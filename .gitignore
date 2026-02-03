@@ -1,0 +1,16 @@
+# Ignore server-side and sensitive files
+*.gs
+appsscript.json
+.clasp*
+credentials*
+.env
+# Node / build
+node_modules/
+.DS_Store
+# Ignore compiled or temporary files
+*.log
+
+# Prevent accidental upload of server-side or transpiled files
+parancsnoki_hid*
+*.gs.js
+

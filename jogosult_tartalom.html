@@ -1,0 +1,26 @@
+<div class="page-container">
+    <div class="page-section" style="text-align: center;">
+        <h1 style="color: var(--color-accent); font-family: var(--font-serif);">Üdv a fedélzeten!</h1>
+        <p>Válassz a lenti menüből, hogy merre folytatod a kalandot!</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 20px auto;">
+            <button class="btn" style="background-color: var(--color-secondary); padding: 15px; font-size: 1.1em;" onclick="loadPage('kikoto_oldal')">
+                <i class="fas fa-anchor"></i> Ugrás a mentett álláshoz
+            </button>
+            
+            <button class="btn" style="background-color: var(--color-gold); color: #333; padding: 15px; font-size: 1.1em;" onclick="launchGame()">
+                <i class="fas fa-fish"></i> Gyerünk hártyát halászni!
+            </button>
+        </div>
+    </div>
+
+    <div class="page-section" style="text-align: center; background-color: #fff;">
+        <h3>Navigáció</h3>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+            <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')">Tudnivalók</button>
+            <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Sziget</button>
+            <button class="btn btn-secondary" onclick="checkRankAndOpenLogModal()">Hajónapló</button>
+            <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+        </div>
+    </div>
+</div>

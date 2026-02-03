@@ -1,0 +1,52 @@
+<div id="kincsek-splash" style="display: none;">
+  <h2>Kincses Leltár</h2>
+  <p>Itt láthatod a vagyonodat, felszerelésedet és eredményeidet, kalóz! Ez a te személyes karakterlapod.</p>
+  <button class="btn" onclick="markPageAsSeen('kincsek')">Értettem, mehet!</button>
+</div>
+
+<div id="kincsek-content" style="display: none; position: relative;">
+  <div class="info-icon-container" title="Információ megjelenítése">
+    <i class="fas fa-info-circle" onclick="showSplash('kincsek')"></i>
+  </div>
+        
+  <div class="character-sheet">
+      <div class="sheet-header">
+        <h2 id="char-sheet-name">Kalóz Neve</h2>
+        <div class="rank">
+          <img id="char-sheet-rank-img" src="" alt="Rangjelzés" style="height: 80px; width: auto;">
+          <div id="char-sheet-rank-name" class="rank-name">Rang</div>
+        </div>
+      </div>
+      
+      <div class="sheet-grid">
+        <div class="stat-block">
+          <h4>Vagyon</h4>
+          <div class="stat-line"><i class="fas fa-coins" style="color: #CECED1;"></i> Kredit: <span class="value" id="char-sheet-kredit">0</span></div>
+          <div class="stat-line"><i class="fas fa-scroll"></i> Hártya: <span class="value" id="char-sheet-hartya">0</span></div>
+          <div class="stat-line"><i class="fas fa-star" style="color: #D2E505;"></i> Tálentum: <span class="value" id="char-sheet-talentum">0</span></div>
+          <div class="stat-line"><i class="fas fa-gem" style="color: #03CB5A;"></i> Letkristály: <span class="value" id="char-sheet-letkristaly">0</span></div>
+        </div>
+        
+        <div class="stat-block">
+          <h4>Tulajdonok</h4>
+          <div class="stat-line"><i class="fas fa-book-open"></i> Könyvek: <span class="value" id="char-sheet-konyv">0</span></div>
+          <div class="stat-line"><i class="fas fa-book"></i> Másolatok: <span class="value" id="char-sheet-masolat">0</span></div>
+          <div class="stat-line"><i class="fas fa-atlas"></i> Tekercsek: <span class="value" id="char-sheet-tekercs">0</span></div>
+          <div class="stat-line"><i class="fas fa-map-marked-alt"></i> Térképek: <span class="value" id="char-sheet-terkep">0</span></div>
+          <div class="stat-line"><i class="fas fa-gem" style="color: #4169E1;"></i> Kristálykönyv: <span class="value" id="char-sheet-kristalykonyv">0</span></div>
+        </div>
+
+        <div class="stat-block">
+          <h4>Járművek</h4>
+          <div class="stat-line"><i class="fas fa-ship"></i> Vitorlás: <span class="value" id="char-sheet-vitorlas">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-anchor"></i> Csónak: <span class="value" id="char-sheet-csonak">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-water"></i> Merülő: <span class="value" id="char-sheet-merulo">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-wind"></i> Léghajó: <span class="value" id="char-sheet-leghajo">Nincs</span></div>
+        </div>
+      </div>
+  </div>
+
+  <div id="navigation" style="text-align: center; margin: 20px 0;">
+    <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+  </div>
+</div>

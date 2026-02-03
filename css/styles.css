@@ -1,0 +1,136 @@
+/* Extracted from index.html - main stylesheet */
+/* ========================================= */
+/* === 1. ALAPBEÁLLÍTÁSOK (Layout) === */
+/* ========================================= */
+:root {
+    --bg-main: #f4f4f4;
+    --bg-paper: #fdf5e6; /* Pergamen */
+    --color-main: #333;
+    --color-accent: #8b4513; /* Barna */
+    --color-gold: #d4af37;
+    --color-primary: #2e8b57; /* Zöld */
+    --color-secondary: #4682b4; /* Kék */
+    --color-danger: #c82333; /* Piros */
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-serif: 'Georgia', serif;
+}
+
+body, html { margin: 0; padding: 0; font-family: var(--font-main); height: 100%; background-color: var(--bg-main); overflow: hidden; /* Görgősáv csak a tartalmon legyen */ }
+
+/* FŐ KONTÉNER: Oszlop elrendezés (Fejléc fönn, Tartalom lenn) */
+#appContainer { 
+    display: flex; 
+    flex-direction: column; 
+    height: 100vh; 
+    width: 100vw;
+}
+
+/* ========================================= */
+/* === 2. FEJLÉC (VISSZAÁLLÍTVA) === */
+/* ========================================= */
+#header {
+    flex: 0 0 auto; /* Nem zsugorodhat, nem nőhet */
+    width: 100%;
+    box-sizing: border-box; /* Padding nem növeli a méretet */
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 3px solid var(--color-accent);
+    display: flex; 
+    justify-content: space-between; /* Cím balra, Statisztika középen/jobbra, X jobbra */
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.header-title { 
+    font-size: 1.3em; 
+    font-weight: bold; 
+    color: var(--color-accent); 
+    font-family: var(--font-serif); 
+    white-space: nowrap;
+}
+
+#header-stats { 
+    display: flex; 
+    gap: 15px; 
+    align-items: center; 
+    justify-content: center;
+    flex-grow: 1; /* Kitölti a helyet középen */
+}
+
+.header-stat-item {
+    background: #f9f9f9; 
+    border: 1px solid #ccc; 
+    padding: 5px 12px; 
+    border-radius: 20px;
+    font-size: 0.9em; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+.header-stat-item:hover { background-color: #e0e0e0; }
+#creditCell i { color: #f0ad4e; }
+
+.header-close-icon { 
+    font-size: 1.5em; 
+    cursor: pointer; 
+    color: #666; 
+    margin-left: 15px;
+    transition: 0.2s; 
+}
+.header-close-icon:hover { color: #000; transform: scale(1.1); }
+
+/* ========================================= */
+/* === 3. TARTALOM (Görgethető) === */
+/* ========================================= */
+#content { 
+    flex: 1 1 auto; /* Kitölti a maradék helyet */
+    overflow-y: auto; /* Csak ez görgethető */
+    padding: 20px; 
+    position: relative; 
+}
+
+#login-view { 
+    width: 100%; 
+    max-width: 400px; 
+    margin: 50px auto; 
+    padding: 30px; 
+    background: white; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    text-align: center; 
+}
+
+/* Rejtett nézetek alapállapota */
+#app-view { display: none; flex-direction: column; height: 100%; }
+
+/* ========================================= */
+/* === 4. UNIVERZÁLIS MODAL (Felugró ablak) === */
+/* ========================================= */
+/* Minden modal (Taverna, Pult, Reader, Stats) ezt használja */
+
+.gamemode-modal, #reader-modal, #upload-map-modal, #map-viewer-modal {
+    display: none; /* Alapból rejtve */
+    position: fixed; z-index: 100; left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85); /* Sötét háttér */
+    justify-content: center; align-items: flex-start; /* Fent kezdődik a tartalom */
+    overflow-y: auto; padding: 40px 0;
+    backdrop-filter: blur(3px); /* Modern elmosás */
+}
+
+.gamemode-modal-content, .reader-container, .modal-content {
+    background-color: var(--bg-paper); /* FONTOS: Pergamen háttér! */
+    border: 2px solid var(--color-accent);
+    border-radius: 8px;
+    padding: 25px;
+    width: 90%; max-width: 700px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    color: var(--color-main);
+}
+
+/* (Additional CSS continues - file truncated for brevity) */

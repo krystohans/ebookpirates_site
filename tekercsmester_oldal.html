@@ -1,0 +1,44 @@
+<div id="tekercsmester_oldal-splash" style="display: none;">
+  <h2>Tekercsmester Műhely</h2>
+  <p>Üdv a műhelyemben, kalóz! Itt fűzheted össze a kalandjaid során összegyűjtött tekercseket, hogy egy teljes másolat birtokába juss. Ha túl vagy egy sikeres hártyahalászaton, itt néhány kreditért egységes olvasmánnyá fűzik a zsákmányt. Ha fölös tekercseid vannak, amiktől szabadulnál, pár kreditet biztosan adnak érte a műhelyben. Ha viszont neked hiányzik valamelyik tekercs, lehet hogy itt sokkal kevesebbért megveheted, mind a piacon. Nézz szét, válogass kedvedre!</p>
+  <button class="btn" onclick="markPageAsSeen('tekercsmester_oldal')">Értettem, mehet!</button>
+</div>
+
+<div id="tekercsmester_oldal-content" style="display: none; position: relative;">
+    
+    <div class="info-icon-container" title="Információ megjelenítése">
+        <i class="fas fa-info-circle" onclick="showSplash('tekercsmester_oldal')"></i>
+    </div>
+
+    <div class="page-container">
+        
+        <div class="page-section" style="text-align: center;">
+    <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Tekercs Piac</h3>
+    
+    <div class="stat-box" style="background-color: rgba(255,255,255,0.5); border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <div id="hartya-count" style="font-family: 'Pirata One', cursive; font-size: 2.5em; color: var(--color-accent);">...</div>
+        <div style="text-transform: uppercase; font-size: 0.9em; color: #555;">Hártyád</div>
+        
+        </div>
+
+    <hr style="border-color: #d2b48c; margin: 20px 0;">
+    
+    <div class="form-group" style="text-align: left;">
+        <label for="elado-tekercs-lista" style="font-weight: bold;">Eladó Tekercsek a Piacon</label>
+        <select id="elado-tekercs-lista"></select>
+    </div>
+    <button id="buy-tekercs-btn" class="btn">Megveszem (11 kredit)</button>
+</div>
+
+        <div class="page-section">
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Saját Tekercseid</h3>
+            <div id="sajat-tekercs-lista-loader"><p>Keresés...</p></div>
+            <div id="sajat-tekercs-lista"></div>
+        </div>
+    </div>
+
+    <div id="navigation" style="text-align: center; margin: 20px 0;">
+        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Vissza a Kikötőbe</button>
+        <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+    </div>
+</div>

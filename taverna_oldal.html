@@ -1,0 +1,314 @@
+<div id="taverna_oldal-splash" style="display: none;">
+  <h2>Taverna a Rózsaszín Gyöngyhöz</h2>
+  <p>Még, hogy kalózkocsma! Szép is lenne! Egy kocsmában talán működik üzenetküldő szolgálat? Nálunk nem csak üzeneteket hagyhatsz, amiket átadunk a megnevezett kalóznak, de itt gyűlnek össze a hajóskapitányok, itt toboroznak új tagokat a legénységbe, az üzenőfalunkon mindig ott virítanak a legújabb felfedezésekről szóló jelentések, a hirdetések, és persze a rendbiztosok által keresett tengeri csibészek pofázmányai is. Asztalainknál a legfrissebb hírek cserél gazdát a söröskorsók felett, a csapos pedig mindent tud, ám felettébb diszkrét. Ilyet egy kocsma nem tud! A hátsó kártyaszobáról már ne is szóljak! Ott aztán nincs köpködés, dajdajozás! A kárpitozott falak közt, a bársonnyal bevont asztalok körül csupa finom úriember és úrhölgy foglal helyet, hogy emelkedett stílusban cseverészve fosszák ki egymást.</p>
+  <button onclick="markPageAsSeen('taverna_oldal')">Értettem, mehet!</button>
+</div>
+
+<div id="taverna_oldal-content" style="display: none; position: relative; min-height: 100vh;">
+    
+    <div class="info-icon-container" title="Információ megjelenítése">
+        <i class="fas fa-info-circle" onclick="showSplash('taverna_oldal')"></i>
+    </div>
+
+    <div class="page-container">
+        <div class="page-section" style="text-align: center;">
+            <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;">
+                Taverna a Rózsaszín Gyöngyhöz
+            </h2>
+            
+            <div onclick="toggleBartender()" title="Beszélek a Csapossal" 
+                 style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; 
+                         background: #d2691e; border: 3px solid var(--color-gold); border-radius: 50%; 
+                         box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 2000; cursor: pointer;
+                         display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                <div style="position: relative;">
+                    <i class="fas fa-beer" style="font-size: 2em; color: white;"></i>
+                    <i class="fas fa-comment-dots" style="position: absolute; bottom: -5px; right: -8px; 
+                        font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+                </div>
+            </div>
+
+            <div id="bartender-panel" class="page-section" 
+                 style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; 
+                         margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); 
+                         z-index: 2001; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
+                 
+                 <div style="background: #d2691e; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
+                     <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
+                         <i class="fas fa-glass-cheers"></i> Öreg Rozsdás
+                     </span>
+                     <button onclick="toggleBartender()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+                 </div>
+
+                 <div id="bartender-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #fdf5e6; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); display: flex; flex-direction: column;">
+                     </div>
+
+                 <div id="bartender-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
+                     <input type="text" id="bartender-input" placeholder="Mit kérsz?" style="width: 100%; padding: 8px; margin-bottom: 5px; display: none;">
+                     <button class="btn" onclick="openBartenderChat()">Indítás</button>
+                 </div>
+            </div>
+
+            <p>Ülj le egy asztalhoz, vagy szólítsd meg a csapost!</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                <button class="btn" onclick="toggleBartender()">🍺 Beszélek a Csapossal</button>
+                <button id="pult-btn" class="btn" onclick="openPultModal()">📨 Pult (Posta/Béta)</button>
+                <button id="asztal-btn" class="btn" onclick="document.getElementById('asztal-confirm-modal').style.display='flex'">🗣️ Asztal (Chat)</button>
+                <button id="jatekterem-btn" class="btn" style="background-color: #8b0000;" onclick="document.getElementById('jatekterem-modal').style.display='flex'">🃏 Játékterem</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+        </div>
+    </div>
+
+    <div id="pult-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 600px; width: 95%;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('pult-modal').style.display='none'">X</button>
+            <h4 id="pult-modal-title" style="color: #8b0000; border-bottom: 2px solid #8b0000; padding-bottom: 5px;">A Pultnál</h4>
+            
+            <div id="pult-view-read">
+                <p><strong>📨 Posta és Üzenetek:</strong></p>
+                <div id="pult-messages-list" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; background: #fff;">
+                    <p>Üzenetek betöltése...</p>
+                </div>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                    <button class="btn" onclick="showPultView('compose')">Üzenetet hagyok</button>
+                    <button class="btn" onclick="showPultView('check_status_init')">Keresés</button>
+                </div>
+
+                <hr style="margin: 15px 0; border-color: #8b4513;">
+
+                <p><strong>📜 Bétaolvasók Asztala:</strong></p>
+                <button class="btn" style="background-color: #a0522d; color: white; width: 100%;" onclick="showPultView('beta_menu')">
+                    Irodalmi Ügyek Intézése
+                </button>
+            </div>
+
+            <div id="pult-view-compose" style="display: none;">
+                <h5 style="margin-top:0;">Üzenet írása</h5>
+                <div class="form-group">
+                    <label for="pult-recipient-name">Címzett kalóz neve:</label>
+                    <input type="text" id="pult-recipient-name" placeholder="Pl. Feketeszakáll">
+                </div>
+                <div class="form-group">
+                    <label for="pult-message-text">Üzenet (max. 200 karakter):</label>
+                    <textarea id="pult-message-text" rows="3" maxlength="200" style="width: 100%; box-sizing: border-box;"></textarea>
+                </div>
+                <button id="send-message-btn" class="btn">Levélkosárba (1 kredit)</button>
+                <button class="btn" onclick="showPultView('read')">Mégse</button>
+            </div>
+            
+            <div id="pult-view-check_status_init" style="display: none;">
+                 <h5 style="margin-top:0;">Üzenet keresése</h5>
+                 <div class="form-group">
+                    <label for="pult-check-recipient-name">Kinek küldött üzenetre vagy kíváncsi?</label>
+                    <input type="text" id="pult-check-recipient-name" placeholder="Add meg a kalóz nevét">
+                </div>
+                <button id="check-status-btn" class="btn">Keresés</button>
+                <button class="btn" onclick="showPultView('read')">Vissza</button>
+            </div>
+
+            <div id="pult-view-feedback" style="display: none;">
+                <p id="pult-feedback-text" style="font-weight: bold; padding: 10px; text-align: center;"></p>
+                <div style="text-align: center;">
+                    <button class="btn" onclick="showPultView('read')">Rendben</button>
+                    <button id="pult-feedback-compose-again-btn" class="btn" style="display: none;" onclick="showPultView('compose')">Új üzenet</button>
+                </div>
+            </div>
+
+            <div id="pult-view-beta_menu" style="display: none; text-align: center;">
+                <h5 style="color: #8b4513;">📜 Bétaolvasók Asztala</h5>
+                <p style="font-size: 0.9em;">"Itt válnak a zöldfülű írások legendává. Vagy papírnehezékké."</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn" onclick="showPultView('beta_upload')" style="background: #8b0000; color: white;">
+                        🖋️ Új írás feltöltése (10 Kr + Bónusz)
+                    </button>
+                    <button class="btn" onclick="listBetaWorksForReader()" style="background: #2e8b57; color: white;">
+                        📖 Olvasok (Kreditszerzés)
+                    </button>
+                    <button class="btn" onclick="showMyBetaStats()" style="background: #4682b4; color: white;">
+                        📊 Saját műveim statisztikája
+                    </button>
+                </div>
+                <hr>
+                <button class="btn" onclick="showPultView('read')">Vissza a Főpulthoz</button>
+            </div>
+
+            <div id="pult-view-beta_upload" style="display: none;">
+                <h5 style="margin-top: 0;">Új mű a Bétázóknak</h5>
+                
+                <div class="form-group">
+                    <label>Mű címe:</label>
+                    <input type="text" id="beta-title" placeholder="A mű címe" style="width: 100%;">
+                </div>
+                
+                <div class="form-group">
+                    <label>Szöveg (Másold be ide):</label>
+                    <textarea id="beta-content" rows="6" style="width: 100%; font-family: inherit;" placeholder="Ide illeszd a történetet..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label title="Ennyit kap egy olvasó a te zsebedből">Bónusz / Fő (Kr):</label>
+                        <input type="number" id="beta-bonus" value="5" min="0" style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label title="Hány embernek fizeted ki?">Max Olvasó:</label>
+                        <input type="number" id="beta-max" value="3" min="1" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div style="background: #eee; padding: 10px; margin: 10px 0; border-radius: 5px; font-size: 0.9em;">
+                    Költség: <strong>10 Kr</strong> (Díj) + <strong id="beta-total-calc">15 Kr</strong> (Bónusz Alap)
+                    <br>Összesen levonásra kerül: <strong id="beta-final-cost" style="color: #8b0000;">25 Kr</strong>
+                </div>
+
+                <button class="btn" onclick="initiateBetaUpload()" style="background-color: #8b0000; color: white; width: 100%;">
+                    Feltöltés és Fizetés
+                </button>
+                <button class="btn" onclick="showPultView('beta_menu')" style="margin-top: 5px; width: 100%;">Mégse</button>
+            </div>
+
+            <div id="pult-view-beta_list" style="display: none;">
+                <h5>Elérhető Művek</h5>
+                <div id="beta-list-container" style="max-height: 250px; overflow-y: auto; border: 1px solid #d2b48c; padding: 5px; background: #fff8dc; margin-bottom: 10px;">
+                    <p style="text-align:center;"><i>Betöltés...</i></p>
+                </div>
+                <button class="btn" onclick="showPultView('beta_menu')">Vissza</button>
+            </div>
+
+            <div id="pult-view-beta_my_works" style="display: none;">
+                <h5>Saját Műveim</h5>
+                <p style="font-size: 0.9em;">Kattints a "Kimutatás" gombra a részletekhez (10 Kr/lekérés).</p>
+                
+                <div id="beta-my-works-container" style="max-height: 250px; overflow-y: auto; border: 1px solid #d2b48c; padding: 5px; background: #fff8dc; margin-bottom: 10px;">
+                    <p style="text-align:center;"><i>Betöltés...</i></p>
+                </div>
+                <button class="btn" onclick="showPultView('beta_menu')">Vissza</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="asztal-confirm-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('asztal-confirm-modal').style.display='none'">X</button>
+            <h4>Az Asztaltársaság</h4>
+            <p>"Foglalj helyet nálunk! Mi hírt hoztál? Hallottad miről beszélnek?"</p>
+            <button id="cseveg-btn" class="btn">Csevegek</button>
+        </div>
+    </div>
+
+    <div id="chat-modal" class="gamemode-modal" style="display: none; top: 0; left: 0; width: 100%; height: 100%; z-index: 1500;">
+        <div class="gamemode-modal-content" style="width: 95%; height: 95%; padding: 10px; position: relative; display: flex; flex-direction: column;">
+             <button id="close-chat-btn" class="btn btn-close" style="position: absolute; top: -10px; right: -10px; padding: 5px 10px; line-height: 1; z-index: 10;">X</button>
+            <iframe id="chat-iframe" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
+    <div id="jatekterem-modal" class="gamemode-modal" style="display: none; top: 0; left: 0; width: 100%; height: 100%; z-index: 1500; background-color: rgba(0,0,0,0.9);">
+        <div id="game-modal-content" class="gamemode-modal-content" style="width: 95%; max-width: 800px; height: 95%; padding: 20px; position: relative; display: flex; flex-direction: column; justify-content: space-around; text-align: center; border: 2px solid #c89b3f;">
+            <button id="close-game-btn" class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1; z-index: 10;">X</button>
+            
+            <h3 id="game-info-text" style="color: #f0e6d2; min-height: 50px;">Melyik az ász? Tedd meg a téted, kalóz!</h3>
+
+            <div id="game-card-area" style="display: flex; justify-content: space-around; align-items: center; min-height: 250px;">
+                <p id="game-feedback-text" style="color: red; font-size: 1.5em; font-weight: bold;"></p>
+            </div>
+
+            <div id="game-betting-area">
+                <label for="game-bet-input" style="color: #f0e6d2;">A téted:</label>
+                <input type="number" id="game-bet-input" style="padding: 8px; width: 100px; text-align: center;">
+                <button id="game-play-btn" class="btn">Játsszunk!</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="beta-reader-modal" class="gamemode-modal" style="display: none; width: 100%; height: 100%; top:0; left:0; background: rgba(0,0,0,0.98); z-index: 2000;">
+        <div style="display: flex; height: 100%; width: 100%; flex-direction: row;">
+            
+            <div style="flex: 7; background: #f4e4bc; padding: 20px; overflow-y: auto; border-right: 8px solid #5d3a1a; position: relative;">
+                 <div style="max-width: 900px; margin: 0 auto; background: rgba(255,255,255,0.5); padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                    <button class="btn" onclick="closeBetaReader()" style="margin-bottom: 20px; background: #8b0000; color: white;">&larr; Megszakítás (Kilépés)</button>
+                    <div id="reader-content-area" style="font-family: 'Georgia', serif; font-size: 1.1em; line-height: 1.6; text-align: justify; color: #2c1a0b;">
+                        <p style="text-align:center; padding-top: 50px;"><i class="fas fa-spinner fa-spin"></i> Tekercs kigöngyölítése...</p>
+                    </div>
+                 </div>
+            </div>
+
+            <div style="flex: 3; background: #fff8dc; padding: 20px; overflow-y: auto; min-width: 320px; box-shadow: -5px 0 15px rgba(0,0,0,0.5); border-left: 2px solid #d2b48c;">
+                <h3 style="color: #8b4513; font-family: 'Pirata One', serif; text-align: center; border-bottom: 2px solid #8b4513; padding-bottom: 10px;">📝 Béta Napló</h3>
+                <p style="font-size: 0.85em; text-align: center; color: #555;">Töltsd ki figyelmesen a 60+ Kredit jutalomért!</p>
+                
+                <form id="beta-log-form">
+                    <div class="form-group">
+                        <label style="font-weight:bold;">Olvasó Neme:*</label>
+                        <select id="log-gender" style="width: 100%; padding: 8px; border: 1px solid #8b4513; border-radius: 4px;">
+                            <option value="">-- Válassz --</option>
+                            <option value="Férfi">Férfi</option>
+                            <option value="Nő">Nő</option>
+                            <option value="Egyéb">Egyéb</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:bold;">Olvasó Kora:*</label>
+                        <select id="log-age" style="width: 100%; padding: 8px; border: 1px solid #8b4513; border-radius: 4px;">
+                            <option value="">-- Válassz --</option>
+                            <option value="18 alatt">18 alatt</option>
+                            <option value="18-25">18-25</option>
+                            <option value="26-40">26-40</option>
+                            <option value="41-60">41-60</option>
+                            <option value="60+">60+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:bold;">Kedvenc Zsánered:*</label>
+                        <input type="text" id="log-genre" placeholder="Pl. Fantasy, Krimi..." style="width: 100%; padding: 8px; border: 1px solid #8b4513; border-radius: 4px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:bold;">Anyanyelved:*</label>
+                        <input type="text" id="log-language" value="Magyar" style="width: 100%; padding: 8px; border: 1px solid #8b4513; border-radius: 4px;">
+                    </div>
+                    <hr style="border-color: #d2b48c; margin: 15px 0;">
+                    <div class="form-group">
+                        <label style="font-weight:bold;">Véleményed, észrevételeid:*</label>
+                        <textarea id="log-opinion" rows="12" style="width: 100%; padding: 10px; font-family: inherit; border: 1px solid #8b4513; border-radius: 4px; resize: vertical;" placeholder="Írj szabadon a történetről... Mi tetszett? Mi nem?"></textarea>
+                    </div>
+                    <button type="button" class="btn" onclick="submitLogbook()" style="background-color: #2e8b57; color: white; width: 100%; font-size: 1.1em; padding: 15px; margin-top: 10px; border: 2px solid #1e5c39;">
+                        💾 Napló Beküldése & Jutalom
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="beta-stats-modal" class="gamemode-modal" style="display: none; width: 100%; height: 100%; top:0; left:0; background: rgba(0,0,0,0.9); z-index: 2000;">
+        <div class="gamemode-modal-content" style="width: 90%; max-width: 1000px; height: 90%; padding: 20px; display: flex; flex-direction: column;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px;" onclick="document.getElementById('beta-stats-modal').style.display='none'">X</button>
+            <h3 id="stats-modal-title" style="color: #8b0000; text-align: center; border-bottom: 2px solid #8b0000;">Béta Jelentés</h3>
+            <div style="flex: 1; overflow-y: auto; background: white; border: 1px solid #ccc; padding: 10px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: #f4e4bc; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Dátum</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Olvasó (Kalóznév)</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Kor/Nem</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Pref. (Zsáner/Nyelv)</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Vélemény</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Bónusz</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stats-table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top: 10px; text-align: center;">
+                <button class="btn" onclick="document.getElementById('beta-stats-modal').style.display='none'">Bezárás</button>
+            </div>
+        </div>
+    </div>
+
+</div>

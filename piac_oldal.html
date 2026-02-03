@@ -1,0 +1,196 @@
+<div id="piac_oldal-splash" style="display: none;">
+  <h2>Minden Portékák Piaca</h2>
+  <p>Itt aztán bármit megtalálsz, és ha van elég kredited, be is szerezheted magadnak! Gyógyító ital a kalandozásokhoz? Új másolatok olvasáshoz? Vagy egy hiányzó tekercs kéne a könyvedhez? Esetleg hajót bérelnél a cimboráiddal egy kis portyázáshoz? Vagy netán te hoztál valamit eladásra? Nyugodtan érdeklődj az árusoktól, vagy vidd licitre a kincseidet, de az erszényedre jól vigyázz! Ha meg Tálentumot váltanál Kalózkreditre, vagy értéket küldenél egy jó ismerősödnek, esetleg adósságot kell rendezned valaki felé, ott van az a puccos épület a piac közepén, az <b>eBankPirates</b>, ott szívesen látják minden értékedet!</p>
+  <button class="btn" onclick="markPageAsSeen('piac_oldal')">Értettem, mehet!</button>
+</div>
+
+<div id="piac_oldal-content" style="display: none; position: relative;">
+    
+    <div class="info-icon-container" title="Információ megjelenítése">
+        <i class="fas fa-info-circle" onclick="showSplash('piac_oldal')"></i>
+    </div>
+
+    <button class="btn" style="background-color: #37474f;" onclick="openUniversalNPC('market_boss', HORTENZI_STYLE)">
+    👵 Beszélek a Piacfőnökkel
+</button>
+
+    <div class="page-container">
+        
+        <div class="page-section">
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Piactér - Aktuális kínálat</h3>
+            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                <input type="text" id="piac-kereso" placeholder="Keress a hirdetések között..." style="flex-grow: 1; margin-bottom: 0;">
+                <button id="piac-kereso-gomb" class="btn" style="margin-top: 0; display: none;">Keresés</button>
+            </div>
+            <div id="piaci-lista-loader"><p>Kínálat betöltése...</p></div>
+            <div id="piaci-lista"></div>
+        </div>
+
+        <div class="page-section">
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Jelenleg meghirdetett tételeim</h3>
+            <div id="meghirdetett-lista-loader"><p>Keresés...</p></div>
+            <div id="meghirdetett-lista"></div>
+        </div>
+
+        <div class="page-section">
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Eladásra szánt tételeim</h3>
+            <div class="form-group">
+                <label for="sell-item-type-select" style="font-weight: bold;">Típus kiválasztása:</label>
+                <select id="sell-item-type-select">
+                    <option value="">Válassz típust...</option>
+                    <option value="masolat">Másolat</option>
+                    <option value="tekercs">Tekercs</option>
+                    <option value="kincs">Kincs</option>
+                    <option value="terkep">Térkép</option>
+                    <option value="hajok">Hajó (Felszíni)</option> 
+                    <option value="buvarhajok">Hajó (Búvár)</option> 
+                    <option value="leghajok">Hajó (Légi)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sell-item-select" style="display: none; font-weight: bold;">Tétel kiválasztása:</label>
+                <select id="sell-item-select" style="display: none;"></select>
+            </div>
+            <div id="sell-item-details" style="margin-bottom: 15px; display: none;"></div>
+            
+            <button id="sell-selected-item-button" class="btn" style="display: none;">Kiválasztott tétel meghirdetése</button>
+            <div id="sajat-eladhato-lista-loader" style="display: none;"><p>Tételek betöltése...</p></div>
+            <div id="sajat-eladhato-lista-status"></div> 
+        </div>
+
+        <div class="page-section">
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Aktív ajánlataim</h3>
+            <div id="aktiv-ajanlatok-loader"><p>Keresés...</p></div>
+            <div id="aktiv-ajanlatok-lista"></div>
+        </div>
+
+        <div class="page-section">
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">eBankPirates</h3>
+            <div class="bank-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                
+                <div class="bank-section" style="flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; background: #fff;">
+                    <h4 style="margin-top: 0;">Tálentum váltása Kreditre (1:100)</h4>
+                    <p>Itt válthatod át a megszerzett Tálentumaidat a piacon használható Kreditre.</p>
+                    <form onsubmit="return false;">
+                        <input type="number" id="bank-exchange-amount" placeholder="Átváltandó Tálentum">
+                        <input type="password" id="bank-exchange-pin" placeholder="PIN kódod a megerősítéshez">
+                        <button id="bank-exchange-btn" class="btn">Váltás</button>
+                    </form>  
+                </div>
+                
+                <div class="bank-section" style="flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; background: #fff;">
+                    <h4 style="margin-top: 0;">Tétel küldése más kalóznak</h4>
+                    <p style="font-size: 0.9em;">A tranzakció díja 1 kredit.</p>
+                    <form onsubmit="return false;">
+                        <input type="email" id="bank-send-recipient" placeholder="Címzett kalóz e-mail címe">
+                        <select id="bank-send-item-type">
+                            <option value="">Válassz típust...</option>
+                            <option value="kredit">Kredit</option>
+                            <option value="talentum">Tálentum</option>
+                            <option value="masolat">Másolat</option>
+                            <option value="tekercs">Tekercs</option>
+                            <option value="kincs">Kincs</option>
+                            <option value="terkep">Térkép</option>
+                            <option value="hajok">Hajó (Felszíni)</option> 
+                            <option value="buvarhajok">Hajó (Búvár)</option> 
+                            <option value="leghajok">Hajó (Légi)</option> 
+                        </select>
+                        <div id="bank-send-item-selector" style="margin-top: 5px;"></div>
+                        <input type="password" id="bank-send-pin" placeholder="PIN kódod a megerősítéshez" style="margin-top: 5px;">
+                        <button id="bank-send-btn" class="btn">Küldés</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div id="navigation" style="text-align: center; margin: 20px 0;">
+        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Vissza a Kikötőbe</button>
+        <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+    </div>
+</div>
+
+<div id="ajanlat-modal" class="gamemode-modal">
+  <div class="gamemode-modal-content">
+    <button class="btn btn-close" onclick="document.getElementById('ajanlat-modal').style.display='none'">X</button>
+    <h4 id="ajanlat-modal-title">Ajánlat tétele</h4>
+    <p id="ajanlat-modal-item-name" style="font-weight: bold; margin-bottom: 15px;"></p>
+    
+    <form onsubmit="return false;"> 
+        <div style="margin-bottom: 15px;">
+            <label for="ajanlat-kredit">Felajánlott kredit:</label>
+            <input type="number" id="ajanlat-kredit" placeholder="Pl. 50">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>Felajánlott kincsek:</label>
+            <div id="ajanlat-kincsek-lista" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #fff;"></div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="ajanlat-pin">PIN kód a megerősítéshez</label>
+            <input type="password" id="ajanlat-pin" placeholder="PIN kódod">
+        </div>
+        
+        <button id="ajanlat-submit-btn" class="btn" style="width: 100%;">Ajánlat elküldése</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('ajanlat-modal').style.display='none'" style="width: 100%;">Mégse</button>
+    </form>
+  </div>
+</div>
+
+<div id="hirdetes-modal" class="gamemode-modal">
+  <div class="gamemode-modal-content">
+    <button class="btn btn-close" onclick="document.getElementById('hirdetes-modal').style.display='none'">X</button>
+    <h4>Hirdetés feladása</h4>
+    <p id="hirdetes-modal-item-name" style="font-weight: bold; margin-bottom: 15px;"></p>
+
+    <form onsubmit="return false;">
+        <div style="margin-bottom: 15px;">
+            <label style="margin-right: 15px;"><input type="radio" name="priceType" value="offer" checked onchange="toggleBuyNowInput(false)"> Ajánlat alapú</label>
+            <label><input type="radio" name="priceType" value="fixed" onchange="toggleBuyNowInput(true)"> Fixáras</label>
+        </div>
+
+        <div id="fixed-price-container" style="display: none; margin-bottom: 15px;">
+            <label for="hirdetes-ar">Fix ár (kreditben)</label>
+            <input type="number" id="hirdetes-ar" placeholder="Pl. 100">
+        </div>
+
+        <div id="buy-now-price-container" style="display: block; margin-bottom: 15px;">
+            <label for="hirdetes-buy-now-ar">Azonnali Vétel Ár (opcionális)</label>
+            <input type="number" id="hirdetes-buy-now-ar" placeholder="Pl. 150 (üresen hagyható)">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="hirdetes-pin">PIN kód a megerősítéshez</label>
+            <input type="password" id="hirdetes-pin" placeholder="PIN kódod">
+        </div>
+
+        <button id="hirdetes-submit-btn" class="btn" style="width: 100%;">Meghirdetem</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('hirdetes-modal').style.display='none'" style="width: 100%;">Mégse</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const HORTENZI_STYLE = {
+    name: "Hortenzi Gabrel",
+    role: "Piacfőnök",
+    icon: "👵",
+    headerColor: "#37474f", // Sötétszürke
+    styles: {
+        modal: {
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        content: {
+            width: '90%',
+            maxWidth: '500px',
+            height: '80vh',
+            borderRadius: '8px',
+            border: '3px solid #37474f',
+            backgroundColor: '#fff',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.6)'
+        }
+    }
+};
+</script>

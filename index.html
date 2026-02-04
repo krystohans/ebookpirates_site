@@ -391,37 +391,10 @@ var currentLogEntryData = null;  // Hajónapló szerkesztéshez
 const MAP_COPY_COST = 30;        // Konstans: másolás ára
 
 /**
- * A KÖZPONTI KOMMUNIKÁCIÓS HÍD (A te biztonságos verziód)
+ * MEGJEGYZÉS: A callBackend() függvény mostantól az [js/app.js] fájlban van definiálva.
+ * Az inline verzió itt el lett távolítva, hogy elkerüljük a duplikációt és a google object felülírását.
+ * Az app.js verzió megfelelően kezeli az Apps Script (google.script) és külső (fetch) környezeteket.
  */
-if (typeof window.callBackend === 'undefined') {
-function callBackend(funcName, params, onSuccess, onFailure) {
-    // 1. Token elővétele
-    var token = localStorage.getItem('ebookPiratesToken'); 
-    
-    // Ha nincs token, null-t küldünk
-    if (!token) token = null;
-
-    // 2. Hívás a Google postással
-    google.script.run
-        .withSuccessHandler(onSuccess)
-        .withFailureHandler(function(error) {
-            console.error("API Hiba (" + funcName + "):", error);
-            
-            // 3. HA LEJÁRT A MUNKAMENET (AUTH_ERROR)
-            if (error.message && error.message.indexOf("AUTH_ERROR") !== -1) {
-                alert("⚠️ A munkamenet lejárt!\n\n" +
-                      "Hogy NE vesszen el a munkád:\n" +
-                      "1. Nyiss egy ÚJ LAPOT a böngészőben!\n" +
-                      "2. Lépj be ott újra!\n" +
-                      "3. Gyere ide vissza, és kattints újra a gombra!\n\n" +
-                      "(NE frissítsd ezt az oldalt, mert akkor minden beírt adat törlődik!)");
-            }
-            
-            if (onFailure) onFailure(error);
-        })
-        .apiRouter(token, funcName, params); }
-
-}
 
 // === BELÉPÉS ÉS AUTHENTIKÁCIÓ ===
 

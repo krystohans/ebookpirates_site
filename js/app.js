@@ -1219,12 +1219,14 @@ function initializeTavernaPage() {
 
     // 2. JAVÍTOTT KÖLTSÉG SZÁMOLÓ (Esemény delegálás - Nincs több "null" hiba!)
     // Ez helyettesíti a régi 'DOMContentLoaded' blokkot
-    document.addEventListener('input', function(e) {
-        // Figyeljük, ha valaki ír a béta mezőkbe
-        if (e.target && (e.target.id === 'beta-bonus' || e.target.id === 'beta-max')) {
-            updateBetaCost();
-        }
-    });
+    if (typeof document !== 'undefined') {
+        document.addEventListener('input', function(e) {
+            // Figyeljük, ha valaki ír a béta mezőkbe
+            if (e.target && (e.target.id === 'beta-bonus' || e.target.id === 'beta-max')) {
+                updateBetaCost();
+            }
+        });
+    }
 
     function updateBetaCost() {
         const fee = 10;

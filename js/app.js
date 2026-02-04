@@ -4704,7 +4704,6 @@ function setupTekercsButtons(currentHartya) {
             sellButton.className = 'btn';
             sellButton.style.marginTop = '10px';
             sellButton.style.backgroundColor = '#d35400';
-            sellButton.style.width = '1
             sellButton.style.width = '100%';
 
             sellButton.onclick = function() {

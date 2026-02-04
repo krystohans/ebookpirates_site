@@ -393,6 +393,7 @@ const MAP_COPY_COST = 30;        // Konstans: másolás ára
 /**
  * A KÖZPONTI KOMMUNIKÁCIÓS HÍD (A te biztonságos verziód)
  */
+if (typeof window.callBackend === 'undefined') {
 function callBackend(funcName, params, onSuccess, onFailure) {
     // 1. Token elővétele
     var token = localStorage.getItem('ebookPiratesToken'); 
@@ -418,7 +419,8 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             
             if (onFailure) onFailure(error);
         })
-        .apiRouter(token, funcName, params); 
+        .apiRouter(token, funcName, params); }
+
 }
 
 // === BELÉPÉS ÉS AUTHENTIKÁCIÓ ===
@@ -5642,23 +5644,43 @@ var currentMarketingFolderId = null;
 
 // URL Paraméterek ellenőrzése
 function checkUrlParametersForMarketing() {
-    google.script.url.getLocation(function(location) {
-        if (location.parameter && location.parameter.page === 'marketing') {
-            var bookId = location.parameter.bookId;
-            var folderId = location.parameter.folderId;
-            
-            if (bookId && folderId) {
-                console.log("Marketing mód észlelve: " + bookId);
-                window.pendingMarketingData = { bookId: bookId, folderId: folderId };
-                var loginStatus = document.getElementById('login-status');
-                // Ellenőrzés, hogy látható-e a login nézet
-                var loginView = document.getElementById('login-view');
-                if (loginStatus && loginView && loginView.style.display !== 'none') {
-                    loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
+    // Apps Script environment
+    if (typeof google !== 'undefined' && google.script && google.script.url && google.script.url.getLocation) {
+        google.script.url.getLocation(function(location) {
+            if (location.parameter && location.parameter.page === 'marketing') {
+                var bookId = location.parameter.bookId;
+                var folderId = location.parameter.folderId;
+
+                if (bookId && folderId) {
+                    console.log("Marketing mód észlelve: " + bookId);
+                    window.pendingMarketingData = { bookId: bookId, folderId: folderId };
+                    var loginStatus = document.getElementById('login-status');
+                    // Ellenőrzés, hogy látható-e a login nézet
+                    var loginView = document.getElementById('login-view');
+                    if (loginStatus && loginView && loginView.style.display !== 'none') {
+                        loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
+                    }
                 }
             }
+        });
+        return;
+    }
+
+    // Fallback: GitHub Pages vagy más statikus host
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('page') === 'marketing') {
+        var bookId2 = params.get('bookId');
+        var folderId2 = params.get('folderId');
+        if (bookId2 && folderId2) {
+            console.log("Marketing mód észlelve (fallback): " + bookId2);
+            window.pendingMarketingData = { bookId: bookId2, folderId: folderId2 };
+            var loginStatus2 = document.getElementById('login-status');
+            var loginView2 = document.getElementById('login-view');
+            if (loginStatus2 && loginView2 && loginView2.style.display !== 'none') {
+                loginStatus2.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
+            }
         }
-    });
+    }
 }
 
 // Betölti a kérdőívet

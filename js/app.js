@@ -10,23 +10,56 @@ function callBackend(funcName, params, onSuccess, onFailure) {
     var token = localStorage.getItem('ebookPiratesToken');
     if (!token) token = null;
 
-    google.script.run
-        .withSuccessHandler(onSuccess)
-        .withFailureHandler(function(error) {
-            console.error("API Hiba (" + funcName + "):", error);
+    // 1. Google Apps Script környezet (Belső)
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+            .withSuccessHandler(onSuccess)
+            .withFailureHandler(function(error) {
+                console.error("API Hiba (" + funcName + "):", error);
 
-            if (error.message && error.message.indexOf("AUTH_ERROR") !== -1) {
-                alert("⚠️ A munkamenet lejárt!\n\n" +
-                      "Hogy NE vesszen el a munkád:\n" +
-                      "1. Nyiss egy ÚJ LAPOT a böngészőben!\n" +
-                      "2. Lépj be ott újra!\n" +
-                      "3. Gyere ide vissza, és kattints újra a gombra!\n\n" +
-                      "(NE frissítsd ezt az oldalt, mert akkor minden beírt adat törlődik!)");
-            }
+                if (error.message && error.message.indexOf("AUTH_ERROR") !== -1) {
+                    alert("⚠️ A munkamenet lejárt!\n\n" +
+                          "Hogy NE vesszen el a munkád:\n" +
+                          "1. Nyiss egy ÚJ LAPOT a böngészőben!\n" +
+                          "2. Lépj be ott újra!\n" +
+                          "3. Gyere ide vissza, és kattints újra a gombra!\n\n" +
+                          "(NE frissítsd ezt az oldalt, mert akkor minden beírt adat törlődik!)");
+                }
 
-            if (onFailure) onFailure(error);
+                if (onFailure) onFailure(error);
+            })
+            .apiRouter(token, funcName, params);
+    } 
+    // 2. Külső környezet (pl. GitHub Pages)
+    else {
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzcTV8OW0TJmB9HEmgTQzYB-QVfb82xyelgWHH5kkQPsI4OjbFhcON5Vit4wiJqkh2v/exec";
+        
+        // POST kérés küldése a backendnek
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain a CORS preflight elkerülése miatt
+            body: JSON.stringify({
+                action: "apiRouter",
+                token: token,
+                funcName: funcName,
+                params: params
+            })
         })
-        .apiRouter(token, funcName, params);
+        .then(response => response.json())
+        .then(data => {
+            // Ha a backend { error: "..." } formátumban jelez hibát
+            if (data && data.error) {
+                console.error("API Hiba (Fetch):", data.error);
+                if (onFailure) onFailure(new Error(data.error));
+            } else {
+                if (onSuccess) onSuccess(data);
+            }
+        })
+        .catch(error => {
+            console.error("Hálózati Hiba:", error);
+            if (onFailure) onFailure(error);
+        });
+    }
 }
 
 function login() {
@@ -150,9 +183,12 @@ function preloadLoadingGif() {
     );
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    preloadLoadingGif();
-});
+// Csak akkor futtatjuk, ha van 'document' (Kliens oldalon)
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+        preloadLoadingGif();
+    });
+}
 
 function updateCreditDisplay() {
     if (!currentUserEmail) return;
@@ -4668,21 +4704,22 @@ function setupTekercsButtons(currentHartya) {
             sellButton.className = 'btn';
             sellButton.style.marginTop = '10px';
             sellButton.style.backgroundColor = '#d35400';
+            sellButton.style.width = '1
             sellButton.style.width = '100%';
 
             sellButton.onclick = function() {
                 uiConfirm(
-                    "Biztosan eladsz 10 hártyát 1 kreditért?",
-                    "Hártya Eladás",
+                    "Biztosan eladsz 10 hártyát 1 kreditért?", 
+                    "Hártya Eladás", 
                     function() {
                         document.getElementById('loading-overlay').style.display = 'flex';
-                        callBackend('sellHartya', [],
+                        callBackend('sellHartya', [], 
                             function(response) {
                                 document.getElementById('loading-overlay').style.display = 'none';
                                 uiAlert(response.message || response.error, response.success ? "Siker" : "Hiba");
                                 if (response.success) {
                                     updateCreditDisplay();
-                                    initializeTekercsmesterPage();
+                                    initializeTekercsmesterPage(); 
                                 }
                             },
                             function(err) {
@@ -4709,10 +4746,9 @@ function renderMyScrollList(myTekercs, container) {
         var div = document.createElement('div');
         div.className = 'item-entry';
         div.innerHTML = '<div class="item-details">' +
-                            '<div class="item-title">' + (item.title || 'Ismeretlen cím') + '</div>' +
-                            '<div class="item-author">' + (item.fejezet || '') + '</div>' +
+                            '<div class="item-title">' + item.title + '</div>' +
+                            '<div class="item-author">' + item.fejezet + '</div>' +
                         '</div>';
         container.appendChild(div);
     });
 }
-

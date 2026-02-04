@@ -397,78 +397,7 @@ const MAP_COPY_COST = 30;        // Konstans: másolás ára
  */
 
 // === BELÉPÉS ÉS AUTHENTIKÁCIÓ ===
-
-function login() {
-    // 1. UI Előkészítése
-    document.getElementById('login-status').innerText = "Ellenőrzés...";
-    const registerButtonContainer = document.getElementById('registerButtonContainer');
-    registerButtonContainer.innerHTML = ''; 
-    
-    // 2. Adatok begyűjtése
-    const formData = { 
-        name: document.getElementById('name').value, 
-        jelszo: document.getElementById('jelszo').value 
-    };
-    
-    // 3. Hívás a callBackend-en keresztül
-    callBackend('performLogin', [formData], 
-        function(response) {
-            if (response && response.success) {
-                localStorage.setItem('ebookPiratesToken', response.token); 
-                initializeApp(response.user);
-            } else {
-                document.getElementById('login-status').innerText = response.message;
-                
-                // Hibás login -> Regisztráció felkínálása
-                const registerButton = document.createElement('button');
-                registerButton.id = 'registerButton';
-                registerButton.type = 'button'; // Fontos, hogy ne submitolja a formot
-                registerButton.innerText = 'Regisztrálás';
-                // Ide a TE Web App URL-ed kerüljön, ha van külön regisztrációs linked
-                registerButton.onclick = function() { window.open('https://script.google.com/macros/s/AKfycbzcTV8OW0TJmB9HEmgTQzYB-QVfb82xyelgWHH5kkQPsI4OjbFhcON5Vit4wiJqkh2v/exec', '_blank'); };
-                registerButtonContainer.appendChild(registerButton);
-            }
-        },
-        function(error) {
-            document.getElementById('login-status').innerText = "Hiba: " + error.message;
-        }
-    );
-}
-
-function initializeApp(user) {
-    currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
-    document.querySelector('.header-title').innerText = user.name;
-    
-    document.getElementById('login-view').style.display = 'none';
-    document.getElementById('app-view').style.display = 'flex';
-    
-    updateCreditDisplay();
-    preloadLoadingGif();
-    
-    // Eseménykezelők
-    document.getElementById('creditCell').onclick = updateCreditDisplay;
-    document.getElementById('libraryLink').onclick = function() { loadPage('konyvtar'); };
-    document.getElementById('treasuresLink').onclick = function() { loadPage('kincsek'); };
-    
-    // --- MARKETING ÁTIRÁNYÍTÁS ---
-    if (window.pendingMarketingData) {
-        console.log("Marketing átirányítás aktiválva...");
-        loadMarketingView(window.pendingMarketingData.bookId, window.pendingMarketingData.folderId);
-        window.pendingMarketingData = null;
-    } else {
-        // Normál irányítás
-        if (user.startPage) {
-             loadPage(user.startPage); // A backend mondja meg (tutorial vagy jogosult)
-        } else {
-             // Fallback (ha régi a backend válasz)
-             if (String(user.kalozStatus).toLowerCase() !== 'ok') {
-                loadPage('tutorial_oldal');
-             } else {
-                loadPage('jogosult_tartalom'); 
-             }
-        }
-    }
-}
+// Functions defined in js/app.js
 
 function checkSession() {
   const token = localStorage.getItem('ebookPiratesToken');
@@ -521,50 +450,8 @@ function logout() {
 }
 
 // === BETÖLTÉS ÉS UI ===
+// Functions defined in js/app.js
 
-function preloadLoadingGif() {
-    console.log("GIF előtöltése indult...");
-    
-    // Backend hívás: 'download' kulcsra keresünk a központi tárban
-    callBackend('getCentralImageAsset', ['download'], 
-        function(imageData) {
-            if (imageData && imageData.data) {
-                var gifElement = document.getElementById('loading-gif');
-                if(gifElement) {
-                    // JAVÍTÁS: Backtick helyett hagyományos string összefűzés!
-                    // Ez volt a hiba, ami miatt megállt a kód.
-                    var mime = imageData.mime || 'image/gif'; // Fallback, ha nincs mime
-                    gifElement.src = 'data:' + mime + ';base64,' + imageData.data;
-                    console.log("GIF sikeresen beillesztve.");
-                }
-            } else {
-                console.warn("Hiba: A szerver nem küldött képadatot a 'download' kulcsra.");
-            }
-        },
-        function(err) {
-            console.error("Hiba a GIF lekérésekor:", err);
-        }
-    );
-}
-// Indítás, amikor a HTML kész
-document.addEventListener('DOMContentLoaded', function() {
-    preloadLoadingGif();
-});
-
-function updateCreditDisplay() {
-    if (!currentUserEmail) return; // Csak biztonsági check kliens oldalon
-    document.getElementById('creditValue').innerText = 'Töltés...';
-    
-    // ÜRES TÖMB a paraméter, mert a Backend automatikusan megkapja az Emailt!
-    callBackend('getPirateCredit', [], 
-        function(credit) {
-            document.getElementById('creditValue').innerText = credit;
-        },
-        function(error) {
-            document.getElementById('creditValue').innerText = 'Hiba!';
-        }
-    );
-}
 
 /**
  * KÖZPONTI OLDALBETÖLTŐ

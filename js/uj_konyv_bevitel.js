@@ -42,7 +42,8 @@ function getParam(key) {
 
 // --- 3. ESEMÉNYKEZELŐK ÉS LOGIKA ---
 
-document.addEventListener("DOMContentLoaded", function() {
+if (typeof document !== 'undefined') {
+  document.addEventListener("DOMContentLoaded", function() {
   try {
       globalGdocId = getParam('gdocId');
       globalUserEmail = getParam('userEmail');
@@ -93,7 +94,8 @@ document.addEventListener("DOMContentLoaded", function() {
   } catch (e) {
       showError(new Error("Inicializálási hiba: " + e.message));
   }
-});
+  });
+}
 
 // --- ŰRLAP BEKÜLDÉSE ---
 function handleFormSubmit(event) {

@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <!-- styles moved to css/styles.css -->
-
+    <script src="js/app.js"></script>
 
 </head>
 <body>
@@ -375,31 +375,12 @@
 
 </div>
 
-        
-<script>
-  
-/* =================================================================
-   === FRONTEND LOGIKA - ROUTER KOMPATIBILIS VERZIÓ ===
-   ================================================================= */
+    </div>
 
-// 1. GLOBÁLIS VÁLTOZÓK DEFINÍCIÓJA
-// Fontos: Csak itt deklaráljuk őket egyszer!
-// Használjunk 'var'-t a biztonság kedvéért, hogy globálisak legyenek.
+    <!-- Inline scripts moved to js/app.js for proper environment compatibility and to avoid conflicts -->
 
-var currentUserEmail = "";       // Az aktuális felhasználó
-var currentLogEntryData = null;  // Hajónapló szerkesztéshez
-const MAP_COPY_COST = 30;        // Konstans: másolás ára
-
-/**
- * MEGJEGYZÉS: A callBackend() függvény mostantól az [js/app.js] fájlban van definiálva.
- * Az inline verzió itt el lett távolítva, hogy elkerüljük a duplikációt és a google object felülírását.
- * Az app.js verzió megfelelően kezeli az Apps Script (google.script) és külső (fetch) környezeteket.
- */
-
-// === BELÉPÉS ÉS AUTHENTIKÁCIÓ ===
-// Functions defined in js/app.js
-
-function checkSession() {
+</body>
+</html>
   const token = localStorage.getItem('ebookPiratesToken');
   
   if (token) {

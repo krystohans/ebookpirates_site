@@ -43,58 +43,58 @@ function getParam(key) {
 // --- 3. ESEMÉNYKEZELŐK ÉS LOGIKA ---
 
 if (typeof document !== 'undefined') {
-  document.addEventListener("DOMContentLoaded", function() {
-  try {
-      globalGdocId = getParam('gdocId');
-      globalUserEmail = getParam('userEmail');
-      globalLogId = getParam('logId'); // Ez a workId
-      globalCoverId = getParam('coverId');
-      var action = getParam('action');
-      var titleParam = getParam('title');
-
-      // elem referenciák
-      submitButton = document.getElementById('submitButton');
-      statusDiv = document.getElementById('status');
-      modalText = document.getElementById('modal-status-text');
-
-      if (action === 'szenteles' && globalGdocId && globalUserEmail && globalLogId) {
-          console.log("Szentelés mód aktív! Fájlmezők elrejtése...");
-          isSzentelesMode = true;
-
-          var epubGroup = document.getElementById('epubFile').closest('.form-group');
-          var coverGroup = document.getElementById('coverImageFile').closest('.form-group');
-          if(epubGroup) epubGroup.style.display = 'none';
-          if(coverGroup) coverGroup.style.display = 'none';
-
-          document.getElementById('epubFile').required = false;
-
-          // Dropdownok betöltése - IF hosted by Apps Script, google.script.run will work; otherwise these calls will fail
-          if (typeof google !== 'undefined' && google.script && google.script.run) {
-            google.script.run.withSuccessHandler(populateDropdowns).getDropdownData();
-            google.script.run.withSuccessHandler(displayLogo).getCentralImageAsset('logo');
+    document.addEventListener("DOMContentLoaded", function() {
+      try {
+          globalGdocId = getParam('gdocId');
+          globalUserEmail = getParam('userEmail');
+          globalLogId = getParam('logId'); // Ez a workId
+          globalCoverId = getParam('coverId');
+          var action = getParam('action');
+          var titleParam = getParam('title');
+    
+          // elem referenciák
+          submitButton = document.getElementById('submitButton');
+          statusDiv = document.getElementById('status');
+          modalText = document.getElementById('modal-status-text');
+    
+          if (action === 'szenteles' && globalGdocId && globalUserEmail && globalLogId) {
+              console.log("Szentelés mód aktív! Fájlmezők elrejtése...");
+              isSzentelesMode = true;
+    
+              var epubGroup = document.getElementById('epubFile').closest('.form-group');
+              var coverGroup = document.getElementById('coverImageFile').closest('.form-group');
+              if(epubGroup) epubGroup.style.display = 'none';
+              if(coverGroup) coverGroup.style.display = 'none';
+    
+              document.getElementById('epubFile').required = false;
+    
+              // Dropdownok betöltése - IF hosted by Apps Script, google.script.run will work; otherwise these calls will fail
+              if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.withSuccessHandler(populateDropdowns).getDropdownData();
+                google.script.run.withSuccessHandler(displayLogo).getCentralImageAsset('logo');
+              }
+    
+              if (titleParam) document.getElementById('title').value = titleParam;
+              document.getElementById('ownerEmail').value = globalUserEmail;
+              document.getElementById('authorName').value = "Felhőkolostor Szerzője";
+    
+          } else {
+              console.log("Normál mód.");
+              if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.withSuccessHandler(populateDropdowns).getDropdownData();
+                google.script.run.withSuccessHandler(displayLogo).getCentralImageAsset('logo');
+                google.script.run.withSuccessHandler(displayLoadingGif).getCentralImageAsset('book_upload');
+              }
           }
-
-          if (titleParam) document.getElementById('title').value = titleParam;
-          document.getElementById('ownerEmail').value = globalUserEmail;
-          document.getElementById('authorName').value = "Felhőkolostor Szerzője";
-
-      } else {
-          console.log("Normál mód.");
-          if (typeof google !== 'undefined' && google.script && google.script.run) {
-            google.script.run.withSuccessHandler(populateDropdowns).getDropdownData();
-            google.script.run.withSuccessHandler(displayLogo).getCentralImageAsset('logo');
-            google.script.run.withSuccessHandler(displayLoadingGif).getCentralImageAsset('book_upload');
-          }
+    
+          // form submit handler hookup
+          var form = document.getElementById('bookForm');
+          if (form) form.addEventListener('submit', handleFormSubmit);
+    
+      } catch (e) {
+          showError(new Error("Inicializálási hiba: " + e.message));
       }
-
-      // form submit handler hookup
-      var form = document.getElementById('bookForm');
-      if (form) form.addEventListener('submit', handleFormSubmit);
-
-  } catch (e) {
-      showError(new Error("Inicializálási hiba: " + e.message));
-  }
-  });
+    });
 }
 
 // --- ŰRLAP BEKÜLDÉSE ---

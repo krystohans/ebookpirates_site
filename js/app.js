@@ -185,7 +185,7 @@ function preloadLoadingGif() {
     
     var gifElement = document.getElementById('loading-gif');
     if (gifElement) {
-        gifElement.src = 'assets/loading.gif'; 
+        gifElement.src = 'assets/download.gif'; 
         console.log("GIF beállítva (Backend hívás nélkül).");
     }
 }

@@ -6,72 +6,69 @@ var currentUserEmail = "";       // Az aktuális felhasználó
 var currentLogEntryData = null;  // Hajónapló szerkesztéshez
 const MAP_COPY_COST = 30;        // Konstans: másolás ára
 
+/**
+ * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
+ * KIZÁRÓLAG a GitHub/Külső környezetben használd!
+ */
 function callBackend(funcName, params, onSuccess, onFailure) {
-    var token = localStorage.getItem('ebookPiratesToken');
-    if (!token) token = null;
+    // 1. A Web App URL-ed (Ezt cseréld le a saját /exec végű URL-edre!)
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
 
-    // 1. Google Apps Script környezet (Belső)
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run
-            .withSuccessHandler(onSuccess)
-            .withFailureHandler(function(error) {
-                console.error("API Hiba (" + funcName + "):", error);
+    // 2. Token beszerzése
+    var token = localStorage.getItem('ebookPiratesToken'); // Ellenőrizd, hogy nálad így hívják-e a tárolt tokent!
 
-                if (error.message && error.message.indexOf("AUTH_ERROR") !== -1) {
-                    alert("⚠️ A munkamenet lejárt!\n\n" +
-                          "Hogy NE vesszen el a munkád:\n" +
-                          "1. Nyiss egy ÚJ LAPOT a böngészőben!\n" +
-                          "2. Lépj be ott újra!\n" +
-                          "3. Gyere ide vissza, és kattints újra a gombra!\n\n" +
-                          "(NE frissítsd ezt az oldalt, mert akkor minden beírt adat törlődik!)");
-                }
-
-                if (onFailure) onFailure(error);
-            })
-            .apiRouter(token, funcName, params);
-    } 
-    // 2. Külső környezet (pl. GitHub Pages)
-    else {
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzcTV8OW0TJmB9HEmgTQzYB-QVfb82xyelgWHH5kkQPsI4OjbFhcON5Vit4wiJqkh2v/exec";
-        
-        // POST kérés küldése a backendnek
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain a CORS preflight elkerülése miatt
-            body: JSON.stringify({
-                action: "apiRouter",
-                token: token,
-                funcName: funcName,
-                params: params
-            })
+    // 3. Kérés összeállítása
+    // Fontos: A 'text/plain' típus trükk a CORS hibák elkerülésére Apps Scriptnél.
+    fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+            action: funcName,  // EZ A LÉNYEG! A doPost ezt várja 'functionName'-ként
+            data: params,      // A paraméterek tömbje
+            token: token       // A belépési token
         })
-        .then(response => response.json())
-        .then(data => {
-            // Ha a backend { error: "..." } formátumban jelez hibát
-            if (data && data.error) {
-                console.error("API Hiba (Fetch):", data.error);
-                if (onFailure) onFailure(new Error(data.error));
-            } else {
-                if (onSuccess) onSuccess(data);
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 4. Válasz feldolgozása
+        // Ha a backend { error: "..." } objektumot küldött
+        if (data && data.error) {
+            console.error("Backend Hiba:", data.error);
+            
+            // Külön kezeljük a lejárt munkamenetet
+            if (data.error.indexOf("AUTH_ERROR") !== -1 || data.error.indexOf("Jelentkezz be") !== -1) {
+                alert("⚠️ A munkamenet lejárt! Kérlek, jelentkezz be újra.");
+                // Opcionális: visszairányítás a főoldalra
+                // showPage('login_page'); 
             }
-        })
-        .catch(error => {
-            console.error("Hálózati Hiba:", error);
-            if (onFailure) onFailure(error);
-        });
-    }
+
+            if (onFailure) onFailure(new Error(data.error));
+        } else {
+            // Siker!
+            if (onSuccess) onSuccess(data);
+        }
+    })
+    .catch(error => {
+        // 5. Hálózati hiba (pl. nincs internet, vagy rossz az URL)
+        console.error("Hálózati Hiba:", error);
+        alert("Hálózati hiba történt. Ellenőrizd az internetkapcsolatot!");
+        if (onFailure) onFailure(error);
+    });
 }
 
 function login() {
+    // 1. UI Előkészítése
     document.getElementById('login-status').innerText = "Ellenőrzés...";
     const registerButtonContainer = document.getElementById('registerButtonContainer');
     registerButtonContainer.innerHTML = ''; 
-
+    
+    // 2. Adatok begyűjtése
     const formData = { 
         name: document.getElementById('name').value, 
         jelszo: document.getElementById('jelszo').value 
     };
-
+    
+    // 3. Hívás a callBackend-en keresztül
     callBackend('performLogin', [formData], 
         function(response) {
             if (response && response.success) {
@@ -79,11 +76,13 @@ function login() {
                 initializeApp(response.user);
             } else {
                 document.getElementById('login-status').innerText = response.message;
-
+                
+                // Hibás login -> Regisztráció felkínálása
                 const registerButton = document.createElement('button');
                 registerButton.id = 'registerButton';
-                registerButton.type = 'button';
+                registerButton.type = 'button'; // Fontos, hogy ne submitolja a formot
                 registerButton.innerText = 'Regisztrálás';
+                // Ide a TE Web App URL-ed kerüljön, ha van külön regisztrációs linked
                 registerButton.onclick = function() { window.open('https://script.google.com/macros/s/AKfycbzcTV8OW0TJmB9HEmgTQzYB-QVfb82xyelgWHH5kkQPsI4OjbFhcON5Vit4wiJqkh2v/exec', '_blank'); };
                 registerButtonContainer.appendChild(registerButton);
             }
@@ -95,26 +94,31 @@ function login() {
 }
 
 function initializeApp(user) {
-    currentUserEmail = user.email;
+    currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
     document.querySelector('.header-title').innerText = user.name;
+    
     document.getElementById('login-view').style.display = 'none';
     document.getElementById('app-view').style.display = 'flex';
-
+    
     updateCreditDisplay();
     preloadLoadingGif();
-
+    
+    // Eseménykezelők
     document.getElementById('creditCell').onclick = updateCreditDisplay;
     document.getElementById('libraryLink').onclick = function() { loadPage('konyvtar'); };
     document.getElementById('treasuresLink').onclick = function() { loadPage('kincsek'); };
-
+    
+    // --- MARKETING ÁTIRÁNYÍTÁS ---
     if (window.pendingMarketingData) {
         console.log("Marketing átirányítás aktiválva...");
         loadMarketingView(window.pendingMarketingData.bookId, window.pendingMarketingData.folderId);
         window.pendingMarketingData = null;
     } else {
+        // Normál irányítás
         if (user.startPage) {
-             loadPage(user.startPage);
+             loadPage(user.startPage); // A backend mondja meg (tutorial vagy jogosult)
         } else {
+             // Fallback (ha régi a backend válasz)
              if (String(user.kalozStatus).toLowerCase() !== 'ok') {
                 loadPage('tutorial_oldal');
              } else {
@@ -126,7 +130,9 @@ function initializeApp(user) {
 
 function checkSession() {
   const token = localStorage.getItem('ebookPiratesToken');
+  
   if (token) {
+    // Itt a tokent paraméterként is átadjuk, mert a getUserDataByToken várja!
     callBackend('getUserDataByToken', [token], 
       function(user) {
         if (user) {
@@ -147,29 +153,45 @@ function checkSession() {
   }
 }
 
+// ==========================================
+// === LOGOUT (MARAD AZ EREDETI) ===
+// ==========================================
+
 function logout() {
     sessionStorage.removeItem('ebookPiratesToken');
     document.getElementById('app-view').style.display = 'none';
     document.getElementById('login-view').style.display = 'block';
+    
     const loginStatus = document.getElementById('login-status');
     if(loginStatus) loginStatus.innerText = "";
+    
     const loginForm = document.getElementById('loginForm');
     if(loginForm) loginForm.reset();
+    
     const regContainer = document.getElementById('registerButtonContainer');
     if(regContainer) regContainer.innerHTML = '';
+    
+    // Globális változók nullázása (ha vannak)
     if(typeof currentUserEmail !== 'undefined') currentUserEmail = '';
+    
     const creditVal = document.getElementById('creditValue');
     if(creditVal) creditVal.innerText = '0';
 }
 
+// === BETÖLTÉS ÉS UI ===
+
 function preloadLoadingGif() {
     console.log("GIF előtöltése indult...");
+    
+    // Backend hívás: 'download' kulcsra keresünk a központi tárban
     callBackend('getCentralImageAsset', ['download'], 
         function(imageData) {
             if (imageData && imageData.data) {
                 var gifElement = document.getElementById('loading-gif');
                 if(gifElement) {
-                    var mime = imageData.mime || 'image/gif';
+                    // JAVÍTÁS: Backtick helyett hagyományos string összefűzés!
+                    // Ez volt a hiba, ami miatt megállt a kód.
+                    var mime = imageData.mime || 'image/gif'; // Fallback, ha nincs mime
                     gifElement.src = 'data:' + mime + ';base64,' + imageData.data;
                     console.log("GIF sikeresen beillesztve.");
                 }
@@ -182,24 +204,22 @@ function preloadLoadingGif() {
         }
     );
 }
-
-// Csak akkor futtatjuk, ha van 'document' (Kliens oldalon)
-if (typeof document !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', function() {
-        preloadLoadingGif();
-    });
-}
+// Indítás, amikor a HTML kész
+document.addEventListener('DOMContentLoaded', function() {
+    preloadLoadingGif();
+});
 
 function updateCreditDisplay() {
-    if (!currentUserEmail) return;
-    var el = document.getElementById('creditValue');
-    if(el) el.innerText = 'Töltés...';
+    if (!currentUserEmail) return; // Csak biztonsági check kliens oldalon
+    document.getElementById('creditValue').innerText = 'Töltés...';
+    
+    // ÜRES TÖMB a paraméter, mert a Backend automatikusan megkapja az Emailt!
     callBackend('getPirateCredit', [], 
         function(credit) {
-            if(el) el.innerText = credit;
+            document.getElementById('creditValue').innerText = credit;
         },
         function(error) {
-            if(el) el.innerText = 'Hiba!';
+            document.getElementById('creditValue').innerText = 'Hiba!';
         }
     );
 }
@@ -1219,14 +1239,12 @@ function initializeTavernaPage() {
 
     // 2. JAVÍTOTT KÖLTSÉG SZÁMOLÓ (Esemény delegálás - Nincs több "null" hiba!)
     // Ez helyettesíti a régi 'DOMContentLoaded' blokkot
-    if (typeof document !== 'undefined') {
-        document.addEventListener('input', function(e) {
-            // Figyeljük, ha valaki ír a béta mezőkbe
-            if (e.target && (e.target.id === 'beta-bonus' || e.target.id === 'beta-max')) {
-                updateBetaCost();
-            }
-        });
-    }
+    document.addEventListener('input', function(e) {
+        // Figyeljük, ha valaki ír a béta mezőkbe
+        if (e.target && (e.target.id === 'beta-bonus' || e.target.id === 'beta-max')) {
+            updateBetaCost();
+        }
+    });
 
     function updateBetaCost() {
         const fee = 10;
@@ -2568,7 +2586,7 @@ function updateBuildOptions() {
         opt.innerText = typesToShow[k];
         select.appendChild(opt);
     }
-    calculateBuildCost()
+    calculateBuildCost();
 }
 
 function calculateBuildCost() {
@@ -4707,20 +4725,25 @@ function setupTekercsButtons(currentHartya) {
             sellButton.style.marginTop = '10px';
             sellButton.style.backgroundColor = '#d35400';
             sellButton.style.width = '100%';
+            sellButton.textContent = 'Hártya Eladása (30 db \u2192 1 kr)';
 
             sellButton.onclick = function() {
                 uiConfirm(
-                    "Biztosan eladsz 10 hártyát 1 kreditért?", 
-                    "Hártya Eladás", 
+                    "Biztosan eladsz <b>30 db hártyát</b>?<br>Cserébe <b>1 Kalózkreditet</b> kapsz.", 
+                    "Hártya Beváltása", 
                     function() {
                         document.getElementById('loading-overlay').style.display = 'flex';
-                        callBackend('sellHartya', [], 
+                        callBackend('exchangeHartyaForCredit', [], 
                             function(response) {
                                 document.getElementById('loading-overlay').style.display = 'none';
                                 uiAlert(response.message || response.error, response.success ? "Siker" : "Hiba");
                                 if (response.success) {
                                     updateCreditDisplay();
-                                    initializeTekercsmesterPage(); 
+                                    if(response.newHartya !== undefined) {
+                                         document.getElementById('hartya-count').textContent = response.newHartya;
+                                    } else {
+                                         initializeTekercsmesterPage();
+                                    }
                                 }
                             },
                             function(err) {
@@ -4738,18 +4761,2182 @@ function setupTekercsButtons(currentHartya) {
 
 function renderMyScrollList(myTekercs, container) {
     container.innerHTML = '';
-    if (!myTekercs || myTekercs.length === 0) {
-        container.innerHTML = '<p>Még nincs saját tekercsed.</p>';
+    if (myTekercs && myTekercs.length > 0) {
+        myTekercs.forEach(function(szett) {
+            var szettDiv = document.createElement('div');
+            szettDiv.className = 'item-entry';
+            
+            var reszletekDiv = document.createElement('div');
+            reszletekDiv.className = 'item-details';
+            // String összefűzés
+            reszletekDiv.innerHTML = '<div class="item-title">' + szett.title + ' (' + szett.tekercsek.length + ' db)</div>' +
+                                     '<div class="item-author">' + szett.author + '</div>';
+            
+            var gombokDiv = document.createElement('div');
+
+            // --- A. Összefűzés gomb ---
+            if (szett.tekercsek.length >= 48) {
+                 var assembleButton = document.createElement('button');
+                 assembleButton.className = 'btn';
+                 assembleButton.textContent = 'Összefűzés másolattá';
+                 assembleButton.onclick = function() {
+                    uiConfirm('Biztosan összefűzöd a(z) "' + szett.title + '" tekercseit?<br>Ez a művelet végleges.', "Összefűzés", function() {
+                        document.getElementById('loading-overlay').style.display = 'flex';
+                        callBackend('assembleScrolls', [szett.code], 
+                            function(response) {
+                                document.getElementById('loading-overlay').style.display = 'none';
+                                uiAlert(response.message || response.error, response.success ? "Siker" : "Hiba");
+                                initializeTekercsmesterPage();
+                            },
+                            function(err) {
+                                document.getElementById('loading-overlay').style.display = 'none';
+                                uiAlert(err.message);
+                            }
+                        );
+                    });
+                 };
+                 gombokDiv.appendChild(assembleButton);
+            }
+            
+            // --- B. Egyedi tekercsek eladása ---
+            szett.tekercsek.forEach(function(tekercs) {
+                var sellButton = document.createElement('button');
+                sellButton.className = 'btn';
+                sellButton.textContent = tekercs.fejezet + ' eladása';
+                sellButton.style.fontSize = '0.8em';
+                sellButton.style.margin = '2px';
+                
+                sellButton.onclick = function() {
+                    uiConfirm('Biztosan eladod ezt a tekercset 10 kreditért: <b>' + tekercs.fejezet + '</b>?', "Eladás", function() {
+                        document.getElementById('loading-overlay').style.display = 'flex';
+                        callBackend('sellTekercs', [tekercs.token], 
+                            function(res) {
+                                document.getElementById('loading-overlay').style.display = 'none';
+                                uiAlert(res.message || res.error, res.success ? "Siker" : "Hiba");
+                                if(res.success) {
+                                    updateCreditDisplay();
+                                    initializeTekercsmesterPage();
+                                }
+                            },
+                            function(err) {
+                                document.getElementById('loading-overlay').style.display = 'none';
+                                uiAlert(err.message);
+                            }
+                        );
+                    });
+                };
+                gombokDiv.appendChild(sellButton);
+            });
+            
+            szettDiv.appendChild(reszletekDiv);
+            szettDiv.appendChild(gombokDiv);
+            container.appendChild(szettDiv);
+        });
+    } else {
+        container.innerHTML = "<p>Még nincsenek tekercseid.</p>";
+    }
+}
+
+// =====================================
+// === MÁSOLATOK OLDAL INICIALIZÁLÓ ===
+// =====================================
+
+/**
+ * Inicializálja a Másolatok oldalt.
+ * JAVÍTVA: callBackend hívásokból kivéve a currentUserEmail.
+ */
+function initializeMasolatokAndCopyMapPage(data) {
+    var myCopiesLoader = document.getElementById('sajat-masolat-lista-loader');
+    var myCopiesContainer = document.getElementById('sajat-masolat-lista-content');
+    var forSaleCopiesSelect = document.getElementById('elado-masolat-lista');
+    var buyCopySection = document.getElementById('buy-copy-section'); 
+    var buyCopyDetailsDiv = document.getElementById('buy-copy-selection-details'); 
+    var buyCopyBtn = document.getElementById('buy-copy-btn');
+    var buyCopyPinInput = document.getElementById('buy-copy-pin-code'); 
+
+    // Új elemek a térképmásoláshoz
+    var availableMapsLoader = document.getElementById('available-maps-list-loader'); 
+    var availableMapsContainer = document.getElementById('available-maps-list-content'); 
+    var copyMapPinInput = document.getElementById('copy-map-pin'); 
+    var copyMapPinLabel = copyMapPinInput ? copyMapPinInput.previousElementSibling : null;
+
+    if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer || !copyMapPinInput || !copyMapPinLabel) {
+         console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
+         return;
+    }
+
+    myCopiesLoader.style.display = 'none';
+    availableMapsLoader.style.display = 'none';
+
+    if (data.error) {
+        myCopiesContainer.innerHTML = '<p style="color:red;">Hiba: ' + data.error + '</p>';
+        availableMapsContainer.innerHTML = '<p style="color:red;">Hiba: ' + data.error + '</p>';
         return;
     }
 
-    myTekercs.forEach(function(item) {
-        var div = document.createElement('div');
-        div.className = 'item-entry';
-        div.innerHTML = '<div class="item-details">' +
-                            '<div class="item-title">' + item.title + '</div>' +
-                            '<div class="item-author">' + item.fejezet + '</div>' +
-                        '</div>';
-        container.appendChild(div);
+    // --- Saját másolatok listázása ---
+    myCopiesContainer.innerHTML = '';
+    if (data.myCopies && data.myCopies.length > 0) {
+        data.myCopies.forEach(function(copy) {
+            var entryDiv = document.createElement('div');
+            entryDiv.className = 'item-entry';
+            entryDiv.innerHTML = '<div class="item-details"><div class="item-title">' + copy.title + '</div><div class="item-author">' + copy.author + '</div></div>';
+            var gombokDiv = document.createElement('div');
+            if (!copy.inPlay) {
+                // Játékba viszem gomb
+                var playBtn = document.createElement('button');
+                playBtn.className = 'btn';
+                playBtn.textContent = 'Játékba viszem';
+                playBtn.onclick = function() {
+                    uiAlert("A Játékmester jelenleg nem elérhető.\n\nKérlek, jelezd a Tavernában vagy Discordon, hogy a(z) " + copy.code + " kódú másolatot játékba hoznád!");
+                  };
+                gombokDiv.appendChild(playBtn);
+
+                // Eladom gomb
+                var sellBtn = document.createElement('button');
+                sellBtn.className = 'btn';
+                sellBtn.textContent = 'Eladom';
+                sellBtn.style.backgroundColor = '#c82333';
+                
+                sellBtn.onclick = function() {
+                    var confirmMsg = 'Biztosan eladod a(z) "<b>' + copy.title + '</b>" másolatot 10 kreditért?';
+
+                    if(typeof uiConfirm === 'function') {
+                        uiConfirm(
+                            confirmMsg, 
+                            "Másolat Eladása", 
+                            function() {
+                                document.getElementById('loading-overlay').style.display = 'flex';
+                                
+                                // --- JAVÍTÁS: callBackend ---
+                                // currentUserEmail KIVÉVE!
+                                callBackend('sellCopy', [copy.code], 
+                                    function(res) {
+                                        document.getElementById('loading-overlay').style.display = 'none';
+                                        if(typeof uiAlert === 'function') uiAlert(res.message || res.error, res.success ? "Siker" : "Értesítés");
+                                        
+                                        if(res.success) {
+                                            updateCreditDisplay();
+                                            loadPage('masolatok_oldal');
+                                        }
+                                    },
+                                    function(err) {
+                                        document.getElementById('loading-overlay').style.display = 'none';
+                                        if(typeof uiAlert === 'function') uiAlert("Hiba történt: " + err.message, "Rendszerhiba");
+                                    }
+                                );
+                            }
+                        );
+                    }
+                };
+                gombokDiv.appendChild(sellBtn);
+
+            } else {
+                var inPlayLabel = document.createElement('span');
+                inPlayLabel.textContent = 'Játékban van';
+                inPlayLabel.style.fontWeight = 'bold';
+                gombokDiv.appendChild(inPlayLabel);
+            }
+            
+            entryDiv.appendChild(gombokDiv);
+            myCopiesContainer.appendChild(entryDiv);
+        });
+    } else {
+        myCopiesContainer.innerHTML = "<p>Jelenleg nincsenek másolataid.</p>";
+    }
+
+    // --- Eladó másolatok listázása ---
+    forSaleCopiesSelect.innerHTML = '<option value="">Válassz egy másolatot...</option>';
+    if (data.forSale && data.forSale.length > 0) {
+        data.forSale.forEach(function(item) {
+            var option = document.createElement('option');
+            option.value = item.rowIndex;
+            // JSON stringify, hogy adatot tároljunk
+            option.setAttribute('data-item-data', JSON.stringify(item));
+            option.textContent = item.title + ' (' + item.author + ')';
+            forSaleCopiesSelect.appendChild(option);
+        });
+    }
+
+    forSaleCopiesSelect.onchange = function() {
+        buyCopyDetailsDiv.innerHTML = ''; 
+        if (this.value) {
+            var selectedOption = this.options[this.selectedIndex];
+            var selectedData = JSON.parse(selectedOption.getAttribute('data-item-data'));
+            var cost = (selectedData.seller.toLowerCase() === currentUserEmail.toLowerCase()) ? 11 : 110;
+            // String összefűzés
+            buyCopyDetailsDiv.innerHTML = '<p><strong>Vételár:</strong> ' + cost + ' kredit</p><p><small>Eladó: ' + selectedData.seller + '</small></p>';
+            buyCopySection.style.display = 'block';
+        } else {
+            buyCopySection.style.display = 'none';
+        }
+    };
+    buyCopySection.style.display = 'none'; 
+
+    buyCopyBtn.onclick = function() {
+        var selectedRowIndex = forSaleCopiesSelect.value;
+        if (!selectedRowIndex) { 
+            if(typeof uiAlert === 'function') uiAlert("Kérlek, válassz egy másolatot a listából!"); 
+            return; 
+        }
+        var pinCode = buyCopyPinInput.value;
+        if (!pinCode) { 
+            if(typeof uiAlert === 'function') uiAlert("PIN kód megadása kötelező a vásárláshoz!"); 
+            return; 
+        }
+        document.getElementById('loading-overlay').style.display = 'flex';
+        
+        // --- JAVÍTÁS: callBackend ---
+        // currentUserEmail KIVÉVE!
+        callBackend('buyCopy', [selectedRowIndex, pinCode], 
+            function(res) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                if(typeof uiAlert === 'function') uiAlert(res.message || res.error);
+                buyCopyPinInput.value = '';
+                if(res.success) {
+                    updateCreditDisplay();
+                    loadPage('masolatok_oldal');
+                }
+            },
+            function(err) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                if(typeof uiAlert === 'function') uiAlert("Hiba: " + err.message);
+            }
+        );
+    };
+
+    // --- Másolható térképek listázása ---
+    availableMapsContainer.innerHTML = ''; 
+
+    if (data.availableMaps && data.availableMaps.length > 0) {
+        console.log("Elérhető térképek találva.");
+
+        // Csoportosítás (manuális loop)
+        var mapGroups = {};
+        data.availableMaps.forEach(function(map) {
+            var baseIdentifier = map.identifier.indexOf('-') !== -1 ? map.identifier.substring(0, map.identifier.lastIndexOf('-')) : map.identifier;
+            if (!mapGroups[baseIdentifier]) {
+                mapGroups[baseIdentifier] = {
+                    name: baseIdentifier.replace(/_map$/, '').replace(/_/g, ' '),
+                    firstRowIndex: map.rowIndex,
+                    count: 0
+                };
+            }
+            mapGroups[baseIdentifier].count++;
+        });
+
+        // Object.values manuális emulálása (vagy használata, ha támogatott) és rendezés
+        var groupsArray = [];
+        for (var key in mapGroups) {
+            if (mapGroups.hasOwnProperty(key)) {
+                groupsArray.push(mapGroups[key]);
+            }
+        }
+        groupsArray.sort(function(a,b) { return a.name.localeCompare(b.name); });
+
+        groupsArray.forEach(function(group) {
+            var entryDiv = document.createElement('div');
+            entryDiv.className = 'item-entry map-entry';
+            // Feltételezzük, hogy MAP_COPY_COST definiálva van globálisan
+            var cost = (typeof MAP_COPY_COST !== 'undefined') ? MAP_COPY_COST : 10;
+            
+            entryDiv.innerHTML = 
+                '<div class="map-details item-details">' +
+                    '<div class="map-name item-title">' + group.name + ' (' + group.count + ' db)</div>' +
+                    '<small class="item-author">Másolás ára: ' + cost + ' kredit</small>' +
+                '</div>' +
+                '<div class="map-actions">' +
+                    '<button class="btn">Másolás</button>' +
+                '</div>';
+            
+            entryDiv.querySelector('.map-actions button').onclick = function() { 
+                if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name); 
+            };
+            availableMapsContainer.appendChild(entryDiv);
+        });
+
+        if (copyMapPinInput) copyMapPinInput.style.display = 'block';
+        if (copyMapPinLabel) copyMapPinLabel.style.display = 'block';
+
+    } else { 
+        availableMapsContainer.innerHTML = "<p>Jelenleg nincsenek másolható térképek.</p>";
+        if (copyMapPinInput) copyMapPinInput.style.display = 'none';
+        if (copyMapPinLabel) copyMapPinLabel.style.display = 'none';
+    }
+}
+
+/**
+ * Elindítja a kliensoldali letöltési és vízjelezési folyamatot.
+ * @param {string} contentId A könyv forrásának azonosítója (Mappa ID az O oszlopból).
+ */
+async function startClientSideDownloadProcess(contentId, bookTitle) {
+    var statusOverlay = document.getElementById('loading-overlay');
+    var allDownloadButtons = Array.prototype.slice.call(document.querySelectorAll('.download-btn'));
+    
+    if (statusOverlay) statusOverlay.style.display = 'flex';
+    allDownloadButtons.forEach(function(btn) { btn.disabled = true; });
+    
+    try {
+        console.log("Letöltés indítása. ID:", contentId, "Cím:", bookTitle);
+
+        if (!contentId) throw new Error("Hiányzó könyv azonosító!");
+
+        // 1. ADATOK LEKÉRÉSE A SZERVERRŐL
+        // Átadjuk a címet is második paraméterként!
+        var data = await new Promise(function(resolve, reject) {
+            callBackend('getRawFilesForDownload', [contentId, bookTitle], 
+                function(res) { resolve(res); },
+                function(err) { reject(err); }
+            );
+        });
+
+        if (data.error) throw new Error(data.error);
+        if (!data.epubBase64 || !data.coverBase64) throw new Error("Hiányos adat érkezett a szervertől.");
+
+        // 2. ADATOK VISSZAALAKÍTÁSA (Base64 -> Blob)
+        // String összefűzés backtick helyett
+        var epubRes = await fetch('data:application/epub+zip;base64,' + data.epubBase64);
+        var epubBlob = await epubRes.blob();
+        
+        var coverRes = await fetch('data:image/png;base64,' + data.coverBase64);
+        var coverBlob = await coverRes.blob();
+        
+        // 3. VÍZJELEZÉS (KÉP)
+        // A data.bookCode a felhasználó egyedi kódja, amit a szerver küld vissza
+        var finalImageBlob = coverBlob;
+        if (typeof embedIdInImage === 'function') {
+             var watermarkedCoverBase64 = await embedIdInImage(coverBlob, data.bookCode);
+             var finalImageRes = await fetch(watermarkedCoverBase64);
+             finalImageBlob = await finalImageRes.blob();
+        } else {
+             console.warn("embedIdInImage hiányzik, a borító vízjelezése kimaradt.");
+        }
+        
+        // 4. EPUB CSOMAGOLÁS ÉS VÍZJELEZÉS (SZÖVEG)
+        // Ez a függvény (processEpubFile) végzi a szöveges vízjelezést és az új borító beillesztését
+        var finalEpubBlob = await processEpubFile(epubBlob, finalImageBlob, data.bookCode, data.coverFilename);
+        
+        // 5. LETÖLTÉS INDÍTÁSA A BÖNGÉSZŐBEN
+        var downloadAnchor = document.createElement('a');
+        downloadAnchor.href = URL.createObjectURL(finalEpubBlob);
+        downloadAnchor.download = data.epubFilename || 'konyv.epub';
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
+        
+        // Memória felszabadítása
+        setTimeout(function() { URL.revokeObjectURL(downloadAnchor.href); }, 1000);
+
+        if(typeof uiAlert === 'function') uiAlert("A könyv letöltése és vízjelezése sikeres!");
+
+    } catch (error) {
+        console.error("Letöltési hiba:", error);
+        var msg = error.message || error;
+        if (typeof uiAlert === "function") {
+            uiAlert('Hiba a letöltés során: ' + msg);
+        } else {
+            alert('Hiba a letöltés során: ' + msg);
+        }
+    } finally {
+        if (statusOverlay) statusOverlay.style.display = 'none';
+        allDownloadButtons.forEach(function(btn) { btn.disabled = false; });
+    }
+}
+
+
+/**
+ * Feldolgozza az ePub fájlt és QR KÓDOT is beszúr a link mellé.
+ * JAVÍTOTT MARKETINGES VERZIÓ.
+ * @param {Blob} epubBlob Az eredeti ePub.
+ * @param {Blob} newCoverBlob Az új, vízjeles borító (PNG).
+ * @param {string} bookCode Az új, beillesztendő kód.
+ * @param {string} newCoverFilename Az új borító kívánt fájlneve (pl. "kep.png").
+ * @returns {Promise<Blob>} A kész, végleges ePub fájl.
+ */
+async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilename) { 
+    var zip = new JSZip();
+    var loadedZip = await zip.loadAsync(epubBlob);
+    
+    var zeroWidthId = (typeof encodeIdToZeroWidth === 'function') ? encodeIdToZeroWidth(bookCode) : bookCode;
+
+    // Fájlok szűrése (ES5)
+    var allFiles = Object.keys(loadedZip.files);
+    var xhtmlFiles = allFiles.filter(function(name) {
+        return name.indexOf('.xhtml') !== -1 || name.indexOf('.html') !== -1;
+    });
+    
+    // === MARKETING LINK ÉS QR KÓD ===
+    var appUrl = "https://script.google.com/macros/s/AKfycbzZZV2QQ4fOExg_dv0ddkWVEFgNTCXzYtFhWlOs1Kn5R3wUCHDXV7IpE3Kx3DNT53Npbw/exec"; 
+    var feedbackLink = appUrl + "?page=marketing&bookId=" + bookCode;
+    var qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(feedbackLink);
+    
+    // HTML Blokk (String összefűzés backtick helyett!)
+    var feedbackHtmlBlock = "";
+    feedbackHtmlBlock += '<div style="margin-top: 50px; padding: 20px; border-top: 2px solid #ccc; text-align: center; font-family: sans-serif; page-break-before: always;">';
+    feedbackHtmlBlock +=    '<hr/>';
+    feedbackHtmlBlock +=    '<h3>☠️ Tetszett a zsákmány? ☠️</h3>';
+    feedbackHtmlBlock +=    '<p>Oszd meg véleményedet a szerzővel és a készítőkkel!</p>';
+    feedbackHtmlBlock +=    '<p>Minden válaszodért <strong>Kalózkreditet</strong> kapsz jutalmul.</p>';
+    
+    feedbackHtmlBlock +=    '<div style="margin: 20px auto;">';
+    feedbackHtmlBlock +=        '<img src="' + qrImageUrl + '" alt="Szkenneld be" style="width: 150px; height: 150px; border: 2px solid #333; padding: 5px;"/>';
+    feedbackHtmlBlock +=        '<p><small>Szkenneld be a telefonoddal!</small></p>';
+    feedbackHtmlBlock +=    '</div>';
+
+    feedbackHtmlBlock +=    '<p>';
+    feedbackHtmlBlock +=        '<a href="' + feedbackLink + '" target="_blank" style="background-color: #8b0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">';
+    feedbackHtmlBlock +=            'Vélemény írása a böngészőben';
+    feedbackHtmlBlock +=        '</a>';
+    feedbackHtmlBlock +=    '</p>';
+    feedbackHtmlBlock +=    '<p><small>(Ha az olvasód nem kezeli a böngészőt, használd a fenti kódot)</small></p>';
+    feedbackHtmlBlock += '</div>';
+
+    var lastFile = xhtmlFiles[xhtmlFiles.length - 1];
+
+    for (var i = 0; i < xhtmlFiles.length; i++) {
+        var fileName = xhtmlFiles[i];
+        var content = await loadedZip.file(fileName).async('string');
+        
+        // Vízjel csere
+        content = content.replace(/[\u200b-\u2d0d]/g, ''); 
+        // RegExp objektum a változó miatt
+        var pRegex = new RegExp('</p>', 'i');
+        content = content.replace(pRegex, zeroWidthId + '</p>');
+        
+        // Marketing blokk
+        if (fileName === lastFile) {
+            if (content.indexOf('</body>') !== -1) {
+                content = content.replace('</body>', feedbackHtmlBlock + '</body>');
+            } else {
+                content += feedbackHtmlBlock;
+            }
+        }
+        
+        loadedZip.file(fileName, content);
+    }
+
+    // === HIBRID BORÍTÓAZONOSÍTÁS ÉS CSERE ===
+    var oldCoverFullPath = null;
+    var opfFile = allFiles.find(function(name) { return name.indexOf('.opf') !== -1; });
+    
+    if (!opfFile) throw new Error("Hiba: A könyv tartalomjegyzéke (.opf fájl) nem található.");
+    
+    var opfContent = await loadedZip.file(opfFile).async('string');
+
+    // 1. KÍSÉRLET: cover.xhtml
+    var coverXhtmlFile = allFiles.find(function(name) { return name.toLowerCase().indexOf('cover.xhtml') !== -1; });
+    if (coverXhtmlFile) {
+        var coverXhtmlContent = await loadedZip.file(coverXhtmlFile).async('string');
+        var imgSrcRegex = /<img[^>]*src="([^"]+)"/;
+        var match = coverXhtmlContent.match(imgSrcRegex);
+        if (match && match[1]) {
+            oldCoverFullPath = (typeof resolvePath === 'function') ? resolvePath(coverXhtmlFile, match[1]) : match[1];
+        }
+    }
+
+    // 2. KÍSÉRLET: Manifeszt
+    if (!oldCoverFullPath) {
+        var coverMetaRegex = /<meta\s+name="cover"\s+content="([^"]+)"\s*\/>/;
+        var coverMetaMatch = opfContent.match(coverMetaRegex);
+        if (coverMetaMatch && coverMetaMatch[1]) {
+            var itemRegex = new RegExp('<item[^>]*id="' + coverMetaMatch[1] + '"[^>]*href="([^"]+)"[^>]*\/>');
+            var itemMatch = opfContent.match(itemRegex);
+            if (itemMatch && itemMatch[1]) {
+                var opfPath = opfFile.substring(0, opfFile.lastIndexOf('/'));
+                oldCoverFullPath = (typeof resolvePath === 'function') ? resolvePath(opfPath + '/', itemMatch[1]) : itemMatch[1];
+            }
+        }
+    }
+
+    if (oldCoverFullPath) {
+        var oldCoverFilename = oldCoverFullPath.split('/').pop();
+        // Regex escape nélkül veszélyes lehet, de feltételezzük a normál fájlnevet
+        opfContent = opfContent.replace(new RegExp(oldCoverFilename, "g"), newCoverFilename);
+        opfContent = opfContent.replace(/media-type="image\/jpeg"/g, 'media-type="image/png"');
+        loadedZip.file(opfFile, opfContent);
+        
+        if(loadedZip.files[oldCoverFullPath]) {
+            loadedZip.remove(oldCoverFullPath);
+        }
+        
+        var pathPrefix = oldCoverFullPath.substring(0, oldCoverFullPath.lastIndexOf('/') + 1);
+        loadedZip.file(pathPrefix + newCoverFilename, newCoverBlob);
+    } 
+
+    return await loadedZip.generateAsync({ type: 'blob', mimeType: 'application/epub+zip' });
+}
+
+// ===================================
+// === MARKETING (VÉLEMÉNY) MODUL ===
+// ===================================
+
+var currentMarketingBookId = null;
+var currentMarketingFolderId = null;
+
+// URL Paraméterek ellenőrzése
+function checkUrlParametersForMarketing() {
+    google.script.url.getLocation(function(location) {
+        if (location.parameter && location.parameter.page === 'marketing') {
+            var bookId = location.parameter.bookId;
+            var folderId = location.parameter.folderId;
+            
+            if (bookId && folderId) {
+                console.log("Marketing mód észlelve: " + bookId);
+                window.pendingMarketingData = { bookId: bookId, folderId: folderId };
+                var loginStatus = document.getElementById('login-status');
+                // Ellenőrzés, hogy látható-e a login nézet
+                var loginView = document.getElementById('login-view');
+                if (loginStatus && loginView && loginView.style.display !== 'none') {
+                    loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
+                }
+            }
+        }
     });
 }
+
+// Betölti a kérdőívet
+function loadMarketingView(bookId, folderId) {
+    console.log(">>> loadMarketingView MEGHÍVVA: " + bookId);
+
+    currentMarketingBookId = bookId;
+    currentMarketingFolderId = folderId;
+    
+    // 1. NÉZETEK KEZELÉSE
+    document.getElementById('app-view').style.display = 'none'; 
+    document.getElementById('login-view').style.display = 'none';
+    
+    var marketingView = document.getElementById('marketing-view');
+    if (marketingView) {
+        marketingView.style.display = 'block';
+    } else {
+        console.error("KRITIKUS HIBA: Nem található a 'marketing-view' div!");
+        return;
+    }
+    
+    // 2. TÖLTÉS JELZŐ
+    var container = document.getElementById('marketing-questions-area');
+    if (container) {
+        container.innerHTML = '<div style="text-align:center; padding:50px; color:#555;">' +
+                              '<i class="fas fa-spinner fa-spin fa-3x"></i>' +
+                              '<p style="margin-top:15px;">Kérdéseink a könyvről...</p>' +
+                              '</div>';
+    }
+
+    // 3. SZERVER HÍVÁS (callBackend)
+    callBackend('getFeedbackFormConfig', [bookId, folderId], // currentUserEmail-t a Router adja hozzá
+        function(response) {
+             console.log(">>> SZERVER VÁLASZ:", response);
+             
+             if (response.success) {
+                 renderMarketingQuestions(response.config, response.isOwner, bookId, folderId);
+             } 
+             else if (response.error === "ALREADY_VOTED") {
+                 container.innerHTML = '';
+                 showSystemModal(
+                    "Már szavaztál!", 
+                    response.message, 
+                    "fas fa-check-double", 
+                    [{ 
+                        text: "Rendben, vissza a Kikötőbe", 
+                        color: "#2e8b57",
+                        textColor: "white",
+                        callback: function() { returnToPort(); } 
+                    }]
+                 );
+             }
+             else {
+                 container.innerHTML = ''; 
+                 showSystemModal(
+                    "Hiba történt", 
+                    response.error, 
+                    "fas fa-exclamation-triangle", 
+                    [{ 
+                        text: "Vissza", 
+                        callback: function() { returnToPort(); } 
+                    }]
+                 );
+             }
+        },
+        function(err) {
+            console.error(">>> HÁLÓZATI HIBA:", err);
+            if (container) container.innerHTML = '';
+            showSystemModal(
+                "Kapcsolódási Hiba", 
+                "Nem sikerült elérni a szervert: " + err.message, 
+                "fas fa-wifi", 
+                [{ text: "Vissza", callback: function() { returnToPort(); } }]
+            );
+        }
+    );
+}
+
+function returnToPort() {
+    document.getElementById('marketing-view').style.display = 'none';
+    document.getElementById('app-view').style.display = 'flex';
+    document.getElementById('header-stats').style.display = 'flex'; 
+    document.getElementById('content').style.display = 'block'; 
+    
+    var contentDiv = document.getElementById('content');
+    if (!contentDiv.innerHTML.trim()) {
+        loadPage('jogosult_tartalom'); 
+    }
+}
+
+/**
+ * Dinamikusan kirajzolja a kérdéseket.
+ * Kétlépcsős folyamat: Ellenőrzés -> Értékelés
+ */
+function renderMarketingQuestions(config, isOwner, bookId, folderId) {
+    console.log(">>> RENDER START. Kapott kérdések:", config.questions);
+
+    var container = document.getElementById('marketing-questions-area');
+    if (!container) return;
+    container.innerHTML = ''; 
+
+    // --- DOBOZOK ---
+    var verifyDiv = document.createElement('div');
+    verifyDiv.id = 'verify-section';
+    verifyDiv.style.cssText = "background:#fff3e0; padding:20px; border-radius:8px; border:1px solid #ffcc80; margin-bottom:20px;";
+    verifyDiv.innerHTML = '<h3 style="margin-top:0; color:#e65100;"><i class="fas fa-shield-alt"></i> 1. Lépés: Olvasottsági Próba</h3>' + 
+                          '<p style="margin-bottom:15px; font-style:italic;">Válaszolj helyesen, különben a rendszer visszaküld a kikötőbe!</p>';
+
+    var marketingDiv = document.createElement('div');
+    marketingDiv.id = 'marketing-section';
+    marketingDiv.style.display = 'none'; 
+    marketingDiv.innerHTML = '<h3 style="margin-top:20px; color:#2e8b57; border-top:1px dashed #ccc; padding-top:20px;"><i class="fas fa-star"></i> 2. Lépés: Értékelés</h3>';
+
+    // --- KÉRDÉSEK GENERÁLÁSA ---
+    var verifyCount = 0;
+
+    // forEach + function
+    config.questions.forEach(function(q) {
+        var card = document.createElement('div');
+        card.className = 'question-card';
+        card.style.cssText = "margin-bottom: 15px; padding: 10px; background: white; border-radius: 5px; border: 1px solid #eee;";
+        
+        var inputHtml = '';
+        
+        if (q.type === 'rating') {
+            inputHtml = '<div class="star-rating">';
+            for (var i = 5; i >= 1; i--) {
+                inputHtml += '<input type="radio" id="' + q.id + '_' + i + '" name="' + q.id + '" value="' + i + '"><label for="' + q.id + '_' + i + '">★</label>';
+            }
+            inputHtml += '</div>';
+        } 
+        else if (q.type === 'yesno') {
+            inputHtml = '<div style="margin-top:5px;">' +
+                        '<label style="margin-right:15px;"><input type="radio" name="' + q.id + '" value="Igen"> Igen</label>' +
+                        '<label><input type="radio" name="' + q.id + '" value="Nem"> Nem</label>' +
+                        '</div>';
+        } 
+        else {
+            var correct = q.gatekeeper || ""; 
+            // Dataset használata helyett data- attribútum stringben is jó, vagy JS-ből állítva
+            inputHtml = '<input type="text" name="' + q.id + '" ' +
+                        'data-answer="' + correct + '" ' +
+                        'autocomplete="off" ' +
+                        'style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:4px;" ' +
+                        'placeholder="Válasz...">';
+        }
+
+        card.innerHTML = '<label style="font-weight:bold; display:block; color:#444;">' + q.text + '</label>' + inputHtml;
+
+        if (q.type === 'verify') {
+            verifyDiv.appendChild(card);
+            verifyCount++;
+        } else {
+            marketingDiv.appendChild(card);
+        }
+    });
+
+    // --- VEZÉRLÉS ---
+    var submitBtn = document.getElementById('submit-marketing-btn');
+    if (submitBtn) submitBtn.style.display = 'none';
+
+    // HA VAN ELLENŐRZŐ KÉRDÉS
+    if (verifyCount > 0) {
+        var nextBtn = document.createElement('button');
+        nextBtn.type = 'button'; 
+        nextBtn.className = 'btn';
+        nextBtn.innerHTML = 'Ellenőrzés és Tovább <i class="fas fa-arrow-right"></i>';
+        nextBtn.style.cssText = "background:#e65100; color:white; margin-top:10px; width:100%; font-weight:bold;";
+        
+        nextBtn.onclick = function(e) {
+            if(e) e.preventDefault(); 
+            
+            var inputs = verifyDiv.querySelectorAll('input[type="text"]');
+            var failed = false;
+
+            // forEach + function
+            // NodeList forEach támogatás IE-ben nincs, de modern böngészőben oké. Biztonságosabb lenne Array.from().forEach
+            for (var k = 0; k < inputs.length; k++) {
+                var input = inputs[k];
+                var userAnswer = input.value.trim().toLowerCase();
+                var correctAnswer = (input.dataset.answer || "").trim().toLowerCase();
+                
+                console.log('Ellenőrzés: User="' + userAnswer + '" vs Correct="' + correctAnswer + '"');
+
+                if (userAnswer === '') {
+                    failed = true;
+                    input.style.border = "2px solid red";
+                }
+                else if (correctAnswer !== "" && userAnswer.indexOf(correctAnswer) === -1) {
+                    failed = true;
+                    input.style.border = "2px solid red";
+                } 
+                else {
+                    input.style.border = "1px solid #2e8b57";
+                }
+            }
+
+            if (failed) {
+                showSystemModal(
+                    "Hibás válasz!", 
+                    "Sajnálom, de az ellenőrző kérdésekre adott válaszaid nem megfelelőek. A rendszer most visszairányít.", 
+                    "fas fa-ban", 
+                    [{ 
+                        text: "Kilépés", 
+                        color: "#8b0000",
+                        textColor: "white",
+                        callback: function() { 
+                           document.getElementById('marketing-view').style.display = 'none';
+                           returnToPort(); 
+                        } 
+                    }]
+                );
+                return; 
+            }
+
+            verifyDiv.style.opacity = '0.5'; 
+            verifyDiv.style.pointerEvents = 'none';
+            nextBtn.style.display = 'none';
+            marketingDiv.style.display = 'block'; 
+            // scrollIntoView smooth opcióval
+            try { marketingDiv.scrollIntoView({behavior: "smooth"}); } catch(e) { marketingDiv.scrollIntoView(); }
+            if (submitBtn) submitBtn.style.display = 'inline-block';
+        };
+        
+        verifyDiv.appendChild(nextBtn);
+        container.appendChild(verifyDiv);
+        container.appendChild(marketingDiv);
+        
+    } else {
+        marketingDiv.style.display = 'block';
+        var h3 = marketingDiv.querySelector('h3');
+        if(h3) h3.style.display = 'none';
+        
+        container.appendChild(marketingDiv);
+        if (submitBtn) submitBtn.style.display = 'inline-block';
+    }
+    
+    // Szerzői panel
+    if (isOwner) {
+         var authorPanel = document.createElement('div');
+         authorPanel.style.cssText = "margin-bottom: 20px; padding: 15px; background: #e6fffa; border: 2px dashed #319795; text-align: center; border-radius:8px;";
+         authorPanel.innerHTML = '<h3 style="margin-top:0; color:#2c7a7b;">✒️ Üdvözlet, Szerző!</h3>' + 
+                                 '<button class="btn" style="background:#319795; color:white;" onclick="openAuthorDashboard(\'' + bookId + '\', \'' + folderId + '\', \'A Könyved\')">📊 Statisztikák</button>';
+         container.insertBefore(authorPanel, container.firstChild);
+    }
+}
+
+/**
+ * Válaszok összegyűjtése és beküldése.
+ */
+function submitMarketingForm() {
+    var form = document.getElementById('marketing-form');
+    var formData = new FormData(form);
+    var answers = {};
+    
+    // FormData iterálás ES5 módon (nem for...of)
+    // A modern böngészők támogatják a for...of-ot, de a biztonság kedvéért:
+    // Mivel a FormData.entries() iterátort ad, és az IE nem támogatja,
+    // a legbiztosabb, ha manuálisan szedjük össze az inputokat, 
+    // VAGY bízunk benne, hogy a Chrome/FF futtatja.
+    // Javítás: Sima DOM bejárás a form elemein.
+    var elements = form.elements;
+    var hasAnswer = false;
+
+    for (var i = 0; i < elements.length; i++) {
+        var item = elements[i];
+        if (item.name && !item.disabled) {
+            if (item.type === 'radio') {
+                if (item.checked) {
+                    answers[item.name] = item.value;
+                    hasAnswer = true;
+                }
+            } else if (item.type === 'text' || item.type === 'textarea') {
+                if (item.value.trim() !== "") {
+                    answers[item.name] = item.value;
+                    hasAnswer = true;
+                }
+            }
+        }
+    }
+    
+    if (!hasAnswer) {
+        showSystemModal(
+            "Üres a palack?", 
+            "Kérlek, válaszolj legalább egy kérdésre, mielőtt a tengerbe dobnád az üzenetet!", 
+            "fas fa-exclamation-circle", 
+            [{ text: "Rendben", color: "#e65100", textColor: "white" }]
+        );
+        return;
+    }
+
+    document.getElementById('loading-overlay').style.display = 'flex';
+    
+    callBackend('submitBookFeedback', [currentMarketingBookId, currentMarketingFolderId, answers], 
+        function(res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            
+            if (res.success) {
+                showSystemModal(
+                    "Sikeres Küldetés!", 
+                    '<div style="text-align:center;">' +
+                        '<p style="font-size:1.1em; margin-bottom:15px;">' + res.message + '</p>' +
+                        '<p style="color:#2e8b57; font-weight:bold;">+1 Kalózkredit jóváírva!</p>' +
+                     '</div>', 
+                    "fas fa-gem", 
+                    [{ 
+                        text: "Kreditek Zsebretétele & Kilépés", 
+                        color: "#2e8b57", 
+                        textColor: "white",
+                        callback: function() { 
+                            returnToPort(); 
+                            updateCreditDisplay(); 
+                        }
+                    }]
+                );
+            } else {
+                showSystemModal(
+                    "Hiba történt", 
+                    "A szerver visszautasította a kérést:<br><b>" + res.error + "</b>", 
+                    "fas fa-skull-crossbones", 
+                    [{ text: "Megértettem", color: "#8b0000", textColor: "white" }]
+                );
+            }
+        },
+        function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            showSystemModal(
+                "Kapcsolódási Hiba", 
+                "Nem sikerült elérni a szervert. Ellenőrizd az internetkapcsolatot!<br><small>" + err.message + "</small>", 
+                "fas fa-wifi", 
+                [{ text: "Rendben", color: "#555", textColor: "white" }]
+            );
+        }
+    );
+}
+
+// ===============================================
+// === SZERZŐI DASHBOARD FUNKCIÓK MARKETINGHEZ ===
+// ===============================================
+
+let currentDashBookId = null;
+let currentDashFolderId = null;
+
+// Fülváltó a Dashboardon belül
+function openDashboardTab(evt, tabName) {
+    var tabs = document.querySelectorAll('#author-dashboard-modal .tab-content');
+    for(var i=0; i<tabs.length; i++) { tabs[i].style.display = 'none'; }
+    
+    var btns = document.querySelectorAll('#author-dashboard-modal .tab-button');
+    for(var j=0; j<btns.length; j++) { btns[j].classList.remove('active'); }
+    
+    document.getElementById(tabName).style.display = 'block';
+    evt.currentTarget.classList.add('active');
+}
+
+/**
+ * Megnyitja a Dashboardot egy adott könyvhöz.
+ * @param {string} bookId - A könyv azonosítója (Kódja).
+ * @param {string} folderId - A könyv mappájának ID-ja (ahol a JSON van).
+ * @param {string} title - A könyv címe (fejléchez).
+ */
+function openAuthorDashboard(bookId, folderId, title) {
+    currentDashBookId = bookId;
+    currentDashFolderId = folderId;
+    
+    document.getElementById('dashboard-book-title').textContent = title + " - Marketing Elemző";
+    document.getElementById('author-dashboard-modal').style.display = 'flex';
+    document.getElementById('dashboard-loading').style.display = 'block';
+    document.getElementById('dashboard-content').style.display = 'none';
+    
+    // Alaphelyzetbe állítás
+    document.querySelector('#author-dashboard-modal .tab-button').click();
+
+    callBackend('getAuthorMarketingStats', [bookId, folderId], 
+        renderDashboardStats,
+        function(err) {
+            document.getElementById('dashboard-loading').innerHTML = '<p style="color:red;">Hiba: ' + err.message + '</p>';
+        }
+    );
+}
+
+/**
+ * Kirajzolja a Dashboard adatait.
+ * 1. Feltölti a "Meglévő kérdések" listát a Settings fülön.
+ * 2. Kirajzolja a Statisztikákat az Eredmények fülön.
+ */
+function renderDashboardStats(response) {
+    const loadingEl = document.getElementById('dashboard-loading');
+    const contentEl = document.getElementById('dashboard-content');
+    
+    if(loadingEl) loadingEl.style.display = 'none';
+    if(contentEl) contentEl.style.display = 'block';
+
+    if (!response.success) {
+        const detailsList = document.getElementById('dashboard-details-list');
+        if(detailsList) detailsList.innerHTML = `<p style="color:red;">${response.error}</p>`;
+        return;
+    }
+
+    // === 0. LÉPÉS: VERIFY KÉRDÉSEK ===
+    const allQuestions = (response.config && response.config.questions) ? response.config.questions : [];
+    const verifyQs = allQuestions.filter(q => q.type === 'verify');
+
+    for (let i = 0; i < 3; i++) {
+        const txtInput = document.getElementById('v-q' + (i+1) + '-text');
+        const ansInput = document.getElementById('v-q' + (i+1) + '-ans');
+        
+        if(txtInput && ansInput) {
+            if (verifyQs[i]) {
+                txtInput.value = verifyQs[i].text || "";
+                ansInput.value = verifyQs[i].gatekeeper || ""; 
+            } else {
+                txtInput.value = "";
+                ansInput.value = "";
+            }
+        }
+    }
+
+    // === 1. MEGLÉVŐ KÉRDÉSEK LISTÁZÁSA ===
+    const questionsListContainer = document.getElementById('existing-questions-list');
+    
+    if (questionsListContainer) {
+        questionsListContainer.innerHTML = ''; 
+        const questions = (response.config && response.config.questions) ? response.config.questions : [];
+
+        if (questions.length === 0) {
+            questionsListContainer.innerHTML = '<p style="color:#888;">Nincsenek aktív kérdések.</p>';
+        } else {
+            const ul = document.createElement('ul');
+            ul.style.cssText = "list-style: none; padding: 0; margin: 0;";
+
+            questions.forEach(q => {
+                const li = document.createElement('li');
+                li.style.cssText = "padding: 8px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;";
+                
+                let typeIcon = '<i class="fas fa-font" title="Szöveges"></i>';
+                if (q.type === 'rating') typeIcon = '<i class="fas fa-star" style="color: gold;" title="Értékelés"></i>';
+                if (q.type === 'yesno') typeIcon = '<i class="fas fa-check-circle" style="color: blue;" title="Igen/Nem"></i>';
+
+                li.innerHTML = `
+                    <span style="width: 25px; text-align: center;">${typeIcon}</span>
+                    <span style="flex-grow: 1; font-weight: 500; color: #333;">${q.text}</span>
+                    <span style="font-size: 0.8em; color: #999; background: #eee; padding: 2px 6px; border-radius: 4px;">${q.id}</span>
+                `;
+                ul.appendChild(li);
+            });
+            questionsListContainer.appendChild(ul);
+        }
+    }
+
+    // === 2. STATISZTIKÁK KIRAJZOLÁSA ===
+    const stats = response.stats;
+    const detailsList = document.getElementById('dashboard-details-list');
+    const totalRespEl = document.getElementById('stat-total-responses');
+
+    if (!stats) {
+        if(detailsList) detailsList.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Még nem érkezett válasz az olvasóktól.</p>`;
+        if(totalRespEl) totalRespEl.textContent = "0";
+        return;
+    }
+
+    if(totalRespEl) totalRespEl.textContent = stats.totalResponses;
+    if(detailsList) detailsList.innerHTML = '';
+
+    // Modern Object.entries ciklus
+    for (const [qId, data] of Object.entries(stats.questions)) {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'result-item';
+        itemDiv.style.cssText = "margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #eee;";
+        
+        let visualHtml = '';
+
+        if (data.type === 'rating') {
+            const avg = parseFloat(data.average) || 0; // Biztonságos parszolás
+            const percent = (avg / 5) * 100;
+            // Biztonságos csillag generálás
+            const starCount = Math.round(avg);
+            const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+            
+            visualHtml = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span>Átlag: <strong>${avg.toFixed(1)}</strong> / 5</span>
+                    <span style="color:#f6e05e;">${stars}</span>
+                </div>
+                <div class="progress-container" style="background:#edf2f7; height:10px; border-radius:5px; overflow:hidden;">
+                    <div class="progress-bar" style="width: ${percent}%; background:#ecc94b; height:100%;"></div>
+                </div>`;
+        } else if (data.type === 'yesno') {
+            visualHtml = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span>Igen válaszok: <strong>${data.yesPercent}%</strong></span>
+                </div>
+                <div class="progress-container" style="background:#edf2f7; height:10px; border-radius:5px; overflow:hidden;">
+                    <div class="progress-bar" style="width: ${data.yesPercent}%; background:#4299e1; height:100%;"></div>
+                </div>`;
+        } else if (data.type === 'text') {
+             let answersHtml = (data.answers && data.answers.length > 0) 
+                ? data.answers.map(ans => `<div style="background:#f7fafc; padding:8px; border-left:3px solid #cbd5e0; margin-bottom:5px; font-style:italic;">"${ans}"</div>`).join('')
+                : '<div style="color:#aaa; font-style:italic;">(Nincs szöveges válasz)</div>';
+             visualHtml = `<div style="margin-top:10px;">${answersHtml}</div>`;
+        }
+
+        itemDiv.innerHTML = `<div style="font-weight:bold; margin-bottom:10px; color:#2d3748;">${data.label}</div>${visualHtml}`;
+        detailsList.appendChild(itemDiv);
+    }
+}
+
+/**
+ * Összeszedi a 3 Verify mezőt és elküldi a szervernek mentésre.
+ */
+function submitVerificationQuiz() {
+    var questionsToSave = [];
+    
+    for (var i = 1; i <= 3; i++) {
+        var text = document.getElementById('v-q' + i + '-text').value.trim();
+        var answer = document.getElementById('v-q' + i + '-ans').value.trim();
+        
+        if (text) {
+            if (!answer) {
+                showSystemModal("Hiányos adat", i + ". kérdésnél megadtad a kérdést, de hiányzik a helyes válasz!", "fas fa-exclamation-triangle", [{text:"Rendben"}]);
+                return;
+            }
+            questionsToSave.push({ text: text, answer: answer });
+        }
+    }
+
+    if (questionsToSave.length === 0) {
+        showSystemModal("Üres űrlap", "Legalább egy ellenőrző kérdést meg kell adnod!", "fas fa-exclamation-triangle", [{text:"Rendben"}]);
+        return;
+    }
+
+    var btn = document.querySelector('#verification-quiz-form button');
+    var originalText = btn.innerHTML;
+    btn.innerText = "Mentés folyamatban...";
+    btn.disabled = true;
+
+    callBackend('saveVerificationQuiz', [currentDashBookId, currentDashFolderId, questionsToSave], 
+        function(res) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            
+            if (res.success) {
+                showSystemModal("Siker", "Az ellenőrző kérdések frissültek!", "fas fa-check-circle", [{text:"Rendben", color: "#276749", textColor: "white"}]);
+            } else {
+                showSystemModal("Hiba", "Mentési hiba: " + res.error, "fas fa-times-circle", [{text:"Bezárás"}]);
+            }
+        },
+        function(err) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            showSystemModal("Szerverhiba", err.message, "fas fa-wifi", [{text:"Bezárás"}]);
+        }
+    );
+}
+
+function submitNewQuestion() {
+    var text = document.getElementById('nq-text').value;
+    var type = document.getElementById('nq-type').value;
+    var category = document.getElementById('nq-category').value;
+    var isGame = document.getElementById('nq-isgame').checked;
+
+    if (!text) { uiAlert("Add meg a kérdés szövegét!"); return; }
+
+    var newQuestion = {
+        id: 'custom_' + Date.now(), 
+        type: type,
+        text: text,
+        category: category,
+        isGame: isGame,
+        min: 1, max: 5 
+    };
+
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    callBackend('addCustomQuestion', [currentDashBookId, currentDashFolderId, newQuestion], 
+        function(res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (res.success) {
+                uiAlert("Kérdés hozzáadva! A következő olvasó már látni fogja.");
+                document.getElementById('new-question-form').reset();
+            } else {
+                uiAlert("Hiba: " + res.error);
+            }
+        },
+        function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert("Szerverhiba: " + err.message);
+        }
+    );
+}
+
+// =============
+// == KINCSEK ==
+// =============
+
+function initializeKincsekPage(response) {
+    if (!response || !response.success) {
+        var errorMessage = response ? response.error : "Ismeretlen hiba történt a szerverrel való kommunikáció során.";
+        var sheetElement = document.querySelector('.character-sheet');
+        if(sheetElement){
+             sheetElement.innerHTML = '<h2>Hiba a karakteradatok betöltésekor</h2><p style="color:red; font-size: 0.9em; margin-top: 15px;"><b>Részletek:</b> ' + errorMessage + '</p>';
+        } else {
+             console.error("Hiba: A '.character-sheet' elem nem található a DOM-ban.");
+             var contentDiv = document.getElementById('content');
+             if(contentDiv) contentDiv.innerHTML = '<p style="color:red;">Hiba a karakterlap megjelenítésekor.</p>';
+        }
+        return;
+    }
+
+    var data = response.data;
+
+    var nameEl = document.getElementById('char-sheet-name');
+    if (nameEl) nameEl.innerText = document.querySelector('.header-title').innerText;
+
+    var kreditEl = document.getElementById('char-sheet-kredit');
+    if (kreditEl) kreditEl.innerText = data.kredit;
+
+    var hartyaEl = document.getElementById('char-sheet-hartya');
+    if (hartyaEl) hartyaEl.innerText = data.hartya;
+
+    var talentumEl = document.getElementById('char-sheet-talentum');
+    if (talentumEl) talentumEl.innerText = data.talentum;
+
+    var letkristalyEl = document.getElementById('char-sheet-letkristaly');
+    if (letkristalyEl) letkristalyEl.innerText = data.letkristaly;
+
+    var konyvEl = document.getElementById('char-sheet-konyv');
+    if (konyvEl) konyvEl.innerText = data.konyv;
+
+    var masolatEl = document.getElementById('char-sheet-masolat');
+    if (masolatEl) masolatEl.innerText = data.masolat;
+
+    var tekercsEl = document.getElementById('char-sheet-tekercs');
+    if (tekercsEl) tekercsEl.innerText = data.tekercs;
+
+    var terkepEl = document.getElementById('char-sheet-terkep');
+    if (terkepEl) terkepEl.innerText = data.terkep;
+
+    var kristalykonyvEl = document.getElementById('char-sheet-kristalykonyv');
+    if (kristalykonyvEl) kristalykonyvEl.innerText = data.kristalykonyv;
+
+    var vitorlasEl = document.getElementById('char-sheet-vitorlas');
+    if (vitorlasEl) vitorlasEl.innerText = data.vitorlas;
+
+    var csonakEl = document.getElementById('char-sheet-csonak');
+    if (csonakEl) csonakEl.innerText = data.csonak;
+
+    var meruloEl = document.getElementById('char-sheet-merulo');
+    if (meruloEl) meruloEl.innerText = data.merulo;
+
+    var leghajoEl = document.getElementById('char-sheet-leghajo');
+    if (leghajoEl) leghajoEl.innerText = data.leghajo;
+
+    var rankNameEl = document.getElementById('char-sheet-rank-name');
+    if (rankNameEl) rankNameEl.innerText = data.rang;
+
+    var rankImgElement = document.getElementById('char-sheet-rank-img');
+    if(rankImgElement){
+        rankImgElement.alt = data.rang;
+        if (data.rang_kep_data && data.rang_kep_data.data) {
+            rankImgElement.src = 'data:' + data.rang_kep_data.mime + ';base64,' + data.rang_kep_data.data;
+        } else {
+            rankImgElement.src = ""; 
+        }
+    }
+
+    // A feltétel maradhat (kliens oldali ellenőrzésnek jó), de a hívásból kivesszük!
+    if (currentUserEmail && data.rang) {
+        console.log('[initializeKincsekPage] Rang frissítésének indítása: ' + currentUserEmail + ', ' + data.rang);
+        
+        // --- JAVÍTOTT callBackend ---
+        // Csak a [data.rang]-ot küldjük! Az emailt a Router intézi.
+        callBackend('updatePlayerRank', [data.rang], 
+            function(){}, // Siker esetén csendben maradunk
+            function(error) {
+                console.error('!!! HIBA a rang szerveroldali frissítésekor: ' + error.message);
+            }
+        );
+    } else {
+        console.warn("[initializeKincsekPage] Figyelmeztetés: Hiányzó currentUserEmail vagy data.rang a rangfrissítéshez.");
+    }
+}
+
+// ==========================
+// === TITKOSÍTÁS SEGÉDEK ===
+// ==========================
+
+// Relatív és valós útvonal összefűzése
+function resolvePath(basePath, relativePath) {
+    var baseParts = basePath.split('/');
+    var relativeParts = relativePath.split('/');
+    
+    baseParts.pop(); 
+    
+    // for...of helyett sima for ciklus
+    for (var i = 0; i < relativeParts.length; i++) {
+        var part = relativeParts[i];
+        if (part === '..') {
+            baseParts.pop(); 
+        } else if (part !== '.') {
+            baseParts.push(part); 
+        }
+    }
+    return baseParts.join('/');
+}
+
+// LSB Vízjelezés Borítóképnél (Async marad, de szintaxis tisztítás)
+function embedIdInImage(imageFile, id) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          var binaryId = '';
+          for (var i = 0; i < id.length; i++) {
+            // padStart helyett manuális kiegészítés
+            var bin = id[i].charCodeAt(0).toString(2);
+            while (bin.length < 8) bin = "0" + bin;
+            binaryId += bin;
+          }
+          binaryId += "11111111"; 
+
+          var pixelData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          var data = pixelData.data;
+
+          if (binaryId.length > (data.length / 4) * 3) {
+             return reject(new Error("A kép túl kicsi az azonosító elrejtéséhez."));
+          }
+          
+          var dataIndex = 0;
+          for (var j = 0; j < binaryId.length; j++) {
+            var bit = binaryId[j];
+            
+            while ((dataIndex + 1) % 4 === 0) {
+              dataIndex++;
+            }
+            
+            if (dataIndex >= data.length) {
+                return reject(new Error("Hiba a vízjel írása közben: a kép mérete nem elegendő."));
+            }
+            
+            var oldValue = data[dataIndex];
+            data[dataIndex] = (bit === '1') ? (oldValue | 1) : (oldValue & 254);
+            
+            dataIndex++;
+          }
+          
+          ctx.putImageData(pixelData, 0, 0);
+          
+          var finalDataURL = canvas.toDataURL('image/png');
+          console.log("DEBUG: Vízjelezett kép kész."); 
+          
+          resolve(finalDataURL);
+        };
+        img.onerror = function(err) { reject(new Error("A képfájl nem tölthető be. Lehet, hogy sérült.")); };
+        img.src = event.target.result;
+      };
+      reader.onerror = function(err) { reject(new Error("A fájl olvasása sikertelen.")); };
+      reader.readAsDataURL(imageFile);
+    });
+}
+
+// nulla széles titkos kód
+function encodeIdToZeroWidth(id) {
+    var binaryId = '';
+    for (var i = 0; i < id.length; i++) {
+        var bin = id[i].charCodeAt(0).toString(2);
+        while (bin.length < 8) bin = "0" + bin;
+        binaryId += bin;
+    }
+    var zeroWidthCode = '';
+    for (var j = 0; j < binaryId.length; j++) {
+        var bit = binaryId[j];
+        zeroWidthCode += (bit === '0') ? '\u200b' : '\u200c';
+    }
+    return zeroWidthCode + '\u200d'; 
+}
+
+// Jelszó láthatóság
+var togglePassword = document.querySelector('#togglePassword');
+var passwordInput = document.querySelector('#jelszo');
+
+if (togglePassword && passwordInput) {
+    togglePassword.addEventListener('click', function (e) {
+        var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+} else {
+    console.warn("A jelszó láthatóság kapcsoló elemei (ikon vagy input) nem találhatóak!");
+}
+
+// ==========================
+// === HAJÓNAPLÓ FUNKCIÓK ===
+// ==========================
+
+var MIN_LOG_RANK = 'Fregattkapitány'; 
+
+function checkRankAndOpenLogModal() {
+    console.log("Rang ellenőrzése és napló ID lekérése a naplóíráshoz...");
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    // 1. LÉPÉS: Rang ellenőrzése
+    callBackend('getCharacterSheetData', [], 
+        function(rankResponse) {
+            if (!rankResponse.success || !rankResponse.data || !rankResponse.data.rang) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                uiAlert("Hiba a rangod ellenőrzésekor: " + (rankResponse.error || "Ismeretlen hiba"));
+                return;
+            }
+            
+            // 2. LÉPÉS: Írási jogosultság és Napló ID
+            callBackend('checkLogWritePermission', [], 
+                function(logId) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    console.log("checkLogWritePermission válasz: " + logId);
+                    
+                    if (logId && typeof logId === 'string') {
+                        console.log("Napló ID rendben (" + logId + "), modal megnyitása.");
+                        openLogEntryModal(); 
+                    } else {
+                        uiAlert("Hiba: Nem sikerült előkészíteni a hajónaplót.");
+                        console.error("checkLogWritePermission érvénytelen válasz:", logId);
+                    }
+                },
+                function(err) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    uiAlert("Hiba: " + err.message);
+                    console.error("checkLogWritePermission hiba:", err);
+                }
+            );
+        },
+        function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert("Szerverhiba a rang ellenőrzésekor: " + err.message);
+            console.error("getCharacterSheetData hiba:", err);
+        }
+    );
+}
+
+function openLogEntryModal(entryId, logIdForContext) {
+    if (typeof entryId === 'undefined') entryId = 'last';
+    
+    var modal = document.getElementById('log-entry-modal');
+    var form = document.getElementById('log-entry-form');
+    var title = document.getElementById('log-modal-title');
+    var entryIdInput = document.getElementById('log-entry-id');
+    var statusDiv = document.getElementById('log-entry-status');
+    var imagePreview = document.getElementById('log-image-preview');
+    var imageInput = document.getElementById('log-image');
+    var prevBtn = document.getElementById('log-prev-btn');
+    var nextBtn = document.getElementById('log-next-btn');
+    var submitBtn = document.getElementById('submit-log-entry-btn');
+
+    form.reset();
+    imagePreview.innerHTML = '';
+    statusDiv.textContent = '';
+    entryIdInput.value = '';
+    document.getElementById('log-entry-splash-text').style.display = 'none';
+    prevBtn.style.visibility = 'hidden';
+    nextBtn.style.visibility = 'hidden';
+    prevBtn.onclick = null;
+    nextBtn.onclick = null;
+
+    imageInput.onchange = function(event) {
+        var file = event.target.files[0];
+        imagePreview.innerHTML = '';
+        if (file && file.type === "image/png") {
+             var reader = new FileReader();
+             reader.onload = function(e) {
+                 var img = document.createElement('img');
+                 img.src = e.target.result;
+                 imagePreview.appendChild(img);
+             };
+             reader.readAsDataURL(file);
+        } else if (file) {
+             uiAlert("Csak PNG formátumú kép csatolható!");
+             imageInput.value = '';
+        }
+    };
+
+    var newSubmitBtn = submitBtn.cloneNode(true);
+    submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+    newSubmitBtn.addEventListener('click', submitLogEntry);
+
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    // 1. Log ID lekérése (Ismétlés a biztonságért)
+    callBackend('checkLogWritePermission', [], 
+        function(currentLogId) {
+            if (!currentLogId || typeof currentLogId !== 'string') {
+                 document.getElementById('loading-overlay').style.display = 'none';
+                 uiAlert("Hiba: Nem található az írható hajónapló azonosítója.");
+                 closeLogEntryModal();
+                 return;
+            }
+
+            // 2. Bejegyzés lekérése
+            callBackend('getLogEntry', [currentLogId, entryId || 'last'], // currentUserEmail-t a Router adja
+                function(entry) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+
+                    if (entry.error) {
+                        uiAlert("Hiba a bejegyzés betöltésekor: " + entry.error);
+                        closeLogEntryModal();
+                        return;
+                    }
+
+                    window.currentLogEntryData = entry; 
+
+                    if (entryId === null || entry.id === null) {
+                        // === ÚJ BEJEGYZÉS ===
+                        title.textContent = 'Új Hajónapló Bejegyzés';
+                        entryIdInput.value = ''; 
+                        var now = new Date();
+                        var year = now.getFullYear();
+                        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+                        var day = ("0" + now.getDate()).slice(-2);
+                        var hours = ("0" + now.getHours()).slice(-2);
+                        var minutes = ("0" + now.getMinutes()).slice(-2);
+                        
+                        document.getElementById('log-date').value = year + '-' + month + '-' + day;
+                        document.getElementById('log-time').value = hours + ':' + minutes;
+                        getGeoLocation(true);
+
+                        if (entry.prevId) { 
+                            prevBtn.style.visibility = 'visible';
+                            prevBtn.onclick = function() { openLogEntryModal(entry.prevId); };
+                        } else if (window.currentLogEntryData && window.currentLogEntryData.id) {
+                             prevBtn.style.visibility = 'visible';
+                             prevBtn.onclick = function() { openLogEntryModal(window.currentLogEntryData.id); };
+                        }
+                        nextBtn.style.visibility = 'hidden';
+
+                    } else {
+                        // === SZERKESZTÉS ===
+                        title.textContent = 'Hajónapló Bejegyzés Szerkesztése';
+                        entryIdInput.value = entry.id || '';
+                        document.getElementById('log-date').value = entry.date || '';
+                        document.getElementById('log-time').value = entry.time || '';
+                        document.getElementById('log-wind').value = entry.wind || '';
+                        document.getElementById('log-weather').value = entry.weather || '';
+                        document.getElementById('log-lat').value = entry.latitude || '';
+                        document.getElementById('log-lon').value = entry.longitude || '';
+                        document.getElementById('log-report').value = entry.report || '';
+
+                        if (entry.imageId) {
+                            imagePreview.innerHTML = '<p><small><i>Kép csatolva. Új kép feltöltése felülírja.</i></small></p>';
+                        }
+
+                        if (entry.prevId) {
+                            prevBtn.style.visibility = 'visible';
+                            prevBtn.onclick = function() { openLogEntryModal(entry.prevId); };
+                        } else {
+                            prevBtn.style.visibility = 'hidden';
+                        }
+
+                        if (entry.nextId) {
+                            nextBtn.style.visibility = 'visible';
+                            nextBtn.onclick = function() { openLogEntryModal(entry.nextId); };
+                        } else {
+                            nextBtn.style.visibility = 'visible';
+                            nextBtn.textContent = 'Új Bejegyzés >';
+                            nextBtn.onclick = function() { openLogEntryModal(null); };
+                        }
+                    }
+
+                    modal.style.display = 'flex';
+                },
+                function(err) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    uiAlert("Szerverhiba a bejegyzés lekérésekor: " + err.message);
+                    closeLogEntryModal();
+                }
+            );
+        },
+        function(err) {
+             document.getElementById('loading-overlay').style.display = 'none';
+             uiAlert("Hiba a napló előkészítésekor: " + err.message);
+             closeLogEntryModal();
+        }
+    );
+}
+
+function closeLogEntryModal() {
+    var modal = document.getElementById('log-entry-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function getGeoLocation(silentMode) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                document.getElementById('log-lat').value = position.coords.latitude.toFixed(4);
+                document.getElementById('log-lon').value = position.coords.longitude.toFixed(4);
+            },
+            function(error) {
+                var message = "Hiba a pozíció lekérésekor: " + error.message;
+                console.warn(message);
+                if (!silentMode) {
+                    uiAlert(message + "\nKérlek, add meg manuálisan a koordinátákat.");
+                }
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+        );
+    } else {
+        var message = "A böngésződ nem támogatja a helymeghatározást.";
+        console.warn(message);
+        if (!silentMode) {
+            uiAlert(message);
+        }
+    }
+}
+
+// Async maradhat, mert a képfeldolgozáshoz kell
+async function submitLogEntry() {
+    var form = document.getElementById('log-entry-form');
+    var statusDiv = document.getElementById('log-entry-status');
+    var submitBtn = document.getElementById('submit-log-entry-btn');
+    var entryIdInput = document.getElementById('log-entry-id'); 
+    
+    statusDiv.textContent = '';
+    submitBtn.disabled = true;
+
+    var entryData = {
+        date: document.getElementById('log-date').value,
+        time: document.getElementById('log-time').value,
+        wind: document.getElementById('log-wind').value,
+        weather: document.getElementById('log-weather').value,
+        latitude: document.getElementById('log-lat').value,
+        longitude: document.getElementById('log-lon').value,
+        report: document.getElementById('log-report').value,
+        imageBase64: null,
+        id: entryIdInput.value || null
+    };
+
+    if (!entryData.date || !entryData.time) {
+        statusDiv.textContent = 'A dátum és idő megadása kötelező!';
+        submitBtn.disabled = false;
+        return;
+    }
+     if (!entryData.report.trim()) {
+        statusDiv.textContent = 'A napi jelentés kitöltése kötelező!';
+        submitBtn.disabled = false;
+        return;
+    }
+
+    var imageInput = document.getElementById('log-image');
+    var file = imageInput.files[0];
+
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    try {
+        if (file) {
+            var fileReader = new FileReader();
+            var dataUrl = await new Promise(function(resolve, reject) {
+                 fileReader.onload = function(e) { resolve(e.target.result); };
+                 fileReader.onerror = function(e) { reject(new Error("Hiba a képfájl olvasása közben.")); };
+                 fileReader.readAsDataURL(file);
+            });
+            var pngDataUrl = await convertToPngDataUrl(dataUrl);
+            entryData.imageBase64 = pngDataUrl.split(',')[1];
+        }
+
+        console.log("Mentésre küldött adatok:", entryData); 
+        
+        // callBackend hívás
+        callBackend('saveLogEntry', [entryData], 
+            function(response) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                submitBtn.disabled = false;
+                if (response.success) {
+                    uiAlert("Bejegyzés sikeresen mentve!");
+                    closeLogEntryModal();
+                } else {
+                    statusDiv.textContent = "Hiba mentéskor: " + response.error;
+                    console.error("Mentési hiba:", response.error);
+                }
+            },
+            function(err) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                submitBtn.disabled = false;
+                statusDiv.textContent = "Szerverhiba: " + err.message;
+                console.error("Szerverhiba mentéskor:", err);
+            }
+        );
+
+    } catch (error) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        submitBtn.disabled = false;
+        statusDiv.textContent = "Hiba a kép feldolgozása közben: " + error.message;
+        console.error("Képfeldolgozási hiba:", error);
+    }
+}
+
+function toggleLogSplash() {
+    var splashText = document.getElementById('log-entry-splash-text');
+    if (splashText) {
+        splashText.style.display = (splashText.style.display === 'none') ? 'block' : 'none';
+    }
+}
+
+function showLogPublishingSection(logId, gdocId) {
+    var section = document.getElementById('log-publish-section');
+    if (!section) {
+        console.error("Hiba: A 'log-publish-section' HTML elem nem található!");
+        return;
+    }
+    
+    // Backtick helyett string összefűzés
+    var gdocUrl = 'https://docs.google.com/document/d/' + gdocId + '/edit';
+
+    section.style.display = 'block';
+    document.getElementById('log-publish-id-display').textContent = logId;
+    document.getElementById('log-publish-id-hidden').value = logId; 
+    document.getElementById('log-publish-step1').style.display = 'none'; 
+    document.getElementById('log-publish-step2').style.display = 'block'; 
+    document.getElementById('log-publish-gdoc-link').href = gdocUrl;
+    document.getElementById('log-publish-pin').value = '';
+    document.getElementById('log-publish-status').textContent = '';
+
+    var submitBtn = document.getElementById('log-publish-submit-btn');
+    
+    // Klónozással eltávolítjuk a régi listenereket
+    var newSubmitBtn = submitBtn.cloneNode(true);
+    submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+
+    newSubmitBtn.onclick = function() {
+        if (this.disabled) return;
+        var pinCode = document.getElementById('log-publish-pin').value;
+        var statusDiv = document.getElementById('log-publish-status');
+
+        if (!pinCode) {
+            statusDiv.textContent = "A PIN kód megadása kötelező!";
+            statusDiv.className = 'msg-error';
+            return;
+        }
+
+        this.disabled = true;
+        this.textContent = 'Szentelés folyamatban...';
+        document.getElementById('loading-overlay').style.display = 'flex';
+        statusDiv.textContent = '';
+
+        callBackend('publishEditedLogbook', [gdocId, pinCode, logId], 
+            function(response) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                newSubmitBtn.disabled = false;
+                newSubmitBtn.textContent = 'Véglegesítés és Szentelés';
+                if (response.success) {
+                    uiAlert("Sikeres kiadás! A naplód könyvként és másolatokként is elérhető a Könyvtáradban.");
+                    section.style.display = 'none'; 
+                    updateCreditDisplay(); 
+                } else {
+                    statusDiv.textContent = "Hiba a szenteléskor: " + response.error;
+                    statusDiv.className = 'msg-error';
+                }
+            },
+            function(err) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                newSubmitBtn.disabled = false;
+                newSubmitBtn.textContent = 'Véglegesítés és Szentelés';
+                statusDiv.textContent = "Szerverhiba: " + err.message;
+                statusDiv.className = 'msg-error';
+            }
+        ); 
+    };
+}
+
+// ===================== NPC INTERFÉSZEK =====================================
+
+// === UNIVERZÁLIS MEGJELENÍTŐ ===
+
+var ACTIVE_NPC_CONFIG = {}; 
+
+function openUniversalNPC(npcId, config) {
+    var modal = document.getElementById('universal-npc-modal');
+    var modalContent = modal.querySelector('.gamemode-modal-content');
+    var portraitPanel = document.getElementById('npc-portrait-panel');
+    var portraitImg = document.getElementById('npc-portrait-image');
+    
+    // 1. Állapot mentése
+    document.getElementById('current-npc-id').value = npcId;
+    // Globális változóba mentjük, hogy elérhető legyen máshol is
+    window.currentNPCConfig = config || {}; 
+    ACTIVE_NPC_CONFIG = window.currentNPCConfig;
+
+    config = ACTIVE_NPC_CONFIG; 
+    var name = config.name || 'NPC';
+    var role = config.role || '';
+    var icon = config.icon || '👤';
+    var headerColor = config.headerColor || '#333';
+
+    document.getElementById('npc-name').innerText = name;
+    document.getElementById('npc-role').innerText = role;
+    document.getElementById('npc-icon').innerHTML = icon;
+    document.getElementById('npc-header').style.backgroundColor = headerColor;
+
+    modal.style.cssText = "display: flex; z-index: 100; background: rgba(0,0,0,0.5);";
+    modalContent.style.cssText = ""; 
+    modalContent.className = "gamemode-modal-content";
+
+    // 4. PORTRÉ KEZELÉS
+    portraitPanel.className = 'npc-portrait-closed';
+    portraitImg.src = '';
+
+    if (config.portrait) {
+        portraitImg.src = config.portrait;
+        
+        setTimeout(function() {
+            portraitPanel.className = 'npc-portrait-open';
+            if (config.styles && config.styles.content && config.styles.content.height === '100%') {
+                portraitPanel.style.height = '100%';
+            } else {
+                portraitPanel.style.height = '80vh'; 
+            }
+        }, 100);
+    }
+
+    if (config.styles) {
+        if (config.styles.modal) {
+            for (var key in config.styles.modal) { modal.style[key] = config.styles.modal[key]; }
+        }
+        if (config.styles.content) {
+            for (var k in config.styles.content) { modalContent.style[k] = config.styles.content[k]; }
+        }
+    }
+
+    var chatArea = document.getElementById('universal-chat-area');
+    chatArea.innerHTML = ''; 
+    
+    var input = document.getElementById('universal-chat-input');
+    if (input) {
+        input.value = '';
+        input.disabled = false;
+        input.placeholder = name + " figyel...";
+    }
+
+    modal.style.display = 'flex';
+    
+    // callBackend használata
+    callBackend('handleNPCInteraction', [npcId, "", "INIT", null], handleUniversalResponse);
+}
+
+function sendUniversalMessage() {
+    var input = document.getElementById('universal-chat-input');
+    var msg = input.value.trim();
+    if (!msg) return;
+
+    var npcId = document.getElementById('current-npc-id').value;
+    
+    addBubbleToUniversal("Te", msg, "outgoing");
+    input.value = '';
+    input.disabled = true;
+
+    var chatArea = document.getElementById('universal-chat-area');
+    var loaderId = "load-" + Date.now();
+    var loader = document.createElement('div');
+    loader.id = loaderId;
+    loader.style.cssText = "font-style: italic; color: #666; margin: 5px 15px;";
+    
+    if (ACTIVE_NPC_CONFIG.loaderHTML) {
+        loader.innerHTML = ACTIVE_NPC_CONFIG.loaderHTML; 
+    } else {
+        var npcName = document.getElementById('npc-name').innerText;
+        loader.innerText = npcName + " gondolkodik...";
+    }
+    
+    chatArea.appendChild(loader);
+    chatArea.scrollTop = chatArea.scrollHeight;
+
+    callBackend('handleNPCInteraction', [npcId, msg, "CHAT"], 
+        function(response) {
+            var l = document.getElementById(loaderId);
+            if(l) l.remove();
+            input.disabled = false;
+            input.focus();
+            handleUniversalResponse(response);
+        },
+        function(err) {
+            var l = document.getElementById(loaderId);
+            if(l) l.remove();
+            input.disabled = false;
+            addBubbleToUniversal("Rendszer", "Hiba: " + err.message, "system");
+        }
+    );
+}
+
+function addBubbleToUniversal(sender, text, type) {
+    var chatArea = document.getElementById('universal-chat-area');
+    var div = document.createElement('div');
+    var config = window.currentNPCConfig || {}; 
+
+    div.style.padding = "10px 15px";
+    div.style.borderRadius = "10px";
+    div.style.maxWidth = "80%";
+    div.style.lineHeight = "1.4";
+    div.style.marginBottom = "8px";
+    div.style.boxShadow = "1px 1px 3px rgba(0,0,0,0.3)"; 
+    div.style.wordWrap = "break-word"; 
+
+    if (type === "incoming") { 
+        div.style.background = "#ffffff";
+        div.style.color = "#000000";
+        div.style.alignSelf = "flex-start";
+        
+        var borderColor = config.headerColor || "#37474f"; 
+        div.style.borderLeft = "5px solid " + borderColor;
+
+        var iconHtml = "";
+        if (config.msgIcon) {
+            iconHtml = config.msgIcon + " "; 
+        }
+
+        var formattedText = text
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); 
+
+        div.innerHTML = '<strong>' + sender + ':</strong><br><div style="margin-top:4px;">' + iconHtml + formattedText + '</div>';
+
+    } else if (type === "outgoing") { 
+        div.style.background = "#d4af37"; 
+        div.style.color = "#3e2723"; 
+        div.style.fontWeight = "bold";
+        div.style.alignSelf = "flex-end";
+        div.style.marginLeft = "auto";
+        div.style.textAlign = "right";
+        div.innerHTML = text.replace(/\n/g, '<br>');
+
+    } else { 
+        div.style.background = "transparent";
+        div.style.boxShadow = "none";
+        div.style.color = "#ccc"; 
+        div.style.fontStyle = "italic";
+        div.style.textAlign = "center";
+        div.style.margin = "0 auto";
+        div.style.fontSize = "0.85em";
+        div.innerHTML = text;
+    }
+
+    chatArea.appendChild(div);
+    
+    setTimeout(function() {
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }, 50);
+}
+
+function adjustColorBrightness(col, amt) {
+    if (col[0] !== "#") return col;
+    var num = parseInt(col.slice(1),16);
+    var r = (num >> 16) + amt;
+    var b = ((num >> 8) & 0x00FF) + amt;
+    var g = (num & 0x0000FF) + amt;
+    var newColor = g | (b << 8) | (r << 16);
+    return "#" + (0x1000000 + (newColor<0?0:newColor>0xFFFFFF?0xFFFFFF:newColor)).toString(16).slice(1);
+}
+
+// === SZERVER VÁLASZ FELDOLGOZÁSA ===
+function handleUniversalResponse(response) {
+    var chatArea = document.getElementById('universal-chat-area');
+    console.log("Szerver válasz érkezett:", response); 
+
+    if (!response) {
+        console.error("Hiba: A szerver üres választ küldött!");
+        addBubbleToUniversal("System", "Hiba: A szerver nem küldött adatot. (Null Response)", "system");
+        return;
+    }
+
+    if (response.text) {
+        addBubbleToUniversal(response.sender || "NPC", response.text, "incoming");
+    }
+
+    var buttons = response.buttons || response.actions || [];
+    
+    if (buttons.length > 0) {
+        var btnContainer = document.createElement('div');
+        btnContainer.className = "npc-response-buttons"; 
+        btnContainer.style.display = "flex";
+        btnContainer.style.flexWrap = "wrap";
+        btnContainer.style.gap = "8px";
+        btnContainer.style.justifyContent = "center";
+        
+        buttons.forEach(function(btn) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'tooltip-wrapper'; 
+            wrapper.style.display = "flex";
+            wrapper.style.flex = "1 1 auto"; 
+
+            var b = document.createElement('button');
+            b.className = 'btn'; 
+            b.style.cssText = "width: 100%; flex: 1 1 auto; font-size: 0.9em; white-space: normal; padding: 8px;";
+            
+            if (btn.action === 'PAY_FOR_INFO' || (btn.text && btn.text.indexOf('Kr') > -1)) {
+                b.style.border = "1px solid #ffd700"; 
+                b.style.backgroundColor = "#444"; 
+                b.style.color = "#ffd700"; 
+            }
+
+            b.innerHTML = btn.text || btn.label || "Gomb";
+            
+            b.onclick = function() {
+                if(btnContainer.parentNode) btnContainer.parentNode.removeChild(btnContainer);
+                else btnContainer.remove();
+                handleNPCButtonAction(btn);
+            };
+            
+            if (btn.tooltipImage || btn.tooltip) {
+                var popup = document.createElement('div');
+                popup.className = 'tooltip-popup';
+                var popupHTML = "";
+                if (btn.tooltipImage) {
+                    popupHTML += '<img src="' + btn.tooltipImage + '" alt="Info" onerror="this.style.display=\'none\'">';
+                }
+                if (btn.tooltip) {
+                    popupHTML += '<p>' + btn.tooltip + '</p>';
+                }
+                popup.innerHTML = popupHTML;
+                wrapper.appendChild(popup); 
+            }
+
+            wrapper.appendChild(b); 
+            btnContainer.appendChild(wrapper); 
+        });
+        
+        chatArea.appendChild(btnContainer);
+        setTimeout(function() { chatArea.scrollTop = chatArea.scrollHeight; }, 50);
+    }
+}
+
+// === UNIVERZÁLIS GOMBKEZELŐ ===
+function handleNPCButtonAction(btn) {
+    console.log("Gomb megnyomva:", btn);
+
+    var buttonContainer = document.getElementById('universal-button-area');
+    if (buttonContainer) buttonContainer.innerHTML = '';
+
+    if (btn.action === 'CLIENT_FN') {
+        var fnName = btn.payload;
+        if (typeof window[fnName] === 'function') {
+            window[fnName](); 
+        } else {
+            console.error("Hiba: A '" + fnName + "' függvény nem létezik.");
+        }
+        return; 
+    }
+
+    if (btn.action && btn.action.indexOf('CLIENT_REQ_PIN') === 0) {
+        var parts = btn.action.split('|'); 
+        var funcName = parts[1]; 
+        var modalTitle = parts[2] || "Biztonsági Ellenőrzés"; 
+        var params = parts.slice(3); 
+        var npcId = document.getElementById('current-npc-id').value;
+
+        requestPin(function(pinCode) {
+            addBubbleToUniversal("Én", "(Adat megadva: ****)", "outgoing");
+            
+            var loaderId = "pin-load-" + Date.now();
+            var chatArea = document.getElementById('universal-chat-area');
+            var loader = document.createElement('div');
+            loader.id = loaderId;
+            loader.style.cssText = "color:#888; font-style:italic; margin:5px 15px;";
+            loader.innerText = "Feldolgozás...";
+            chatArea.appendChild(loader);
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            callBackend('handleNPCInteraction', [npcId, pinCode, "EXECUTE_PIN_ACTION", { func: funcName, args: params }], 
+                function(response) {
+                    var l = document.getElementById(loaderId);
+                    if(l) l.remove();
+                    handleUniversalResponse(response);
+                },
+                function(err) {
+                    var l = document.getElementById(loaderId);
+                    if(l) l.remove();
+                    addBubbleToUniversal("Rendszer", "Hiba: " + err.message, "system");
+                }
+            );
+
+        }, '<strong>' + modalTitle + '</strong>');
+        
+        return; 
+    }
+
+    var userBubbleText = "";
+    if (btn.reply) {
+        userBubbleText = btn.reply;
+    } else if (btn.action === 'CHAT') {
+        userBubbleText = (typeof btn.payload === 'string') ? btn.payload : btn.text;
+    } else {
+        userBubbleText = btn.text;
+    }
+
+    if (userBubbleText) {
+        addBubbleToUniversal("Én", userBubbleText, "outgoing");
+    }
+
+    var actionType = btn.action;
+    var extraData = btn.payload; 
+
+    if (typeof extraData === 'string' && extraData.indexOf('{') === 0) {
+        try { extraData = JSON.parse(extraData); } catch(e) {}
+    }
+
+    triggerUniversalServerAction(actionType, extraData);
+}
+
+function triggerUniversalServerAction(actionType, extraData) {
+    var npcId = document.getElementById('current-npc-id').value;
+    var chatArea = document.getElementById('universal-chat-area');
+
+    var loaderId = "loader-" + Date.now();
+    var loader = document.createElement('div');
+    loader.id = loaderId;
+    loader.style.cssText = "font-style: italic; color: #888; font-size: 0.8em; margin: 5px 15px;";
+    loader.innerText = "Hogy is mondjam...";
+    chatArea.appendChild(loader);
+    chatArea.scrollTop = chatArea.scrollHeight; 
+
+    callBackend('handleNPCInteraction', [npcId, "", actionType, extraData], 
+        function(response) {
+            var l = document.getElementById(loaderId);
+            if(l) l.remove();
+            handleUniversalResponse(response);          
+        },
+        function(err) {
+            var l = document.getElementById(loaderId);
+            if(l) l.remove();
+            addBubbleToUniversal("Rendszer", "Hiba történt: " + err.message, "system");
+        }
+    );
+}
+
+function triggerNPCPayment(amount) {
+    var npcId = document.getElementById('current-npc-id').value;
+    addBubbleToUniversal("Te", "Itt a pénz (" + amount + " Kr).", "outgoing");
+    
+    callBackend('handleNPCInteraction', [npcId, "", "PAY_FOR_INFO", {cost: amount}], 
+        handleUniversalResponse,
+        function(err){
+            addBubbleToUniversal("System", "Tranzakciós hiba: " + err.message, "system");
+        }
+    );
+}
+
+// Enter támogatás
+var univInput = document.getElementById('universal-chat-input');
+if (univInput) {
+    univInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") sendUniversalMessage();
+    });
+}
+
+// ================================= UNIVERZÁLIS NPC VEZÉRLŐ VÉGE ====================================
+
+// Segédfüggvény a harmonikához
+function toggleAccordionPanel() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+    } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+}
+
+// ... (előző kódok vége) ...
+
+// === WINDOW ONLOAD (INDÍTÁS) ===
+window.onload = function() {
+    console.log(">>> OLLDAL BETÖLTVE. Rendszer indítása...");
+
+    // 1. AUTOMATIKUS BELÉPÉS
+    try {
+        console.log("1. Auto-login indítása...");
+        if (typeof checkSession === 'function') {
+            checkSession();
+        } else {
+            console.error("HIBA: A checkSession függvény nem létezik!");
+        }
+    } catch (e) {
+        console.error("KRITIKUS HIBA az Auto-login során:", e);
+    }
+
+    // 2. HARMONIKA GOMBOK (Accordion)
+    try {
+        var acc = document.getElementsByClassName("accordion-button");
+        if (acc.length > 0) {
+            for (var i = 0; i < acc.length; i++) {
+                acc[i].removeEventListener("click", toggleAccordionPanel); 
+                acc[i].addEventListener("click", toggleAccordionPanel);
+            }
+            console.log("2. Harmonika gombok beállítva.");
+        }
+    } catch (e) {
+        console.warn("Hiba a harmonika gomboknál (nem kritikus):", e);
+    }
+
+    // 3. MARKETING URL
+    try {
+        if (typeof checkUrlParametersForMarketing === 'function') {
+            checkUrlParametersForMarketing();
+        }
+    } catch (e) {
+        console.warn("Marketing hiba:", e);
+    }
+
+    // 5. === MONK PIN KÓD LÁTHATÓSÁGA ===
+    try {
+        var monkPinToggle = document.getElementById('monk-pin-toggle');
+        var monkPinInput = document.getElementById('monk-pin-input');
+
+        if (monkPinToggle && monkPinInput) {
+            monkPinToggle.addEventListener('click', function (e) {
+                var type = monkPinInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                monkPinInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+            console.log("5. Monk PIN gomb beállítva.");
+        } else {
+            console.warn("A Monk PIN mező vagy az ikon nem található.");
+        }
+    } catch(e) {
+        console.warn("Monk PIN hiba:", e);
+    }
+
+    console.log(">>> Minden rendszer kész.");
+};
+
+// Segédfüggvény a harmonikához (KÍVÜL HAGYJUK, hogy globális legyen)
+function toggleAccordionPanel() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+    } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+}
+
+/* SCRIPT VÉGE - BIZTONSÁGI LEZÁRÁS */
+console.log("EOF");

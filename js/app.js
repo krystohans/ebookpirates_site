@@ -181,29 +181,15 @@ function logout() {
 // === BETÖLTÉS ÉS UI ===
 
 function preloadLoadingGif() {
-    console.log("GIF előtöltése indult...");
+    console.log("GIF beállítása helyi forrásból...");
     
-    // Backend hívás: 'download' kulcsra keresünk a központi tárban
-    callBackend('getCentralImageAsset', ['download'], 
-        function(imageData) {
-            if (imageData && imageData.data) {
-                var gifElement = document.getElementById('loading-gif');
-                if(gifElement) {
-                    // JAVÍTÁS: Backtick helyett hagyományos string összefűzés!
-                    // Ez volt a hiba, ami miatt megállt a kód.
-                    var mime = imageData.mime || 'image/gif'; // Fallback, ha nincs mime
-                    gifElement.src = 'data:' + mime + ';base64,' + imageData.data;
-                    console.log("GIF sikeresen beillesztve.");
-                }
-            } else {
-                console.warn("Hiba: A szerver nem küldött képadatot a 'download' kulcsra.");
-            }
-        },
-        function(err) {
-            console.error("Hiba a GIF lekérésekor:", err);
-        }
-    );
+    var gifElement = document.getElementById('loading-gif');
+    if (gifElement) {
+        gifElement.src = 'assets/loading.gif'; 
+        console.log("GIF beállítva (Backend hívás nélkül).");
+    }
 }
+
 // Indítás, amikor a HTML kész
 document.addEventListener('DOMContentLoaded', function() {
     preloadLoadingGif();
@@ -5275,23 +5261,36 @@ var currentMarketingFolderId = null;
 
 // URL Paraméterek ellenőrzése
 function checkUrlParametersForMarketing() {
-    google.script.url.getLocation(function(location) {
-        if (location.parameter && location.parameter.page === 'marketing') {
-            var bookId = location.parameter.bookId;
-            var folderId = location.parameter.folderId;
+    try {
+        // 1. Szabványos URL paraméter olvasás (Böngésző független)
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        // Keresett paraméterek
+        const bookId = urlParams.get('bookId');
+        const folderId = urlParams.get('folderId'); 
+
+        if (bookId) {
+            console.log("Marketing paraméter találat:", bookId);
             
-            if (bookId && folderId) {
-                console.log("Marketing mód észlelve: " + bookId);
-                window.pendingMarketingData = { bookId: bookId, folderId: folderId };
-                var loginStatus = document.getElementById('login-status');
-                // Ellenőrzés, hogy látható-e a login nézet
-                var loginView = document.getElementById('login-view');
-                if (loginStatus && loginView && loginView.style.display !== 'none') {
-                    loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
-                }
+            // Globális változóba mentjük a későbbi használatra
+            window.pendingMarketingData = {
+                bookId: bookId,
+                folderId: folderId
+            };
+
+            // --- EZT HOZTUK VISSZA A RÉGIBŐL (UI Üzenet) ---
+            var loginStatus = document.getElementById('login-status');
+            var loginView = document.getElementById('login-view');
+            
+            // Ha a belépő képernyőn vagyunk, jelezzük a felhasználónak
+            if (loginStatus && loginView && window.getComputedStyle(loginView).display !== 'none') {
+                 loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
             }
         }
-    });
+    } catch (e) {
+        console.error("Hiba az URL paraméterek olvasásakor:", e);
+    }
 }
 
 // Betölti a kérdőívet

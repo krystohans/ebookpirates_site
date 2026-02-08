@@ -69,9 +69,9 @@ if (typeof document !== 'undefined') {
               document.getElementById('epubFile').required = false;
     
               // Dropdownok betöltése - IF hosted by Apps Script, google.script.run will work; otherwise these calls will fail
-              if (typeof google !== 'undefined' && google.script && google.script.run) {
-                google.script.run.withSuccessHandler(populateDropdowns).getDropdownData();
-                google.script.run.withSuccessHandler(displayLogo).getCentralImageAsset('logo');
+              if (typeof callBackend === 'function') {
+                callBackend('getDropdownData', [], populateDropdowns, showError);
+                callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
               }
     
               if (titleParam) document.getElementById('title').value = titleParam;
@@ -80,10 +80,10 @@ if (typeof document !== 'undefined') {
     
           } else {
               console.log("Normál mód.");
-              if (typeof google !== 'undefined' && google.script && google.script.run) {
-                google.script.run.withSuccessHandler(populateDropdowns).getDropdownData();
-                google.script.run.withSuccessHandler(displayLogo).getCentralImageAsset('logo');
-                google.script.run.withSuccessHandler(displayLoadingGif).getCentralImageAsset('book_upload');
+              if (typeof callBackend === 'function') {
+                callBackend('getDropdownData', [], populateDropdowns, showError);
+                callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
+                callBackend('getCentralImageAsset', ['book_upload'], displayLoadingGif, function(e){ console.warn('Gif hiba', e); });
               }
           }
     
@@ -113,30 +113,22 @@ function handleFormSubmit(event) {
   if (action === 'szenteles' && gdocId && logId) {
       setUiState('loading', 'Szentelt könyv adatainak feldolgozása a szerveren...');
       
-      if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run
-          .withSuccessHandler(function(response) {
+      callBackend('initiateGDocSzenteles', [gdocId, formData.ownerEmail, logId, coverId, formData], 
+          function(response) {
                if (!response.success) { showError(new Error(response.error)); return; }
                handleSzentelesResponse(response, formData); 
-          })
-          .withFailureHandler(showError)
-          .initiateGDocSzenteles(gdocId, formData.ownerEmail, logId, coverId, formData);
-      } else {
-        showError(new Error('Server calls are not available from this host. Use the Apps Script hosted page or deploy as webapp.'));
-      }
+          },
+          showError
+      );
           
   } else {
       setUiState('loading', 'Azonosító foglalása a szerveren...');
-      if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run
-          .withSuccessHandler(function(response) {
+      callBackend('initiateUploadAndGetId', [formData], 
+          function(response) {
             processFilesAndFinalize(formObject, response.basicCode, response.rowNumber, null, null, formData.ownerEmail);
-          })
-          .withFailureHandler(showError)
-          .initiateUploadAndGetId(formData);
-      } else {
-        showError(new Error('Server calls are not available from this host. Use the Apps Script hosted page or deploy as webapp.'));
-      }
+           },
+          showError
+      );
   }
 }
 
@@ -268,14 +260,8 @@ async function processFilesAndFinalize(formObject, basicCode, rowNumber, gdocId,
     
     setUiState('loading', 'Véglegesítés és fájlfeltöltés...');
     
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
-      google.script.run
-        .withSuccessHandler(showResult)
-        .withFailureHandler(showError)
-        .finalizeUpload(finalData);
-    } else {
-      showError(new Error('Server calls are not available from this host. Use the Apps Script hosted page or deploy as webapp.'));
-    }
+    callBackend('finalizeUpload', [finalData], showResult, showError);
+
   } catch (error) {
     showError(error);
   }

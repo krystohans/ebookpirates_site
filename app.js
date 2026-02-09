@@ -24,6 +24,7 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         method: "POST",
         redirect: "follow",
         credentials: "omit",
+        cache: "no-store",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         // Fontos: stringify-olva küldjük az adatot
         body: JSON.stringify({

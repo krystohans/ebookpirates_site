@@ -82,6 +82,9 @@
         flex-shrink: 0; /* Biztosítja, hogy ne nyomódjon össze */
         font-weight: bold; /* Az X karakter legyen vastag és jól látható */
         line-height: 1;    /* Pontosabb függőleges igazítás */
+        min-width: 24px;   /* Garantált szélesség */
+        text-align: center; /* Középre igazítás */
+        display: inline-block; /* Hogy a méretek érvényesüljenek */
     }
     .header-close-icon:hover { color: #000; transform: scale(1.1); }
 

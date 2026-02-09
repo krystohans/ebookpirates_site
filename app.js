@@ -9,49 +9,61 @@ const MAP_COPY_COST = 30;        // Konstans: másolás ára
 /**
  * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
  * KIZÁRÓLAG a GitHub/Külső környezetben használd!
+ * Robusztus backend hívó, ami nem omlik össze, ha HTML hibaüzenetet kap.
  */
 function callBackend(funcName, params, onSuccess, onFailure) {
-    // 1. A Web App URL-ed (Ezt cseréld le a saját /exec végű URL-edre!)
+    // 1. A Web App URL-ed
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
 
-    // 2. Token beszerzése
-    var token = localStorage.getItem('ebookPiratesToken'); // Ellenőrizd, hogy nálad így hívják-e a tárolt tokent!
+    var token = localStorage.getItem('ebookPiratesToken');
 
-    // 3. Kérés összeállítása
-    // Fontos: A 'text/plain' típus trükk a CORS hibák elkerülésére Apps Scriptnél.
     fetch(WEB_APP_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
-            action: funcName,  // EZ A LÉNYEG! A doPost ezt várja 'functionName'-ként
-            data: params,      // A paraméterek tömbje
-            token: token       // A belépési token
+            action: funcName,
+            data: params,
+            token: token
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        // 4. Válasz feldolgozása
-        // Ha a backend { error: "..." } objektumot küldött
-        if (data && data.error) {
-            console.error("Backend Hiba:", data.error);
+    .then(response => {
+        // Először szövegként olvassuk ki, hogy meg tudjuk vizsgálni
+        return response.text().then(text => {
+            return { status: response.status, text: text };
+        });
+    })
+    .then(result => {
+        let data;
+        try {
+            // Megpróbáljuk JSON-ként értelmezni
+            data = JSON.parse(result.text);
+        } catch (e) {
+            // HA EZ LEFUT, AKKOR JÖTT A HTML HIBAOLDAL!
+            console.error("KRITIKUS HIBA: A szerver nem JSON-t küldött!");
+            console.error("Kapott válasz (HTML):", result.text); // Itt látni fogod a Google hibaüzenetét!
             
-            // Külön kezeljük a lejárt munkamenetet
-            if (data.error.indexOf("AUTH_ERROR") !== -1 || data.error.indexOf("Jelentkezz be") !== -1) {
-                alert("⚠️ A munkamenet lejárt! Kérlek, jelentkezz be újra.");
-                // Opcionális: visszairányítás a főoldalra
-                // showPage('login_page'); 
+            if (result.text.indexOf("script.google.com") !== -1 || result.text.indexOf("Google") !== -1) {
+                throw new Error("SERVER_CRASH: A Google Script összeomlott vagy nem érhető el. (Lásd a konzolt)");
+            } else {
+                throw new Error("INVALID_RESPONSE: Érvénytelen válasz a szervertől.");
             }
+        }
 
+        // Ha idáig eljutunk, akkor sikeres volt a JSON parse
+        if (data && data.error) {
+            console.error("Backend Logikai Hiba:", data.error);
+            if (data.error.indexOf("AUTH_ERROR") !== -1) {
+                alert("⚠️ A munkamenet lejárt! Jelentkezz be újra.");
+            }
             if (onFailure) onFailure(new Error(data.error));
         } else {
-            // Siker!
+            // SIKER!
             if (onSuccess) onSuccess(data);
         }
     })
     .catch(error => {
-        // 5. Hálózati hiba (pl. nincs internet, vagy rossz az URL)
-        console.error("Hálózati Hiba:", error);
-        alert("Hálózati hiba történt. Ellenőrizd az internetkapcsolatot!");
+        console.error("Végső Hiba:", error);
+        alert("Hiba történt: " + error.message);
         if (onFailure) onFailure(error);
     });
 }
@@ -263,7 +275,13 @@ function loadPage(pageName) {
                 if(typeof initShipyard === 'function') initShipyard();
             } else if (pageName === 'kincsek') {
                 initializePage(pageName);
-                if(typeof initializeKincsekPage === 'function') initializeKincsekPage(result.pageData);     
+                if(typeof initializeKincsekPage === 'function') initializeKincsekPage(result.pageData);
+            } else if (pageName === 'uj_konyv_bevitel') {
+                if(typeof initializeUploadForm === 'function') {
+                    initializeUploadForm(); 
+                } else {
+                    console.error("HIBA: initializeUploadForm nincs definiálva!");
+                }         
             } else if (pagesWithSplash.includes(pageName)) { 
                 initializePage(pageName); 
             }
@@ -3775,13 +3793,431 @@ function finalizeResignation(leaveGame) {
     );
 }
 
-    // =====================================
-    // === ÚJ ÉS ÁTHELYEZETT TÉRKÉP FUNKCIÓK ===
-    // =====================================
+// ============================================================================
+// KÖNYVFELTÖLTŐ ÉS SZENTELŐ MODUL (Eredeti, szétválasztott logika)
+// ============================================================================
 
-    // =====================================
+(function() { // Bezárjuk egy függvénybe, hogy a változók ne szennyezzék a globális teret, de a globális események működjenek
+
+    // --- HELYI VÁLTOZÓK ---
+    var submitButton = null;
+    var statusDiv = null;
+    var modalText = null;
+    var isSubmitting = false;
+    var serverParams = {};
+
+    // Szenteléshez szükséges változók
+    var globalGdocId = null;
+    var globalCoverId = null;
+    var globalLogId = null; 
+    var globalUserEmail = null;
+    var isSzentelesMode = false;
+
+    // --- PARAMÉTEREK BEOLVASÁSA (URL-ből) ---
+    try {
+        if (typeof window !== 'undefined' && window.location && window.location.search) {
+            const params = new URLSearchParams(window.location.search);
+            const obj = {};
+            for (const [k,v] of params.entries()) {
+                obj[k] = [v]; // Apps Script kompatibilis formátum (tömb)
+            }
+            serverParams = obj;
+        }
+    } catch(e) { console.warn('Paraméter feldolgozási hiba:', e); }
+
+    function getParam(key) {
+        return (serverParams && serverParams[key] && serverParams[key][0]) ? serverParams[key][0] : null;
+    }
+
+    // --- INICIALIZÁLÁS (DOM betöltéskor) ---
+    document.addEventListener("DOMContentLoaded", function() {
+        // Csak akkor fusson, ha van könyvfeltöltő űrlap az oldalon
+        var form = document.getElementById('bookForm');
+        if (!form) return; // Ha nincs űrlap, kilépünk (ne zavarja a többi oldalt)
+
+        console.log("Könyvfeltöltő modul inicializálása...");
+
+        try {
+            // UI elemek mentése
+            submitButton = document.getElementById('submitButton');
+            statusDiv = document.getElementById('status');
+            modalText = document.getElementById('modal-status-text');
+
+            // Paraméterek
+            globalGdocId = getParam('gdocId');
+            globalUserEmail = getParam('userEmail');
+            globalLogId = getParam('logId');
+            globalCoverId = getParam('coverId');
+            var action = getParam('action');
+            var titleParam = getParam('title');
+
+            // --- 1. ÁG: SZENTELÉS MÓD (Felhőkolostorból jött) ---
+            if (action === 'szenteles' && globalGdocId && globalUserEmail && globalLogId) {
+                console.log(">>> MÓD: Szentelés aktív.");
+                isSzentelesMode = true;
+
+                // Fájlmezők elrejtése (a szerver adja őket)
+                var epubElem = document.getElementById('epubFile');
+                var coverElem = document.getElementById('coverImageFile');
+                
+                if (epubElem) {
+                    var epubGroup = epubElem.closest('.form-group');
+                    if(epubGroup) epubGroup.style.display = 'none';
+                    epubElem.required = false; // Kötelezőség levétele
+                }
+                
+                if (coverElem) {
+                    var coverGroup = coverElem.closest('.form-group');
+                    if(coverGroup) coverGroup.style.display = 'none';
+                }
+
+                // Adatok előtöltése
+                if (titleParam) document.getElementById('title').value = titleParam;
+                var ownerEmailField = document.getElementById('ownerEmail');
+                if (ownerEmailField) ownerEmailField.value = globalUserEmail;
+                
+                var authorNameField = document.getElementById('authorName');
+                if (authorNameField) authorNameField.value = "Felhőkolostor Szerzője";
+
+                // Backend hívások (Szentelés specifikus vagy közös)
+                callBackend('getDropdownData', [], populateDropdowns, showError);
+                callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
+
+            } else {
+                // --- 2. ÁG: NORMÁL MÓD ---
+                console.log(">>> MÓD: Normál feltöltés.");
+                
+                // Backend hívások (Normál specifikus)
+                callBackend('getDropdownData', [], populateDropdowns, showError);
+                callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
+                callBackend('getCentralImageAsset', ['book_upload'], displayLoadingGif, function(e){ console.warn('Gif hiba', e); });
+            }
+
+            // Űrlap beküldés eseménykezelő csatolása
+            form.addEventListener('submit', handleFormSubmit);
+
+        } catch (e) {
+            showError(new Error("Inicializálási hiba: " + e.message));
+        }
+    });
+
+    // --- ŰRLAP BEKÜLDÉSE (A KÉT ÁG KEZELÉSE) ---
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        if (isSubmitting) return;
+
+        var formObject = event.target;
+        var formData = buildBaseFormData(formObject, null);
+        
+        // Paraméterek újraolvasása a biztonság kedvéért
+        var gdocId = getParam('gdocId');
+        var logId = getParam('logId');
+        var coverId = getParam('coverId');
+        var action = getParam('action');
+
+        if (action === 'szenteles' && gdocId && logId) {
+            // === SZENTELÉS ÁG ===
+            setUiState('loading', 'Szentelt könyv adatainak feldolgozása a szerveren...');
+            
+            // Itt a 'initiateGDocSzenteles' backend függvényt hívjuk
+            callBackend('initiateGDocSzenteles', [gdocId, formData.ownerEmail, logId, coverId, formData], 
+                function(response) {
+                    if (!response.success) { 
+                        showError(new Error(response.error)); 
+                        return; 
+                    }
+                    // Ha sikeres, a kliens oldalon dolgozzuk fel a választ
+                    handleSzentelesResponse(response, formData);
+                },
+                showError
+            );
+
+        } else {
+            // === NORMÁL ÁG ===
+            setUiState('loading', 'Azonosító foglalása a szerveren...');
+            
+            // Itt a 'initiateUploadAndGetId' backend függvényt hívjuk
+            callBackend('initiateUploadAndGetId', [formData], 
+                function(response) {
+                    // Ha megvan az ID, indul a helyi fájlfeldolgozás
+                    processFilesAndFinalize(formObject, response.basicCode, response.rowNumber, null, null, formData.ownerEmail);
+                },
+                showError
+            );
+        }
+    }
+
+    // --- SZENTELÉS SPECIFIKUS FELDOLGOZÓ ---
+    function handleSzentelesResponse(response, formData) {
+        setUiState('loading', 'Fájlok visszaalakítása és véglegesítés...');
+        try {
+            // 1. ePub visszaalakítása base64-ből Blob-bá
+            var epubBlob = base64ToBlob(response.base64Epub);
+            var cleanTitle = sanitizeForFilename(formData.title);
+            epubBlob.name = cleanTitle + ".epub";
+
+            // 2. Borító visszaalakítása (ha van)
+            var coverFilesArray = [];
+            if (response.base64Cover) {
+                var coverBlob = base64ToBlob(response.base64Cover, 'image/png');
+                coverBlob.name = cleanTitle + "_cover.png";
+                coverFilesArray = [coverBlob];
+            }
+
+            // 3. Mock (szimulált) űrlap objektum létrehozása
+            // Ez azért kell, hogy a közös 'processFilesAndFinalize' függvény azt higgye, űrlapról jött az adat
+            var mockFormObject = {
+                title: { value: formData.title },
+                epubFile: { files: [epubBlob] },
+                coverImageFile: { files: coverFilesArray },
+                epubBaseName: cleanTitle 
+            };
+
+            // 4. Átadás a közös feldolgozónak
+            processFilesAndFinalize(mockFormObject, response.basicCode, response.rowNumber, globalGdocId, globalLogId, globalUserEmail);
+
+        } catch (e) {
+            showError(new Error("Feldolgozási hiba (Szentelés): " + e.message));
+        }
+    }
+
+    // --- KÖZÖS FÁJLFELDOLGOZÓ ÉS FELTÖLTŐ (Core Logic) ---
+    async function processFilesAndFinalize(formObject, basicCode, rowNumber, gdocId, logId, userEmail) {
+        try {
+            setUiState('loading', 'Fájlok vízjelezése, kicsomagolása és feltöltése...');
+
+            // Cím meghatározása (támogatja a Mock objektumot és a HTML elemet is)
+            var bookTitle = (formObject.title && formObject.title.value) ? formObject.title.value : "Nocim";
+            if (!bookTitle && typeof formObject.title === 'string') bookTitle = formObject.title;
+            var sanitizedTitle = sanitizeForFilename(bookTitle);
+
+            var epubFile = (formObject.epubFile && formObject.epubFile.files) ? formObject.epubFile.files[0] : null;
+            var coverFile = (formObject.coverImageFile && formObject.coverImageFile.files) ? formObject.coverImageFile.files[0] : null;
+
+            // Végső adatcsomag
+            var finalData = { 
+                rowNumber: rowNumber,
+                gdocId: gdocId, 
+                logId: logId,
+                userEmail: userEmail,
+                epubBaseName: sanitizedTitle,
+                quizData: getVerificationData()
+            };
+
+            // 1. Borító vízjelezése
+            if (coverFile) {
+                var watermarkedCoverBase64 = await embedIdInImage(coverFile, basicCode);
+                finalData.coverImageData = watermarkedCoverBase64.split(',')[1];
+                finalData.coverImageFilename = sanitizedTitle + '_cover.png';
+                finalData.coverImageMimeType = 'image/png';
+            }
+
+            // 2. ePub feldolgozása
+            if (epubFile) {
+                var zip = new JSZip(); // Feltételezzük, hogy a JSZip globálisan elérhető
+                var epubData = await epubFile.arrayBuffer();
+                var loadedZip = await zip.loadAsync(epubData);
+                var zeroWidthId = encodeIdToZeroWidth(basicCode);
+
+                // XHTML fájlok tisztítása
+                var xhtmlFileNames = Object.keys(loadedZip.files).filter(name => name.toLowerCase().endsWith('.xhtml'));
+                var xhtmlPromises = xhtmlFileNames.map(async (fileName) => {
+                    var content = await loadedZip.file(fileName).async('string');
+                    // CSS tisztítás (eredeti regexek)
+                    content = content.replace(/(background-color|background):\s*[^;"]+;?/gi, '');
+                    content = content.replace(/color:\s*[^;"]+;?/gi, '');
+                    content = content.replace(/font-family:[^;"]+;?/gi, '');
+                    content = content.replace(/font-size:[^;"]+;?/gi, '');
+                    content = content.replace(/line-height:[^;"]+;?/gi, '');
+                    content = content.replace(/style="\s*"/gi, '');
+                    var shortName = fileName.split('/').pop();
+                    return { filename: shortName, content: content };
+                });
+                finalData.xhtmlFiles = await Promise.all(xhtmlPromises);
+
+                // Képek vízjelezése
+                var imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+                var imageFileNames = Object.keys(loadedZip.files).filter(fileName => 
+                    imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !fileName.startsWith('__MACOSX')
+                );
+
+                var imagePromises = imageFileNames.map(async (fileName) => {
+                    var file = loadedZip.file(fileName);
+                    var imageName = fileName.split('/').pop();
+                    try {
+                        var imageBlob = await file.async('blob');
+                        var base64Url = await readBlobAsDataURL(imageBlob);
+                        var watermarkedBase64Url = await embedIdInImage(base64Url, basicCode);
+                        return {
+                            filename: imageName.replace(/\.[^/.]+$/, "") + '.png',
+                            base64: watermarkedBase64Url.split(',')[1]
+                        };
+                    } catch (e) { return null; }
+                });
+                finalData.base64Images = (await Promise.all(imagePromises)).filter(img => img);
+
+                // Szöveges vízjel beszúrása
+                try {
+                    var containerXmlContent = await loadedZip.file('META-INF/container.xml').async('string');
+                    var containerParser = new DOMParser();
+                    var containerDoc = containerParser.parseFromString(containerXmlContent, 'text/xml');
+                    var opfPath = containerDoc.querySelector('rootfile').getAttribute('full-path');
+                    var opfContent = await loadedZip.file(opfPath).async('string');
+                    var xmlDoc = new DOMParser().parseFromString(opfContent, 'text/xml');
+                    var itemrefs = xmlDoc.querySelectorAll('spine itemref');
+
+                    for (const itemref of itemrefs) {
+                        var idref = itemref.getAttribute('idref');
+                        var manifestItem = xmlDoc.querySelector(`manifest item[id="${idref}"]`);
+                        if (manifestItem && manifestItem.getAttribute('media-type') === 'application/xhtml+xml') {
+                            var href = manifestItem.getAttribute('href');
+                            var pathPrefix = opfPath.substring(0, opfPath.lastIndexOf('/') + 1);
+                            var chapterContent = await loadedZip.file(pathPrefix + href).async('string');
+                            var watermarkedChapterContent = chapterContent.replace(/<\/p>/i, `${zeroWidthId}</p>`);
+                            loadedZip.file(pathPrefix + href, watermarkedChapterContent);
+                        }
+                    }
+                } catch(err) { console.warn("Vízjelezési hiba (nem blokkoló):", err); }
+
+                var watermarkedEpubBlob = await loadedZip.generateAsync({ type: 'blob' });
+                var epubBase64 = await readFileAsBase64(watermarkedEpubBlob);
+                finalData.epubFileData = epubBase64.split(',')[1];
+                finalData.epubFilename = sanitizedTitle + '.epub';
+                finalData.epubMimeType = epubFile.type;
+
+            } else {
+                throw new Error("ePub fájl hiányzik a csomagból!");
+            }
+
+            setUiState('loading', 'Véglegesítés és fájlfeltöltés...');
+
+            // Véglegesítés a szerveren
+            callBackend('finalizeUpload', [finalData], showResult, showError);
+
+        } catch (error) {
+            showError(error);
+        }
+    }
+
+
+    // --- SEGÉDFÜGGVÉNYEK ---
+
+    function buildBaseFormData(form, basicCode) {
+        var data = {
+            ownerEmail: form.ownerEmail.value,
+            productType: form.productType.value,
+            language: form.language.value,
+            authorName: form.authorName.value,
+            publisherName: form.publisherName.value,
+            title: form.title.value,
+            isbn: form.isbn.value,
+            price: form.price.value,
+            acceptance: form.acceptance.checked
+        };
+        if (basicCode) data.basicCode = basicCode;
+        return data;
+    }
+
+    function getVerificationData() {
+        var q1 = document.getElementById('quiz_q1');
+        var a1 = document.getElementById('quiz_a1');
+        var q2 = document.getElementById('quiz_q2');
+        var a2 = document.getElementById('quiz_a2');
+        var q3 = document.getElementById('quiz_q3');
+        var a3 = document.getElementById('quiz_a3');
+        if (!q1 || !a1 || !q2 || !a2 || !q3 || !a3) return [];
+        return [ 
+            { question: q1.value.trim(), answer: a1.value.trim() }, 
+            { question: q2.value.trim(), answer: a2.value.trim() }, 
+            { question: q3.value.trim(), answer: a3.value.trim() } 
+        ];
+    }
+
+    function setUiState(state, message) {
+        var modal = document.getElementById('loading-modal');
+        var modalTextLocal = document.getElementById('modal-status-text');
+        if (state === 'loading') {
+            isSubmitting = true;
+            if(submitButton) submitButton.disabled = true;
+            if(statusDiv) { statusDiv.textContent = message || 'Feldolgozás...'; statusDiv.className = ''; }
+            if(modalTextLocal) modalTextLocal.textContent = message || 'Feldolgozás folyamatban...';
+            if(modal) modal.style.display = 'flex';
+        } else {
+            isSubmitting = false;
+            if(submitButton) submitButton.disabled = false;
+            if(statusDiv) {
+                statusDiv.textContent = message || '';
+                statusDiv.className = (message && (message.startsWith('Hiba') || message.startsWith('Időtúllépés'))) ? 'error' : 'success';
+            }
+            if(modal) modal.style.display = 'none';
+        }
+    }
+
+    function showResult(message) {
+        setUiState('finished', message);
+        if (!message.startsWith('Hiba')) {
+            var form = document.getElementById('bookForm');
+            if (form) form.style.display = 'none';
+            var logo = document.getElementById('logo-container');
+            if (logo) logo.style.display = 'none';
+            if (statusDiv) {
+                statusDiv.innerHTML = '<div style="padding:30px; background-color:#e3fcef; color:#006644; border:2px solid #006644; border-radius:8px;"><h3>✅ SIKERES BEKÜLDÉS!</h3><p>' + message + '</p></div>';
+            }
+            var title = document.getElementById('page-title');
+            if (title) title.innerText = "Feltöltés Befejezve";
+        }
+    }
+
+    function showError(error) {
+        var msg = (error && error.message) ? error.message : "Ismeretlen hiba.";
+        setUiState('finished', 'Hiba: ' + msg);
+    }
+
+    // --- Backend Handler Callbackek ---
+    function populateDropdowns(data) {
+        var genreSelect = document.getElementById('productType');
+        var languageSelect = document.getElementById('language');
+        if(!genreSelect || !languageSelect) return;
+        
+        genreSelect.innerHTML = '<option value="">Válassz...</option>';
+        languageSelect.innerHTML = '<option value="">Válassz...</option>';
+        if (data && data.genres) data.genres.forEach(g => { var o = document.createElement('option'); o.value = g; o.textContent = g; genreSelect.appendChild(o); });
+        if (data && data.languages) data.languages.forEach(l => { var o = document.createElement('option'); o.value = l; o.textContent = l; languageSelect.appendChild(o); });
+    }
+
+    function displayLogo(imageData) {
+        var logoElement = document.getElementById('oldal-logo');
+        if(logoElement && imageData && imageData.data) {
+            logoElement.src = `data:${imageData.mime};base64,${imageData.data}`;
+            logoElement.style.display = 'block';
+        }
+    }
+
+    function displayLogoError(error) { console.error("Logo betöltési hiba:", error); }
+    
+    function displayLoadingGif(imageData) {
+        var gifElement = document.getElementById('book_upload-image');
+        if(gifElement && imageData && imageData.data) gifElement.src = `data:${imageData.mime};base64,${imageData.data}`;
+    }
+
+    // --- Utilitik (Vízjelezéshez, stb.) ---
+    function sanitizeForFilename(text) { if (!text) return "nevtelen_konyv"; return text.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, ''); }
+    function encodeIdToZeroWidth(id) { var b=''; for(var i=0;i<id.length;i++) b+=id[i].charCodeAt(0).toString(2).padStart(8,'0'); var z=''; for(const x of b) z+=(x==='0')?'\u200b':'\u200c'; return z+'\u200d'; }
+    function readFileAsBase64(file) { return new Promise((res, rej) => { var r=new FileReader(); r.onload=()=>res(r.result); r.onerror=e=>rej(e); r.readAsDataURL(file); }); }
+    function readBlobAsDataURL(blob) { return new Promise((res, rej) => { var r=new FileReader(); r.onload=()=>res(r.result); r.onerror=e=>rej(e); r.readAsDataURL(blob); }); }
+    function base64ToBlob(b64, mime) { mime=mime||'application/epub+zip'; var c=atob(b64); var b=new Uint8Array(c.length); for(var i=0;i<c.length;i++) b[i]=c.charCodeAt(i); return new Blob([b], {type:mime}); }
+    function embedIdInImage(src, id) { return new Promise((res, rej) => { var i=new Image(); i.onload=function(){ var c=document.createElement('canvas'); c.width=i.width; c.height=i.height; var x=c.getContext('2d'); x.drawImage(i,0,0); var b=''; for(var k=0;k<id.length;k++) b+=id[k].charCodeAt(0).toString(2).padStart(8,'0'); b+="11111111"; var p=x.getImageData(0,0,c.width,c.height); var d=0; for(var k=0;k<b.length;k++){ if((d+1)%4===0)d++; var v=p.data[d]; p.data[d]=(b[k]==='1')?(v|1):(v&254); d++; } x.putImageData(p,0,0); res(c.toDataURL('image/png')); }; i.onerror=e=>rej(new Error("Kép hiba")); if(typeof src==='string') i.src=src; else { var r=new FileReader(); r.onload=e=>i.src=e.target.result; r.readAsDataURL(src); } }); }
+
+})(); 
+
+
+// =========================================
+// === ÚJ ÉS ÁTHELYEZETT TÉRKÉP FUNKCIÓK ===
+// =========================================
+
+
 // === 1. BIZTONSÁGI SEGÉDFÜGGVÉNYEK (VISSZAÁLLÍTVA) ===
-// =====================================
+
 
 /**
  * Megakadályozza az alapértelmezett jobbklikk menüt.

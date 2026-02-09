@@ -1,0 +1,794 @@
+/* ========================================= */
+    /* === 1. ALAPBEÁLLÍTÁSOK (Layout) === */
+    /* ========================================= */
+    :root {
+        --bg-main: #f4f4f4;
+        --bg-paper: #fdf5e6; /* Pergamen */
+        --color-main: #333;
+        --color-accent: #8b4513; /* Barna */
+        --color-gold: #d4af37;
+        --color-primary: #2e8b57; /* Zöld */
+        --color-secondary: #4682b4; /* Kék */
+        --color-danger: #c82333; /* Piros */
+        --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --font-serif: 'Georgia', serif;
+    }
+
+    body, html { margin: 0; padding: 0; font-family: var(--font-main); height: 100%; background-color: var(--bg-main); overflow: hidden; /* Görgősáv csak a tartalmon legyen */ }
+    
+    /* FŐ KONTÉNER: Oszlop elrendezés (Fejléc fönn, Tartalom lenn) */
+    #appContainer { 
+        display: flex; 
+        flex-direction: column; 
+        height: 100vh; 
+        width: 100vw;
+    }
+
+    /* ========================================= */
+    /* === 2. FEJLÉC (VISSZAÁLLÍTVA) === */
+    /* ========================================= */
+    #header {
+        flex: 0 0 auto; /* Nem zsugorodhat, nem nőhet */
+        width: 100%;
+        box-sizing: border-box; /* Padding nem növeli a méretet */
+        padding: 10px 20px;
+        background-color: #fff;
+        border-bottom: 3px solid var(--color-accent);
+        display: flex; 
+        justify-content: space-between; /* Cím balra, Statisztika középen/jobbra, X jobbra */
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    .header-title { 
+        font-size: 1.3em; 
+        font-weight: bold; 
+        color: var(--color-accent); 
+        font-family: var(--font-serif); 
+        white-space: nowrap;
+    }
+    
+    #header-stats { 
+        display: flex; 
+        gap: 15px; 
+        align-items: center; 
+        justify-content: center;
+        flex-grow: 1; /* Kitölti a helyet középen */
+    }
+
+    .header-stat-item {
+        background: #f9f9f9; 
+        border: 1px solid #ccc; 
+        padding: 5px 12px; 
+        border-radius: 20px;
+        font-size: 0.9em; 
+        cursor: pointer; 
+        display: flex; 
+        align-items: center; 
+        gap: 5px;
+        white-space: nowrap;
+        transition: background 0.2s;
+    }
+    .header-stat-item:hover { background-color: #e0e0e0; }
+    #creditCell i { color: #f0ad4e; }
+    
+    .header-close-icon { 
+        font-size: 1.5em; 
+        cursor: pointer; 
+        color: #666; 
+        margin-left: 15px;
+        transition: 0.2s; 
+    }
+    .header-close-icon:hover { color: #000; transform: scale(1.1); }
+
+    /* ========================================= */
+    /* === 3. TARTALOM (Görgethető) === */
+    /* ========================================= */
+    #content { 
+        flex: 1 1 auto; /* Kitölti a maradék helyet */
+        overflow-y: auto; /* Csak ez görgethető */
+        padding: 20px; 
+        position: relative; 
+    }
+
+    #login-view { 
+        width: 100%; 
+        max-width: 400px; 
+        margin: 50px auto; 
+        padding: 30px; 
+        background: white; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        text-align: center; 
+    }
+    
+    /* Rejtett nézetek alapállapota */
+    #app-view { display: none; flex-direction: column; height: 100%; }
+
+    /* ========================================= */
+    /* === 4. UNIVERZÁLIS MODAL (Felugró ablak) === */
+    /* ========================================= */
+    /* Minden modal (Taverna, Pult, Reader, Stats) ezt használja */
+    
+    .gamemode-modal, #reader-modal, #upload-map-modal, #map-viewer-modal {
+        display: none; /* Alapból rejtve */
+        position: fixed; z-index: 100; left: 0; top: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.85); /* Sötét háttér */
+        justify-content: center; align-items: flex-start; /* Fent kezdődik a tartalom */
+        overflow-y: auto; padding: 40px 0;
+        backdrop-filter: blur(3px); /* Modern elmosás */
+    }
+
+    .gamemode-modal-content, .reader-container, .modal-content {
+        background-color: var(--bg-paper); /* FONTOS: Pergamen háttér! */
+        border: 2px solid var(--color-accent);
+        border-radius: 8px;
+        padding: 25px;
+        width: 90%; max-width: 700px;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        color: var(--color-main);
+    }
+
+    /* Modal fejlécek egységesítése */
+    .gamemode-modal h3, .gamemode-modal h4, .gamemode-modal h5 {
+        color: #8b0000;
+        border-bottom: 1px solid var(--color-accent);
+        padding-bottom: 10px; margin-top: 0;
+        font-family: var(--font-serif);
+    }
+
+    /* Bezáró gomb (X) egységesítése */
+    .btn-close, .close-btn, .reader-close-btn {
+        position: absolute; top: 10px; right: 10px;
+        background: transparent; border: none; font-size: 1.5em; color: #555; cursor: pointer;
+    }
+    .btn-close:hover { color: red; }
+
+    /* ========================================= */
+    /* === 5. TAVERNA SPECIFIKUS STÍLUSOK === */
+    /* ========================================= */
+    
+    /* Splash Screen (Indító üzenet) */
+    #taverna_oldal-splash {
+        background-color: rgba(0, 0, 0, 0.9) !important; /* Majdnem fekete doboz */
+        color: #f0e6d2 !important; /* Világos szöveg */
+        border: 2px solid var(--color-gold);
+        padding: 40px; border-radius: 10px;
+        max-width: 600px; margin: 10vh auto; text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        position: relative; z-index: 100;
+    }
+    #taverna_oldal-splash h2 { font-family: 'Pirata One', cursive; color: var(--color-gold); font-size: 2em; margin-top: 0; }
+
+    /* Pult gombok */
+    #pult-view-read button { width: 100%; margin-bottom: 8px; }
+
+    /* ========================================= */
+    /* === 6. UI ELEMEK (Gombok, Inputok) === */
+    /* ========================================= */
+    button, .btn { 
+        padding: 10px 20px; 
+        border: none; 
+        border-radius: 5px; 
+        cursor: pointer;
+        font-size: 14px; 
+        font-weight: bold; 
+        transition: 0.2s;
+        background-color: var(--color-primary); 
+        color: white;
+        text-align: center; 
+        display: inline-block;
+        margin-top: 5px;
+    }
+    button:hover, .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    button:disabled, .btn:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+
+    .btn-secondary { background-color: #6c757d; }
+    .btn-danger { background-color: var(--color-danger); }
+    
+    input, select, textarea {
+        width: 100%; padding: 10px; margin-bottom: 10px;
+        border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        font-family: inherit; font-size: 14px;
+    }
+    
+    .page-container { max-width: 800px; margin: 0 auto; }
+    .page-section { background: rgba(255,255,255,0.8); border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+    input:focus, select:focus, textarea:focus { border-color: var(--color-primary); outline: none; }
+
+    /* Pult (Taverna) */
+    #pult-view-read button { width: 100%; margin-bottom: 8px; }
+    
+    /* Password Eye */
+    .password-container { position: relative; }
+    .password-container i { position: absolute; right: 10px; top: 38%; cursor: pointer; color: #777; }
+
+    .item-entry, .book-entry, .map-entry {
+        display: flex; justify-content: space-between; align-items: center;
+        background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px;
+    }
+    .item-title { font-weight: bold; color: var(--color-accent); font-size: 1.1em; }
+    .item-author { font-size: 0.9em; color: #666; font-style: italic; }
+
+    /* ========================================= */
+    /* === 7. BETÖLTŐ KÉPERNYŐ === */
+    /* ========================================= */
+    #loading-overlay {
+        display: none; 
+        position: fixed; 
+        z-index: 300; 
+        left: 0; top: 0; 
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* Csak sötétítés */
+        justify-content: center; 
+        align-items: center; 
+        flex-direction: column;
+    }
+    
+    /* A GIF stílusa: Nincs keret, nincs doboz */
+    #loading-gif { 
+        width: 80px; 
+        height: auto; 
+        margin-bottom: 10px; 
+        background: transparent;
+        box-shadow: none;
+    }
+    
+    /* Szöveg stílusa: Fehér, árnyékkal, hogy olvasható legyen a sötéten */
+    #loading-overlay p { 
+        color: #fff; 
+        font-weight: bold; 
+        font-size: 1.2em; 
+        text-shadow: 1px 1px 3px #000;
+        margin: 0;
+    }
+    #loading-overlay img { max-width: 100px; margin-bottom: 20px; }
+    @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+    /* Mobil optimalizálás */
+    @media (max-width: 600px) {
+        .stat-label { display: none; }
+        .header-stat-item { padding: 5px; }
+        .item-entry { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .item-entry button { width: 100%; }
+        .gamemode-modal-content { width: 95%; padding: 15px; }
+    }
+
+    /* ========================================= */
+    /* === 8. LENYÍLÓ PANELEK (ACCORDION) === */
+    /* ========================================= */
+    .accordion-button {
+        background-color: #fff;
+        color: var(--color-main);
+        cursor: pointer;
+        padding: 15px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: 0.3s;
+        border-bottom: 1px solid #ccc;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .accordion-button:hover, .accordion-button.active {
+        background-color: #f0f0f0;
+        color: var(--color-accent);
+    }
+    /* Nyíl ikon a végére (CSS trükk) */
+    .accordion-button:after {
+        content: '\25BC'; /* Lefelé nyíl */
+        font-size: 0.8em; transition: transform 0.3s;
+    }
+    .accordion-button.active:after {
+        transform: rotate(180deg); /* Felfelé nyíl */
+    }
+    
+    .accordion-panel, .accordion-content {
+        padding: 0 18px;
+        background-color: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        border-bottom: 1px solid #eee;
+    }
+    .accordion-content p { padding: 15px 0; margin: 0; line-height: 1.6; }
+
+    .accordion-panel-content {
+        padding: 15px 5px; /* Kicsi oldalsó padding, hogy ne lógjon ki a szöveg */
+        max-height: 400px; /* Fix magasság */
+        overflow-y: auto;  /* Ha több a tartalom, görgetősáv jelenik meg */
+        
+        /* Görgetősáv stilizálása (Chrome/Safari) */
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-accent) #f0f0f0;
+    }
+    
+    .accordion-panel-content::-webkit-scrollbar { width: 8px; }
+    .accordion-panel-content::-webkit-scrollbar-track { background: #f0f0f0; }
+    .accordion-panel-content::-webkit-scrollbar-thumb { background-color: var(--color-accent); border-radius: 4px; }
+
+    /* ========================================= */
+    /* === 9. KARAKTERLAP (KINCSEK) STÍLUS === */
+    /* ========================================= */
+    .character-sheet {
+        background-color: var(--bg-paper);
+        border: 3px solid var(--color-accent);
+        border-radius: 5px;
+        color: #4a2c2a;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .sheet-header { text-align: center; border-bottom: 2px dashed var(--color-accent); margin-bottom: 20px; padding-bottom: 10px; }
+    .sheet-header h2 { font-family: 'Pirata One', cursive; font-size: 2.5em; margin: 0; color: #5D4037; }
+    .sheet-header .rank { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+    .sheet-header .rank-name { font-size: 1.2em; font-style: italic; margin-top: 5px; }
+    
+    .sheet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .stat-block { background-color: rgba(139, 69, 19, 0.05); border: 1px solid #D2B48C; padding: 15px; border-radius: 3px; }
+    .stat-block h4 { margin-top: 0; border-bottom: 1px solid #D2B48C; padding-bottom: 5px; color: var(--color-accent); }
+    .stat-line { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 1em; }
+    .stat-line i { color: var(--color-accent); margin-right: 8px; width: 20px; text-align: center; }
+    .stat-line .value { font-weight: bold; }
+
+    /* ========================================= */
+    /* == 10. DINAMIKUS ELEMEK (JS GENERÁLJA) == */
+    /* ========================================= */
+
+    /* --- MUNKAPAD KÁRTYÁK (Kolostor) --- */
+    .work-card {
+        background-color: #fff;
+        border: 1px solid #d2b48c;
+        border-left: 5px solid var(--color-secondary); /* Kék jelölés */
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+    .work-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .work-card h4 { margin-top: 0; color: var(--color-accent); }
+    .work-card table td { padding: 5px; border-bottom: 1px solid #eee; }
+
+    /* --- KÁRTYAJÁTÉK (Taverna) --- */
+    #game-modal-content {
+        background-size: cover;
+        background-position: center;
+        color: #f0e6d2; /* Világos szöveg a sötét háttéren */
+        border: 4px solid #c89b3f !important; /* Arany keret */
+    }
+    .card {
+        width: 100px; height: 150px;
+        background-size: contain; background-repeat: no-repeat;
+        cursor: pointer; transition: transform 0.3s;
+        border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .card:hover { transform: scale(1.1); z-index: 100; }
+
+    /* --- CHAT BUBOREKOK (Suttogó) --- */
+    .chat-bubble {
+        padding: 10px 15px; border-radius: 15px; margin-bottom: 8px;
+        max-width: 75%; font-size: 0.95em; line-height: 1.4;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .chat-bubble.incoming {
+        background-color: #fff; color: #333; border: 1px solid #ccc;
+        align-self: flex-start; border-bottom-left-radius: 2px;
+    }
+    .chat-bubble.outgoing {
+        background-color: var(--color-accent); color: #fff;
+        align-self: flex-end; border-bottom-right-radius: 2px;
+    }
+
+    /* --- BETÖLTŐ ANIMÁCIÓ --- */
+    /* Ez biztosítja, hogy a kép ne legyen túl nagy */
+    #loading-gif { width: 80px; height: auto; }
+
+    /* ========================================= */
+    /* === 11. DINAMIKUS MODULOK STÍLUSAI === */
+    /* ========================================= */
+
+    /* --- FÓRUM (Kolostor) --- */
+    .forum-post {
+        background: #fff; border: 1px solid #ddd; border-left: 4px solid var(--color-accent);
+        padding: 15px; margin-bottom: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .forum-header {
+        display: flex; justify-content: space-between; font-size: 0.85em;
+        color: #666; border-bottom: 1px dashed #ccc; padding-bottom: 5px; margin-bottom: 10px;
+    }
+    .forum-author { font-weight: bold; color: var(--color-accent); }
+
+    /* === ÚJ MARKETING NÉZET STÍLUS === */
+    #marketing-view {
+        position: fixed; /* Fixen a képernyőn */
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: var(--bg-main); /* Ugyanaz a háttér, mint a fő appnál */
+        z-index: 100; /* Legyen minden felett (kivéve a modálokat) */
+        overflow-y: auto; /* Görgethető legyen! */
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* --- MARKETING ŰRLAP (Csillagok és Gombok) --- */
+    .question-card {
+        background: #fff; border: 1px solid var(--color-accent); border-radius: 8px;
+        padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .question-title { display: block; font-weight: bold; color: var(--color-accent); margin-bottom: 10px; }
+    
+    /* Csillagos értékelő logika */
+    .star-rating {
+    display: inline-block;
+    border: none;
+    }
+    .star-rating input {
+        display: none; /* A kerek gombok elrejtése */
+    }
+    .star-rating label {
+        float: right; /* Jobbról balra rendezés a CSS trükkhöz */
+        color: #ddd;  /* Inaktív szürke */
+        font-size: 30px;
+        padding: 0 2px;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    /* Kijelölés logikája: A "checked" gomb és az utána jövők (amik balra vannak) színezése */
+    .star-rating input:checked ~ label,
+    .star-rating:not(:checked) > label:hover,
+    .star-rating:not(:checked) > label:hover ~ label {
+        color: #FFD700; /* Arany szín */
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    /* Igen/Nem gombok */
+    .yesno-container { display: flex; gap: 20px; }
+    .radio-btn-label {
+        display: flex; align-items: center; cursor: pointer; padding: 10px 20px;
+        border: 1px solid #ccc; border-radius: 5px; background: #fff; transition: 0.2s;
+    }
+    .radio-btn-label:hover { background-color: #f0f0f0; }
+    .radio-btn-label:has(input:checked) { background-color: #e6fffa; border-color: var(--color-primary); font-weight: bold; }
+
+    /* --- KVÍZ (Tutorial) --- */
+    .option-label {
+        display: block; background: #fff; padding: 15px; border: 1px solid #ccc;
+        border-radius: 6px; cursor: pointer; margin-bottom: 10px; transition: 0.2s;
+    }
+    .option-label:hover { background-color: #f9f9f9; border-color: var(--color-secondary); }
+
+    /* ========================================= */
+    /* === 12. OLVASÓ JAVÍTÁS ÉS VÉDELEM === */
+    /* ========================================= */
+
+    /* 1. LAYOUT JAVÍTÁS: Fentről kezdődjön, ne középről! */
+    #reader-modal {
+        align-items: flex-start !important; /* Ez oldja meg az üres helyet */
+        padding-top: 10px;
+    }
+
+    /* 2. VÉDELEM: Kijelölés tiltása */
+    .reader-container, #reader-content-display {
+        user-select: none; /* Szövegkijelölés tiltása */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    /* 3. VÉDELEM: Nyomtatás tiltása */
+    @media print {
+        body * { display: none !important; }
+        html, body { height: 0; overflow: hidden; background: #000; }
+    }
+
+    /* 4. SHIELD (Láthatatlan pajzs a képek fölé, ha a JS nem lenne elég) */
+    #reader-shield {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 1000; background: transparent; pointer-events: none; /* Hogy görgetni lehessen */
+    }
+
+/* ========================================= */
+/* === TÉRKÉP NÉZEGETŐ (VÉGTELEN VÁSZON) === */
+/* ========================================= */
+
+.map-viewer-image-wrapper {
+    /* Flex a kezdeti középre igazításhoz */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    
+    overflow: hidden !important; /* Ami kilóg, az nem látszik */
+    cursor: grab;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a;
+    
+    /* Letiltások a szellemkép ellen */
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+.map-viewer-image-wrapper.active {
+    cursor: grabbing;
+}
+
+#map-viewer-image {
+    /* A transzformáció (mozgás/zoom) legyen azonnali, ne késsen! */
+    transition: none !important; 
+    
+    /* Hardveres gyorsítás a sima mozgásért */
+    will-change: transform;
+    
+    /* Szellemkép tiltása */
+    pointer-events: none; 
+    -webkit-user-drag: none;
+    user-select: none;
+    
+    /* Maximális méret korlátok levétele */
+    max-width: none !important;
+    max-height: none !important;
+    
+    /* Alapértelmezett méret: illeszkedjen, de ne lógjon túl */
+    height: 80%; 
+    width: auto;
+    
+    /* A transzformáció origója legyen a középpont, így szebb a zoom */
+    transform-origin: center center;
+}
+
+/* === KÉPES TOOLTIP STÍLUSOK === */
+
+/* A gombot ebbe a konténerbe csomagoljuk */
+.tooltip-wrapper {
+    position: relative; /* Hogy a popup ehhez igazodjon */
+    display: flex;
+    flex: 1 1 auto; /* Ugyanúgy viselkedjen, mint egy gomb */
+}
+
+/* Maga a felugró ablak */
+.tooltip-popup {
+    visibility: hidden; /* Alapból rejtett */
+    opacity: 0;
+    
+    position: absolute;
+    bottom: 110%; /* A gomb felett jelenjen meg */
+    left: 50%;
+    transform: translateX(-50%); /* Középre igazítás */
+    
+    width: 220px; /* Szélesség */
+    background-color: #3e2723; /* Sötétbarna háttér */
+    color: #e3c08d; /* Pergamen színű szöveg */
+    border: 2px solid #d4af37; /* Arany keret */
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    
+    z-index: 1000; /* Minden felett */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    
+    /* Hogy ne kattintsunk rá véletlenül */
+    pointer-events: none; 
+    text-align: center;
+}
+
+/* A kép stílusa a popupban */
+.tooltip-popup img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    border: 1px solid #5d4037;
+}
+
+/* Leírás szöveg stílusa */
+.tooltip-popup p {
+    margin: 0;
+    font-size: 0.85em;
+    line-height: 1.3;
+}
+
+/* HOVER HATÁS: Amikor a wrapper fölé visszük az egeret */
+.tooltip-wrapper:hover .tooltip-popup {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px); /* Kicsit feljebb úszik */
+}
+
+/* Kis nyíl lefelé (opcionális csicsa) */
+.tooltip-popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #d4af37 transparent transparent transparent;
+}
+
+/* ==========================================================
+   UNIVERZÁLIS NPC - RESET ÉS SZERKEZET (A Konfliktusfeloldó)
+   ========================================================== */
+
+/* Ez a szabály erősebb, mint a sima .gamemode-modal-content, 
+   mert az ID (#universal-npc-modal) miatt magasabb a prioritása. */
+#universal-npc-modal .gamemode-modal-content {
+    /* 1. Méretek nullázása (hogy a JS dönthessen) */
+    width: auto !important; 
+    max-width: none !important;
+    height: auto !important;
+    
+    /* 2. A "pergamenség" és keretek törlése */
+    background: none !important;      /* Törli a globális var(--bg-paper)-t */
+    border: none !important;          /* Törli a keretet */
+    border-radius: 0 !important;      /* Törli a lekerekítést */
+    box-shadow: none !important;      /* Törli az árnyékot */
+    
+    /* 3. A legfontosabb: A PADDING TÖRLÉSE! */
+    /* Ez okozta a réseket és a túllógást, mert a 100% magassághoz még hozzáadódott a 25px */
+    padding: 0 !important; 
+
+    /* 4. Flexbox szerkezet kényszerítése (hogy a chat ne folyjon szét) */
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important; /* A külső keret nem görget, csak a chat-area */
+    
+    /* 5. Dobozmodell javítása */
+    box-sizing: border-box !important;
+}
+
+/* Külön a chat területnek és a fejlécnek is kell a helyes méretezés */
+#universal-npc-modal #universal-chat-area {
+    flex: 1; /* Kitölti a maradék helyet */
+    overflow-y: auto; /* Csak ez görgethető */
+    padding: 15px; /* Itt legyen padding, ne a kereten! */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+#universal-npc-modal #npc-header {
+    flex-shrink: 0; /* Fix méret */
+    width: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
+
+#universal-npc-modal #universal-chat-input-container {
+    flex-shrink: 0; /* Fix méret */
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* ========================================= */
+/* === NPC PORTRÉ (SLIDE-OUT) STÍLUSOK === */
+/* ========================================= */
+
+#npc-portrait-panel {
+    height: 80vh; /* Igazodik a chat ablak magasságához (alapból) */
+    background-color: transparent;
+    overflow: hidden; /* Hogy a kép ne lógjon ki csukott állapotban */
+    transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.6s ease; /* Finom animáció */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Ne nyomja össze a chat ablak */
+    margin-right: 0; /* Alapból összeérnek */
+}
+
+/* Kép stílusa */
+#npc-portrait-image {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain; /* Hogy ne torzuljon */
+    /* Később ide jön az animáció, filter, stb. */
+    filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.5)); /* Árnyék a kép mögé */
+}
+
+/* ÁLLAPOTOK */
+
+/* 1. Csukott (Láthatatlan) */
+.npc-portrait-closed {
+    width: 0px;
+    opacity: 0;
+    margin-right: 0;
+}
+
+/* 2. Nyitott (Látható) */
+.npc-portrait-open {
+    width: 300px; /* Vagy amennyi a kép szélessége */
+    opacity: 1;
+    margin-right: -20px; /* Kicsit rácsúszhat a chat ablakra, vagy lehet 10px távolság */
+}
+
+/* MOBILON NE NYÍLJON KI (Helyhiány miatt) */
+@media (max-width: 800px) {
+    #npc-portrait-panel {
+        display: none !important; /* Mobilon elrejtjük */
+    }
+}
+
+/* =============================================== */
+/* --- MARKETING KIEMELT CHAT MÓD (Szélesítés) --- */
+/* =============================================== */
+
+.expanded-chat-window {
+    width: 130% !important; /* Harmadával szélesebb */
+    max-width: 95vw !important; /* Hogy ne lógjon ki mobilon */
+    transition: width 0.4s ease-in-out, left 0.4s ease-in-out;
+    /* Középre igazítás korrigálása szélesítéskor (ha középen van a modal) */
+    left: 50% !important;
+    transform: translateX(-50%) !important; 
+    border-color: #ffd700 !important; /* Arany keret jelzi a "küldetést" */
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* A Monk panelje jobbról úszik be, ott másképp szélesítünk */
+#monk-panel.expanded-chat-window {
+    width: 600px !important; /* 450px helyett */
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+}
+
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; margin: 20px; background-color: #f4f5f7; color: #172b4d; }
+    .form-container { max-width: 650px; margin: auto; padding: 30px; border: 1px solid #dfe1e6; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    h2 { text-align: center; border-bottom: 1px solid #dfe1e6; padding-bottom: 15px; margin-top: 0; }
+    #logo-container { text-align: center; margin-bottom: 20px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+    label.inline { display: inline-block; margin-left: 10px; font-weight: normal; }
+    .required-star { color: #de350b; }
+    input[type="text"], input[type="email"], input[type="number"], select { width: 100%; padding: 10px; box-sizing: border-box; border: 2px solid #dfe1e6; border-radius: 4px; background-color: #fafbfc; }
+    input:focus, select:focus { border-color: #4c9aff; outline: none; background-color: #fff; }
+    button { width: 100%; padding: 12px 15px; font-size: 16px; font-weight: 600; background-color: #0052cc; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; }
+    button:hover { background-color: #0065ff; }
+    button:disabled { background-color: #a5adba; cursor: not-allowed; }
+    #status { margin-top: 20px; font-weight: bold; text-align: center; padding: 10px; border-radius: 4px; }
+    .success { color: #006644; background-color: #e3fcef; }
+    .error { color: #bf2600; background-color: #fffae6; }
+
+    /* === A FELUGRÓ ABLAK STÍLUSAI === */
+#loading-modal {
+  display: none; /* Alapértelmezetten rejtett */
+  position: fixed; /* A teljes képernyőt lefedi */
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Sötétített háttér */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #000000;
+  padding: 20px 40px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content img {
+  max-width: 200px; /* A GIF mérete */
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  margin: 0;
+  font-weight: 600;
+  color: #e19e56;
+}

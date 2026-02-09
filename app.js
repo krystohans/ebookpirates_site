@@ -22,6 +22,8 @@ function callBackend(funcName, params, onSuccess, onFailure) {
 
     fetch(WEB_APP_URL, {
         method: "POST",
+        redirect: "follow",
+        credentials: "omit",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         // Fontos: stringify-olva küldjük az adatot
         body: JSON.stringify({

@@ -9,17 +9,21 @@ const MAP_COPY_COST = 30;        // Konstans: másolás ára
 /**
  * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
  * KIZÁRÓLAG a GitHub/Külső környezetben használd!
- * Robusztus backend hívó, ami nem omlik össze, ha HTML hibaüzenetet kap.
+ * ROBUSZTUS BACKEND HÍVÓ - JSON VADÁSZ MÓDDAL 🏹
+ * Képes kezelni, ha a Google HTML "szemetet" (fejlécet/hibaüzenetet) küld a JSON helyett/mellett.
  */
 function callBackend(funcName, params, onSuccess, onFailure) {
-    // 1. A Web App URL-ed
+    // A TE DEPLOYMENT URL-ED (Ellenőrizd, hogy a legfrissebb legyen!)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
 
     var token = localStorage.getItem('ebookPiratesToken');
 
+    console.log(`📡 Kérés indítása: ${funcName}`);
+
     fetch(WEB_APP_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
+        // Fontos: stringify-olva küldjük az adatot
         body: JSON.stringify({
             action: funcName,
             data: params,
@@ -27,33 +31,56 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         })
     })
     .then(response => {
-        // Először szövegként olvassuk ki, hogy meg tudjuk vizsgálni
-        return response.text().then(text => {
-            return { status: response.status, text: text };
-        });
+        // Először mindenképpen szövegként olvassuk ki
+        return response.text().then(text => ({
+            status: response.status,
+            text: text
+        }));
     })
     .then(result => {
+        let responseText = result.text.trim();
         let data;
+
+        // 1. ESET: Tiszta JSON jött (Ez a normális)
         try {
-            // Megpróbáljuk JSON-ként értelmezni
-            data = JSON.parse(result.text);
+            data = JSON.parse(responseText);
         } catch (e) {
-            // HA EZ LEFUT, AKKOR JÖTT A HTML HIBAOLDAL!
-            console.error("KRITIKUS HIBA: A szerver nem JSON-t küldött!");
-            console.error("Kapott válasz (HTML):", result.text); // Itt látni fogod a Google hibaüzenetét!
+            // 2. ESET: HTML jött (Google fejléc vagy Hibaoldal)
+            console.warn("⚠️ HTML válasz érkezett JSON helyett. Kísérlet a tisztításra...");
             
-            if (result.text.indexOf("script.google.com") !== -1 || result.text.indexOf("Google") !== -1) {
-                throw new Error("SERVER_CRASH: A Google Script összeomlott vagy nem érhető el. (Lásd a konzolt)");
+            // Megpróbáljuk kinyerni a JSON-t a HTML-ből (ha van benne)
+            // A Google néha beágyazza a választ, vagy csak sima hibaüzenetet küld.
+            
+            // Keresünk kapcsos zárójeleket { ... }
+            const jsonStart = responseText.indexOf('{');
+            const jsonEnd = responseText.lastIndexOf('}');
+
+            if (jsonStart !== -1 && jsonEnd !== -1) {
+                try {
+                    let jsonCandidate = responseText.substring(jsonStart, jsonEnd + 1);
+                    data = JSON.parse(jsonCandidate);
+                    console.log("✅ Sikerült kinyerni a JSON-t a HTML-ből!");
+                } catch (innerErr) {
+                    // Ha még így sem JSON, akkor ez egy tiszta HTML hibaoldal
+                    throw new Error("SERVER_CRASH: A szerver nem adott vissza értelmezhető adatot.\nNyers válasz eleje: " + responseText.substring(0, 100));
+                }
             } else {
-                throw new Error("INVALID_RESPONSE: Érvénytelen válasz a szervertől.");
+                // Nincs benne JSON struktúra -> Ez egy Google Hibaoldal
+                console.error("Kapott HTML:", responseText);
+                if (responseText.includes("Google Apps Script")) {
+                    throw new Error("GAS_ERROR: A Google Script futási hibát dobott (pl. változó nem definiált). Nézd meg a Script Szerkesztőt!");
+                }
+                throw new Error("NETWORK_ERROR: HTML érkezett JSON helyett.");
             }
         }
 
-        // Ha idáig eljutunk, akkor sikeres volt a JSON parse
-        if (data && data.error) {
+        // --- INNEN MÁR VAN JSON ADATUNK (data) ---
+
+        if (data.error) {
             console.error("Backend Logikai Hiba:", data.error);
-            if (data.error.indexOf("AUTH_ERROR") !== -1) {
-                alert("⚠️ A munkamenet lejárt! Jelentkezz be újra.");
+            if (String(data.error).includes("AUTH")) {
+                alert("⚠️ A munkamenet lejárt.");
+                // Opcionális: logout();
             }
             if (onFailure) onFailure(new Error(data.error));
         } else {
@@ -62,9 +89,15 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         }
     })
     .catch(error => {
-        console.error("Végső Hiba:", error);
-        alert("Hiba történt: " + error.message);
+        console.error("CallBackend Végső Hiba:", error);
         if (onFailure) onFailure(error);
+        
+        // UI visszajelzés a státuszmezőbe (ha van)
+        const statusDiv = document.getElementById('status') || document.getElementById('login-status');
+        if (statusDiv) {
+            statusDiv.innerText = "Kommunikációs hiba: " + error.message;
+            statusDiv.style.color = "red";
+        }
     });
 }
 

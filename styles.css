@@ -80,6 +80,8 @@
         margin-left: 15px;
         transition: 0.2s; 
         flex-shrink: 0; /* Biztosítja, hogy ne nyomódjon össze */
+        font-weight: bold; /* Az X karakter legyen vastag és jól látható */
+        line-height: 1;    /* Pontosabb függőleges igazítás */
     }
     .header-close-icon:hover { color: #000; transform: scale(1.1); }
 

@@ -79,16 +79,13 @@ function callBackend(funcName, params, onSuccess, onFailure) {
 
         // --- INNEN MÁR VAN JSON ADATUNK (data) ---
 
-        if (data && data.error) {
+        if (data.error) {
             console.error("Backend Logikai Hiba:", data.error);
             if (String(data.error).includes("AUTH")) {
                 alert("⚠️ A munkamenet lejárt.");
                 // Opcionális: logout();
             }
             if (onFailure) onFailure(new Error(data.error));
-        } else if (!data) {
-            console.warn("A szerver üres választ (null) küldött.");
-            if (onFailure) onFailure(new Error("Üres válasz érkezett a szervertől."));
         } else {
             // SIKER!
             if (onSuccess) onSuccess(data);

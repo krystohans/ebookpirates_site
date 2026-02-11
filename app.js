@@ -143,6 +143,7 @@ function login() {
 function initializeApp(user) {
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
     document.querySelector('.header-title').innerText = user.name;
+    ensureCreditDisplayIsPresent();
     
     document.getElementById('login-view').style.display = 'none';
     document.getElementById('app-view').style.display = 'flex';
@@ -257,6 +258,11 @@ function updateCreditDisplay() {
     );
 }
 
+function ensureCreditDisplayIsPresent() {
+    if (!document.getElementById('creditValue')) {
+        console.warn("Hiba: A 'creditValue' HTML elem nem található a fejlécben!");
+    }
+}
 /**
  * KÖZPONTI OLDALBETÖLTŐ
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!

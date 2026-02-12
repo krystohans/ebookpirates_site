@@ -172,22 +172,26 @@ function initializeApp(user) {
 
 function checkSession() {
   const token = localStorage.getItem('ebookPiratesToken');
-  
+
   if (token) {
-    // Itt a tokent paraméterként is átadjuk, mert a getUserDataByToken várja!
-    callBackend('getUserDataByToken', [token], 
+    callBackend('getUserDataByToken', [token],
       function(user) {
-        if (user) {
+        var isValidUser = !!(user && user.email && user.name && user.isValid === true);
+        if (isValidUser) {
           console.log("Sikeres visszatérés:", user.name);
           initializeApp(user);
         } else {
           console.warn("A token lejárt vagy érvénytelen.");
           localStorage.removeItem('ebookPiratesToken');
+          document.getElementById('app-view').style.display = 'none';
+          document.getElementById('login-view').style.display = 'block';
         }
       },
       function(err) {
-         console.warn("Session check hiba:", err);
-         localStorage.removeItem('ebookPiratesToken');
+        console.warn("Session check hiba:", err);
+        localStorage.removeItem('ebookPiratesToken');
+        document.getElementById('app-view').style.display = 'none';
+        document.getElementById('login-view').style.display = 'block';
       }
     );
   } else {
@@ -201,6 +205,7 @@ function checkSession() {
 
 function logout() {
     sessionStorage.removeItem('ebookPiratesToken');
+    localStorage.removeItem('ebookPiratesToken');
     document.getElementById('app-view').style.display = 'none';
     document.getElementById('login-view').style.display = 'block';
     

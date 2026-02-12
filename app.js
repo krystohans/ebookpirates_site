@@ -22,17 +22,10 @@ function callBackend(funcName, params, onSuccess, onFailure) {
     console.log(`📡 Kérés indítása: ${funcName}`);
 
     fetch(WEB_APP_URL, {
-        method: "POST",
-        redirect: "follow",
-        credentials: "omit",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        // Fontos: stringify-olva küldjük az adatot
-        body: JSON.stringify({
-            action: funcName,
-            data: params,
-            token: token
-        })
-    })
+  method: "POST",
+  headers: { "Content-Type": "text/plain;charset=utf-8" },
+  body: JSON.stringify({ action: funcName, data: params, token: token })
+})
     .then(response => {
         // Először mindenképpen szövegként olvassuk ki
         return response.text().then(text => ({

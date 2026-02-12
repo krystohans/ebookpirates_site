@@ -1,5 +1,6 @@
 // Core frontend helpers extracted from index.html
 // NOTE: Follow project rule: no template literals in client-side code.
+// FIGYELMEZTETÉS: NEM írok asszisztensként a kódba, csak a chat ablakon keresztül adok alternatívát! A kód minden esetben csak manuálisan módosítható!
 
 // 1. GLOBÁLIS VÁLTOZÓK DEFINÍCIÓJA
 var currentUserEmail = "";       // Az aktuális felhasználó

@@ -1,5 +1,6 @@
 # Copilot / AI Agent utasítások eBookPirates_kalozsziget-hez ✅
-
+Gemini NEM ÍR a kódba, csak utasítás szerkeszt a chatbe, a felhasználónak és/vagy a copilotnak!
+Copilot csak engedéllyel ír felül kódot, vagy futtat adatbáziskezelő parancsot!
 Rövid, cselekvőképes jegyzetek, hogy egy AI-ügynök azonnal hasznos legyen a repóban.
 
 ## Rövid áttekintés 🔧

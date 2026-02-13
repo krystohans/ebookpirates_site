@@ -14,14 +14,14 @@
     <div id="appContainer">
     
     <div id="login-view">
-        <h2>Belépés a Kikötőbe</h2>
+        <h2 data-lang="login_title">Belépés a Kikötőbe</h2>
         <form id="loginForm" autocomplete="on">
-            <input type="text" id="name" name="username" placeholder="Mi a kalózneved?" required autocomplete="username">
+            <input type="text" id="name" name="username" placeholder="Mi a kalózneved?" data-lang-placeholder="login_name_placeholder" required autocomplete="username">
             <div class="password-container">
-                <input type="password" id="jelszo" name="password" placeholder="Mi a kedvenc ételed?" required autocomplete="current-password">
+                <input type="password" id="jelszo" name="password" placeholder="Mi a kedvenc ételed?" data-lang-placeholder="login_pass_placeholder" required autocomplete="current-password">
                 <i class="fas fa-eye" id="togglePassword"></i>
             </div>
-            <button type="button" onclick="login()">Beszállás</button>
+            <button type="button" onclick="login()" data-lang="login_button">Beszállás</button>
         </form>
         <p id="login-status" style="color: red;"></p>
         <div id="registerButtonContainer"></div>
@@ -32,18 +32,18 @@
             <span class="header-title">eBookPirates</span>
             
             <div id="header-stats">
-                <div id="creditCell" class="header-stat-item" title="Kreditegyenleg frissítése">
+                <div id="creditCell" class="header-stat-item" title="Kreditegyenleg frissítése" data-lang-title="header_credits_tooltip">
                     <i class="fas fa-coins"></i> <span id="creditValue">0</span>
                 </div>
-                <div id="libraryLink" class="header-stat-item" title="Könyvtár">
-                    <i class="fas fa-book"></i> <span class="stat-label">Könyvtár</span>
+                <div id="libraryLink" class="header-stat-item" title="Könyvtár" data-lang-title="header_library">
+                    <i class="fas fa-book"></i> <span class="stat-label" data-lang="header_library">Könyvtár</span>
                 </div>
-                <div id="treasuresLink" class="header-stat-item" title="Kincsek">
-                    <i class="fas fa-gem"></i> <span class="stat-label">Kincsek</span>
+                <div id="treasuresLink" class="header-stat-item" title="Kincsek" data-lang-title="header_treasures">
+                    <i class="fas fa-gem"></i> <span class="stat-label" data-lang="header_treasures">Kincsek</span>
                 </div>
             </div>
             <div>            
-                <div class="header-close-icon" onclick="loadPage('kikoto_oldal')" title="Vissza a kikötőbe">
+                <div class="header-close-icon" onclick="loadPage('kikoto_oldal')" title="Vissza a kikötőbe" data-lang-title="header_back_to_port">
                     <span id="close-icon-text">X</span>
                     <img src="assets/vissza.png" alt="X" style="height: 1em; width: auto; vertical-align: middle; display: none;" onload="this.style.display='inline'; document.getElementById('close-icon-text').style.display='none';" onerror="this.remove()">
                 </div>
@@ -56,23 +56,23 @@
 
     <div id="loading-overlay">
         <img id="loading-gif" src="" alt="Betöltés..."/>
-        <p>Kis türelmet, kalóz...</p>
+        <p data-lang="loading_overlay_text">Kis türelmet, kalóz...</p>
     </div>
 
     <div id="marketing-view" style="display: none;">
         <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: #8b0000; font-family: 'Pirata One', serif; font-size: 2.5em;">A Zsákmány Értékelése</h2>
-            <p>Minden válaszod <strong>1 Kalózkreditet</strong> ér!</p>
+            <h2 style="color: #8b0000; font-family: 'Pirata One', serif; font-size: 2.5em;" data-lang="marketing_title">A Zsákmány Értékelése</h2>
+            <p data-lang-html="marketing_intro">Minden válaszod <strong>1 Kalózkreditet</strong> ér!</p>
         </div>
         
         <form id="marketing-form" onsubmit="return false;">
             <div id="marketing-questions-area"></div>
             
             <div style="text-align: center; margin-top: 30px;">
-                <button type="button" class="btn btn-primary" onclick="submitMarketingForm()" style="font-size: 1.2em; padding: 15px 40px; background-color: #8b0000; border: none;">
+                <button type="button" class="btn btn-primary" onclick="submitMarketingForm()" style="font-size: 1.2em; padding: 15px 40px; background-color: #8b0000; border: none;" data-lang="marketing_submit_button">
                     Vélemény Beküldése & Kreditek Zsebretétele
                 </button>
-                <button type="button" class="btn btn-secondary" onclick="returnToPort()" style="font-size: 1.2em; padding: 15px 30px; margin-left: 10px; background-color: #666; border: none; color: white;">
+                <button type="button" class="btn btn-secondary" onclick="returnToPort()" style="font-size: 1.2em; padding: 15px 30px; margin-left: 10px; background-color: #666; border: none; color: white;" data-lang="marketing_cancel_button">
                     Mégse
                 </button>
             </div>
@@ -83,18 +83,18 @@
         <div class="gamemode-modal-content" style="margin-top: 5vh; max-width: 900px; width: 95%;">
             
             <div class="gamemode-header">
-                <span id="dashboard-book-title" class="header-title">Könyv Statisztika</span>
+                <span id="dashboard-book-title" class="header-title" data-lang="dashboard_title">Könyv Statisztika</span>
                 <span class="close-modal-btn" onclick="document.getElementById('author-dashboard-modal').style.display='none'">&times;</span>
             </div>
 
-            <div id="dashboard-loading" style="padding: 20px; text-align: center;">
+            <div id="dashboard-loading" style="padding: 20px; text-align: center;" data-lang-html="dashboard_loading">
                 <i class="fas fa-spinner fa-spin"></i> Adatok betöltése a kristálygömbből...
             </div>
 
             <div id="dashboard-content" style="display: none; padding: 20px;">
                 
                 <div id="dashboard-header-summary" style="margin-bottom: 25px; padding: 15px; background: #fff8dc; border: 1px solid #d2b48c; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <h4 style="margin-top:0; color:#8b4513; border-bottom:1px dashed #ccc; padding-bottom:5px;">
+                    <h4 style="margin-top:0; color:#8b4513; border-bottom:1px dashed #ccc; padding-bottom:5px;" data-lang-html="dashboard_active_questions_title">
                         <i class="fas fa-list-alt"></i> Aktív Alapkérdések (Ezekre válaszol az olvasó)
                     </h4>
                     <div id="base-questions-grid" style="display: flex; flex-wrap: wrap; gap: 10px;">
@@ -103,15 +103,15 @@
 
                 <div class="stats-summary-box" style="display: flex; gap: 20px; margin-bottom: 20px;">
                     <div class="stat-card">
-                        <h3>Összes Válasz</h3>
+                        <h3 data-lang="dashboard_total_responses">Összes Válasz</h3>
                         <p id="stat-total-responses" style="font-size: 2em; font-weight: bold; color: #2c5282;">0</p>
                     </div>
                 </div>
                 
                 <div class="tab-container" style="border-bottom: 2px solid #ddd; margin-bottom: 20px;">
-                    <button class="tab-button active" onclick="openDashboardTab(event, 'DashStats')">📊 Eredmények</button>
-                    <button class="tab-button" onclick="openDashboardTab(event, 'DashVerification')">🛡️ Ellenőrzés (Kvíz)</button>
-                    <button class="tab-button" onclick="openDashboardTab(event, 'DashSettings')">⚙️ Új Kérdés</button>
+                    <button class="tab-button active" onclick="openDashboardTab(event, 'DashStats')" data-lang="dashboard_tab_results">📊 Eredmények</button>
+                    <button class="tab-button" onclick="openDashboardTab(event, 'DashVerification')" data-lang="dashboard_tab_verification">🛡️ Ellenőrzés (Kvíz)</button>
+                    <button class="tab-button" onclick="openDashboardTab(event, 'DashSettings')" data-lang="dashboard_tab_new_question">⚙️ Új Kérdés</button>
                 </div>
 
                 <div id="DashStats" class="tab-content" style="display: block;">
@@ -120,46 +120,46 @@
 
                 <div id="DashVerification" class="tab-content" style="display: none;">
                     <div style="background: #f0fff4; border: 1px solid #c6f6d5; padding: 20px; border-radius: 8px;">
-                        <h3 style="color: #276749; margin-top: 0;">🧐 Olvasottsági Próba (Anti-Csalás Védelem)</h3>
-                        <p>Itt állíthatsz be 3 kérdést, amire <strong>csak az tudja a választ, aki tényleg olvasta a művet.</strong></p>
-                        <p style="font-size: 0.9em; color: #555;"><i>A rendszer ezeket "verify" típusként menti el. A statisztikába nem kerülnek bele, csak a kapuőrző funkciót látják el.</i></p>
+                        <h3 style="color: #276749; margin-top: 0;" data-lang="dashboard_verify_title">🧐 Olvasottsági Próba (Anti-Csalás Védelem)</h3>
+                        <p data-lang-html="dashboard_verify_intro">Itt állíthatsz be 3 kérdést, amire <strong>csak az tudja a választ, aki tényleg olvasta a művet.</strong></p>
+                        <p style="font-size: 0.9em; color: #555;" data-lang-html="dashboard_verify_note"><i>A rendszer ezeket "verify" típusként menti el. A statisztikába nem kerülnek bele, csak a kapuőrző funkciót látják el.</i></p>
                         <hr>
 
                         <form id="verification-quiz-form">
                             <div class="quiz-setup-item" style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <label><strong>1. Ellenőrző Kérdés:</strong></label>
-                                <input type="text" id="v-q1-text" class="quiz-q-text" placeholder="Kérdés szövege..." style="width: 100%; margin-bottom: 5px;">
+                                <label><strong data-lang="dashboard_verify_q1_label">1. Ellenőrző Kérdés:</strong></label>
+                                <input type="text" id="v-q1-text" class="quiz-q-text" placeholder="Kérdés szövege..." data-lang-placeholder="dashboard_verify_question_placeholder" style="width: 100%; margin-bottom: 5px;">
                                 <div style="display: flex; gap: 10px;">
                                     <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
-                                        <option value="text" selected>Szöveges válasz</option>
+                                        <option value="text" selected data-lang="dashboard_verify_answer_type">Szöveges válasz</option>
                                     </select>
-                                    <input type="text" id="v-q1-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" style="flex-grow: 1; border: 2px solid #276749;">
+                                    <input type="text" id="v-q1-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" data-lang-placeholder="dashboard_verify_answer_placeholder" style="flex-grow: 1; border: 2px solid #276749;">
                                 </div>
                             </div>
 
                             <div class="quiz-setup-item" style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <label><strong>2. Ellenőrző Kérdés:</strong></label>
-                                <input type="text" id="v-q2-text" class="quiz-q-text" placeholder="Kérdés szövege..." style="width: 100%; margin-bottom: 5px;">
+                                <label><strong data-lang="dashboard_verify_q2_label">2. Ellenőrző Kérdés:</strong></label>
+                                <input type="text" id="v-q2-text" class="quiz-q-text" placeholder="Kérdés szövege..." data-lang-placeholder="dashboard_verify_question_placeholder" style="width: 100%; margin-bottom: 5px;">
                                 <div style="display: flex; gap: 10px;">
                                     <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
-                                        <option value="text" selected>Szöveges válasz</option>
+                                        <option value="text" selected data-lang="dashboard_verify_answer_type">Szöveges válasz</option>
                                     </select>
-                                    <input type="text" id="v-q2-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" style="flex-grow: 1; border: 2px solid #276749;">
+                                    <input type="text" id="v-q2-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" data-lang-placeholder="dashboard_verify_answer_placeholder" style="flex-grow: 1; border: 2px solid #276749;">
                                 </div>
                             </div>
 
                             <div class="quiz-setup-item" style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <label><strong>3. Ellenőrző Kérdés:</strong></label>
-                                <input type="text" id="v-q3-text" class="quiz-q-text" placeholder="Kérdés szövege..." style="width: 100%; margin-bottom: 5px;">
+                                <label><strong data-lang="dashboard_verify_q3_label">3. Ellenőrző Kérdés:</strong></label>
+                                <input type="text" id="v-q3-text" class="quiz-q-text" placeholder="Kérdés szövege..." data-lang-placeholder="dashboard_verify_question_placeholder" style="width: 100%; margin-bottom: 5px;">
                                 <div style="display: flex; gap: 10px;">
                                     <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
-                                        <option value="text" selected>Szöveges válasz</option>
+                                        <option value="text" selected data-lang="dashboard_verify_answer_type">Szöveges válasz</option>
                                     </select>
-                                    <input type="text" id="v-q3-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" style="flex-grow: 1; border: 2px solid #276749;">
+                                    <input type="text" id="v-q3-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" data-lang-placeholder="dashboard_verify_answer_placeholder" style="flex-grow: 1; border: 2px solid #276749;">
                                 </div>
                             </div>
 
-                            <button type="button" class="btn" onclick="submitVerificationQuiz()" style="background-color: #276749; width: 100%; color: white; font-weight: bold; padding: 10px;">
+                            <button type="button" class="btn" onclick="submitVerificationQuiz()" style="background-color: #276749; width: 100%; color: white; font-weight: bold; padding: 10px;" data-lang="dashboard_verify_save_button">
                                 💾 3 Ellenőrző Kérdés Mentése
                             </button>
                         </form>
@@ -169,48 +169,48 @@
                 <div id="DashSettings" class="tab-content" style="display: none;">
 
                     <div style="margin-bottom: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                        <div style="background: #f0f4f8; padding: 10px 15px; border-bottom: 1px solid #ddd; font-weight: bold; color: #2c3e50;">
+                        <div style="background: #f0f4f8; padding: 10px 15px; border-bottom: 1px solid #ddd; font-weight: bold; color: #2c3e50;" data-lang-html="dashboard_active_questions_panel_title">
                             <i class="fas fa-clipboard-list"></i> Jelenleg aktív kérdések (Ezeket már tartalmazza az űrlap)
                         </div>
                         <div id="existing-questions-list" style="max-height: 200px; overflow-y: auto; padding: 10px;">
-                            <p style="color:#888; font-style:italic;">Adatok betöltése...</p>
+                            <p style="color:#888; font-style:italic;" data-lang="dashboard_existing_questions_loading">Adatok betöltése...</p>
                         </div>
                     </div>
 
                     <hr style="border: 0; border-top: 1px dashed #ccc; margin: 20px 0;">
 
-                    <h3>Új kérdés hozzáadása az űrlaphoz</h3>
-                    <p style="font-size: 0.9em; color: #666;">Itt bővítheted a kérdőívet. Az új kérdések automatikusan megjelennek az új olvasóknál.</p>
+                    <h3 data-lang="dashboard_new_question_title">Új kérdés hozzáadása az űrlaphoz</h3>
+                    <p style="font-size: 0.9em; color: #666;" data-lang="dashboard_new_question_intro">Itt bővítheted a kérdőívet. Az új kérdések automatikusan megjelennek az új olvasóknál.</p>
                     
                     <form id="new-question-form" style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
                         <div class="form-group">
-                            <label>Kérdés szövege:</label>
-                            <input type="text" id="nq-text" placeholder="Pl. Melyik karakter volt a legszimpatikusabb?" required style="width: 100%; padding: 8px;">
+                            <label data-lang="dashboard_new_question_text_label">Kérdés szövege:</label>
+                            <input type="text" id="nq-text" placeholder="Pl. Melyik karakter volt a legszimpatikusabb?" data-lang-placeholder="dashboard_new_question_text_placeholder" required style="width: 100%; padding: 8px;">
                         </div>
                         
                         <div class="form-group" style="margin-top: 10px;">
-                            <label>Típus:</label>
+                            <label data-lang="dashboard_new_question_type_label">Típus:</label>
                             <select id="nq-type" style="width: 100%; padding: 8px;">
-                                <option value="text">Szöveges kifejtős</option>
-                                <option value="rating">Csillagos értékelés (1-5)</option>
-                                <option value="yesno">Igen / Nem</option>
+                                <option value="text" data-lang="dashboard_new_question_type_text">Szöveges kifejtős</option>
+                                <option value="rating" data-lang="dashboard_new_question_type_rating">Csillagos értékelés (1-5)</option>
+                                <option value="yesno" data-lang="dashboard_new_question_type_yesno">Igen / Nem</option>
                             </select>
                         </div>
 
                         <div class="form-group" style="margin-top: 10px;">
-                            <label>Kategória (Játékhoz):</label>
+                            <label data-lang="dashboard_new_question_category_label">Kategória (Játékhoz):</label>
                             <select id="nq-category" style="width: 100%; padding: 8px;">
-                                <option value="general">Általános</option>
-                                <option value="story">Történet / Lore</option>
-                                <option value="character">Karakterek</option>
+                                <option value="general" data-lang="dashboard_new_question_category_general">Általános</option>
+                                <option value="story" data-lang="dashboard_new_question_category_story">Történet / Lore</option>
+                                <option value="character" data-lang="dashboard_new_question_category_character">Karakterek</option>
                             </select>
                         </div>
                         
                         <div style="margin-top: 10px;">
-                            <label><input type="checkbox" id="nq-isgame"> Ez a kérdés bekerülhet kvízkérdésnek a játékba?</label>
+                            <label><input type="checkbox" id="nq-isgame"> <span data-lang="dashboard_new_question_isgame">Ez a kérdés bekerülhet kvízkérdésnek a játékba?</span></label>
                         </div>
 
-                        <button type="button" class="btn btn-success" onclick="submitNewQuestion()" style="margin-top: 15px; width: 100%;">Hozzáadás</button>
+                        <button type="button" class="btn btn-success" onclick="submitNewQuestion()" style="margin-top: 15px; width: 100%;" data-lang="dashboard_new_question_add_button">Hozzáadás</button>
                     </form>
                 </div>
 
@@ -238,7 +238,7 @@
             </div>
 
         <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
-            <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
             <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -251,101 +251,101 @@
     <div id="log-entry-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;">
         <div class="gamemode-modal-content" style="margin-top: 5vh; max-width: 700px;">
             <span class="close-btn" onclick="closeLogEntryModal()">&times;</span>
-            <h4 id="log-modal-title">Új Hajónapló Bejegyzés</h4> 
+            <h4 id="log-modal-title" data-lang="log_entry_title">Új Hajónapló Bejegyzés</h4> 
             <div style="margin-bottom: 15px; text-align: right;">
                 <i class="fas fa-info-circle" style="cursor: pointer; font-size: 1.2em;" onclick="toggleLogSplash()"></i>
             </div>
             <div id="log-entry-splash-text" style="display: none; background-color: rgba(0,0,0,0.1); padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em; border: 1px dashed #ccc;">
-                <p>A hajónapló a hajó elválaszthatatlan, hivatalos dokumentuma. Csakis azok a hajóskapitányok vezethetik, akik ténylegesen irányítják a hajót, legyenek akár a hajó tulajdonosai, vagy csupán a tulajdonos által felkért parancsnokai. A napi jelentések beírása a napi rutinjuk kötelező része, egy sikeres könyvexpedíció vagy letkristályvadászat után segítenek az emlékek felidézésében, a pontos térképek megrajzolásában.</p>
+                <p data-lang="log_entry_splash_text">A hajónapló a hajó elválaszthatatlan, hivatalos dokumentuma. Csakis azok a hajóskapitányok vezethetik, akik ténylegesen irányítják a hajót, legyenek akár a hajó tulajdonosai, vagy csupán a tulajdonos által felkért parancsnokai. A napi jelentések beírása a napi rutinjuk kötelező része, egy sikeres könyvexpedíció vagy letkristályvadászat után segítenek az emlékek felidézésében, a pontos térképek megrajzolásában.</p>
             </div>
 
             <form id="log-entry-form">
                 <input type="hidden" id="log-entry-id" value="">
 
                 <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                    <button type="button" id="log-prev-btn" class="btn btn-secondary" style="visibility: hidden;">&lt; Előző</button>
-                    <button type="button" id="log-next-btn" class="btn btn-secondary" style="visibility: hidden;">Következő &gt;</button>
+                    <button type="button" id="log-prev-btn" class="btn btn-secondary" style="visibility: hidden;" data-lang="log_entry_prev_button">&lt; Előző</button>
+                    <button type="button" id="log-next-btn" class="btn btn-secondary" style="visibility: hidden;" data-lang="log_entry_next_button">Következő &gt;</button>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div class="form-group">
-                        <label for="log-date">Dátum:</label>
+                        <label for="log-date" data-lang="log_entry_date_label">Dátum:</label>
                         <input type="date" id="log-date" style="padding: 8px;"> 
                     </div>
                     <div class="form-group">
-                        <label for="log-time">Idő (kb.):</label>
+                        <label for="log-time" data-lang="log_entry_time_label">Idő (kb.):</label>
                         <input type="time" id="log-time" style="padding: 8px;"> 
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
                     <div class="form-group">
-                        <label for="log-wind">Szélirány:</label>
+                        <label for="log-wind" data-lang="log_entry_wind_label">Szélirány:</label>
                         <select id="log-wind">
-                            <option value="">Válassz...</option>
-                            <option value="É">Észak (É)</option>
-                            <option value="ÉK">Észak-Kelet (ÉK)</option>
-                            <option value="K">Kelet (K)</option>
-                            <option value="DK">Dél-Kelet (DK)</option>
-                            <option value="D">Dél (D)</option>
-                            <option value="DNY">Dél-Nyugat (DNY)</option>
-                            <option value="NY">Nyugat (NY)</option>
-                            <option value="ÉNY">Észak-Nyugat (ÉNY)</option>
-                            <option value="Változó">Változó</option>
-                            <option value="Szélcsend">Szélcsend</option>
+                            <option value="" data-lang="log_entry_wind_select">Válassz...</option>
+                            <option value="É" data-lang="log_entry_wind_n">Észak (É)</option>
+                            <option value="ÉK" data-lang="log_entry_wind_ne">Észak-Kelet (ÉK)</option>
+                            <option value="K" data-lang="log_entry_wind_e">Kelet (K)</option>
+                            <option value="DK" data-lang="log_entry_wind_se">Dél-Kelet (DK)</option>
+                            <option value="D" data-lang="log_entry_wind_s">Dél (D)</option>
+                            <option value="DNY" data-lang="log_entry_wind_sw">Dél-Nyugat (DNY)</option>
+                            <option value="NY" data-lang="log_entry_wind_w">Nyugat (NY)</option>
+                            <option value="ÉNY" data-lang="log_entry_wind_nw">Észak-Nyugat (ÉNY)</option>
+                            <option value="Változó" data-lang="log_entry_wind_variable">Változó</option>
+                            <option value="Szélcsend" data-lang="log_entry_wind_calm">Szélcsend</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="log-weather">Időjárás:</label>
+                        <label for="log-weather" data-lang="log_entry_weather_label">Időjárás:</label>
                         <select id="log-weather">
-                            <option value="">Válassz...</option>
-                            <option value="Napos">Napos</option>
-                            <option value="Felhős">Felhős</option>
-                            <option value="Esős">Esős</option>
-                            <option value="Viharos">Viharos</option>
-                            <option value="Ködös">Ködös</option>
+                            <option value="" data-lang="log_entry_weather_select">Válassz...</option>
+                            <option value="Napos" data-lang="log_entry_weather_sunny">Napos</option>
+                            <option value="Felhős" data-lang="log_entry_weather_cloudy">Felhős</option>
+                            <option value="Esős" data-lang="log_entry_weather_rainy">Esős</option>
+                            <option value="Viharos" data-lang="log_entry_weather_storm">Viharos</option>
+                            <option value="Ködös" data-lang="log_entry_weather_fog">Ködös</option>
                         </select>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                     <div class="form-group">
-                        <label for="log-lat">Szélesség:</label>
-                        <input type="text" id="log-lat" placeholder="Pl. 47.4979">
+                        <label for="log-lat" data-lang="log_entry_lat_label">Szélesség:</label>
+                        <input type="text" id="log-lat" placeholder="Pl. 47.4979" data-lang-placeholder="log_entry_lat_placeholder">
                     </div>
                     <div class="form-group">
-                        <label for="log-lon">Hosszúság:</label>
-                        <input type="text" id="log-lon" placeholder="Pl. 19.0402">
+                        <label for="log-lon" data-lang="log_entry_lon_label">Hosszúság:</label>
+                        <input type="text" id="log-lon" placeholder="Pl. 19.0402" data-lang-placeholder="log_entry_lon_placeholder">
                     </div>
-                    <button type="button" class="btn" onclick="getGeoLocation()" style="padding: 8px 12px; height: fit-content;" title="Pozíció lekérése">📍</button>
+                    <button type="button" class="btn" onclick="getGeoLocation()" style="padding: 8px 12px; height: fit-content;" title="Pozíció lekérése" data-lang-title="log_entry_geo_title">📍</button>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="log-report">Napi jelentés:</label>
-                    <textarea id="log-report" rows="8" style="width: 100%; box-sizing: border-box; padding: 8px;" placeholder="Írd le a mai nap eseményeit..."></textarea>
+                    <label for="log-report" data-lang="log_entry_report_label">Napi jelentés:</label>
+                    <textarea id="log-report" rows="8" style="width: 100%; box-sizing: border-box; padding: 8px;" placeholder="Írd le a mai nap eseményeit..." data-lang-placeholder="log_entry_report_placeholder"></textarea>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="log-image">Kép csatolása (opcionális, PNG):</label>
+                    <label for="log-image" data-lang="log_entry_image_label">Kép csatolása (opcionális, PNG):</label>
                     <input type="file" id="log-image" accept="image/png">
                     <div id="log-image-preview" style="margin-top: 10px; max-width: 200px;"></div>
                 </div>
 
                 <div id="log-entry-status" style="margin-bottom: 15px; color: red; font-weight: bold;"></div>
 
-                <button type="button" id="submit-log-entry-btn" class="btn">Bejegyzés mentése</button>
-                <button type="button" class="btn btn-close" onclick="closeLogEntryModal()">Mégse</button>
+                <button type="button" id="submit-log-entry-btn" class="btn" data-lang="log_entry_save_button">Bejegyzés mentése</button>
+                <button type="button" class="btn btn-close" onclick="closeLogEntryModal()" data-lang="log_entry_cancel_button">Mégse</button>
             </form>
         </div>
     </div>
 
     <div id="monk-pin-modal" class="gamemode-modal" style="display: none; align-items: center;">
         <div class="gamemode-modal-content" style="max-width: 400px; text-align: center;">
-            <h3 style="margin-top: 0;">Biztonsági Ellenőrzés</h3>
-            <p>A művelet díja 10 Tálentum.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!</p>
+            <h3 style="margin-top: 0;" data-lang="monk_pin_title">Biztonsági Ellenőrzés</h3>
+            <p data-lang-html="monk_pin_intro">A művelet díja 10 Tálentum.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!</p>
             
             <div style="position: relative; margin: 20px 0; text-align: left;">
-                <label for="monk-pin-input" style="font-weight: bold;">PIN Kód:</label>
+                <label for="monk-pin-input" style="font-weight: bold;" data-lang="monk_pin_label">PIN Kód:</label>
                 <div style="position: relative;">
                     <input type="password" id="monk-pin-input" style="width: 100%; padding-right: 40px; box-sizing: border-box;" placeholder="****">
                     <i class="fas fa-eye" id="monk-pin-toggle" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
@@ -353,8 +353,8 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; gap: 10px;">
-                <button class="btn btn-danger" onclick="closeMonkPinModal()">Mégse</button>
-                <button class="btn btn-success" onclick="finalizeMonkUpload()">Megerősítés és Feltöltés</button>
+                <button class="btn btn-danger" onclick="closeMonkPinModal()" data-lang="monk_pin_cancel_button">Mégse</button>
+                <button class="btn btn-success" onclick="finalizeMonkUpload()" data-lang="monk_pin_confirm_button">Megerősítés és Feltöltés</button>
             </div>
         </div>
     </div>
@@ -364,7 +364,7 @@
             
             <div style="margin-bottom: 15px;">
                 <i id="sys-modal-icon" class="fas fa-info-circle" style="font-size: 2.5em; color: #8b0000; display:block; margin-bottom: 10px;"></i>
-                <h3 id="sys-modal-title" style="color: #5d3a1a; margin: 0; font-family: 'Georgia', serif;">Rendszerüzenet</h3>
+                <h3 id="sys-modal-title" style="color: #5d3a1a; margin: 0; font-family: 'Georgia', serif;" data-lang="system_message_title">Rendszerüzenet</h3>
             </div>
 
             <div id="sys-modal-body" style="color: #333; font-size: 1em; line-height: 1.5; margin-bottom: 20px;">

@@ -83,7 +83,7 @@
         font-weight: bold; /* Az X karakter legyen vastag és jól látható */
         line-height: 1;    /* Pontosabb függőleges igazítás */
         min-width: 24px;   /* Garantált szélesség */
-        text-align: right; /* jobbra igazítás */
+        text-align: center; /* középre igazítás */
         display: inline-block; /* Hogy a méretek érvényesüljenek */
     }
     .header-close-icon:hover { color: #000; transform: scale(1.1); }
@@ -797,4 +797,32 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxyge
   margin: 0;
   font-weight: 600;
   color: #e19e56;
+}
+
+/* === szótár választáshoz zászlók megjelenítése === */
+.lang-switch {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 4px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.lang-btn .fi {
+  width: 24px;
+  height: 16px;
+  display: inline-block;
+}
+
+.lang-btn.active {
+  border-color: #8b0000;
+  border-radius: 4px;
 }

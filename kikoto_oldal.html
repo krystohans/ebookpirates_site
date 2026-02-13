@@ -1,18 +1,18 @@
 <div id="kikoto_oldal-splash" style="display: none;">
-    <h2>Mi szél hozott a Kikötőbe?</h2>
-    <p>Itt vannak a legnagyobb vízi zsiványok; van, aki boltot visz, mások a piacon lebzselnek a portékáikkal. Ha a legújabb pletykákról hallanál, irány a kocsma, de ha friss árut hoztál, mehetsz egyenesen a tekercsmesterhez.</p>
-    <button class="btn" onclick="markPageAsSeen('kikoto_oldal')">Értettem, mehet!</button>
+    <h2 data-lang="harbor_splash_title">Mi szél hozott a Kikötőbe?</h2>
+    <p data-lang="harbor_splash_body">Itt vannak a legnagyobb vízi zsiványok; van, aki boltot visz, mások a piacon lebzselnek a portékáikkal. Ha a legújabb pletykákról hallanál, irány a kocsma, de ha friss árut hoztál, mehetsz egyenesen a tekercsmesterhez.</p>
+    <button class="btn" onclick="markPageAsSeen('kikoto_oldal')" data-lang="harbor_splash_ack_button">Értettem, mehet!</button>
 </div>
 
 <div id="kikoto_oldal-content" style="display: none; position: relative;">
     
-    <div class="info-icon-container" title="Információ megjelenítése">
+    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
         <i class="fas fa-info-circle" onclick="showSplash('kikoto_oldal')"></i>
     </div>
 
     <div class="page-container">
         <div class="page-section" style="text-align: center;">
-            <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;">Kikötő</h2>
+            <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;" data-lang="harbor_title">Kikötő</h2>
             
               <div onclick="openUniversalNPC('harbormaster', {
                   name: 'Barba Negra',
@@ -60,7 +60,7 @@
                   
                   <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
                       <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
-                          <i class="fas fa-user-tie"></i> Kikötőmester
+                          <i class="fas fa-user-tie"></i> <span data-lang="harbor_master_title">Kikötőmester</span>
                       </span>
                       <button onclick="toggleHarbormaster()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
                   </div>
@@ -69,24 +69,24 @@
                       </div>
 
                   <div id="harbormaster-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
-                      <button class="btn" onclick="loadDialogue('start')">Indítás</button>
+                      <button class="btn" onclick="loadDialogue('start')" data-lang="harbor_master_start_button">Indítás</button>
                   </div>
               </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-                <button class="btn" style="background-color: var(--color-secondary);" onclick="loadPage('jogosult_tartalom')">🚢 A fedélzetre</button>
-                <button class="btn" onclick="loadPage('piac_oldal')">💰 Piac & Bank</button>
-                <button class="btn" onclick="loadPage('tekercsmester_oldal')">📜 Tekercsbolt</button>
-                <button class="btn" onclick="loadPage('masolatok_oldal')">📚 Másolatok</button>
-                <button class="btn" onclick="loadPage('taverna_oldal')">🍺 Kocsma</button>
-                <button class="btn" onclick="loadPage('konyvszentely_oldal')">✨ Szentély</button>
-                <button class="btn" onclick="loadPage('felhokolostor_oldal')">☁️ Kolostor</button>
-                <button class="btn" onclick="loadPage('hajomuhely_oldal')">🛠️ Hajóműhely</button> </div>
+                <button class="btn" style="background-color: var(--color-secondary);" onclick="loadPage('jogosult_tartalom')" data-lang="harbor_nav_deck">🚢 A fedélzetre</button>
+                <button class="btn" onclick="loadPage('piac_oldal')" data-lang="harbor_nav_market">💰 Piac & Bank</button>
+                <button class="btn" onclick="loadPage('tekercsmester_oldal')" data-lang="harbor_nav_scrollshop">📜 Tekercsbolt</button>
+                <button class="btn" onclick="loadPage('masolatok_oldal')" data-lang="harbor_nav_copies">📚 Másolatok</button>
+                <button class="btn" onclick="loadPage('taverna_oldal')" data-lang="harbor_nav_tavern">🍺 Kocsma</button>
+                <button class="btn" onclick="loadPage('konyvszentely_oldal')" data-lang="harbor_nav_shrine">✨ Szentély</button>
+                <button class="btn" onclick="loadPage('felhokolostor_oldal')" data-lang="harbor_nav_monastery">☁️ Kolostor</button>
+                <button class="btn" onclick="loadPage('hajomuhely_oldal')" data-lang="harbor_nav_shipyard">🛠️ Hajóműhely</button> </div>
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-            <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')">Tudnivalók</button>
-            <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+            <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')" data-lang="harbor_nav_tutorial">Tudnivalók</button>
+            <button class="btn btn-danger" onclick="logout()" data-lang="harbor_nav_logout">Kijelentkezés</button>
         </div>
     </div>
 </div>

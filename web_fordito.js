@@ -317,7 +317,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'A tutorial játék betöltődött. Ha mégsem működik, indíthatod a kvízt.',
         'tutorial_unity_status_unavailable': 'A tutorial játék nem érhető el. Kvíz indul.',
         'tutorial_unity_status_launching': 'Tutorial játék indítása folyamatban...',
+        'tutorial_unity_status_waiting_click': 'A játék indításához kattints a gombra.',
         'tutorial_unity_status_timeout': 'A tutorial játék nem válaszol időben. Kvíz indul.',
+        'tutorial_unity_status_webgl_not_supported': 'A böngésző/GPU nem támogatja a szükséges WebGL2 funkciókat. Kvíz indul.',
         'tutorial_unity_status_manual_fallback': 'Kézi váltás: kvíz indul.',
         'tutorial_unity_fail_reason_unknown': 'ismeretlen ok',
 
@@ -1141,7 +1143,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'Tutorial game loaded. If it still does not work, you can start the quiz.',
         'tutorial_unity_status_unavailable': 'Tutorial game is not available. Switching to quiz.',
         'tutorial_unity_status_launching': 'Launching tutorial game...',
+        'tutorial_unity_status_waiting_click': 'Click the button to start the game.',
         'tutorial_unity_status_timeout': 'Tutorial game did not respond in time. Switching to quiz.',
+        'tutorial_unity_status_webgl_not_supported': 'Your browser/GPU does not support required WebGL2 features. Switching to quiz.',
         'tutorial_unity_status_manual_fallback': 'Manual switch: starting quiz.',
         'tutorial_unity_fail_reason_unknown': 'unknown reason',
 
@@ -1884,7 +1888,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'Tutorial-Spiel wurde geladen. Wenn es trotzdem nicht funktioniert, kannst du das Quiz starten.',
         'tutorial_unity_status_unavailable': 'Tutorial-Spiel ist nicht erreichbar. Quiz wird gestartet.',
         'tutorial_unity_status_launching': 'Tutorial-Spiel wird gestartet...',
+        'tutorial_unity_status_waiting_click': 'Klicke auf den Button, um das Spiel zu starten.',
         'tutorial_unity_status_timeout': 'Tutorial-Spiel antwortet nicht rechtzeitig. Quiz wird gestartet.',
+        'tutorial_unity_status_webgl_not_supported': 'Dein Browser/GPU unterstuetzt die benoetigten WebGL2-Funktionen nicht. Quiz wird gestartet.',
         'tutorial_unity_status_manual_fallback': 'Manueller Wechsel: Quiz wird gestartet.',
         'tutorial_unity_fail_reason_unknown': 'unbekannter Grund',
 
@@ -2692,7 +2698,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'Le jeu tutoriel est charge. S il ne fonctionne pas, tu peux lancer le quiz.',
         'tutorial_unity_status_unavailable': 'Le jeu tutoriel est indisponible. Bascule vers le quiz.',
         'tutorial_unity_status_launching': 'Demarrage du jeu tutoriel...',
+        'tutorial_unity_status_waiting_click': 'Clique sur le bouton pour lancer le jeu.',
         'tutorial_unity_status_timeout': 'Le jeu tutoriel ne repond pas a temps. Bascule vers le quiz.',
+        'tutorial_unity_status_webgl_not_supported': 'Ton navigateur/GPU ne prend pas en charge les fonctions WebGL2 requises. Bascule vers le quiz.',
         'tutorial_unity_status_manual_fallback': 'Bascule manuelle : lancement du quiz.',
         'tutorial_unity_fail_reason_unknown': 'raison inconnue',
 
@@ -3509,7 +3517,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'El juego tutorial se ha cargado. Si aun no funciona, puedes iniciar el cuestionario.',
         'tutorial_unity_status_unavailable': 'El juego tutorial no esta disponible. Cambiando al cuestionario.',
         'tutorial_unity_status_launching': 'Iniciando el juego tutorial...',
+        'tutorial_unity_status_waiting_click': 'Haz clic en el boton para iniciar el juego.',
         'tutorial_unity_status_timeout': 'El juego tutorial no respondio a tiempo. Cambiando al cuestionario.',
+        'tutorial_unity_status_webgl_not_supported': 'Tu navegador/GPU no admite las funciones WebGL2 necesarias. Cambiando al cuestionario.',
         'tutorial_unity_status_manual_fallback': 'Cambio manual: iniciando cuestionario.',
         'tutorial_unity_fail_reason_unknown': 'motivo desconocido',
 
@@ -4317,7 +4327,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'Gra samouczka zostala zaladowana. Jesli nadal nie dziala, mozesz uruchomic quiz.',
         'tutorial_unity_status_unavailable': 'Gra samouczka jest niedostepna. Uruchamianie quizu.',
         'tutorial_unity_status_launching': 'Uruchamianie gry samouczka...',
+        'tutorial_unity_status_waiting_click': 'Kliknij przycisk, aby uruchomic gre.',
         'tutorial_unity_status_timeout': 'Gra samouczka nie odpowiedziala na czas. Uruchamianie quizu.',
+        'tutorial_unity_status_webgl_not_supported': 'Twoja przegladarka/GPU nie obsluguje wymaganych funkcji WebGL2. Uruchamianie quizu.',
         'tutorial_unity_status_manual_fallback': 'Przelaczenie reczne: uruchamianie quizu.',
         'tutorial_unity_fail_reason_unknown': 'nieznany powod',
 
@@ -5125,7 +5137,9 @@ const translations = {
         'tutorial_unity_status_loaded': 'Обучающая игра загружена. Если всё равно не работает, можно запустить викторину.',
         'tutorial_unity_status_unavailable': 'Обучающая игра недоступна. Переключение на викторину.',
         'tutorial_unity_status_launching': 'Запуск обучающей игры...',
+        'tutorial_unity_status_waiting_click': 'Нажми кнопку, чтобы запустить игру.',
         'tutorial_unity_status_timeout': 'Обучающая игра не ответила вовремя. Переключение на викторину.',
+        'tutorial_unity_status_webgl_not_supported': 'Браузер/GPU не поддерживает необходимые функции WebGL2. Переключение на викторину.',
         'tutorial_unity_status_manual_fallback': 'Ручное переключение: запуск викторины.',
         'tutorial_unity_fail_reason_unknown': 'неизвестная причина',
 

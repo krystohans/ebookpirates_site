@@ -695,6 +695,11 @@ function runTutorialScript() {
             fallbackBtn.innerText = t('tutorial_unity_fallback_quiz');
         }
 
+        var startBtn = document.getElementById('tutorial-unity-start-btn');
+        if (startBtn) {
+            startBtn.innerText = t('tutorial_unity_start_button');
+        }
+
         if (continueBtn) {
             continueBtn.innerText = t('tutorial_unity_continue_button');
         }
@@ -766,38 +771,25 @@ function runTutorialScript() {
         return launchUrl;
     }
 
-    function tryLaunchUnity(flow) {
-        ensureUnityUiElements();
-
-        var panel = document.getElementById('tutorial-unity-panel');
-        var host = document.getElementById('tutorial-unity-host');
-        var fallbackBtn = document.getElementById('tutorial-fallback-btn');
-        var openBtn = document.getElementById('tutorial-open-unity-btn');
-
-        if (!panel || !host) {
-            showQuizMode();
-            return;
+    function checkUnityWebGLSupport() {
+        try {
+            var canvas = document.createElement('canvas');
+            var gl2 = canvas.getContext('webgl2', { antialias: false, alpha: false });
+            if (!gl2) {
+                return { ok: false, reason: t('tutorial_unity_status_webgl_not_supported') };
+            }
+            return { ok: true, reason: '' };
+        } catch (e) {
+            return { ok: false, reason: t('tutorial_unity_status_webgl_not_supported') };
         }
+    }
 
-        var unityUrl = (flow && flow.unityUrl) ? flow.unityUrl : '';
-        if (!unityUrl) {
+    function mountUnityIframe(host) {
+        if (!host || !unityTargetUrl) {
             setUnityStatus(t('tutorial_unity_status_missing_url'), '#c0392b');
             showQuizMode();
             return;
         }
-
-        panel.style.display = 'block';
-        var quiz = document.getElementById('quiz-container');
-        var nav = document.getElementById('quiz-navigation');
-        if (quiz) {
-            quiz.style.display = 'none';
-        }
-        if (nav) {
-            nav.style.display = 'none';
-        }
-
-        var mode = flow && flow.tutorialCompleted ? 'continue' : 'tutorial';
-        unityTargetUrl = buildUnityLaunchUrl(unityUrl, mode, flow ? flow.gameStateToken : '');
 
         host.innerHTML = '';
         var iframe = document.createElement('iframe');
@@ -806,6 +798,7 @@ function runTutorialScript() {
         iframe.style.height = '560px';
         iframe.style.border = '0';
         iframe.setAttribute('allowfullscreen', 'true');
+        iframe.setAttribute('allow', 'autoplay; fullscreen');
         iframe.setAttribute('title', t('tutorial_unity_iframe_title'));
 
         iframe.onload = function() {
@@ -826,6 +819,61 @@ function runTutorialScript() {
             setUnityStatus(t('tutorial_unity_status_timeout'), '#c0392b');
             showQuizMode();
         }, 12000);
+    }
+
+    function tryLaunchUnity(flow, autoStart) {
+        ensureUnityUiElements();
+
+        var panel = document.getElementById('tutorial-unity-panel');
+        var host = document.getElementById('tutorial-unity-host');
+        var fallbackBtn = document.getElementById('tutorial-fallback-btn');
+        var openBtn = document.getElementById('tutorial-open-unity-btn');
+        var startBtn = document.getElementById('tutorial-unity-start-btn');
+
+        if (!panel || !host) {
+            showQuizMode();
+            return;
+        }
+
+        var unityUrl = (flow && flow.unityUrl) ? flow.unityUrl : '';
+        if (!unityUrl) {
+            setUnityStatus(t('tutorial_unity_status_missing_url'), '#c0392b');
+            showQuizMode();
+            return;
+        }
+
+        var support = checkUnityWebGLSupport();
+        if (!support.ok) {
+            setUnityStatus(support.reason, '#c0392b');
+            showQuizMode();
+            return;
+        }
+
+        panel.style.display = 'block';
+        var quiz = document.getElementById('quiz-container');
+        var nav = document.getElementById('quiz-navigation');
+        if (quiz) {
+            quiz.style.display = 'none';
+        }
+        if (nav) {
+            nav.style.display = 'none';
+        }
+
+        var mode = flow && flow.tutorialCompleted ? 'continue' : 'tutorial';
+        unityTargetUrl = buildUnityLaunchUrl(unityUrl, mode, flow ? flow.gameStateToken : '');
+
+        if (startBtn) {
+            startBtn.style.display = 'inline-block';
+            startBtn.onclick = function() {
+                mountUnityIframe(host);
+            };
+        }
+
+        if (autoStart) {
+            mountUnityIframe(host);
+        } else {
+            setUnityStatus(t('tutorial_unity_status_waiting_click'), '#333');
+        }
 
         if (fallbackBtn) {
             fallbackBtn.onclick = function() {
@@ -856,7 +904,7 @@ function runTutorialScript() {
                     tutorialCompleted: true,
                     gameStateToken: flow.gameStateToken,
                     unityUrl: flow.unityUrl
-                });
+                }, true);
             };
         } else {
             btn.style.display = 'none';
@@ -867,7 +915,9 @@ function runTutorialScript() {
     function initializeTutorialPage(flow) {
         currentFlowState = flow || {};
 
-        setupTutorialAccordion();
+        if (typeof setupAccordionListeners === 'function') {
+            setupAccordionListeners();
+        }
         ensureUnityUiElements();
 
         var newUserContent = document.getElementById('new-user-content');
@@ -896,22 +946,7 @@ function runTutorialScript() {
                 nav.style.display = 'none';
             }
             bindContinueButton(null);
-            tryLaunchUnity(flow || {});
-        }
-    }
-
-    function setupTutorialAccordion() {
-        var acc = document.getElementsByClassName('accordion-button');
-        for (var i = 0; i < acc.length; i++) {
-            acc[i].addEventListener('click', function() {
-                this.classList.toggle('active');
-                var panel = this.nextElementSibling;
-                if (panel.style.maxHeight) {
-                    panel.style.maxHeight = null;
-                } else {
-                    panel.style.maxHeight = panel.scrollHeight + 'px';
-                }
-            });
+            tryLaunchUnity(flow || {}, false);
         }
     }
 
@@ -961,10 +996,22 @@ function runTutorialScript() {
         if (!qObj || !questionTextEl || !optionsContainer) {
             return;
         }
-        questionTextEl.textContent = qObj.question;
+        var questionText = (typeof qObj.question === 'string' && qObj.question) ? qObj.question : t('tutorial_question_loading');
+        var options = Array.isArray(qObj.options) ? qObj.options : [];
 
-        for (var i = 0; i < qObj.options.length; i++) {
-            var option = qObj.options[i];
+        questionTextEl.textContent = questionText;
+
+        if (options.length === 0) {
+            showFeedback(t('error_prefix') + 'Érvénytelen kérdés adatok érkeztek.', 'red');
+            var invalidBtn = document.getElementById('submit-btn');
+            if (invalidBtn) {
+                invalidBtn.disabled = true;
+            }
+            return;
+        }
+
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
             var label = document.createElement('label');
             label.className = 'option-label';
 

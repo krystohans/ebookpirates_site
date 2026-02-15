@@ -5,21 +5,21 @@
             <p style="text-align: center;" data-lang="tutorial_intro">A sikeres kalózvizsgához olvasd el figyelmesen az alábbiakat!</p>
 
             <div id="info-accordion" style="margin-top: 20px; border: 1px solid #ccc; border-radius: 5px; overflow: hidden;">
-                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_credit_title">A kalózkreditről és a kocsmáról</button>
+                <button class="accordion-button" data-lang="tutorial_acc_credit_title">A kalózkreditről és a kocsmáról</button>
                 <div class="accordion-content">
                     <div class="accordion-panel-content">
                         <p data-lang-html="tutorial_acc_credit_body">A <b>kalózkredit</b> a legfőbb fizetőeszköz. Ebből tudsz a piacon vásárolni. Sok ezer kreditet a <b>kocsmában</b> felvett küldetések teljesítésével szerezhetsz. Vagy mehetsz hártyahalásznak napi néhány kreditért.</p>
                     </div>
                 </div>
 
-                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_scroll_title">A tekercsekről és a hártyákról</button>
+                <button class="accordion-button" data-lang="tutorial_acc_scroll_title">A tekercsekről és a hártyákról</button>
                 <div class="accordion-content">
                     <div class="accordion-panel-content">
                         <p data-lang-html="tutorial_acc_scroll_body">A <b>tekercsek</b> különleges olvasmányok, a <b>hártyák</b> pedig a tekercsek alapanyaga. A <b>letkristályok</b> segítségével tudod a tekercseidet könyvekké fejleszteni, ami növeli a jutalékodat.</p>
                     </div>
                 </div>
 
-                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_market_title">A piacról és a szentélyről</button>
+                <button class="accordion-button" data-lang="tutorial_acc_market_title">A piacról és a szentélyről</button>
                 <div class="accordion-content">
                     <div class="accordion-panel-content">
                         <p data-lang-html="tutorial_acc_market_body">A <strong>piacon</strong> adhatod el a megszerzett kincseidet kalózkreditért, vagy szerezheted be a szükséges felszerelésedet. A <strong>szentély</strong> egy misztikus hely, ahol áldozatokat mutathatsz be különleges jutalmakért.</p>
@@ -33,6 +33,7 @@
             <p id="tutorial-unity-status" style="font-weight: bold;" data-lang="tutorial_unity_status_starting">Tutorial játék indítása...</p>
             <div id="tutorial-unity-host" style="width: 100%; min-height: 560px; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; background: #111;"></div>
             <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="tutorial-unity-start-btn" class="btn" type="button" data-lang="tutorial_unity_start_button">Tutorial játék indítása</button>
                 <button id="tutorial-open-unity-btn" class="btn" type="button" data-lang="tutorial_unity_open_external">Tutorial játék külön lapon</button>
                 <button id="tutorial-fallback-btn" class="btn" type="button" style="background: #8b0000;" data-lang="tutorial_unity_fallback_quiz">Kvíz indítása helyette</button>
             </div>

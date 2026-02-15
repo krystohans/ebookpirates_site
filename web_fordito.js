@@ -2542,18 +2542,14 @@ function updateActiveLangButtons() {
 function bindLanguageButtons() {
     const langButtons = document.querySelectorAll('.lang-btn');
     langButtons.forEach(button => {
-        if (button.getAttribute('data-lang-bound') === '1') {
-            return;
-        }
-
         const buttonLang = button.getAttribute('data-lang');
         if (!buttonLang) {
             return;
         }
 
-        button.addEventListener('click', function() {
+        button.onclick = function() {
             switchLanguage(buttonLang);
-        });
+        };
         button.setAttribute('data-lang-bound', '1');
     });
 }

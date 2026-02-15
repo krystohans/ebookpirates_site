@@ -984,12 +984,61 @@ function runTutorialScript() {
             optionsContainer.innerHTML = '';
         }
 
-        callBackend('getTutorialQuestion', [index, getSiteLang()],
-            displayQuestion,
-            function(error) {
-                showFeedback(t('error_prefix') + error.message, 'red');
+        loadQuestionWithFallback(index);
+    }
+
+    function isValidTutorialQuestionPayload(qObj) {
+        if (!qObj || typeof qObj !== 'object') {
+            return false;
+        }
+        if (typeof qObj.question !== 'string' || !qObj.question) {
+            return false;
+        }
+        if (!Array.isArray(qObj.options) || qObj.options.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
+    function buildTutorialQuestionParamVariants(index) {
+        var lang = getSiteLang();
+        return [
+            [index, lang],
+            [index]
+        ];
+    }
+
+    function loadQuestionWithFallback(index) {
+        var paramVariants = buildTutorialQuestionParamVariants(index);
+        var attemptIndex = 0;
+
+        function tryNext(lastErrorMessage) {
+            if (attemptIndex >= paramVariants.length) {
+                showFeedback(t('error_prefix') + (lastErrorMessage || 'Nem sikerült kérdést betölteni.'), 'red');
+                return;
             }
-        );
+
+            var params = paramVariants[attemptIndex];
+            attemptIndex++;
+
+            callBackend('getTutorialQuestion', params,
+                function(response) {
+                    if (isValidTutorialQuestionPayload(response)) {
+                        displayQuestion(response);
+                        return;
+                    }
+
+                    var backendError = (response && (response.error || response.message)) ? (response.error || response.message) : '';
+                    tryNext(backendError || t('invalid_question_index'));
+                },
+                function(error) {
+                    var errorText = (error && error.message) ? error.message : '';
+                    tryNext(errorText);
+                }
+            );
+        }
+
+        tryNext('');
     }
 
     function displayQuestion(qObj) {

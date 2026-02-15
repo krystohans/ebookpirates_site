@@ -1,44 +1,51 @@
 <div class="page-container tutorial-container">
-    
     <div id="new-user-content" style="display: none;">
         <div class="page-section">
             <h2 style="color: var(--color-accent); text-align: center;" data-lang="tutorial_title_main">A Legfontosabb Tudnivalók</h2>
             <p style="text-align: center;" data-lang="tutorial_intro">A sikeres kalózvizsgához olvasd el figyelmesen az alábbiakat!</p>
-            
+
             <div id="info-accordion" style="margin-top: 20px; border: 1px solid #ccc; border-radius: 5px; overflow: hidden;">
-    
                 <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_credit_title">A kalózkreditről és a kocsmáról</button>
-                  <div class="accordion-content">
-                      <div class="accordion-panel-content">
-                          <p data-lang-html="tutorial_acc_credit_body">A <b>kalózkredit</b> a legfőbb fizetőeszköz. Ebből tudsz a piacon vásárolni. Sok ezer kreditet a <b>kocsmában</b> felvett küldetések teljesítésével szerezhetsz. Vagy mehetsz hártyahalásznak napi néhány kreditért.</p>
-                      </div>
-                  </div>
-                
-                                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_scroll_title">A tekercsekről és a hártyákról</button>
-                  <div class="accordion-content">
-                      <div class="accordion-panel-content">
-                                                    <p data-lang-html="tutorial_acc_scroll_body">A <b>tekercsek</b> különleges olvasmányok, a <b>hártyák</b> pedig a tekercsek alapanyaga. A <b>letkristályok</b> segítségével tudod a tekercseidet könyvekké fejleszteni, ami növeli a jutalékodat.</p>
-                      </div>
-                  </div>
+                <div class="accordion-content">
+                    <div class="accordion-panel-content">
+                        <p data-lang-html="tutorial_acc_credit_body">A <b>kalózkredit</b> a legfőbb fizetőeszköz. Ebből tudsz a piacon vásárolni. Sok ezer kreditet a <b>kocsmában</b> felvett küldetések teljesítésével szerezhetsz. Vagy mehetsz hártyahalásznak napi néhány kreditért.</p>
+                    </div>
+                </div>
 
-                                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_market_title">A piacról és a szentélyről</button>
-                  <div class="accordion-content">
-                      <div class="accordion-panel-content">
-                                                    <p data-lang-html="tutorial_acc_market_body">A <strong>piacon</strong> adhatod el a megszerzett kincseidet kalózkreditért, vagy szerezheted be a szükséges felszerelésedet. A <strong>szentély</strong> egy misztikus hely, ahol áldozatokat mutathatsz be különleges jutalmakért.</p>
-                  </div>
+                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_scroll_title">A tekercsekről és a hártyákról</button>
+                <div class="accordion-content">
+                    <div class="accordion-panel-content">
+                        <p data-lang-html="tutorial_acc_scroll_body">A <b>tekercsek</b> különleges olvasmányok, a <b>hártyák</b> pedig a tekercsek alapanyaga. A <b>letkristályok</b> segítségével tudod a tekercseidet könyvekké fejleszteni, ami növeli a jutalékodat.</p>
+                    </div>
+                </div>
+
+                <button class="accordion-button" onclick="toggleAccordionPanel.call(this)" data-lang="tutorial_acc_market_title">A piacról és a szentélyről</button>
+                <div class="accordion-content">
+                    <div class="accordion-panel-content">
+                        <p data-lang-html="tutorial_acc_market_body">A <strong>piacon</strong> adhatod el a megszerzett kincseidet kalózkreditért, vagy szerezheted be a szükséges felszerelésedet. A <strong>szentély</strong> egy misztikus hely, ahol áldozatokat mutathatsz be különleges jutalmakért.</p>
+                    </div>
+                </div>
             </div>
+        </div>
 
-</div>
+        <div id="tutorial-unity-panel" class="page-section" style="display: none; margin-top: 20px; background-color: #fff;">
+            <h2 style="border-bottom: 2px solid var(--color-primary); padding-bottom: 10px;">Unity Tutorial</h2>
+            <p id="tutorial-unity-status" style="font-weight: bold;">Tutorial játék indítása...</p>
+            <div id="tutorial-unity-host" style="width: 100%; min-height: 560px; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; background: #111;"></div>
+            <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="tutorial-open-unity-btn" class="btn" type="button">Tutorial játék külön lapon</button>
+                <button id="tutorial-fallback-btn" class="btn" type="button" style="background: #8b0000;">Kvíz indítása helyette</button>
+            </div>
+        </div>
 
         <div id="quiz-container" class="page-section" style="margin-top: 20px; background-color: #fff;">
             <h2 style="border-bottom: 2px solid var(--color-primary); padding-bottom: 10px;" data-lang="tutorial_quiz_title">Vizsga</h2>
-            
+
             <div id="question-area">
                 <p id="question-text" style="font-weight: bold; font-size: 1.1em;" data-lang="tutorial_question_loading">Kérdés betöltése...</p>
-                <div id="options-container" style="display: flex; flex-direction: column; gap: 10px;">
-                    </div>
+                <div id="options-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
-            
+
             <button id="submit-btn" class="btn" style="width: 100%; margin-top: 20px; font-size: 1.2em;" data-lang="tutorial_submit_button">Ezt választom!</button>
             <p id="feedback-text" style="text-align: center; font-weight: bold; min-height: 20px; margin-top: 10px;"></p>
         </div>
@@ -47,10 +54,10 @@
     <div id="quiz-navigation" class="page-section" style="display: none; text-align: center;">
         <h3 style="color: var(--color-primary);" data-lang="tutorial_nav_title">Gratulálok! Ezzel a tudással már lehetsz kalóz!</h3>
         <p data-lang="tutorial_nav_prompt">Most merre tovább?</p>
-        <div style="display: flex; justify-content: center; gap: 10px;">
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <button id="tutorial-continue-btn" class="btn" type="button" style="display: none; background-color: #1d6a96;">Tutorial játék folytatása</button>
             <button class="btn" onclick="loadPage('jogosult_tartalom')" data-lang="tutorial_nav_deck_button">A fedélzetre</button>
             <button class="btn btn-danger" onclick="logout()" data-lang="tutorial_nav_logout_button">Kijelentkezés</button>
         </div>
     </div>
-
 </div>

@@ -226,6 +226,12 @@ function login() {
         function(response) {
             if (response && response.success) {
                 localStorage.setItem('ebookPiratesToken', response.token); 
+                try {
+                    sessionStorage.setItem('ebookPiratesLoginName', formData.name || '');
+                    sessionStorage.setItem('ebookPiratesLoginPass', formData.jelszo || '');
+                } catch (storageError) {
+                    console.warn('Nem sikerült ideiglenesen menteni a login adatokat.', storageError);
+                }
                 initializeApp(response.user);
             } else {
                 document.getElementById('login-status').innerText = response.message;
@@ -584,141 +590,457 @@ function showSplash(pageName) {
 // ==========================================
 
 function runTutorialScript() {
-    console.log("runTutorialScript() FÜGGVÉNY ELINDULT (Routeres verzió).");
-    
-    // Belső segédfüggvények
-    function initializeTutorialPage(status) {
-        setupTutorialAccordion();
-        const newUserContent = document.getElementById('new-user-content');
-        if(newUserContent) newUserContent.style.display = 'block';
-        
-        if (status === 'ok') {
-            document.getElementById('quiz-container').style.display = 'none';
-            document.getElementById('quiz-navigation').style.display = 'block';
+    console.log('runTutorialScript() FÜGGVÉNY ELINDULT (Unity + fallback verzió).');
+
+    var currentQuestionIndex = 0;
+    var questionTextEl = document.getElementById('question-text');
+    var optionsContainer = document.getElementById('options-container');
+    var feedbackEl = document.getElementById('feedback-text');
+    var submitBtn = document.getElementById('submit-btn');
+    var unityLaunchTimeoutId = null;
+    var unityTargetUrl = '';
+    var currentFlowState = null;
+
+    function getClientOsInfo() {
+        var ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
+        var platform = (navigator && navigator.platform) ? navigator.platform : 'unknown';
+        var osType = 'PC';
+
+        if (/Android/i.test(ua)) {
+            osType = 'ANDROID';
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+            osType = 'IOS';
+        } else if (/Windows/i.test(ua)) {
+            osType = 'WINDOWS';
+        } else if (/Mac/i.test(ua)) {
+            osType = 'MAC';
+        } else if (/Linux/i.test(ua)) {
+            osType = 'LINUX';
+        }
+
+        return {
+            osType: osType,
+            platform: platform,
+            userAgent: ua,
+            touch: !!(('ontouchstart' in window) || (navigator && navigator.maxTouchPoints > 0))
+        };
+    }
+
+    function ensureUnityUiElements() {
+        var newUserContent = document.getElementById('new-user-content');
+        if (!newUserContent) {
+            return;
+        }
+
+        var panel = document.getElementById('tutorial-unity-panel');
+        if (!panel) {
+            panel = document.createElement('div');
+            panel.id = 'tutorial-unity-panel';
+            panel.className = 'page-section';
+            panel.style.display = 'none';
+            panel.style.marginTop = '20px';
+            panel.style.backgroundColor = '#fff';
+            panel.innerHTML = '<h2 style="border-bottom:2px solid var(--color-primary); padding-bottom:10px;">Unity Tutorial</h2>' +
+                '<p id="tutorial-unity-status" style="font-weight:bold;">Tutorial játék indítása...</p>' +
+                '<div id="tutorial-unity-host" style="width:100%; min-height:560px; border:1px solid #ccc; border-radius:6px; overflow:hidden; background:#111;"></div>' +
+                '<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">' +
+                '<button id="tutorial-open-unity-btn" class="btn" type="button">Tutorial játék külön lapon</button>' +
+                '<button id="tutorial-fallback-btn" class="btn" type="button" style="background:#8b0000;">Kvíz indítása helyette</button>' +
+                '</div>';
+
+            var quizContainer = document.getElementById('quiz-container');
+            if (quizContainer && quizContainer.parentNode) {
+                quizContainer.parentNode.insertBefore(panel, quizContainer);
+            } else {
+                newUserContent.appendChild(panel);
+            }
+        }
+
+        var continueBtn = document.getElementById('tutorial-continue-btn');
+        var nav = document.getElementById('quiz-navigation');
+        if (!continueBtn && nav) {
+            continueBtn = document.createElement('button');
+            continueBtn.id = 'tutorial-continue-btn';
+            continueBtn.className = 'btn';
+            continueBtn.type = 'button';
+            continueBtn.style.display = 'none';
+            continueBtn.style.backgroundColor = '#1d6a96';
+            continueBtn.innerText = 'Tutorial játék folytatása';
+
+            var wrapper = nav.querySelector('div');
+            if (wrapper) {
+                wrapper.appendChild(continueBtn);
+            } else {
+                nav.appendChild(continueBtn);
+            }
+        }
+    }
+
+    function setUnityStatus(text, color) {
+        var statusEl = document.getElementById('tutorial-unity-status');
+        if (statusEl) {
+            statusEl.innerText = text;
+            if (color) {
+                statusEl.style.color = color;
+            }
+        }
+    }
+
+    function stopUnityTimeout() {
+        if (unityLaunchTimeoutId) {
+            clearTimeout(unityLaunchTimeoutId);
+            unityLaunchTimeoutId = null;
+        }
+    }
+
+    function showQuizMode() {
+        stopUnityTimeout();
+        var panel = document.getElementById('tutorial-unity-panel');
+        if (panel) {
+            panel.style.display = 'none';
+        }
+
+        var quiz = document.getElementById('quiz-container');
+        var nav = document.getElementById('quiz-navigation');
+        if (quiz) {
+            quiz.style.display = 'block';
+        }
+        if (nav) {
+            nav.style.display = 'none';
+        }
+
+        startQuiz();
+    }
+
+    function buildUnityLaunchUrl(baseUrl, mode, token) {
+        var loginName = '';
+        var loginPass = '';
+
+        try {
+            loginName = sessionStorage.getItem('ebookPiratesLoginName') || '';
+            loginPass = sessionStorage.getItem('ebookPiratesLoginPass') || '';
+        } catch (e) {
+            loginName = '';
+            loginPass = '';
+        }
+
+        var osInfo = getClientOsInfo();
+        var sep = (baseUrl.indexOf('?') === -1) ? '?' : '&';
+        var launchUrl = baseUrl + sep +
+            'mode=' + encodeURIComponent(mode || 'tutorial') +
+            '&email=' + encodeURIComponent(currentUserEmail || '') +
+            '&loginName=' + encodeURIComponent(loginName) +
+            '&password=' + encodeURIComponent(loginPass) +
+            '&os=' + encodeURIComponent(osInfo.osType) +
+            '&platform=' + encodeURIComponent(osInfo.platform) +
+            '&touch=' + encodeURIComponent(osInfo.touch ? '1' : '0');
+
+        if (token) {
+            launchUrl += '&gameStateToken=' + encodeURIComponent(token);
+        }
+
+        return launchUrl;
+    }
+
+    function tryLaunchUnity(flow) {
+        ensureUnityUiElements();
+
+        var panel = document.getElementById('tutorial-unity-panel');
+        var host = document.getElementById('tutorial-unity-host');
+        var fallbackBtn = document.getElementById('tutorial-fallback-btn');
+        var openBtn = document.getElementById('tutorial-open-unity-btn');
+
+        if (!panel || !host) {
+            showQuizMode();
+            return;
+        }
+
+        var unityUrl = (flow && flow.unityUrl) ? flow.unityUrl : '';
+        if (!unityUrl) {
+            setUnityStatus('Unity URL nincs beállítva, kvíz indul.', '#c0392b');
+            showQuizMode();
+            return;
+        }
+
+        panel.style.display = 'block';
+        var quiz = document.getElementById('quiz-container');
+        var nav = document.getElementById('quiz-navigation');
+        if (quiz) {
+            quiz.style.display = 'none';
+        }
+        if (nav) {
+            nav.style.display = 'none';
+        }
+
+        var mode = flow && flow.tutorialCompleted ? 'continue' : 'tutorial';
+        unityTargetUrl = buildUnityLaunchUrl(unityUrl, mode, flow ? flow.gameStateToken : '');
+
+        host.innerHTML = '';
+        var iframe = document.createElement('iframe');
+        iframe.src = unityTargetUrl;
+        iframe.style.width = '100%';
+        iframe.style.height = '560px';
+        iframe.style.border = '0';
+        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.setAttribute('title', 'eBookPirates tutorial játék');
+
+        iframe.onload = function() {
+            stopUnityTimeout();
+            setUnityStatus('A tutorial játék betöltődött. Ha mégsem működik, indíthatod a kvízt.', '#1f7a1f');
+        };
+
+        iframe.onerror = function() {
+            setUnityStatus('A tutorial játék nem érhető el. Kvíz indul.', '#c0392b');
+            showQuizMode();
+        };
+
+        host.appendChild(iframe);
+        setUnityStatus('Tutorial játék indítása folyamatban...', '#333');
+
+        stopUnityTimeout();
+        unityLaunchTimeoutId = setTimeout(function() {
+            setUnityStatus('A tutorial játék nem válaszol időben. Kvíz indul.', '#c0392b');
+            showQuizMode();
+        }, 12000);
+
+        if (fallbackBtn) {
+            fallbackBtn.onclick = function() {
+                setUnityStatus('Kézi váltás: kvíz indul.', '#c0392b');
+                showQuizMode();
+            };
+        }
+
+        if (openBtn) {
+            openBtn.onclick = function() {
+                if (unityTargetUrl) {
+                    window.open(unityTargetUrl, '_blank');
+                }
+            };
+        }
+    }
+
+    function bindContinueButton(flow) {
+        var btn = document.getElementById('tutorial-continue-btn');
+        if (!btn) {
+            return;
+        }
+
+        if (flow && flow.gameStateToken) {
+            btn.style.display = 'inline-block';
+            btn.onclick = function() {
+                tryLaunchUnity({
+                    tutorialCompleted: true,
+                    gameStateToken: flow.gameStateToken,
+                    unityUrl: flow.unityUrl
+                });
+            };
         } else {
-            document.getElementById('quiz-container').style.display = 'block';
-            document.getElementById('quiz-navigation').style.display = 'none';
-            startQuiz();
+            btn.style.display = 'none';
+            btn.onclick = null;
+        }
+    }
+
+    function initializeTutorialPage(flow) {
+        currentFlowState = flow || {};
+
+        setupTutorialAccordion();
+        ensureUnityUiElements();
+
+        var newUserContent = document.getElementById('new-user-content');
+        if (newUserContent) {
+            newUserContent.style.display = 'block';
+        }
+
+        var status = (flow && flow.status) ? String(flow.status).toLowerCase() : '';
+        var quiz = document.getElementById('quiz-container');
+        var nav = document.getElementById('quiz-navigation');
+        var panel = document.getElementById('tutorial-unity-panel');
+
+        if (status === 'ok') {
+            if (quiz) {
+                quiz.style.display = 'none';
+            }
+            if (nav) {
+                nav.style.display = 'block';
+            }
+            if (panel) {
+                panel.style.display = 'none';
+            }
+            bindContinueButton(flow);
+        } else {
+            if (nav) {
+                nav.style.display = 'none';
+            }
+            bindContinueButton(null);
+            tryLaunchUnity(flow || {});
         }
     }
 
     function setupTutorialAccordion() {
-        const acc = document.getElementsByClassName("accordion-button");
-        for (let i = 0; i < acc.length; i++) {
-            // Itt használhatnánk a globális setupAccordionListeners-t is, 
-            // de meghagyom a te logikádat, hogy biztosan ne akadjon össze.
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                const panel = this.nextElementSibling;
+        var acc = document.getElementsByClassName('accordion-button');
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener('click', function() {
+                this.classList.toggle('active');
+                var panel = this.nextElementSibling;
                 if (panel.style.maxHeight) {
                     panel.style.maxHeight = null;
                 } else {
-                    panel.style.maxHeight = panel.scrollHeight + "px";
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
                 }
             });
         }
     }
 
-    let currentQuestionIndex = 0;
-    const questionTextEl = document.getElementById('question-text');
-    const optionsContainer = document.getElementById('options-container');
-    const feedbackEl = document.getElementById('feedback-text');
-    const submitBtn = document.getElementById('submit-btn');
-
-    function startQuiz() { 
-        // Régi listener levétele, hogy ne duplikálódjon
-        const newBtn = submitBtn.cloneNode(true);
-        submitBtn.parentNode.replaceChild(newBtn, submitBtn);
-        newBtn.addEventListener('click', handleAnswer); 
-        
-        // Frissítjük a referenciát
-        // (Vagy használhatnánk a removeEventListener-t, ha a handleAnswer nem lenne closure-ben)
-        // De a klónozás itt biztonságosabb a scope miatt.
-        loadQuestion(currentQuestionIndex); 
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        var currentSubmitBtn = document.getElementById('submit-btn');
+        if (!currentSubmitBtn) {
+            return;
+        }
+        var newBtn = currentSubmitBtn.cloneNode(true);
+        currentSubmitBtn.parentNode.replaceChild(newBtn, currentSubmitBtn);
+        newBtn.addEventListener('click', handleAnswer);
+        loadQuestion(currentQuestionIndex);
     }
 
-    function showFeedback(message, color) { 
-        feedbackEl.textContent = message; 
-        feedbackEl.style.color = color; 
+    function showFeedback(message, color) {
+        if (!feedbackEl) {
+            return;
+        }
+        feedbackEl.textContent = message;
+        feedbackEl.style.color = color;
     }
 
     function loadQuestion(index) {
-        showFeedback('', 'black'); 
-        const btn = document.getElementById('submit-btn'); // Újra lekérjük a klónozás miatt
-        if(btn) btn.disabled = true; 
-        
-        questionTextEl.textContent = t('tutorial_question_loading'); 
-        optionsContainer.innerHTML = '';
-
-        // callBackend: getTutorialQuestion
-        callBackend('getTutorialQuestion', [index], 
-            displayQuestion,
-            function(error) { showFeedback(t('error_prefix') + error.message, 'red'); }
-        );
-    }
-
-    function displayQuestion(qObj) {
-        questionTextEl.textContent = qObj.question;
-        qObj.options.forEach(option => {
-            const label = document.createElement('label'); 
-            label.className = 'option-label';
-            const radio = document.createElement('input'); 
-            radio.type = 'radio'; 
-            radio.name = 'answer'; 
-            radio.value = option;
-            
-            label.appendChild(radio); 
-            label.appendChild(document.createTextNode(option));
-            optionsContainer.appendChild(label);
-        });
-        const btn = document.getElementById('submit-btn');
-        if(btn) btn.disabled = false;
-    }
-
-    function handleAnswer() {
-        const selectedOption = document.querySelector('input[name="answer"]:checked');
-        const btn = document.getElementById('submit-btn');
-
-        if (!selectedOption) { 
-            showFeedback(t('tutorial_select_prompt'), 'red'); 
-            return; 
+        showFeedback('', 'black');
+        var btn = document.getElementById('submit-btn');
+        if (btn) {
+            btn.disabled = true;
         }
-        
-        if(btn) btn.disabled = true; 
-        showFeedback(t('tutorial_checking_answer'), 'gray');
 
-        // callBackend: checkTutorialAnswer
-        // UserEmail NEM kell, a Router tudja.
-        callBackend('checkTutorialAnswer', [currentQuestionIndex, selectedOption.value], 
-            function(result) {
-                if (result.correct) {
-                    if (result.isLast) {
-                        showFeedback(t('tutorial_correct_finished'), 'green');
-                        document.getElementById('quiz-container').style.display = 'none';
-                        document.getElementById('quiz-navigation').style.display = 'block';
-                    } else {
-                        showFeedback(t('tutorial_correct_next'), 'green');
-                        currentQuestionIndex++;
-                        setTimeout(() => loadQuestion(currentQuestionIndex), 1500);
-                    }
-                } else {
-                    showFeedback(t('tutorial_incorrect_try'), 'red');
-                    if(btn) btn.disabled = false;
-                }
-            },
-            function(error) { 
-                showFeedback(t('error_prefix') + error.message, 'red'); 
-                if(btn) btn.disabled = false; 
+        if (questionTextEl) {
+            questionTextEl.textContent = t('tutorial_question_loading');
+        }
+        if (optionsContainer) {
+            optionsContainer.innerHTML = '';
+        }
+
+        callBackend('getTutorialQuestion', [index],
+            displayQuestion,
+            function(error) {
+                showFeedback(t('error_prefix') + error.message, 'red');
             }
         );
     }
 
-    // INDÍTÁS
-    // callBackend: getUserStatus
-    callBackend('getUserStatus', [], 
+    function displayQuestion(qObj) {
+        if (!qObj || !questionTextEl || !optionsContainer) {
+            return;
+        }
+        questionTextEl.textContent = qObj.question;
+
+        for (var i = 0; i < qObj.options.length; i++) {
+            var option = qObj.options[i];
+            var label = document.createElement('label');
+            label.className = 'option-label';
+
+            var radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'answer';
+            radio.value = option;
+
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(option));
+            optionsContainer.appendChild(label);
+        }
+
+        var btn = document.getElementById('submit-btn');
+        if (btn) {
+            btn.disabled = false;
+        }
+    }
+
+    function handleAnswer() {
+        var selectedOption = document.querySelector('input[name="answer"]:checked');
+        var btn = document.getElementById('submit-btn');
+
+        if (!selectedOption) {
+            showFeedback(t('tutorial_select_prompt'), 'red');
+            return;
+        }
+
+        if (btn) {
+            btn.disabled = true;
+        }
+        showFeedback(t('tutorial_checking_answer'), 'gray');
+
+        callBackend('checkTutorialAnswer', [currentQuestionIndex, selectedOption.value],
+            function(result) {
+                if (result && result.correct) {
+                    if (result.isLast) {
+                        showFeedback(t('tutorial_correct_finished'), 'green');
+                        if (document.getElementById('quiz-container')) {
+                            document.getElementById('quiz-container').style.display = 'none';
+                        }
+                        if (document.getElementById('quiz-navigation')) {
+                            document.getElementById('quiz-navigation').style.display = 'block';
+                        }
+                    } else {
+                        showFeedback(t('tutorial_correct_next'), 'green');
+                        currentQuestionIndex++;
+                        setTimeout(function() {
+                            loadQuestion(currentQuestionIndex);
+                        }, 1500);
+                    }
+                } else {
+                    showFeedback(t('tutorial_incorrect_try'), 'red');
+                    if (btn) {
+                        btn.disabled = false;
+                    }
+                }
+            },
+            function(error) {
+                showFeedback(t('error_prefix') + error.message, 'red');
+                if (btn) {
+                    btn.disabled = false;
+                }
+            }
+        );
+    }
+
+    window.SaveTokenToSheet = function(email, token) {
+        var finalToken = token || '';
+        if (!finalToken) {
+            return;
+        }
+        callBackend('saveGameStateToken', [finalToken], function() {}, function(err) {
+            console.warn('Játékállás token mentése sikertelen:', err);
+        });
+    };
+
+    window.onTutorialSuccess = function(email) {
+        callBackend('markTutorialCompleted', ['unity'], function(res) {
+            if (res && res.success) {
+                loadPage('jogosult_tartalom');
+            }
+        }, function(err) {
+            console.warn('Tutorial OK mentési hiba:', err);
+            loadPage('jogosult_tartalom');
+        });
+    };
+
+    window.onUnityTutorialFailed = function(reason) {
+        console.warn('Unity tutorial hiba jelzés:', reason || 'ismeretlen ok');
+        showQuizMode();
+    };
+
+    callBackend('getTutorialFlowState', [],
         initializeTutorialPage,
         function(error) {
-            document.querySelector('.tutorial-container').innerHTML = '<h2>' + t('error_prefix') + error.message + '</h2>';
+            var tc = document.querySelector('.tutorial-container');
+            if (tc) {
+                tc.innerHTML = '<h2>' + t('error_prefix') + error.message + '</h2>';
+            }
         }
     );
 }

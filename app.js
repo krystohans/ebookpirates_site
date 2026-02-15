@@ -600,6 +600,78 @@ function runTutorialScript() {
     var unityLaunchTimeoutId = null;
     var unityTargetUrl = '';
     var currentFlowState = null;
+    var localTutorialQuestions = [];
+
+    function getLocalTutorialQuestionsForLang(siteLang) {
+        var normalized = String(siteLang || 'hu').toLowerCase();
+        if (normalized.indexOf('-') > -1) {
+            normalized = normalized.split('-')[0];
+        }
+
+        var questionMap = {
+            hu: [
+                { question: 'Mi a neve a játékban használatos fizetőeszköznek?', options: ['Arany', 'Kalózkredit', 'Gyöngy', 'Dublon'], correctAnswer: 'Kalózkredit' },
+                { question: 'Hol tudsz új küldetéseket felvenni?', options: ['A piacon', 'A szentélyben', 'A kocsmában', 'A tekercsmesternél'], correctAnswer: 'A kocsmában' },
+                { question: 'Mire használhatod a letkristályokat?', options: ['Új hajó vásárlására', 'A könyvek fejlesztésére', 'Azonnali utazásra', 'A jutalék csökkentésére'], correctAnswer: 'A könyvek fejlesztésére' }
+            ],
+            en: [
+                { question: 'What is the name of the main currency used in the game?', options: ['Gold', 'Pirate Credit', 'Pearl', 'Doubloon'], correctAnswer: 'Pirate Credit' },
+                { question: 'Where can you take new quests?', options: ['At the market', 'At the shrine', 'At the tavern', 'At the scroll master'], correctAnswer: 'At the tavern' },
+                { question: 'What can spirit crystals be used for?', options: ['Buying a new ship', 'Upgrading books', 'Instant travel', 'Reducing commission'], correctAnswer: 'Upgrading books' }
+            ],
+            de: [
+                { question: 'Wie heißt die wichtigste Währung im Spiel?', options: ['Gold', 'Piratenkredit', 'Perle', 'Dublone'], correctAnswer: 'Piratenkredit' },
+                { question: 'Wo kannst du neue Aufträge annehmen?', options: ['Auf dem Markt', 'Im Heiligtum', 'In der Taverne', 'Beim Schriftrollenmeister'], correctAnswer: 'In der Taverne' },
+                { question: 'Wofür kannst du Seelenkristalle verwenden?', options: ['Neues Schiff kaufen', 'Bücher verbessern', 'Sofortreise', 'Provision senken'], correctAnswer: 'Bücher verbessern' }
+            ],
+            fr: [
+                { question: 'Quel est le nom de la monnaie principale du jeu ?', options: ['Or', 'Credit pirate', 'Perle', 'Doubloon'], correctAnswer: 'Credit pirate' },
+                { question: 'Ou peux-tu prendre de nouvelles quetes ?', options: ['Au marche', 'Au sanctuaire', 'A la taverne', 'Chez le maitre des parchemins'], correctAnswer: 'A la taverne' },
+                { question: 'A quoi servent les cristaux d esprit ?', options: ['Acheter un nouveau navire', 'Ameliorer les livres', 'Voyage instantane', 'Reduire la commission'], correctAnswer: 'Ameliorer les livres' }
+            ],
+            es: [
+                { question: 'Como se llama la moneda principal del juego?', options: ['Oro', 'Credito pirata', 'Perla', 'Doblon'], correctAnswer: 'Credito pirata' },
+                { question: 'Donde puedes aceptar nuevas misiones?', options: ['En el mercado', 'En el santuario', 'En la taberna', 'Con el maestro de pergaminos'], correctAnswer: 'En la taberna' },
+                { question: 'Para que sirven los cristales espirituales?', options: ['Comprar un barco nuevo', 'Mejorar libros', 'Viaje instantaneo', 'Reducir comision'], correctAnswer: 'Mejorar libros' }
+            ],
+            pl: [
+                { question: 'Jak nazywa sie glowna waluta w grze?', options: ['Zloto', 'Kredyt piracki', 'Perla', 'Dublon'], correctAnswer: 'Kredyt piracki' },
+                { question: 'Gdzie mozesz przyjmowac nowe zadania?', options: ['Na rynku', 'W swiatyni', 'W tawernie', 'U mistrza zwojow'], correctAnswer: 'W tawernie' },
+                { question: 'Do czego sluza krysztaly ducha?', options: ['Kupno nowego statku', 'Ulepszanie ksiazek', 'Natychmiastowa podroz', 'Zmniejszenie prowizji'], correctAnswer: 'Ulepszanie ksiazek' }
+            ],
+            ru: [
+                { question: 'Как называется основная валюта в игре?', options: ['Золото', 'Пиратский кредит', 'Жемчуг', 'Дублон'], correctAnswer: 'Пиратский кредит' },
+                { question: 'Где можно взять новые задания?', options: ['На рынке', 'В святилище', 'В таверне', 'У мастера свитков'], correctAnswer: 'В таверне' },
+                { question: 'Для чего нужны кристаллы духа?', options: ['Покупка нового корабля', 'Улучшение книг', 'Мгновенное путешествие', 'Снижение комиссии'], correctAnswer: 'Улучшение книг' }
+            ]
+        };
+
+        return questionMap[normalized] || questionMap.hu;
+    }
+
+    function activateLocalQuizMode() {
+        localTutorialQuestions = getLocalTutorialQuestionsForLang(getSiteLang());
+    }
+
+    function completeQuizLocally() {
+        callBackend('markTutorialCompleted', ['quiz'], function(res) {
+            if (res && res.success) {
+                if (document.getElementById('quiz-container')) {
+                    document.getElementById('quiz-container').style.display = 'none';
+                }
+                if (document.getElementById('quiz-navigation')) {
+                    document.getElementById('quiz-navigation').style.display = 'block';
+                }
+            }
+        }, function() {
+            if (document.getElementById('quiz-container')) {
+                document.getElementById('quiz-container').style.display = 'none';
+            }
+            if (document.getElementById('quiz-navigation')) {
+                document.getElementById('quiz-navigation').style.display = 'block';
+            }
+        });
+    }
 
     function getClientOsInfo() {
         var ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
@@ -952,6 +1024,7 @@ function runTutorialScript() {
 
     function startQuiz() {
         currentQuestionIndex = 0;
+        activateLocalQuizMode();
         var currentSubmitBtn = document.getElementById('submit-btn');
         if (!currentSubmitBtn) {
             return;
@@ -984,61 +1057,13 @@ function runTutorialScript() {
             optionsContainer.innerHTML = '';
         }
 
-        loadQuestionWithFallback(index);
-    }
-
-    function isValidTutorialQuestionPayload(qObj) {
-        if (!qObj || typeof qObj !== 'object') {
-            return false;
-        }
-        if (typeof qObj.question !== 'string' || !qObj.question) {
-            return false;
-        }
-        if (!Array.isArray(qObj.options) || qObj.options.length === 0) {
-            return false;
-        }
-        return true;
-    }
-
-    function buildTutorialQuestionParamVariants(index) {
-        var lang = getSiteLang();
-        return [
-            [index, lang],
-            [index]
-        ];
-    }
-
-    function loadQuestionWithFallback(index) {
-        var paramVariants = buildTutorialQuestionParamVariants(index);
-        var attemptIndex = 0;
-
-        function tryNext(lastErrorMessage) {
-            if (attemptIndex >= paramVariants.length) {
-                showFeedback(t('error_prefix') + (lastErrorMessage || 'Nem sikerült kérdést betölteni.'), 'red');
-                return;
-            }
-
-            var params = paramVariants[attemptIndex];
-            attemptIndex++;
-
-            callBackend('getTutorialQuestion', params,
-                function(response) {
-                    if (isValidTutorialQuestionPayload(response)) {
-                        displayQuestion(response);
-                        return;
-                    }
-
-                    var backendError = (response && (response.error || response.message)) ? (response.error || response.message) : '';
-                    tryNext(backendError || t('invalid_question_index'));
-                },
-                function(error) {
-                    var errorText = (error && error.message) ? error.message : '';
-                    tryNext(errorText);
-                }
-            );
+        var localQuestion = localTutorialQuestions[index];
+        if (!localQuestion) {
+            showFeedback(t('error_prefix') + 'Nem sikerült kérdést betölteni.', 'red');
+            return;
         }
 
-        tryNext('');
+        displayQuestion(localQuestion);
     }
 
     function displayQuestion(qObj) {
@@ -1094,38 +1119,27 @@ function runTutorialScript() {
         }
         showFeedback(t('tutorial_checking_answer'), 'gray');
 
-        callBackend('checkTutorialAnswer', [currentQuestionIndex, selectedOption.value, getSiteLang()],
-            function(result) {
-                if (result && result.correct) {
-                    if (result.isLast) {
-                        showFeedback(t('tutorial_correct_finished'), 'green');
-                        if (document.getElementById('quiz-container')) {
-                            document.getElementById('quiz-container').style.display = 'none';
-                        }
-                        if (document.getElementById('quiz-navigation')) {
-                            document.getElementById('quiz-navigation').style.display = 'block';
-                        }
-                    } else {
-                        showFeedback(t('tutorial_correct_next'), 'green');
-                        currentQuestionIndex++;
-                        setTimeout(function() {
-                            loadQuestion(currentQuestionIndex);
-                        }, 1500);
-                    }
-                } else {
-                    showFeedback(t('tutorial_incorrect_try'), 'red');
-                    if (btn) {
-                        btn.disabled = false;
-                    }
-                }
-            },
-            function(error) {
-                showFeedback(t('error_prefix') + error.message, 'red');
-                if (btn) {
-                    btn.disabled = false;
-                }
+        var currentQuestion = localTutorialQuestions[currentQuestionIndex];
+        var isCorrect = !!(currentQuestion && selectedOption.value === currentQuestion.correctAnswer);
+        var isLastQuestion = currentQuestionIndex >= (localTutorialQuestions.length - 1);
+
+        if (isCorrect) {
+            if (isLastQuestion) {
+                showFeedback(t('tutorial_correct_finished'), 'green');
+                completeQuizLocally();
+            } else {
+                showFeedback(t('tutorial_correct_next'), 'green');
+                currentQuestionIndex++;
+                setTimeout(function() {
+                    loadQuestion(currentQuestionIndex);
+                }, 1500);
             }
-        );
+        } else {
+            showFeedback(t('tutorial_incorrect_try'), 'red');
+            if (btn) {
+                btn.disabled = false;
+            }
+        }
     }
 
     window.SaveTokenToSheet = function(email, token) {

@@ -15,6 +15,17 @@ function getSiteLang() {
     return localStorage.getItem('siteLang') || 'hu';
 }
 
+function getPageHtmlUrl(pageName) {
+    if (!pageName) {
+        return "index.html";
+    }
+    var cleanName = pageName;
+    if (cleanName.indexOf('.html') === -1) {
+        cleanName = cleanName + '.html';
+    }
+    return cleanName;
+}
+
 /**
  * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
  * KIZÁRÓLAG a GitHub/Külső környezetben használd!
@@ -281,71 +292,80 @@ function loadPage(pageName) {
     contentDiv.innerHTML = ''; 
     if(loadingOverlay) loadingOverlay.style.display = 'flex';
     
-    // HÍVÁS: Csak az oldal nevét küldjük! A Backend Router beszúrja az emailt elé.
-    // Így lesz a szerveren: getPageDataAndContent(email, pageName)
-    callBackend('getPageDataAndContent', [pageName, getSiteLang()], 
-        function(result) {
-            // 1. HTML beillesztése
-            contentDiv.innerHTML = result.htmlContent;
+    fetch(getPageHtmlUrl(pageName), { cache: 'no-cache' })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            return response.text();
+        })
+        .then(function(htmlText) {
+            contentDiv.innerHTML = htmlText;
 
-            // Frissitjuk a nyelvi UI-t a dinamikusan betoltott tartalmakon is.
             if (typeof updateLanguageUI === 'function') {
                 updateLanguageUI();
             }
             if (typeof bindLanguageButtons === 'function') {
                 bindLanguageButtons();
             }
-            
-            const pagesWithSplash = ['hajomuhely_oldal', 'kikoto_oldal', 'piac_oldal', 'tekercsmester_oldal', 'masolatok_oldal', 'taverna_oldal', 'konyvszentely_oldal', 'felhokolostor_oldal', 'konyvtar', 'kincsek'];
-            
-            // 2. Inicializálás az adatokkal
-            if (pageName === 'tutorial_oldal') { 
-                runTutorialScript(); 
-            } else if (pageName === 'konyvszentely_oldal') {
-                initializePage(pageName);
-                if(typeof initializeKonyvszentely === 'function') initializeKonyvszentely();
-            } else if (pageName === 'felhokolostor_oldal') {
-                 initializePage(pageName);
-                 if(typeof refreshMonasteryWork === 'function') refreshMonasteryWork();
-            } else if (pageName === 'konyvtar') { 
-                initializePage(pageName);
-                if(typeof initializeLibraryAndMapPage === 'function') initializeLibraryAndMapPage(result.pageData);
-            } else if (pageName === 'tekercsmester_oldal') {
-                initializePage(pageName);
-                if(typeof initializeTekercsmesterPage === 'function') initializeTekercsmesterPage(result.pageData);
-            } else if (pageName === 'piac_oldal') { 
-                initializePage(pageName); 
-                if(typeof initializePiacOldal === 'function') initializePiacOldal(); 
-            } else if (pageName === 'masolatok_oldal') { 
-                initializePage(pageName);
-                if(typeof initializeMasolatokAndCopyMapPage === 'function') initializeMasolatokAndCopyMapPage(result.pageData);
-            } else if (pageName === 'taverna_oldal') { 
-                initializePage(pageName);
-                if(typeof initializeTavernaPage === 'function') initializeTavernaPage();
-            } else if (pageName === 'hajomuhely_oldal') {
-                initializePage(pageName); 
-                if(typeof initShipyard === 'function') initShipyard();
-            } else if (pageName === 'kincsek') {
-                initializePage(pageName);
-                if(typeof initializeKincsekPage === 'function') initializeKincsekPage(result.pageData);
-            } else if (pageName === 'uj_konyv_bevitel') {
-                if(typeof initializeUploadForm === 'function') {
-                    initializeUploadForm(); 
-                } else {
-                    console.error("HIBA: initializeUploadForm nincs definiálva!");
-                }         
-            } else if (pagesWithSplash.includes(pageName)) { 
-                initializePage(pageName); 
-            }
-            
-            setupAccordionListeners();
-            if(loadingOverlay) loadingOverlay.style.display = 'none';
-        },
-        function(error) {
+
+            callBackend('getPageDataAndContent', [pageName, getSiteLang()], 
+                function(result) {
+                    var pageData = (result && result.pageData) ? result.pageData : {};
+                    const pagesWithSplash = ['hajomuhely_oldal', 'kikoto_oldal', 'piac_oldal', 'tekercsmester_oldal', 'masolatok_oldal', 'taverna_oldal', 'konyvszentely_oldal', 'felhokolostor_oldal', 'konyvtar', 'kincsek'];
+
+                    if (pageName === 'tutorial_oldal') { 
+                        runTutorialScript(); 
+                    } else if (pageName === 'konyvszentely_oldal') {
+                        initializePage(pageName);
+                        if(typeof initializeKonyvszentely === 'function') initializeKonyvszentely();
+                    } else if (pageName === 'felhokolostor_oldal') {
+                        initializePage(pageName);
+                        if(typeof refreshMonasteryWork === 'function') refreshMonasteryWork();
+                    } else if (pageName === 'konyvtar') { 
+                        initializePage(pageName);
+                        if(typeof initializeLibraryAndMapPage === 'function') initializeLibraryAndMapPage(pageData);
+                    } else if (pageName === 'tekercsmester_oldal') {
+                        initializePage(pageName);
+                        if(typeof initializeTekercsmesterPage === 'function') initializeTekercsmesterPage(pageData);
+                    } else if (pageName === 'piac_oldal') { 
+                        initializePage(pageName); 
+                        if(typeof initializePiacOldal === 'function') initializePiacOldal(); 
+                    } else if (pageName === 'masolatok_oldal') { 
+                        initializePage(pageName);
+                        if(typeof initializeMasolatokAndCopyMapPage === 'function') initializeMasolatokAndCopyMapPage(pageData);
+                    } else if (pageName === 'taverna_oldal') { 
+                        initializePage(pageName);
+                        if(typeof initializeTavernaPage === 'function') initializeTavernaPage();
+                    } else if (pageName === 'hajomuhely_oldal') {
+                        initializePage(pageName); 
+                        if(typeof initShipyard === 'function') initShipyard();
+                    } else if (pageName === 'kincsek') {
+                        initializePage(pageName);
+                        if(typeof initializeKincsekPage === 'function') initializeKincsekPage(pageData);
+                    } else if (pageName === 'uj_konyv_bevitel') {
+                        if(typeof initializeUploadForm === 'function') {
+                            initializeUploadForm(); 
+                        } else {
+                            console.error("HIBA: initializeUploadForm nincs definiálva!");
+                        }         
+                    } else if (pagesWithSplash.includes(pageName)) { 
+                        initializePage(pageName); 
+                    }
+
+                    setupAccordionListeners();
+                    if(loadingOverlay) loadingOverlay.style.display = 'none';
+                },
+                function(error) {
+                    contentDiv.innerHTML = '<p>' + t('page_load_error_prefix') + error.message + '</p>';
+                    if(loadingOverlay) loadingOverlay.style.display = 'none';
+                }
+            );
+        })
+        .catch(function(error) {
             contentDiv.innerHTML = '<p>' + t('page_load_error_prefix') + error.message + '</p>';
             if(loadingOverlay) loadingOverlay.style.display = 'none';
-        }
-    );
+        });
 }
 
 function reloadCurrentPageForLanguage() {

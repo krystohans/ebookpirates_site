@@ -1,34 +1,34 @@
 <div id="hajomuhely_oldal-splash" style="display: none;">
-    <h2>A Hajóműhely</h2>
-    <p>Itt építtetheted meg a saját hajódat, léghajódat, búvárhajódat az egyedi elképzelésed alapján. A rendelésed alapján kikalkulált árat be kell fizetned a kasszába, és amint elkészült a járgány, üzennek neked. Ha egy létező hajó másolatát szeretnéd elkészíttetni a műhellyel, arra gyorsabban van lehetőség, ha pedig a műhely nyakán maradt egyszerűbb hajókból válogatnál, akár azonnal hajótulajdonossá is válhatsz.</p>
-    <button class="btn" onclick="markPageAsSeen('hajomuhely_oldal')">Értettem, mehet!</button>
+    <h2 data-lang="shipyard_splash_title">A Hajóműhely</h2>
+    <p data-lang="shipyard_splash_body">Itt építtetheted meg a saját hajódat, léghajódat, búvárhajódat az egyedi elképzelésed alapján. A rendelésed alapján kikalkulált árat be kell fizetned a kasszába, és amint elkészült a járgány, üzennek neked. Ha egy létező hajó másolatát szeretnéd elkészíttetni a műhellyel, arra gyorsabban van lehetőség, ha pedig a műhely nyakán maradt egyszerűbb hajókból válogatnál, akár azonnal hajótulajdonossá is válhatsz.</p>
+    <button class="btn" onclick="markPageAsSeen('hajomuhely_oldal')" data-lang="shipyard_splash_ack_button">Értettem, mehet!</button>
 </div>
 
 <div id="hajomuhely_oldal-content" style="display: none; position: relative;">
     
-    <div class="info-icon-container" title="Információ megjelenítése">
+    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
         <i class="fas fa-info-circle" onclick="showSplash('hajomuhely_oldal')"></i>
     </div>
 
     <div class="page-container">
         
         <div class="page-section" style="text-align: center;">
-            <h2 style="color: var(--color-accent); font-family: 'Pirata One', cursive; margin-top: 0;">Holckopf és Fiai Hajóműhely</h2>
-            <p>Szakszerű javítás, becsületes adás-vétel és új bárkák építése.</p>
+            <h2 style="color: var(--color-accent); font-family: 'Pirata One', cursive; margin-top: 0;" data-lang="shipyard_title">Holckopf és Fiai Hajóműhely</h2>
+            <p data-lang="shipyard_subtitle">Szakszerű javítás, becsületes adás-vétel és új bárkák építése.</p>
         </div>
     
         <div class="page-section" style="padding: 10px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-            <button class="btn" onclick="showWorkshopTab('repair')" id="btn-tab-repair">🛠️ Javítás</button>
-            <button class="btn btn-secondary" onclick="showWorkshopTab('market')" id="btn-tab-market">⚖️ Használt Piac</button>
-            <button class="btn btn-secondary" onclick="showWorkshopTab('build')" id="btn-tab-build">⚓ Új Építése</button>
+            <button class="btn" onclick="showWorkshopTab('repair')" id="btn-tab-repair" data-lang="shipyard_tab_repair">🛠️ Javítás</button>
+            <button class="btn btn-secondary" onclick="showWorkshopTab('market')" id="btn-tab-market" data-lang="shipyard_tab_market">⚖️ Használt Piac</button>
+            <button class="btn btn-secondary" onclick="showWorkshopTab('build')" id="btn-tab-build" data-lang="shipyard_tab_build">⚓ Új Építése</button>
         </div>
     
         <div id="tab-repair" class="workshop-tab">
             <div class="page-section">
-                <h3 style="color: var(--color-primary); border-bottom: 1px solid #ccc; padding-bottom: 5px;">Saját Hajóid Javítása</h3>
-                <p style="font-style: italic; font-size: 0.9em;">A mesterek 100 Kreditér' kalapálnak helyre 1 élettartam pontot.</p>
+                <h3 style="color: var(--color-primary); border-bottom: 1px solid #ccc; padding-bottom: 5px;" data-lang="shipyard_repair_title">Saját Hajóid Javítása</h3>
+                <p style="font-style: italic; font-size: 0.9em;" data-lang="shipyard_repair_note">A mesterek 100 Kreditér' kalapálnak helyre 1 élettartam pontot.</p>
                 <div id="repair-list" style="margin-top: 15px;">
-                    <p style="text-align: center; color: #666;">Adataid betöltése...</p>
+                    <p style="text-align: center; color: #666;" data-lang="shipyard_loading_data">Adataid betöltése...</p>
                 </div>
             </div>
         </div>
@@ -37,16 +37,16 @@
             <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                 <div class="page-section" style="flex: 1; min-width: 300px;">
                     <h4 style="color: var(--color-danger); border-bottom: 2px solid var(--color-danger); padding-bottom: 5px;">
-                        <i class="fas fa-money-bill-wave"></i> Eladás a Műhelynek
+                        <i class="fas fa-money-bill-wave"></i> <span data-lang="shipyard_market_sell_title">Eladás a Műhelynek</span>
                     </h4>
-                    <p style="font-size: 0.9em;">Ár: 100 Kr / Életpont</p>
+                    <p style="font-size: 0.9em;" data-lang="shipyard_market_sell_price">Ár: 100 Kr / Életpont</p>
                     <div id="market-sell-list"></div>
                 </div>
                 <div class="page-section" style="flex: 1; min-width: 300px;">
                     <h4 style="color: var(--color-primary); border-bottom: 2px solid var(--color-primary); padding-bottom: 5px;">
-                        <i class="fas fa-shopping-cart"></i> Műhely Kínálata
+                        <i class="fas fa-shopping-cart"></i> <span data-lang="shipyard_market_buy_title">Műhely Kínálata</span>
                     </h4>
-                    <p style="font-size: 0.9em;">Ár: 110 Kr / Életpont</p>
+                    <p style="font-size: 0.9em;" data-lang="shipyard_market_buy_price">Ár: 110 Kr / Életpont</p>
                     <div id="market-buy-list"></div>
                 </div>
             </div>
@@ -54,36 +54,36 @@
     
         <div id="tab-build" class="workshop-tab" style="display:none;">
             <div class="page-section">
-                <h3 style="color: var(--color-accent); border-bottom: 1px solid #ccc; padding-bottom: 5px;">Új Hajó Megrendelése</h3>
-                <p style="margin-bottom: 20px;">A legkiválóbb anyagokból, 150 Kredit / Életpont áron.</p>
+                <h3 style="color: var(--color-accent); border-bottom: 1px solid #ccc; padding-bottom: 5px;" data-lang="shipyard_build_title">Új Hajó Megrendelése</h3>
+                <p style="margin-bottom: 20px;" data-lang="shipyard_build_note">A legkiválóbb anyagokból, 150 Kredit / Életpont áron.</p>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div>
-                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Kategória:</label>
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;" data-lang="shipyard_build_category_label">Kategória:</label>
                         <select id="build-category" onchange="updateBuildOptions()">
-                            <option value="hajok">Vízi Hajók</option>
-                            <option value="buvarhajok">Búvárhajók</option>
-                            <option value="leghajok">Léghajók</option>
+                            <option value="hajok" data-lang="shipyard_build_category_ships">Vízi Hajók</option>
+                            <option value="buvarhajok" data-lang="shipyard_build_category_subs">Búvárhajók</option>
+                            <option value="leghajok" data-lang="shipyard_build_category_air">Léghajók</option>
                         </select>
-                        <label style="font-weight: bold; display: block; margin-bottom: 5px; margin-top: 10px;">Típus:</label>
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px; margin-top: 10px;" data-lang="shipyard_build_type_label">Típus:</label>
                         <select id="build-type" onchange="calculateBuildCost()">
                             </select>
-                        <label style="font-weight: bold; display: block; margin-bottom: 5px; margin-top: 10px;">Hajó Neve:</label>
-                        <input type="text" id="build-name" placeholder="Add meg az új hajód nevét">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px; margin-top: 10px;" data-lang="shipyard_build_name_label">Hajó Neve:</label>
+                        <input type="text" id="build-name" placeholder="Add meg az új hajód nevét" data-lang-placeholder="shipyard_build_name_placeholder">
                     </div>
                     <div class="stat-block" style="background-color: #fff; border-left: 5px solid var(--color-gold);">
-                        <h4 style="color: var(--color-accent); margin-top: 0;">Megrendelés Összesítő</h4>
-                        <div class="stat-line"><span><i class="fas fa-heart"></i> Alap Életerő:</span><span class="value" id="preview-hp">-</span></div>
-                        <div class="stat-line" style="margin-top: 15px; font-size: 1.1em;"><span><i class="fas fa-coins"></i> Gyártási Költség:</span><span class="value" id="preview-cost" style="color: var(--color-danger);">-</span></div>
-                        <button class="btn" style="width: 100%; margin-top: 20px; background-color: var(--color-accent);" onclick="initiateBuild()"><i class="fas fa-hammer"></i> Építés Megkezdése</button>
+                        <h4 style="color: var(--color-accent); margin-top: 0;" data-lang="shipyard_build_summary_title">Megrendelés Összesítő</h4>
+                        <div class="stat-line"><span><i class="fas fa-heart"></i> <span data-lang="shipyard_build_base_hp">Alap Életerő:</span></span><span class="value" id="preview-hp">-</span></div>
+                        <div class="stat-line" style="margin-top: 15px; font-size: 1.1em;"><span><i class="fas fa-coins"></i> <span data-lang="shipyard_build_cost_label">Gyártási Költség:</span></span><span class="value" id="preview-cost" style="color: var(--color-danger);">-</span></div>
+                        <button class="btn" style="width: 100%; margin-top: 20px; background-color: var(--color-accent);" onclick="initiateBuild()"><i class="fas fa-hammer"></i> <span data-lang="shipyard_build_start_button">Építés Megkezdése</span></button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-            <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Vissza a Kikötőbe</button>
-            <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+            <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')" data-lang="shipyard_nav_back_button">Vissza a Kikötőbe</button>
+            <button class="btn btn-danger" onclick="logout()" data-lang="shipyard_nav_logout_button">Kijelentkezés</button>
         </div>
 
     </div>

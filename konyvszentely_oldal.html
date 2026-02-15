@@ -1,31 +1,31 @@
 <div id="konyvszentely_oldal-splash" style="display: none;">
-  <h2>Paideia Könyvszentélye</h2>
-  <p>Itt léphetsz kapcsolatba az isteni szférákkal, miáltal valódi könyv birtokába kerülhetsz, felszentelve valamelyik másolatodat, vagy teljes értékű tekercsedet. Ha még nem rendelkezel a könyvszenteléshez szükséges szentséges letkristályokkal, megidéztethesz magadnak egy megfelelőt. Ha már vagyonos kapitány vagy, akár kristálykönyvet is készíttethetsz a könyvedből. Áldozz a kohézió isteneinek, és lelked magasabb szintre emelkedik!</p>
-  <button class="btn" onclick="markPageAsSeen('konyvszentely_oldal')">Értettem, mehet!</button>
+    <h2 data-lang="ksz_splash_title">Paideia Könyvszentélye</h2>
+    <p data-lang="ksz_splash_body">Itt léphetsz kapcsolatba az isteni szférákkal, miáltal valódi könyv birtokába kerülhetsz, felszentelve valamelyik másolatodat, vagy teljes értékű tekercsedet. Ha még nem rendelkezel a könyvszenteléshez szükséges szentséges letkristályokkal, megidéztethesz magadnak egy megfelelőt. Ha már vagyonos kapitány vagy, akár kristálykönyvet is készíttethetsz a könyvedből. Áldozz a kohézió isteneinek, és lelked magasabb szintre emelkedik!</p>
+    <button class="btn" onclick="markPageAsSeen('konyvszentely_oldal')" data-lang="ksz_splash_ack_button">Értettem, mehet!</button>
 </div>
 
 <div id="konyvszentely_oldal-content" style="display: none; position: relative;">
     
-    <div class="info-icon-container" title="Információ megjelenítése">
+    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
         <i class="fas fa-info-circle" onclick="showSplash('konyvszentely_oldal')"></i>
     </div>
 
     <div class="page-container">
         
         <div class="page-section" style="text-align: center;">
-             <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Vagyonod és Áldozatok</h3>
+             <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_assets_title">Vagyonod és Áldozatok</h3>
              
              <div class="stat-box" style="background-color: rgba(255,255,255,0.8); border: 1px solid #d4af37; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
                     
                     <div style="text-align: center; margin: 5px;">
                         <div id="ksz-crystal-count" style="font-family: 'Pirata One', cursive; font-size: 2em; color: #8e44ad;">...</div>
-                        <div style="font-size: 0.8em; text-transform: uppercase; color: #555;">Letkristály</div>
+                        <div style="font-size: 0.8em; text-transform: uppercase; color: #555;" data-lang="ksz_crystal_label">Letkristály</div>
                     </div>
 
                     <div style="text-align: center; margin: 5px;">
                         <div id="ksz-talent-count" style="font-family: 'Pirata One', cursive; font-size: 2em; color: #d35400;">...</div>
-                        <div style="font-size: 0.8em; text-transform: uppercase; color: #555;">Tálentum</div>
+                        <div style="font-size: 0.8em; text-transform: uppercase; color: #555;" data-lang="ksz_talent_label">Tálentum</div>
                     </div>
 
                 </div>
@@ -35,23 +35,23 @@
         </div>
 
         <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Tekercseid Keresése</h3>
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_search_title">Tekercseid Keresése</h3>
             <div class="form-group">
                 <select id="ksz-search-type" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <option value="all">Összes tekercsem</option>
-                    <option value="title">Cím alapján</option>
-                    <option value="author">Szerző alapján</option>
-                    <option value="code">Kód alapján</option>
+                    <option value="all" data-lang="ksz_search_all_option">Összes tekercsem</option>
+                    <option value="title" data-lang="ksz_search_title_option">Cím alapján</option>
+                    <option value="author" data-lang="ksz_search_author_option">Szerző alapján</option>
+                    <option value="code" data-lang="ksz_search_code_option">Kód alapján</option>
                 </select>
             </div>
             <div class="form-group">
-                <input type="text" id="ksz-search-term" placeholder="Keresési kifejezés..." disabled style="width: 100%; padding: 8px;">
+                <input type="text" id="ksz-search-term" placeholder="Keresési kifejezés..." data-lang-placeholder="ksz_search_placeholder" disabled style="width: 100%; padding: 8px;">
             </div>
-            <button id="ksz-search-btn" class="btn" style="width: 100%;">Keresés</button>
+            <button id="ksz-search-btn" class="btn" style="width: 100%;" data-lang="ksz_search_button">Keresés</button>
         </div>
 
         <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Találatok</h3>
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_results_title">Találatok</h3>
             <div id="ksz-results-list" style="
                 background: #fff; 
                 padding: 10px; 
@@ -63,30 +63,30 @@
                 display: flex;
                 flex-direction: column;
                 gap: 10px;">
-                <p style="padding: 10px; color: #718096; text-align: center; font-style: italic;">Indíts keresést a listázáshoz...</p>
+                <p style="padding: 10px; color: #718096; text-align: center; font-style: italic;" data-lang="ksz_results_empty_prompt">Indíts keresést a listázáshoz...</p>
             </div>
         </div>
 
         <div id="ksz-action-section" class="page-section" style="display: none;">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Kiváltott Tekercs</h3>
+            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_selected_title">Kiváltott Tekercs</h3>
             <div id="ksz-selection-details" style="background: #e6fffa; padding: 15px; border: 1px solid #319795; border-radius: 5px; margin-bottom: 15px;"></div>
             
             <div class="form-group">
-                <label for="ksz-gift-email">Ajándékozás más kalóznak (nem kötelező)</label>
-                <input type="text" id="ksz-gift-email" placeholder="Címzett e-mail címe..." style="width: 100%; padding: 8px;">
+                <label for="ksz-gift-email" data-lang="ksz_gift_label">Ajándékozás más kalóznak (nem kötelező)</label>
+                <input type="text" id="ksz-gift-email" placeholder="Címzett e-mail címe..." data-lang-placeholder="ksz_gift_placeholder" style="width: 100%; padding: 8px;">
             </div>
             <div class="form-group">
-                <label for="ksz-pin-code">Tranzakció megerősítése PIN kóddal</label>
-                <input type="password" id="ksz-pin-code" placeholder="PIN kódod" style="width: 100%; padding: 8px;">
+                <label for="ksz-pin-code" data-lang="ksz_pin_label">Tranzakció megerősítése PIN kóddal</label>
+                <input type="password" id="ksz-pin-code" placeholder="PIN kódod" data-lang-placeholder="ksz_pin_placeholder" style="width: 100%; padding: 8px;">
             </div>
-            <button id="ksz-upgrade-btn" class="btn" style="width: 100%;">Könyvvé Alakítás</button>
+            <button id="ksz-upgrade-btn" class="btn" style="width: 100%;" data-lang="ksz_upgrade_button">Könyvvé Alakítás</button>
         </div>
         
         <div id="ksz-message-box" style="display: none; padding: 15px; border-radius: 5px; margin-top: 15px; text-align: center; font-weight: bold;"></div>
     </div>
 
     <div id="navigation" style="text-align: center; margin: 20px 0;">
-        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Vissza a Kikötőbe</button>
-        <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')" data-lang="ksz_nav_back_button">Vissza a Kikötőbe</button>
+        <button class="btn btn-danger" onclick="logout()" data-lang="ksz_nav_logout_button">Kijelentkezés</button>
     </div>
 </div>

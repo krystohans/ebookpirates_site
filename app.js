@@ -5,7 +5,15 @@
 // 1. GLOBÁLIS VÁLTOZÓK DEFINÍCIÓJA
 var currentUserEmail = "";       // Az aktuális felhasználó
 var currentLogEntryData = null;  // Hajónapló szerkesztéshez
+var currentPageName = "";        // Az aktuálisan betoltott oldal neve
 const MAP_COPY_COST = 30;        // Konstans: másolás ára
+
+function getSiteLang() {
+    if (typeof localStorage === 'undefined') {
+        return 'hu';
+    }
+    return localStorage.getItem('siteLang') || 'hu';
+}
 
 /**
  * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
@@ -21,10 +29,10 @@ function callBackend(funcName, params, onSuccess, onFailure) {
 
     console.log("📡 Kérés indítása: " + funcName);
 
-    fetch(WEB_APP_URL, {
-  method: "POST",
-  headers: { "Content-Type": "text/plain;charset=utf-8" },
-  body: JSON.stringify({ action: funcName, data: params, token: token })
+        fetch(WEB_APP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: funcName, data: params, token: token, lang: getSiteLang() })
 })
     .then(function(response) {
         return response.text().then(function(text) {
@@ -100,7 +108,8 @@ function login() {
     // 2. Adatok begyűjtése
     const formData = { 
         name: document.getElementById('name').value, 
-        jelszo: document.getElementById('jelszo').value 
+        jelszo: document.getElementById('jelszo').value,
+        lang: getSiteLang()
     };
     
     // 3. Hívás a callBackend-en keresztül
@@ -261,6 +270,7 @@ function ensureCreditDisplayIsPresent() {
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
 function loadPage(pageName) {
+    currentPageName = pageName;
     document.getElementById('content').style.display = 'block';       
     // document.getElementById('marketing-view').style.display = 'none'; // Ha van ilyen div
     document.getElementById('header-stats').style.display = 'flex';
@@ -273,7 +283,7 @@ function loadPage(pageName) {
     
     // HÍVÁS: Csak az oldal nevét küldjük! A Backend Router beszúrja az emailt elé.
     // Így lesz a szerveren: getPageDataAndContent(email, pageName)
-    callBackend('getPageDataAndContent', [pageName], 
+    callBackend('getPageDataAndContent', [pageName, getSiteLang()], 
         function(result) {
             // 1. HTML beillesztése
             contentDiv.innerHTML = result.htmlContent;
@@ -336,6 +346,17 @@ function loadPage(pageName) {
             if(loadingOverlay) loadingOverlay.style.display = 'none';
         }
     );
+}
+
+function reloadCurrentPageForLanguage() {
+    if (!currentPageName) {
+        return;
+    }
+    var appView = document.getElementById('app-view');
+    if (!appView || appView.style.display === 'none') {
+        return;
+    }
+    loadPage(currentPageName);
 }
 
 // ==========================================

@@ -2451,6 +2451,10 @@ const translations = {
  * Megkeres minden 'data-lang' attribútummal rendelkező elemet a HTML-ben.
  */
 function updateLanguageUI() {
+    var storedLang = localStorage.getItem('siteLang');
+    if (storedLang && storedLang !== currentLang && translations[storedLang]) {
+        currentLang = storedLang;
+    }
     console.log('Nyelv frissítése erre:', currentLang);
     
     // Minden elem megkeresése, aminek van data-lang attribútuma
@@ -2574,6 +2578,9 @@ function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;
         updateLanguageUI();
+        if (typeof reloadCurrentPageForLanguage === 'function') {
+            reloadCurrentPageForLanguage();
+        }
     } else {
         console.error('Ismeretlen nyelv:', lang);
     }

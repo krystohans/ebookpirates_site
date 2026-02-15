@@ -640,12 +640,12 @@ function runTutorialScript() {
             panel.style.display = 'none';
             panel.style.marginTop = '20px';
             panel.style.backgroundColor = '#fff';
-            panel.innerHTML = '<h2 style="border-bottom:2px solid var(--color-primary); padding-bottom:10px;">Unity Tutorial</h2>' +
-                '<p id="tutorial-unity-status" style="font-weight:bold;">Tutorial játék indítása...</p>' +
+            panel.innerHTML = '<h2 style="border-bottom:2px solid var(--color-primary); padding-bottom:10px;">' + t('tutorial_unity_title') + '</h2>' +
+                '<p id="tutorial-unity-status" style="font-weight:bold;">' + t('tutorial_unity_status_starting') + '</p>' +
                 '<div id="tutorial-unity-host" style="width:100%; min-height:560px; border:1px solid #ccc; border-radius:6px; overflow:hidden; background:#111;"></div>' +
                 '<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">' +
-                '<button id="tutorial-open-unity-btn" class="btn" type="button">Tutorial játék külön lapon</button>' +
-                '<button id="tutorial-fallback-btn" class="btn" type="button" style="background:#8b0000;">Kvíz indítása helyette</button>' +
+                '<button id="tutorial-open-unity-btn" class="btn" type="button">' + t('tutorial_unity_open_external') + '</button>' +
+                '<button id="tutorial-fallback-btn" class="btn" type="button" style="background:#8b0000;">' + t('tutorial_unity_fallback_quiz') + '</button>' +
                 '</div>';
 
             var quizContainer = document.getElementById('quiz-container');
@@ -665,7 +665,7 @@ function runTutorialScript() {
             continueBtn.type = 'button';
             continueBtn.style.display = 'none';
             continueBtn.style.backgroundColor = '#1d6a96';
-            continueBtn.innerText = 'Tutorial játék folytatása';
+            continueBtn.innerText = t('tutorial_unity_continue_button');
 
             var wrapper = nav.querySelector('div');
             if (wrapper) {
@@ -673,6 +673,30 @@ function runTutorialScript() {
             } else {
                 nav.appendChild(continueBtn);
             }
+        }
+
+        var panelTitleEl = panel ? panel.querySelector('h2') : null;
+        if (panelTitleEl) {
+            panelTitleEl.innerText = t('tutorial_unity_title');
+        }
+
+        var statusEl = document.getElementById('tutorial-unity-status');
+        if (statusEl && !statusEl.innerText) {
+            statusEl.innerText = t('tutorial_unity_status_starting');
+        }
+
+        var openBtn = document.getElementById('tutorial-open-unity-btn');
+        if (openBtn) {
+            openBtn.innerText = t('tutorial_unity_open_external');
+        }
+
+        var fallbackBtn = document.getElementById('tutorial-fallback-btn');
+        if (fallbackBtn) {
+            fallbackBtn.innerText = t('tutorial_unity_fallback_quiz');
+        }
+
+        if (continueBtn) {
+            continueBtn.innerText = t('tutorial_unity_continue_button');
         }
     }
 
@@ -757,7 +781,7 @@ function runTutorialScript() {
 
         var unityUrl = (flow && flow.unityUrl) ? flow.unityUrl : '';
         if (!unityUrl) {
-            setUnityStatus('Unity URL nincs beállítva, kvíz indul.', '#c0392b');
+            setUnityStatus(t('tutorial_unity_status_missing_url'), '#c0392b');
             showQuizMode();
             return;
         }
@@ -782,30 +806,30 @@ function runTutorialScript() {
         iframe.style.height = '560px';
         iframe.style.border = '0';
         iframe.setAttribute('allowfullscreen', 'true');
-        iframe.setAttribute('title', 'eBookPirates tutorial játék');
+        iframe.setAttribute('title', t('tutorial_unity_iframe_title'));
 
         iframe.onload = function() {
             stopUnityTimeout();
-            setUnityStatus('A tutorial játék betöltődött. Ha mégsem működik, indíthatod a kvízt.', '#1f7a1f');
+            setUnityStatus(t('tutorial_unity_status_loaded'), '#1f7a1f');
         };
 
         iframe.onerror = function() {
-            setUnityStatus('A tutorial játék nem érhető el. Kvíz indul.', '#c0392b');
+            setUnityStatus(t('tutorial_unity_status_unavailable'), '#c0392b');
             showQuizMode();
         };
 
         host.appendChild(iframe);
-        setUnityStatus('Tutorial játék indítása folyamatban...', '#333');
+        setUnityStatus(t('tutorial_unity_status_launching'), '#333');
 
         stopUnityTimeout();
         unityLaunchTimeoutId = setTimeout(function() {
-            setUnityStatus('A tutorial játék nem válaszol időben. Kvíz indul.', '#c0392b');
+            setUnityStatus(t('tutorial_unity_status_timeout'), '#c0392b');
             showQuizMode();
         }, 12000);
 
         if (fallbackBtn) {
             fallbackBtn.onclick = function() {
-                setUnityStatus('Kézi váltás: kvíz indul.', '#c0392b');
+                setUnityStatus(t('tutorial_unity_status_manual_fallback'), '#c0392b');
                 showQuizMode();
             };
         }
@@ -925,7 +949,7 @@ function runTutorialScript() {
             optionsContainer.innerHTML = '';
         }
 
-        callBackend('getTutorialQuestion', [index],
+        callBackend('getTutorialQuestion', [index, getSiteLang()],
             displayQuestion,
             function(error) {
                 showFeedback(t('error_prefix') + error.message, 'red');
@@ -974,7 +998,7 @@ function runTutorialScript() {
         }
         showFeedback(t('tutorial_checking_answer'), 'gray');
 
-        callBackend('checkTutorialAnswer', [currentQuestionIndex, selectedOption.value],
+        callBackend('checkTutorialAnswer', [currentQuestionIndex, selectedOption.value, getSiteLang()],
             function(result) {
                 if (result && result.correct) {
                     if (result.isLast) {
@@ -1030,7 +1054,7 @@ function runTutorialScript() {
     };
 
     window.onUnityTutorialFailed = function(reason) {
-        console.warn('Unity tutorial hiba jelzés:', reason || 'ismeretlen ok');
+        console.warn('Unity tutorial hiba jelzés:', reason || t('tutorial_unity_fail_reason_unknown'));
         showQuizMode();
     };
 

@@ -29,12 +29,12 @@
         </div>
 
         <div id="tutorial-unity-panel" class="page-section" style="display: none; margin-top: 20px; background-color: #fff;">
-            <h2 style="border-bottom: 2px solid var(--color-primary); padding-bottom: 10px;">Unity Tutorial</h2>
-            <p id="tutorial-unity-status" style="font-weight: bold;">Tutorial játék indítása...</p>
+            <h2 style="border-bottom: 2px solid var(--color-primary); padding-bottom: 10px;" data-lang="tutorial_unity_title">Unity Tutorial</h2>
+            <p id="tutorial-unity-status" style="font-weight: bold;" data-lang="tutorial_unity_status_starting">Tutorial játék indítása...</p>
             <div id="tutorial-unity-host" style="width: 100%; min-height: 560px; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; background: #111;"></div>
             <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button id="tutorial-open-unity-btn" class="btn" type="button">Tutorial játék külön lapon</button>
-                <button id="tutorial-fallback-btn" class="btn" type="button" style="background: #8b0000;">Kvíz indítása helyette</button>
+                <button id="tutorial-open-unity-btn" class="btn" type="button" data-lang="tutorial_unity_open_external">Tutorial játék külön lapon</button>
+                <button id="tutorial-fallback-btn" class="btn" type="button" style="background: #8b0000;" data-lang="tutorial_unity_fallback_quiz">Kvíz indítása helyette</button>
             </div>
         </div>
 
@@ -55,7 +55,7 @@
         <h3 style="color: var(--color-primary);" data-lang="tutorial_nav_title">Gratulálok! Ezzel a tudással már lehetsz kalóz!</h3>
         <p data-lang="tutorial_nav_prompt">Most merre tovább?</p>
         <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-            <button id="tutorial-continue-btn" class="btn" type="button" style="display: none; background-color: #1d6a96;">Tutorial játék folytatása</button>
+            <button id="tutorial-continue-btn" class="btn" type="button" style="display: none; background-color: #1d6a96;" data-lang="tutorial_unity_continue_button">Tutorial játék folytatása</button>
             <button class="btn" onclick="loadPage('jogosult_tartalom')" data-lang="tutorial_nav_deck_button">A fedélzetre</button>
             <button class="btn btn-danger" onclick="logout()" data-lang="tutorial_nav_logout_button">Kijelentkezés</button>
         </div>

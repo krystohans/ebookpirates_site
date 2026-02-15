@@ -277,6 +277,14 @@ function loadPage(pageName) {
         function(result) {
             // 1. HTML beillesztése
             contentDiv.innerHTML = result.htmlContent;
+
+            // Frissitjuk a nyelvi UI-t a dinamikusan betoltott tartalmakon is.
+            if (typeof updateLanguageUI === 'function') {
+                updateLanguageUI();
+            }
+            if (typeof bindLanguageButtons === 'function') {
+                bindLanguageButtons();
+            }
             
             const pagesWithSplash = ['hajomuhely_oldal', 'kikoto_oldal', 'piac_oldal', 'tekercsmester_oldal', 'masolatok_oldal', 'taverna_oldal', 'konyvszentely_oldal', 'felhokolostor_oldal', 'konyvtar', 'kincsek'];
             

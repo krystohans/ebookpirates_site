@@ -2059,6 +2059,25 @@ function updateActiveLangButtons() {
     });
 }
 
+function bindLanguageButtons() {
+    const langButtons = document.querySelectorAll('.lang-btn');
+    langButtons.forEach(button => {
+        if (button.getAttribute('data-lang-bound') === '1') {
+            return;
+        }
+
+        const buttonLang = button.getAttribute('data-lang');
+        if (!buttonLang) {
+            return;
+        }
+
+        button.addEventListener('click', function() {
+            switchLanguage(buttonLang);
+        });
+        button.setAttribute('data-lang-bound', '1');
+    });
+}
+
 /**
  * Segédfüggvény a JavaScript kódban lévő dinamikus szövegekhez (pl. alert, generált HTML).
  * Használat: alert(t('error_auth'));
@@ -2090,4 +2109,5 @@ function switchLanguage(lang) {
 // Amikor az oldal betöltődött, azonnal futtatjuk a fordítást
 document.addEventListener('DOMContentLoaded', function() {
     updateLanguageUI();
+    bindLanguageButtons();
 });

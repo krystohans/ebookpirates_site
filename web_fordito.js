@@ -2452,7 +2452,7 @@ const translations = {
  */
 function updateLanguageUI() {
     var storedLang = localStorage.getItem('siteLang');
-    if (storedLang && storedLang !== currentLang && translations[storedLang]) {
+    if ((!currentLang || !translations[currentLang]) && storedLang && translations[storedLang]) {
         currentLang = storedLang;
     }
     console.log('Nyelv frissítése erre:', currentLang);

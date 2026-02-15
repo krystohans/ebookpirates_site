@@ -43,7 +43,7 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         fetch(WEB_APP_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ action: funcName, data: params, token: token, lang: getSiteLang() })
+    body: JSON.stringify({ action: funcName, data: params, token: token })
 })
     .then(function(response) {
         return response.text().then(function(text) {
@@ -59,6 +59,8 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             throw new Error("Invalid JSON response");
         }
 
+        data = translateBackendResponse(data);
+
         if (payload.status >= 200 && payload.status < 300) {
             if (onSuccess) {
                 onSuccess(data);
@@ -67,6 +69,7 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         }
 
         var errorMessage = data.error || data.message || ("HTTP " + payload.status);
+        errorMessage = translateBackendText(errorMessage);
         var httpError = new Error(errorMessage);
         httpError.response = data;
         throw httpError;
@@ -83,6 +86,79 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             statusDiv.style.color = "red";
         }
     });
+}
+
+function translateBackendResponse(value) {
+    return translateBackendValue(value);
+}
+
+function translateBackendValue(value) {
+    if (typeof value === 'string') {
+        return translateBackendText(value);
+    }
+
+    if (!value || typeof value !== 'object') {
+        return value;
+    }
+
+    if (Array.isArray(value)) {
+        var mappedArray = new Array(value.length);
+        for (var i = 0; i < value.length; i++) {
+            mappedArray[i] = translateBackendValue(value[i]);
+        }
+        return mappedArray;
+    }
+
+    var mappedObject = {};
+    for (var key in value) {
+        if (Object.prototype.hasOwnProperty.call(value, key)) {
+            mappedObject[key] = translateBackendValue(value[key]);
+        }
+    }
+    return mappedObject;
+}
+
+function translateBackendText(text) {
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+
+    if (typeof translations === 'undefined' || typeof currentLang === 'undefined') {
+        return text;
+    }
+
+    if (currentLang === 'hu' || !translations.hu || !translations[currentLang]) {
+        return text;
+    }
+
+    var huDict = translations.hu;
+    var targetDict = translations[currentLang];
+
+    for (var key in huDict) {
+        if (Object.prototype.hasOwnProperty.call(huDict, key)) {
+            if (huDict[key] === text && targetDict[key]) {
+                return targetDict[key];
+            }
+        }
+    }
+
+    var bestKey = null;
+    var bestLength = 0;
+    for (var prefixKey in huDict) {
+        if (Object.prototype.hasOwnProperty.call(huDict, prefixKey)) {
+            var huPrefix = huDict[prefixKey];
+            if (targetDict[prefixKey] && text.indexOf(huPrefix) === 0 && huPrefix.length > bestLength) {
+                bestKey = prefixKey;
+                bestLength = huPrefix.length;
+            }
+        }
+    }
+
+    if (bestKey) {
+        return targetDict[bestKey] + text.substring(bestLength);
+    }
+
+    return text;
 }
 
 function parseJsonFromText(text) {
@@ -119,8 +195,7 @@ function login() {
     // 2. Adatok begyűjtése
     const formData = { 
         name: document.getElementById('name').value, 
-        jelszo: document.getElementById('jelszo').value,
-        lang: getSiteLang()
+        jelszo: document.getElementById('jelszo').value
     };
     
     // 3. Hívás a callBackend-en keresztül
@@ -309,7 +384,7 @@ function loadPage(pageName) {
                 bindLanguageButtons();
             }
 
-            callBackend('getPageDataAndContent', [pageName, getSiteLang()], 
+            callBackend('getPageDataAndContent', [pageName], 
                 function(result) {
                     var pageData = (result && result.pageData) ? result.pageData : {};
                     const pagesWithSplash = ['hajomuhely_oldal', 'kikoto_oldal', 'piac_oldal', 'tekercsmester_oldal', 'masolatok_oldal', 'taverna_oldal', 'konyvszentely_oldal', 'felhokolostor_oldal', 'konyvtar', 'kincsek'];

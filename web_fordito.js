@@ -340,6 +340,91 @@ const translations = {
         'log_publish_success': 'Sikeres kiadás! A naplód könyvként és másolatokként is elérhető a Könyvtáradban.',
         'sanctify_error_prefix': 'Hiba a szenteléskor: ',
 
+        // --- Marketing + Dashboard + Naplo + Modalok ---
+        'marketing_title': 'A Zsákmány Értékelése',
+        'marketing_intro': 'Minden válaszod <strong>1 Kalózkreditet</strong> ér!',
+        'marketing_submit_button': 'Vélemény Beküldése & Kreditek Zsebretétele',
+        'marketing_cancel_button': 'Mégse',
+
+        'dashboard_title': 'Könyv Statisztika',
+        'dashboard_loading': '<i class="fas fa-spinner fa-spin"></i> Adatok betöltése a kristálygömbből...',
+        'dashboard_active_questions_title': '<i class="fas fa-list-alt"></i> Aktív Alapkérdések (Ezekre válaszol az olvasó)',
+        'dashboard_active_questions_panel_title': '<i class="fas fa-clipboard-list"></i> Jelenleg aktív kérdések (Ezeket már tartalmazza az űrlap)',
+        'dashboard_total_responses': 'Összes Válasz',
+        'dashboard_tab_results': '📊 Eredmények',
+        'dashboard_tab_verification': '🛡️ Ellenőrzés (Kvíz)',
+        'dashboard_tab_new_question': '⚙️ Új Kérdés',
+        'dashboard_verify_title': '🧐 Olvasottsági Próba (Anti-Csalás Védelem)',
+        'dashboard_verify_intro': 'Itt állíthatsz be 3 kérdést, amire <strong>csak az tudja a választ, aki tényleg olvasta a művet.</strong>',
+        'dashboard_verify_note': '<i>A rendszer ezeket "verify" típusként menti el. A statisztikába nem kerülnek bele, csak a kapuőrző funkciót látják el.</i>',
+        'dashboard_verify_q1_label': '1. Ellenőrző Kérdés:',
+        'dashboard_verify_q2_label': '2. Ellenőrző Kérdés:',
+        'dashboard_verify_q3_label': '3. Ellenőrző Kérdés:',
+        'dashboard_verify_answer_type': 'Szöveges válasz',
+        'dashboard_verify_question_placeholder': 'Kérdés szövege...',
+        'dashboard_verify_answer_placeholder': 'Helyes válasz (kulcsszó)',
+        'dashboard_verify_save_button': '💾 3 Ellenőrző Kérdés Mentése',
+        'dashboard_existing_questions_loading': 'Adatok betöltése...',
+        'dashboard_new_question_title': 'Új kérdés hozzáadása az űrlaphoz',
+        'dashboard_new_question_intro': 'Itt bővítheted a kérdőívet. Az új kérdések automatikusan megjelennek az új olvasóknál.',
+        'dashboard_new_question_text_label': 'Kérdés szövege:',
+        'dashboard_new_question_text_placeholder': 'Pl. Melyik karakter volt a legszimpatikusabb?',
+        'dashboard_new_question_type_label': 'Típus:',
+        'dashboard_new_question_type_text': 'Szöveges kifejtős',
+        'dashboard_new_question_type_rating': 'Csillagos értékelés (1-5)',
+        'dashboard_new_question_type_yesno': 'Igen / Nem',
+        'dashboard_new_question_category_label': 'Kategória (Játékhoz):',
+        'dashboard_new_question_category_general': 'Általános',
+        'dashboard_new_question_category_story': 'Történet / Lore',
+        'dashboard_new_question_category_character': 'Karakterek',
+        'dashboard_new_question_isgame': 'Ez a kérdés bekerülhet kvízkérdésnek a játékba?',
+        'dashboard_new_question_add_button': 'Hozzáadás',
+
+        'log_entry_title': 'Új Hajónapló Bejegyzés',
+        'log_entry_splash_text': 'A hajónapló a hajó elválaszthatatlan, hivatalos dokumentuma. Csakis azok a hajóskapitányok vezethetik, akik ténylegesen irányítják a hajót, legyenek akár a hajó tulajdonosai, vagy csupán a tulajdonos által felkért parancsnokai. A napi jelentések beírása a napi rutinjuk kötelező része, egy sikeres könyvexpedíció vagy letkristályvadászat után segítenek az emlékek felidézésében, a pontos térképek megrajzolásában.',
+        'log_entry_prev_button': '< Előző',
+        'log_entry_next_button': 'Következő >',
+        'log_entry_date_label': 'Dátum:',
+        'log_entry_time_label': 'Idő (kb.):',
+        'log_entry_wind_label': 'Szélirány:',
+        'log_entry_wind_select': 'Válassz...',
+        'log_entry_wind_n': 'Észak (É)',
+        'log_entry_wind_ne': 'Észak-Kelet (ÉK)',
+        'log_entry_wind_e': 'Kelet (K)',
+        'log_entry_wind_se': 'Dél-Kelet (DK)',
+        'log_entry_wind_s': 'Dél (D)',
+        'log_entry_wind_sw': 'Dél-Nyugat (DNY)',
+        'log_entry_wind_w': 'Nyugat (NY)',
+        'log_entry_wind_nw': 'Észak-Nyugat (ÉNY)',
+        'log_entry_wind_variable': 'Változó',
+        'log_entry_wind_calm': 'Szélcsend',
+        'log_entry_weather_label': 'Időjárás:',
+        'log_entry_weather_select': 'Válassz...',
+        'log_entry_weather_sunny': 'Napos',
+        'log_entry_weather_cloudy': 'Felhős',
+        'log_entry_weather_rainy': 'Esős',
+        'log_entry_weather_storm': 'Viharos',
+        'log_entry_weather_fog': 'Ködös',
+        'log_entry_lat_label': 'Szélesség:',
+        'log_entry_lon_label': 'Hosszúság:',
+        'log_entry_lat_placeholder': 'Pl. 47.4979',
+        'log_entry_lon_placeholder': 'Pl. 19.0402',
+        'log_entry_report_label': 'Napi jelentés:',
+        'log_entry_report_placeholder': 'Írd le a mai nap eseményeit...',
+        'log_entry_image_label': 'Kép csatolása (opcionális, PNG):',
+        'log_entry_save_button': 'Bejegyzés mentése',
+        'log_entry_cancel_button': 'Mégse',
+        'log_entry_geo_title': 'Pozíció lekérése',
+
+        'monk_pin_title': 'Biztonsági Ellenőrzés',
+        'monk_pin_intro': 'A művelet díja 10 Tálentum.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!',
+        'monk_pin_label': 'PIN Kód:',
+        'monk_pin_cancel_button': 'Mégse',
+        'monk_pin_confirm_button': 'Megerősítés és Feltöltés',
+
+        'system_message_title': 'Rendszerüzenet',
+        'npc_chat_placeholder': 'Mit akarsz?',
+
         // --- Egyebek ---
         'game_pick_card_prompt': 'Na, hol a piros ász? Válassz egy lapot!',
         'shipyard_repair_placeholder': '+HP',
@@ -1896,18 +1981,23 @@ function updateLanguageUI() {
     const elements = document.querySelectorAll('[data-lang]');
     
     elements.forEach(element => {
+        if (element.classList.contains('lang-btn')) {
+            return;
+        }
         const key = element.getAttribute('data-lang');
+        const value = (translations[currentLang] && translations[currentLang][key])
+            || (translations.hu && translations.hu[key]);
         
         // Ellenőrizzük, hogy létezik-e a kulcs az aktuális nyelvben
-        if (translations[currentLang] && translations[currentLang][key]) {
+        if (value) {
             
             // Ha input gomb (pl. <input type="button">), akkor a 'value'-t kell cserélni
             if (element.tagName === 'INPUT' && (element.type === 'button' || element.type === 'submit')) {
-                element.value = translations[currentLang][key];
+                element.value = value;
             } 
             // Minden más esetben (div, span, p, h1, button) a szöveges tartalmat cseréljük
             else {
-                element.innerText = translations[currentLang][key];
+                element.innerText = value;
             }
         } else {
             console.warn('Hiányzó fordítás ehhez a kulcshoz (' + currentLang + '):', key);
@@ -1918,22 +2008,26 @@ function updateLanguageUI() {
     const htmlElements = document.querySelectorAll('[data-lang-html]');
     htmlElements.forEach(element => {
         const htmlKey = element.getAttribute('data-lang-html');
-        if (translations[currentLang] && translations[currentLang][htmlKey]) {
-            element.innerHTML = translations[currentLang][htmlKey];
+        const htmlValue = (translations[currentLang] && translations[currentLang][htmlKey])
+            || (translations.hu && translations.hu[htmlKey]);
+        if (htmlValue) {
+            element.innerHTML = htmlValue;
         } else {
             console.warn('Hiányzó html fordítás (' + currentLang + '):', htmlKey);
         }
     });
 
     // Mentés a böngészőbe, hogy frissítésnél megmaradjon a nyelv
-    
+    localStorage.setItem('siteLang', currentLang);
 
     // placeholder fordítás
     const placeholderElements = document.querySelectorAll('[data-lang-placeholder]');
     placeholderElements.forEach(element => {
         const placeholderKey = element.getAttribute('data-lang-placeholder');
-        if (translations[currentLang] && translations[currentLang][placeholderKey]) {
-            element.setAttribute('placeholder', translations[currentLang][placeholderKey]);
+        const placeholderValue = (translations[currentLang] && translations[currentLang][placeholderKey])
+            || (translations.hu && translations.hu[placeholderKey]);
+        if (placeholderValue) {
+            element.setAttribute('placeholder', placeholderValue);
         } else {
             console.warn('Hiányzó placeholder fordítás (' + currentLang + '):', placeholderKey);
         }
@@ -1943,8 +2037,10 @@ function updateLanguageUI() {
     const titleElements = document.querySelectorAll('[data-lang-title]');
     titleElements.forEach(element => {
         const titleKey = element.getAttribute('data-lang-title');
-        if (translations[currentLang] && translations[currentLang][titleKey]) {
-            element.setAttribute('title', translations[currentLang][titleKey]);
+        const titleValue = (translations[currentLang] && translations[currentLang][titleKey])
+            || (translations.hu && translations.hu[titleKey]);
+        if (titleValue) {
+            element.setAttribute('title', titleValue);
         } else {
             console.warn('Hiányzó title fordítás (' + currentLang + '):', titleKey);
         }
@@ -1953,6 +2049,14 @@ function updateLanguageUI() {
     updateActiveLangButtons();
     // Jelzés a HTML tag-en is (pl. CSS formázáshoz hasznos lehet: html[lang="en"])
     document.documentElement.lang = currentLang;
+}
+
+function updateActiveLangButtons() {
+    const langButtons = document.querySelectorAll('.lang-btn');
+    langButtons.forEach(button => {
+        const buttonLang = button.getAttribute('data-lang');
+        button.classList.toggle('active', buttonLang === currentLang);
+    });
 }
 
 /**

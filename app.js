@@ -127,17 +127,34 @@ function translateBackendText(text) {
         return text;
     }
 
-    if (currentLang === 'hu' || !translations.hu || !translations[currentLang]) {
+    if (currentLang === 'hu' || !translations.hu) {
         return text;
     }
 
     var huDict = translations.hu;
-    var targetDict = translations[currentLang];
+    var targetDict = translations[currentLang] || {};
+    var enDict = translations.en || {};
+
+    function getBestLocalizedValue(key) {
+        if (targetDict[key]) {
+            return targetDict[key];
+        }
+        if (enDict[key]) {
+            return enDict[key];
+        }
+        if (huDict[key]) {
+            return huDict[key];
+        }
+        return null;
+    }
 
     for (var key in huDict) {
         if (Object.prototype.hasOwnProperty.call(huDict, key)) {
-            if (huDict[key] === text && targetDict[key]) {
-                return targetDict[key];
+            if (huDict[key] === text) {
+                var exactValue = getBestLocalizedValue(key);
+                if (exactValue) {
+                    return exactValue;
+                }
             }
         }
     }
@@ -147,7 +164,7 @@ function translateBackendText(text) {
     for (var prefixKey in huDict) {
         if (Object.prototype.hasOwnProperty.call(huDict, prefixKey)) {
             var huPrefix = huDict[prefixKey];
-            if (targetDict[prefixKey] && text.indexOf(huPrefix) === 0 && huPrefix.length > bestLength) {
+            if (getBestLocalizedValue(prefixKey) && text.indexOf(huPrefix) === 0 && huPrefix.length > bestLength) {
                 bestKey = prefixKey;
                 bestLength = huPrefix.length;
             }
@@ -155,7 +172,7 @@ function translateBackendText(text) {
     }
 
     if (bestKey) {
-        return targetDict[bestKey] + text.substring(bestLength);
+        return getBestLocalizedValue(bestKey) + text.substring(bestLength);
     }
 
     return text;

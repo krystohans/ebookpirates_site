@@ -2540,6 +2540,23 @@ function updateActiveLangButtons() {
 }
 
 function bindLanguageButtons() {
+    if (typeof window !== 'undefined' && !window._langButtonDelegated) {
+        document.addEventListener('click', function(event) {
+            var target = event.target;
+            while (target && target !== document) {
+                if (target.classList && target.classList.contains('lang-btn')) {
+                    var lang = target.getAttribute('data-lang');
+                    if (lang) {
+                        switchLanguage(lang);
+                    }
+                    return;
+                }
+                target = target.parentNode;
+            }
+        });
+        window._langButtonDelegated = true;
+    }
+
     const langButtons = document.querySelectorAll('.lang-btn');
     langButtons.forEach(button => {
         const buttonLang = button.getAttribute('data-lang');

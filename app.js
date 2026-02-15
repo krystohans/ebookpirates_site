@@ -56,6 +56,12 @@ function callBackend(funcName, params, onSuccess, onFailure) {
     .then(function(payload) {
         var data = parseJsonFromText(payload.text);
         if (!data) {
+            if (payload.status >= 200 && payload.status < 300 && funcName === 'updatePlayerRank') {
+                if (onSuccess) {
+                    onSuccess({ success: true });
+                }
+                return;
+            }
             throw new Error("Invalid JSON response");
         }
 

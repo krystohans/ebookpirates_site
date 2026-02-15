@@ -19,27 +19,76 @@ function callBackend(funcName, params, onSuccess, onFailure) {
 
     var token = localStorage.getItem('ebookPiratesToken');
 
-    console.log(`📡 Kérés indítása: ${funcName}`);
+    console.log("📡 Kérés indítása: " + funcName);
 
     fetch(WEB_APP_URL, {
   method: "POST",
   headers: { "Content-Type": "text/plain;charset=utf-8" },
   body: JSON.stringify({ action: funcName, data: params, token: token })
 })
-    .then(response => {
-        // Először mindenképpen szövegként olvassuk ki
-        return response.text().then(text => ({
-            status: response.status,
-            text: text
-        }));
-        
-        // UI visszajelzés a státuszmezőbe (ha van)
-        const statusDiv = document.getElementById('status') || document.getElementById('login-status');
+    .then(function(response) {
+        return response.text().then(function(text) {
+            return {
+                status: response.status,
+                text: text
+            };
+        });
+    })
+    .then(function(payload) {
+        var data = parseJsonFromText(payload.text);
+        if (!data) {
+            throw new Error("Invalid JSON response");
+        }
+
+        if (payload.status >= 200 && payload.status < 300) {
+            if (onSuccess) {
+                onSuccess(data);
+            }
+            return;
+        }
+
+        var errorMessage = data.error || data.message || ("HTTP " + payload.status);
+        var httpError = new Error(errorMessage);
+        httpError.response = data;
+        throw httpError;
+    })
+    .catch(function(error) {
+        if (onFailure) {
+            onFailure(error);
+            return;
+        }
+
+        var statusDiv = document.getElementById('status') || document.getElementById('login-status');
         if (statusDiv) {
             statusDiv.innerText = t('comm_error_prefix') + error.message;
             statusDiv.style.color = "red";
         }
     });
+}
+
+function parseJsonFromText(text) {
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch (err) {
+        // continue
+    }
+
+    var start = text.indexOf('{');
+    var end = text.lastIndexOf('}');
+    if (start !== -1 && end !== -1 && end > start) {
+        var slice = text.substring(start, end + 1);
+        try {
+            return JSON.parse(slice);
+        } catch (err2) {
+            return null;
+        }
+    }
+
+    return null;
 }
 
 function login() {

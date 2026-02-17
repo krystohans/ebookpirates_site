@@ -8,6 +8,8 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         token = null;
     }
 
+    console.info('[Regisztracio] Backend hivas indul:', funcName);
+
     fetch(REGISTRATION_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -24,6 +26,13 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             throw new Error('Érvénytelen szerverválasz.');
         }
 
+        console.info('[Regisztracio] Backend valasz:', {
+            status: payload.status,
+            success: parsed.success,
+            message: parsed.message,
+            error: parsed.error
+        });
+
         if (payload.status >= 200 && payload.status < 300) {
             if (onSuccess) {
                 onSuccess(parsed);
@@ -34,6 +43,7 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         throw new Error(parsed.error || parsed.message || ('HTTP ' + payload.status));
     })
     .catch(function(error) {
+        console.error('[Regisztracio] Backend hiba:', error);
         if (onFailure) {
             onFailure(error);
         }
@@ -76,7 +86,20 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         name: this.name.value
     };
 
+    console.info('[Regisztracio] Submit adatok:', {
+        email: formData.email,
+        nameLength: (formData.name || '').length
+    });
+
     callBackend('submitRegistrationRequest', [formData], function(response) {
+        if (!response || response.success === false) {
+            var backendError = (response && response.error) ? (' (' + response.error + ')') : '';
+            statusMessage.textContent = (response && response.message ? response.message : 'Nem sikerült rögzíteni a regisztrációt.') + backendError;
+            statusMessage.style.color = 'red';
+            submitButton.disabled = false;
+            return;
+        }
+
         statusMessage.textContent = response.message || 'A regisztrációs kérelmet rögzítettük.';
         statusMessage.style.color = 'green';
         document.getElementById('registrationForm').style.display = 'none';

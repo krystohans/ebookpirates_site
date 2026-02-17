@@ -55,14 +55,16 @@ function callBackend(funcName, params, onSuccess, onFailure) {
     })
     .then(function(payload) {
         var data = parseJsonFromText(payload.text);
-        if (!data) {
+        if (data === null || typeof data === 'undefined') {
             if (payload.status >= 200 && payload.status < 300 && funcName === 'updatePlayerRank') {
                 if (onSuccess) {
                     onSuccess({ success: true });
                 }
                 return;
             }
-            throw new Error("Invalid JSON response");
+            var raw = String(payload.text || '').replace(/\s+/g, ' ').trim();
+            var snippet = raw.substring(0, 240);
+            throw new Error("Invalid JSON response (" + funcName + "): " + snippet);
         }
 
         data = translateBackendResponse(data);
@@ -195,14 +197,54 @@ function parseJsonFromText(text) {
         // continue
     }
 
-    var start = text.indexOf('{');
-    var end = text.lastIndexOf('}');
-    if (start !== -1 && end !== -1 && end > start) {
-        var slice = text.substring(start, end + 1);
-        try {
-            return JSON.parse(slice);
-        } catch (err2) {
-            return null;
+    var start = -1;
+    var depth = 0;
+    var inString = false;
+    var escaped = false;
+
+    for (var i = 0; i < text.length; i++) {
+        var ch = text.charAt(i);
+
+        if (inString) {
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            if (ch === '\\') {
+                escaped = true;
+                continue;
+            }
+            if (ch === '"') {
+                inString = false;
+            }
+            continue;
+        }
+
+        if (ch === '"') {
+            inString = true;
+            continue;
+        }
+
+        if (ch === '{') {
+            if (depth === 0) {
+                start = i;
+            }
+            depth++;
+            continue;
+        }
+
+        if (ch === '}') {
+            if (depth > 0) {
+                depth--;
+                if (depth === 0 && start !== -1) {
+                    var candidate = text.substring(start, i + 1);
+                    try {
+                        return JSON.parse(candidate);
+                    } catch (err2) {
+                        start = -1;
+                    }
+                }
+            }
         }
     }
 
@@ -532,7 +574,8 @@ function initializePage(pageName) {
                 return;
             }
 
-            if (status === 'ok') {
+            var normalizedStatus = String(status || '').trim().toLowerCase();
+            if (normalizedStatus === 'ok') {
                 splash.style.display = 'none';
                 content.style.display = 'block';
             } else {
@@ -542,8 +585,12 @@ function initializePage(pageName) {
         },
         function(err) {
             console.error("Hiba a getPageStatus híváskor:", err);
-            // Hiba esetén biztonsági okból inkább a tartalmat mutatjuk (vagy maradhat rejtve)
-            // Itt most nem nyúlunk hozzá, marad az alapállapot.
+            const splash = document.getElementById(pageName + '-splash');
+            const content = document.getElementById(pageName + '-content');
+            if (splash && content) {
+                splash.style.display = 'block';
+                content.style.display = 'none';
+            }
         }
     );
 }

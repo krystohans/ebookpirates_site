@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leléptető</title>
+    <link rel="stylesheet" href="lelepteto.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Leléptető</h2>
+        <p class="description">Kijelentkezésemmel tudomásul veszem, hogy adataim, játékban megszerzett eredményeim törlésre kerülnek, ezek után semmilyen anyagi és jogi követelésem nincs.</p>
+
+        <form id="deletionForm" novalidate>
+            <div class="form-group">
+                <label for="name">Mi a játékban használt kalózneved? <span class="required-notice">*</span></label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Mi az e-mail címed, amin regisztráltál? <span class="required-notice">*</span></label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="reason">Mi a kilépésed oka? <span class="required-notice">*</span></label>
+                <textarea id="reason" name="reason" required></textarea>
+            </div>
+
+            <button type="submit" id="submit-button">Kijelentkezési kérelem küldése</button>
+        </form>
+
+        <div id="status-message"></div>
+    </div>
+
+    <script src="lelepteto.js"></script>
+</body>
+</html>

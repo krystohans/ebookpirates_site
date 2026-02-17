@@ -242,7 +242,7 @@ function login() {
                 registerButton.type = 'button'; // Fontos, hogy ne submitolja a formot
                 registerButton.innerText = t('login_register_button');
                 // Ide a TE Web App URL-ed kerüljön, ha van külön regisztrációs linked
-                registerButton.onclick = function() { window.open('https://script.google.com/macros/s/AKfycbzcTV8OW0TJmB9HEmgTQzYB-QVfb82xyelgWHH5kkQPsI4OjbFhcON5Vit4wiJqkh2v/exec', '_blank'); };
+                registerButton.onclick = function() { window.open('https://krystohans.github.io/ebookpirates_site/GitHubSite/regisztracio/', '_blank'); };
                 registerButtonContainer.appendChild(registerButton);
             }
         },
@@ -3849,7 +3849,7 @@ function refreshMonasteryWork() {
                             '<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">' +
                                 '<div>' +
                                     '<strong style="font-size:1.1em;">' + work.title + '</strong> ' + 
-                                    '<span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.8em;">' + work.status + '</span><br>' +
+                                    '<span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.8em;">' + getMonasteryWorkStatusLabel(work.status) + '</span><br>' +
                                     '<small>' + t('author_label') + ' ' + work.author + '</small>' +
                                 '</div>' +
                                 '<button class="btn btn-sm btn-secondary" onclick="window.open(\'' + work.url + '\', \'_blank\')">' + t('gdoc_button') + '</button>' +
@@ -3973,12 +3973,47 @@ function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
     }, 5000);
 }
 
+function getMonasteryWorkStatusLabel(status) {
+    var statusMap = {
+        'Elbírálás alatt': 'monk_work_status_under_review',
+        'Folyamatban': 'monk_work_status_in_progress',
+        'Ellenőrzés alatt': 'monk_work_status_quality_check',
+        'Véglegesítésre vár': 'monk_work_status_waiting_finalize',
+        'Elutasítva': 'monk_work_status_rejected'
+    };
+    var key = statusMap[status];
+    if (!key) return status;
+    var translated = t(key);
+    return translated === key ? status : translated;
+}
+
+function getMonasteryTaskStatusLabel(status) {
+    var statusMap = {
+        'inaktív': 'monk_task_status_inactive',
+        'várakozó': 'monk_task_status_waiting',
+        'folyamatban': 'monk_task_status_in_progress',
+        'javítás alatt': 'monk_task_status_revision',
+        'ellenőrzés alatt': 'monk_task_status_under_review',
+        'elfogadva': 'monk_task_status_accepted'
+    };
+    var key = statusMap[status];
+    if (!key) return status;
+    var translated = t(key);
+    return translated === key ? status : translated;
+}
+
+function getMonasteryTaskLabel(taskKey, fallbackLabel) {
+    var key = 'monk_task_label_' + taskKey;
+    var translated = t(key);
+    return translated === key ? (fallbackLabel || taskKey) : translated;
+}
+
 function renderDetailedChecklist(work, allMonks, currentUser) {
     var html = '<table style="width:100%; font-size:0.9em; border-collapse:collapse;">';
 
     for (var key in work.checklist) {
         var task = work.checklist[key];
-        var action = task.status;
+        var action = getMonasteryTaskStatusLabel(task.status);
         var userHasRole = work.userRoles && work.userRoles.some(function(r) { return r.includes(task.requiredRole); });
         var isOwnerOrPapat = work.isMyWork || work.isPapat;
 
@@ -4059,7 +4094,7 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
         var monkName = task.selectedMonk ? (monkData ? monkData.fullName : t('unknown_label_html')) : '-';
 
         html += '<tr style="border-bottom:1px solid #f0f0f0;">' +
-                    '<td style="padding:8px;">' + task.label + '</td>' +
+                    '<td style="padding:8px;">' + getMonasteryTaskLabel(key, task.label) + '</td>' +
                     '<td style="padding:8px; color:#555;">' + monkName + '</td>' +
                     '<td style="padding:8px; text-align:right;">' + action + '</td>' +
                  '</tr>';

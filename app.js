@@ -278,12 +278,8 @@ function initializeApp(user) {
         if (user.startPage) {
              loadPage(user.startPage); // A backend mondja meg (tutorial vagy jogosult)
         } else {
-             // Fallback (ha régi a backend válasz)
-             if (String(user.kalozStatus).toLowerCase() !== 'ok') {
-                loadPage('tutorial_oldal');
-             } else {
-                loadPage('jogosult_tartalom'); 
-             }
+                 // Fallback: ha a backend valamiért nem küld startPage-et
+                 loadPage('tutorial_oldal');
         }
     }
 }

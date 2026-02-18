@@ -4,33 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leléptető</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
     <link rel="stylesheet" href="lelepteto.css">
 </head>
 <body>
     <div class="form-container">
-        <h2>Leléptető</h2>
-        <p class="description">Kijelentkezésemmel tudomásul veszem, hogy adataim, játékban megszerzett eredményeim törlésre kerülnek, ezek után semmilyen anyagi és jogi követelésem nincs.</p>
+        <div class="lang-switch" aria-label="Nyelvvalaszto">
+            <button type="button" class="lang-btn" data-lang="hu" title="Magyar"><span class="fi fi-hu"></span></button>
+            <button type="button" class="lang-btn" data-lang="en" title="English"><span class="fi fi-gb"></span></button>
+            <button type="button" class="lang-btn" data-lang="de" title="Deutsch"><span class="fi fi-de"></span></button>
+            <button type="button" class="lang-btn" data-lang="fr" title="Francais"><span class="fi fi-fr"></span></button>
+            <button type="button" class="lang-btn" data-lang="es" title="Espanol"><span class="fi fi-es"></span></button>
+            <button type="button" class="lang-btn" data-lang="pl" title="Polski"><span class="fi fi-pl"></span></button>
+            <button type="button" class="lang-btn" data-lang="ru" title="Russkiy"><span class="fi fi-ru"></span></button>
+        </div>
+        <h2 data-lang="del_form_title">Leléptető</h2>
+        <p class="description" data-lang="del_form_desc">Kijelentkezésemmel tudomásul veszem, hogy adataim, játékban megszerzett eredményeim törlésre kerülnek, ezek után semmilyen anyagi és jogi követelésem nincs.</p>
 
         <form id="deletionForm" novalidate>
             <div class="form-group">
-                <label for="name">Mi a játékban használt kalózneved? <span class="required-notice">*</span></label>
-                <input type="text" id="name" name="name" required>
+                <label for="name" data-lang-html="del_name_label_html">Mi a játékban használt kalózneved? <span class="required-notice">*</span></label>
+                <input type="text" id="name" name="name" required data-lang-placeholder="del_name_placeholder">
             </div>
             <div class="form-group">
-                <label for="email">Mi az e-mail címed, amin regisztráltál? <span class="required-notice">*</span></label>
-                <input type="email" id="email" name="email" required>
+                <label for="email" data-lang-html="del_email_label_html">Mi az e-mail címed, amin regisztráltál? <span class="required-notice">*</span></label>
+                <input type="email" id="email" name="email" required data-lang-placeholder="del_email_placeholder">
             </div>
             <div class="form-group">
-                <label for="reason">Mi a kilépésed oka? <span class="required-notice">*</span></label>
-                <textarea id="reason" name="reason" required></textarea>
+                <label for="reason" data-lang-html="del_reason_label_html">Mi a kilépésed oka? <span class="required-notice">*</span></label>
+                <textarea id="reason" name="reason" required data-lang-placeholder="del_reason_placeholder"></textarea>
             </div>
 
-            <button type="submit" id="submit-button">Kijelentkezési kérelem küldése</button>
+            <button type="submit" id="submit-button" data-lang="del_submit_button">Kijelentkezési kérelem küldése</button>
         </form>
 
         <div id="status-message"></div>
     </div>
 
+    <script src="../../web_fordito.js"></script>
     <script src="lelepteto.js"></script>
 </body>
 </html>

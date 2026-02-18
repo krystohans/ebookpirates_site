@@ -19,6 +19,36 @@ body {
     max-width: 550px;
 }
 
+.lang-switch {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.lang-btn {
+    border: 1px solid #dadce0;
+    border-radius: 999px;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    cursor: pointer;
+    padding: 0;
+}
+
+.lang-btn .fi {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.lang-btn.active {
+    border-color: #bd584c;
+    box-shadow: 0 0 0 2px rgba(189, 88, 76, 0.15);
+}
+
 h2 {
     font-family: 'Google Sans', sans-serif;
     font-size: 24px;

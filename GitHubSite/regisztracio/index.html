@@ -4,31 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>eBookPirate leszek</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
     <link rel="stylesheet" href="regisztracio.css">
 </head>
 <body>
     <div class="form-container">
-        <h2>eBookPirate leszek</h2>
-        <p class="description">Jelentkezésemmel kijelentem, hogy az eBookPirates banda tagja kívánok lenni, és tengerre kelek a magyar e-könyvek ügyéért!</p>
-        <p class="info-text">Elolvastam és megértettem a <a href="https://script.google.com/macros/s/AKfycbw_N_3P9bb5wReF_viyo-epfLnstbgZ8PejaJs-3p0DTRXZDp8P7kxE6mGo2bfU3xIa/exec" target="_blank" rel="noopener noreferrer">játékszabályokat</a>.</p>
+        <div class="lang-switch" aria-label="Nyelvvalaszto">
+            <button type="button" class="lang-btn" data-lang="hu" title="Magyar"><span class="fi fi-hu"></span></button>
+            <button type="button" class="lang-btn" data-lang="en" title="English"><span class="fi fi-gb"></span></button>
+            <button type="button" class="lang-btn" data-lang="de" title="Deutsch"><span class="fi fi-de"></span></button>
+            <button type="button" class="lang-btn" data-lang="fr" title="Francais"><span class="fi fi-fr"></span></button>
+            <button type="button" class="lang-btn" data-lang="es" title="Espanol"><span class="fi fi-es"></span></button>
+            <button type="button" class="lang-btn" data-lang="pl" title="Polski"><span class="fi fi-pl"></span></button>
+            <button type="button" class="lang-btn" data-lang="ru" title="Russkiy"><span class="fi fi-ru"></span></button>
+        </div>
+        <h2 data-lang="reg_form_title">eBookPirate leszek</h2>
+        <p class="description" data-lang="reg_form_desc">Jelentkezésemmel kijelentem, hogy az eBookPirates banda tagja kívánok lenni, és tengerre kelek a magyar e-könyvek ügyéért!</p>
+        <p class="info-text" data-lang-html="reg_form_rules_html">Elolvastam és megértettem a <a href="https://script.google.com/macros/s/AKfycbw_N_3P9bb5wReF_viyo-epfLnstbgZ8PejaJs-3p0DTRXZDp8P7kxE6mGo2bfU3xIa/exec" target="_blank" rel="noopener noreferrer">játékszabályokat</a>.</p>
 
         <form id="registrationForm" novalidate>
             <div class="form-group">
-                <label for="email">Mi lesz a kalóz e-mail címed? <span class="required-notice">*</span></label>
-                <input type="email" id="email" name="email" autocomplete="email" required>
+                <label for="email" data-lang-html="reg_email_label_html">Mi lesz a kalóz e-mail címed? <span class="required-notice">*</span></label>
+                <input type="email" id="email" name="email" autocomplete="email" required data-lang-placeholder="reg_email_placeholder">
             </div>
             <div class="form-group">
-                <label for="name">Mi a kalózneved? <span class="required-notice">*</span></label>
-                <input type="text" id="name" name="name" autocomplete="nickname" required>
+                <label for="name" data-lang-html="reg_name_label_html">Mi a kalózneved? <span class="required-notice">*</span></label>
+                <input type="text" id="name" name="name" autocomplete="nickname" required data-lang-placeholder="reg_name_placeholder">
             </div>
-            <p class="info-text">Ha nincs ötleted, használd a <a href="https://script.google.com/macros/s/AKfycbx30ktRzSTx5XTU9x9Kb8PAzhLTzeVx7HGco9X4Oau9QnPKPyt_jGo0aga4MIEqxLucQA/exec" target="_blank" rel="noopener noreferrer">Névalkotót</a>!</p>
+            <p class="info-text" data-lang-html="reg_namegen_html">Ha nincs ötleted, használd a <a href="https://script.google.com/macros/s/AKfycbx30ktRzSTx5XTU9x9Kb8PAzhLTzeVx7HGco9X4Oau9QnPKPyt_jGo0aga4MIEqxLucQA/exec" target="_blank" rel="noopener noreferrer">Névalkotót</a>!</p>
 
-            <button type="submit" id="submit-button">Jelentkezem</button>
+            <button type="submit" id="submit-button" data-lang="reg_submit_button">Jelentkezem</button>
         </form>
 
         <div id="status-message"></div>
     </div>
 
+    <script src="../../web_fordito.js"></script>
     <script src="regisztracio.js"></script>
 </body>
 </html>

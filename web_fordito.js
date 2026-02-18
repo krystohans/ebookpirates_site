@@ -5975,7 +5975,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'Nem sikerült rögzíteni a regisztrációt. Kérlek, próbáld újra később.',
         'backend_email_auth_required': 'A rendszer e-mail küldési jogosultsága hiányzik. Jelezd az adminnak, hogy a Scriptben engedélyezze újra az email-küldést.',
         'backend_del_success': 'Kérelmedet rögzítettük. Hamarosan emailt küldünk a megerősítéshez.',
-        'backend_del_fail': 'Nem sikerült rögzíteni a kérelmet. Kérlek, próbáld újra később.'
+        'backend_del_fail': 'Nem sikerült rögzíteni a kérelmet. Kérlek, próbáld újra később.',
+        'backend_login_status_not_ok': 'A fiók nem aktív. Belépés csak jóváhagyott (OK) státusszal lehetséges.',
+        'backend_btn_back_to_port': 'Vissza a Kikötőbe',
+        'backend_btn_go_to_port': 'Irány a Kikötő!',
+        'backend_deletion_confirmed_message': 'Hozzáférésedet megszüntettük. Köszönjük, hogy velünk hajóztál!',
+        'backend_registration_confirmed_message': 'A regisztrációd most már aktív. A jelszavaidat a korábban kapott e-mailben találod.'
     },
     en: {
         'reg_page_title': 'Become an eBookPirate',
@@ -6012,7 +6017,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'Registration could not be saved. Please try again later.',
         'backend_email_auth_required': 'The system is missing e-mail sending authorization. Ask the admin to re-enable e-mail sending in the Script.',
         'backend_del_success': 'Your request has been recorded. We will send a confirmation e-mail shortly.',
-        'backend_del_fail': 'Could not record your request. Please try again later.'
+        'backend_del_fail': 'Could not record your request. Please try again later.',
+        'backend_login_status_not_ok': 'Account is not active. Login is only allowed with approved (OK) status.',
+        'backend_btn_back_to_port': 'Back to Port',
+        'backend_btn_go_to_port': 'Sail to Port!',
+        'backend_deletion_confirmed_message': 'Your access has been revoked. Thank you for sailing with us!',
+        'backend_registration_confirmed_message': 'Your registration is now active. You can find your passwords in the e-mail you received earlier.'
     },
     de: {
         'reg_page_title': 'Ich werde eBookPirate',
@@ -6049,7 +6059,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'Registrierung konnte nicht gespeichert werden. Bitte spaeter erneut versuchen.',
         'backend_email_auth_required': 'Die Berechtigung zum E-Mail-Versand fehlt. Bitte den Admin, den Versand im Script wieder zu aktivieren.',
         'backend_del_success': 'Dein Antrag wurde gespeichert. In Kuerze senden wir eine Bestaetigungs-E-Mail.',
-        'backend_del_fail': 'Der Antrag konnte nicht gespeichert werden. Bitte spaeter erneut versuchen.'
+        'backend_del_fail': 'Der Antrag konnte nicht gespeichert werden. Bitte spaeter erneut versuchen.',
+        'backend_login_status_not_ok': 'Das Konto ist nicht aktiv. Login ist nur mit freigegebenem (OK) Status moeglich.',
+        'backend_btn_back_to_port': 'Zurueck zum Hafen',
+        'backend_btn_go_to_port': 'Auf zum Hafen!',
+        'backend_deletion_confirmed_message': 'Dein Zugang wurde beendet. Danke, dass du mit uns gesegelt bist!',
+        'backend_registration_confirmed_message': 'Deine Registrierung ist jetzt aktiv. Deine Passwoerter findest du in der zuvor erhaltenen E-Mail.'
     },
     fr: {
         'reg_page_title': 'Je deviens eBookPirate',
@@ -6086,7 +6101,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'Impossible d enregistrer l inscription. Merci de reessayer plus tard.',
         'backend_email_auth_required': 'Le systeme n a pas l autorisation d envoyer des e-mails. Demande a l admin de reactiver cet acces dans le Script.',
         'backend_del_success': 'Ta demande a ete enregistree. Nous enverrons bientot un e-mail de confirmation.',
-        'backend_del_fail': 'Impossible d enregistrer ta demande. Merci de reessayer plus tard.'
+        'backend_del_fail': 'Impossible d enregistrer ta demande. Merci de reessayer plus tard.',
+        'backend_login_status_not_ok': 'Le compte nest pas actif. La connexion est autorisee uniquement avec le statut approuve (OK).',
+        'backend_btn_back_to_port': 'Retour au Port',
+        'backend_btn_go_to_port': 'Cap sur le Port !',
+        'backend_deletion_confirmed_message': 'Ton acces a ete supprime. Merci d avoir navigue avec nous !',
+        'backend_registration_confirmed_message': 'Ton inscription est maintenant active. Tu trouveras tes mots de passe dans le-mail recu precedemment.'
     },
     es: {
         'reg_page_title': 'Quiero ser eBookPirate',
@@ -6123,7 +6143,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'No se pudo guardar el registro. Intentalo de nuevo mas tarde.',
         'backend_email_auth_required': 'El sistema no tiene permiso para enviar correos. Pide al administrador que reactive ese permiso en el Script.',
         'backend_del_success': 'Tu solicitud ha sido registrada. En breve enviaremos un correo de confirmacion.',
-        'backend_del_fail': 'No se pudo registrar tu solicitud. Intentalo de nuevo mas tarde.'
+        'backend_del_fail': 'No se pudo registrar tu solicitud. Intentalo de nuevo mas tarde.',
+        'backend_login_status_not_ok': 'La cuenta no esta activa. El acceso solo esta permitido con estado aprobado (OK).',
+        'backend_btn_back_to_port': 'Volver al Puerto',
+        'backend_btn_go_to_port': 'Ir al Puerto!',
+        'backend_deletion_confirmed_message': 'Tu acceso ha sido revocado. Gracias por navegar con nosotros!',
+        'backend_registration_confirmed_message': 'Tu registro ya esta activo. Encontraras tus contrasenas en el correo recibido anteriormente.'
     },
     pl: {
         'reg_page_title': 'Chce zostac eBookPirate',
@@ -6160,7 +6185,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'Nie udalo sie zapisac rejestracji. Sprobuj ponownie pozniej.',
         'backend_email_auth_required': 'System nie ma uprawnien do wysylki e-maili. Popros administratora o ponowne wlaczenie wysylki w skrypcie.',
         'backend_del_success': 'Twoj wniosek zostal zapisany. Wkrotce wyslemy e-mail potwierdzajacy.',
-        'backend_del_fail': 'Nie udalo sie zapisac wniosku. Sprobuj ponownie pozniej.'
+        'backend_del_fail': 'Nie udalo sie zapisac wniosku. Sprobuj ponownie pozniej.',
+        'backend_login_status_not_ok': 'Konto nie jest aktywne. Logowanie jest mozliwe tylko ze statusem zatwierdzonym (OK).',
+        'backend_btn_back_to_port': 'Wroc do Portu',
+        'backend_btn_go_to_port': 'Do Portu!',
+        'backend_deletion_confirmed_message': 'Dostep zostal usuniety. Dziekujemy, ze zeglowales z nami!',
+        'backend_registration_confirmed_message': 'Rejestracja jest teraz aktywna. Hasla znajdziesz w otrzymanym wczesniej e-mailu.'
     },
     ru: {
         'reg_page_title': 'Ya hochu stat eBookPirate',
@@ -6197,7 +6227,12 @@ const registrationDeletionTranslations = {
         'backend_reg_fail_generic': 'Ne udalos sohranit registratsiyu. Pozhaluysta, poprobuy pozhe.',
         'backend_email_auth_required': 'U sistemy net prav na otpravku e-mail. Poprosi administratora snova vklyuchit otpravku v Script.',
         'backend_del_success': 'Tvoy zapros sohranen. Skoro my otpravim pismo dlya podtverzhdeniya.',
-        'backend_del_fail': 'Ne udalos sohranit zapros. Pozhaluysta, poprobuy pozhe.'
+        'backend_del_fail': 'Ne udalos sohranit zapros. Pozhaluysta, poprobuy pozhe.',
+        'backend_login_status_not_ok': 'Akkount ne aktiven. Vhod razreshen tolko so statusom podtverzhden (OK).',
+        'backend_btn_back_to_port': 'Nazad v Port',
+        'backend_btn_go_to_port': 'V Port!',
+        'backend_deletion_confirmed_message': 'Vash dostup otklyuchen. Spasibo, chto plavali s nami!',
+        'backend_registration_confirmed_message': 'Vasha registratsiya teper aktivna. Paroli ukazany v ranee poluchennom e-mail.'
     }
 };
 

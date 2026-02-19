@@ -1,0 +1,39 @@
+<div id="fedelzet_oldal-splash" style="display: none;">
+    <h2 data-lang="deck_welcome_title">Üdv a fedélzeten!</h2>
+    <p data-lang="deck_splash_body">
+        Minden kalóz itt érzi igazán otthon magát, ahol a csizmája alatt billeg és nyikorog a hajódeszka. Ide visszavonulva tudod nyugodtan átnézni a jegyzeteidet, megírni az aktuális fejezetet a hajónaplódba, vagy tenni, ami az igazi élet - kihajózni a tengerre.
+    </p>
+    <button class="btn" onclick="markPageAsSeen('fedelzet_oldal')" data-lang="deck_splash_ack_button">Értettem, mehet!</button>
+</div>
+
+<div id="fedelzet_oldal-content" style="display: none; position: relative;">
+    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
+        <i class="fas fa-info-circle" onclick="showSplash('fedelzet_oldal')"></i>
+    </div>
+
+    <div class="page-container">
+        <div class="page-section" style="text-align: center;">
+            <h1 style="color: var(--color-accent); font-family: var(--font-serif);" data-lang="deck_welcome_title">Üdv a fedélzeten!</h1>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 20px auto;">
+                <button class="btn" style="background-color: var(--color-secondary); padding: 15px; font-size: 1.1em;" onclick="loadPage('kikoto_oldal')" data-lang="deck_resume_button">
+                    <i class="fas fa-anchor"></i> Ugrás a mentett álláshoz
+                </button>
+
+                <button class="btn" style="background-color: var(--color-gold); color: #333; padding: 15px; font-size: 1.1em;" onclick="launchGame()" data-lang="deck_fish_button">
+                    <i class="fas fa-fish"></i> Gyerünk hártyát halászni!
+                </button>
+            </div>
+        </div>
+
+        <div class="page-section" style="text-align: center; background-color: #fff;">
+            <h3 data-lang="deck_nav_title">Navigáció</h3>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')" data-lang="deck_nav_tutorial">Tudnivalók</button>
+                <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')" data-lang="deck_nav_island">Sziget</button>
+                <button class="btn btn-secondary" onclick="checkRankAndOpenLogModal()" data-lang="deck_nav_logbook">Hajónapló</button>
+                <button class="btn btn-danger" onclick="logout()" data-lang="deck_nav_logout">Kijelentkezés</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -454,7 +454,7 @@ function loadPage(pageName) {
             callBackend('getPageDataAndContent', [pageName], 
                 function(result) {
                     var pageData = (result && result.pageData) ? result.pageData : {};
-                    const pagesWithSplash = ['hajomuhely_oldal', 'kikoto_oldal', 'piac_oldal', 'tekercsmester_oldal', 'masolatok_oldal', 'taverna_oldal', 'konyvszentely_oldal', 'felhokolostor_oldal', 'konyvtar', 'kincsek'];
+                    const pagesWithSplash = ['fedelzet_oldal', 'hajomuhely_oldal', 'kikoto_oldal', 'piac_oldal', 'tekercsmester_oldal', 'masolatok_oldal', 'taverna_oldal', 'konyvszentely_oldal', 'felhokolostor_oldal', 'konyvtar', 'kincsek'];
 
                     if (pageName === 'tutorial_oldal') { 
                         runTutorialScript(); 
@@ -1198,11 +1198,11 @@ function runTutorialScript() {
     window.onTutorialSuccess = function(email) {
         callBackend('markTutorialCompleted', ['unity'], function(res) {
             if (res && res.success) {
-                loadPage('jogosult_tartalom');
+                loadPage('fedelzet_oldal');
             }
         }, function(err) {
             console.warn('Tutorial OK mentési hiba:', err);
-            loadPage('jogosult_tartalom');
+            loadPage('fedelzet_oldal');
         });
     };
 
@@ -6525,7 +6525,7 @@ function returnToPort() {
     
     var contentDiv = document.getElementById('content');
     if (!contentDiv.innerHTML.trim()) {
-        loadPage('jogosult_tartalom'); 
+        loadPage('fedelzet_oldal'); 
     }
 }
 

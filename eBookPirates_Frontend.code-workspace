@@ -5,6 +5,12 @@
 		},
 		{
 			"path": "../../GoogleProjektek/eBookPirates_kalozsziget"
+		},
+		{
+			"path": "../eBookPirates"
+		},
+		{
+			"path": "D:/unity_projects/HBPT_V01B/HBPT_V01B"
 		}
 	],
 	"settings": {}

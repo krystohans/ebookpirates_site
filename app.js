@@ -381,6 +381,107 @@ function logout() {
     if(creditVal) creditVal.innerText = '0';
 }
 
+/**
+ * Returns information about the client's operating system and capabilities.
+ */
+function getClientOsInfo() {
+    var ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
+    var platform = (navigator && navigator.platform) ? navigator.platform : 'unknown';
+    var osType = 'PC';
+
+    if (/Android/i.test(ua)) {
+        osType = 'ANDROID';
+    } else if (/iPhone|iPad|iPod/i.test(ua)) {
+        osType = 'IOS';
+    } else if (/Windows/i.test(ua)) {
+        osType = 'WINDOWS';
+    } else if (/Mac/i.test(ua)) {
+        osType = 'MAC';
+    } else if (/Linux/i.test(ua)) {
+        osType = 'LINUX';
+    }
+
+    return {
+        osType: osType,
+        platform: platform,
+        userAgent: ua,
+        touch: !!(('ontouchstart' in window) || (navigator && navigator.maxTouchPoints > 0))
+    };
+}
+
+/**
+ * Builds the full URL to launch the Unity game with necessary parameters.
+ */
+function buildUnityLaunchUrl(baseUrl, mode, token) {
+    var loginName = '';
+    var loginPass = '';
+
+    try {
+        loginName = sessionStorage.getItem('ebookPiratesLoginName') || '';
+        loginPass = sessionStorage.getItem('ebookPiratesLoginPass') || '';
+    } catch (e) {
+        loginName = '';
+        loginPass = '';
+    }
+
+    var osInfo = getClientOsInfo();
+    var sep = (baseUrl.indexOf('?') === -1) ? '?' : '&';
+    var launchUrl = baseUrl + sep +
+        'mode=' + encodeURIComponent(mode || 'tutorial') +
+        '&email=' + encodeURIComponent(currentUserEmail || '') +
+        '&loginName=' + encodeURIComponent(loginName) +
+        '&password=' + encodeURIComponent(loginPass) +
+        '&os=' + encodeURIComponent(osInfo.osType) +
+        '&platform=' + encodeURIComponent(osInfo.platform) +
+        '&touch=' + encodeURIComponent(osInfo.touch ? '1' : '0');
+
+    if (token) {
+        launchUrl += '&gameStateToken=' + encodeURIComponent(token);
+    }
+
+    return launchUrl;
+}
+
+/**
+ * Handles the "Jump to saved state" button click.
+ * Fetches the game state and launches the Unity game in a new window.
+ */
+function jumpToSavedState() {
+    console.log("Mentett játékállás keresése...");
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    // We use getTutorialFlowState because it already provides the unityUrl and gameStateToken
+    callBackend('getTutorialFlowState', [], 
+        function(flow) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (flow && flow.unityUrl) {
+                if (flow.gameStateToken) {
+                    console.log("Játékállás token megtalálva, Unity indítása...");
+                    const unityTargetUrl = buildUnityLaunchUrl(flow.unityUrl, 'continue', flow.gameStateToken);
+                    // Open in new window for simplicity, avoids complex DOM manipulation for embedded view
+                    window.open(unityTargetUrl, '_blank');
+                } else {
+                    uiAlert('Nincs mentett játékállás a szerveren.');
+                }
+            } else {
+                uiAlert('A játék URL-je nem konfigurált a szerveren.');
+            }
+        },
+        function(error) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert('Hiba a játékállás lekérésekor: ' + error.message);
+        }
+    );
+}
+
+/**
+ * Placeholder for launching the fishing mini-game.
+ */
+function launchGame() {
+    // TODO: Implement this function to launch the Unity game for fishing.
+    uiAlert("Hártya halászat hamarosan...");
+}
+
 // === BETÖLTÉS ÉS UI ===
 
 function preloadLoadingGif() {
@@ -716,31 +817,6 @@ function runTutorialScript() {
         });
     }
 
-    function getClientOsInfo() {
-        var ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
-        var platform = (navigator && navigator.platform) ? navigator.platform : 'unknown';
-        var osType = 'PC';
-
-        if (/Android/i.test(ua)) {
-            osType = 'ANDROID';
-        } else if (/iPhone|iPad|iPod/i.test(ua)) {
-            osType = 'IOS';
-        } else if (/Windows/i.test(ua)) {
-            osType = 'WINDOWS';
-        } else if (/Mac/i.test(ua)) {
-            osType = 'MAC';
-        } else if (/Linux/i.test(ua)) {
-            osType = 'LINUX';
-        }
-
-        return {
-            osType: osType,
-            platform: platform,
-            userAgent: ua,
-            touch: !!(('ontouchstart' in window) || (navigator && navigator.maxTouchPoints > 0))
-        };
-    }
-
     function ensureUnityUiElements() {
         var newUserContent = document.getElementById('new-user-content');
         if (!newUserContent) {
@@ -854,36 +930,6 @@ function runTutorialScript() {
         }
 
         startQuiz();
-    }
-
-    function buildUnityLaunchUrl(baseUrl, mode, token) {
-        var loginName = '';
-        var loginPass = '';
-
-        try {
-            loginName = sessionStorage.getItem('ebookPiratesLoginName') || '';
-            loginPass = sessionStorage.getItem('ebookPiratesLoginPass') || '';
-        } catch (e) {
-            loginName = '';
-            loginPass = '';
-        }
-
-        var osInfo = getClientOsInfo();
-        var sep = (baseUrl.indexOf('?') === -1) ? '?' : '&';
-        var launchUrl = baseUrl + sep +
-            'mode=' + encodeURIComponent(mode || 'tutorial') +
-            '&email=' + encodeURIComponent(currentUserEmail || '') +
-            '&loginName=' + encodeURIComponent(loginName) +
-            '&password=' + encodeURIComponent(loginPass) +
-            '&os=' + encodeURIComponent(osInfo.osType) +
-            '&platform=' + encodeURIComponent(osInfo.platform) +
-            '&touch=' + encodeURIComponent(osInfo.touch ? '1' : '0');
-
-        if (token) {
-            launchUrl += '&gameStateToken=' + encodeURIComponent(token);
-        }
-
-        return launchUrl;
     }
 
     function checkUnityWebGLSupport() {
@@ -8083,6 +8129,54 @@ function toggleAccordionPanel() {
     } else {
         panel.style.maxHeight = panel.scrollHeight + "px";
     }
+
+/**
+ * Elindítja a játékot a szerverről lekért mentett játékállással.
+ * Ezt a 'tutorial_oldal.html'-en lévő "Ugrás a mentett álláshoz" gomb hívja.
+ */
+function jumpToSavedState() {
+    console.log("Kísérlet a mentett játékállás betöltésére...");
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    // 1. Backend hívás a játékállás (AH oszlop) éscess, gameState, unityUrl } objektumot ad vissza. a Unity URL lekéréséhez.
+    // Feltételezzük, hogy a backend a 'getGameState' action-re egy { suc
+    callBackend('getGameState', [], 
+        function(response) {
+            if (response && response.success && response.gameState && response.unityUrl) {
+                console.log("Sikeresen megkapva a játékállás, Unity indítása...");
+                
+                // A 'tryLaunchUnity' egy 'flow' objektumot vár, ezt itt összeállítjuk.
+                const flow = {
+                    unityUrl: response.unityUrl,
+                    gameStateToken: response.gameState, // A 'gameStateToken' nevet használjuk a konzisztencia érdekében.
+                    tutorialCompleted: true // Feltételezzük, hogy ha van mentése, a tutorialt már befejezte.
+                };
+
+                // 2. Indítjuk a Unity-t a tryLaunchUnity függvénnyel.
+                // Az 'autoStart' paraméter (true) biztosítja, hogy a játék azonnal induljon.
+                tryLaunchUnity(flow, true);
+
+            } else {
+                document.getElementById('loading-overlay').style.display = 'none';
+                var errorMessage = response.error || "A mentett játékállás nem érhető el vagy hibás a válasz.";
+                if(typeof uiAlert === 'function') {
+                    uiAlert(errorMessage, "Betöltési Hiba");
+                } else {
+                    alert("Hiba: " + errorMessage);
+                }
+            }
+        },
+        function(error) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if(typeof uiAlert === 'function') {
+                uiAlert("Hiba történt a szerverrel való kommunikáció során: " + error.message, "Szerver Hiba");
+            } else {
+                alert("Szerver Hiba: " + error.message);
+            }
+        }
+    );
+}
+
 }
 
 /* SCRIPT VÉGE - BIZTONSÁGI LEZÁRÁS */

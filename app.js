@@ -443,38 +443,6 @@ function buildUnityLaunchUrl(baseUrl, mode, token) {
 }
 
 /**
- * Handles the "Jump to saved state" button click.
- * Fetches the game state and launches the Unity game in a new window.
- */
-function jumpToSavedState() {
-    console.log("Mentett játékállás keresése...");
-    document.getElementById('loading-overlay').style.display = 'flex';
-
-    // We use getTutorialFlowState because it already provides the unityUrl and gameStateToken
-    callBackend('getTutorialFlowState', [], 
-        function(flow) {
-            document.getElementById('loading-overlay').style.display = 'none';
-            if (flow && flow.unityUrl) {
-                if (flow.gameStateToken) {
-                    console.log("Játékállás token megtalálva, Unity indítása...");
-                    const unityTargetUrl = buildUnityLaunchUrl(flow.unityUrl, 'continue', flow.gameStateToken);
-                    // Open in new window for simplicity, avoids complex DOM manipulation for embedded view
-                    window.open(unityTargetUrl, '_blank');
-                } else {
-                    uiAlert('Nincs mentett játékállás a szerveren.');
-                }
-            } else {
-                uiAlert('A játék URL-je nem konfigurált a szerveren.');
-            }
-        },
-        function(error) {
-            document.getElementById('loading-overlay').style.display = 'none';
-            uiAlert('Hiba a játékállás lekérésekor: ' + error.message);
-        }
-    );
-}
-
-/**
  * Placeholder for launching the fishing mini-game.
  */
 function launchGame() {
@@ -8129,6 +8097,7 @@ function toggleAccordionPanel() {
     } else {
         panel.style.maxHeight = panel.scrollHeight + "px";
     }
+}
 
 /**
  * Elindítja a játékot a szerverről lekért mentett játékállással.
@@ -8181,8 +8150,3 @@ function jumpToSavedState() {
 
 /* SCRIPT VÉGE - BIZTONSÁGI LEZÁRÁS */
 console.log("EOF");
-
-
-
-
-

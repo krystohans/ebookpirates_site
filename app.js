@@ -8146,7 +8146,5 @@ function jumpToSavedState() {
     );
 }
 
-}
-
 /* SCRIPT VÉGE - BIZTONSÁGI LEZÁRÁS */
 console.log("EOF");

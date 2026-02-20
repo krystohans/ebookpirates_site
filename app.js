@@ -8107,8 +8107,7 @@ function jumpToSavedState() {
     console.log("Kísérlet a mentett játékállás betöltésére...");
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // 1. Backend hívás a játékállás (AH oszlop) éscess, gameState, unityUrl } objektumot ad vissza. a Unity URL lekéréséhez.
-    // Feltételezzük, hogy a backend a 'getGameState' action-re egy { suc
+     // 1. Backend hívás a játékállás (AH oszlop) és a Unity URL lekéréséhez
     callBackend('getGameState', [], 
         function(response) {
             if (response && response.success && response.gameState && response.unityUrl) {

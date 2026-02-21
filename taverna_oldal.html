@@ -16,7 +16,42 @@
                 Taverna a Rózsaszín Gyöngyhöz
             </h2>
             
-            <div onclick="toggleBartender()" title="Beszélek a Csapossal" 
+                        <div onclick="openUniversalNPC('bartender', {
+                                name: 'Sőke Rozmár',
+                                role: 'Taverna Pultosa',
+                                icon: '<i class=\'fas fa-beer\'></i>',
+                                headerColor: '#d2691e',
+                                portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                                msgIcon: '<i class=\'fas fa-beer\' style=\'color:#d2691e; margin-right:5px;\'></i>',
+                                loaderHTML: '<i class=\'fas fa-beer fa-spin\' style=\'color:#d2691e; margin-right:8px;\'></i> <i>A Pultos keveri az italokat...</i>',
+                                styles: {
+                                        modal: {
+                                                justifyContent: 'flex-end',
+                                                alignItems: 'stretch',
+                                                background: '',
+                                                padding: '0'
+                                        },
+                                        content: {
+                                                width: '350px',
+                                                height: '100vh',
+                                                maxWidth: '85vw',
+                                                margin: '0',
+                                                borderRadius: '2',
+                                                border: 'none',
+                                                borderLeft: '5px solid #d2691e',
+                                                backgroundColor: '#fdf5e6',
+                                                color: '#241512',
+                                                backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
+                                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+                                        }
+                                },
+                                menu: [
+                                    {text: '🍺 Itallap (Fizetés)', action: 'RUN_FUNCTION', payload: 'BT_menuDrinks', reply: '_'},
+                                    {text: '👥 Zsoldosok', action: 'RUN_FUNCTION', payload: 'BT_listMercenaries', reply: '_'},
+                                    {text: '📜 Pletykák (Küldetések)', action: 'RUN_FUNCTION', payload: 'BT_listMissions', reply: '_'},
+                                    {text: '📝 Bétaolvasás', action: 'CLIENT_OPEN_PULT', payload: '', reply: '_'}
+                                ]
+                            })" title="Beszélek a Csapossal" 
                  style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; 
                          background: #d2691e; border: 3px solid var(--color-gold); border-radius: 50%; 
                          box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 2000; cursor: pointer;

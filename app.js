@@ -6008,20 +6008,6 @@ function initializeMasolatokAndCopyMapPage(data) {
     var copyMapPinInput = document.getElementById('copy-map-pin'); 
     var copyMapPinLabel = copyMapPinInput ? copyMapPinInput.previousElementSibling : null;
 
-        // Játékmester NPC gomb logika
-        var gmBtn = document.getElementById('gamemaster-npc-btn');
-        if (gmBtn) {
-            gmBtn.onclick = function() {
-                openUniversalNPC('gamemaster', {
-                    name: 'Játékmester',
-                    role: 'Sors és játékvezető',
-                    icon: '<i class="fas fa-chess-knight"></i>',
-                    headerColor: '#9c27b0',
-                    portrait: '',
-                    meta: {}
-                });
-            };
-        }
 
     if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer || !copyMapPinInput || !copyMapPinLabel) {
          console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
@@ -6052,14 +6038,14 @@ function initializeMasolatokAndCopyMapPage(data) {
                 playBtn.textContent = t('copy_play_button');
                 playBtn.style.marginRight = '8px';
                 playBtn.onclick = function() {
-                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz
+                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz, automatikusan indítja az "Új kaland (Varázsló)" menüt
                     openUniversalNPC('gamemaster', {
                         name: 'Játékmester',
                         role: 'Sors és játékvezető',
-                        icon: '<i class="fas fa-chess-knight"></i>', // vagy dobókocka: '<i class="fas fa-dice"></i>'
+                        icon: '<i class="fas fa-chess-knight"></i>',
                         headerColor: '#9c27b0',
-                        portrait: '', // opcionális
-                        meta: { copyCode: copy.code }
+                        portrait: '',
+                        meta: { copyCode: copy.code, autoMenu: 'UJ_KALAND_VARAZSLO' }
                     });
                 };
                 gombokDiv.appendChild(playBtn);

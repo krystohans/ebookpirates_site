@@ -31,6 +31,32 @@
 
         <div class="page-section" style="padding: 0; overflow: hidden;">
             <button class="accordion-button">Saját Másolataid</button>
+            <div class="accordion-panel">
+                <div class="accordion-panel-content" id="sajat-masolat-lista-content"> 
+                    <div id="sajat-masolat-lista-loader"><p>Keresés...</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-section" style="padding: 0; overflow: hidden; margin-top: 15px;">
+            <button class="accordion-button">Térképek Másolása</button>
+            <div class="accordion-panel"> 
+                <div class="accordion-panel-content">
+                    <p style="font-size: 0.9em; margin-bottom: 10px;">Itt készíthetsz másolatot a már létező térképekről. A másolás díja 30 kredit.</p>
+                    <div id="available-maps-list-content"> 
+                        <div id="available-maps-list-loader"><p>Másolható térképek betöltése...</p></div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="copy-map-pin" style="display: none;">PIN kód a másoláshoz:</label>
+                        <input type="password" id="copy-map-pin" placeholder="PIN kódod" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-section" style="padding: 0; overflow: hidden;">
+            <button class="accordion-button">Saját Másolataid</button>
             <!-- Floating GameMaster NPC Button -->
             <div onclick="openUniversalNPC('gamemaster', {
                 name: 'Játékmester',
@@ -72,23 +98,6 @@
             <div class="accordion-panel">
                 <div class="accordion-panel-content" id="sajat-masolat-lista-content"> 
                     <div id="sajat-masolat-lista-loader"><p>Keresés...</p></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-section" style="padding: 0; overflow: hidden; margin-top: 15px;">
-            <button class="accordion-button">Térképek Másolása</button>
-            <div class="accordion-panel"> 
-                <div class="accordion-panel-content">
-                    <p style="font-size: 0.9em; margin-bottom: 10px;">Itt készíthetsz másolatot a már létező térképekről. A másolás díja 30 kredit.</p>
-                    <div id="available-maps-list-content"> 
-                        <div id="available-maps-list-loader"><p>Másolható térképek betöltése...</p></div>
-                    </div>
-                    
-                    <div class="form-group" style="margin-top: 15px;">
-                        <label for="copy-map-pin" style="display: none;">PIN kód a másoláshoz:</label>
-                        <input type="password" id="copy-map-pin" placeholder="PIN kódod" style="display: none;">
-                    </div>
                 </div>
             </div>
         </div>

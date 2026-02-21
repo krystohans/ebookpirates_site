@@ -6008,6 +6008,21 @@ function initializeMasolatokAndCopyMapPage(data) {
     var copyMapPinInput = document.getElementById('copy-map-pin'); 
     var copyMapPinLabel = copyMapPinInput ? copyMapPinInput.previousElementSibling : null;
 
+        // Játékmester NPC gomb logika
+        var gmBtn = document.getElementById('gamemaster-npc-btn');
+        if (gmBtn) {
+            gmBtn.onclick = function() {
+                openUniversalNPC('gamemaster', {
+                    name: 'Játékmester',
+                    role: 'Sors és játékvezető',
+                    icon: '<i class="fas fa-chess-knight"></i>',
+                    headerColor: '#9c27b0',
+                    portrait: '',
+                    meta: {}
+                });
+            };
+        }
+
     if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer || !copyMapPinInput || !copyMapPinLabel) {
          console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
          return;
@@ -6034,11 +6049,38 @@ function initializeMasolatokAndCopyMapPage(data) {
                 // Játékba viszem gomb
                 var playBtn = document.createElement('button');
                 playBtn.className = 'btn';
-                                playBtn.textContent = t('copy_play_button');
+                playBtn.textContent = t('copy_play_button');
+                playBtn.style.marginRight = '8px';
                 playBtn.onclick = function() {
-                                        uiAlert(t('copy_play_unavailable_prefix') + copy.code + t('copy_play_unavailable_suffix'));
-                  };
+                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz
+                    openUniversalNPC('gamemaster', {
+                        name: 'Játékmester',
+                        role: 'Sors és játékvezető',
+                        icon: '<i class="fas fa-chess-knight"></i>', // vagy dobókocka: '<i class="fas fa-dice"></i>'
+                        headerColor: '#9c27b0',
+                        portrait: '', // opcionális
+                        meta: { copyCode: copy.code }
+                    });
+                };
                 gombokDiv.appendChild(playBtn);
+                // Játékmester ikon gomb
+                var gmBtn = document.createElement('button');
+                gmBtn.className = 'btn';
+                gmBtn.innerHTML = '<i class="fas fa-chess-knight"></i>'; // vagy '<i class="fas fa-dice"></i>'
+                gmBtn.title = 'Játékmester';
+                gmBtn.style.backgroundColor = '#9c27b0';
+                gmBtn.style.color = '#fff';
+                gmBtn.onclick = function() {
+                    openUniversalNPC('gamemaster', {
+                        name: 'Játékmester',
+                        role: 'Sors és játékvezető',
+                        icon: '<i class="fas fa-chess-knight"></i>',
+                        headerColor: '#9c27b0',
+                        portrait: '',
+                        meta: { copyCode: copy.code }
+                    });
+                };
+                gombokDiv.appendChild(gmBtn);
 
                 // Eladom gomb
                 var sellBtn = document.createElement('button');

@@ -30,46 +30,47 @@
         </div>
 
         <div class="page-section" style="padding: 0; overflow: hidden;">
-            <button class="accordion-button">Saját Másolataid</button>
+            <button class="accordion-button" onclick="toggleAccordionPanel(this)">Saját Másolataid</button>
 
-        <!-- Floating GameMaster NPC Button -->
-        <div onclick="openUniversalNPC('gamemaster', {
-            name: 'Játékmester',
-            role: 'Sors és játékvezető',
-            icon: '<i class=\'fas fa-chess-knight\'></i>',
-            headerColor: '#9c27b0',
-            portrait: '',
-            msgIcon: '<i class=\'fas fa-chess-knight\' style=\'color:#fff; margin-right:5px;\'></i>',
-            loaderHTML: '<i class=\'fas fa-chess-knight fa-spin\' style=\'color:#fff; margin-right:8px;\'></i> <i>A Játékmester gondolkodik...</i>',
-            styles: {
-                modal: {
-                    justifyContent: 'flex-end',
-                    alignItems: 'stretch',
-                    background: '',
-                    padding: '0'
-                },
-                content: {
-                    width: '350px',
-                    height: '100vh',
-                    maxWidth: '85vw',
-                    margin: '0',
-                    borderRadius: '2',
-                    border: 'none',
-                    borderLeft: '5px solid #9c27b0',
-                    backgroundColor: '#1e1e1e',
-                    color: '#fff',
-                    boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+            <!-- Floating GameMaster NPC Button -->
+            <div onclick="openUniversalNPC('gamemaster', {
+                name: 'Játékmester',
+                role: 'Sors és játékvezető',
+                icon: '<i class=\'fas fa-chess-knight\'></i>',
+                headerColor: '#9c27b0',
+                portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                msgIcon: '<i class=\'fas fa-chess-knight\' style=\'color:#fff; margin-right:5px;\'></i>',
+                loaderHTML: '<i class=\'fas fa-chess-knight fa-spin\' style=\'color:#fff; margin-right:8px;\'></i> <i>A Játékmester gondolkodik...</i>',
+                styles: {
+                    modal: {
+                        justifyContent: 'flex-end',
+                        alignItems: 'stretch',
+                        background: '',
+                        padding: '0'
+                    },
+                    content: {
+                        width: '350px',
+                        height: '100vh',
+                        maxWidth: '85vw',
+                        margin: '0',
+                        borderRadius: '2',
+                        border: 'none',
+                        borderLeft: '5px solid #9c27b0',
+                        backgroundColor: '#1e1e1e',
+                        color: '#fff',
+                        backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
+                        boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+                    }
                 }
-            }
-        })"
-        title="Játékmester"
-        style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #9c27b0; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-            <div style="position: relative;">
-                <i class="fas fa-chess-knight" style="font-size: 2em; color: white;"></i>
-                <i class="fas fa-user-tie" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #fff; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+            })"
+            title="Játékmester"
+            style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #9c27b0; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                <div style="position: relative;">
+                    <i class="fas fa-chess-knight" style="font-size: 2em; color: white;"></i>
+                    <i class="fas fa-user-tie" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #fff; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+                </div>
             </div>
-        </div>
-            <div class="accordion-panel">
+            <div class="accordion-panel" style="display: none;">
                 <div class="accordion-panel-content" id="sajat-masolat-lista-content"> 
                     <div id="sajat-masolat-lista-loader"><p>Keresés...</p></div>
                 </div>
@@ -100,23 +101,21 @@
             margin: 0; border-radius: 0; border-left: 4px solid #9c27b0; 
             z-index: 2002; padding: 0; flex-direction: column; 
             box-shadow: -10px 0 30px rgba(0,0,0,0.9); background-color: #121212;">
-    
-        <div style="background: #2a0e36; color: #e1bee7; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #9c27b0;">
-            <span style="font-family: 'Courier New', monospace; font-size: 1.2em; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
-                <i class="fas fa-eye"></i> Játékmester
+        <div style="background: #9c27b0; color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #fff;">
+            <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
+                <i class="fas fa-chess-knight"></i> Játékmester
             </span>
-            <button onclick="closeGameMasterChat()" style="background: transparent; border: none; color: #e1bee7; font-size: 1.5em; cursor: pointer; transition: color 0.3s;">&times;</button>
+            <button onclick="closeGameMasterChat()" style="background: transparent; border: none; color: #fff; font-size: 1.5em; cursor: pointer;">&times;</button>
         </div>
 
-        <div id="gamemaster-chat-box" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #0d0d0d; display: flex; flex-direction: column; gap: 12px;">
-            </div>
+        <div id="gamemaster-chat-box" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #1e1e1e; display: flex; flex-direction: column; gap: 12px;">
+        </div>
 
-        <div style="padding: 15px; background: #1e1e1e; border-top: 1px solid #333; min-height: 70px; display: flex; gap: 8px; align-items: center;">
+        <div style="padding: 15px; background: #fff; border-top: 1px solid #9c27b0; min-height: 70px; display: flex; gap: 8px; align-items: center;">
             <input type="text" id="gamemaster-input" placeholder="Válasz a sorsnak..." 
-                  style="flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #4a148c; background: #2c2c2c; color: white; outline: none;">
-            
+                  style="flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #9c27b0; background: #fff; color: #9c27b0; outline: none;">
             <button class="btn" onclick="sendGameMasterMessage()" 
-                    style="background: #7b1fa2; color: white; border: none; padding: 0 15px; height: 38px; border-radius: 4px; cursor: pointer;">
+                    style="background: #9c27b0; color: #fff; border: none; padding: 0 15px; height: 38px; border-radius: 4px; cursor: pointer;">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>

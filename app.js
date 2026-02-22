@@ -6038,7 +6038,7 @@ function initializeMasolatokAndCopyMapPage(data) {
                 playBtn.textContent = t('copy_play_button');
                 playBtn.style.marginRight = '8px';
                 playBtn.onclick = function() {
-                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz, pontosan a masolatok_oldal.html gomb stílusával és adataival
+                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz, pontosan a masolatok_oldal.html gomb stílusával és adataival, és azonnal GM_startSession-t indít
                     openUniversalNPC('gamemaster', {
                         name: 'Játékmester',
                         role: 'Sors és játékvezető',
@@ -6068,7 +6068,7 @@ function initializeMasolatokAndCopyMapPage(data) {
                                 boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
                             }
                         },
-                        meta: { copyCode: copy.code, autoMenu: 'UJ_KALAND_VARAZSLO' }
+                        meta: { copyCode: copy.code, autoMenu: 'UJ_KALAND_VARAZSLO', autoRunFunction: 'GM_startSession' }
                     });
                 };
                 gombokDiv.appendChild(playBtn);

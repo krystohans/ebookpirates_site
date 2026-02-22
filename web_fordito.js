@@ -360,7 +360,7 @@ const translations = {
         'taverna_user_data_missing': 'Hiányzó felhasználói adatok.',
         'taverna_chat_url_missing': 'Hiányzó chat URL.',
         'taverna_request_pin_missing': 'Hiányzó PIN kéréshez.',
-        'taverna_game_entry_prompt': 'Add meg a tétet!',
+        'taverna_game_entry_prompt': 'Mi a fizetési jelszó?',
 
         // --- Játék ---
         'server_error_prefix': 'Szerverhiba: ',
@@ -1218,7 +1218,7 @@ const translations = {
         'taverna_user_data_missing': 'Missing user data.',
         'taverna_chat_url_missing': 'Missing chat URL.',
         'taverna_request_pin_missing': 'Missing PIN request.',
-        'taverna_game_entry_prompt': 'Enter your bet!',
+        'taverna_game_entry_prompt': 'What is the payment password?',
 
         // --- Game ---
         'server_error_prefix': 'Server error: ',
@@ -1995,7 +1995,7 @@ const translations = {
         'taverna_user_data_missing': 'Benutzerdaten fehlen.',
         'taverna_chat_url_missing': 'Chat-URL fehlt.',
         'taverna_request_pin_missing': 'PIN-Anfrage fehlt.',
-        'taverna_game_entry_prompt': 'Gib deinen Einsatz ein!',
+        'taverna_game_entry_prompt': 'Wie lautet das Zahlungspasswort?',
 
         // --- Spiel ---
         'server_error_prefix': 'Serverfehler: ',
@@ -2837,7 +2837,7 @@ const translations = {
         'taverna_user_data_missing': 'Donnees utilisateur manquantes.',
         'taverna_chat_url_missing': 'URL du chat manquante.',
         'taverna_request_pin_missing': 'Demande de PIN manquante.',
-        'taverna_game_entry_prompt': 'Entre ta mise !',
+        'taverna_game_entry_prompt': 'Quel est le mot de passe de paiement ?',
 
         // --- Jeu ---
         'server_error_prefix': 'Erreur serveur : ',
@@ -3688,7 +3688,7 @@ const translations = {
         'taverna_user_data_missing': 'Faltan datos de usuario.',
         'taverna_chat_url_missing': 'Falta la URL del chat.',
         'taverna_request_pin_missing': 'Falta la solicitud de PIN.',
-        'taverna_game_entry_prompt': 'Ingresa tu apuesta!',
+        'taverna_game_entry_prompt': '¿Cuál es la contraseña de pago?',
 
         // --- Juego ---
         'server_error_prefix': 'Error del servidor: ',
@@ -4530,7 +4530,7 @@ const translations = {
         'taverna_user_data_missing': 'Brak danych uzytkownika.',
         'taverna_chat_url_missing': 'Brak adresu URL czatu.',
         'taverna_request_pin_missing': 'Brak prosby o PIN.',
-        'taverna_game_entry_prompt': 'Podaj stawke!',
+        'taverna_game_entry_prompt': 'Jakie jest hasło płatności?',
 
         // --- Gra ---
         'server_error_prefix': 'Blad serwera: ',
@@ -5372,7 +5372,7 @@ const translations = {
         'taverna_user_data_missing': 'Отсутствуют данные пользователя.',
         'taverna_chat_url_missing': 'Отсутствует URL чата.',
         'taverna_request_pin_missing': 'Отсутствует запрос PIN.',
-        'taverna_game_entry_prompt': 'Введи ставку!',
+        'taverna_game_entry_prompt': 'Какой пароль для оплаты?',
 
         // --- Игра ---
         'server_error_prefix': 'Ошибка сервера: ',

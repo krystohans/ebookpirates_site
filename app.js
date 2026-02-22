@@ -6218,10 +6218,8 @@ function initializeMasolatokAndCopyMapPage(data) {
         groupsArray.forEach(function(group) {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'item-entry map-entry';
-            // Feltételezzük, hogy MAP_COPY_COST definiálva van globálisan
             var cost = (typeof MAP_COPY_COST !== 'undefined') ? MAP_COPY_COST : 10;
-            
-            entryDiv.innerHTML = 
+            entryDiv.innerHTML =
                 '<div class="map-details item-details">' +
                     '<div class="map-name item-title">' + group.name + ' (' + group.count + ' db)</div>' +
                     '<small class="item-author">Másolás ára: ' + cost + ' kredit</small>' +
@@ -6229,9 +6227,25 @@ function initializeMasolatokAndCopyMapPage(data) {
                 '<div class="map-actions">' +
                     '<button class="btn">Másolás</button>' +
                 '</div>';
-            
-            entryDiv.querySelector('.map-actions button').onclick = function() { 
-                if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name); 
+            entryDiv.querySelector('.map-actions button').onclick = function() {
+                // Egységes PIN modal bekérés
+                requestPin(function(pin) {
+                    if (!pin || pin.length < 4) {
+                        uiAlert(t('pin_required_copy_map'));
+                        return;
+                    }
+                    // Szerver oldali PIN ellenőrzés
+                    callBackend('verifyUserPin', [pin], function(res) {
+                        if (!res.success) {
+                            uiAlert(t('pin_invalid'));
+                            return;
+                        }
+                        // Ha valid, indítjuk a térképmásolást
+                        if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name, pin);
+                    }, function(err) {
+                        uiAlert(t('server_error_prefix') + err.message);
+                    });
+                }, t('monk_pin_map_copy_html'));
             };
             availableMapsContainer.appendChild(entryDiv);
         });

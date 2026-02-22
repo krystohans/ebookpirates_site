@@ -6038,35 +6038,40 @@ function initializeMasolatokAndCopyMapPage(data) {
                 playBtn.textContent = t('copy_play_button');
                 playBtn.style.marginRight = '8px';
                 playBtn.onclick = function() {
-                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz, automatikusan indítja az "Új kaland (Varázsló)" menüt
+                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz, pontosan a masolatok_oldal.html gomb stílusával és adataival
                     openUniversalNPC('gamemaster', {
                         name: 'Játékmester',
                         role: 'Sors és játékvezető',
-                        icon: '<i class="fas fa-chess-knight"></i>',
+                        icon: '<i class=\'fas fa-chess-knight\'></i>',
                         headerColor: '#9c27b0',
-                        portrait: '',
+                        portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                        msgIcon: '<i class=\'fas fa-chess-knight\' style=\'color:#fff; margin-right:5px;\'></i>',
+                        loaderHTML: '<i class=\'fas fa-chess-knight fa-spin\' style=\'color:#fff; margin-right:8px;\'></i> <i>A Játékmester gondolkodik...</i>',
+                        styles: {
+                            modal: {
+                                justifyContent: 'flex-end',
+                                alignItems: 'stretch',
+                                background: '',
+                                padding: '0'
+                            },
+                            content: {
+                                width: '350px',
+                                height: '100vh',
+                                maxWidth: '85vw',
+                                margin: '0',
+                                borderRadius: '2',
+                                border: 'none',
+                                borderLeft: '5px solid #9c27b0',
+                                backgroundColor: '#1e1e1e',
+                                color: '#fff',
+                                backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
+                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+                            }
+                        },
                         meta: { copyCode: copy.code, autoMenu: 'UJ_KALAND_VARAZSLO' }
                     });
                 };
                 gombokDiv.appendChild(playBtn);
-                // Játékmester ikon gomb
-                var gmBtn = document.createElement('button');
-                gmBtn.className = 'btn';
-                gmBtn.innerHTML = '<i class="fas fa-chess-knight"></i>'; // vagy '<i class="fas fa-dice"></i>'
-                gmBtn.title = 'Játékmester';
-                gmBtn.style.backgroundColor = '#9c27b0';
-                gmBtn.style.color = '#fff';
-                gmBtn.onclick = function() {
-                    openUniversalNPC('gamemaster', {
-                        name: 'Játékmester',
-                        role: 'Sors és játékvezető',
-                        icon: '<i class="fas fa-chess-knight"></i>',
-                        headerColor: '#9c27b0',
-                        portrait: '',
-                        meta: { copyCode: copy.code }
-                    });
-                };
-                gombokDiv.appendChild(gmBtn);
 
                 // Eladom gomb
                 var sellBtn = document.createElement('button');

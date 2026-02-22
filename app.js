@@ -6231,7 +6231,7 @@ function initializeMasolatokAndCopyMapPage(data) {
                         return;
                     }
                     // PIN-t közvetlenül a copyMap backend függvénynek adjuk át
-                    if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name, pin);
+                    if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, pin);
                 }, t('monk_pin_map_copy_html'));
             };
             availableMapsContainer.appendChild(entryDiv);

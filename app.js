@@ -5156,52 +5156,28 @@ function disableContextMenuOnElement(elementId) {
      * Elindítja a térképmásolási folyamatot.
      */
     function initiateMapCopy(mapSheetRowIndex, mapName) {
-            // PIN bekérés modalból, mint a taverna játékteremnél
-            if (typeof requestPin === 'function') {
-                requestPin(function(pinCode) {
-                    if (!pinCode) {
-                        uiAlert(t('pin_required'));
-                        return;
-                    }
-                    document.getElementById('loading-overlay').style.display = 'flex';
-                    callBackend('copyMap', [mapSheetRowIndex, pinCode], 
-                        function(response) {
-                            document.getElementById('loading-overlay').style.display = 'none';
-                            uiAlert(response.message || response.error);
-                            if (response.success) {
-                                updateCreditDisplay();
-                                loadPage('masolatok_oldal');
-                            }
-                        },
-                        function(err) {
-                            document.getElementById('loading-overlay').style.display = 'none';
-                            uiAlert(t('map_copy_server_error_prefix') + err.message);
-                        }
-                    );
-                }, t('monk_pin_map_copy_html'));
-            } else {
-                // Fallback: prompt
-                const p = prompt(t('pin_prompt_label'));
-                if (!p) {
-                    uiAlert(t('pin_required'));
-                    return;
-                }
-                document.getElementById('loading-overlay').style.display = 'flex';
-                callBackend('copyMap', [mapSheetRowIndex, p], 
-                    function(response) {
-                        document.getElementById('loading-overlay').style.display = 'none';
-                        uiAlert(response.message || response.error);
-                        if (response.success) {
-                            updateCreditDisplay();
-                            loadPage('masolatok_oldal');
-                        }
-                    },
-                    function(err) {
-                        document.getElementById('loading-overlay').style.display = 'none';
-                        uiAlert(t('map_copy_server_error_prefix') + err.message);
-                    }
-                );
+            // PIN-t a hívó adja át, nem kérünk újra modalt!
+            // mapName helyett PIN-t várunk 3. paraméterként
+            var pinCode = mapName; // A hívó a PIN-t adja át!
+            if (!pinCode) {
+                uiAlert(t('pin_required'));
+                return;
             }
+            document.getElementById('loading-overlay').style.display = 'flex';
+            callBackend('copyMap', [mapSheetRowIndex, pinCode], 
+                function(response) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    uiAlert(response.message || response.error);
+                    if (response.success) {
+                        updateCreditDisplay();
+                        loadPage('masolatok_oldal');
+                    }
+                },
+                function(err) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    uiAlert(t('map_copy_server_error_prefix') + err.message);
+                }
+            );
 }
 
     /**
@@ -6265,7 +6241,7 @@ function initializeMasolatokAndCopyMapPage(data) {
                     }, function(err) {
                         uiAlert(t('server_error_prefix') + err.message);
                     });
-                }, t('monk_pin_map_copy_html'));
+                }, t('Mi a fizetési jelszavad?'));
             };
             availableMapsContainer.appendChild(entryDiv);
         });

@@ -6004,15 +6004,13 @@ function initializeMasolatokAndCopyMapPage(data) {
 
     // Új elemek a térképmásoláshoz
     var availableMapsLoader = document.getElementById('available-maps-list-loader'); 
-    var availableMapsContainer = document.getElementById('available-maps-list-content'); 
-    var copyMapPinInput = document.getElementById('copy-map-pin'); 
-    var copyMapPinLabel = copyMapPinInput ? copyMapPinInput.previousElementSibling : null;
+    var availableMapsContainer = document.getElementById('available-maps-list-content');
 
 
-    if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer || !copyMapPinInput || !copyMapPinLabel) {
-         console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
-         return;
-    }
+        if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer) {
+            console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
+            return;
+        }
 
     myCopiesLoader.style.display = 'none';
     availableMapsLoader.style.display = 'none';
@@ -6250,13 +6248,11 @@ function initializeMasolatokAndCopyMapPage(data) {
             availableMapsContainer.appendChild(entryDiv);
         });
 
-        if (copyMapPinInput) copyMapPinInput.style.display = 'block';
-        if (copyMapPinLabel) copyMapPinLabel.style.display = 'block';
+        // PIN input már nem szükséges, modal rendszer használata
 
     } else { 
         availableMapsContainer.innerHTML = "<p>Jelenleg nincsenek másolható térképek.</p>";
-        if (copyMapPinInput) copyMapPinInput.style.display = 'none';
-        if (copyMapPinLabel) copyMapPinLabel.style.display = 'none';
+        // PIN input már nem szükséges, modal rendszer használata
     }
 }
 

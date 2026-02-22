@@ -141,25 +141,36 @@
     </div>
 </div>
 
-<script>
-const MONK_STYLE = {
-    name: "Anonymus Testvér",
-    role: "Rendi Írnok",
-    icon: '<i class="fas fa-scroll"></i>',
-    headerColor: "#5d4037", // Sötétbarna
+<!-- UNIVERSAL NPC BUTTON (Anonymus Testvér) -->
+<div onclick="openUniversalNPC('monk', {
+    name: 'Anonymus Testvér',
+    role: 'Rendi Írnok',
+    icon: '<i class=\'fas fa-scroll\'></i>',
+    headerColor: '#5d4037',
+    portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg', 
+    msgIcon: '<i class=\'fas fa-scroll\' style=\'color:#5d4037; margin-right:5px;\'></i>',
+    loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#5d4037; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
     styles: {
-        modal: { 
-            justifyContent: 'center', 
-            alignItems: 'center' 
-        },
+        modal: { justifyContent: 'center', alignItems: 'center' },
         content: {
-            width: '90%',
-            maxWidth: '500px',
-            height: '70vh',
-            backgroundColor: '#fdf5e6', // Pergamen
-            border: '4px double #8b4513', // Kódex stílus
-            borderRadius: '5px'
+            width: '350px',
+            height: '100vh',
+            maxWidth: '85vw',
+            margin: '0',
+            borderRadius: '2',
+            border: 'none',
+            borderLeft: '5px solid #5d4037',
+            backgroundColor: '#fdfbf7',
+            color: '#333',
+            backgroundImage: 'https://www.transparenttextures.com/patterns/parchment.png',
+            boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
         }
     }
-};
-</script>
+})"
+title="Anonymus Testvér" 
+style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #5d4037; border: 3px solid #d2b48c; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+    <div style="position: relative;">
+        <i class="fas fa-scroll" style="font-size: 2em; color: white;"></i>
+        <i class="fas fa-user-secret" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #d2b48c; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+    </div>
+</div>

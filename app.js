@@ -6004,11 +6004,11 @@ function initializeMasolatokAndCopyMapPage(data) {
     var availableMapsLoader = document.getElementById('available-maps-list-loader'); 
     var availableMapsContainer = document.getElementById('available-maps-list-content');
 
-
-        if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer) {
-            console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
-            return;
-        }
+    // PIN input mező eltávolítva, minden PIN modal panelen keresztül jön
+    if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer) {
+        console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
+        return;
+    }
 
     myCopiesLoader.style.display = 'none';
     availableMapsLoader.style.display = 'none';
@@ -6230,18 +6230,9 @@ function initializeMasolatokAndCopyMapPage(data) {
                         uiAlert(t('pin_required_copy_map'));
                         return;
                     }
-                    // Szerver oldali PIN ellenőrzés
-                    callBackend('verifyUserPin', [pin], function(res) {
-                        if (!res.success) {
-                            uiAlert(t('pin_invalid'));
-                            return;
-                        }
-                        // Ha valid, indítjuk a térképmásolást
-                        if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name, pin);
-                    }, function(err) {
-                        uiAlert(t('server_error_prefix') + err.message);
-                    });
-                }, t('Mi a fizetési jelszavad?'));
+                    // PIN-t közvetlenül a copyMap backend függvénynek adjuk át
+                    if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name, pin);
+                }, t('monk_pin_map_copy_html'));
             };
             availableMapsContainer.appendChild(entryDiv);
         });

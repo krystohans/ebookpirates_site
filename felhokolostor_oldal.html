@@ -11,15 +11,7 @@
         <i class="fas fa-info-circle" onclick="showSplash('felhokolostor_oldal')"></i>
     </div>
 
-        <div id="monk-toggle-btn" class="panel-toggle-btn" onclick="toggleMonkPanel()" 
-            title="Anonymus Testvér" data-lang-title="monastery_toggle_title"
-         style="position: absolute; top: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; 
-                background: #5d3a1a; border: 3px solid #d2b48c; cursor: pointer; 
-                display: flex; align-items: center; justify-content: center; 
-                z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.5); transition: transform 0.2s;">
-        
-        <i class="fas fa-user-secret" style="font-size: 32px; color: #fdfbf7;"></i>
-    </div>
+        <!-- Removed redundant monk-toggle-btn button -->
 
     <div id="monk-panel" class="side-panel" style="position: fixed; top: 0; right: -450px; width: 400px; height: 100%; background-image: url('https://www.transparenttextures.com/patterns/parchment.png'); background-color: #fdfbf7; border-left: 5px double #5d3a1a; z-index: 5000; transition: right 0.4s ease-in-out; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5);">
         
@@ -141,42 +133,58 @@
     </div>
 </div>
 
-<!-- UNIVERSAL NPC CHATBOX (Anonymus Testvér, npc_id: 'monk') -->
-<div id="monk-npc-btn" onclick="openUniversalNPC('monk', {
+<!-- UNIVERSAL NPC CHATBOX (Anonymus Testvér, npc_id: 'monk') - styled like harbormaster -->
+<div onclick="openUniversalNPC('monk', {
     name: 'Anonymus Testvér',
     role: 'Rendi Írnok',
     icon: '<i class=\'fas fa-scroll\'></i>',
-    headerColor: '#5d4037',
+    headerColor: '#37474f',
     portrait: '',
-    msgIcon: '<i class=\'fas fa-scroll\' style=\'color:#5d4037; margin-right:5px;\'></i>',
-    loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#5d4037; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
+    msgIcon: '<i class=\'fas fa-scroll\' style=\'color:#d4af37; margin-right:5px;\'></i>',
+    loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
     styles: {
-        modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
+        modal: {
+            justifyContent: 'flex-end', 
+            alignItems: 'stretch',
+            background: '',
+            padding: '0'
+        },
         content: {
-            width: '350px', height: '100vh', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #5d4037', backgroundColor: '#fdfbf7', color: '#333', backgroundImage: 'https://www.transparenttextures.com/patterns/parchment.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+            width: '350px',              
+            height: '100vh',            
+            maxWidth: '85vw',           
+            margin: '0',                
+            borderRadius: '2',          
+            border: 'none',
+            borderLeft: '5px solid #d4af37', 
+            backgroundColor: '#1f0901',
+            color: '#241512',
+            backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
+            boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
         }
     }
-})"
+})" 
     title="Anonymus Testvér" 
-    style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #5d4037; border: 3px solid #d2b48c; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+    style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
     <div style="position: relative;">
         <i class="fas fa-scroll" style="font-size: 2em; color: white;"></i>
         <i class="fas fa-user-secret" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #d2b48c; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
     </div>
 </div>
 
-<!-- NPC CHAT PANEL (egységes stílus, kikötő mintájára) -->
-<div id="monk-npc-panel" style="display: none; position: fixed; top: 0; right: 0; width: 350px; height: 100%; margin: 0; border-radius: 0; border-left: 4px solid #5d4037; z-index: 100; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
-    <div style="background: #5d4037; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d2b48c;">
-        <span style="font-family: 'Pirata One', cursive; font-size: 1.2em; font-weight: bold;">
-            <i class="fas fa-scroll"></i> <span>Anonymus Testvér</span>
+<!-- NPC CHAT PANEL (styled like harbormaster) -->
+<div id="monk-npc-panel" class="page-section" 
+    style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); z-index: 100; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
+    <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
+        <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
+            <i class="fas fa-user-secret"></i> <span>Anonymus Testvér</span>
         </span>
         <button onclick="toggleMonkNPCPanel()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
     </div>
-    <div id="monk-npc-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #fdfbf7; display: flex; flex-direction: column;"></div>
-    <div id="monk-npc-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #d2b48c; min-height: 60px; display: flex; flex-direction: row; gap: 5px;">
+    <div id="monk-npc-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: var(--bg-paper); display: flex; flex-direction: column;"></div>
+    <div id="monk-npc-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
         <input type="text" id="monk-npc-input" placeholder="Írj a Testvérnek..." style="flex-grow:1; margin-bottom: 0; padding: 8px; border: 1px solid #8b4513; border-radius: 4px; font-family: 'Georgia', serif;">
-        <button class="btn" id="monk-npc-send-btn" style="background-color: #5d4037; color: white; border: none; padding: 0 15px; border-radius: 4px; min-width: 40px;" onclick="sendMonkNPCMessage()">
+        <button class="btn" id="monk-npc-send-btn" style="background-color: var(--color-primary); color: white; border: none; padding: 0 15px; border-radius: 4px; min-width: 40px;" onclick="sendMonkNPCMessage()">
             <i class="fas fa-paper-plane"></i>
         </button>
     </div>

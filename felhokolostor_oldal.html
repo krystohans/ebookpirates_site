@@ -189,3 +189,34 @@
         </button>
     </div>
 </div>
+
+<!-- UNIVERSAL NPC CHATBOX MODAL (shared) -->
+<div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
+      <div id="npc-portrait-panel" class="npc-portrait-closed">
+        <img id="npc-portrait-image" src="" alt="NPC">
+      </div>
+<div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
+    
+    <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="npc-icon" style="font-size: 1.5em;">👵</span> <div>
+                <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Gabrel</h3>
+                <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+            </div>
+        </div>
+        <button onclick="document.getElementById('universal-npc-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+    </div>
+
+    <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
+        </div>
+
+    <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
+        <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+    
+    <input type="hidden" id="current-npc-id" value="">
+</div>
+</div>

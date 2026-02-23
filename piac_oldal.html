@@ -2,44 +2,55 @@
   <h2>Minden Portékák Piaca</h2>
   <p>Itt aztán bármit megtalálsz, és ha van elég kredited, be is szerezheted magadnak! Gyógyító ital a kalandozásokhoz? Új másolatok olvasáshoz? Vagy egy hiányzó tekercs kéne a könyvedhez? Esetleg hajót bérelnél a cimboráiddal egy kis portyázáshoz? Vagy netán te hoztál valamit eladásra? Nyugodtan érdeklődj az árusoktól, vagy vidd licitre a kincseidet, de az erszényedre jól vigyázz! Ha meg Tálentumot váltanál Kalózkreditre, vagy értéket küldenél egy jó ismerősödnek, esetleg adósságot kell rendezned valaki felé, ott van az a puccos épület a piac közepén, az <b>eBankPirates</b>, ott szívesen látják minden értékedet!</p>
   <button class="btn" onclick="markPageAsSeen('piac_oldal')">Értettem, mehet!</button>
+</div>
 
-<!-- MARKET_BOSS NPC CHATBOX (npc_id: 'market_boss') - styled like kikoto chatbox -->
-<div onclick="openUniversalNPC('market_boss', {
-    name: 'Hortenzi Mama',
-    role: 'Piacfőnök',
-    icon: '<i class=\'fas fa-balance-scale\'></i>',
-    headerColor: '#37474f',
-    portrait: '',
-    msgIcon: '<i class=\'fas fa-balance-scale\' style=\'color:#d4af37; margin-right:5px;\'></i>',
-    loaderHTML: '<i class=\'fas fa-balance-scale fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>Hortenzi Mama számol...</i>',
-    styles: {
-        modal: {
-            justifyContent: 'flex-end', 
-            alignItems: 'stretch',
-            background: '',
-            padding: '0'
-        },
-        content: {
-            width: '350px',              
-            height: '100vh',            
-            maxWidth: '85vw',           
-            margin: '0',                
-            borderRadius: '2',          
-            border: 'none',
-            borderLeft: '5px solid #d4af37', 
-            backgroundColor: '#1f0901',
-            color: '#241512',
-            backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-            boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-        }
-    }
-})" 
-    title="Piacfőnök" 
-    style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-    <div style="position: relative;">
-        <i class="fas fa-balance-scale" style="font-size: 2em; color: white;"></i>
-        <i class="fas fa-user-friends" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
-    </div>
+
+<!-- NPC CHATBOX BUTTONS (Piacfőnök & Bankár) -->
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: row; gap: 15px;">
+  <div onclick="openUniversalNPC('market_boss', {
+      name: 'Hortenzi Mama',
+      role: 'Piacfőnök',
+      icon: '<i class=\'fas fa-balance-scale\'></i>',
+      headerColor: '#37474f',
+      portrait: '',
+      msgIcon: '<i class=\'fas fa-balance-scale\' style=\'color:#d4af37; margin-right:5px;\'></i>',
+      loaderHTML: '<i class=\'fas fa-balance-scale fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>Hortenzi Mama számol...</i>',
+      styles: {
+          modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
+          content: {
+              width: '350px', height: '100vh', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #d4af37', backgroundColor: '#1f0901', color: '#241512', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+          }
+      }
+  })"
+      title="Piacfőnök" 
+      style="width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+      <div style="position: relative;">
+          <i class="fas fa-balance-scale" style="font-size: 2em; color: white;"></i>
+          <i class="fas fa-user-friends" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+      </div>
+  </div>
+  <div onclick="openUniversalNPC('bankar', {
+      name: 'Loan Shark',
+      role: 'Bankár',
+      icon: '<i class=\'fas fa-coins\'></i>',
+      headerColor: '#2e7d32',
+      portrait: '',
+      msgIcon: '<i class=\'fas fa-coins\' style=\'color:#ffd700; margin-right:5px;\'></i>',
+      loaderHTML: '<i class=\'fas fa-coins fa-spin\' style=\'color:#ffd700; margin-right:8px;\'></i> <i>A Bankár számol...</i>',
+      styles: {
+          modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
+          content: {
+              width: '350px', height: '100vh', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #ffd700', backgroundColor: '#0d2f1b', color: '#1b2f0d', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+          }
+      }
+  })"
+      title="Bankár (Loan Shark)" 
+      style="width: 65px; height: 65px; background: #2e7d32; border: 3px solid #ffd700; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+      <div style="position: relative;">
+          <i class="fas fa-coins" style="font-size: 2em; color: white;"></i>
+          <i class="fas fa-user-tie" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #ffd700; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+      </div>
+  </div>
 </div>
 
 <div id="market_boss-npc-panel" class="page-section" 

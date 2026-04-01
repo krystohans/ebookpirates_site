@@ -378,6 +378,21 @@
         </div>
     </div>
 
+    <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 105;">
+        <div class="gamemode-modal-content" style="margin-top: 5vh; max-width: 700px; width: 95%;">
+            <div class="gamemode-header">
+                <span class="header-title"><i class="fas fa-robot"></i> Papát AI - Értékelő Jelentés</span>
+                <span class="close-modal-btn" onclick="closePapatReportModal()">&times;</span>
+            </div>
+            <div id="papat-report-content" style="padding: 20px; font-size: 0.95em; line-height: 1.5;">
+                <!-- AI report goes here -->
+            </div>
+            <div style="text-align: center; margin-top: 15px; padding-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="closePapatReportModal()">Bezárás</button>
+            </div>
+        </div>
+    </div>
+
     <div id="system-message-modal" class="gamemode-modal" style="display: none; z-index: 100; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
         <div class="gamemode-modal-content" style="width: 320px; text-align: center; border: 2px solid #d2691e; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.5);">
             

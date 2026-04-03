@@ -13,4 +13,4 @@ node_modules/
 # Prevent accidental upload of server-side or transpiled files
 parancsnoki_hid*
 *.gs.js
-
+global_dev_context.txt

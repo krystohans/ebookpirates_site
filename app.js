@@ -3861,25 +3861,13 @@ function refreshMonasteryWork() {
                                 '<button class="btn btn-sm btn-danger" style="margin-top:5px;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
                             '</div>';
                         } else {
-                            if (work.checklist && work.checklist.papat_report) {
-                                topControls = '<div style="margin:5px 0; background:#f4ebf9; border: 1px solid #8e44ad; padding: 10px; border-radius: 5px;">' + 
-                                              '<div style="text-align:center; margin-bottom:10px;">' + 
-                                              '<strong><i class="fas fa-robot"></i> AI Elemzés Kész</strong><br>' +
-                                              '<button class="btn btn-sm" style="background-color:#8e44ad; margin-top:5px; width:100%;" onclick="openPapatReportModal(\'' + work.id + '\')"><i class="fas fa-eye"></i> Értékelő Jelentés Olvasása</button>' +
-                                              '</div>' +
-                                              '<button class="btn btn-sm" style="background-color:#28a745; width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' + 
-                                              '<button class="btn btn-sm btn-danger" style="width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' + 
-                                              '</div>';
-                            } else {
-                                topControls = '<div style="margin:5px 0;">' + 
-                                              '<button class="btn btn-sm" style="background-color:#8e44ad; margin-bottom: 5px; width: 100%;" onclick="triggerAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-robot"></i> Elemzés Indítása (Papát AI)</button><br>' + 
-                                              '<button class="btn btn-sm" style="background-color:#28a745;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' + 
-                                              '<button class="btn btn-sm btn-danger" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' + 
-                                              '</div>';
-                            }
+                            topControls = '<div style="margin:5px 0;">' + 
+                                          '<button class="btn btn-sm" style="background-color:#28a745;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' + 
+                                          '<button class="btn btn-sm" style="background-color:#6f42c1; color:white; border:1px solid #ffd700;" onclick="triggerPapatAgent(\'' + work.id + '\')">🤖 AI Elemzés</button> ' +
+                                          '<button class="btn btn-sm btn-danger" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' + 
+                                          '</div>';
+                                          '</div>';
                         }
-                    } else if (work.status === 'Agent elemzés alatt') {
-                         topControls = '<div style="margin:5px 0; padding:10px; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; text-align:center; color: #8e44ad;"><strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br><small>A kézirat le van foglalva az elemzőmodul számára.</small></div>';
                     } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
                          topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                     }
@@ -4044,6 +4032,33 @@ function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
     }, 5000);
 }
 
+// --- PAPÁT CLOUD INDÍTÁSA ---
+function triggerPapatAgent(workId) {
+    if (!confirm("Biztosan elindítod az AI elemzést (Papát)? Ez eltarthat 1-2 percig.")) return;
+    
+    showLoading("Papát hívása...");
+    
+    // 1. Állapot frissítése (hogy látszódjon a folyamat)
+    callBackend('manageWorkStatus', [workId, 'set_status', 'Agent elemzés alatt'], function(res) {
+        if (!res || !res.success) {
+            hideLoading();
+            alert("Hiba az állapot frissítésekor: " + (res ? res.error : "Ismeretlen hiba"));
+            return;
+        }
+        
+        // 2. Felhő alapú folyamat elindítása a Backend-en keresztül
+        callBackend('triggerPapatCloudProcess', [workId], function(papatRes) {
+            hideLoading();
+            if (papatRes && papatRes.success) {
+                alert("Papát megkezdte az elemzést! Kérlek várj pár percet, majd frissíts rá a munkapadra.");
+                refreshMonasteryWork(); 
+            } else {
+                alert("Papát sajnos nem tudott elindulni: " + (papatRes ? papatRes.error : "Szerver hiba"));
+            }
+        });
+    });
+}
+
 function getMonasteryWorkStatusLabel(status) {
     var statusMap = {
         'Elbírálás alatt': 'monk_work_status_under_review',
@@ -4202,101 +4217,6 @@ function doWorkAction(workId, action, param1, param2) {
             uiAlert(t('server_call_error_prefix') + err.message, t('system_error_title'));
         }
     );
-}
-
-// --- PAPÁT REPORT MEGJELENÍTŐ LOGIKA ---
-
-function triggerAgentAnalysis(workId) {
-    if(!confirm('Biztosan átadod ezt a kéziratot a Papát AI asszisztensnek elemzésre? A háttérfolyamat perceket is igénybe vehet.')) return;
-    
-    var loading = document.getElementById('loading-overlay');
-    if (loading) loading.style.display = 'flex';
-
-    callBackend('manageWorkStatus', [workId, 'agent_analysis_start', null], 
-        function(res) {
-            if (loading) loading.style.display = 'none';
-            uiAlert(res.message || "Az elemzés elindult. Nemsokára jelentkezik az Agent egy értékeléssel.", "Siker");
-            refreshMonasteryWork();
-        },
-        function(err) {
-            if (loading) loading.style.display = 'none';
-            uiAlert("Hiba a szerverhívásban: " + err.message, "Rendszerhiba");
-        }
-    );
-}
-
-function openPapatReportModal(workId) {
-    if (!window.currentMonasteryWorks) {
-        uiAlert("Hiba: Nem találhatóak a művek a memóriában. Frissítsd a listát!", "Rendszerhiba");
-        return;
-    }
-    
-    var foundWork = window.currentMonasteryWorks.find(function(w) { return w.id === workId; });
-    if (!foundWork || !foundWork.checklist || !foundWork.checklist.papat_report) {
-         uiAlert("Ehhez a kézirathoz nem található Papát AI jelentés!", "Hiba");
-         return;
-    }
-    
-    var report = foundWork.checklist.papat_report;
-    var html = "";
-    
-    html += "<p><strong>Mű címe:</strong> " + foundWork.title + "</p>";
-    html += "<p><strong>Kiállítás Dátuma:</strong> " + (report.timestamp || 'N/A') + "</p>";
-    html += "<hr>";
-    
-    var plagColor = "green";
-    var plagText = "Tiszta (Nincs Belső Plágium)";
-    if (report.plagiarism && report.plagiarism.status === "failed") {
-        plagColor = "red";
-        plagText = "VIGYÁZAT: Részleges vagy teljes ÖNPLÁGIUM/MÁSOLAT! (" + report.plagiarism.score_percent + "%)";
-    } else if (report.plagiarism && report.plagiarism.status === "warning") {
-        plagColor = "orange";
-        plagText = "FIGYELEM: Gyanús külső egyezések!";
-    }
-    html += "<div style='margin-bottom: 15px; padding: 10px; border: 1px solid " + plagColor + "; background-color: " + (plagColor === 'red' ? '#ffe6e6' : (plagColor === 'orange' ? '#fff3cd' : '#e6ffe6')) + "; border-radius: 5px;'>";
-    html += "<strong><i class='fas fa-search'></i> Fájl-alapú Plágiumszűrés:</strong> <span style='color: " + plagColor + "; font-weight: bold;'>" + plagText + "</span>";
-    if (report.plagiarism && report.plagiarism.message) {
-         html += "<br><small>" + report.plagiarism.message + "</small>";
-    }
-    html += "</div>";
-
-    var coheScore = report.cohesion_score || 0;
-    var coheColor = coheScore > 75 ? '#28a745' : (coheScore > 50 ? '#f39c12' : '#dc3545');
-    html += "<div style='margin-bottom: 10px;'>";
-    html += "<strong>Logikai Kohézió és Stílus:</strong> <span style='float:right; font-weight:bold; color:" + coheColor + "'>" + coheScore + "/100</span>";
-    html += "<div style='width: 100%; background-color: #e9ecef; border-radius: 4px; overflow: hidden; height: 15px; margin-top: 5px;'>";
-    html += "  <div style='height: 100%; width: " + coheScore + "%; background-color: " + coheColor + ";'></div>";
-    html += "</div></div>";
-
-    var hookScore = report.hook_score || 0;
-    var hookColor = hookScore > 75 ? '#28a745' : (hookScore > 50 ? '#f39c12' : '#dc3545');
-    html += "<div style='margin-bottom: 15px;'>";
-    html += "<strong>Felütés (Figyelemfelkeltés):</strong> <span style='float:right; font-weight:bold; color:" + hookColor + "'>" + hookScore + "/100</span>";
-    html += "<div style='width: 100%; background-color: #e9ecef; border-radius: 4px; overflow: hidden; height: 15px; margin-top: 5px;'>";
-    html += "  <div style='height: 100%; width: " + hookScore + "%; background-color: " + hookColor + ";'></div>";
-    html += "</div></div>";
-
-    if (report.is_fanfic) {
-        html += "<div style='margin-bottom: 15px; padding: 10px; border: 1px solid #ff9800; background-color: #fff3e0; border-radius: 5px; color: #d84315;'>";
-        html += "<strong><i class='fas fa-exclamation-triangle'></i> Fanfic GYANÚ!</strong> A történet valószínűleg egy ismert szellemi termékhez kötődik.";
-        html += "</div>";
-    }
-
-    html += "<h4>📝 Összefoglaló:</h4>";
-    html += "<p style='font-style: italic; border-left: 3px solid #8e44ad; padding-left: 10px; color: #555;'>" + (report.summary || 'Nincs összefoglaló.') + "</p>";
-    
-    html += "<h4>⚖️ Kritikai Visszajelzés:</h4>";
-    html += "<p>" + (report.feedback || 'Nincs visszajelzés.') + "</p>";
-
-    document.getElementById('papat-report-content').innerHTML = html;
-    
-    var modal = document.getElementById('papat-report-modal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closePapatReportModal() {
-    var modal = document.getElementById('papat-report-modal');
-    if (modal) modal.style.display = 'none';
 }
 
 // --- 2. FÓRUM (Közös Terem) ---
@@ -5265,28 +5185,30 @@ function disableContextMenuOnElement(elementId) {
      * Elindítja a térképmásolási folyamatot.
      */
     function initiateMapCopy(mapSheetRowIndex, mapName) {
-            // PIN-t a hívó adja át, nem kérünk újra modalt!
-            // mapName helyett PIN-t várunk 3. paraméterként
-            var pinCode = mapName; // A hívó a PIN-t adja át!
-            if (!pinCode) {
-                uiAlert(t('pin_required'));
-                return;
-            }
-            document.getElementById('loading-overlay').style.display = 'flex';
-            callBackend('copyMap', [mapSheetRowIndex, pinCode], 
-                function(response) {
-                    document.getElementById('loading-overlay').style.display = 'none';
-                    uiAlert(response.message || response.error);
-                    if (response.success) {
-                        updateCreditDisplay();
-                        loadPage('masolatok_oldal');
-                    }
-                },
-                function(err) {
-                    document.getElementById('loading-overlay').style.display = 'none';
-                    uiAlert(t('map_copy_server_error_prefix') + err.message);
-                }
-            );
+      const pinCodeInput = document.getElementById('copy-map-pin');
+      const pinCode = pinCodeInput ? pinCodeInput.value : null;
+        
+        if (pinCode === null || pinCode === "") {
+        uiAlert(t('pin_required'));
+        if (pinCodeInput) pinCodeInput.focus();
+        return;
+        }
+
+        document.getElementById('loading-overlay').style.display = 'flex';
+        callBackend('copyMap', [mapSheetRowIndex, pinCode], 
+    function(response) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        uiAlert(response.message || response.error);
+        if (response.success) {
+            updateCreditDisplay();
+            loadPage('masolatok_oldal');
+        }
+    },
+    function(err) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        uiAlert(t('map_copy_server_error_prefix') + err.message);
+    }
+  );
 }
 
     /**
@@ -6111,12 +6033,13 @@ function initializeMasolatokAndCopyMapPage(data) {
 
     // Új elemek a térképmásoláshoz
     var availableMapsLoader = document.getElementById('available-maps-list-loader'); 
-    var availableMapsContainer = document.getElementById('available-maps-list-content');
+    var availableMapsContainer = document.getElementById('available-maps-list-content'); 
+    var copyMapPinInput = document.getElementById('copy-map-pin'); 
+    var copyMapPinLabel = copyMapPinInput ? copyMapPinInput.previousElementSibling : null;
 
-    // PIN input mező eltávolítva, minden PIN modal panelen keresztül jön
-    if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer) {
-        console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
-        return;
+    if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer || !copyMapPinInput || !copyMapPinLabel) {
+         console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
+         return;
     }
 
     myCopiesLoader.style.display = 'none';
@@ -6140,42 +6063,10 @@ function initializeMasolatokAndCopyMapPage(data) {
                 // Játékba viszem gomb
                 var playBtn = document.createElement('button');
                 playBtn.className = 'btn';
-                playBtn.textContent = t('copy_play_button');
-                playBtn.style.marginRight = '8px';
+                                playBtn.textContent = t('copy_play_button');
                 playBtn.onclick = function() {
-                    // Megnyitja a Játékmester NPC chatboxot a kiválasztott másolathoz, pontosan a masolatok_oldal.html gomb stílusával és adataival, és azonnal GM_startSession-t indít
-                    openUniversalNPC('gamemaster', {
-                        name: 'Játékmester',
-                        role: 'Sors és játékvezető',
-                        icon: '<i class=\'fas fa-chess-knight\'></i>',
-                        headerColor: '#9c27b0',
-                        portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
-                        msgIcon: '<i class=\'fas fa-chess-knight\' style=\'color:#fff; margin-right:5px;\'></i>',
-                        loaderHTML: '<i class=\'fas fa-chess-knight fa-spin\' style=\'color:#fff; margin-right:8px;\'></i> <i>A Játékmester gondolkodik...</i>',
-                        styles: {
-                            modal: {
-                                justifyContent: 'flex-end',
-                                alignItems: 'stretch',
-                                background: '',
-                                padding: '0'
-                            },
-                            content: {
-                                width: '350px',
-                                height: '100vh',
-                                maxWidth: '85vw',
-                                margin: '0',
-                                borderRadius: '2',
-                                border: 'none',
-                                borderLeft: '5px solid #9c27b0',
-                                backgroundColor: '#1e1e1e',
-                                color: '#fff',
-                                backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-                            }
-                        },
-                        meta: { copyCode: copy.code, autoMenu: 'UJ_KALAND_VARAZSLO', autoRunFunction: 'GM_startSession' }
-                    });
-                };
+                                        uiAlert(t('copy_play_unavailable_prefix') + copy.code + t('copy_play_unavailable_suffix'));
+                  };
                 gombokDiv.appendChild(playBtn);
 
                 // Eladom gomb
@@ -6323,8 +6214,10 @@ function initializeMasolatokAndCopyMapPage(data) {
         groupsArray.forEach(function(group) {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'item-entry map-entry';
+            // Feltételezzük, hogy MAP_COPY_COST definiálva van globálisan
             var cost = (typeof MAP_COPY_COST !== 'undefined') ? MAP_COPY_COST : 10;
-            entryDiv.innerHTML =
+            
+            entryDiv.innerHTML = 
                 '<div class="map-details item-details">' +
                     '<div class="map-name item-title">' + group.name + ' (' + group.count + ' db)</div>' +
                     '<small class="item-author">Másolás ára: ' + cost + ' kredit</small>' +
@@ -6332,25 +6225,20 @@ function initializeMasolatokAndCopyMapPage(data) {
                 '<div class="map-actions">' +
                     '<button class="btn">Másolás</button>' +
                 '</div>';
-            entryDiv.querySelector('.map-actions button').onclick = function() {
-                // Egységes PIN modal bekérés
-                requestPin(function(pin) {
-                    if (!pin || pin.length < 4) {
-                        uiAlert(t('pin_required_copy_map'));
-                        return;
-                    }
-                    // PIN-t közvetlenül a copyMap backend függvénynek adjuk át
-                    if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, pin);
-                }, t('monk_pin_map_copy_html'));
+            
+            entryDiv.querySelector('.map-actions button').onclick = function() { 
+                if(typeof initiateMapCopy === 'function') initiateMapCopy(group.firstRowIndex, group.name); 
             };
             availableMapsContainer.appendChild(entryDiv);
         });
 
-        // PIN input már nem szükséges, modal rendszer használata
+        if (copyMapPinInput) copyMapPinInput.style.display = 'block';
+        if (copyMapPinLabel) copyMapPinLabel.style.display = 'block';
 
     } else { 
         availableMapsContainer.innerHTML = "<p>Jelenleg nincsenek másolható térképek.</p>";
-        // PIN input már nem szükséges, modal rendszer használata
+        if (copyMapPinInput) copyMapPinInput.style.display = 'none';
+        if (copyMapPinLabel) copyMapPinLabel.style.display = 'none';
     }
 }
 

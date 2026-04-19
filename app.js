@@ -3824,14 +3824,36 @@ async function submitMonasteryWork() {
     });
 }
 
-function refreshMonasteryWork() {
+var agentPollingInterval = null;
+
+function setupAgentPolling(hasPending) {
+    if (agentPollingInterval) {
+        clearInterval(agentPollingInterval);
+        agentPollingInterval = null;
+    }
+    if (hasPending) {
+        // Frissítjük a kolostort csendben minden 15 másodpercben
+        agentPollingInterval = setInterval(function() {
+            if (document.getElementById('monastery-work-list')) {
+                refreshMonasteryWork(true);
+            }
+        }, 15000);
+    }
+}
+
+function refreshMonasteryWork(silent) {
     var container = document.getElementById('monastery-work-list');
-    container.innerHTML = '<p><i>' + t('monk_work_loading') + '</i></p>';
+    if (!silent) {
+        container.innerHTML = '<p><i>' + t('monk_work_loading') + '</i></p>';
+    }
     
     callBackend('getMonasteryWorks', [], 
         function(res) {
-            if (!res.success) { container.innerHTML = '<p style="color:red;">' + t('error_prefix') + res.error + '</p>'; return; }
-            if (res.works.length === 0) { container.innerHTML = '<p>' + t('monk_work_none') + '</p>'; return; }
+            if (!res.success) { if (!silent) container.innerHTML = '<p style="color:red;">' + t('error_prefix') + res.error + '</p>'; return; }
+            if (res.works.length === 0) { if (!silent) container.innerHTML = '<p>' + t('monk_work_none') + '</p>'; return; }
+            
+            var hasPendingAgent = res.works.some(function(w) { return w.status === 'Agent elemzés alatt'; });
+            setupAgentPolling(hasPendingAgent);
             
             var html = '';
             window.currentMonasteryWorks = res.works;

@@ -14,3 +14,7 @@ node_modules/
 parancsnoki_hid*
 *.gs.js
 global_dev_context.txt
+Archy_Master.code-workspace
+*.code-workspace
+*.py
+

@@ -3834,6 +3834,8 @@ function refreshMonasteryWork() {
             if (res.works.length === 0) { container.innerHTML = '<p>' + t('monk_work_none') + '</p>'; return; }
             
             var html = '';
+            window.currentMonasteryWorks = res.works;
+            
             var isPapatUser = res.works.some(function(w) { return w.isPapat; }); 
             if (isPapatUser) {
                 var adminBtn = document.getElementById('open-personnel-btn');
@@ -3861,13 +3863,25 @@ function refreshMonasteryWork() {
                                 '<button class="btn btn-sm btn-danger" style="margin-top:5px;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
                             '</div>';
                         } else {
-                            topControls = '<div style="margin:5px 0;">' + 
-                                          '<button class="btn btn-sm" style="background-color:#28a745;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' + 
-                                          '<button class="btn btn-sm" style="background-color:#6f42c1; color:white; border:1px solid #ffd700;" onclick="triggerPapatAgent(\'' + work.id + '\')">🤖 AI Elemzés</button> ' +
-                                          '<button class="btn btn-sm btn-danger" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' + 
-                                          '</div>';
-                                          '</div>';
+                            if (work.checklist && work.checklist.papat_report) {
+                                topControls = '<div style="margin:5px 0; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; padding:10px;">' +
+                                              '<div style="text-align:center; margin-bottom:10px;">' + 
+                                              '<strong><i class="fas fa-robot"></i> AI Elemzés Kész</strong><br>' +
+                                              '<button class="btn btn-sm" style="background-color:#8e44ad; margin-top:5px; width:100%;" onclick="openPapatReportModal(\'' + work.id + '\')"><i class="fas fa-eye"></i> Értékelő Jelentés Olvasása</button>' +
+                                              '</div>' +
+                                              '<button class="btn btn-sm" style="background-color:#28a745; width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' + 
+                                              '<button class="btn btn-sm btn-danger" style="width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' + 
+                                              '</div>';
+                            } else {
+                                topControls = '<div style="margin:5px 0;">' + 
+                                              '<button class="btn btn-sm" style="background-color:#8e44ad; margin-bottom: 5px; width: 100%; color:white; border:1px solid #ffd700;" onclick="triggerAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-robot"></i> Elemzés Indítása (Papát AI)</button><br>' + 
+                                              '<button class="btn btn-sm" style="background-color:#28a745;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' + 
+                                              '<button class="btn btn-sm btn-danger" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' + 
+                                              '</div>';
+                            }
                         }
+                    } else if (work.status === 'Agent elemzés alatt') {
+                         topControls = '<div style="margin:5px 0; padding:10px; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; text-align:center; color: #8e44ad;"><strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br><small>A kézirat le van foglalva az elemzőmodul számára.</small></div>';
                     } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
                          topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                     }
@@ -8174,5 +8188,98 @@ function jumpToSavedState() {
     );
 }
 
-/* SCRIPT VÉGE - BIZTONSÁGI LEZÁRÁS */
+function triggerAgentAnalysis(workId) {
+    if(!confirm('Biztosan átadod ezt a kéziratot a Papát AI asszisztensnek elemzésre? A háttérfolyamat perceket is igénybe vehet.')) return;
+    
+    var loading = document.getElementById('loading-overlay');
+    if (loading) loading.style.display = 'flex';
+
+    callBackend('manageWorkStatus', [workId, 'agent_analysis_start', null], 
+        function(res) {
+            if (loading) loading.style.display = 'none';
+            uiAlert(res.message || "Az elemzés elindult. Nemsokára jelentkezik az Agent egy értékeléssel.", "Siker");
+            refreshMonasteryWork();
+        },
+        function(err) {
+            if (loading) loading.style.display = 'none';
+            uiAlert("Hiba a szerverhívásban: " + err.message, "Rendszerhiba");
+        }
+    );
+}
+
+// --- PAPÁT REPORT MEGJELENÍTŐ LOGIKA ---
+function openPapatReportModal(workId) {
+    if (!window.currentMonasteryWorks) {
+        uiAlert("Hiba: Nem találhatóak a művek a memóriában. Frissítsd a listát!", "Rendszerhiba");
+        return;
+    }
+    
+    var foundWork = window.currentMonasteryWorks.find(function(w) { return w.id === workId; });
+    if (!foundWork || !foundWork.checklist || !foundWork.checklist.papat_report) {
+         uiAlert("Ehhez a kézirathoz nem található Papát AI jelentés!", "Hiba");
+         return;
+    }
+    
+    var report = foundWork.checklist.papat_report;
+    var html = "";
+    
+    html += "<p><strong>Mű címe:</strong> " + foundWork.title + "</p>";
+    html += "<p><strong>Kiállítás Dátuma:</strong> " + (report.timestamp || 'N/A') + "</p>";
+    html += "<hr>";
+    
+    // BELSŐ PLÁGIUM
+    var plagColor = "green";
+    var plagText = "Tiszta (Nincs Belső Plágium)";
+    if (report.plagiarism && report.plagiarism.status === "failed") {
+        plagColor = "red";
+        plagText = "VIGYÁZAT: Részleges vagy teljes ÖNPLÁGIUM/MÁSOLAT! (" + report.plagiarism.score_percent + "%)";
+    }
+    html += "<div style='margin-bottom: 15px; padding: 10px; border: 1px solid " + plagColor + "; background-color: " + (plagColor === 'red' ? '#ffe6e6' : '#e6ffe6') + "; border-radius: 5px;'>";
+    html += "<strong><i class='fas fa-search'></i> Fájl-alapú Plágiumszűrés:</strong> <span style='color: " + plagColor + "; font-weight: bold;'>" + plagText + "</span>";
+    if (report.plagiarism && report.plagiarism.message) {
+         html += "<br><small>" + report.plagiarism.message + "</small>";
+    }
+    html += "</div>";
+
+    // PONTOZÓ SÁVOK (Kohézió)
+    var coheScore = report.cohesion_score || 0;
+    var coheColor = coheScore > 75 ? '#28a745' : (coheScore > 50 ? '#f39c12' : '#dc3545');
+    html += "<div style='margin-bottom: 10px;'>";
+    html += "<strong>Logikai Kohézió és Stílus:</strong> <span style='float:right; font-weight:bold; color:" + coheColor + "'>" + coheScore + "/100</span>";
+    html += "<div style='width: 100%; background-color: #e9ecef; border-radius: 4px; overflow: hidden; height: 15px; margin-top: 5px;'>";
+    html += "  <div style='height: 100%; width: " + coheScore + "%; background-color: " + coheColor + ";'></div>";
+    html += "</div></div>";
+
+    // PONTOZÓ SÁVOK (Felütés/Hook)
+    var hookScore = report.hook_score || 0;
+    var hookColor = hookScore > 75 ? '#28a745' : (hookScore > 50 ? '#f39c12' : '#dc3545');
+    html += "<div style='margin-bottom: 15px;'>";
+    html += "<strong>Felütés (Figyelemfelkeltés):</strong> <span style='float:right; font-weight:bold; color:" + hookColor + "'>" + hookScore + "/100</span>";
+    html += "<div style='width: 100%; background-color: #e9ecef; border-radius: 4px; overflow: hidden; height: 15px; margin-top: 5px;'>";
+    html += "  <div style='height: 100%; width: " + hookScore + "%; background-color: " + hookColor + ";'></div>";
+    html += "</div></div>";
+
+    // FANFIC RIASZTÁS
+    if (report.is_fanfic) {
+        html += "<div style='margin-bottom: 15px; padding: 10px; border: 1px solid #ff9800; background-color: #fff3e0; border-radius: 5px; color: #d84315;'>";
+        html += "<strong><i class='fas fa-exclamation-triangle'></i> Fanfic GYANÚ!</strong> A történet valószínűleg egy ismert szellemi termékhez kötődik.";
+        html += "</div>";
+    }
+
+    html += "<h4>📝 Összefoglaló:</h4>";
+    html += "<p style='font-style: italic; border-left: 3px solid #8e44ad; padding-left: 10px; color: #555;'>" + (report.summary || 'Nincs összefoglaló.') + "</p>";
+    
+    html += "<h4>⚖️ Kritikai Visszajelzés:</h4>";
+    html += "<p>" + (report.feedback || 'Nincs visszajelzés.') + "</p>";
+
+    document.getElementById('papat-report-content').innerHTML = html;
+    var modal = document.getElementById('papat-report-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closePapatReportModal() {
+    var modal = document.getElementById('papat-report-modal');
+    if (modal) modal.style.display = 'none';
+}
+
 console.log("EOF");

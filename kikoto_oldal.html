@@ -1,20 +1,24 @@
 <div id="kikoto_oldal-splash" style="display: none;">
     <h2 data-lang="harbor_splash_title">Mi szél hozott a Kikötőbe?</h2>
-    <p data-lang="harbor_splash_body">Itt vannak a legnagyobb vízi zsiványok; van, aki boltot visz, mások a piacon lebzselnek a portékáikkal. Ha a legújabb pletykákról hallanál, irány a kocsma, de ha friss árut hoztál, mehetsz egyenesen a tekercsmesterhez.</p>
-    <button class="btn" onclick="markPageAsSeen('kikoto_oldal')" data-lang="harbor_splash_ack_button">Értettem, mehet!</button>
+    <p data-lang="harbor_splash_body">Itt vannak a legnagyobb vízi zsiványok; van, aki boltot visz, mások a piacon
+        lebzselnek a portékáikkal. Ha a legújabb pletykákról hallanál, irány a kocsma, de ha friss árut hoztál, mehetsz
+        egyenesen a tekercsmesterhez.</p>
+    <button class="btn" onclick="markPageAsSeen('kikoto_oldal')" data-lang="harbor_splash_ack_button">Értettem,
+        mehet!</button>
 </div>
 
 <div id="kikoto_oldal-content" style="display: none; position: relative;">
-    
+
     <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
         <i class="fas fa-info-circle" onclick="showSplash('kikoto_oldal')"></i>
     </div>
 
     <div class="page-container">
         <div class="page-section" style="text-align: center;">
-            <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;" data-lang="harbor_title">Kikötő</h2>
-            
-              <div onclick="openUniversalNPC('harbormaster', {
+            <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;"
+                data-lang="harbor_title">Kikötő</h2>
+
+            <div onclick="openUniversalNPC('harbormaster', {
                   name: 'Barba Negra',
                   role: 'Kikötőmester',
                   icon: '<i class=\'fas fa-anchor\'></i>', 
@@ -43,83 +47,108 @@
                           boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
                       }
                   }
-              })" 
-              title="Kikötőmester" 
-              style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-                  
-                  <div style="position: relative;">
-                        <i class="fas fa-anchor" style="font-size: 2em; color: white;"></i>
-                        <i class="fas fa-user-tie" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
-                  </div>
-              </div>
+              })" title="Kikötőmester"
+                style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
 
-              <div id="harbormaster-panel" class="page-section" 
-                  style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; 
+                <div style="position: relative;">
+                    <i class="fas fa-anchor" style="font-size: 2em; color: white;"></i>
+                    <i class="fas fa-user-tie"
+                        style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+                </div>
+            </div>
+
+            <div id="harbormaster-panel" class="page-section" style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; 
                           margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); 
                           z-index: 100; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
-                  
-                  <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
-                      <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
-                          <i class="fas fa-user-tie"></i> <span data-lang="harbor_master_title">Kikötőmester</span>
-                      </span>
-                      <button onclick="toggleHarbormaster()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-                  </div>
 
-                  <div id="harbormaster-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: var(--bg-paper); display: flex; flex-direction: column;">
-                      </div>
+                <div
+                    style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
+                    <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
+                        <i class="fas fa-user-tie"></i> <span data-lang="harbor_master_title">Kikötőmester</span>
+                    </span>
+                    <button onclick="toggleHarbormaster()"
+                        style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+                </div>
 
-                  <div id="harbormaster-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
-                      <button class="btn" onclick="loadDialogue('start')" data-lang="harbor_master_start_button">Indítás</button>
-                  </div>
-              </div>
+                <div id="harbormaster-chat-area"
+                    style="flex: 1; padding: 15px; overflow-y: auto; background-color: var(--bg-paper); display: flex; flex-direction: column;">
+                </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-                <button class="btn" style="background-color: var(--color-secondary);" onclick="loadPage('fedelzet_oldal')" data-lang="harbor_nav_deck">🚢 A fedélzetre</button>
-                <button class="btn" onclick="loadPage('piac_oldal')" data-lang="harbor_nav_market">💰 Piac & Bank</button>
-                <button class="btn" onclick="loadPage('tekercsmester_oldal')" data-lang="harbor_nav_scrollshop">📜 Tekercsbolt</button>
-                <button class="btn" onclick="loadPage('masolatok_oldal')" data-lang="harbor_nav_copies">📚 Másolatok</button>
+                <div id="harbormaster-controls"
+                    style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
+                    <button class="btn" onclick="loadDialogue('start')"
+                        data-lang="harbor_master_start_button">Indítás</button>
+                </div>
+            </div>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                <button class="btn" style="background-color: var(--color-secondary);"
+                    onclick="loadPage('fedelzet_oldal')" data-lang="harbor_nav_deck">🚢 A fedélzetre</button>
+                <button class="btn" onclick="loadPage('piac_oldal')" data-lang="harbor_nav_market">💰 Piac &
+                    Bank</button>
+                <button class="btn" onclick="loadPage('tekercsmester_oldal')" data-lang="harbor_nav_scrollshop">📜
+                    Tekercsbolt</button>
+                <button class="btn" onclick="loadPage('masolatok_oldal')" data-lang="harbor_nav_copies">📚
+                    Másolatok</button>
                 <button class="btn" onclick="loadPage('taverna_oldal')" data-lang="harbor_nav_tavern">🍺 Kocsma</button>
-                <button class="btn" onclick="loadPage('konyvszentely_oldal')" data-lang="harbor_nav_shrine">✨ Szentély</button>
-                <button class="btn" onclick="loadPage('felhokolostor_oldal')" data-lang="harbor_nav_monastery">☁️ Kolostor</button>
-                <button class="btn" onclick="loadPage('hajomuhely_oldal')" data-lang="harbor_nav_shipyard">🛠️ Hajóműhely</button> </div>
+                <button class="btn" onclick="loadPage('konyvszentely_oldal')" data-lang="harbor_nav_shrine">✨
+                    Szentély</button>
+                <button class="btn" onclick="loadPage('felhokolostor_oldal')" data-lang="harbor_nav_monastery">☁️
+                    Kolostor</button>
+                <button class="btn" onclick="loadPage('hajomuhely_oldal')" data-lang="harbor_nav_shipyard">🛠️
+                    Hajóműhely</button>
+            </div>
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-            <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')" data-lang="harbor_nav_tutorial">Tudnivalók</button>
+            <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')"
+                data-lang="harbor_nav_tutorial">Tudnivalók</button>
             <button class="btn btn-danger" onclick="logout()" data-lang="harbor_nav_logout">Kijelentkezés</button>
         </div>
     </div>
 
     <!-- Universal NPC Modal (universal-npc-modal) -->
-    <div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
-          <div id="npc-portrait-panel" class="npc-portrait-closed">
+    <div id="universal-npc-modal" class="gamemode-modal"
+        style="display: none; align-items: center; justify-content: center;">
+        <div id="npc-portrait-panel" class="npc-portrait-closed">
             <img id="npc-portrait-image" src="" alt="NPC">
-          </div>
-    <div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
-        
-        <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span id="npc-icon" style="font-size: 1.5em;">👵</span> <div>
-                    <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Gabrel</h3>
-                    <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+        </div>
+        <div class="gamemode-modal-content"
+            style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
+
+            <div id="npc-header"
+                style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="npc-icon" style="font-size: 1.5em;">👵</span>
+                    <div>
+                        <h3 id="npc-name"
+                            style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">
+                            Hortenzi Gabrel</h3>
+                        <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+                    </div>
                 </div>
-            </div>
-            <button onclick="document.getElementById('universal-npc-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-        </div>
-
-        <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
+                <button onclick="document.getElementById('universal-npc-modal').style.display='none'"
+                    style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
             </div>
 
-        <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
-            <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-            <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+            <div id="universal-chat-area"
+                style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
+            </div>
+
+            <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
+                <input type="text" id="universal-chat-input" placeholder="Mit akarsz?"
+                    data-lang-placeholder="npc_chat_placeholder"
+                    style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <button class="btn" onclick="sendUniversalMessage()"
+                    style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="current-npc-id" value="">
         </div>
-        
-        <input type="hidden" id="current-npc-id" value="">
     </div>
-</div>
 
-<!-- End Universal NPC Modal -->
+    <!-- End Universal NPC Modal -->
 </div>

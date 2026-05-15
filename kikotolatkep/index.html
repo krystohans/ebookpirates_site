@@ -143,6 +143,12 @@
 
     // 2. Panel megnyitása kattintásra
     terulet.addEventListener('click', () => {
+      // Ha a kikötőre kattint, visszavisz a főoldalra (top frame)
+      if (terulet.id === 'kikoto') {
+        window.top.location.href = '../index.html';
+        return;
+      }
+
       if (aktivPanel) aktivPanel.style.display = 'none';
       
       const panelId = 'info-' + terulet.id;

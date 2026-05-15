@@ -1857,7 +1857,7 @@ const translations = {
         'papat_report_summary_label': '📝 Summary:',
         'papat_report_feedback_label': '⚖️ Critical Feedback:',
         'papat_report_no_feedback': 'No feedback available.',
-        'papat_report_close_button': '✕'
+        'papat_report_close_button': '✕',
     
         'login_name_placeholder': 'Mi a kalózneved?',
         'login_pass_placeholder': 'Mi a kedvenc ételed?',
@@ -2626,7 +2626,7 @@ const translations = {
         'papat_report_summary_label': '📝 Zusammenfassung:',
         'papat_report_feedback_label': '⚖️ Kritisches Feedback:',
         'papat_report_no_feedback': 'Kein Feedback verfügbar.',
-        'papat_report_close_button': '✕'
+        'papat_report_close_button': '✕',
     
         'offer_not_allowed_on_fixed_price_item': 'This item has a fixed price, so offers are not allowed.',
         'cannot_make_offer_on_own_listing': 'You cannot make an offer on your own listing.',
@@ -3575,7 +3575,7 @@ const translations = {
         'papat_report_summary_label': '📝 Résumé:',
         'papat_report_feedback_label': '⚖️ Retour critique:',
         'papat_report_no_feedback': 'Aucun commentaire disponible.',
-        'papat_report_close_button': '✕'
+        'papat_report_close_button': '✕',
     
         'login_register_button': 'Register',
         'offer_not_allowed_on_fixed_price_item': 'This item has a fixed price, so offers are not allowed.',
@@ -4533,7 +4533,7 @@ const translations = {
         'papat_report_summary_label': '📝 Resumen:',
         'papat_report_feedback_label': '⚖️ Retroalimentación crítica:',
         'papat_report_no_feedback': 'No hay comentarios disponibles.',
-        'papat_report_close_button': '✕'
+        'papat_report_close_button': '✕',
     
         'offer_not_allowed_on_fixed_price_item': 'This item has a fixed price, so offers are not allowed.',
         'cannot_make_offer_on_own_listing': 'You cannot make an offer on your own listing.',
@@ -5482,7 +5482,7 @@ const translations = {
         'papat_report_summary_label': '📝 Podsumowanie:',
         'papat_report_feedback_label': '⚖️ Krytyczna informacja zwrotna:',
         'papat_report_no_feedback': 'Brak dostępnych komentarzy.',
-        'papat_report_close_button': '✕'
+        'papat_report_close_button': '✕',
     
         'offer_not_allowed_on_fixed_price_item': 'This item has a fixed price, so offers are not allowed.',
         'cannot_make_offer_on_own_listing': 'You cannot make an offer on your own listing.',
@@ -6431,7 +6431,7 @@ const translations = {
         'papat_report_summary_label': '📝 Краткое содержание:',
         'papat_report_feedback_label': '⚖️ Критический отзыв:',
         'papat_report_no_feedback': 'Отзывы недоступны.',
-        'papat_report_close_button': '✕'
+        'papat_report_close_button': '✕',
     
         'offer_not_allowed_on_fixed_price_item': 'This item has a fixed price, so offers are not allowed.',
         'cannot_make_offer_on_own_listing': 'You cannot make an offer on your own listing.',

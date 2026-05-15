@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <title>HEBOK kikötője</title>
-  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
  </head>
 
 <body>
@@ -122,16 +122,19 @@
   let aktivPanel = null;
 
   teruletek.forEach(terulet => {
-    // 1. Tooltip megjelenítése (feliratok az ID alapján)
+    // 1. Tooltip megjelenítése
     terulet.addEventListener('mouseover', (e) => {
-      // Szebbé tesszük az ID-t (pl. sarkany-gerinc -> Sarkany gerinc)
-      tooltip.textContent = terulet.id.replace(/-/g, ' ').toUpperCase();
+      const panelId = 'info-' + terulet.id;
+      const panel = document.getElementById(panelId);
+      if (panel) {
+        const titleElement = panel.querySelector('h3');
+        if (titleElement) {
+          tooltip.textContent = titleElement.textContent;
+        } else {
+          tooltip.textContent = terulet.id.toUpperCase();
+        }
+      }
       tooltip.style.display = 'block';
-    });
-
-    terulet.addEventListener('mousemove', (e) => {
-      tooltip.style.left = e.pageX + 15 + 'px';
-      tooltip.style.top = e.pageY + 15 + 'px';
     });
 
     terulet.addEventListener('mouseout', () => {

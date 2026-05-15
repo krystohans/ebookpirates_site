@@ -979,13 +979,6 @@ const translations = {
         'papat_report_summary_label': '📝 Összefoglaló:',
         'papat_report_feedback_label': '⚖️ Kritikai Visszajelzés:',
         'papat_report_no_feedback': 'Nincs visszajelzés.',
-        'papat_report_no_summary': 'Nincs összefoglaló.',
-        'papat_report_none_found': 'Ehhez a kézirathoz nem található Papát AI jelentés!',
-        'papat_report_plagiarism_alert': 'VIGYÁZAT: Részleges vagy teljes ÖNPLÁGIUM/MÁSOLAT!',
-        'papat_report_fanfic_alert_html': '<strong><i class="fas fa-exclamation-triangle"></i> Fanfic GYANÚ!</strong> A történet valószínűleg egy ismert szellemi termékhez kötődik.',
-        'papat_ai_confirm_start': 'Biztosan átadod ezt a kéziratot a Papát AI asszisztensnek elemzésre? A háttérfolyamat perceket is igénybe vehet.',
-        'papat_ai_start_success': 'Papát megkezdte az elemzést! Kérlek várj pár percet, majd frissíts rá a munkapadra.',
-        'papat_ai_error_status': 'Hiba az állapot frissítésekor: ',
         'papat_report_close_button': '✕'
     },
     'en': {
@@ -1951,15 +1944,7 @@ const translations = {
         'monk_pin_cancel_button': 'Mégse',
         'monk_pin_confirm_button': 'Megerősítés és Feltöltés',
         'system_message_title': 'Rendszerüzenet',
-        'npc_chat_placeholder': 'Mit akarsz?',
-        'papat_report_fanfic_alert_html': '<strong><i class=\'fas fa-exclamation-triangle\'></i> Fanfic SUSPICION!</strong> The story is likely tied to a known intellectual property.',
-        'papat_ai_error_status': 'Error updating status: ',
-        'papat_report_none_found': 'No Papát AI report found for this manuscript!',
-        'papat_ai_start_success': 'Papát has started the analysis! Please wait a few minutes, then refresh your workbench.',
-        'papat_ai_confirm_start': 'Are you sure you want to hand this manuscript over to the Papát AI assistant for analysis? The background process may take minutes.',
-        'papat_report_plagiarism_alert': 'WARNING: Partial or full SELF-PLAGIARISM/COPY!',
-        'papat_report_no_summary': 'No summary available.'
-    },
+        'npc_chat_placeholder': 'Mit akarsz?',},
     'de': {
         // --- Allgemein ---
         'app_title': 'Piratenportal',
@@ -2908,15 +2893,7 @@ const translations = {
         'chat_you_label': 'You',
         'payment_sent_prefix': 'Here is the money (',
         'payment_sent_suffix': ').',
-        'transaction_error_prefix': 'Transaction error: ',
-        'papat_report_fanfic_alert_html': '<strong><i class=\'fas fa-exclamation-triangle\'></i> Fanfic VERDACHT!</strong> Die Geschichte ist wahrscheinlich an ein bekanntes geistiges Eigentum gebunden.',
-        'papat_ai_error_status': 'Fehler beim Aktualisieren des Status: ',
-        'papat_report_none_found': 'Für dieses Manuskript wurde kein Papát AI-Bericht gefunden!',
-        'papat_ai_start_success': 'Papát hat die Analyse gestartet! Bitte warten Sie ein paar Minuten und aktualisieren Sie dann Ihre Werkbank.',
-        'papat_ai_confirm_start': 'Sind Sie sicher, dass Sie dieses Manuskript dem Papát AI-Assistenten zur Analyse übergeben möchten? Der Hintergrundprozess kann Minuten dauern.',
-        'papat_report_plagiarism_alert': 'WARNUNG: Teilweises oder vollständiges SELBSTPLAGIAT/KOPIE!',
-        'papat_report_no_summary': 'Keine Zusammenfassung verfügbar.'
-    },
+        'transaction_error_prefix': 'Transaction error: ',},
     'fr': {
         // --- Général ---
         'app_title': 'Portail des pirates',
@@ -3874,15 +3851,7 @@ const translations = {
         'chat_you_label': 'You',
         'payment_sent_prefix': 'Here is the money (',
         'payment_sent_suffix': ').',
-        'transaction_error_prefix': 'Transaction error: ',
-        'papat_report_fanfic_alert_html': '<strong><i class=\'fas fa-exclamation-triangle\'></i> SOUPÇON de Fanfic !</strong> L\'histoire est probablement liée à une propriété intellectuelle connue.',
-        'papat_ai_error_status': 'Erreur lors de la mise à jour du statut : ',
-        'papat_report_none_found': 'Aucun rapport Papát AI trouvé pour ce manuscrit !',
-        'papat_ai_start_success': 'Papát a commencé l\'analyse ! Veuillez patienter quelques minutes, puis actualisez votre établi.',
-        'papat_ai_confirm_start': 'Êtes-vous sûr de vouloir confier ce manuscrit à l\'assistant Papát AI pour analyse ? Le processus en arrière-plan peut prendre des minutes.',
-        'papat_report_plagiarism_alert': 'ATTENTION : AUTO-PLAGIAT/COPIE partiel ou total !',
-        'papat_report_no_summary': 'Aucun résumé disponible.'
-    },
+        'transaction_error_prefix': 'Transaction error: ',},
     'es': {
         // --- General ---
         'app_title': 'Portal pirata',
@@ -5780,23 +5749,7 @@ const translations = {
         'chat_you_label': 'You',
         'payment_sent_prefix': 'Here is the money (',
         'payment_sent_suffix': ').',
-        'transaction_error_prefix': 'Transaction error: ',
-        'papat_report_fanfic_alert_html': '<strong><i class=\'fas fa-exclamation-triangle\'></i> ¡SOSPECHA de Fanfic!</strong> La historia probablemente esté ligada a una propiedad intelectual conocida.',
-        'papat_ai_error_status': 'Error al actualizar el estado: ',
-        'papat_report_none_found': '¡No se encontró ningún informe de Papát AI para este manuscrito!',
-        'papat_ai_start_success': '¡Papát ha comenzado el análisis! Por favor, espere unos minutos y luego actualice su banco de trabajo.',
-        'papat_ai_confirm_start': '¿Estás seguro de que quieres entregar este manuscrito al asistente de IA Papát para su análisis? El proceso en segundo plano puede tardar minutos.',
-        'papat_report_plagiarism_alert': 'ADVERTENCIA: ¡AUTOPLAGIO/COPIA parcial o total!',
-        'papat_report_no_summary': 'Sin resumen disponible.'
-    ,
-        'papat_report_fanfic_alert_html': '<strong><i class=\'fas fa-exclamation-triangle\'></i> PODEJRZENIE o Fanfic!</strong> Historia jest prawdopodobnie powiązana ze znaną własnością intelektualną.',
-        'papat_ai_error_status': 'Błąd podczas aktualizacji statusu: ',
-        'papat_report_none_found': 'Nie znaleziono raportu Papát AI dla tego manuskryptu!',
-        'papat_ai_start_success': 'Papát rozpoczął analizę! Proszę poczekać kilka minut, a następnie odświeżyć swój warsztat.',
-        'papat_ai_confirm_start': 'Czy na pewno chcesz przekazać ten manuskrypt asystentowi AI Papát do analizy? Proces w tle może zająć kilka minut.',
-        'papat_report_plagiarism_alert': 'OSTRZEŻENIE: Częściowy lub całkowity AUTOPLAGIAT/KOPIA!',
-        'papat_report_no_summary': 'Brak dostępnego podsumowania.'
-    },
+        'transaction_error_prefix': 'Transaction error: ',},
     'ru': {
         // --- Общее ---
         'app_title': 'Пиратский портал',
@@ -7218,12 +7171,4 @@ function switchLanguage(lang) {
 document.addEventListener('DOMContentLoaded', function() {
     updateLanguageUI();
     bindLanguageButtons();
-,
-        'papat_report_fanfic_alert_html': '<strong><i class=\'fas fa-exclamation-triangle\'></i> ПОДОЗРЕНИЕ на Фанфик!</strong> История, скорее всего, связана с известной интеллектуальной собственностью.',
-        'papat_ai_error_status': 'Ошибка при обновлении статуса: ',
-        'papat_report_none_found': 'Для этой рукописи отчет Papát AI не найден!',
-        'papat_ai_start_success': 'Papát начал анализ! Пожалуйста, подождите несколько минут, затем обновите свой верстак.',
-        'papat_ai_confirm_start': 'Вы уверены, что хотите передать эту рукопись помощнику Papát AI для анализа? Фоновый процесс может занять несколько минут.',
-        'papat_report_plagiarism_alert': 'ВНИМАНИЕ: Частичный или полный САМОПЛАГИАТ/КОПИЯ!',
-        'papat_report_no_summary': 'Резюме отсутствует.'
-    });
+});

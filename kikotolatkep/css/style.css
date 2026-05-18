@@ -355,3 +355,31 @@ h1, h2, h3, h4, h5 {
   pointer-events: none; /* Fontos: Így az egér "átkattinthat" rajta, nem zavarja a térképet */
   white-space: nowrap;
 }
+
+/* === szótár választáshoz zászlók megjelenítése === */
+.lang-switch {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.lang-btn {
+    background: rgba(255, 255, 255, 0.1); /* 90% átlátszó háttér */
+    border: 1px solid transparent;
+    padding: 4px;
+    cursor: pointer;
+    line-height: 1;
+    border-radius: 4px;
+}
+
+.lang-btn .fi {
+    width: 24px;
+    height: 16px;
+    display: inline-block;
+}
+
+.lang-btn.active {
+    border-color: #8b0000;
+}

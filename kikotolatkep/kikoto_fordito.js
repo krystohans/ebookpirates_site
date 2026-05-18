@@ -255,12 +255,13 @@ function bindKikotoLanguageButtons() {
             }
         };
 
-        button.addEventListener('mousemove', (e) => {
+        button.addEventListener('mouseenter', (e) => {
             tooltip.textContent = langNames[buttonLang];
-            // Kicsit lejjebb toljuk a transform miatt
+            // Rögzítjük a zászló alatt
+            const rect = button.getBoundingClientRect();
             tooltip.style.transform = 'translate(-50%, 0%)';
-            tooltip.style.left = e.pageX + 'px';
-            tooltip.style.top = (e.pageY + 25) + 'px'; // Kurzor alatt jelenik meg
+            tooltip.style.left = (rect.left + rect.width / 2 + window.scrollX) + 'px';
+            tooltip.style.top = (rect.bottom + window.scrollY + 5) + 'px';
             tooltip.style.display = 'block';
         });
 

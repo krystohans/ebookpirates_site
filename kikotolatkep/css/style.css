@@ -9,7 +9,7 @@
   --szin-kiemeles: #8b4513; /* Nyeregbarna / Réz */
   --betu-cim: 'Cinzel', serif;
   --betu-szoveg: 'Merriweather', serif;
-  --hatter-soft-wallpaper: url('../assets/soft_wallpaper.png');
+  --hatter-soft-wallpaper: none;
 }
 
 /* --- Alapbeállítások --- */

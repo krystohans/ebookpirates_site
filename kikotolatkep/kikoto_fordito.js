@@ -272,7 +272,7 @@ function bindKikotoLanguageButtons() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    updateKikotoLanguageUI();
-    bindKikotoLanguageButtons();
-});
+// A script az oldal aljára töltődik be, a DOM ekkor már kész.
+// DOMContentLoaded helyett közvetlen hívás szükséges.
+updateKikotoLanguageUI();
+bindKikotoLanguageButtons();

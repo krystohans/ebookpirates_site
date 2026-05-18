@@ -6,7 +6,7 @@
 var currentLang = localStorage.getItem('siteLang') || 'hu';
 
 const kikotoTranslations = {
-  HU: {
+  'hu': {
     'lang_name': 'Magyar',
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
@@ -34,7 +34,7 @@ const kikotoTranslations = {
     'desc_bank': `<p>Ha Talentumot akarsz Kalózkreditre váltani, vagy egy jó ismerősnek értéket küldeni, esetleg neked kell kiegyenlítened valaki felé egy adósságot, ott az a puccos épület a piac közepén, az eBankPirates, ott minden értékedet szívesen látják!</p><p>Loan Shark, a kissé ijesztő kinézetű bankár minden hozzá kölcsönért fordulóval személyesen beszél, és nem is szoktak elégedetlenül távozni tőle az ügyfelek. Már ha távoznak. És adósai sem maradnak neki sosem.</p>`,
     'desc_kikoto': `<p>Itt vannak a legnagyobb vízi lókötők, van, aki boltot visz, más meg a piacon lebzsel a portékájával. Ha a legújabb pletykákra vagy kíváncsi, a tavernába vedd az irányt, de ha friss árut hoztál, mehetsz egyenest a tekercsmesterhez.</p>`
   },
-  EN: {
+  'en': {
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
     'title_tekercsmester': 'A Tekercspréselő Műhely',
@@ -61,7 +61,7 @@ const kikotoTranslations = {
     'desc_bank': `<p>If you want to exchange Talents for Pirate Credits, or send valuables to a good acquaintance, or perhaps you need to settle a debt with someone, there is that fancy building in the middle of the market, the eBankPirates, where they welcome all your valuables!</p><p>Loan Shark, the slightly scary-looking banker, personally talks to everyone who wants to take out a loan from him, and customers usually don't leave him dissatisfied. That is, if they leave. And they never remain in debt to him either.</p>`,
     'desc_kikoto': `<p>Here are the greatest water rogues; some run a shop, others loiter in the market with their wares. If you want to hear about the latest rumors, head to the tavern, but if you brought fresh goods, you can go straight to the scroll master.</p>`
   },
-  DE: {
+  'de': {
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
     'title_tekercsmester': 'A Tekercspréselő Műhely',
@@ -88,7 +88,7 @@ const kikotoTranslations = {
     'desc_bank': `<p>Wenn Sie Talente gegen Piraten-Credits eintauschen, einem guten Bekannten Wertsachen senden oder vielleicht eine Schuld bei jemandem begleichen müssen, gibt es dieses schicke Gebäude in der Mitte des Marktes, die eBankPirates, wo sie alle Ihre Wertsachen begrüßen!</p><p>Loan Shark, der etwas gruselig aussehende Bankier, spricht persönlich mit jedem, der einen Kredit von ihm aufnehmen möchte, und die Kunden verlassen ihn in der Regel nicht unzufrieden. Das heißt, wenn sie gehen. Und sie bleiben ihm auch nie etwas schuldig.</p>`,
     'desc_kikoto': `<p>Hier sind die größten Wasserschurken; einige betreiben einen Laden, andere lungern mit ihren Waren auf dem Markt herum. Wenn Sie die neuesten Gerüchte hören wollen, gehen Sie in die Taverne, aber wenn Sie frische Waren mitgebracht haben, können Sie direkt zum Schriftrollenmeister gehen.</p>`
   },
-  FR: {
+  'fr': {
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
     'title_tekercsmester': 'A Tekercspréselő Műhely',
@@ -115,7 +115,7 @@ const kikotoTranslations = {
     'desc_bank': `<p>Si vous souhaitez échanger des Talents contre des Crédits Pirates, ou envoyer des objets de valeur à une bonne connaissance, ou peut-être devez-vous régler une dette envers quelqu'un, il y a ce bâtiment chic au milieu du marché, l'eBankPirates, où ils accueillent tous vos objets de valeur !</p><p>Loan Shark, le banquier à l'allure un peu effrayante, parle personnellement à tous ceux qui souhaitent lui emprunter de l'argent, et les clients ne le quittent généralement pas insatisfaits. C'est-à-dire, s'ils partent. Et ils ne restent jamais non plus endettés envers lui.</p>`,
     'desc_kikoto': `<p>Voici les plus grands voyous de l'eau ; certains tiennent une boutique, d'autres traînent sur le marché avec leurs marchandises. Si vous voulez entendre parler des dernières rumeurs, rendez-vous à la taverne, mais si vous avez apporté des marchandises fraîches, vous pouvez aller directement voir le maître des parchemins.</p>`
   },
-  ES: {
+  'es': {
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
     'title_tekercsmester': 'A Tekercspréselő Műhely',
@@ -142,7 +142,7 @@ const kikotoTranslations = {
     'desc_bank': `<p>Si quieres cambiar Talentos por Créditos Piratas, o enviar objetos de valor a un buen conocido, o quizás necesites saldar una deuda con alguien, ¡ahí está ese elegante edificio en medio del mercado, el eBankPirates, donde le dan la bienvenida a todos tus objetos de valor!</p><p>Loan Shark, el banquero de aspecto un tanto aterrador, habla personalmente con todos los que quieran pedirle un préstamo, y los clientes no suelen dejarlo insatisfechos. O sea, si es que se van. Y nunca se quedan endeudados con él tampoco.</p>`,
     'desc_kikoto': `<p>Aquí están los mayores pícaros del agua; algunos dirigen una tienda, otros holgazanean en el mercado con su mercancía. Si quieres enterarte de los últimos rumores, dirígete a la taberna, pero si trajiste productos frescos, puedes ir directamente a ver al maestro de pergaminos.</p>`
   },
-  PL: {
+  'pl': {
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
     'title_tekercsmester': 'A Tekercspréselő Műhely',
@@ -169,7 +169,7 @@ const kikotoTranslations = {
     'desc_bank': `<p>Gdy u na we po z byś pod za z na u z od i we na z w do Talenty po i na od za Kredyty w dla ze Pirackie z od to we albo i po od u dla we z na u byś na za a o wartości z na za i że to od i we do na ze dobrym u po a do z na znajomym o do u po lub na ze u od we w masz za u z po do dług od i we u kogoś na za po to a we on u po do z o u po to tam z i to na że dla a we w po elegancki ze z na to u o budynek z w od a na i u rynku po z za do a u eBankPirates w na i po do za on u we z o tam u z do po to od witają na za z w twoje we z i od u po na do a ze wartości w za u to!</p><p>Loan Shark z na po o u za od i to we we od u z z na nieco u po za w od przerażający ze i na za po to od u do bankier po w na osobiście o z u we to z na i do z ze w rozmawia po od na a za u na od każdym to w u za na by o z na po chce we za po u od w po i od na u z za a w to po wziąć w za na u po z od we pożyczkę od z w na u do za o u na i za na w do po od we klienci na o po i od ze u za na w do nie z od do w u od po wychodzą na we po u niezadowoleni z za u na do. To po na za we ze u w do z od że w na po o za tak z w po do i u że a w po na od we o w wyjdą po za u do a na i za w od na. A w u po do na w po z i na o za od we do u z długach po we na u po za i we nigdy z na o u we na po z za do z od i na za u od z do nim u po na i od u za we do w u a zostają po ze w do na.</p>`,
     'desc_kikoto': `<p>A u we na do tu za w od na po w u i u po z we na o najwięksi na do z po na z u od rzezimieszki z po a na wodni z u i że u od w po na z prowadzi z za o we w na u od po do to sklep do za i na w u po z na u inni za o po w we u rynku za od do wałęsają się z w po u ze na za o u do swoim w na po za a od we to towarem od po za na. Gdy z na w o u po do we to za byś z od na a i na o u do po od najnowszych we po za na o plotkach w u z po od usłyszeć ze do na w po za u od we do i za w tawerny na u we od z do na po o u z w podążaj po u i za na od we w ale ze u na to po w a że do u o za w do u we od z na do do przyniosłeś z na po w u świeży na za od do po u to towar a i od na w we to do u za po z możesz do w po za a u po z do u od i to za na u do z w we z na w prosto z do ze po i od u mistrza na z we do zwojów po od na u.</p>`
   },
-  RU: {
+  'ru': {
     'title_hajoacs': 'A Hajóács Műhely',
     'title_masolatbolt': 'A Másolatok Boltja',
     'title_tekercsmester': 'A Tekercspréselő Műhely',
@@ -199,20 +199,18 @@ const kikotoTranslations = {
 };
 
 function tKikoto(key) {
-    var langKey = currentLang.toUpperCase();
-    if (kikotoTranslations[langKey] && kikotoTranslations[langKey][key]) {
-        return kikotoTranslations[langKey][key];
+    if (kikotoTranslations[currentLang] && kikotoTranslations[currentLang][key]) {
+        return kikotoTranslations[currentLang][key];
     }
     return key;
 }
 
 function updateKikotoLanguageUI() {
     // Sima szövegek frissítése
-    var langKey = currentLang.toUpperCase();
     document.querySelectorAll('[data-lang]').forEach(element => {
         const key = element.getAttribute('data-lang');
-        if (kikotoTranslations[langKey] && kikotoTranslations[langKey][key]) {
-            element.innerHTML = kikotoTranslations[langKey][key];
+        if (kikotoTranslations[currentLang] && kikotoTranslations[currentLang][key]) {
+            element.innerHTML = kikotoTranslations[currentLang][key];
         }
     });
 
@@ -248,7 +246,7 @@ function bindKikotoLanguageButtons() {
         if (!buttonLang) return;
 
         button.onclick = function() {
-            if (kikotoTranslations[buttonLang.toUpperCase()]) {
+            if (kikotoTranslations[buttonLang]) {
                 currentLang = buttonLang;
                 if (typeof localStorage !== 'undefined') {
                     localStorage.setItem('siteLang', buttonLang);

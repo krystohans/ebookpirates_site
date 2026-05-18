@@ -199,18 +199,20 @@ const kikotoTranslations = {
 };
 
 function tKikoto(key) {
-    if (kikotoTranslations[currentLang] && kikotoTranslations[currentLang][key]) {
-        return kikotoTranslations[currentLang][key];
+    var langKey = currentLang.toUpperCase();
+    if (kikotoTranslations[langKey] && kikotoTranslations[langKey][key]) {
+        return kikotoTranslations[langKey][key];
     }
     return key;
 }
 
 function updateKikotoLanguageUI() {
     // Sima szövegek frissítése
+    var langKey = currentLang.toUpperCase();
     document.querySelectorAll('[data-lang]').forEach(element => {
         const key = element.getAttribute('data-lang');
-        if (kikotoTranslations[currentLang] && kikotoTranslations[currentLang][key]) {
-            element.innerHTML = kikotoTranslations[currentLang][key];
+        if (kikotoTranslations[langKey] && kikotoTranslations[langKey][key]) {
+            element.innerHTML = kikotoTranslations[langKey][key];
         }
     });
 
@@ -246,7 +248,7 @@ function bindKikotoLanguageButtons() {
         if (!buttonLang) return;
 
         button.onclick = function() {
-            if (kikotoTranslations[buttonLang]) {
+            if (kikotoTranslations[buttonLang.toUpperCase()]) {
                 currentLang = buttonLang;
                 if (typeof localStorage !== 'undefined') {
                     localStorage.setItem('siteLang', buttonLang);

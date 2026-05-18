@@ -339,10 +339,10 @@ h1, h2, h3, h4, h5 {
   position: absolute; /* Hogy a relatív szülőhöz (térkép) igazodjon */
   z-index: 3000; /* Legyen a legtetején, még az infó panel felett is */
   
-  /* Középre zárás a térkép konténeren belül */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  /* Pozíciót JavaScriptből állítjuk */
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%); /* Hogy középre zárva a kurzor FELETT jelenjen meg */
   
   /* Kinézet */
   padding: 8px 12px;

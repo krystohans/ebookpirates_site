@@ -126,7 +126,7 @@
   let aktivPanel = null;
 
   teruletek.forEach(terulet => {
-    // 1. Tooltip megjelenítése
+    // 1. Tooltip megjelenítése (megjelenéskor pozicionálva a kurzorhoz)
     terulet.addEventListener('mouseover', (e) => {
       const panelId = 'info-' + terulet.id;
       const panel = document.getElementById(panelId);
@@ -138,6 +138,16 @@
           tooltip.textContent = terulet.id.toUpperCase();
         }
       }
+      
+      // Pozíció beállítása a konténerhez képest
+      const containerRect = document.querySelector('.terkep-kontener').getBoundingClientRect();
+      const relativeX = e.clientX - containerRect.left;
+      const relativeY = e.clientY - containerRect.top;
+      
+      tooltip.style.left = relativeX + 'px';
+      // Egy picit feljebb toljuk, hogy ne takarja ki a kurzor, és a CSS transform(-100%) miatt pontosan felette lesz.
+      tooltip.style.top = (relativeY - 10) + 'px';
+      
       tooltip.style.display = 'block';
     });
 

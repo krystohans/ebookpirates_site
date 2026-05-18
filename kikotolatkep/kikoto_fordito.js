@@ -5,7 +5,7 @@
 
 var currentLang = localStorage.getItem('siteLang') || 'hu';
 
-const kikotoTranslations = const kikotoTranslations = {
+const kikotoTranslations = {
   HU: {
     'lang_name': 'Magyar',
     'title_hajoacs': 'A Hajóács Műhely',
@@ -196,7 +196,7 @@ const kikotoTranslations = const kikotoTranslations = {
     'desc_bank': `<p>Если вы хотите обменять Таланты на Пиратские Кредиты, или отправить ценности хорошему знакомому, или, возможно, вам нужно погасить долг перед кем-то, посреди рынка есть это шикарное здание, eBankPirates, где они будут рады всем вашим ценностям!</p><p>Лоун Шарк, слегка пугающего вида банкир, лично разговаривает со всеми, кто хочет взять у него кредит, и клиенты обычно не уходят от него недовольными. То есть, если они уходят. И они тоже никогда не остаются у него в долгу.</p>`,
     'desc_kikoto': `<p>Здесь величайшие водные негодяи; одни держат магазин, другие слоняются по рынку со своими товарами. Если вы хотите услышать о последних слухах, отправляйтесь в таверну, но если вы привезли свежие товары, вы можете пойти прямо к мастеру свитков.</p>`
   }
-};;
+};
 
 function tKikoto(key) {
     if (kikotoTranslations[currentLang] && kikotoTranslations[currentLang][key]) {

@@ -3867,8 +3867,26 @@ function refreshMonasteryWork(silent) {
             res.works.forEach(function (work) {
                 var topControls = '';
 
-                // --- 1. PAPÁT JOGKÖRÖK ---
-                if (work.isPapat) {
+                // --- 0. FORDÍTÁSI KÁRTYÁK ---
+                if (work.title && work.title.indexOf('[FORDÍTÁS') === 0) {
+                    var langMatch = work.title.match(/\[FORDÍTÁS\s+([^\]]+)\]/);
+                    var targetLang = langMatch ? langMatch[1] : 'Ismeretlen';
+                    
+                    if (work.isPapat && work.status === 'Véglegesítésre vár') {
+                        var safeTitle = work.title.replace(/'/g, "\\'");
+                        topControls = '<div style="background:#f4ebf9; padding:10px; text-align:center; border:1px solid #8e44ad; margin-top:10px; border-radius:5px;">' +
+                            '<h4 style="margin-top:0; color:#8e44ad;"><i class="fas fa-language"></i> Fordítás Elfogadása</h4>' +
+                            '<p>A(z) <b>' + targetLang + '</b> nyelvű fordítás elkészült és lektorálva lett.</p>' +
+                            '<button class="btn btn-success" onclick="finalizeTranslationProcess(\'' + work.id + '\', \'' + safeTitle + '\', \'' + targetLang + '\', \'' + work.gdocId + '\', \'' + work.rootCode + '\', \'' + work.targetLangCode + '\')">Fordítás Publikálása</button>' +
+                            '</div>';
+                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
+                        if (work.isPapat || work.userRoles.length > 0) {
+                           topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
+                        }
+                    }
+                } 
+                // --- 1. PAPÁT JOGKÖRÖK (Eredeti) ---
+                else if (work.isPapat) {
                     var isApplication = work.checklist && work.checklist.hasOwnProperty('referencia');
 
                     if (work.status === 'Elbírálás alatt') {
@@ -3910,7 +3928,7 @@ function refreshMonasteryWork(silent) {
                 }
 
                 // --- 2. SZERZŐ / PAPÁT PUBLIKÁLÁS ---
-                if ((work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === 'Véglegesítésre vár') {
+                if (!work.title.startsWith('[FORDÍTÁS') && (work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === 'Véglegesítésre vár') {
 
                     var safeTitleForOnclick = work.title.replace(/'/g, "\\'");
                     var btnId = 'pub-btn-' + work.id;
@@ -4066,6 +4084,43 @@ function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
             function (err) { console.warn("Polling hiba: " + err.message); }
         );
     }, 5000);
+}
+
+function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootCode, targetLangCode) {
+    if (!rootCode || rootCode === 'null') {
+        uiAlert("Hiba: A könyv forráskódja nem található a fordításhoz!");
+        return;
+    }
+    
+    requestPin(function(pinCode) {
+        document.getElementById('loading-overlay').style.display = 'flex';
+        
+        var payload = {
+            logId: workId,
+            gdocId: gdocId,
+            rootCode: rootCode,
+            targetLangCode: targetLangCode,
+            targetLangName: targetLangName,
+            email: currentUserEmail,
+            pinCode: pinCode
+        };
+        
+        callBackend('finalizeTranslation', payload, 
+            function(res) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                if (res.success) {
+                    uiAlert("Sikeresen publikálva! Új Kód: " + res.newBaseCode, "Fordítás Elfogadva");
+                    refreshMonasteryWork();
+                } else {
+                    uiAlert("Hiba történt: " + res.error, "Publikációs hiba");
+                }
+            },
+            function(err) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                uiAlert("Hálózati hiba: " + err.message);
+            }
+        );
+    }, "Add meg a Mesterkódot a <b>" + title + "</b> publikálásához:");
 }
 
 // --- PAPÁT CLOUD INDÍTÁSA ---

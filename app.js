@@ -4282,7 +4282,7 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
         })();
 
         if (task.status === 'inaktív') {
-            if (isOwnerOrPapat) action = makeBtn(t('monk_task_activate'), '#17a2b8', 'doWorkAction(\'' + work.id + '\', \'activate_task\', \'\'' + key + '\')');
+            if (isOwnerOrPapat) action = makeBtn(t('monk_task_activate'), '#17a2b8', 'doWorkAction(\'' + work.id + '\', \'activate_task\', \'' + key + '\')');
             else action = '<span style="color:#999;">' + t('monk_task_inactive') + '</span>';
         }
         else if (work.status === 'Folyamatban' && (task.status === 'várakozó' || task.status === 'javítás alatt')) {
@@ -4308,8 +4308,8 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
         }
         else if (task.status === 'ellenőrzés alatt') {
             if (isOwnerOrPapat) {
-                action = makeBtn(t('monk_task_accept'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'accept_task_work\', \'\'' + key + '\')') +
-                    makeBtn(t('monk_task_revision'), '#f0ad4e', 'doWorkAction(\'' + work.id + '\', \'request_revision\', \'\'' + key + '\')');
+                action = makeBtn(t('monk_task_accept'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'accept_task_work\', \'' + key + '\')') +
+                    makeBtn(t('monk_task_revision'), '#f0ad4e', 'doWorkAction(\'' + work.id + '\', \'request_revision\', \'' + key + '\')');
             } else {
                 action = t('monk_task_reviewing');
             }
@@ -4317,13 +4317,13 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
 
         if (task.selectedMonk === currentUser && task.paymentStatus === 'none' && task.status !== 'inaktív') {
             action = '<input type="number" id="price-' + key + '" placeholder="' + t('talentum_short') + '" style="width:50px; padding:2px;"> ' +
-                makeBtn(t('ok_button'), '#2e8b57', 'offerPrice(\'' + work.id + '\', \'\'' + key + '\')');
+                makeBtn(t('ok_button'), '#2e8b57', 'offerPrice(\'' + work.id + '\', \'' + key + '\')');
         }
 
         if (isOwnerOrPapat && task.paymentStatus === 'pending_approval') {
             action = '<b>' + task.priceRequest + ' ' + t('talentum_short') + '</b><br>' +
-                makeBtn(t('pay_button'), '#2e8b57', 'payDirect(\'' + work.id + '\', \'\'' + key + '\')') +
-                makeBtn(t('credit_button'), '#f0ad4e', 'acceptCredit(\'' + work.id + '\', \'\'' + key + '\')');
+                makeBtn(t('pay_button'), '#2e8b57', 'payDirect(\'' + work.id + '\', \'' + key + '\')') +
+                makeBtn(t('credit_button'), '#f0ad4e', 'acceptCredit(\'' + work.id + '\', \'' + key + '\')');
         }
 
         if (task.paymentStatus === 'paid_direct' || task.paymentStatus === 'paid_out') action += ' <span title="' + t('paid_title') + '">💰</span>';
@@ -4331,20 +4331,20 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
 
         if (task.selectedMonk === currentUser && task.status !== 'elfogadva' && task.status !== 'ellenőrzés alatt' && task.status !== 'inaktív') {
             if (action.indexOf('button') === -1) action = '';
-            action += makeBtn(t('ready_button'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'report_ready\', \'\'' + key + '\')') +
-                makeBtn(t('cancel_short_button'), '#c82333', 'resignTask(\'' + work.id + '\', \'\'' + key + '\')');
+            action += makeBtn(t('ready_button'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'report_ready\', \'' + key + '\')') +
+                makeBtn(t('cancel_short_button'), '#c82333', 'resignTask(\'' + work.id + '\', \'' + key + '\')');
         }
 
         if (key === 'borito' && (isOwnerOrPapat || task.selectedMonk === currentUser)) {
             if (task.status === 'várakozó' || task.status === 'javítás alatt') {
                 action = '<input type="file" id="cover-upload-' + work.id + '" accept="image/png" style="width:180px; font-size:0.8em;">' +
-                    makeBtn(t('upload_button'), '#2e8b57', 'uploadCoverFromCard(\'' + work.id + '\', \'\'' + key + '\')');
+                    makeBtn(t('upload_button'), '#2e8b57', 'uploadCoverFromCard(\'' + work.id + '\', \'' + key + '\')');
             }
         }
 
         if (isOwnerOrPapat && task.selectedMonk && task.status !== 'elfogadva' && task.status !== 'ellenőrzés alatt') {
             if (action.indexOf('button') !== -1 || action.indexOf('select') !== -1) action += '<br>';
-            action += makeBtn(t('monk_revoke_penalty_button'), '#d9534f', 'resignTask(\'' + work.id + '\', \'\'' + key + '\')');
+            action += makeBtn(t('monk_revoke_penalty_button'), '#d9534f', 'resignTask(\'' + work.id + '\', \'' + key + '\')');
         }
 
         var monkData = allMonks.find(function (m) { return m.email === task.selectedMonk; });

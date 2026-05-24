@@ -3577,16 +3577,8 @@ function selectCopy(element, copy) {
 function processUpgrade() {
     if (!selectedCopy) { uiAlert(t('ksz_select_copy_first'), t('missing_data_title')); return; }
 
-    var pinCodeInput = document.getElementById('ksz-pin-code');
-    var pinCode = pinCodeInput.value;
     var giftEmailInput = document.getElementById('ksz-gift-email');
     var giftEmail = giftEmailInput ? giftEmailInput.value : '';
-
-    if (!pinCode) {
-        uiAlert(t('pin_required_continue'), t('missing_pin_title'));
-        pinCodeInput.focus();
-        return;
-    }
 
     var confirmMsg = t('ksz_upgrade_confirm_prefix') + selectedCopy.title + t('ksz_upgrade_confirm_middle');
     if (giftEmail) {
@@ -3595,25 +3587,27 @@ function processUpgrade() {
     confirmMsg += t('ksz_upgrade_confirm_suffix');
 
     uiConfirm(confirmMsg, t('ksz_upgrade_title'), function () {
-        setLoadingState(true, 'upgrade');
+        requestPin(function(pinCode) {
+            setLoadingState(true, 'upgrade');
 
-        var data = {
-            productCode: selectedCopy.code,
-            // currentUserEmail NEM KELL, a Router intézi!
-            giftToEmail: giftEmail,
-            pinCode: pinCode
-        };
+            var data = {
+                productCode: selectedCopy.code,
+                // currentUserEmail NEM KELL, a Router intézi!
+                giftToEmail: giftEmail,
+                pinCode: pinCode
+            };
 
-        // ÚJ HÍVÁS (callBackend)
-        callBackend('initiateUpgradeProcess', [data],
-            function (result) {
-                handleProcessResult(result);
-            },
-            function (err) {
-                setLoadingState(false, 'upgrade');
-                uiAlert(t('error_prefix') + err.message);
-            }
-        );
+            // ÚJ HÍVÁS (callBackend)
+            callBackend('initiateUpgradeProcess', [data],
+                function (result) {
+                    handleProcessResult(result);
+                },
+                function (err) {
+                    setLoadingState(false, 'upgrade');
+                    uiAlert(t('error_prefix') + err.message);
+                }
+            );
+        }, "Kérlek add meg a PIN kódodat a(z) <b>" + selectedCopy.title + "</b> felszenteléséhez:");
     });
 }
 
@@ -3632,8 +3626,6 @@ function handleProcessResult(result) {
             updateCreditDisplay();
         }
         loadWalletStats();
-    } else {
-        document.getElementById('ksz-pin-code').value = '';
     }
 }
 

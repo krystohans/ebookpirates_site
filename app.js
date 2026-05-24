@@ -32,18 +32,141 @@ function getPageHtmlUrl(pageName) {
  * ROBUSZTUS BACKEND HÍVÓ - JSON VADÁSZ MÓDDAL 🏹
  * Képes kezelni, ha a Google HTML "szemetet" (fejlécet/hibaüzenetet) küld a JSON helyett/mellett.
  */
+function handleBackendPayload(payload, funcName, onSuccess, onFailure) {
+    var data = parseJsonFromText(payload.text);
+    if (data === null || typeof data === 'undefined') {
+        if (payload.status >= 200 && payload.status < 300 && funcName === 'updatePlayerRank') {
+            if (onSuccess) {
+                onSuccess({ success: true });
+            }
+            return;
+        }
+        var raw = String(payload.text || '').replace(/\s+/g, ' ').trim();
+        var snippet = raw.substring(0, 240);
+        throw new Error("Invalid JSON response (" + funcName + "): " + snippet);
+    }
+
+    data = translateBackendResponse(data);
+
+    if (payload.status >= 200 && payload.status < 300) {
+        if (onSuccess) {
+            onSuccess(data);
+        }
+        return;
+    }
+
+    var errorMessage = data.error || data.message || ("HTTP " + payload.status);
+    errorMessage = translateBackendText(errorMessage);
+    var httpError = new Error(errorMessage);
+    httpError.response = data;
+    throw httpError;
+}
+
+function handleBackendError(error, onFailure) {
+    if (onFailure) {
+        onFailure(error);
+        return;
+    }
+
+    var statusDiv = document.getElementById('status') || document.getElementById('login-status');
+    if (statusDiv) {
+        statusDiv.innerText = t('comm_error_prefix') + error.message;
+        statusDiv.style.color = "red";
+    }
+}
+
+function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onFailure) {
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
+    var CHUNK_SIZE = 1024 * 1024 * 2; // 2 MB
+    var totalChunks = Math.ceil(payloadString.length / CHUNK_SIZE);
+    var transferId = 'CHUNK_' + new Date().getTime() + '_' + Math.floor(Math.random() * 1000);
+    
+    var currentChunk = 0;
+    
+    function setLocalStatus(msg) {
+        console.log("📦 " + msg);
+        var modalTextLocal = document.getElementById('modal-status-text');
+        if (modalTextLocal) modalTextLocal.textContent = msg;
+        var statusDiv = document.getElementById('status') || document.getElementById('login-status');
+        if (statusDiv) {
+            statusDiv.innerText = msg;
+            statusDiv.style.color = "blue";
+        }
+    }
+    
+    function sendNextChunk() {
+        if (currentChunk >= totalChunks) {
+            setLocalStatus('Fájlok szerveroldali összefűzése folyamatban (' + totalChunks + ' adag)...');
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    action: 'assembleChunkedPayload',
+                    data: [transferId, funcName],
+                    token: token
+                })
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    return { status: response.status, text: text };
+                });
+            }).then(function (payload) {
+                handleBackendPayload(payload, funcName, onSuccess, onFailure);
+            }).catch(function (error) {
+                handleBackendError(error, onFailure);
+            });
+            return;
+        }
+        
+        var chunkData = payloadString.substring(currentChunk * CHUNK_SIZE, (currentChunk + 1) * CHUNK_SIZE);
+        setLocalStatus('Nagy fájl feltöltése... (' + (currentChunk + 1) + '/' + totalChunks + ' adag)');
+        
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+                action: 'receivePayloadChunk',
+                data: [transferId, currentChunk, totalChunks, chunkData],
+                token: token
+            })
+        }).then(function(r){ return r.text(); }).then(function(text){
+            var res = null;
+            try { res = JSON.parse(text); } catch(e) {}
+            if (res && res.success) {
+                currentChunk++;
+                sendNextChunk();
+            } else {
+                var err = new Error(res ? res.error : "Adag feltöltési hiba.");
+                handleBackendError(err, onFailure);
+            }
+        }).catch(function(error) {
+            handleBackendError(error, onFailure);
+        });
+    }
+    
+    sendNextChunk();
+}
+
 function callBackend(funcName, params, onSuccess, onFailure) {
     // A TE DEPLOYMENT URL-ED (Ellenőrizd, hogy a legfrissebb legyen!)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
 
     var token = localStorage.getItem('ebookPiratesToken');
 
+    var requestPayloadString = JSON.stringify({ action: funcName, data: params, token: token });
+    
+    // LIMIT: 2 MB. E felett automatikusan bekapcsol az adagoló (Chunked Upload)!
+    var CHUNK_SIZE = 1024 * 1024 * 2;
+    if (requestPayloadString.length > CHUNK_SIZE) {
+        uploadChunksSequentially(funcName, requestPayloadString, token, onSuccess, onFailure);
+        return;
+    }
+
     console.log("📡 Kérés indítása: " + funcName);
 
     fetch(WEB_APP_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: funcName, data: params, token: token })
+        body: requestPayloadString
     })
         .then(function (response) {
             return response.text().then(function (text) {
@@ -54,45 +177,10 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             });
         })
         .then(function (payload) {
-            var data = parseJsonFromText(payload.text);
-            if (data === null || typeof data === 'undefined') {
-                if (payload.status >= 200 && payload.status < 300 && funcName === 'updatePlayerRank') {
-                    if (onSuccess) {
-                        onSuccess({ success: true });
-                    }
-                    return;
-                }
-                var raw = String(payload.text || '').replace(/\s+/g, ' ').trim();
-                var snippet = raw.substring(0, 240);
-                throw new Error("Invalid JSON response (" + funcName + "): " + snippet);
-            }
-
-            data = translateBackendResponse(data);
-
-            if (payload.status >= 200 && payload.status < 300) {
-                if (onSuccess) {
-                    onSuccess(data);
-                }
-                return;
-            }
-
-            var errorMessage = data.error || data.message || ("HTTP " + payload.status);
-            errorMessage = translateBackendText(errorMessage);
-            var httpError = new Error(errorMessage);
-            httpError.response = data;
-            throw httpError;
+            handleBackendPayload(payload, funcName, onSuccess, onFailure);
         })
         .catch(function (error) {
-            if (onFailure) {
-                onFailure(error);
-                return;
-            }
-
-            var statusDiv = document.getElementById('status') || document.getElementById('login-status');
-            if (statusDiv) {
-                statusDiv.innerText = t('comm_error_prefix') + error.message;
-                statusDiv.style.color = "red";
-            }
+            handleBackendError(error, onFailure);
         });
 }
 
@@ -3860,11 +3948,11 @@ function refreshMonasteryWork(silent) {
                 var topControls = '';
 
                 // --- 0. FORDÍTÁSI KÁRTYÁK ---
-                if (work.title && work.title.indexOf('[FORDÍTÁS') === 0) {
-                    var langMatch = work.title.match(/\[FORDÍTÁS\s+([^\]]+)\]/);
+                if (work.status && work.status.indexOf('[FORDÍTÁS') === 0) {
+                    var langMatch = work.status.match(/\[FORDÍTÁS\s+([^\]]+)\]/);
                     var targetLang = langMatch ? langMatch[1] : 'Ismeretlen';
                     
-                    if (work.isPapat && work.status === 'Véglegesítésre vár') {
+                    if (work.isPapat && work.status === '[FORDÍTÁS ' + targetLang + '] Véglegesítésre vár') {
                         var safeTitle = work.title.replace(/'/g, "\\'");
                         topControls = '<div style="background:#f4ebf9; padding:10px; text-align:center; border:1px solid #8e44ad; margin-top:10px; border-radius:5px;">' +
                             '<h4 style="margin-top:0; color:#8e44ad;"><i class="fas fa-language"></i> Fordítás Elfogadása</h4>' +
@@ -4565,14 +4653,21 @@ function uploadCoverFromCard(workId, taskKey) {
     if (!file) { uiAlert(t('monk_cover_missing'), t('missing_file_title')); return; }
 
     var message = t('monk_cover_confirm_html');
-    uiConfirm(message, t('monk_cover_upload_title'), function () {
+    uiConfirm(message, t('monk_cover_upload_title'), async function () {
         document.getElementById('loading-overlay').style.display = 'flex';
-        var reader = new FileReader();
-        reader.onload = function (e) {
+        try {
+            var reader = new FileReader();
+            var dataUrl = await new Promise(function(resolve, reject) {
+                reader.onload = function(e) { resolve(e.target.result); };
+                reader.onerror = function(e) { reject(new Error("Hiba a fájl olvasása közben")); };
+                reader.readAsDataURL(file);
+            });
+            
+            var pngDataUrl = await convertToPngDataUrl(dataUrl);
             var fileData = {
-                base64: e.target.result.split(',')[1],
-                mimeType: file.type,
-                filename: file.name
+                base64: pngDataUrl.split(',')[1],
+                mimeType: 'image/png',
+                filename: file.name.replace(/\.[^/.]+$/, "") + ".png"
             };
 
             callBackend('uploadCoverAndFinishTask', [workId, taskKey, fileData],
@@ -4586,8 +4681,10 @@ function uploadCoverFromCard(workId, taskKey) {
                     uiAlert(t('monk_cover_upload_error_prefix') + err.message, t('system_error_title'));
                 }
             );
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert("Hiba a kép konvertálása során: " + err.message, t('system_error_title'));
+        }
     });
 }
 
@@ -5385,11 +5482,15 @@ function convertToPngDataUrl(inputDataUrl) {
     return new Promise(function (resolve, reject) {
         var img = new Image();
         img.onload = function () {
+            var maxWidth = 1920;
+            var scale = img.naturalWidth > maxWidth ? maxWidth / img.naturalWidth : 1;
+            var newWidth = Math.floor(img.naturalWidth * scale);
+            var newHeight = Math.floor(img.naturalHeight * scale);
             var canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
+            canvas.width = newWidth;
+            canvas.height = newHeight;
             var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
             try {
                 var pngDataUrl = canvas.toDataURL('image/png');
                 resolve(pngDataUrl);
@@ -7278,11 +7379,15 @@ function embedIdInImage(imageFile, id) {
         reader.onload = function (event) {
             var img = new Image();
             img.onload = function () {
+                var maxWidth = 1920;
+                var scale = img.width > maxWidth ? maxWidth / img.width : 1;
+                var newWidth = Math.floor(img.width * scale);
+                var newHeight = Math.floor(img.height * scale);
                 var canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
+                canvas.width = newWidth;
+                canvas.height = newHeight;
                 var ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
                 var binaryId = '';
                 for (var i = 0; i < id.length; i++) {

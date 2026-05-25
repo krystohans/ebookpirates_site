@@ -3952,7 +3952,7 @@ function refreshMonasteryWork(silent) {
                     var langMatch = work.status.match(/\[FORDÍTÁS\s+([^\]]+)\]/);
                     var targetLang = langMatch ? langMatch[1] : 'Ismeretlen';
                     
-                    if (work.isPapat && work.status === '[FORDÍTÁS ' + targetLang + '] Véglegesítésre vár') {
+                    if ((work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === '[FORDÍTÁS ' + targetLang + '] Véglegesítésre vár') {
                         var safeTitle = work.title.replace(/'/g, "\\'");
                         topControls = '<div style="background:#f4ebf9; padding:10px; text-align:center; border:1px solid #8e44ad; margin-top:10px; border-radius:5px;">' +
                             '<h4 style="margin-top:0; color:#8e44ad;"><i class="fas fa-language"></i> Fordítás Elfogadása</h4>' +

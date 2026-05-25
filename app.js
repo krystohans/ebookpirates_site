@@ -3959,7 +3959,9 @@ function refreshMonasteryWork(silent) {
                             '<p>A(z) <b>' + targetLang + '</b> nyelvű fordítás elkészült és lektorálva lett.</p>' +
                             '<button class="btn btn-success" onclick="finalizeTranslationProcess(\'' + work.id + '\', \'' + safeTitle + '\', \'' + targetLang + '\', \'' + work.gdocId + '\', \'' + work.rootCode + '\', \'' + work.targetLangCode + '\')">Fordítás Publikálása</button>' +
                             '</div>';
-                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
+                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt' || 
+                               work.status === '[FORDÍTÁS ' + targetLang + '] folyamatban' || work.status === '[FORDÍTÁS ' + targetLang + '] Folyamatban' || 
+                               work.status === '[FORDÍTÁS ' + targetLang + '] Ellenőrzés alatt') {
                         if (work.isPapat || work.userRoles.length > 0) {
                            topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                         }

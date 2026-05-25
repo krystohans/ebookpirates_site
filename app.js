@@ -4295,15 +4295,15 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
                         var m = allMonks.find(function (monk) { return monk.email === email; });
                         opts += '<option value="' + email + '">' + (m ? m.fullName : email) + '</option>';
                     });
-                    action = '<select style="padding:2px;" onchange="doWorkAction(\'' + work.id + '\', \'select_monk\', \'\'' + key + '\', this.value)">' + opts + '</select>';
+                    action = '<select style="padding:2px;" onchange="doWorkAction(\'' + work.id + '\', \'select_monk\', \'' + key + '\', this.value)">' + opts + '</select>';
                 } else {
                     action = '<span style="color:#d9534f;">' + t('monk_no_applicant') + '</span>';
                 }
                 if (userHasRole && !task.selectedMonk) {
-                    action += '<br>' + makeBtn(t('monk_assign_self'), '#333', 'doWorkAction(\'' + work.id + '\', \'select_monk\', \'\'' + key + '\', \'\'' + currentUser + '\')');
+                    action += '<br>' + makeBtn(t('monk_assign_self'), '#333', 'doWorkAction(\'' + work.id + '\', \'select_monk\', \'' + key + '\', \'' + currentUser + '\')');
                 }
             } else if (userHasRole && !task.applicants.includes(currentUser)) {
-                action = makeBtn(t('monk_apply_task'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'apply_task\', \'\'' + key + '\')');
+                action = makeBtn(t('monk_apply_task'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'apply_task\', \'' + key + '\')');
             } else if (task.applicants.includes(currentUser)) {
                 action = '<span style="color:orange;">' + t('monk_applied') + '</span>';
             }

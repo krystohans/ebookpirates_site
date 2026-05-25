@@ -4281,11 +4281,13 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
             };
         })();
 
+        var isWorkInProgress = work.status === 'Folyamatban' || work.status.indexOf('[FORDÍTÁS') !== -1;
+
         if (task.status === 'inaktív') {
             if (isOwnerOrPapat) action = makeBtn(t('monk_task_activate'), '#17a2b8', 'doWorkAction(\'' + work.id + '\', \'activate_task\', \'' + key + '\')');
             else action = '<span style="color:#999;">' + t('monk_task_inactive') + '</span>';
         }
-        else if (work.status === 'Folyamatban' && (task.status === 'várakozó' || task.status === 'javítás alatt')) {
+        else if (isWorkInProgress && (task.status === 'várakozó' || task.status === 'javítás alatt')) {
             if (isOwnerOrPapat) {
                 if (task.applicants.length > 0) {
                     var opts = '<option value="">' + t('monk_select_placeholder') + '</option>';

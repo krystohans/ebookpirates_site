@@ -1,4 +1,4 @@
-/**
+﻿/**
  * web_fordito.js
  * A kliens oldali többnyelvűsítés motorja.
  * * Működés elve:
@@ -604,6 +604,7 @@ const translations = {
         'monk_task_label_lelektoralas': 'Lektorálás',
         'monk_task_label_korrektura': 'Korrektúra',
         'monk_task_label_borito': 'Borítókészítés',
+        'monk_task_label_forditas': 'Fordítás Lektorálása',
         'crystal_sell_button': 'Letkristály Eladása (1db &rarr; 1 Tálentum)',
         'crystal_sell_confirm_html': 'Biztosan eladsz <b>1 db Letkristályt</b> a Papnőnek?<br><br>Kapcsolatba lépsz a szférákkal, és <b>1 Tálentumot</b> kapsz cserébe.',
         'crystal_sacrifice_title': 'Áldozat a Papnőnek',
@@ -1568,6 +1569,7 @@ const translations = {
         'monk_task_label_lelektoralas': 'Editing review',
         'monk_task_label_korrektura': 'Proofreading',
         'monk_task_label_borito': 'Cover design',
+        'monk_task_label_forditas': 'Translation Proofreading',
         'crystal_sell_button': 'Sell Spirit Crystal (1 pc &rarr; 1 Talent)',
         'crystal_sell_confirm_html': 'Are you sure you will sell <b>1 Spirit Crystal</b> to the Priestess?<br><br>You commune with the spheres and receive <b>1 Talent</b> in return.',
         'crystal_sacrifice_title': 'Sacrifice to the Priestess',
@@ -2452,6 +2454,7 @@ const translations = {
         'monk_task_label_lelektoralas': 'Lektorat',
         'monk_task_label_korrektura': 'Korrektur',
         'monk_task_label_borito': 'Covergestaltung',
+        'monk_task_label_forditas': 'Übersetzungskorrektur',
         'crystal_sell_button': 'Lebenskristall verkaufen (1 Stk &rarr; 1 Talent)',
         'crystal_sell_confirm_html': 'Bist du sicher, dass du <b>1 Lebenskristall</b> der Priesterin opferst?<br><br>Du trittst mit den Sphaeren in Kontakt und erhaeltst <b>1 Talent</b>.',
         'crystal_sacrifice_title': 'Opfer fuer die Priesterin',

@@ -6636,18 +6636,18 @@ function initializeMasolatokAndCopyMapPage(data) {
  */
 function loadLogForExtraction() {
     var select = document.getElementById('log-extract-select');
-    var contentDiv = document.getElementById('log-extract-content');
+    var modalDiv = document.getElementById('log-extract-modal');
     var entriesDiv = document.getElementById('log-extract-entries');
     var loader = document.getElementById('log-extract-loader');
     var costSpan = document.getElementById('log-extract-total-cost');
     var logId = select.value;
 
     if (!logId) {
-        contentDiv.style.display = 'none';
+        if(modalDiv) modalDiv.style.display = 'none';
         return;
     }
 
-    contentDiv.style.display = 'none';
+    if(modalDiv) modalDiv.style.display = 'none';
     loader.style.display = 'block';
 
     callBackend('getLogContentForReading', [logId],
@@ -6725,7 +6725,7 @@ function loadLogForExtraction() {
                     entriesDiv.appendChild(wrapper);
                 });
             }
-            contentDiv.style.display = 'block';
+            if(modalDiv) modalDiv.style.display = 'flex';
         },
         function(err) {
             loader.style.display = 'none';
@@ -6779,7 +6779,8 @@ function executeLogExtraction() {
                             if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolás");
                             pinInput.value = '';
                             select.value = '';
-                            document.getElementById('log-extract-content').style.display = 'none';
+                            var modalDiv = document.getElementById('log-extract-modal');
+                            if(modalDiv) modalDiv.style.display = 'none';
                             updateCreditDisplay();
                             loadPage('masolatok_oldal');
                         }

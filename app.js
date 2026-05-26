@@ -4005,16 +4005,20 @@ function refreshMonasteryWork(silent) {
 
                     if (work.status === 'Elbírálás alatt') {
                         if (isApplication) {
+                            var requestedRoleRaw = (work.checklist && work.checklist.referencia && work.checklist.referencia.extraInfo) ? work.checklist.referencia.extraInfo : "";
+                            var displayRole = requestedRoleRaw;
+                            if (requestedRoleRaw === 'editor') displayRole = "Lektor";
+                            else if (requestedRoleRaw === 'szkriptor') displayRole = "Szkriptor";
+                            else if (requestedRoleRaw === 'piktor') displayRole = "Piktor";
+                            else if (requestedRoleRaw === 'inspektor') displayRole = "Inspektor";
+                            else if (requestedRoleRaw.startsWith('translator')) displayRole = "Fordító" + requestedRoleRaw.substring(10);
+                            
                             topControls =
-                                '<div style="margin:5px 0; background:#f0f8ff; padding:10px; border:1px solid blue; border-radius:5px;">' +
-                                '<strong>' + t('monk_hire_title') + '</strong><br>' +
-                                '<label><input type="checkbox" class="role-select" value="editor"> ' + t('monk_role_editor') + '</label> ' +
-                                '<label><input type="checkbox" class="role-select" value="szkriptor"> ' + t('monk_role_skriptor') + '</label> ' +
-                                '<label><input type="checkbox" class="role-select" value="piktor"> ' + t('monk_role_piktor') + '</label> ' +
-                                '<label><input type="checkbox" class="role-select" value="inspektor"> ' + t('monk_role_inspektor') + '</label>' +
-                                '<br>' +
-                                '<button class="btn btn-sm" style="margin-top:5px; background-color:#28a745;" onclick="hireMinistrans(\'' + work.id + '\', \'' + work.author + '\')">' + t('monk_hire_button') + '</button> ' +
-                                '<button class="btn btn-sm btn-danger" style="margin-top:5px;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
+                                '<div style="margin:5px 0; background:#f0f8ff; padding:10px; border:1px solid blue; border-radius:5px; text-align:center;">' +
+                                '<strong>Szerzetes felvétele szerepkörbe:</strong><br>' +
+                                '<h4 style="color:#8b4513; margin:10px 0;">' + displayRole + '</h4>' +
+                                '<button class="btn btn-sm" style="margin-top:5px; background-color:#28a745; width:48%;" onclick="hireMinistrans(\'' + work.id + '\', \'' + work.author + '\', \'' + requestedRoleRaw + '\')">' + t('monk_hire_button') + '</button> ' +
+                                '<button class="btn btn-sm btn-danger" style="margin-top:5px; width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
                                 '</div>';
                         } else {
                             if (work.checklist && work.checklist.papat_report) {
@@ -4655,11 +4659,14 @@ function acceptCredit(workId, taskKey) {
     });
 }
 
-function hireMinistrans(workId, applicantName) {
+function hireMinistrans(workId, applicantName, requestedRoleRaw) {
     var roles = [];
-    var checkboxes = document.querySelectorAll('.role-select:checked');
-    for (var i = 0; i < checkboxes.length; i++) {
-        roles.push(checkboxes[i].value);
+    if (requestedRoleRaw) {
+        if (requestedRoleRaw.startsWith('translator')) {
+            roles.push('translator');
+        } else {
+            roles.push(requestedRoleRaw);
+        }
     }
 
     if (roles.length === 0) {
@@ -4667,7 +4674,7 @@ function hireMinistrans(workId, applicantName) {
         return;
     }
 
-    var message = t('monk_hire_confirm_prefix') + applicantName + t('monk_hire_confirm_suffix_prefix') + roles.join(", ") + t('monk_hire_confirm_suffix');
+    var message = t('monk_hire_confirm_prefix') + applicantName + " felvétele a megpályázott szerepkörbe?";
     uiConfirm(message, t('monk_hire_title'), function () {
         doWorkAction(workId, 'hire_ministrans', { roles: roles.join(", "), applicantName: applicantName });
     });

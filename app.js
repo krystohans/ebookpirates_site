@@ -3839,13 +3839,33 @@ function toggleUploadType() {
 }
 
 function toggleTranslatorLanguage() {
-    var role = document.getElementById('monk-application-role').value;
-    var langGroup = document.getElementById('monk-application-lang-group');
-    if (role === 'translator') {
-        langGroup.style.display = 'block';
-    } else {
-        langGroup.style.display = 'none';
-    }
+    // Deprecated since checkboxes are used now.
+}
+
+var ALL_MONK_ROLES = [
+    {val: 'editor', text: 'Lektor'},
+    {val: 'szkriptor', text: 'Szkriptor'},
+    {val: 'piktor', text: 'Piktor'},
+    {val: 'inspektor', text: 'Inspektor'},
+    {val: 'translator_Angol', text: 'Fordító (Angol)'},
+    {val: 'translator_Német', text: 'Fordító (Német)'},
+    {val: 'translator_Francia', text: 'Fordító (Francia)'},
+    {val: 'translator_Olasz', text: 'Fordító (Olasz)'},
+    {val: 'translator_Spanyol', text: 'Fordító (Spanyol)'},
+    {val: 'translator_Holland', text: 'Fordító (Holland)'},
+    {val: 'translator_Orosz', text: 'Fordító (Orosz)'}
+];
+
+function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
+    var html = '<div style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin: 10px 0;">';
+    ALL_MONK_ROLES.forEach(function(r) {
+        var isChecked = checkedRolesArray.includes(r.val) ? 'checked' : '';
+        html += '<label style="font-size:0.9em; background:#fff; padding:2px 5px; border:1px solid #ccc; border-radius:3px; cursor:pointer;">' +
+                '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + '> ' + r.text +
+                '</label>';
+    });
+    html += '</div>';
+    return html;
 }
 
 async function submitMonasteryWork() {
@@ -3898,10 +3918,11 @@ async function submitMonasteryWork() {
                 cover: coverData
             };
             if (submissionType === 'application') {
-                payload.role = document.getElementById('monk-application-role').value;
-                if (payload.role === 'translator') {
-                    payload.targetLang = document.getElementById('monk-application-lang').value;
-                }
+                var checkedRoles = [];
+                document.querySelectorAll('.monk-role-checkbox:checked').forEach(function(cb) {
+                    checkedRoles.push(cb.value);
+                });
+                payload.roles = checkedRoles;
             }
 
             // callBackend hívás
@@ -4005,19 +4026,14 @@ function refreshMonasteryWork(silent) {
 
                     if (work.status === 'Elbírálás alatt') {
                         if (isApplication) {
-                            var requestedRoleRaw = (work.checklist && work.checklist.referencia && work.checklist.referencia.extraInfo) ? work.checklist.referencia.extraInfo : "";
-                            var displayRole = requestedRoleRaw;
-                            if (requestedRoleRaw === 'editor') displayRole = "Lektor";
-                            else if (requestedRoleRaw === 'szkriptor') displayRole = "Szkriptor";
-                            else if (requestedRoleRaw === 'piktor') displayRole = "Piktor";
-                            else if (requestedRoleRaw === 'inspektor') displayRole = "Inspektor";
-                            else if (requestedRoleRaw.startsWith('translator')) displayRole = "Fordító" + requestedRoleRaw.substring(10);
+                            var requestedRolesStr = (work.checklist && work.checklist.referencia && work.checklist.referencia.extraInfo) ? work.checklist.referencia.extraInfo : "";
+                            var appliedRolesArray = requestedRolesStr ? requestedRolesStr.split(',') : [];
                             
                             topControls =
                                 '<div style="margin:5px 0; background:#f0f8ff; padding:10px; border:1px solid blue; border-radius:5px; text-align:center;">' +
-                                '<strong>Szerzetes felvétele szerepkörbe:</strong><br>' +
-                                '<h4 style="color:#8b4513; margin:10px 0;">' + displayRole + '</h4>' +
-                                '<button class="btn btn-sm" style="margin-top:5px; background-color:#28a745; width:48%;" onclick="hireMinistrans(\'' + work.id + '\', \'' + work.author + '\', \'' + requestedRoleRaw + '\')">' + t('monk_hire_button') + '</button> ' +
+                                '<strong>Szerzetes felvétele szerepkörökbe:</strong><br>' +
+                                getRoleCheckboxesHtml(appliedRolesArray, work.id) +
+                                '<button class="btn btn-sm" style="margin-top:5px; background-color:#28a745; width:48%;" onclick="hireMinistransMulti(\'' + work.id + '\', \'' + work.author + '\')">' + t('monk_hire_button') + '</button> ' +
                                 '<button class="btn btn-sm btn-danger" style="margin-top:5px; width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
                                 '</div>';
                         } else {
@@ -4659,14 +4675,11 @@ function acceptCredit(workId, taskKey) {
     });
 }
 
-function hireMinistrans(workId, applicantName, requestedRoleRaw) {
+function hireMinistransMulti(workId, applicantName) {
     var roles = [];
-    if (requestedRoleRaw) {
-        if (requestedRoleRaw.startsWith('translator')) {
-            roles.push('translator');
-        } else {
-            roles.push(requestedRoleRaw);
-        }
+    var checkboxes = document.querySelectorAll('.role-select-' + workId + ':checked');
+    for (var i = 0; i < checkboxes.length; i++) {
+        roles.push(checkboxes[i].value);
     }
 
     if (roles.length === 0) {
@@ -4674,9 +4687,9 @@ function hireMinistrans(workId, applicantName, requestedRoleRaw) {
         return;
     }
 
-    var message = t('monk_hire_confirm_prefix') + applicantName + " felvétele a megpályázott szerepkörbe?";
+    var message = t('monk_hire_confirm_prefix') + applicantName + " felvétele a megjelölt szerepkör(ök)be?";
     uiConfirm(message, t('monk_hire_title'), function () {
-        doWorkAction(workId, 'hire_ministrans', { roles: roles.join(", "), applicantName: applicantName });
+        doWorkAction(workId, 'hire_ministrans', { roles: roles.join(","), applicantName: applicantName });
     });
 }
 
@@ -4718,7 +4731,11 @@ function loadPersonnelData() {
                     '<div>' +
                     '<div class="item-title">' + monk.name + '</div>' +
                     '<small>' + monk.email + '</small><br>' +
-                    '<small style="color: var(--color-secondary); font-weight:bold;">' + (monk.roles || t('monk_no_title')) + '</small>' +
+                    '<div style="margin-top: 5px;">' +
+                    '<span style="color: var(--color-secondary); font-weight:bold;">Szerepkörök módosítása:</span><br>' +
+                    getRoleCheckboxesHtml(monk.roles ? monk.roles.split(',').map(function(s){return s.trim();}) : [], 'admin_' + CSS.escape(monk.email)) +
+                    '<button class="btn btn-sm" style="background-color:var(--color-primary); color:white; margin-top:5px;" onclick="adminUpdateMonkRoles(\'' + monk.email + '\')">Szerepkörök Mentése</button>' +
+                    '</div>' +
                     '</div>' +
                     '<button class="btn btn-danger" onclick="adminExpelMonk(\'' + monk.email + '\')">' + t('monk_expel_button') + '</button>' +
                     '</div>' +
@@ -4728,6 +4745,33 @@ function loadPersonnelData() {
             container.innerHTML = html;
         },
         function (err) { container.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>'; }
+    );
+}
+
+function adminUpdateMonkRoles(email) {
+    var roles = [];
+    var safeEmail = CSS.escape(email);
+    var checkboxes = document.querySelectorAll('.role-select-admin_' + safeEmail + ':checked');
+    for (var i = 0; i < checkboxes.length; i++) {
+        roles.push(checkboxes[i].value);
+    }
+    
+    var rolesStr = roles.join(",");
+    document.getElementById('loading-overlay').style.display = 'flex';
+    callBackend('updateMonkRoles', [email, rolesStr],
+        function(res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (res.success) {
+                uiAlert("Szerepkörök sikeresen frissítve!", t('success_title'));
+                loadPersonnelData();
+            } else {
+                uiAlert(res.error, t('error_title'));
+            }
+        },
+        function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert(t('error_prefix') + err.message, t('system_error_title'));
+        }
     );
 }
 

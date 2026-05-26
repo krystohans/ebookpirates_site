@@ -59,19 +59,21 @@
 
                 <div id="monk-application-options" style="display: none; background: #fff5e6; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #ffcc80;">
                     <label style="font-weight:bold; margin-bottom:5px; display:block;">Megpályázott Munkakörök (több is választható):</label>
-                    <div id="monk-application-roles-container" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 0;">
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="editor"> Lektor</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="szkriptor"> Szkriptor</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="piktor"> Piktor</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="inspektor"> Inspektor</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Angol"> Fordító (Angol)</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Német"> Fordító (Német)</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Francia"> Fordító (Francia)</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Olasz"> Fordító (Olasz)</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Spanyol"> Fordító (Spanyol)</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Holland"> Fordító (Holland)</label>
-                        <label style="background:#fff; padding:5px 10px; border:1px solid #ccc; border-radius:4px; cursor:pointer;"><input type="checkbox" class="monk-role-checkbox" value="translator_Orosz"> Fordító (Orosz)</label>
-                    </div>
+                    <details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin-bottom:10px; cursor:pointer;">
+                        <summary style="padding:8px 10px; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása (kattints a lenyitáshoz)...</summary>
+                        <div id="monk-application-roles-container" style="display: flex; flex-direction: column; gap: 8px; padding: 10px; max-height: 200px; overflow-y: auto;">
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="editor" style="margin:0;"> Lektor</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="szkriptor" style="margin:0;"> Szkriptor</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="piktor" style="margin:0;"> Piktor</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="inspektor" style="margin:0;"> Inspektor</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="translator_Angol" style="margin:0;"> Fordító (Angol)</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="translator_Spanyol" style="margin:0;"> Fordító (Spanyol)</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="translator_Német" style="margin:0;"> Fordító (Német)</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="translator_Francia" style="margin:0;"> Fordító (Francia)</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="translator_Orosz" style="margin:0;"> Fordító (Orosz)</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="monk-role-checkbox" value="translator_Lengyel" style="margin:0;"> Fordító (Lengyel)</label>
+                        </div>
+                    </details>
                 </div>
 
                 <p id="upload-description" style="font-size:0.9em; color:#666;" data-lang-html="monastery_upload_desc">

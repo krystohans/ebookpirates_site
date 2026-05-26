@@ -3848,23 +3848,24 @@ var ALL_MONK_ROLES = [
     {val: 'piktor', text: 'Piktor'},
     {val: 'inspektor', text: 'Inspektor'},
     {val: 'translator_Angol', text: 'Fordító (Angol)'},
+    {val: 'translator_Spanyol', text: 'Fordító (Spanyol)'},
     {val: 'translator_Német', text: 'Fordító (Német)'},
     {val: 'translator_Francia', text: 'Fordító (Francia)'},
-    {val: 'translator_Olasz', text: 'Fordító (Olasz)'},
-    {val: 'translator_Spanyol', text: 'Fordító (Spanyol)'},
-    {val: 'translator_Holland', text: 'Fordító (Holland)'},
-    {val: 'translator_Orosz', text: 'Fordító (Orosz)'}
+    {val: 'translator_Orosz', text: 'Fordító (Orosz)'},
+    {val: 'translator_Lengyel', text: 'Fordító (Lengyel)'}
 ];
 
 function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
-    var html = '<div style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin: 10px 0;">';
+    var html = '<details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin: 10px 0; text-align: left;">';
+    html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása...</summary>';
+    html += '<div style="display:flex; flex-direction:column; gap:8px; padding:10px; max-height:200px; overflow-y:auto;">';
     ALL_MONK_ROLES.forEach(function(r) {
         var isChecked = checkedRolesArray.includes(r.val) ? 'checked' : '';
-        html += '<label style="font-size:0.9em; background:#fff; padding:2px 5px; border:1px solid #ccc; border-radius:3px; cursor:pointer;">' +
-                '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + '> ' + r.text +
+        html += '<label style="font-size:0.9em; cursor:pointer; display:flex; align-items:center; gap:8px;">' +
+                '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + ' style="margin:0;"> ' + r.text +
                 '</label>';
     });
-    html += '</div>';
+    html += '</div></details>';
     return html;
 }
 

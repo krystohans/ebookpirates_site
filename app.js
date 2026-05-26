@@ -3858,11 +3858,13 @@ var ALL_MONK_ROLES = [
 function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
     var html = '<details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin: 10px 0; text-align: left;">';
     html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása...</summary>';
-    html += '<div style="display:flex; flex-direction:column; gap:8px; padding:10px; max-height:200px; overflow-y:auto;">';
-    ALL_MONK_ROLES.forEach(function(r) {
+    html += '<div style="display:flex; flex-direction:column; padding:10px; max-height:250px; overflow-y:auto;">';
+    ALL_MONK_ROLES.forEach(function(r, index) {
         var isChecked = checkedRolesArray.includes(r.val) ? 'checked' : '';
-        html += '<label style="font-size:0.9em; cursor:pointer; display:flex; align-items:center; gap:8px;">' +
-                '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + ' style="margin:0;"> ' + r.text +
+        var borderStyle = index < ALL_MONK_ROLES.length - 1 ? 'border-bottom: 1px solid #f0f0f0;' : '';
+        html += '<label style="font-size:0.9em; cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; ' + borderStyle + '">' +
+                '<span>' + r.text + '</span>' +
+                '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + ' style="margin:0; width:16px; height:16px;">' +
                 '</label>';
     });
     html += '</div></details>';

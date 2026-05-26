@@ -6662,7 +6662,7 @@ function loadLogForExtraction() {
             entriesDiv.innerHTML = '';
             costSpan.textContent = '0';
             
-            var processedHtml = res.html;
+            var processedHtml = res.htmlContent;
             if (res.imageData) {
                 var imgRegex = /\[IMAGE:([^:]+):([^\]]+)\]/g;
                 var imgMatch;

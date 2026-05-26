@@ -54,6 +54,36 @@
             </div>
         </div>
 
+        <div class="page-section" style="padding: 0; overflow: hidden; margin-top: 15px;">
+            <button class="accordion-button">Hajónapló Kivonatolása</button>
+            <div class="accordion-panel"> 
+                <div class="accordion-panel-content">
+                    <p style="font-size: 0.9em; margin-bottom: 10px;">Válassz ki naplóbejegyzéseket, hogy egy saját másolatot készíts belőlük. A kivonatolás díja 10 kredit naponként.</p>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="log-extract-select" style="font-weight: bold;">Elérhető hajónaplók:</label>
+                        <select id="log-extract-select" onchange="loadLogForExtraction()">
+                            <option value="">Válassz hajónaplót...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="log-extract-content" style="display: none;">
+                        <div id="log-extract-entries" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; background: #fff;">
+                            <!-- Ide jönnek a naplóbejegyzések checkboxszal -->
+                        </div>
+                        <div style="text-align: right; margin-bottom: 15px; font-weight: bold;">
+                            Összesen: <span id="log-extract-total-cost" style="color: var(--color-accent); font-size: 1.2em;">0</span> Kalózkredit
+                        </div>
+                        <div class="form-group">
+                            <label for="log-extract-pin">PIN kód a kivonatoláshoz:</label>
+                            <input type="password" id="log-extract-pin" placeholder="PIN kódod">
+                        </div>
+                        <button id="log-extract-btn" class="btn" onclick="executeLogExtraction()">Kivonatolás (0 Kredit)</button>
+                    </div>
+                    <div id="log-extract-loader" style="display: none;"><p><i class="fas fa-spinner fa-spin"></i> Napló betöltése...</p></div>
+                </div>
+            </div>
+        </div>
+
         <div class="page-section" style="padding: 0; overflow: hidden;">
             
             <!-- Floating GameMaster NPC Button -->

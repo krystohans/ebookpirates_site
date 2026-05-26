@@ -6615,6 +6615,183 @@ function initializeMasolatokAndCopyMapPage(data) {
         if (copyMapPinInput) copyMapPinInput.style.display = 'none';
         if (copyMapPinLabel) copyMapPinLabel.style.display = 'none';
     }
+
+    // --- Hajónapló Kivonatolás Listázása ---
+    var logExtractSelect = document.getElementById('log-extract-select');
+    if (logExtractSelect) {
+        logExtractSelect.innerHTML = '<option value="">Válassz hajónaplót...</option>';
+        if (data.logs && data.logs.length > 0) {
+            data.logs.forEach(function (log) {
+                var option = document.createElement('option');
+                option.value = log.id;
+                option.textContent = log.name;
+                logExtractSelect.appendChild(option);
+            });
+        }
+    }
+}
+
+/**
+ * Betölti a kiválasztott hajónaplót kivonatolás céljából
+ */
+function loadLogForExtraction() {
+    var select = document.getElementById('log-extract-select');
+    var contentDiv = document.getElementById('log-extract-content');
+    var entriesDiv = document.getElementById('log-extract-entries');
+    var loader = document.getElementById('log-extract-loader');
+    var costSpan = document.getElementById('log-extract-total-cost');
+    var logId = select.value;
+
+    if (!logId) {
+        contentDiv.style.display = 'none';
+        return;
+    }
+
+    contentDiv.style.display = 'none';
+    loader.style.display = 'block';
+
+    callBackend('getLogContentForReading', [logId],
+        function(res) {
+            loader.style.display = 'none';
+            if (res.error) {
+                if (typeof uiAlert === 'function') uiAlert(res.error);
+                select.value = '';
+                return;
+            }
+
+            entriesDiv.innerHTML = '';
+            costSpan.textContent = '0';
+            
+            var processedHtml = res.html;
+            if (res.imageData) {
+                var imgRegex = /\[IMAGE:([^:]+):([^\]]+)\]/g;
+                var imgMatch;
+                while ((imgMatch = imgRegex.exec(processedHtml)) !== null) {
+                    var imgId = imgMatch[1];
+                    var imgName = imgMatch[2];
+                    var base64 = res.imageData[imgId];
+                    if (base64) {
+                        var imgTag = '<img src="' + base64 + '" alt="' + imgName + '" style="max-width:100%; height:auto;" />';
+                        processedHtml = processedHtml.replace(imgMatch[0], imgTag);
+                    }
+                }
+            }
+
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = processedHtml;
+            
+            var entries = tempDiv.querySelectorAll('.log-entry');
+            if (entries.length === 0) {
+                entriesDiv.innerHTML = '<p>A napló üres.</p>';
+            } else {
+                entries.forEach(function(entry) {
+                    var entryId = entry.getAttribute('data-entry-id');
+                    var titleElem = entry.querySelector('.log-entry-title');
+                    var dateElem = entry.querySelector('.log-entry-date');
+                    var entryTitle = titleElem ? titleElem.textContent : 'Névtelen bejegyzés';
+                    var entryDate = dateElem ? dateElem.textContent : '';
+
+                    var wrapper = document.createElement('div');
+                    wrapper.style.marginBottom = '10px';
+                    wrapper.style.padding = '10px';
+                    wrapper.style.border = '1px solid #eee';
+                    wrapper.style.borderRadius = '5px';
+                    wrapper.style.display = 'flex';
+                    wrapper.style.alignItems = 'flex-start';
+
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = entryId;
+                    checkbox.className = 'log-extract-checkbox';
+                    checkbox.style.marginRight = '15px';
+                    checkbox.style.marginTop = '5px';
+                    checkbox.style.transform = 'scale(1.5)';
+                    
+                    checkbox.onchange = function() {
+                        var checked = document.querySelectorAll('.log-extract-checkbox:checked').length;
+                        costSpan.textContent = (checked * 10).toString();
+                        var btn = document.getElementById('log-extract-btn');
+                        if (btn) btn.textContent = 'Kivonatolás (' + (checked * 10) + ' Kredit)';
+                    };
+
+                    var label = document.createElement('div');
+                    label.style.flex = "1";
+                    label.innerHTML = '<div style="cursor: pointer; display: flex; justify-content: space-between;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === \'none\' ? \'block\' : \'none\'">' +
+                                      '<strong>' + entryTitle + '</strong><small style="color: #666;">' + entryDate + ' ▼</small></div>' +
+                                      '<div style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; font-family: var(--font-serif); font-size: 1.1em; line-height: 1.6;">' + entry.innerHTML + '</div>';
+
+                    wrapper.appendChild(checkbox);
+                    wrapper.appendChild(label);
+                    entriesDiv.appendChild(wrapper);
+                });
+            }
+            contentDiv.style.display = 'block';
+        },
+        function(err) {
+            loader.style.display = 'none';
+            if (typeof uiAlert === 'function') uiAlert("Hiba történt a napló betöltésekor: " + err.message);
+            select.value = '';
+        }
+    );
+}
+
+/**
+ * Végrehajtja a kiválasztott bejegyzések kivonatolását és a kifizetést
+ */
+function executeLogExtraction() {
+    var select = document.getElementById('log-extract-select');
+    var pinInput = document.getElementById('log-extract-pin');
+    var checkboxes = document.querySelectorAll('.log-extract-checkbox:checked');
+    
+    var logId = select.value;
+    var pinCode = pinInput.value;
+    
+    if (!logId) {
+        if (typeof uiAlert === 'function') uiAlert("Válassz ki egy hajónaplót!");
+        return;
+    }
+    if (checkboxes.length === 0) {
+        if (typeof uiAlert === 'function') uiAlert("Legalább egy bejegyzést ki kell választanod!");
+        return;
+    }
+    if (!pinCode) {
+        if (typeof uiAlert === 'function') uiAlert("Add meg a PIN kódodat!");
+        return;
+    }
+
+    var selectedIds = [];
+    for (var i = 0; i < checkboxes.length; i++) {
+        selectedIds.push(checkboxes[i].value);
+    }
+
+    if (typeof uiConfirm === 'function') {
+        uiConfirm(
+            "Biztosan ki szeretnéd vonatolni ezt a " + selectedIds.length + " naplóbejegyzést? Ez " + (selectedIds.length * 10) + " kalózkreditbe fog kerülni.",
+            "Kivonatolás megerősítése",
+            function() {
+                document.getElementById('loading-overlay').style.display = 'flex';
+                callBackend('extractLogEntriesToCopy', [logId, selectedIds, pinCode],
+                    function(res) {
+                        document.getElementById('loading-overlay').style.display = 'none';
+                        if (res.error) {
+                            if (typeof uiAlert === 'function') uiAlert(res.error, "Hiba");
+                        } else {
+                            if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolás");
+                            pinInput.value = '';
+                            select.value = '';
+                            document.getElementById('log-extract-content').style.display = 'none';
+                            updateCreditDisplay();
+                            loadPage('masolatok_oldal');
+                        }
+                    },
+                    function(err) {
+                        document.getElementById('loading-overlay').style.display = 'none';
+                        if (typeof uiAlert === 'function') uiAlert("Rendszerhiba történt: " + err.message, "Hiba");
+                    }
+                );
+            }
+        );
+    }
 }
 
 /**

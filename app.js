@@ -6686,10 +6686,8 @@ function loadLogForExtraction() {
             } else {
                 entries.forEach(function(entry) {
                     var entryId = entry.getAttribute('data-entry-id');
-                    var titleElem = entry.querySelector('.log-entry-title');
-                    var dateElem = entry.querySelector('.log-entry-date');
-                    var entryTitle = titleElem ? titleElem.textContent : 'Névtelen bejegyzés';
-                    var entryDate = dateElem ? dateElem.textContent : '';
+                    var dateAttr = entry.getAttribute('data-date');
+                    var entryTitle = 'Bejegyzés: ' + (dateAttr || 'Ismeretlen dátum');
 
                     var wrapper = document.createElement('div');
                     wrapper.style.marginBottom = '10px';
@@ -6714,14 +6712,36 @@ function loadLogForExtraction() {
                         if (btn) btn.textContent = 'Kivonatolás (' + (checked * 10) + ' Kredit)';
                     };
 
-                    var label = document.createElement('div');
-                    label.style.flex = "1";
-                    label.innerHTML = '<div style="cursor: pointer; display: flex; justify-content: space-between;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === \'none\' ? \'block\' : \'none\'">' +
-                                      '<strong>' + entryTitle + '</strong><small style="color: #666;">' + entryDate + ' ▼</small></div>' +
-                                      '<div style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; font-family: var(--font-serif); font-size: 1.1em; line-height: 1.6;">' + entry.innerHTML + '</div>';
+                    var textContainer = document.createElement('div');
+                    textContainer.style.flex = "1";
+                    
+                    var headerDiv = document.createElement('div');
+                    headerDiv.style.cursor = 'pointer';
+                    headerDiv.style.display = 'flex';
+                    headerDiv.style.justifyContent = 'space-between';
+                    headerDiv.innerHTML = '<strong>' + entryTitle + '</strong><small style="color: #666; font-weight: bold;">▼ Olvasás</small>';
+                    
+                    var contentDiv = document.createElement('div');
+                    contentDiv.style.display = 'none';
+                    contentDiv.style.marginTop = '10px';
+                    contentDiv.style.paddingTop = '10px';
+                    contentDiv.style.borderTop = '1px dashed #ccc';
+                    contentDiv.style.fontFamily = 'var(--font-serif)';
+                    contentDiv.style.fontSize = '1.1em';
+                    contentDiv.style.lineHeight = '1.6';
+                    contentDiv.innerHTML = entry.innerHTML;
+                    
+                    headerDiv.onclick = function() {
+                        var isHidden = contentDiv.style.display === 'none';
+                        contentDiv.style.display = isHidden ? 'block' : 'none';
+                        headerDiv.querySelector('small').innerHTML = isHidden ? '▲ Bezárás' : '▼ Olvasás';
+                    };
+                    
+                    textContainer.appendChild(headerDiv);
+                    textContainer.appendChild(contentDiv);
 
                     wrapper.appendChild(checkbox);
-                    wrapper.appendChild(label);
+                    wrapper.appendChild(textContainer);
                     entriesDiv.appendChild(wrapper);
                 });
             }

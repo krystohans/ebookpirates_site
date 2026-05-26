@@ -180,6 +180,18 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             handleBackendPayload(payload, funcName, onSuccess, onFailure);
         })
         .catch(function (error) {
+            if (error.message && error.message.includes('Failed to fetch')) {
+                var isLongProcess = ['initiateGDocSzenteles', 'finalizeUpload', 'initiateUpgradeProcess', 'finalizeTranslation', 'uploadCoverAndFinishTask'].includes(funcName);
+                if (isLongProcess) {
+                    console.warn("Látszólagos hálózati megszakadás (Failed to fetch). A háttérfolyamat valószínűleg sikeresen fut tovább.");
+                    if (onFailure) {
+                        onFailure(new Error("A szerver válaszideje lejárt, de a könyvszentelés/művelet a háttérben valószínűleg sikeresen lefut. Kérjük, frissítsd az oldalt néhány perc múlva!"));
+                    } else {
+                        handleBackendError(new Error("A szerver válaszideje lejárt, de a könyvszentelés a háttérben valószínűleg sikeresen lefut. Frissíts pár perc múlva!"), null);
+                    }
+                    return;
+                }
+            }
             handleBackendError(error, onFailure);
         });
 }
@@ -3954,10 +3966,11 @@ function refreshMonasteryWork(silent) {
                     
                     if ((work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === '[FORDÍTÁS ' + targetLang + '] Véglegesítésre vár') {
                         var safeTitle = work.title.replace(/'/g, "\\'");
+                        var btnId = 'pub-trans-btn-' + work.id;
                         topControls = '<div style="background:#f4ebf9; padding:10px; text-align:center; border:1px solid #8e44ad; margin-top:10px; border-radius:5px;">' +
                             '<h4 style="margin-top:0; color:#8e44ad;"><i class="fas fa-language"></i> Fordítás Elfogadása</h4>' +
                             '<p>A(z) <b>' + targetLang + '</b> nyelvű fordítás elkészült és lektorálva lett.</p>' +
-                            '<button class="btn btn-success" onclick="finalizeTranslationProcess(\'' + work.id + '\', \'' + safeTitle + '\', \'' + targetLang + '\', \'' + work.gdocId + '\', \'' + work.rootCode + '\', \'' + work.targetLangCode + '\')">Fordítás Publikálása</button>' +
+                            '<button id="' + btnId + '" class="btn btn-success" onclick="openPublishWindow(\'' + btnId + '\', \'' + work.id + '\', \'' + work.gdocId + '\', \'' + safeTitle + ' (' + targetLang + ')\', \'\')">Fordítás Publikálása</button>' +
                             '</div>';
                     } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt' || 
                                work.status === '[FORDÍTÁS ' + targetLang + '] folyamatban' || work.status === '[FORDÍTÁS ' + targetLang + '] Folyamatban' || 
@@ -4106,6 +4119,81 @@ function purgeWork(workId, title) {
                 uiAlert(t('error_prefix') + err.message, t('system_error_title'));
             }
         );
+    });
+}
+
+function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle, targetLang, rootCode) {
+    var btnElement = document.getElementById(btnId);
+    if (btnElement) {
+        btnElement.style.display = 'none';
+        if (btnElement.parentNode) {
+            var msg = document.createElement('span');
+            msg.id = 'pub-status-' + workId;
+            msg.innerHTML = "Könyv adatainak lekérése...";
+            msg.style.color = '#d9534f';
+            msg.style.fontWeight = 'bold';
+            btnElement.parentNode.appendChild(msg);
+        }
+    }
+    
+    if (!gdocId || gdocId === 'undefined' || gdocId === 'null') {
+        uiAlert(t('monk_publish_missing_gdoc'));
+        return;
+    }
+    
+    setLoadingState(true, 'monastery');
+    callBackend('getOriginalBookDataForTranslation', [rootCode], function(res) {
+        setLoadingState(false, 'monastery');
+        if (!res.success) {
+            var statusMsg = document.getElementById('pub-status-' + workId);
+            if (statusMsg) statusMsg.innerHTML = "Hiba az adatok betöltésekor.";
+            uiAlert(res.error);
+            return;
+        }
+        
+        var konyvFeltoltoUrl = 'https://script.google.com/macros/s/AKfycbzZZV2QQ4fOExg_dv0ddkWVEFgNTCXzYtFhWlOs1Kn5R3wUCHDXV7IpE3Kx3DNT53Npbw/exec';
+        var params = new URLSearchParams();
+        params.append('action', 'szenteles');
+        params.append('gdocId', gdocId);
+        params.append('logId', workId);
+        params.append('userEmail', currentUserEmail);
+        params.append('title', translatedTitle);
+        
+        if (res.book.author) params.append('origAuthor', res.book.author);
+        if (res.book.publisher) params.append('origPublisher', res.book.publisher);
+        if (res.book.type) params.append('origType', res.book.type);
+        if (res.book.isbn) params.append('origIsbn', res.book.isbn);
+        params.append('targetLang', targetLang);
+        
+        window.open(konyvFeltoltoUrl + '?' + params.toString(), '_blank');
+        
+        if (document.getElementById('pub-status-' + workId)) {
+            document.getElementById('pub-status-' + workId).innerHTML = t('monk_publish_in_progress_html');
+        }
+        
+        // Start polling
+        var attempts = 0;
+        var maxAttempts = 60;
+        var poller = setInterval(function () {
+            attempts++;
+            if (attempts > maxAttempts) {
+                clearInterval(poller);
+                var sMsg = document.getElementById('pub-status-' + workId);
+                if (sMsg) sMsg.innerHTML = t('monk_publish_timeout_html');
+                return;
+            }
+            callBackend('checkWorkExists', [workId], function (exists) {
+                if (exists === false) {
+                    clearInterval(poller);
+                    var sMsg = document.getElementById('pub-status-' + workId);
+                    if (sMsg) {
+                        sMsg.innerHTML = t('monk_publish_done_html');
+                        sMsg.style.color = "green";
+                    }
+                    if (typeof refreshMonasteryWork === 'function') refreshMonasteryWork();
+                }
+            });
+        }, 5000);
     });
 }
 
@@ -4815,8 +4903,24 @@ function finalizeResignation(leaveGame) {
                 var ownerEmailField = document.getElementById('ownerEmail');
                 if (ownerEmailField) ownerEmailField.value = globalUserEmail;
 
+                var origAuthor = getParam('origAuthor');
                 var authorNameField = document.getElementById('authorName');
-                if (authorNameField) authorNameField.value = "Felhőkolostor Szerzője";
+                if (authorNameField) authorNameField.value = origAuthor ? origAuthor : "Felhőkolostor Szerzője";
+                
+                var origPublisher = getParam('origPublisher');
+                var publisherNameField = document.getElementById('publisherName');
+                if (publisherNameField && origPublisher) publisherNameField.value = origPublisher;
+                
+                var origIsbn = getParam('origIsbn');
+                var isbnField = document.getElementById('isbn');
+                if (isbnField && origIsbn) isbnField.value = origIsbn;
+                
+                // Set the dropdowns asynchronously once they are populated!
+                var origType = getParam('origType');
+                var targetLang = getParam('targetLang');
+                
+                if (origType) window.prefillProductType = origType;
+                if (targetLang) window.prefillLanguage = targetLang;
 
                 // Backend hívások (Szentelés specifikus vagy közös)
                 callBackend('getDropdownData', [], populateDropdowns, showError);
@@ -5120,8 +5224,18 @@ function finalizeResignation(leaveGame) {
 
         genreSelect.innerHTML = '<option value="">' + t('select_option') + '</option>';
         languageSelect.innerHTML = '<option value="">' + t('select_option') + '</option>';
-        if (data && data.genres) data.genres.forEach(g => { var o = document.createElement('option'); o.value = g; o.textContent = g; genreSelect.appendChild(o); });
-        if (data && data.languages) data.languages.forEach(l => { var o = document.createElement('option'); o.value = l; o.textContent = l; languageSelect.appendChild(o); });
+        if (data && data.genres) data.genres.forEach(g => { 
+            var o = document.createElement('option'); 
+            o.value = g; o.textContent = g; 
+            if (window.prefillProductType && g.toLowerCase() === window.prefillProductType.toLowerCase()) o.selected = true;
+            genreSelect.appendChild(o); 
+        });
+        if (data && data.languages) data.languages.forEach(l => { 
+            var o = document.createElement('option'); 
+            o.value = l; o.textContent = l; 
+            if (window.prefillLanguage && l.toLowerCase() === window.prefillLanguage.toLowerCase()) o.selected = true;
+            languageSelect.appendChild(o); 
+        });
     }
 
     function displayLogo(imageData) {

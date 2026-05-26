@@ -57,6 +57,27 @@
                     </label>
                 </div>
 
+                <div id="monk-application-options" style="display: none; background: #fff5e6; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #ffcc80;">
+                    <label style="font-weight:bold; margin-bottom:5px; display:block;">Megpályázott Munkakör:</label>
+                    <select id="monk-application-role" style="width:100%; padding:8px; margin-bottom:10px;" onchange="if(typeof toggleTranslatorLanguage === 'function') toggleTranslatorLanguage()">
+                        <option value="proofreader">Korrektor / Lektor (Szöveggondozó)</option>
+                        <option value="cover_artist">Illusztrátor (Borítókészítő)</option>
+                        <option value="translator">Fordító</option>
+                    </select>
+
+                    <div id="monk-application-lang-group" style="display:none;">
+                        <label style="font-weight:bold; margin-bottom:5px; display:block;">Célnyelv (amelyre fordítanál):</label>
+                        <select id="monk-application-lang" style="width:100%; padding:8px;">
+                            <option value="Angol">Angol</option>
+                            <option value="Német">Német</option>
+                            <option value="Francia">Francia</option>
+                            <option value="Olasz">Olasz</option>
+                            <option value="Spanyol">Spanyol</option>
+                            <option value="Holland">Holland</option>
+                        </select>
+                    </div>
+                </div>
+
                 <p id="upload-description" style="font-size:0.9em; color:#666;" data-lang-html="monastery_upload_desc">
                     Támogatott szerkeszthető formátumok: <b>.docx, .doc, .txt, .rtf</b> (automatikus konverzió GDoc-ká).
                 </p>

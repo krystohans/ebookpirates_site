@@ -3821,17 +3821,30 @@ function toggleUploadType() {
     var fileLabel = document.getElementById('upload-file-label');
     var desc = document.getElementById('upload-description');
     var coverContainer = document.getElementById('cover-upload-container');
+    var appOptions = document.getElementById('monk-application-options');
 
     if (type === 'work') {
         titleInput.placeholder = t('monk_upload_title_placeholder_work');
         fileLabel.textContent = t('monk_upload_file_label_work');
         desc.innerHTML = t('monk_upload_desc_work_html');
         if (coverContainer) coverContainer.style.display = 'block';
+        if (appOptions) appOptions.style.display = 'none';
     } else {
         titleInput.placeholder = t('monk_upload_title_placeholder_application');
         fileLabel.textContent = t('monk_upload_file_label_application');
         desc.innerHTML = t('monk_upload_desc_application_html');
         if (coverContainer) coverContainer.style.display = 'none';
+        if (appOptions) appOptions.style.display = 'block';
+    }
+}
+
+function toggleTranslatorLanguage() {
+    var role = document.getElementById('monk-application-role').value;
+    var langGroup = document.getElementById('monk-application-lang-group');
+    if (role === 'translator') {
+        langGroup.style.display = 'block';
+    } else {
+        langGroup.style.display = 'none';
     }
 }
 
@@ -3884,6 +3897,12 @@ async function submitMonasteryWork() {
                 manuscript: manuscriptData,
                 cover: coverData
             };
+            if (submissionType === 'application') {
+                payload.role = document.getElementById('monk-application-role').value;
+                if (payload.role === 'translator') {
+                    payload.targetLang = document.getElementById('monk-application-lang').value;
+                }
+            }
 
             // callBackend hívás
             callBackend('uploadWorkToMonastery', [payload, pinCode],

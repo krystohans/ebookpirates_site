@@ -6760,11 +6760,9 @@ function loadLogForExtraction() {
  */
 function executeLogExtraction() {
     var select = document.getElementById('log-extract-select');
-    var pinInput = document.getElementById('log-extract-pin');
     var checkboxes = document.querySelectorAll('.log-extract-checkbox:checked');
     
     var logId = select.value;
-    var pinCode = pinInput.value;
     
     if (!logId) {
         if (typeof uiAlert === 'function') uiAlert("Válassz ki egy hajónaplót!");
@@ -6774,44 +6772,41 @@ function executeLogExtraction() {
         if (typeof uiAlert === 'function') uiAlert("Legalább egy bejegyzést ki kell választanod!");
         return;
     }
-    if (!pinCode) {
-        if (typeof uiAlert === 'function') uiAlert("Add meg a PIN kódodat!");
-        return;
-    }
 
     var selectedIds = [];
     for (var i = 0; i < checkboxes.length; i++) {
         selectedIds.push(checkboxes[i].value);
     }
+    
+    var totalCost = selectedIds.length * 10;
+    var customMessage = "A művelet díja " + totalCost + " Kalózkredit.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!";
 
-    if (typeof uiConfirm === 'function') {
-        uiConfirm(
-            "Biztosan ki szeretnéd vonatolni ezt a " + selectedIds.length + " naplóbejegyzést? Ez " + (selectedIds.length * 10) + " kalózkreditbe fog kerülni.",
-            "Kivonatolás megerősítése",
-            function() {
-                document.getElementById('loading-overlay').style.display = 'flex';
-                callBackend('extractLogEntriesToCopy', [logId, selectedIds, pinCode],
-                    function(res) {
-                        document.getElementById('loading-overlay').style.display = 'none';
-                        if (res.error) {
-                            if (typeof uiAlert === 'function') uiAlert(res.error, "Hiba");
-                        } else {
-                            if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolás");
-                            pinInput.value = '';
-                            select.value = '';
-                            var modalDiv = document.getElementById('log-extract-modal');
-                            if(modalDiv) modalDiv.style.display = 'none';
-                            updateCreditDisplay();
-                            loadPage('masolatok_oldal');
-                        }
-                    },
-                    function(err) {
-                        document.getElementById('loading-overlay').style.display = 'none';
-                        if (typeof uiAlert === 'function') uiAlert("Rendszerhiba történt: " + err.message, "Hiba");
+    if (typeof requestPin === 'function') {
+        requestPin(function (pinCode) {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            callBackend('extractLogEntriesToCopy', [logId, selectedIds, pinCode],
+                function(res) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    if (res.error) {
+                        if (typeof uiAlert === 'function') uiAlert(res.error, "Hiba");
+                    } else {
+                        if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolás");
+                        select.value = '';
+                        var modalDiv = document.getElementById('log-extract-modal');
+                        if(modalDiv) modalDiv.style.display = 'none';
+                        updateCreditDisplay();
+                        loadPage('masolatok_oldal');
                     }
-                );
-            }
-        );
+                },
+                function(err) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    if (typeof uiAlert === 'function') uiAlert("Rendszerhiba történt: " + err.message, "Hiba");
+                }
+            );
+        }, customMessage);
+    } else {
+        if (typeof uiAlert === 'function') uiAlert("A PIN bekérő modul nem elérhető!");
     }
 }
 

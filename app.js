@@ -6629,6 +6629,16 @@ function initializeMasolatokAndCopyMapPage(data) {
             });
         }
     }
+
+    // --- Papát Funkciók Megjelenítése ---
+    var papatUploadSection = document.getElementById('papat-log-upload-section');
+    if (papatUploadSection) {
+        if (data.isPapat === true) {
+            papatUploadSection.style.display = 'block';
+        } else {
+            papatUploadSection.style.display = 'none';
+        }
+    }
 }
 
 /**
@@ -6751,6 +6761,47 @@ function loadLogForExtraction() {
             loader.style.display = 'none';
             if (typeof uiAlert === 'function') uiAlert("Hiba történt a napló betöltésekor: " + err.message);
             select.value = '';
+        }
+    );
+}
+
+/**
+ * Papát feltölti a GDoc naplómásolatot.
+ */
+function submitPapatLogUpload() {
+    var gdocUrl = document.getElementById('papat-log-gdoc').value.trim();
+    var copyName = document.getElementById('papat-log-name').value.trim();
+
+    if (!gdocUrl || !copyName) {
+        if (typeof uiAlert === 'function') uiAlert("Minden mező kitöltése kötelező!", "Hiba");
+        return;
+    }
+
+    var urlMatch = gdocUrl.match(/[-\w]{25,}/);
+    if (!urlMatch) {
+        if (typeof uiAlert === 'function') uiAlert("Kérlek adj meg egy érvényes Google Docs linket!", "Hiba");
+        return;
+    }
+
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    callBackend('uploadPapatLogCopy', [gdocUrl, copyName],
+        function(res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (typeof uiAlert === 'function') {
+                uiAlert(res.message || res.error, res.success ? "Siker" : "Hiba");
+            }
+            if (res.success) {
+                document.getElementById('papat-log-gdoc').value = '';
+                document.getElementById('papat-log-name').value = '';
+                loadPage('masolatok_oldal');
+            }
+        },
+        function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (typeof uiAlert === 'function') {
+                uiAlert("Szerverhiba történt: " + err.message, "Hiba");
+            }
         }
     );
 }

@@ -70,6 +70,26 @@
             </div>
         </div>
 
+        <div class="page-section papat-only" style="padding: 0; overflow: hidden; margin-top: 15px; display: none;" id="papat-log-upload-section">
+            <button class="accordion-button" style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white;">⚜️ Papát Napló Feltöltő</button>
+            <div class="accordion-panel"> 
+                <div class="accordion-panel-content">
+                    <p style="font-size: 0.9em; margin-bottom: 10px;">Csak Papát rangúak számára. Közvetlenül GDoc dokumentumból hoz létre új hajónapló másolatot a tulajdonodba.</p>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label for="papat-log-gdoc" style="font-weight: bold;">Google Doc Link:</label>
+                        <input type="text" id="papat-log-gdoc" placeholder="https://docs.google.com/document/d/..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="papat-log-name" style="font-weight: bold;">Napló Másolat Neve:</label>
+                        <input type="text" id="papat-log-name" placeholder="Pl. Az Elsüllyedt Armada Naplója" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    </div>
+                    <button class="btn" onclick="submitPapatLogUpload()" style="background: #2e7d32; color: white; border: none; padding: 10px 15px; width: 100%; font-weight: bold;">
+                        <i class="fas fa-upload"></i> Feltöltés Másolatként
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="page-section" style="padding: 0; overflow: hidden;">
             
             <!-- Floating GameMaster NPC Button -->

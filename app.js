@@ -5894,6 +5894,85 @@ function initializeLibraryAndMapPage(data) {
     } else {
         uploadButton.style.display = 'none';
     }
+
+    // ============================================================
+    // 7. PAPÁT FUNKCIÓK (TÉRKÉPEK ELBÍRÁLÁSA)
+    // ============================================================
+    var papatApprovalSection = document.getElementById('papat-map-approval-section');
+    var pendingMapsContainer = document.getElementById('konyvtar-pending-maps-content');
+    if (papatApprovalSection && pendingMapsContainer) {
+        if (data.isPapat === true) {
+            papatApprovalSection.style.display = 'block';
+            pendingMapsContainer.innerHTML = '';
+            
+            if (data.pendingMaps && data.pendingMaps.length > 0) {
+                data.pendingMaps.forEach(function (map) {
+                    var entryDiv = document.createElement('div');
+                    entryDiv.className = 'item-entry map-entry';
+                    
+                    entryDiv.innerHTML = 
+                        '<div class="item-icon"><i class="fas fa-map" style="color: #b71c1c;"></i></div>' +
+                        '<div class="item-details">' +
+                            '<div class="item-title">' + map.identifier + '</div>' +
+                            '<small class="item-author">Feltöltő: ' + map.email + '</small>' +
+                        '</div>' +
+                        '<div class="map-actions">' +
+                            '<button class="btn view-btn" style="background:#17a2b8;">Megtekintés</button>' +
+                            '<button class="btn approve-btn" style="background:#28a745;">Jóváhagyás</button>' +
+                            '<button class="btn reject-btn" style="background:#dc3545;">Elutasítás</button>' +
+                        '</div>';
+                    
+                    entryDiv.querySelector('.view-btn').onclick = function() {
+                        openMapViewer(map.fileId, map.identifier);
+                    };
+                    
+                    entryDiv.querySelector('.approve-btn').onclick = function() {
+                        if(typeof uiConfirm === 'function') {
+                            uiConfirm('Biztosan jóváhagyod ezt a térképet?', 'Megerősítés', function() {
+                                handleMapApproval(map.rowIndex, 'approve');
+                            });
+                        }
+                    };
+                    
+                    entryDiv.querySelector('.reject-btn').onclick = function() {
+                        if(typeof uiConfirm === 'function') {
+                            uiConfirm('Biztosan elutasítod ezt a térképet?', 'Megerősítés', function() {
+                                handleMapApproval(map.rowIndex, 'reject');
+                            });
+                        }
+                    };
+                    
+                    pendingMapsContainer.appendChild(entryDiv);
+                });
+            } else {
+                pendingMapsContainer.innerHTML = '<p>Nincs elbírálásra váró térkép.</p>';
+            }
+        } else {
+            papatApprovalSection.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * Papát térkép elbírálás backend hívás
+ */
+function handleMapApproval(rowIndex, action) {
+    document.getElementById('loading-overlay').style.display = 'flex';
+    var functionName = action === 'approve' ? 'approveMapImage' : 'rejectMapImage';
+    
+    callBackend(functionName, [rowIndex],
+        function(res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if(typeof uiAlert === 'function') uiAlert(res.message || res.error);
+            if(res.success) {
+                loadPage('konyvtar'); // Újratöltjük a könyvtárat a frissített listáért
+            }
+        },
+        function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if(typeof uiAlert === 'function') uiAlert('Szerverhiba: ' + err.message);
+        }
+    );
 }
 
 // =========================================================

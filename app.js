@@ -2035,6 +2035,31 @@ function openPultModal() {
     }
 }
 
+// 1.B Új Taverna Asztaltársaság hívása
+function openTavernJobs() {
+    const modal = document.getElementById('tavern-jobs-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const contentDiv = document.getElementById('tavern-jobs-content');
+        contentDiv.innerHTML = '<p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...<br>A rendszer hallgatózik...</i></p>';
+        
+        // Backend hívás a kocsmaasztal NPC-hez
+        const payload = { email: currentUserEmail };
+        
+        if (typeof callBackend === 'function') {
+            callBackend("getTavernJobs", payload, function(response) {
+                if (response && response.text) {
+                    contentDiv.innerHTML = formatAIResponse(response.text);
+                } else {
+                    contentDiv.innerHTML = '<p>Az asztalnál lévők csak morognak. (Hiba: ' + (response.error || "Nincs válasz") + ')</p>';
+                }
+            });
+        } else {
+             contentDiv.innerHTML = '<p>A hálózati kapcsolat megszakadt, nem hallod, mit mondanak.</p>';
+        }
+    }
+}
+
 // 2. JAVÍTOTT KÖLTSÉG SZÁMOLÓ (Esemény delegálás - Nincs több "null" hiba!)
 // Ez helyettesíti a régi 'DOMContentLoaded' blokkot
 document.addEventListener('input', function (e) {

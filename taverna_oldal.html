@@ -86,7 +86,7 @@
 
             <p>Ülj le egy asztalhoz, vagy szólítsd meg a csapost!</p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-                <button class="btn" onclick="toggleBartender()">🍺 Beszélek a Csapossal</button>
+                <button class="btn" onclick="openTavernJobs()">🗣️ Melót vagy melóst keresek</button>
                 <button id="pult-btn" class="btn" onclick="openPultModal()">📨 Pult (Posta/Béta)</button>
                 <button id="asztal-btn" class="btn" onclick="document.getElementById('asztal-confirm-modal').style.display='flex'">🗣️ Asztal (Chat)</button>
                 <button id="jatekterem-btn" class="btn" style="background-color: #8b0000;" onclick="document.getElementById('jatekterem-modal').style.display='flex'">🃏 Játékterem</button>
@@ -234,6 +234,17 @@
             <h4>Az Asztaltársaság</h4>
             <p>"Foglalj helyet nálunk! Mi hírt hoztál? Hallottad miről beszélnek?"</p>
             <button id="cseveg-btn" class="btn">Csevegek</button>
+        </div>
+    </div>
+
+    <div id="tavern-jobs-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 600px; width: 95%;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('tavern-jobs-modal').style.display='none'">X</button>
+            <h4 style="color: #8b0000; border-bottom: 2px solid #8b0000; padding-bottom: 5px;">Munkák és Pletykák</h4>
+            <div id="tavern-jobs-content" style="min-height: 150px; margin-top: 15px; font-size: 1.05em; line-height: 1.4;">
+                <p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...</i></p>
+            </div>
+            <button class="btn" onclick="document.getElementById('tavern-jobs-modal').style.display='none'" style="margin-top: 15px; width: 100%;">Vissza a pulthoz</button>
         </div>
     </div>
 

@@ -2046,7 +2046,7 @@ function openTavernJobs() {
         if (typeof callBackend === 'function') {
             callBackend("getTavernJobs", [], function(response) {
                 if (response && response.text) {
-                    contentDiv.innerHTML = formatAIResponse(response.text);
+                    contentDiv.innerHTML = response.text;
                 } else {
                     contentDiv.innerHTML = '<p>Az asztalnál lévők csak morognak. (Hiba: ' + (response.error || "Nincs válasz") + ')</p>';
                 }

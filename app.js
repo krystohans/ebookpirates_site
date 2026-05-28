@@ -2051,13 +2051,23 @@ function openTavernJobs() {
         // 16 másodperces időlimit a várakozásra
         const timeoutId = setTimeout(() => {
             if (!hasResponded) {
-                hasResponded = true;
-                contentDiv.innerHTML = '<p><b>Kapatos kalóz:</b> "Nem látod, hogy épp ürítjük a kupákat?! Húzz innen a viharba, amíg bele nem kötök abba a szép kis pofádba!"<br><br><i>(A kocsma zaja elnyomta a hangokat, a kapcsolat megszakadt.)</i></p>';
+                contentDiv.innerHTML = '<p><i>(A varázslat nagyon lassan hat... a rendszer megpróbálja közvetlenül lefordítani a pletykákat!)</i></p>';
+                
+                // Második hívás, ami azonnal az Okos Konzervet kéri (skipAI = true)
+                callBackend("getTavernJobs", [true], function(fallbackResponse) {
+                    if (hasResponded) return; // Ha az első időközben befutott
+                    hasResponded = true;
+                    if (fallbackResponse && fallbackResponse.text) {
+                        contentDiv.innerHTML = formatAIResponse(fallbackResponse.text);
+                    } else {
+                        contentDiv.innerHTML = '<p><b>Szakállas tengerész:</b> "Üres a tenger, öcsém. Nincs most meló."</p>';
+                    }
+                });
             }
         }, 16000);
 
         if (typeof callBackend === 'function') {
-            callBackend("getTavernJobs", payload, function(response) {
+            callBackend("getTavernJobs", [], function(response) {
                 if (hasResponded) return; // Ha a timeout már lefutott, ne csináljon semmit
                 hasResponded = true;
                 clearTimeout(timeoutId);

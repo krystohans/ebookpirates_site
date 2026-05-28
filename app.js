@@ -8994,6 +8994,7 @@ function closePapatReportModal() {
 
 console.log("EOF");
 
+
 // === KOCSMAI HIRDETOTABLA ===
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
@@ -9058,7 +9059,8 @@ function renderNoticeBoard(data) {
                              '<h4 style="margin: 10px 0 10px 0; color: #1b5e20; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><i class="fas fa-scroll"></i> Küldetés!</h4>' +
                              '<p style="font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 1.1em; color: #3e2723;">' + item.title + '</p>' +
                              '<p style="font-size: 0.9em; margin-bottom: 5px; color: #4e342e;"><strong>Keresnek:</strong><br>' + item.specialists + '</p>' +
-                             '<p style="font-size: 0.9em; margin-bottom: 15px; color: #8b0000;"><strong>Veszély:</strong> ' + item.danger + '</p>' +
+                             '<p style="font-size: 0.9em; margin-bottom: 10px; color: #8b0000;"><strong>Veszély:</strong> ' + item.danger + '</p>' +
+                             '<p style="text-align: center; color: #1b5e20; font-style: italic; font-size: 0.85em; margin-bottom: 5px;">(Jelentkezz a csaposnál!)</p>' +
                              '<p style="text-align: center; color: #b71c1c; font-weight: bold; font-size: 1.1em; background: rgba(183,28,28,0.1); padding: 5px; border-radius: 3px;">Jutalom: ' + item.reward + '</p>';
             boardDiv.appendChild(card);
         });

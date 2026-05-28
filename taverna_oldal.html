@@ -87,6 +87,7 @@
             <p>Ülj le egy asztalhoz, vagy szólítsd meg a csapost!</p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
                 <button class="btn" onclick="openTavernJobs()">🗣️ Melót vagy melóst keresek</button>
+                <button class="btn" style="background-color: #5c3a21;" onclick="openNoticeBoard()">📌 Hirdetőtábla</button>
                 <button id="pult-btn" class="btn" onclick="openPultModal()">📨 Pult (Posta/Béta)</button>
                 <button id="asztal-btn" class="btn" onclick="document.getElementById('asztal-confirm-modal').style.display='flex'">🗣️ Asztal (Chat)</button>
                 <button id="jatekterem-btn" class="btn" style="background-color: #8b0000;" onclick="document.getElementById('jatekterem-modal').style.display='flex'">🃏 Játékterem</button>
@@ -245,6 +246,19 @@
                 <p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...</i></p>
             </div>
             <button class="btn" onclick="document.getElementById('tavern-jobs-modal').style.display='none'" style="margin-top: 15px; width: 100%;">Vissza a pulthoz</button>
+        </div>
+    </div>
+
+    <!-- Notice Board Modal -->
+    <div id="notice-board-modal" class="gamemode-modal" style="display: none; background: rgba(0,0,0,0.8);">
+        <div class="gamemode-modal-content" style="position: relative; max-width: 1000px; width: 95%; height: 85vh; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); background-color: #8b5a2b; border: 8px solid #5c3a21; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); padding: 10px;">
+            <button class="btn btn-close" style="position: absolute; top: -15px; right: -15px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100;" onclick="document.getElementById('notice-board-modal').style.display='none'">X</button>
+            
+            <h2 style="text-align: center; color: #f5deb3; font-family: 'Pirata One', cursive; text-shadow: 2px 2px 4px #000; margin-top: 10px; border-bottom: none;">📌 Kocsmai Hirdetőtábla</h2>
+            
+            <div id="notice-board-content" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; overflow-y: auto; height: calc(100% - 70px);">
+                <p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiú épp szögeli fel az új papírokat...</p>
+            </div>
         </div>
     </div>
 

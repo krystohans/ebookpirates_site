@@ -2046,8 +2046,22 @@ function openTavernJobs() {
         // Backend hívás a kocsmaasztal NPC-hez
         const payload = []; // Az apiRouter automatikusan unshift-eli az emailt, így egy üres tömb kell!
         
+        let hasResponded = false;
+        
+        // 12 másodperces időlimit a várakozásra
+        const timeoutId = setTimeout(() => {
+            if (!hasResponded) {
+                hasResponded = true;
+                contentDiv.innerHTML = '<p><b>Kapatos kalóz:</b> "Nem látod, hogy épp ürítjük a kupákat?! Húzz innen a viharba, amíg bele nem kötök abba a szép kis pofádba!"<br><br><i>(A kocsma zaja elnyomta az AI válaszát, így csak a morcos konzervet kaptad meg.)</i></p>';
+            }
+        }, 12000);
+
         if (typeof callBackend === 'function') {
             callBackend("getTavernJobs", payload, function(response) {
+                if (hasResponded) return; // Ha a timeout már lefutott, ne csináljon semmit
+                hasResponded = true;
+                clearTimeout(timeoutId);
+                
                 if (response && response.text) {
                     contentDiv.innerHTML = formatAIResponse(response.text);
                 } else {

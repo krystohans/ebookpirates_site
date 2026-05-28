@@ -2044,7 +2044,7 @@ function openTavernJobs() {
         contentDiv.innerHTML = '<p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...<br>A rendszer hallgatózik...</i></p>';
         
         // Backend hívás a kocsmaasztal NPC-hez
-        const payload = { email: currentUserEmail };
+        const payload = []; // Az apiRouter automatikusan unshift-eli az emailt, így egy üres tömb kell!
         
         if (typeof callBackend === 'function') {
             callBackend("getTavernJobs", payload, function(response) {

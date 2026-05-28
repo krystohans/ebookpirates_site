@@ -2048,13 +2048,13 @@ function openTavernJobs() {
         
         let hasResponded = false;
         
-        // 12 másodperces időlimit a várakozásra
+        // 16 másodperces időlimit a várakozásra
         const timeoutId = setTimeout(() => {
             if (!hasResponded) {
                 hasResponded = true;
-                contentDiv.innerHTML = '<p><b>Kapatos kalóz:</b> "Nem látod, hogy épp ürítjük a kupákat?! Húzz innen a viharba, amíg bele nem kötök abba a szép kis pofádba!"<br><br><i>(A kocsma zaja elnyomta az AI válaszát, így csak a morcos konzervet kaptad meg.)</i></p>';
+                contentDiv.innerHTML = '<p><b>Kapatos kalóz:</b> "Nem látod, hogy épp ürítjük a kupákat?! Húzz innen a viharba, amíg bele nem kötök abba a szép kis pofádba!"<br><br><i>(A kocsma zaja elnyomta a hangokat, a kapcsolat megszakadt.)</i></p>';
             }
-        }, 12000);
+        }, 16000);
 
         if (typeof callBackend === 'function') {
             callBackend("getTavernJobs", payload, function(response) {

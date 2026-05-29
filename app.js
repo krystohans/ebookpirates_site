@@ -6541,7 +6541,38 @@ function initializeMasolatokAndCopyMapPage(data) {
                 playBtn.className = 'btn';
                 playBtn.textContent = t('copy_play_button');
                 playBtn.onclick = function () {
-                    uiAlert(t('copy_play_unavailable_prefix') + copy.code + t('copy_play_unavailable_suffix'));
+                    openUniversalNPC('gamemaster', {
+                        name: 'Játékmester',
+                        role: 'Sors és játékvezető',
+                        icon: '<i class="fas fa-chess-knight"></i>',
+                        headerColor: '#9c27b0',
+                        portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                        msgIcon: '<i class="fas fa-chess-knight" style="color:#fff; margin-right:5px;"></i>',
+                        loaderHTML: '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester gondolkodik...</i>'
+                    });
+                    
+                    setTimeout(function() {
+                        var chatArea = document.getElementById('universal-chat-area');
+                        chatArea.innerHTML = '';
+                        var loaderId = "loader-" + Date.now();
+                        var loader = document.createElement('div');
+                        loader.id = loaderId;
+                        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester felkészül...</i>';
+                        chatArea.appendChild(loader);
+                        
+                        callBackend('handleNPCInteraction', ['gamemaster', '', 'START_GM_SESSION', copy.code], 
+                            function(response) {
+                                var l = document.getElementById(loaderId);
+                                if (l) l.remove();
+                                handleUniversalResponse(response);
+                            },
+                            function(err) {
+                                var l = document.getElementById(loaderId);
+                                if (l) l.remove();
+                                addBubbleToUniversal("System", "Hiba: " + err.message, "system");
+                            }
+                        );
+                    }, 500);
                 };
                 gombokDiv.appendChild(playBtn);
 

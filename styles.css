@@ -745,6 +745,26 @@ textarea:focus {
     color: var(--color-accent);
 }
 
+/* ========================================= */
+/* === 12. CHAT UI JAVÍTÁSOK (NPC & MONK) === */
+/* ========================================= */
+#universal-chat-input,
+#monk-chat-input,
+#gamemaster-input {
+    margin: 0 !important;
+    width: auto !important;
+    flex-grow: 1 !important;
+}
+
+#universal-chat-input + button,
+#monk-chat-input + button,
+#gamemaster-input + button {
+    width: auto !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+    padding: 0 20px !important;
+}
+
 /* === ÚJ MARKETING NÉZET STÍLUS === */
 #marketing-view {
     position: fixed;

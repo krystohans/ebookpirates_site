@@ -48,6 +48,12 @@ function handleBackendPayload(payload, funcName, onSuccess, onFailure) {
 
     data = translateBackendResponse(data);
 
+    if (data && data.error) {
+        var errorObj = new Error(data.error);
+        errorObj.details = data.details || "";
+        throw errorObj;
+    }
+
     if (payload.status >= 200 && payload.status < 300) {
         if (onSuccess) {
             onSuccess(data);

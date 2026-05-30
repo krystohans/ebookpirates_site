@@ -76,7 +76,7 @@ function handleBackendError(error, onFailure) {
 }
 
 function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onFailure) {
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
     var CHUNK_SIZE = 1024 * 1024 * 2; // 2 MB
     var totalChunks = Math.ceil(payloadString.length / CHUNK_SIZE);
     var transferId = 'CHUNK_' + new Date().getTime() + '_' + Math.floor(Math.random() * 1000);
@@ -148,7 +148,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
 
 function callBackend(funcName, params, onSuccess, onFailure) {
     // A TE DEPLOYMENT URL-ED (Ellenőrizd, hogy a legfrissebb legyen!)
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
 
     var token = localStorage.getItem('ebookPiratesToken');
 
@@ -6548,7 +6548,29 @@ function initializeMasolatokAndCopyMapPage(data) {
                         headerColor: '#9c27b0',
                         portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
                         msgIcon: '<i class="fas fa-chess-knight" style="color:#fff; margin-right:5px;"></i>',
-                        loaderHTML: '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester gondolkodik...</i>'
+                        loaderHTML: '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester gondolkodik...</i>',
+                        skipInit: true,
+                        styles: {
+                            modal: {
+                                justifyContent: 'flex-end',
+                                alignItems: 'stretch',
+                                background: '',
+                                padding: '0'
+                            },
+                            content: {
+                                width: '350px',
+                                height: '100vh',
+                                maxWidth: '85vw',
+                                margin: '0',
+                                borderRadius: '2px',
+                                border: 'none',
+                                borderLeft: '5px solid #9c27b0',
+                                backgroundColor: '#1e1e1e',
+                                color: '#fff',
+                                backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
+                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+                            }
+                        }
                     });
                     
                     setTimeout(function() {
@@ -8484,7 +8506,9 @@ function openUniversalNPC(npcId, config) {
     modal.style.display = 'flex';
 
     // callBackend használata
-    callBackend('handleNPCInteraction', [npcId, "", "INIT", null], handleUniversalResponse);
+    if (!config || !config.skipInit) {
+        callBackend('handleNPCInteraction', [npcId, "", "INIT", null], handleUniversalResponse);
+    }
 }
 
 function sendUniversalMessage() {

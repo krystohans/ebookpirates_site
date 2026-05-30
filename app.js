@@ -6540,62 +6540,33 @@ function initializeMasolatokAndCopyMapPage(data) {
                 var playBtn = document.createElement('button');
                 playBtn.className = 'btn';
                 playBtn.textContent = t('copy_play_button');
-                playBtn.onclick = function () {
-                    openUniversalNPC('gamemaster', {
-                        name: 'Játékmester',
-                        role: 'Sors és játékvezető',
-                        icon: '<i class="fas fa-chess-knight"></i>',
-                        headerColor: '#9c27b0',
-                        portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
-                        msgIcon: '<i class="fas fa-chess-knight" style="color:#fff; margin-right:5px;"></i>',
-                        loaderHTML: '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester gondolkodik...</i>',
-                        skipInit: true,
-                        styles: {
-                            modal: {
-                                justifyContent: 'flex-end',
-                                alignItems: 'stretch',
-                                background: '',
-                                padding: '0'
-                            },
-                            content: {
-                                width: '350px',
-                                height: '100vh',
-                                maxWidth: '85vw',
-                                margin: '0',
-                                borderRadius: '2px',
-                                border: 'none',
-                                borderLeft: '5px solid #9c27b0',
-                                backgroundColor: '#1e1e1e',
-                                color: '#fff',
-                                backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
-                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-                            }
-                        }
-                    });
-                    
-                    setTimeout(function() {
-                        var chatArea = document.getElementById('universal-chat-area');
-                        chatArea.innerHTML = '';
-                        var loaderId = "loader-" + Date.now();
-                        var loader = document.createElement('div');
-                        loader.id = loaderId;
-                        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester felkészül...</i>';
-                        chatArea.appendChild(loader);
-                        
-                        callBackend('handleNPCInteraction', ['gamemaster', '', 'START_GM_SESSION', copy.code], 
-                            function(response) {
-                                var l = document.getElementById(loaderId);
-                                if (l) l.remove();
-                                handleUniversalResponse(response);
-                            },
-                            function(err) {
-                                var l = document.getElementById(loaderId);
-                                if (l) l.remove();
-                                addBubbleToUniversal("System", "Hiba: " + err.message, "system");
-                            }
-                        );
-                    }, 500);
-                };
+                playBtn.onclick = function() {
+    var gmBtn = document.getElementById('floating-gamemaster-btn');
+    if (gmBtn) gmBtn.click();
+    
+    setTimeout(function() {
+        var chatArea = document.getElementById('universal-chat-area');
+        chatArea.innerHTML = '';
+        var loaderId = "loader-" + Date.now();
+        var loader = document.createElement('div');
+        loader.id = loaderId;
+        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester felkészül...</i>';
+        chatArea.appendChild(loader);
+        
+        callBackend('handleNPCInteraction', ['gamemaster', '', 'START_GM_SESSION', copy.code], 
+            function(response) {
+                var l = document.getElementById(loaderId);
+                if (l) l.remove();
+                handleUniversalResponse(response);
+            },
+            function(err) {
+                var l = document.getElementById(loaderId);
+                if (l) l.remove();
+                addBubbleToUniversal("System", "Hiba: " + err.message, "system");
+            }
+        );
+    }, 500);
+};
                 gombokDiv.appendChild(playBtn);
 
                 // Eladom gomb

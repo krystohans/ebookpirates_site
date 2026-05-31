@@ -8671,6 +8671,77 @@ function handleUniversalResponse(response) {
         chatArea.appendChild(btnContainer);
         setTimeout(function () { chatArea.scrollTop = chatArea.scrollHeight; }, 50);
     }
+
+    if (response.dropdown) {
+        var dpContainer = document.createElement('div');
+        dpContainer.className = "npc-response-dropdown";
+        dpContainer.style.marginTop = "10px";
+        dpContainer.style.display = "flex";
+        dpContainer.style.flexDirection = "column";
+        dpContainer.style.gap = "10px";
+        dpContainer.style.alignItems = "center";
+
+        var select = document.createElement('select');
+        select.style.padding = "8px";
+        select.style.borderRadius = "5px";
+        select.style.width = "100%";
+        select.style.backgroundColor = "#444";
+        select.style.color = "#fff";
+        select.style.border = "1px solid #777";
+
+        var defaultOpt = document.createElement('option');
+        defaultOpt.value = "";
+        defaultOpt.text = "--- Válassz egyet ---";
+        defaultOpt.disabled = true;
+        defaultOpt.selected = true;
+        select.appendChild(defaultOpt);
+
+        if (response.dropdown.options) {
+            response.dropdown.options.forEach(function(opt) {
+                var option = document.createElement('option');
+                option.value = opt.value;
+                option.text = opt.label;
+                select.appendChild(option);
+            });
+        }
+
+        var submitBtn = document.createElement('button');
+        submitBtn.className = 'btn';
+        submitBtn.style.cssText = "width: 100%; font-size: 0.9em; padding: 8px;";
+        submitBtn.innerHTML = response.dropdown.submitText || "Kiválaszt";
+        
+        submitBtn.onclick = function() {
+            if (!select.value) {
+                addBubbleToUniversal("System", "Hiba: Kérlek, válassz a listából!", "system");
+                return;
+            }
+            if (dpContainer.parentNode) dpContainer.parentNode.removeChild(dpContainer);
+            else dpContainer.remove();
+            
+            var btnAction = response.dropdown.action;
+            if (btnAction.indexOf('CLIENT_REQ_PIN') === 0) {
+                handleNPCButtonAction({ action: btnAction + select.value });
+            } else {
+                handleNPCButtonAction({ action: btnAction, payload: select.value });
+            }
+        };
+
+        dpContainer.appendChild(select);
+        dpContainer.appendChild(submitBtn);
+        chatArea.appendChild(dpContainer);
+        setTimeout(function () { chatArea.scrollTop = chatArea.scrollHeight; }, 50);
+    }
+
+    if (response.clientFn) {
+        setTimeout(function() {
+            var fnName = response.clientFn;
+            if (typeof window[fnName] === 'function') {
+                window[fnName]();
+            } else {
+                console.error("Hiba: A '" + fnName + "' automatikus függvény nem létezik.");
+            }
+        }, 1500); // Késleltetés, hogy a játékos elolvashassa a siker üzenetet
+    }
 }
 
 // === UNIVERZÁLIS GOMBKEZELŐ ===
@@ -9114,4 +9185,11 @@ function renderNoticeBoard(data) {
     if (boardDiv.innerHTML === '') {
         boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.5em; font-family: \'Pirata One\', cursive;">A tábla jelenleg kong az ürességtől...</p>';
     }
+}
+
+function reloadCopiesPage() {
+    var modal = document.getElementById('universal-npc-modal');
+    if (modal) modal.style.display = 'none';
+    if (typeof updateCreditDisplay === 'function') updateCreditDisplay();
+    loadPage('masolatok');
 }

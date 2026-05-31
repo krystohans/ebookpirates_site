@@ -9191,5 +9191,5 @@ function reloadCopiesPage() {
     var modal = document.getElementById('universal-npc-modal');
     if (modal) modal.style.display = 'none';
     if (typeof updateCreditDisplay === 'function') updateCreditDisplay();
-    loadPage('masolatok');
+    loadPage('masolatok_oldal');
 }

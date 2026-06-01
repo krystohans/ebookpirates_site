@@ -4086,7 +4086,12 @@ function refreshMonasteryWork(silent) {
                             }
                         }
                     } else if (work.status === 'Agent elemzés alatt') {
-                        topControls = '<div style="margin:5px 0; padding:10px; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; text-align:center; color: #8e44ad;"><strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br><small>A kézirat le van foglalva az elemzőmodul számára.</small></div>';
+                        topControls = '<div style="margin:5px 0; padding:10px; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; text-align:center; color: #8e44ad;">' +
+                                      '<strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br>' +
+                                      '<small>A kézirat le van foglalva az elemzőmodul számára.</small><br>' +
+                                      '<button class="btn btn-sm btn-warning" style="margin-top:10px; color:#333; font-weight:bold; width:100%;" onclick="cancelAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-undo"></i> AI Elemzés Megszakítása (Visszavonás)</button>' +
+                                      '</div>';
+
                     } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
                         topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                     }
@@ -4384,9 +4389,25 @@ function triggerPapatAgent(workId) {
                 alert("Papát megkezdte az elemzést! Kérlek várj pár percet, majd frissíts rá a munkapadra.");
                 refreshMonasteryWork();
             } else {
-                alert("Papát sajnos nem tudott elindulni: " + (papatRes ? papatRes.error : "Szerver hiba"));
+                alert("Papát sajnos nem tudott elindulni: " + (papatRes ? papatRes.error : "Szerver hiba. Ha a helyi AI ügynök fut, az automatikusan átveszi a feladatot!"));
+                // Frissítsük a munkapadot, hogy látszódjon az "Agent elemzés alatt" státusz!
+                refreshMonasteryWork();
             }
         });
+    });
+}
+
+function cancelAgentAnalysis(workId) {
+    if (!confirm("Biztosan megszakítod az AI elemzést? A mű visszakerül 'Elbírálás alatt' státuszba, és kézzel kell elbírálnod.")) return;
+    
+    document.getElementById('loading-overlay').style.display = 'flex';
+    callBackend('manageWorkStatus', [workId, 'set_status', 'Elbírálás alatt'], function (res) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        if (res && res.success) {
+            refreshMonasteryWork();
+        } else {
+            alert("Hiba: " + (res ? res.error : "Szerver hiba"));
+        }
     });
 }
 

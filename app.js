@@ -8782,6 +8782,35 @@ function handleNPCButtonAction(btn) {
         return;
     }
 
+    if (btn.action === 'CLIENT_REDIRECT') {
+        var targetTab = btn.payload;
+        if (targetTab === 'MUNKAPAD') targetTab = 'Munkapad';
+        
+        if (typeof openMonasteryTab === 'function') {
+            openMonasteryTab(null, targetTab);
+            var modal = document.getElementById('universal-npc-modal');
+            if (modal) modal.style.display = 'none';
+        } else {
+            console.error("Hiba: openMonasteryTab fuggveny nem letezik.");
+        }
+        return;
+    }
+
+    if (btn.action && btn.action.indexOf('CLIENT_OPEN_DASHBOARD') === 0) {
+        var parts = btn.action.split('|');
+        var bookId = parts[1];
+        var folderId = parts[2];
+        var title = parts[3];
+        if (typeof openAuthorDashboard === 'function') {
+            openAuthorDashboard(bookId, folderId, title);
+            var modal = document.getElementById('universal-npc-modal');
+            if (modal) modal.style.display = 'none';
+        } else {
+            console.error("Hiba: openAuthorDashboard fuggveny nem letezik.");
+        }
+        return;
+    }
+
     if (btn.action && btn.action.indexOf('CLIENT_REQ_PIN') === 0) {
         var parts = btn.action.split('|');
         var funcName = parts[1];

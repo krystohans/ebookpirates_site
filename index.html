@@ -99,11 +99,11 @@
     </div>
 
     <div id="author-dashboard-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 100;">
-        <div class="gamemode-modal-content" style="margin-top: 5vh; max-width: 900px; width: 95%;">
+        <div class="gamemode-modal-content" style="position: relative; margin-top: 5vh; max-width: 900px; width: 95%;">
             
-            <div class="gamemode-header">
+            <div class="gamemode-header" style="position: relative;">
                 <span id="dashboard-book-title" class="header-title" data-lang="dashboard_title">Könyv Statisztika</span>
-                <span class="close-modal-btn" onclick="document.getElementById('author-dashboard-modal').style.display='none'">&times;</span>
+                <button class="btn btn-close" style="position: absolute; top: -15px; right: -15px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 0;" onclick="document.getElementById('author-dashboard-modal').style.display='none'">X</button>
             </div>
 
             <div id="dashboard-loading" style="padding: 20px; text-align: center;" data-lang-html="dashboard_loading">
@@ -379,10 +379,10 @@
     </div>
 
     <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 105;">
-        <div class="gamemode-modal-content" style="margin-top: 5vh; max-width: 700px; width: 95%;">
+        <div class="gamemode-modal-content" style="position: relative; margin-top: 5vh; max-width: 700px; width: 95%;">
             <div class="gamemode-header">
                 <span class="header-title"><i class="fas fa-robot"></i> Papát AI - Értékelő Jelentés</span>
-                <span class="close-modal-btn" onclick="closePapatReportModal()">&times;</span>
+                <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closePapatReportModal()">X</button>
             </div>
             <div id="papat-report-content" style="padding: 20px; font-size: 0.95em; line-height: 1.5;">
                 <!-- AI report goes here -->

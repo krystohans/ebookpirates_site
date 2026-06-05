@@ -7934,7 +7934,59 @@ function initializeKincsekPage(response) {
     } else {
         console.warn("[initializeKincsekPage] Figyelmeztetés: Hiányzó currentUserEmail vagy data.rang a rangfrissítéshez.");
     }
+
+    // --- ZSOLDOSOK BETÖLTÉSE ---
+    var mercContainer = document.getElementById('char-sheet-mercenaries');
+    if (mercContainer) {
+        callBackend('getMyMercenaries', [],
+            function (mercResponse) {
+                if (mercResponse && mercResponse.length > 0) {
+                    var html = '';
+                    mercResponse.forEach(function (merc) {
+                        html += '<div style="background: rgba(0,0,0,0.2); padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 3px solid #ffd700;">';
+                        html += '<strong>' + merc.name + '</strong> <span style="font-size:0.8em; color:#ccc;">(' + merc.role + ')</span><br>';
+                        html += '<span style="font-size:0.85em; color:#aaa;">Szerződés: ' + merc.remainingDays + ' nap hátra (lejár: ' + merc.endDateStr + ')</span><br>';
+                        html += '<div style="margin-top:8px; display:flex; gap:5px;">';
+                        html += '<button class="btn btn-sm" onclick="handleMercenaryAction(\'extend\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">Meghosszabbítom (' + merc.cost + ' Kr)</button>';
+                        html += '<button class="btn btn-danger btn-sm" onclick="handleMercenaryAction(\'dismiss\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">Elküldöm</button>';
+                        html += '</div></div>';
+                    });
+                    mercContainer.innerHTML = html;
+                } else {
+                    mercContainer.innerHTML = '<div class="stat-line">Nincs aktív zsoldosod.</div>';
+                }
+            },
+            function (err) {
+                console.error("Zsoldosok betöltése sikertelen:", err);
+                mercContainer.innerHTML = '<div class="stat-line" style="color:red;">Hiba a lekérdezésnél.</div>';
+            }
+        );
+    }
 }
+
+function handleMercenaryAction(actionType, npcName) {
+    if (!confirm("Biztosan " + (actionType === 'extend' ? "meghosszabbítod" : "elküldöd") + " ezt a zsoldost: " + npcName + "?")) {
+        return;
+    }
+    document.getElementById('loading-overlay').style.display = 'flex';
+    var actionFunc = actionType === 'extend' ? 'extendMercenary' : 'dismissMercenary';
+    callBackend(actionFunc, [npcName],
+        function (response) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (response.success) {
+                uiAlert("Sikeres művelet: " + response.message);
+                loadPage('kincsek'); // Újratöltjük a kincsek oldalt
+            } else {
+                uiAlert("Hiba: " + response.error);
+            }
+        },
+        function (err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert("Hálózati hiba: " + err.message);
+        }
+    );
+}
+
 
 // ==========================
 // === TITKOSÍTÁS SEGÉDEK ===

@@ -7943,9 +7943,9 @@ function initializeKincsekPage(response) {
                 if (mercResponse && mercResponse.length > 0) {
                     var html = '';
                     mercResponse.forEach(function (merc) {
-                        html += '<div style="background: rgba(255,255,255,0.4); padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 3px solid #8b4513;">';
-                        html += '<strong style="color:#000;">' + merc.name + '</strong> <span style="font-size:0.8em; color:#333; font-style:italic;">(' + merc.role + ')</span><br>';
-                        html += '<span style="font-size:0.85em; color:#444; font-weight:bold;">Szerződés: ' + merc.remainingDays + ' nap hátra (lejár: ' + merc.endDateStr + ')</span><br>';
+                        html += '<div style="background: rgba(255, 255, 255, 0.85); padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid #8b4513; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">';
+                        html += '<strong style="color:#000; font-size:1.1em;">' + merc.name + '</strong> <span style="font-size:0.9em; color:#3e2723; font-style:italic;">(' + merc.role + ')</span><br>';
+                        html += '<span style="font-size:0.9em; color:#8b0000; font-weight:bold;">Szerződés: ' + merc.remainingDays + ' nap hátra (lejár: ' + merc.endDateStr + ')</span><br>';
                         html += '<div style="margin-top:8px; display:flex; gap:5px;">';
                         html += '<button class="btn btn-sm" onclick="handleMercenaryAction(\'extend\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">Meghosszabbítom (' + merc.cost + ' Kr)</button>';
                         html += '<button class="btn btn-danger btn-sm" onclick="handleMercenaryAction(\'dismiss\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">Elküldöm</button>';

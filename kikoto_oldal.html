@@ -98,6 +98,7 @@
                     Kolostor</button>
                 <button class="btn" onclick="loadPage('hajomuhely_oldal')" data-lang="harbor_nav_shipyard">🛠️
                     Hajóműhely</button>
+                <button class="btn" onclick="openToborzoBarakk()">⚓ Toborzóbarakk</button>
             </div>
         </div>
 
@@ -151,4 +152,38 @@
     </div>
 
     <!-- End Universal NPC Modal -->
+
+    <!-- Toborzóbarakk Modal -->
+    <div id="toborzo-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;">
+        <div class="gamemode-modal-content" style="width: 90%; max-width: 600px; max-height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-paper); border-radius: 8px; border: 2px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            
+            <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--color-gold);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-users" style="font-size: 1.5em; color: var(--color-gold);"></i>
+                    <div>
+                        <h3 style="margin: 0; font-family: var(--font-serif); font-size: 1.5em; color: white;">Toborzóbarakk</h3>
+                        <small style="color: #bdc3c7;">Jelentkezés hajós pozíciókra</small>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('toborzo-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+            </div>
+
+            <div style="padding: 20px; overflow-y: auto; flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4 style="margin: 0; color: var(--color-accent); font-family: var(--font-serif);">Elérhető Hajók</h4>
+                    <button class="btn" onclick="openToborzoBarakk()"><i class="fas fa-sync-alt"></i> Frissítés</button>
+                </div>
+                
+                <div id="toborzo-loading" style="text-align: center; padding: 20px; display: none;">
+                    <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--color-gold);"></i>
+                    <p style="margin-top: 10px; font-style: italic;">Hajók lekérdezése...</p>
+                </div>
+
+                <div id="toborzo-ship-list" style="display: grid; gap: 15px;">
+                    <!-- Hajók ide töltődnek -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Toborzóbarakk Modal -->
 </div>

@@ -9295,3 +9295,107 @@ function reloadCopiesPage() {
     if (typeof updateCreditDisplay === 'function') updateCreditDisplay();
     loadPage('masolatok_oldal');
 }
+
+// --- TOBORZÓBARAKK LOGIKA ---
+
+function openToborzoBarakk() {
+    // 1. Megnyitjuk a modálist
+    document.getElementById('toborzo-modal').style.display = 'flex';
+    document.getElementById('toborzo-loading').style.display = 'block';
+    document.getElementById('toborzo-ship-list').innerHTML = '';
+
+    // 2. Lekérdezzük a hajókat a backendből
+    fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            'action': 'getAvailableShipsForPlayer',
+            'token': window.localStorage.getItem('userToken') || ''
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('toborzo-loading').style.display = 'none';
+        if (data.success) {
+            renderToborzoShips(data.ships);
+        } else {
+            uiAlert('Hiba a hajók lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
+        }
+    })
+    .catch(err => {
+        document.getElementById('toborzo-loading').style.display = 'none';
+        uiAlert('Hálózati hiba a Toborzóbarakk lekérdezésekor: ' + err.message);
+    });
+}
+
+function renderToborzoShips(ships) {
+    const listContainer = document.getElementById('toborzo-ship-list');
+    listContainer.innerHTML = '';
+
+    if (!ships || ships.length === 0) {
+        listContainer.innerHTML = '<p style="text-align:center; font-style:italic;">Jelenleg nincs elérhető hajó, amely legénységet keres.</p>';
+        return;
+    }
+
+    ships.forEach(ship => {
+        // Create ship card
+        const card = document.createElement('div');
+        card.style.cssText = 'background: #eceff1; border: 1px solid #cfd8dc; border-radius: 6px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);';
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = `
+            <h5 style="margin: 0; font-size: 1.2em; color: #37474f;">${ship.name}</h5>
+            <small style="color: #78909c;">Típus: ${ship.type || 'Ismeretlen'}</small><br>
+            <small style="color: #78909c;">Kapitány: ${ship.captain || 'Nincs kinevezve'}</small>
+        `;
+
+        const applyBtn = document.createElement('button');
+        applyBtn.className = 'btn btn-primary';
+        applyBtn.innerHTML = 'Jelentkezés <i class="fas fa-arrow-right"></i>';
+        applyBtn.onclick = () => {
+            showShipRoleSelection(ship.id, ship.name);
+        };
+
+        card.appendChild(infoDiv);
+        card.appendChild(applyBtn);
+        listContainer.appendChild(card);
+    });
+}
+
+function showShipRoleSelection(shipId, shipName) {
+    const role = prompt(`Milyen pozícióra szeretnél jelentkezni a(z) ${shipName} hajóra?\n(Pl.: Matróz, Fedélzetmester, Tüzér, Szakács, stb.)`);
+    if (!role || role.trim() === '') return;
+
+    submitShipApplication(shipId, role.trim());
+}
+
+function submitShipApplication(shipId, role) {
+    document.getElementById('toborzo-loading').style.display = 'block';
+    fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            'action': 'applyForShipRole',
+            'token': window.localStorage.getItem('userToken') || '',
+            'shipId': shipId,
+            'requestedRole': role
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('toborzo-loading').style.display = 'none';
+        if (data.success) {
+            uiAlert('Sikeres jelentkezés! A kapitány hamarosan dönt a felvételedről.');
+        } else {
+            uiAlert('Hiba a jelentkezés során: ' + (data.error || 'Ismeretlen hiba'));
+        }
+    })
+    .catch(err => {
+        document.getElementById('toborzo-loading').style.display = 'none';
+        uiAlert('Hálózati hiba a jelentkezéskor: ' + err.message);
+    });
+}

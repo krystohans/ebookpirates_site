@@ -1317,12 +1317,10 @@ function runTutorialScript() {
 
     window.onTutorialSuccess = function (email) {
         callBackend('markTutorialCompleted', ['unity'], function (res) {
-            if (res && res.success) {
-                loadPage('fedelzet_oldal');
-            }
+                loadPage('kikoto_oldal');
         }, function (err) {
             console.warn('Tutorial OK mentési hiba:', err);
-            loadPage('fedelzet_oldal');
+            loadPage('kikoto_oldal');
         });
     };
 
@@ -7339,7 +7337,7 @@ function returnToPort() {
 
     var contentDiv = document.getElementById('content');
     if (!contentDiv.innerHTML.trim()) {
-        loadPage('fedelzet_oldal');
+        loadPage('kikoto_oldal');
     }
 }
 
@@ -9376,6 +9374,31 @@ function submitShipApplication(shipId, role) {
         function(err) {
             document.getElementById('toborzo-loading').style.display = 'none';
             uiAlert('Hálózati hiba a jelentkezéskor: ' + err.message);
+        }
+    );
+}
+
+function tryGoToDeck() {
+    var loading = document.getElementById('loading-overlay');
+    if (loading) loading.style.display = 'flex';
+
+    callBackend('getUserShips', [], 
+        function(response) {
+            if (loading) loading.style.display = 'none';
+            if (response.success) {
+                if (response.ships && response.ships.length > 0) {
+                    window.userShips = response.ships; // Mentsük el a frontendnek
+                    loadPage('fedelzet_oldal');
+                } else {
+                    uiAlert("Még egy rozzant tutajod sincs, hova akarsz felszállni?! Jelentkezz egy hajóra a Toborzóbarakkban vagy vásárolj egyet a Hajóműhelyben!", "Nincs hajód!");
+                }
+            } else {
+                uiAlert("Hiba a hajók lekérdezésekor: " + response.error);
+            }
+        },
+        function(err) {
+            if (loading) loading.style.display = 'none';
+            uiAlert("Hálózati hiba: " + err.message);
         }
     );
 }

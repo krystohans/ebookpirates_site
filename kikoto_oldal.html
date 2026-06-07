@@ -154,7 +154,7 @@
     <!-- End Universal NPC Modal -->
 
     <!-- Toborzóbarakk Modal -->
-    <div id="toborzo-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;">
+    <div id="toborzo-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 100;">
         <div class="gamemode-modal-content" style="width: 90%; max-width: 700px; max-height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-paper); border-radius: 8px; border: 2px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
             
             <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--color-gold);">
@@ -205,15 +205,22 @@
                             <label style="font-weight: bold; display: block; margin-bottom: 5px;">Keresett Pozíció (ha aktív vagy):</label>
                             <select id="toborzo-role-select" class="form-control" style="width: 100%; padding: 10px;">
                                 <option value="">- Válassz -</option>
-                                <option value="Matróz">Matróz</option>
-                                <option value="Szakács">Szakács</option>
-                                <option value="Orvos">Hajóorvos</option>
-                                <option value="Tüzér">Tüzér / Pattantyús</option>
-                                <option value="Navigátor">Kormányos / Navigátor</option>
+                                <option value="Kapitány">Kapitány</option>
+                                <option value="Navigátor">Navigátor</option>
+                                <option value="Kormányos">Kormányos</option>
                                 <option value="Vitorlamester">Vitorlamester</option>
                                 <option value="Fedélzetmester">Fedélzetmester</option>
-                                <option value="Kárpitos">Kárpitos</option>
-                                <option value="Ács">Hajóács</option>
+                                <option value="Tüzér">Tüzér</option>
+                                <option value="Hajóorvos">Hajóorvos</option>
+                                <option value="Hajószakács">Hajószakács</option>
+                                <option value="Térképrajzoló">Térképrajzoló</option>
+                                <option value="Tekercsmester">Tekercsmester</option>
+                                <option value="Felfedező">Felfedező</option>
+                                <option value="Gépész">Gépész</option>
+                                <option value="Hajóács">Hajóács</option>
+                                <option value="Letmester">Letmester</option>
+                                <option value="Monk">Monk</option>
+                                <option value="Tengerész">Tengerész</option>
                             </select>
                         </div>
                         <button class="btn" style="background: var(--color-gold); color: #333; padding: 12px; font-weight: bold; margin-top: 10px;" onclick="savePlayerJobStatus()">

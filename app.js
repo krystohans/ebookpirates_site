@@ -9305,29 +9305,20 @@ function openToborzoBarakk() {
     document.getElementById('toborzo-ship-list').innerHTML = '';
 
     // 2. Lekérdezzük a hajókat a backendből
-    fetch(WEB_APP_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+    callBackend('getAvailableShipsForPlayer', [], 
+        function(data) {
+            document.getElementById('toborzo-loading').style.display = 'none';
+            if (data.success) {
+                renderToborzoShips(data.ships);
+            } else {
+                uiAlert('Hiba a hajók lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
+            }
         },
-        body: new URLSearchParams({
-            'action': 'getAvailableShipsForPlayer',
-            'token': window.localStorage.getItem('userToken') || ''
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('toborzo-loading').style.display = 'none';
-        if (data.success) {
-            renderToborzoShips(data.ships);
-        } else {
-            uiAlert('Hiba a hajók lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
+        function(err) {
+            document.getElementById('toborzo-loading').style.display = 'none';
+            uiAlert('Hálózati hiba a Toborzóbarakk lekérdezésekor: ' + err.message);
         }
-    })
-    .catch(err => {
-        document.getElementById('toborzo-loading').style.display = 'none';
-        uiAlert('Hálózati hiba a Toborzóbarakk lekérdezésekor: ' + err.message);
-    });
+    );
 }
 
 function renderToborzoShips(ships) {
@@ -9373,29 +9364,18 @@ function showShipRoleSelection(shipId, shipName) {
 
 function submitShipApplication(shipId, role) {
     document.getElementById('toborzo-loading').style.display = 'block';
-    fetch(WEB_APP_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+    callBackend('applyForShipRole', [shipId, role],
+        function(data) {
+            document.getElementById('toborzo-loading').style.display = 'none';
+            if (data.success) {
+                uiAlert('Sikeres jelentkezés! A kapitány hamarosan dönt a felvételedről.');
+            } else {
+                uiAlert('Hiba a jelentkezés során: ' + (data.error || 'Ismeretlen hiba'));
+            }
         },
-        body: new URLSearchParams({
-            'action': 'applyForShipRole',
-            'token': window.localStorage.getItem('userToken') || '',
-            'shipId': shipId,
-            'requestedRole': role
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('toborzo-loading').style.display = 'none';
-        if (data.success) {
-            uiAlert('Sikeres jelentkezés! A kapitány hamarosan dönt a felvételedről.');
-        } else {
-            uiAlert('Hiba a jelentkezés során: ' + (data.error || 'Ismeretlen hiba'));
+        function(err) {
+            document.getElementById('toborzo-loading').style.display = 'none';
+            uiAlert('Hálózati hiba a jelentkezéskor: ' + err.message);
         }
-    })
-    .catch(err => {
-        document.getElementById('toborzo-loading').style.display = 'none';
-        uiAlert('Hálózati hiba a jelentkezéskor: ' + err.message);
-    });
+    );
 }

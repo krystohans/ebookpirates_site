@@ -9391,7 +9391,7 @@ function renderSelectedShipCrew() {
     formDiv.id = 'bulk-crew-form';
     
     var allRoles = [
-        "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
+        "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
         "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló", 
         "Tekercsmester", "Felfedező", "Gépész", "Hajóács", 
         "Letmester", "Monk", "Tengerész"
@@ -9477,7 +9477,7 @@ function renderSelectedShipCrew() {
             var dName = cMatch ? cMatch.name : currEmail;
             var label = document.createElement('label');
             label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em; background: #e8f5e9;';
-            label.innerHTML = '<input type="checkbox" value="' + currEmail + '" data-role="' + role + '" data-name="' + dName + '" checked> <strong>' + dName + '</strong> <span style="color:#aaa;font-size:0.8em;">(' + currEmail + ')</span>';
+            label.innerHTML = '<input type="checkbox" value="' + currEmail + '" data-role="' + role + '" data-name="' + dName + '" checked> <strong>' + dName + '</strong>';
             optionsContainer.appendChild(label);
             optionAdded = true;
         });
@@ -9485,9 +9485,10 @@ function renderSelectedShipCrew() {
         // Akik szabadok (nincsenek ezen a pozíción, de nincsenek máshol sem a hajón - VAGY ha máshol vannak, az szerveroldalon ki lesz szűrve, de itt mindent mutatunk)
         sortedCrew.forEach(function(player) {
             if (currentEmails.includes(player.email.toLowerCase())) return;
+            if (player.isBusy) return; // SKIP BUSY PLAYERS
             var label = document.createElement('label');
             label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em;';
-            label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + player.name + '"> ' + player.name + ' <span style="color:#aaa;font-size:0.8em;">(' + player.email + ')</span>';
+            label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + player.name + '"> ' + player.name;
             optionsContainer.appendChild(label);
             optionAdded = true;
         });
@@ -9533,6 +9534,8 @@ function submitBulkCrewAssignment(shipId) {
     };
     
     var checkboxes = document.querySelectorAll('#bulk-crew-form input[type="checkbox"]');
+    var seenEmails = {};
+    var hasDuplicates = false;
     
     for (var i = 0; i < checkboxes.length; i++) {
         var cb = checkboxes[i];
@@ -9540,9 +9543,22 @@ function submitBulkCrewAssignment(shipId) {
             var role = cb.getAttribute('data-role');
             var val = cb.value;
             if (val) {
+                if (seenEmails[val]) {
+                    hasDuplicates = true;
+                }
+                seenEmails[val] = true;
                 assignmentsMap[role].push(val);
             }
         }
+    }
+
+    if (hasDuplicates) {
+        if (typeof uiAlert === 'function') {
+            uiAlert("Egy kalóz egyszerre csak EGY pozíciót tölthet be a hajón! Kérlek javítsd a kijelölést.");
+        } else {
+            alert("Egy kalóz egyszerre csak EGY pozíciót tölthet be a hajón! Kérlek javítsd a kijelölést.");
+        }
+        return;
     }
 
     document.getElementById('toborzo-loading').style.display = 'flex';

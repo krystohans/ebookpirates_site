@@ -9345,6 +9345,32 @@ function switchToborzoTab(tab) {
     document.getElementById('tab-btn-kapitany').style.background = (tab === 'kapitany') ? 'var(--color-gold)' : '#bdbdbd';
 }
 
+function hasRequiredRank(playerRank, role) {
+    var rankHierarchy = [
+      '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
+      'Alhajómester', 'Törzshajómester', 'Törzsfőhajómester',
+      'Tengerész-hadapród', 'Korvetthadnagy', 'Fregatthadnagy', 'Sorhajóhadnagy',
+      'Korvettkapitány', 'Fregattkapitány', 'Sorhajókapitány',
+      'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'Főtengernagy'
+    ];
+    var szakmaiTisztek = ['Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester', 'Felfedező', 'Letmester', 'Monk'];
+    var parancsnokiTisztek = ['Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester', 'Gépész'];
+    
+    var playerIdx = rankHierarchy.indexOf(playerRank);
+    if (playerIdx === -1) playerIdx = 0; // fallback
+    
+    var requiredIdx = 0;
+    if (role === 'Kapitány') {
+        requiredIdx = 11;
+    } else if (parancsnokiTisztek.indexOf(role) !== -1) {
+        requiredIdx = 7;
+    } else if (szakmaiTisztek.indexOf(role) !== -1) {
+        requiredIdx = 4;
+    }
+    
+    return playerIdx >= requiredIdx;
+}
+
 function savePlayerJobStatus() {
     const status = document.getElementById('toborzo-status-select').value;
     const role = document.getElementById('toborzo-role-select').value;
@@ -9490,9 +9516,13 @@ function renderSelectedShipCrew() {
         sortedCrew.forEach(function(player) {
             if (currentEmails.includes(player.email.toLowerCase())) return;
             if (player.isBusy) return; // SKIP BUSY PLAYERS
+            
+            // Kiszűrjük azokat, akiknek nincs meg a megfelelő rangjuk
+            if (!hasRequiredRank(player.rank, role)) return;
+            
             var label = document.createElement('label');
             label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em;';
-            label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + player.name + '"> ' + player.name;
+            label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + player.name + '"> ' + player.name + ' <span style="color:#888; font-size:0.8em;">(' + (player.rank || '') + ')</span>';
             optionsContainer.appendChild(label);
             optionAdded = true;
         });

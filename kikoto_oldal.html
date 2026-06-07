@@ -155,33 +155,98 @@
 
     <!-- Toborzóbarakk Modal -->
     <div id="toborzo-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;">
-        <div class="gamemode-modal-content" style="width: 90%; max-width: 600px; max-height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-paper); border-radius: 8px; border: 2px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+        <div class="gamemode-modal-content" style="width: 90%; max-width: 700px; max-height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-paper); border-radius: 8px; border: 2px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
             
             <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--color-gold);">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <i class="fas fa-users" style="font-size: 1.5em; color: var(--color-gold);"></i>
                     <div>
                         <h3 style="margin: 0; font-family: var(--font-serif); font-size: 1.5em; color: white;">Toborzóbarakk</h3>
-                        <small style="color: #bdc3c7;">Jelentkezés hajós pozíciókra</small>
+                        <small style="color: #bdc3c7;">Álláskeresés és Legénység Menedzsment</small>
                     </div>
                 </div>
                 <button onclick="document.getElementById('toborzo-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
             </div>
 
-            <div style="padding: 20px; overflow-y: auto; flex: 1;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h4 style="margin: 0; color: var(--color-accent); font-family: var(--font-serif);">Elérhető Hajók</h4>
-                    <button class="btn" onclick="openToborzoBarakk()"><i class="fas fa-sync-alt"></i> Frissítés</button>
-                </div>
+            <!-- TAB HEADER -->
+            <div style="display: flex; background: #e0e0e0; border-bottom: 2px solid #ccc;">
+                <button id="tab-btn-munkavallalo" class="btn" style="flex: 1; border-radius: 0; background: var(--color-gold); color: #333;" onclick="switchToborzoTab('munkavallalo')">
+                    <i class="fas fa-user-tag"></i> Munkavállaló
+                </button>
+                <button id="tab-btn-kapitany" class="btn" style="flex: 1; border-radius: 0; background: #bdbdbd; color: #333;" onclick="switchToborzoTab('kapitany')">
+                    <i class="fas fa-ship"></i> Kapitány
+                </button>
+            </div>
+
+            <div style="padding: 20px; overflow-y: auto; flex: 1; position: relative;">
                 
-                <div id="toborzo-loading" style="text-align: center; padding: 20px; display: none;">
-                    <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--color-gold);"></i>
-                    <p style="margin-top: 10px; font-style: italic;">Hajók lekérdezése...</p>
+                <!-- LOADING INDICATOR -->
+                <div id="toborzo-loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: none; align-items: center; justify-content: center; z-index: 10; flex-direction: column;">
+                    <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--color-gold);"></i>
+                    <p style="margin-top: 15px; font-weight: bold; font-family: var(--font-serif);">Adatok feldolgozása...</p>
                 </div>
 
-                <div id="toborzo-ship-list" style="display: grid; gap: 15px;">
-                    <!-- Hajók ide töltődnek -->
+                <!-- I. MUNKAVÁLLALÓ NÉZET -->
+                <div id="toborzo-tab-munkavallalo">
+                    <h4 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 15px;">
+                        Jelentkezés Munkára
+                    </h4>
+                    <p style="font-size: 0.9em; margin-bottom: 15px;">Itt adhatod meg, hogy milyen hajós munkát vállalnál. A jelentkezésed felkerül a faliújságra, ahol a kapitányok megláthatják és felbérelhetnek.</p>
+                    
+                    <div style="display: grid; gap: 15px; max-width: 400px; margin: 0 auto;">
+                        <div>
+                            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Munkavállalói státuszod:</label>
+                            <select id="toborzo-status-select" class="form-control" style="width: 100%; padding: 10px;">
+                                <option value="Keresek munkát">Aktívan keresek munkát</option>
+                                <option value="Foglalt">Már van munkám / Nem érek rá</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Keresett Pozíció (ha aktív vagy):</label>
+                            <select id="toborzo-role-select" class="form-control" style="width: 100%; padding: 10px;">
+                                <option value="">- Válassz -</option>
+                                <option value="Matróz">Matróz</option>
+                                <option value="Szakács">Szakács</option>
+                                <option value="Orvos">Hajóorvos</option>
+                                <option value="Tüzér">Tüzér / Pattantyús</option>
+                                <option value="Navigátor">Kormányos / Navigátor</option>
+                                <option value="Vitorlamester">Vitorlamester</option>
+                                <option value="Fedélzetmester">Fedélzetmester</option>
+                                <option value="Kárpitos">Kárpitos</option>
+                                <option value="Ács">Hajóács</option>
+                            </select>
+                        </div>
+                        <button class="btn" style="background: var(--color-gold); color: #333; padding: 12px; font-weight: bold; margin-top: 10px;" onclick="savePlayerJobStatus()">
+                            <i class="fas fa-save"></i> Státusz Mentése
+                        </button>
+                    </div>
                 </div>
+
+                <!-- II. KAPITÁNY NÉZET -->
+                <div id="toborzo-tab-kapitany" style="display: none;">
+                    <h4 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 15px;">
+                        Saját Hajóim Legénysége
+                    </h4>
+                    <p style="font-size: 0.9em; margin-bottom: 15px;">Válassz ki egyet a kikötőben lévő hajóid közül, hogy betöltsd az üres pozíciókat. Csak azokat a hajókat látod, amik nincsenek expedíción.</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: bold;">Hajó kiválasztása:</label>
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <select id="toborzo-myships-select" class="form-control" style="flex: 1; padding: 10px;" onchange="renderSelectedShipCrew()">
+                                <option value="">Nincs kiválasztott hajó</option>
+                            </select>
+                            <button class="btn" onclick="openToborzoBarakk()"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="toborzo-myship-details" style="display: none;">
+                        <h5 style="background: #37474f; color: white; padding: 8px; margin: 0; border-radius: 4px 4px 0 0;">Legénységi Roster</h5>
+                        <div id="toborzo-myship-roles" style="border: 1px solid #ccc; border-top: none; padding: 10px; border-radius: 0 0 4px 4px; display: grid; gap: 10px;">
+                            <!-- Ide generáljuk az adott hajó posztjait -->
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>

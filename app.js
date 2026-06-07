@@ -9297,19 +9297,36 @@ function reloadCopiesPage() {
 // --- TOBORZÓBARAKK LOGIKA ---
 
 function openToborzoBarakk() {
-    // 1. Megnyitjuk a modálist
+    // UI Initialization
     document.getElementById('toborzo-modal').style.display = 'flex';
-    document.getElementById('toborzo-loading').style.display = 'block';
-    document.getElementById('toborzo-ship-list').innerHTML = '';
+    document.getElementById('toborzo-loading').style.display = 'flex';
+    switchToborzoTab('munkavallalo');
 
-    // 2. Lekérdezzük a hajókat a backendből
-    callBackend('getAvailableShipsForPlayer', [], 
+    // Fetch initial data
+    callBackend('getToborzoData', [], 
         function(data) {
             document.getElementById('toborzo-loading').style.display = 'none';
             if (data.success) {
-                renderToborzoShips(data.ships);
+                // Populate Worker Tab
+                if (data.playerStatus) {
+                    document.getElementById('toborzo-status-select').value = data.playerStatus.status || "Keresek munkát";
+                    document.getElementById('toborzo-role-select').value = data.playerStatus.role || "";
+                }
+
+                // Populate Captain Tab
+                window.toborzoOwnedShips = data.ownedShips || [];
+                const myshipsSelect = document.getElementById('toborzo-myships-select');
+                myshipsSelect.innerHTML = '<option value="">Nincs kiválasztott hajó</option>';
+                window.toborzoOwnedShips.forEach(ship => {
+                    const opt = document.createElement('option');
+                    opt.value = ship.id;
+                    opt.textContent = ship.name + (ship.inHarbor ? "" : " (Expedíción)");
+                    opt.disabled = !ship.inHarbor;
+                    myshipsSelect.appendChild(opt);
+                });
+                renderSelectedShipCrew(); // clear details
             } else {
-                uiAlert('Hiba a hajók lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
+                uiAlert('Hiba az adatok lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
             }
         },
         function(err) {
@@ -9319,61 +9336,122 @@ function openToborzoBarakk() {
     );
 }
 
-function renderToborzoShips(ships) {
-    const listContainer = document.getElementById('toborzo-ship-list');
-    listContainer.innerHTML = '';
+function switchToborzoTab(tab) {
+    document.getElementById('toborzo-tab-munkavallalo').style.display = (tab === 'munkavallalo') ? 'block' : 'none';
+    document.getElementById('toborzo-tab-kapitany').style.display = (tab === 'kapitany') ? 'block' : 'none';
+    
+    document.getElementById('tab-btn-munkavallalo').style.background = (tab === 'munkavallalo') ? 'var(--color-gold)' : '#bdbdbd';
+    document.getElementById('tab-btn-kapitany').style.background = (tab === 'kapitany') ? 'var(--color-gold)' : '#bdbdbd';
+}
 
-    if (!ships || ships.length === 0) {
-        listContainer.innerHTML = '<p style="text-align:center; font-style:italic;">Jelenleg nincs elérhető hajó, amely legénységet keres.</p>';
+function savePlayerJobStatus() {
+    const status = document.getElementById('toborzo-status-select').value;
+    const role = document.getElementById('toborzo-role-select').value;
+    
+    if (status === 'Keresek munkát' && !role) {
+        uiAlert("Kérlek, válassz ki egy keresett pozíciót!");
         return;
     }
 
-    ships.forEach(ship => {
-        // Create ship card
-        const card = document.createElement('div');
-        card.style.cssText = 'background: #eceff1; border: 1px solid #cfd8dc; border-radius: 6px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);';
-        
-        const infoDiv = document.createElement('div');
-        infoDiv.innerHTML = `
-            <h5 style="margin: 0; font-size: 1.2em; color: #37474f;">${ship.name}</h5>
-            <small style="color: #78909c;">Típus: ${ship.type || 'Ismeretlen'}</small><br>
-            <small style="color: #78909c;">Kapitány: ${ship.captain || 'Nincs kinevezve'}</small>
-        `;
-
-        const applyBtn = document.createElement('button');
-        applyBtn.className = 'btn btn-primary';
-        applyBtn.innerHTML = 'Jelentkezés <i class="fas fa-arrow-right"></i>';
-        applyBtn.onclick = () => {
-            showShipRoleSelection(ship.id, ship.name);
-        };
-
-        card.appendChild(infoDiv);
-        card.appendChild(applyBtn);
-        listContainer.appendChild(card);
-    });
-}
-
-function showShipRoleSelection(shipId, shipName) {
-    const role = prompt(`Milyen pozícióra szeretnél jelentkezni a(z) ${shipName} hajóra?\n(Pl.: Matróz, Fedélzetmester, Tüzér, Szakács, stb.)`);
-    if (!role || role.trim() === '') return;
-
-    submitShipApplication(shipId, role.trim());
-}
-
-function submitShipApplication(shipId, role) {
-    document.getElementById('toborzo-loading').style.display = 'block';
-    callBackend('applyForShipRole', [shipId, role],
+    document.getElementById('toborzo-loading').style.display = 'flex';
+    callBackend('updatePlayerJobStatus', [status, role], 
         function(data) {
             document.getElementById('toborzo-loading').style.display = 'none';
             if (data.success) {
-                uiAlert('Sikeres jelentkezés! A kapitány hamarosan dönt a felvételedről.');
+                uiAlert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.");
             } else {
-                uiAlert('Hiba a jelentkezés során: ' + (data.error || 'Ismeretlen hiba'));
+                uiAlert("Hiba a mentés során: " + data.error);
             }
         },
         function(err) {
             document.getElementById('toborzo-loading').style.display = 'none';
-            uiAlert('Hálózati hiba a jelentkezéskor: ' + err.message);
+            uiAlert("Hálózati hiba: " + err.message);
+        }
+    );
+}
+
+function renderSelectedShipCrew() {
+    const select = document.getElementById('toborzo-myships-select');
+    const detailsDiv = document.getElementById('toborzo-myship-details');
+    const rolesContainer = document.getElementById('toborzo-myship-roles');
+    
+    if (!select.value) {
+        detailsDiv.style.display = 'none';
+        return;
+    }
+
+    const ship = window.toborzoOwnedShips.find(s => s.id === select.value);
+    if (!ship) return;
+
+    detailsDiv.style.display = 'block';
+    rolesContainer.innerHTML = '';
+
+    // Standard kalóz hajó posztok (A hajok tábla fejlécei alapján lehetne dinamikus, de rögzíthetjük is a gyakoriakat)
+    const possibleRoles = ["Kapitány", "Elsőtiszt", "Kormányos", "Matróz", "Szakács", "Orvos", "Tüzér", "Ács"];
+    
+    possibleRoles.forEach(role => {
+        const crewMember = ship.crew[role];
+        
+        const rowDiv = document.createElement('div');
+        rowDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px dashed #eee;';
+        
+        const roleLabel = document.createElement('strong');
+        roleLabel.style.width = '120px';
+        roleLabel.textContent = role + ':';
+        
+        const occupantLabel = document.createElement('span');
+        occupantLabel.style.flex = '1';
+        if (crewMember) {
+            occupantLabel.textContent = crewMember;
+            occupantLabel.style.color = '#37474f';
+        } else {
+            occupantLabel.textContent = "Üres";
+            occupantLabel.style.color = '#e53935';
+            occupantLabel.style.fontStyle = 'italic';
+        }
+
+        const actionBtn = document.createElement('button');
+        if (!crewMember) {
+            actionBtn.className = 'btn';
+            actionBtn.style.padding = '4px 8px';
+            actionBtn.style.fontSize = '0.8em';
+            actionBtn.textContent = 'Betöltés';
+            actionBtn.onclick = () => assignToRole(ship.id, role);
+        } else {
+            actionBtn.className = 'btn btn-danger';
+            actionBtn.style.padding = '4px 8px';
+            actionBtn.style.fontSize = '0.8em';
+            actionBtn.textContent = 'Kirúgás';
+            actionBtn.onclick = () => removeRole(ship.id, role); // TODO: implement later if needed
+        }
+
+        rowDiv.appendChild(roleLabel);
+        rowDiv.appendChild(occupantLabel);
+        rowDiv.appendChild(actionBtn);
+        rolesContainer.appendChild(rowDiv);
+    });
+}
+
+function assignToRole(shipId, role) {
+    const targetEmail = prompt(`Kit szeretnél beosztani a(z) ${role} pozícióra ezen a hajón?\n\nÍrd be a zsoldos/játékos email címét. Ha SAJÁT MAGADAT akarod beosztani, hagyd üresen a mezőt!`, "");
+    
+    if (targetEmail === null) return; // Mégsem
+
+    const crewEmail = (targetEmail.trim() === "") ? 'self' : targetEmail.trim();
+
+    document.getElementById('toborzo-loading').style.display = 'flex';
+    callBackend('assignCrewToOwnedShip', [shipId, role, crewEmail], 
+        function(data) {
+            if (data.success) {
+                openToborzoBarakk(); // Refresh
+            } else {
+                document.getElementById('toborzo-loading').style.display = 'none';
+                uiAlert("Hiba: " + data.error);
+            }
+        },
+        function(err) {
+            document.getElementById('toborzo-loading').style.display = 'none';
+            uiAlert("Hiba: " + err.message);
         }
     );
 }

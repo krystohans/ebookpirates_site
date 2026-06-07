@@ -9527,7 +9527,7 @@ function renderSelectedShipCrew() {
 
 function submitBulkCrewAssignment(shipId) {
     var assignmentsMap = {
-        "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [], 
+        "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [], 
         "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [], 
         "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [], 
         "Letmester": [], "Monk": [], "Tengerész": []

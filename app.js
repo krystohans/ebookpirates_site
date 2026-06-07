@@ -9315,7 +9315,7 @@ function openToborzoBarakk() {
 
                 // Populate Captain Tab
                 window.toborzoOwnedShips = data.ownedShips || [];
-                window.allToborzoPlayers = data.allPlayers || [];
+                window.toborzoAvailableCrew = data.availableCrew || [];
                 const myshipsSelect = document.getElementById('toborzo-myships-select');
                 myshipsSelect.innerHTML = '<option value="">Nincs kiválasztott hajó</option>';
                 window.toborzoOwnedShips.forEach(ship => {
@@ -9390,12 +9390,19 @@ function renderSelectedShipCrew() {
     var formDiv = document.createElement('div');
     formDiv.id = 'bulk-crew-form';
     
-    var possibleRoles = Object.keys(ship.crew);
-    var sortedPlayers = window.allToborzoPlayers.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
-    var userMailLower = typeof currentUserEmail !== 'undefined' && currentUserEmail ? currentUserEmail.toLowerCase() : '';
+    var allRoles = [
+        "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
+        "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló", 
+        "Tekercsmester", "Felfedező", "Gépész", "Hajóács", 
+        "Letmester", "Monk", "Tengerész"
+    ];
     
-    possibleRoles.forEach(function(role) {
-        var crewMemberEmails = ship.crew[role] ? ship.crew[role].split(',').map(function(e) { return e.trim().toLowerCase(); }) : [];
+    var availableCrew = window.toborzoAvailableCrew || []; 
+    var sortedCrew = availableCrew.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
+    
+    allRoles.forEach(function(role) {
+        var isSingle = (role !== 'Tengerész');
+        var currentEmails = ship.crew[role] ? ship.crew[role].split(',').map(function(e) { return e.trim().toLowerCase(); }).filter(function(e) { return e; }) : [];
         
         var rowDiv = document.createElement('div');
         rowDiv.style.cssText = 'display: flex; flex-direction: column; padding: 10px; border-bottom: 1px dashed #ccc; background: #fafafa; border-radius: 4px; margin-bottom: 8px;';
@@ -9405,57 +9412,28 @@ function renderSelectedShipCrew() {
         
         var roleLabel = document.createElement('strong');
         roleLabel.style.color = '#1f0901';
-        roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: var(--color-gold);"></i> ' + role;
+        roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: var(--color-gold);"></i> ' + role + (isSingle ? ' <span style="font-size:0.8em; color:#888;">(1 fő)</span>' : ' <span style="font-size:0.8em; color:#888;">(Több fő)</span>');
         
         roleHeader.appendChild(roleLabel);
         rowDiv.appendChild(roleHeader);
         
-        // Jelenlegi tagok listája "Kirúgás" gombbal
-        if (crewMemberEmails.length > 0 && crewMemberEmails[0] !== "") {
-            var currentList = document.createElement('div');
-            currentList.style.marginBottom = '10px';
-            
-            crewMemberEmails.forEach(function(email) {
-                if (!email) return;
-                var pName = email;
-                if (email === userMailLower) pName = "Saját magam";
-                else {
-                    var match = sortedPlayers.find(function(p) { return p.email.toLowerCase() === email; });
-                    if (match) pName = match.name;
-                }
-                
-                var memberDiv = document.createElement('div');
-                memberDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #e0f7fa; padding: 5px 10px; border-radius: 3px; margin-bottom: 3px; border: 1px solid #b2ebf2;';
-                
-                var nameSpan = document.createElement('span');
-                nameSpan.innerHTML = '<strong>' + pName + '</strong> <span style="color:#666; font-size:0.8em;">(' + email + ')</span>';
-                
-                var fireBtn = document.createElement('button');
-                fireBtn.className = 'btn btn-danger btn-sm';
-                fireBtn.style.padding = '2px 8px';
-                fireBtn.style.fontSize = '0.8em';
-                fireBtn.innerHTML = 'Kirúgás';
-                fireBtn.onclick = function() { removeRole(ship.id, role, email); };
-                
-                memberDiv.appendChild(nameSpan);
-                memberDiv.appendChild(fireBtn);
-                currentList.appendChild(memberDiv);
-            });
-            rowDiv.appendChild(currentList);
-        } else {
-            var emptyDiv = document.createElement('div');
-            emptyDiv.style.cssText = 'color: #e53935; font-style: italic; margin-bottom: 10px; font-size: 0.9em;';
-            emptyDiv.innerText = 'Üres';
-            rowDiv.appendChild(emptyDiv);
-        }
-        
-        // Dropdown a felvételhez (Checkbox-os)
+        // Dropdown konténer a kijelöléshez
         var customSelectContainer = document.createElement('div');
         customSelectContainer.style.cssText = 'position: relative; width: 100%; border: 1px solid #aaa; border-radius: 4px; background: white;';
         
         var selectHeader = document.createElement('div');
         selectHeader.style.cssText = 'padding: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #555;';
-        selectHeader.innerHTML = '<span><i class="fas fa-plus"></i> Új tag(ok) kijelölése...</span> <i class="fas fa-chevron-down"></i>';
+        
+        var currentNamesHtml = "--- Üres ---";
+        if (currentEmails.length > 0) {
+            var namesArr = currentEmails.map(function(e) {
+                var match = availableCrew.find(function(c) { return c.email.toLowerCase() === e; });
+                return match ? match.name : e;
+            });
+            currentNamesHtml = '<span style="color:#1b5e20; font-weight:bold;">' + namesArr.join(', ') + '</span>';
+        }
+        
+        selectHeader.innerHTML = '<span>' + currentNamesHtml + '</span> <i class="fas fa-chevron-down"></i>';
         
         var optionsContainer = document.createElement('div');
         optionsContainer.style.cssText = 'display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #aaa; z-index: 10; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
@@ -9468,25 +9446,56 @@ function renderSelectedShipCrew() {
             optionsContainer.style.display = isVisible ? 'none' : 'block';
         };
 
-        if (!crewMemberEmails.includes(userMailLower)) {
-            var selfOption = document.createElement('label');
-            selfOption.style.cssText = 'display: block; padding: 8px; border-bottom: 1px solid #eee; cursor: pointer; background: #fffde7;';
-            selfOption.innerHTML = '<input type="checkbox" value="self" data-role="' + role + '"> <strong>[Saját magam beosztása]</strong>';
-            optionsContainer.appendChild(selfOption);
-        }
-
-        sortedPlayers.forEach(function(player) {
-            if (crewMemberEmails.includes(player.email.toLowerCase())) return;
-            var label = document.createElement('label');
-            label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em;';
-            label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '"> ' + player.name + ' <span style="color:#aaa;font-size:0.8em;">(' + player.email + ')</span>';
-            optionsContainer.appendChild(label);
+        // Checkbox logika
+        optionsContainer.addEventListener('change', function(e) {
+            if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+                if (isSingle && e.target.checked) {
+                    var allCbs = optionsContainer.querySelectorAll('input[type="checkbox"]');
+                    allCbs.forEach(function(cb) {
+                        if (cb !== e.target) cb.checked = false;
+                    });
+                }
+                
+                // Címsor frissítése
+                var checkedCbs = optionsContainer.querySelectorAll('input[type="checkbox"]:checked');
+                if (checkedCbs.length === 0) {
+                    selectHeader.innerHTML = '<span>--- Üres ---</span> <i class="fas fa-chevron-down"></i>';
+                } else {
+                    var nArr = [];
+                    checkedCbs.forEach(function(cb) { nArr.push(cb.getAttribute('data-name')); });
+                    selectHeader.innerHTML = '<span><span style="color:#1b5e20; font-weight:bold;">' + nArr.join(', ') + '</span></span> <i class="fas fa-chevron-down"></i>';
+                }
+            }
         });
 
-        if (optionsContainer.children.length === 0) {
+        // Hozzáadjuk az összes elérhető játékost, akik ehhez a hajóhoz kijelölhetők
+        var optionAdded = false;
+        
+        // Akik már ezen a pozíción vannak
+        currentEmails.forEach(function(currEmail) {
+            var cMatch = availableCrew.find(function(c) { return c.email.toLowerCase() === currEmail; });
+            var dName = cMatch ? cMatch.name : currEmail;
+            var label = document.createElement('label');
+            label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em; background: #e8f5e9;';
+            label.innerHTML = '<input type="checkbox" value="' + currEmail + '" data-role="' + role + '" data-name="' + dName + '" checked> <strong>' + dName + '</strong> <span style="color:#aaa;font-size:0.8em;">(' + currEmail + ')</span>';
+            optionsContainer.appendChild(label);
+            optionAdded = true;
+        });
+
+        // Akik szabadok (nincsenek ezen a pozíción, de nincsenek máshol sem a hajón - VAGY ha máshol vannak, az szerveroldalon ki lesz szűrve, de itt mindent mutatunk)
+        sortedCrew.forEach(function(player) {
+            if (currentEmails.includes(player.email.toLowerCase())) return;
+            var label = document.createElement('label');
+            label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em;';
+            label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + player.name + '"> ' + player.name + ' <span style="color:#aaa;font-size:0.8em;">(' + player.email + ')</span>';
+            optionsContainer.appendChild(label);
+            optionAdded = true;
+        });
+
+        if (!optionAdded) {
             var noMore = document.createElement('div');
             noMore.style.cssText = 'padding: 8px; color: #888; font-style: italic;';
-            noMore.innerText = 'Nincs több elérhető tag.';
+            noMore.innerText = 'Nincs felbérelhető tag.';
             optionsContainer.appendChild(noMore);
         }
 
@@ -9516,7 +9525,13 @@ function renderSelectedShipCrew() {
 }
 
 function submitBulkCrewAssignment(shipId) {
-    var assignmentsMap = {};
+    var assignmentsMap = {
+        "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [], 
+        "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [], 
+        "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [], 
+        "Letmester": [], "Monk": [], "Tengerész": []
+    };
+    
     var checkboxes = document.querySelectorAll('#bulk-crew-form input[type="checkbox"]');
     
     for (var i = 0; i < checkboxes.length; i++) {
@@ -9524,20 +9539,10 @@ function submitBulkCrewAssignment(shipId) {
         if (cb.checked) {
             var role = cb.getAttribute('data-role');
             var val = cb.value;
-            if (val === 'self') val = typeof currentUserEmail !== 'undefined' ? currentUserEmail : '';
-            if (!val) continue;
-            
-            if (!assignmentsMap[role]) {
-                assignmentsMap[role] = [];
+            if (val) {
+                assignmentsMap[role].push(val);
             }
-            assignmentsMap[role].push(val);
         }
-    }
-
-    // Csak ha van kijelölt, különben felesleges hívás
-    if (Object.keys(assignmentsMap).length === 0) {
-        uiAlert("Kérlek először jelölj ki legalább egy tagot valamelyik pozícióra!");
-        return;
     }
 
     document.getElementById('toborzo-loading').style.display = 'flex';

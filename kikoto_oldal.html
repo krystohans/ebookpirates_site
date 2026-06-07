@@ -238,11 +238,12 @@
                     
                     <div style="margin-bottom: 20px;">
                         <label style="font-weight: bold;">Hajó kiválasztása:</label>
-                        <div style="display: flex; gap: 10px; margin-top: 5px;">
-                            <select id="toborzo-myships-select" class="form-control" style="flex: 1; padding: 10px;" onchange="renderSelectedShipCrew()">
+                        <div style="display: flex; gap: 10px; margin-top: 5px; align-items: center;">
+                            <select id="toborzo-myships-select" class="form-control" style="flex: 0 0 200px; padding: 8px;" onchange="renderSelectedShipCrew()">
                                 <option value="">Nincs kiválasztott hajó</option>
                             </select>
-                            <button class="btn" onclick="openToborzoBarakk()"><i class="fas fa-sync-alt"></i></button>
+                            <span id="toborzo-selected-ship-name" style="flex: 1; font-weight: bold; color: var(--color-accent); font-size: 1.1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left;"></span>
+                            <button class="btn" onclick="openToborzoBarakk()" style="padding: 6px 12px; min-width: auto; flex-shrink: 0;" title="Lista frissítése"><i class="fas fa-sync-alt"></i></button>
                         </div>
                     </div>
 

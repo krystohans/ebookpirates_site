@@ -9375,14 +9375,18 @@ function renderSelectedShipCrew() {
     var select = document.getElementById('toborzo-myships-select');
     var detailsDiv = document.getElementById('toborzo-myship-details');
     var rolesContainer = document.getElementById('toborzo-myship-roles');
+    var shipNameSpan = document.getElementById('toborzo-selected-ship-name');
     
     if (!select.value) {
         detailsDiv.style.display = 'none';
+        if (shipNameSpan) shipNameSpan.textContent = '';
         return;
     }
 
     var ship = window.toborzoOwnedShips.find(function(s) { return s.id === select.value; });
     if (!ship) return;
+
+    if (shipNameSpan) shipNameSpan.textContent = ship.name;
 
     detailsDiv.style.display = 'block';
     rolesContainer.innerHTML = '';

@@ -9456,6 +9456,27 @@ function assignToRole(shipId, role) {
     );
 }
 
+function removeRole(shipId, roleToClear) {
+    if (!confirm(`Biztosan ki akarod rúgni a(z) ${roleToClear} pozíción lévő személyt?`)) return;
+
+    document.getElementById('toborzo-loading').style.display = 'flex';
+    callBackend('removeRole', [shipId, roleToClear], 
+        function(data) {
+            if (data.success) {
+                openToborzoBarakk(); // Frissítés
+            } else {
+                document.getElementById('toborzo-loading').style.display = 'none';
+                uiAlert("Hiba a kirúgás során: " + data.error);
+            }
+        },
+        function(err) {
+            document.getElementById('toborzo-loading').style.display = 'none';
+            uiAlert("Hálózati hiba: " + err.message);
+        }
+    );
+}
+
+
 function tryGoToDeck() {
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';

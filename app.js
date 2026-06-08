@@ -1,12 +1,12 @@
-﻿// Core frontend helpers extracted from index.html
+// Core frontend helpers extracted from index.html
 // NOTE: Follow project rule: no template literals in client-side code.
-// FIGYELMEZTETĂ‰S: NEM Ă­rok asszisztenskĂ©nt a kĂłdba, csak a chat ablakon keresztĂĽl adok alternatĂ­vĂˇt! A kĂłd minden esetben csak manuĂˇlisan mĂłdosĂ­thatĂł!
+// FIGYELMEZTETÉS: NEM írok asszisztensként a kódba, csak a chat ablakon keresztül adok alternatívát! A kód minden esetben csak manuálisan módosítható!
 
-// 1. GLOBĂLIS VĂLTOZĂ“K DEFINĂŤCIĂ“JA
-var currentUserEmail = "";       // Az aktuĂˇlis felhasznĂˇlĂł
-var currentLogEntryData = null;  // HajĂłnaplĂł szerkesztĂ©shez
-var currentPageName = "";        // Az aktuĂˇlisan betoltott oldal neve
-const MAP_COPY_COST = 30;        // Konstans: mĂˇsolĂˇs Ăˇra
+// 1. GLOBÁLIS VÁLTOZÓK DEFINÍCIÓJA
+var currentUserEmail = "";       // Az aktuális felhasználó
+var currentLogEntryData = null;  // Hajónapló szerkesztéshez
+var currentPageName = "";        // Az aktuálisan betoltott oldal neve
+const MAP_COPY_COST = 30;        // Konstans: másolás ára
 
 function getSiteLang() {
     if (typeof localStorage === 'undefined') {
@@ -27,10 +27,10 @@ function getPageHtmlUrl(pageName) {
 }
 
 /**
- * Ez a fĂĽggvĂ©ny vĂ©gzi a kommunikĂˇciĂłt a Google Apps Script Backenddel.
- * KIZĂRĂ“LAG a GitHub/KĂĽlsĹ‘ kĂ¶rnyezetben hasznĂˇld!
- * ROBUSZTUS BACKEND HĂŤVĂ“ - JSON VADĂSZ MĂ“DDAL đźŹą
- * KĂ©pes kezelni, ha a Google HTML "szemetet" (fejlĂ©cet/hibaĂĽzenetet) kĂĽld a JSON helyett/mellett.
+ * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
+ * KIZÁRÓLAG a GitHub/Külső környezetben használd!
+ * ROBUSZTUS BACKEND HÍVÓ - JSON VADÁSZ MÓDDAL 🏹
+ * Képes kezelni, ha a Google HTML "szemetet" (fejlécet/hibaüzenetet) küld a JSON helyett/mellett.
  */
 function handleBackendPayload(payload, funcName, onSuccess, onFailure) {
     var data = parseJsonFromText(payload.text);
@@ -90,7 +90,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
     var currentChunk = 0;
     
     function setLocalStatus(msg) {
-        console.log("đź“¦ " + msg);
+        console.log("📦 " + msg);
         var modalTextLocal = document.getElementById('modal-status-text');
         if (modalTextLocal) modalTextLocal.textContent = msg;
         var statusDiv = document.getElementById('status') || document.getElementById('login-status');
@@ -102,7 +102,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
     
     function sendNextChunk() {
         if (currentChunk >= totalChunks) {
-            setLocalStatus('FĂˇjlok szerveroldali Ă¶sszefĹ±zĂ©se folyamatban (' + totalChunks + ' adag)...');
+            setLocalStatus('Fájlok szerveroldali összefűzése folyamatban (' + totalChunks + ' adag)...');
             fetch(WEB_APP_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -124,7 +124,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
         }
         
         var chunkData = payloadString.substring(currentChunk * CHUNK_SIZE, (currentChunk + 1) * CHUNK_SIZE);
-        setLocalStatus('Nagy fĂˇjl feltĂ¶ltĂ©se... (' + (currentChunk + 1) + '/' + totalChunks + ' adag)');
+        setLocalStatus('Nagy fájl feltöltése... (' + (currentChunk + 1) + '/' + totalChunks + ' adag)');
         
         fetch(WEB_APP_URL, {
             method: "POST",
@@ -141,7 +141,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
                 currentChunk++;
                 sendNextChunk();
             } else {
-                var err = new Error(res ? res.error : "Adag feltĂ¶ltĂ©si hiba.");
+                var err = new Error(res ? res.error : "Adag feltöltési hiba.");
                 handleBackendError(err, onFailure);
             }
         }).catch(function(error) {
@@ -153,21 +153,21 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
 }
 
 function callBackend(funcName, params, onSuccess, onFailure) {
-    // A TE DEPLOYMENT URL-ED (EllenĹ‘rizd, hogy a legfrissebb legyen!)
+    // A TE DEPLOYMENT URL-ED (Ellenőrizd, hogy a legfrissebb legyen!)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
 
     var token = localStorage.getItem('ebookPiratesToken');
 
     var requestPayloadString = JSON.stringify({ action: funcName, data: params, token: token });
     
-    // LIMIT: 2 MB. E felett automatikusan bekapcsol az adagolĂł (Chunked Upload)!
+    // LIMIT: 2 MB. E felett automatikusan bekapcsol az adagoló (Chunked Upload)!
     var CHUNK_SIZE = 1024 * 1024 * 2;
     if (requestPayloadString.length > CHUNK_SIZE) {
         uploadChunksSequentially(funcName, requestPayloadString, token, onSuccess, onFailure);
         return;
     }
 
-    console.log("đź“ˇ KĂ©rĂ©s indĂ­tĂˇsa: " + funcName);
+    console.log("📡 Kérés indítása: " + funcName);
 
     fetch(WEB_APP_URL, {
         method: "POST",
@@ -189,11 +189,11 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             if (error.message && error.message.includes('Failed to fetch')) {
                 var isLongProcess = ['initiateGDocSzenteles', 'finalizeUpload', 'initiateUpgradeProcess', 'finalizeTranslation', 'uploadCoverAndFinishTask'].includes(funcName);
                 if (isLongProcess) {
-                    console.warn("LĂˇtszĂłlagos hĂˇlĂłzati megszakadĂˇs (Failed to fetch). A hĂˇttĂ©rfolyamat valĂłszĂ­nĹ±leg sikeresen fut tovĂˇbb.");
+                    console.warn("Látszólagos hálózati megszakadás (Failed to fetch). A háttérfolyamat valószínűleg sikeresen fut tovább.");
                     if (onFailure) {
-                        onFailure(new Error("A szerver vĂˇlaszideje lejĂˇrt, de a kĂ¶nyvszentelĂ©s/mĹ±velet a hĂˇttĂ©rben valĂłszĂ­nĹ±leg sikeresen lefut. KĂ©rjĂĽk, frissĂ­tsd az oldalt nĂ©hĂˇny perc mĂşlva!"));
+                        onFailure(new Error("A szerver válaszideje lejárt, de a könyvszentelés/művelet a háttérben valószínűleg sikeresen lefut. Kérjük, frissítsd az oldalt néhány perc múlva!"));
                     } else {
-                        handleBackendError(new Error("A szerver vĂˇlaszideje lejĂˇrt, de a kĂ¶nyvszentelĂ©s a hĂˇttĂ©rben valĂłszĂ­nĹ±leg sikeresen lefut. FrissĂ­ts pĂˇr perc mĂşlva!"), null);
+                        handleBackendError(new Error("A szerver válaszideje lejárt, de a könyvszentelés a háttérben valószínűleg sikeresen lefut. Frissíts pár perc múlva!"), null);
                     }
                     return;
                 }
@@ -358,18 +358,18 @@ function parseJsonFromText(text) {
 }
 
 function login() {
-    // 1. UI ElĹ‘kĂ©szĂ­tĂ©se
+    // 1. UI Előkészítése
     document.getElementById('login-status').innerText = t('login_status_checking');
     const registerButtonContainer = document.getElementById('registerButtonContainer');
     registerButtonContainer.innerHTML = '';
 
-    // 2. Adatok begyĹ±jtĂ©se
+    // 2. Adatok begyűjtése
     const formData = {
         name: document.getElementById('name').value,
         jelszo: document.getElementById('jelszo').value
     };
 
-    // 3. HĂ­vĂˇs a callBackend-en keresztĂĽl
+    // 3. Hívás a callBackend-en keresztül
     callBackend('performLogin', [formData],
         function (response) {
             if (response && response.success) {
@@ -378,18 +378,18 @@ function login() {
                     sessionStorage.setItem('ebookPiratesLoginName', formData.name || '');
                     sessionStorage.setItem('ebookPiratesLoginPass', formData.jelszo || '');
                 } catch (storageError) {
-                    console.warn('Nem sikerĂĽlt ideiglenesen menteni a login adatokat.', storageError);
+                    console.warn('Nem sikerült ideiglenesen menteni a login adatokat.', storageError);
                 }
                 initializeApp(response.user);
             } else {
                 document.getElementById('login-status').innerText = response.message;
 
-                // HibĂˇs login -> RegisztrĂˇciĂł felkĂ­nĂˇlĂˇsa
+                // Hibás login -> Regisztráció felkínálása
                 const registerButton = document.createElement('button');
                 registerButton.id = 'registerButton';
                 registerButton.type = 'button'; // Fontos, hogy ne submitolja a formot
                 registerButton.innerText = t('login_register_button');
-                // Ide a TE Web App URL-ed kerĂĽljĂ¶n, ha van kĂĽlĂ¶n regisztrĂˇciĂłs linked
+                // Ide a TE Web App URL-ed kerüljön, ha van külön regisztrációs linked
                 registerButton.onclick = function () { window.open('https://krystohans.github.io/ebookpirates_site/GitHubSite/regisztracio/', '_blank'); };
                 registerButtonContainer.appendChild(registerButton);
             }
@@ -401,7 +401,7 @@ function login() {
 }
 
 function initializeApp(user) {
-    currentUserEmail = user.email; // ElmentjĂĽk, de a hĂ­vĂˇsokhoz nem kell kĂĽldeni!
+    currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
     document.querySelector('.header-title').innerText = user.name;
     ensureCreditDisplayIsPresent();
 
@@ -411,22 +411,22 @@ function initializeApp(user) {
     updateCreditDisplay();
     preloadLoadingGif();
 
-    // EsemĂ©nykezelĹ‘k
+    // Eseménykezelők
     document.getElementById('creditCell').onclick = updateCreditDisplay;
     document.getElementById('libraryLink').onclick = function () { loadPage('konyvtar'); };
     document.getElementById('treasuresLink').onclick = function () { loadPage('kincsek'); };
 
-    // --- MARKETING ĂTIRĂNYĂŤTĂS ---
+    // --- MARKETING ÁTIRÁNYÍTÁS ---
     if (window.pendingMarketingData) {
-        console.log("Marketing ĂˇtirĂˇnyĂ­tĂˇs aktivĂˇlva...");
+        console.log("Marketing átirányítás aktiválva...");
         loadMarketingView(window.pendingMarketingData.bookId, window.pendingMarketingData.folderId);
         window.pendingMarketingData = null;
     } else {
-        // NormĂˇl irĂˇnyĂ­tĂˇs
+        // Normál irányítás
         if (user.startPage) {
             loadPage(user.startPage); // A backend mondja meg (tutorial vagy jogosult)
         } else {
-            // Fallback: ha a backend valamiĂ©rt nem kĂĽld startPage-et
+            // Fallback: ha a backend valamiért nem küld startPage-et
             loadPage('tutorial_oldal');
         }
     }
@@ -440,10 +440,10 @@ function checkSession() {
             function (user) {
                 var isValidUser = !!(user && user.email && user.name && user.isValid === true);
                 if (isValidUser) {
-                    console.log("Sikeres visszatĂ©rĂ©s:", user.name);
+                    console.log("Sikeres visszatérés:", user.name);
                     initializeApp(user);
                 } else {
-                    console.warn("A token lejĂˇrt vagy Ă©rvĂ©nytelen.");
+                    console.warn("A token lejárt vagy érvénytelen.");
                     localStorage.removeItem('ebookPiratesToken');
                     document.getElementById('app-view').style.display = 'none';
                     document.getElementById('login-view').style.display = 'block';
@@ -457,7 +457,7 @@ function checkSession() {
             }
         );
     } else {
-        console.log("Nincs mentett token, login szĂĽksĂ©ges.");
+        console.log("Nincs mentett token, login szükséges.");
     }
 }
 
@@ -480,7 +480,7 @@ function logout() {
     const regContainer = document.getElementById('registerButtonContainer');
     if (regContainer) regContainer.innerHTML = '';
 
-    // GlobĂˇlis vĂˇltozĂłk nullĂˇzĂˇsa (ha vannak)
+    // Globális változók nullázása (ha vannak)
     if (typeof currentUserEmail !== 'undefined') currentUserEmail = '';
 
     const creditVal = document.getElementById('creditValue');
@@ -553,31 +553,31 @@ function buildUnityLaunchUrl(baseUrl, mode, token) {
  */
 function launchGame() {
     // TODO: Implement this function to launch the Unity game for fishing.
-    uiAlert("HĂˇrtya halĂˇszat hamarosan...");
+    uiAlert("Hártya halászat hamarosan...");
 }
 
-// === BETĂ–LTĂ‰S Ă‰S UI ===
+// === BETÖLTÉS ÉS UI ===
 
 function preloadLoadingGif() {
-    console.log("GIF beĂˇllĂ­tĂˇsa helyi forrĂˇsbĂłl...");
+    console.log("GIF beállítása helyi forrásból...");
 
     var gifElement = document.getElementById('loading-gif');
     if (gifElement) {
         gifElement.src = 'assets/download.gif';
-        console.log("GIF beĂˇllĂ­tva (Backend hĂ­vĂˇs nĂ©lkĂĽl).");
+        console.log("GIF beállítva (Backend hívás nélkül).");
     }
 }
 
-// IndĂ­tĂˇs, amikor a HTML kĂ©sz
+// Indítás, amikor a HTML kész
 document.addEventListener('DOMContentLoaded', function () {
     preloadLoadingGif();
 });
 
 function updateCreditDisplay() {
-    if (!currentUserEmail) return; // Csak biztonsĂˇgi check kliens oldalon
+    if (!currentUserEmail) return; // Csak biztonsági check kliens oldalon
     document.getElementById('creditValue').innerText = t('credit_loading');
 
-    // ĂśRES TĂ–MB a paramĂ©ter, mert a Backend automatikusan megkapja az Emailt!
+    // ÜRES TÖMB a paraméter, mert a Backend automatikusan megkapja az Emailt!
     callBackend('getPirateCredit', [],
         function (credit) {
             document.getElementById('creditValue').innerText = credit;
@@ -590,12 +590,12 @@ function updateCreditDisplay() {
 
 function ensureCreditDisplayIsPresent() {
     if (!document.getElementById('creditValue')) {
-        console.warn("Hiba: A 'creditValue' HTML elem nem talĂˇlhatĂł a fejlĂ©cben!");
+        console.warn("Hiba: A 'creditValue' HTML elem nem található a fejlécben!");
     }
 }
 /**
- * KĂ–ZPONTI OLDALBETĂ–LTĹ
- * JAVĂŤTVA: Nem kĂĽldjĂĽk az emailt, csak az oldal nevĂ©t!
+ * KÖZPONTI OLDALBETÖLTŐ
+ * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
 function loadPage(pageName) {
     currentPageName = pageName;
@@ -664,7 +664,7 @@ function loadPage(pageName) {
                         if (typeof initializeUploadForm === 'function') {
                             initializeUploadForm();
                         } else {
-                            console.error("HIBA: initializeUploadForm nincs definiĂˇlva!");
+                            console.error("HIBA: initializeUploadForm nincs definiálva!");
                         }
                     } else if (pagesWithSplash.includes(pageName)) {
                         initializePage(pageName);
@@ -697,11 +697,11 @@ function reloadCurrentPageForLanguage() {
 }
 
 // ==========================================
-// === ACCORDION KEZELĂ‰S (EREDETI) ===
+// === ACCORDION KEZELÉS (EREDETI) ===
 // ==========================================
 
 /**
- * BeĂˇllĂ­tja az esemĂ©nykezelĹ‘ket az Ă¶sszes accordion gombhoz az oldalon.
+ * Beállítja az eseménykezelőket az összes accordion gombhoz az oldalon.
  */
 function setupAccordionListeners() {
     const acc = document.querySelectorAll(".accordion-button");
@@ -712,40 +712,40 @@ function setupAccordionListeners() {
 }
 
 /**
- * Az accordion gombra kattintĂˇskor lefutĂł esemĂ©nykezelĹ‘.
+ * Az accordion gombra kattintáskor lefutó eseménykezelő.
  */
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     const panel = this.nextElementSibling;
     if (panel.style.maxHeight) {
-        panel.style.maxHeight = null; // BezĂˇrĂˇs
+        panel.style.maxHeight = null; // Bezárás
     } else {
-        // KinyitĂˇs: a BELSĹ tartalom magassĂˇgĂˇt hasznĂˇljuk + nĂ©mi padding
+        // Kinyitás: a BELSŐ tartalom magasságát használjuk + némi padding
         const content = panel.querySelector('.accordion-panel-content');
-        // BiztonsĂˇgi ellenĹ‘rzĂ©s, ha nincs belsĹ‘ content div
+        // Biztonsági ellenőrzés, ha nincs belső content div
         const scrollHeight = content ? content.scrollHeight : panel.scrollHeight;
         panel.style.maxHeight = (scrollHeight + 30) + "px";
     }
 }
 
 // ==========================================
-// === SPLASH SCREEN / OLDAL LĂTOGATĂS ===
+// === SPLASH SCREEN / OLDAL LÁTOGATÁS ===
 // ==========================================
 
 /**
- * EllenĹ‘rzi, hogy a felhasznĂˇlĂł lĂˇtta-e mĂˇr az adott oldalt.
- * Ha igen -> Tartalom megjelenĂ­tĂ©se.
- * Ha nem -> Splash (InfĂł) kĂ©pernyĹ‘ megjelenĂ­tĂ©se.
+ * Ellenőrzi, hogy a felhasználó látta-e már az adott oldalt.
+ * Ha igen -> Tartalom megjelenítése.
+ * Ha nem -> Splash (Infó) képernyő megjelenítése.
  */
 function initializePage(pageName) {
-    // callBackend hasznĂˇlata (emailt a router intĂ©zi)
+    // callBackend használata (emailt a router intézi)
     callBackend('getPageStatus', [pageName],
         function (status) {
             const splash = document.getElementById(pageName + '-splash');
             const content = document.getElementById(pageName + '-content');
 
             if (!splash || !content) {
-                console.warn(`Hiba: Nem talĂˇlhatĂłk a HTML elemek ehhez: ${pageName}`);
+                console.warn(`Hiba: Nem találhatók a HTML elemek ehhez: ${pageName}`);
                 return;
             }
 
@@ -759,7 +759,7 @@ function initializePage(pageName) {
             }
         },
         function (err) {
-            console.error("Hiba a getPageStatus hĂ­vĂˇskor:", err);
+            console.error("Hiba a getPageStatus híváskor:", err);
             const splash = document.getElementById(pageName + '-splash');
             const content = document.getElementById(pageName + '-content');
             if (splash && content) {
@@ -771,7 +771,7 @@ function initializePage(pageName) {
 }
 
 /**
- * A "MegĂ©rtettem" gomb hĂ­vja: rĂ¶gzĂ­ti a lĂˇtogatĂˇst Ă©s vĂˇlt a tartalomra.
+ * A "Megértettem" gomb hívja: rögzíti a látogatást és vált a tartalomra.
  */
 function markPageAsSeen(pageName) {
     const splash = document.getElementById(pageName + '-splash');
@@ -779,20 +779,20 @@ function markPageAsSeen(pageName) {
 
     if (!splash || !content) return;
 
-    // Azonnali UI vĂˇltĂˇs (hogy gyorsnak tĹ±njĂ¶n)
+    // Azonnali UI váltás (hogy gyorsnak tűnjön)
     splash.style.display = 'none';
     content.style.display = 'block';
 
-    // HĂˇttĂ©rben mentĂ©s callBackend-del
+    // Háttérben mentés callBackend-del
     callBackend('setPageStatus', [pageName],
-        function (res) { console.log(`${pageName} lĂˇtogatĂˇs rĂ¶gzĂ­tve.`); },
-        function (err) { console.warn("Hiba a stĂˇtusz mentĂ©sekor:", err); }
+        function (res) { console.log(`${pageName} látogatás rögzítve.`); },
+        function (err) { console.warn("Hiba a státusz mentésekor:", err); }
     );
 }
 
 /**
- * KĂ©zzel visszahozza a Splash kĂ©pernyĹ‘t (az "InfĂł" gomb).
- * Nem mĂłdosĂ­t adatbĂˇzist, csak UI vĂˇltĂˇs.
+ * Kézzel visszahozza a Splash képernyőt (az "Infó" gomb).
+ * Nem módosít adatbázist, csak UI váltás.
  */
 function showSplash(pageName) {
     const splash = document.getElementById(pageName + '-splash');
@@ -808,7 +808,7 @@ function showSplash(pageName) {
 // ==========================================
 
 function runTutorialScript() {
-    console.log('runTutorialScript() FĂśGGVĂ‰NY ELINDULT (Unity + fallback verziĂł).');
+    console.log('runTutorialScript() FÜGGVÉNY ELINDULT (Unity + fallback verzió).');
 
     var currentQuestionIndex = 0;
     var questionTextEl = document.getElementById('question-text');
@@ -828,9 +828,9 @@ function runTutorialScript() {
 
         var questionMap = {
             hu: [
-                { question: 'Mi a neve a jĂˇtĂ©kban hasznĂˇlatos fizetĹ‘eszkĂ¶znek?', options: ['Arany', 'KalĂłzkredit', 'GyĂ¶ngy', 'Dublon'], correctAnswer: 'KalĂłzkredit' },
-                { question: 'Hol tudsz Ăşj kĂĽldetĂ©seket felvenni?', options: ['A piacon', 'A szentĂ©lyben', 'A kocsmĂˇban', 'A tekercsmesternĂ©l'], correctAnswer: 'A kocsmĂˇban' },
-                { question: 'Mire hasznĂˇlhatod a letkristĂˇlyokat?', options: ['Ăšj hajĂł vĂˇsĂˇrlĂˇsĂˇra', 'A kĂ¶nyvek fejlesztĂ©sĂ©re', 'Azonnali utazĂˇsra', 'A jutalĂ©k csĂ¶kkentĂ©sĂ©re'], correctAnswer: 'A kĂ¶nyvek fejlesztĂ©sĂ©re' }
+                { question: 'Mi a neve a játékban használatos fizetőeszköznek?', options: ['Arany', 'Kalózkredit', 'Gyöngy', 'Dublon'], correctAnswer: 'Kalózkredit' },
+                { question: 'Hol tudsz új küldetéseket felvenni?', options: ['A piacon', 'A szentélyben', 'A kocsmában', 'A tekercsmesternél'], correctAnswer: 'A kocsmában' },
+                { question: 'Mire használhatod a letkristályokat?', options: ['Új hajó vásárlására', 'A könyvek fejlesztésére', 'Azonnali utazásra', 'A jutalék csökkentésére'], correctAnswer: 'A könyvek fejlesztésére' }
             ],
             en: [
                 { question: 'What is the name of the main currency used in the game?', options: ['Gold', 'Pirate Credit', 'Pearl', 'Doubloon'], correctAnswer: 'Pirate Credit' },
@@ -838,9 +838,9 @@ function runTutorialScript() {
                 { question: 'What can spirit crystals be used for?', options: ['Buying a new ship', 'Upgrading books', 'Instant travel', 'Reducing commission'], correctAnswer: 'Upgrading books' }
             ],
             de: [
-                { question: 'Wie heiĂźt die wichtigste WĂ¤hrung im Spiel?', options: ['Gold', 'Piratenkredit', 'Perle', 'Dublone'], correctAnswer: 'Piratenkredit' },
-                { question: 'Wo kannst du neue AuftrĂ¤ge annehmen?', options: ['Auf dem Markt', 'Im Heiligtum', 'In der Taverne', 'Beim Schriftrollenmeister'], correctAnswer: 'In der Taverne' },
-                { question: 'WofĂĽr kannst du Seelenkristalle verwenden?', options: ['Neues Schiff kaufen', 'BĂĽcher verbessern', 'Sofortreise', 'Provision senken'], correctAnswer: 'BĂĽcher verbessern' }
+                { question: 'Wie heißt die wichtigste Währung im Spiel?', options: ['Gold', 'Piratenkredit', 'Perle', 'Dublone'], correctAnswer: 'Piratenkredit' },
+                { question: 'Wo kannst du neue Aufträge annehmen?', options: ['Auf dem Markt', 'Im Heiligtum', 'In der Taverne', 'Beim Schriftrollenmeister'], correctAnswer: 'In der Taverne' },
+                { question: 'Wofür kannst du Seelenkristalle verwenden?', options: ['Neues Schiff kaufen', 'Bücher verbessern', 'Sofortreise', 'Provision senken'], correctAnswer: 'Bücher verbessern' }
             ],
             fr: [
                 { question: 'Quel est le nom de la monnaie principale du jeu ?', options: ['Or', 'Credit pirate', 'Perle', 'Doubloon'], correctAnswer: 'Credit pirate' },
@@ -858,9 +858,9 @@ function runTutorialScript() {
                 { question: 'Do czego sluza krysztaly ducha?', options: ['Kupno nowego statku', 'Ulepszanie ksiazek', 'Natychmiastowa podroz', 'Zmniejszenie prowizji'], correctAnswer: 'Ulepszanie ksiazek' }
             ],
             ru: [
-                { question: 'ĐšĐ°Đş Đ˝Đ°Đ·Ń‹Đ˛Đ°ĐµŃ‚ŃŃŹ ĐľŃĐ˝ĐľĐ˛Đ˝Đ°ŃŹ Đ˛Đ°Đ»ŃŽŃ‚Đ° Đ˛ Đ¸ĐłŃ€Đµ?', options: ['Đ—ĐľĐ»ĐľŃ‚Đľ', 'ĐźĐ¸Ń€Đ°Ń‚ŃĐşĐ¸Đą ĐşŃ€ĐµĐ´Đ¸Ń‚', 'Đ–ĐµĐĽŃ‡ŃĐł', 'Đ”ŃĐ±Đ»ĐľĐ˝'], correctAnswer: 'ĐźĐ¸Ń€Đ°Ń‚ŃĐşĐ¸Đą ĐşŃ€ĐµĐ´Đ¸Ń‚' },
-                { question: 'Đ“Đ´Đµ ĐĽĐľĐ¶Đ˝Đľ Đ˛Đ·ŃŹŃ‚ŃŚ Đ˝ĐľĐ˛Ń‹Đµ Đ·Đ°Đ´Đ°Đ˝Đ¸ŃŹ?', options: ['ĐťĐ° Ń€Ń‹Đ˝ĐşĐµ', 'Đ’ ŃĐ˛ŃŹŃ‚Đ¸Đ»Đ¸Ń‰Đµ', 'Đ’ Ń‚Đ°Đ˛ĐµŃ€Đ˝Đµ', 'ĐŁ ĐĽĐ°ŃŃ‚ĐµŃ€Đ° ŃĐ˛Đ¸Ń‚ĐşĐľĐ˛'], correctAnswer: 'Đ’ Ń‚Đ°Đ˛ĐµŃ€Đ˝Đµ' },
-                { question: 'Đ”Đ»ŃŹ Ń‡ĐµĐłĐľ Đ˝ŃĐ¶Đ˝Ń‹ ĐşŃ€Đ¸ŃŃ‚Đ°Đ»Đ»Ń‹ Đ´ŃŃ…Đ°?', options: ['ĐźĐľĐşŃĐżĐşĐ° Đ˝ĐľĐ˛ĐľĐłĐľ ĐşĐľŃ€Đ°Đ±Đ»ŃŹ', 'ĐŁĐ»ŃŃ‡ŃĐµĐ˝Đ¸Đµ ĐşĐ˝Đ¸Đł', 'ĐśĐłĐ˝ĐľĐ˛ĐµĐ˝Đ˝ĐľĐµ ĐżŃŃ‚ĐµŃĐµŃŃ‚Đ˛Đ¸Đµ', 'ĐˇĐ˝Đ¸Đ¶ĐµĐ˝Đ¸Đµ ĐşĐľĐĽĐ¸ŃŃĐ¸Đ¸'], correctAnswer: 'ĐŁĐ»ŃŃ‡ŃĐµĐ˝Đ¸Đµ ĐşĐ˝Đ¸Đł' }
+                { question: 'Как называется основная валюта в игре?', options: ['Золото', 'Пиратский кредит', 'Жемчуг', 'Дублон'], correctAnswer: 'Пиратский кредит' },
+                { question: 'Где можно взять новые задания?', options: ['На рынке', 'В святилище', 'В таверне', 'У мастера свитков'], correctAnswer: 'В таверне' },
+                { question: 'Для чего нужны кристаллы духа?', options: ['Покупка нового корабля', 'Улучшение книг', 'Мгновенное путешествие', 'Снижение комиссии'], correctAnswer: 'Улучшение книг' }
             ]
         };
 
@@ -1222,7 +1222,7 @@ function runTutorialScript() {
 
         var localQuestion = localTutorialQuestions[index];
         if (!localQuestion) {
-            showFeedback(t('error_prefix') + 'Nem sikerĂĽlt kĂ©rdĂ©st betĂ¶lteni.', 'red');
+            showFeedback(t('error_prefix') + 'Nem sikerült kérdést betölteni.', 'red');
             return;
         }
 
@@ -1239,7 +1239,7 @@ function runTutorialScript() {
         questionTextEl.textContent = questionText;
 
         if (options.length === 0) {
-            showFeedback(t('error_prefix') + 'Ă‰rvĂ©nytelen kĂ©rdĂ©s adatok Ă©rkeztek.', 'red');
+            showFeedback(t('error_prefix') + 'Érvénytelen kérdés adatok érkeztek.', 'red');
             var invalidBtn = document.getElementById('submit-btn');
             if (invalidBtn) {
                 invalidBtn.disabled = true;
@@ -1311,7 +1311,7 @@ function runTutorialScript() {
             return;
         }
         callBackend('saveGameStateToken', [finalToken], function () { }, function (err) {
-            console.warn('JĂˇtĂ©kĂˇllĂˇs token mentĂ©se sikertelen:', err);
+            console.warn('Játékállás token mentése sikertelen:', err);
         });
     };
 
@@ -1319,13 +1319,13 @@ function runTutorialScript() {
         callBackend('markTutorialCompleted', ['unity'], function (res) {
                 loadPage('kikoto_oldal');
         }, function (err) {
-            console.warn('Tutorial OK mentĂ©si hiba:', err);
+            console.warn('Tutorial OK mentési hiba:', err);
             loadPage('kikoto_oldal');
         });
     };
 
     window.onUnityTutorialFailed = function (reason) {
-        console.warn('Unity tutorial hiba jelzĂ©s:', reason || t('tutorial_unity_fail_reason_unknown'));
+        console.warn('Unity tutorial hiba jelzés:', reason || t('tutorial_unity_fail_reason_unknown'));
         showQuizMode();
     };
 
@@ -1341,10 +1341,10 @@ function runTutorialScript() {
 }
 
 /* ========================================= */
-/* === STĂŤLUSOS RENDSZER ĂśZENETEK (UI) === */
+/* === STÍLUSOS RENDSZER ÜZENETEK (UI) === */
 /* ========================================= */
 
-// 1. Az alap fĂĽggvĂ©ny (Ezt hĂ­vja a tĂ¶bbi)
+// 1. Az alap függvény (Ezt hívja a többi)
 function showSystemModal(title, message, iconClass, buttons) {
     const modal = document.getElementById('system-message-modal');
     const titleEl = document.getElementById('sys-modal-title');
@@ -1358,26 +1358,26 @@ function showSystemModal(title, message, iconClass, buttons) {
         return;
     }
 
-    // Tartalom feltĂ¶ltĂ©se
+    // Tartalom feltöltése
     titleEl.innerText = title;
-    bodyEl.innerHTML = message; // HTML-t is engedĂĽnk (pl. sortĂ¶rĂ©s, fĂ©lkĂ¶vĂ©r)
-    iconEl.className = iconClass || 'fas fa-scroll'; // AlapĂ©rtelmezett ikon
+    bodyEl.innerHTML = message; // HTML-t is engedünk (pl. sortörés, félkövér)
+    iconEl.className = iconClass || 'fas fa-scroll'; // Alapértelmezett ikon
 
-    // Gombok generĂˇlĂˇsa
-    btnContainer.innerHTML = ''; // TĂ¶rĂ¶ljĂĽk az elĹ‘zĹ‘ket
+    // Gombok generálása
+    btnContainer.innerHTML = ''; // Töröljük az előzőket
 
     buttons.forEach(btnDef => {
         const btn = document.createElement('button');
-        btn.className = 'btn'; // A te alap stĂ­lusod
+        btn.className = 'btn'; // A te alap stílusod
         btn.innerText = btnDef.text;
 
-        // Egyedi stĂ­lus (opcionĂˇlis)
+        // Egyedi stílus (opcionális)
         if (btnDef.color) btn.style.backgroundColor = btnDef.color;
         if (btnDef.textColor) btn.style.color = btnDef.textColor;
 
-        // KattintĂˇs esemĂ©ny
+        // Kattintás esemény
         btn.onclick = function () {
-            modal.style.display = 'none'; // BezĂˇrĂˇs
+            modal.style.display = 'none'; // Bezárás
             if (typeof btnDef.callback === 'function') {
                 btnDef.callback();
             }
@@ -1386,11 +1386,11 @@ function showSystemModal(title, message, iconClass, buttons) {
         btnContainer.appendChild(btn);
     });
 
-    // MegjelenĂ­tĂ©s
+    // Megjelenítés
     modal.style.display = 'flex';
 }
 
-// 2. HELYETTESĂŤTĹ: alert() helyett -> uiAlert()
+// 2. HELYETTESÍTŐ: alert() helyett -> uiAlert()
 function uiAlert(message, title = t('modal_notice_title')) {
     showSystemModal(
         title,
@@ -1400,7 +1400,7 @@ function uiAlert(message, title = t('modal_notice_title')) {
     );
 }
 
-// 3. HELYETTESĂŤTĹ: confirm() helyett -> uiConfirm()
+// 3. HELYETTESÍTŐ: confirm() helyett -> uiConfirm()
 function uiConfirm(message, title, onYes) {
     showSystemModal(
         title || t('modal_confirm_title'),
@@ -1408,17 +1408,17 @@ function uiConfirm(message, title, onYes) {
         "fas fa-question-circle", // Ikon
         [
             { text: t('modal_yes'), color: "#2e8b57", textColor: "white", callback: onYes },
-            { text: t('modal_cancel'), color: "#8b0000", textColor: "white" } // A MĂ©gse csak bezĂˇr
+            { text: t('modal_cancel'), color: "#8b0000", textColor: "white" } // A Mégse csak bezár
         ]
     );
 }
 
-// 4. HELYETTESĂŤTĹ: prompt() helyett -> uiPrompt()
+// 4. HELYETTESÍTŐ: prompt() helyett -> uiPrompt()
 function uiPrompt(message, title, placeholder, onCommit) {
-    // Egyedi ID a beviteli mezĹ‘nek
+    // Egyedi ID a beviteli mezőnek
     const inputId = 'sys-modal-input-' + Date.now();
 
-    // HTML tartalom: SzĂ¶veg + Input mezĹ‘
+    // HTML tartalom: Szöveg + Input mező
     const content = `
         <p>${message}</p>
         <div style="margin-top: 15px;">
@@ -1437,7 +1437,7 @@ function uiPrompt(message, title, placeholder, onCommit) {
                 color: "#2e8b57",
                 textColor: "white",
                 callback: function () {
-                    // Itt olvassuk ki az Ă©rtĂ©ket, mĂ©g mielĹ‘tt a modal tartalma tĂ¶rlĹ‘dne
+                    // Itt olvassuk ki az értéket, még mielőtt a modal tartalma törlődne
                     const val = document.getElementById(inputId).value;
                     if (onCommit) onCommit(val);
                 }
@@ -1453,7 +1453,7 @@ function uiPrompt(message, title, placeholder, onCommit) {
 // ===============
 
 
-// === GLOBĂLIS VĂLTOZĂ“ A KĂRTYAKĂ‰PEKNEK Ă‰S EGYĂ‰B ASSETEKNEK ===
+// === GLOBÁLIS VÁLTOZÓ A KÁRTYAKÉPEKNEK ÉS EGYÉB ASSETEKNEK ===
 const tavernaImageSources = {
     kartya_hatlap: null,
     kartya_pirosasz: null,
@@ -1464,19 +1464,19 @@ const tavernaImageSources = {
 };
 
 /**
- * ElĹ‘tĂ¶lti a Taverna Ă¶sszes szĂĽksĂ©ges kĂ©pĂ©t a kĂ¶zponti kĂ©pkezelĹ‘bĹ‘l.
- * @param {function} callback A fĂĽggvĂ©ny, ami a sikeres betĂ¶ltĂ©s utĂˇn lefut.
+ * Előtölti a Taverna összes szükséges képét a központi képkezelőből.
+ * @param {function} callback A függvény, ami a sikeres betöltés után lefut.
  */
 function preloadTavernaImages(callback) {
-    // Ha mĂˇr be vannak tĂ¶ltve a kĂ©pek, nem kĂ©rjĂĽk le Ăşjra.
+    // Ha már be vannak töltve a képek, nem kérjük le újra.
     if (tavernaImageSources.kartya_hatlap) {
-        if (callback) callback(); // <--- ITT VOLT A HIBA (tĂ¶rĂ¶ltem a "uiAlert"-et)
+        if (callback) callback(); // <--- ITT VOLT A HIBA (töröltem a "uiAlert"-et)
         return;
     }
 
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // HĂ­vĂˇs a callBackend-del (paramĂ©terek nĂ©lkĂĽl, mert a Router nem kĂ©r semmit ehhez)
+    // Hívás a callBackend-del (paraméterek nélkül, mert a Router nem kér semmit ehhez)
     callBackend('getCardImageAssets', [],
         function (response) {
             if (response.success) {
@@ -1500,33 +1500,33 @@ function preloadTavernaImages(callback) {
 }
 
 /**
-* SegĂ©dfĂĽggvĂ©ny a Pult modal nĂ©zeteinek vĂˇltogatĂˇsĂˇhoz.
-* @param {string} viewName A megjelenĂ­tendĹ‘ nĂ©zet neve (read, compose, check_status_init, feedback).
+* Segédfüggvény a Pult modal nézeteinek váltogatásához.
+* @param {string} viewName A megjelenítendő nézet neve (read, compose, check_status_init, feedback).
 */
 function showPultView(viewName) {
-    // Ă–sszes nĂ©zet elrejtĂ©se
+    // Összes nézet elrejtése
     document.getElementById('pult-view-read').style.display = 'none';
     document.getElementById('pult-view-compose').style.display = 'none';
     document.getElementById('pult-view-check_status_init').style.display = 'none';
     document.getElementById('pult-view-feedback').style.display = 'none';
 
-    // A "compose again" gomb alaphelyzetbe ĂˇllĂ­tĂˇsa
+    // A "compose again" gomb alaphelyzetbe állítása
     document.getElementById('pult-feedback-compose-again-btn').style.display = 'none';
 
-    // A kĂ©rt nĂ©zet megjelenĂ­tĂ©se
+    // A kért nézet megjelenítése
     const viewToShow = document.getElementById(`pult-view-${viewName}`);
     if (viewToShow) {
         viewToShow.style.display = 'block';
     }
 
-    // Ha a fĹ‘ nĂ©zetre tĂ©rĂĽnk vissza, frissĂ­tjĂĽk az ĂĽzenetlistĂˇt
+    // Ha a fő nézetre térünk vissza, frissítjük az üzenetlistát
     if (viewName === 'read') {
         loadTavernaMessages();
     }
 }
 
 /**
- * BetĂ¶lti a felhasznĂˇlĂł ĂĽzeneteit a szerverrĹ‘l Ă©s megjelenĂ­ti Ĺ‘ket.
+ * Betölti a felhasználó üzeneteit a szerverről és megjeleníti őket.
  */
 function loadTavernaMessages() {
     const messagesListDiv = document.getElementById('pult-messages-list');
@@ -1534,14 +1534,14 @@ function loadTavernaMessages() {
 
     const userName = document.querySelector('.header-title').innerText;
 
-    // ĂšJ HĂŤVĂS (Router):
-    // Csak a userName-t kĂĽldjĂĽk, az emailt a Router intĂ©zi!
+    // ÚJ HÍVÁS (Router):
+    // Csak a userName-t küldjük, az emailt a Router intézi!
     callBackend('getTavernaMessages', [userName],
         function (messages) {
             if (messages && messages.length > 0) {
                 let messagesHTML = '';
                 messages.forEach(msg => {
-                    messagesHTML += `<p><strong>${msg.sender} ĂĽzeni:</strong> ${msg.message}</p>`;
+                    messagesHTML += `<p><strong>${msg.sender} üzeni:</strong> ${msg.message}</p>`;
                 });
                 messagesListDiv.innerHTML = messagesHTML;
             } else {
@@ -1555,7 +1555,7 @@ function loadTavernaMessages() {
 }
 
 /**
- * BezĂˇrja az Ă¶sszes taverna oldali modalt/panelt.
+ * Bezárja az összes taverna oldali modalt/panelt.
  */
 function closeAllTavernaModals() {
     const pultModal = document.getElementById('pult-modal');
@@ -1567,7 +1567,7 @@ function closeAllTavernaModals() {
     if (asztalConfirmModal) asztalConfirmModal.style.display = 'none';
     if (jatekteremModal) jatekteremModal.style.display = 'none';
 
-    // A chat panelt kĂĽlĂ¶n kezeljĂĽk, hogy a bezĂˇrĂˇskor a kapcsolat is megszakadjon.
+    // A chat panelt külön kezeljük, hogy a bezáráskor a kapcsolat is megszakadjon.
     if (chatModal && chatModal.style.display !== 'none') {
         chatModal.style.display = 'none';
         const chatIframe = document.getElementById('chat-iframe');
@@ -1577,11 +1577,11 @@ function closeAllTavernaModals() {
 
 
 /**
-* InicializĂˇlja a Taverna oldalt: megjelenĂ­ti a kezdĹ‘ ĂĽzenetet
-* Ă©s esemĂ©nykezelĹ‘ket rendel a gombokhoz.
+* Inicializálja a Taverna oldalt: megjeleníti a kezdő üzenetet
+* és eseménykezelőket rendel a gombokhoz.
 */
 function initializeTavernaPage() {
-    // --- VĂLTOZĂ“K FELVĂ‰TELE ---
+    // --- VÁLTOZÓK FELVÉTELE ---
     const pultModal = document.getElementById('pult-modal');
     const asztalConfirmModal = document.getElementById('asztal-confirm-modal');
     const chatModal = document.getElementById('chat-modal');
@@ -1599,13 +1599,13 @@ function initializeTavernaPage() {
     const closeChatBtn = document.getElementById('close-chat-btn');
     const closeGameBtn = document.getElementById('close-game-btn');
 
-    // JĂˇtĂ©k elemek (ha kellenek kĂ©sĹ‘bb)
+    // Játék elemek (ha kellenek később)
     const gameInfoText = document.getElementById('game-info-text');
     const gameFeedbackText = document.getElementById('game-feedback-text');
     const gameCardArea = document.getElementById('game-card-area');
     const gameBettingArea = document.getElementById('game-betting-area');
 
-    // JĂˇtĂ©k Ăˇllapot vĂˇltozĂłk
+    // Játék állapot változók
     let playerCredit = 0;
     let prizePool = 0;
     let gameState = 'betting';
@@ -1616,12 +1616,12 @@ function initializeTavernaPage() {
         return;
     }
 
-    // Ezt az URL-t majd ellenĹ‘rizd, hogy helyes-e!
+    // Ezt az URL-t majd ellenőrizd, hogy helyes-e!
     const CHAT_ALKALMAZAS_URL = "https://script.google.com/macros/s/AKfycbyxkJipgYkB2K38MF5UzqB9kVYJnqk0QeaeIquVXdFgGL57zFDlVjGKQct-M605PqrS/exec";
 
-    // --- ESEMĂ‰NYKEZELĹK ---
+    // --- ESEMÉNYKEZELŐK ---
 
-    // 1. ĂśdvĂ¶zlĹ‘panel (Bartender)
+    // 1. Üdvözlőpanel (Bartender)
     setTimeout(() => {
         if (typeof toggleBartender === 'function') {
             const panel = document.getElementById('bartender-panel');
@@ -1631,7 +1631,7 @@ function initializeTavernaPage() {
         }
     }, 500);
 
-    // 2. PULT FUNKCIĂ“K (JAVĂŤTVA callBackend-re!)
+    // 2. PULT FUNKCIÓK (JAVÍTVA callBackend-re!)
     pultBtn.onclick = () => {
         if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
         pultModal.style.display = 'flex';
@@ -1651,17 +1651,17 @@ function initializeTavernaPage() {
 
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // --- JAVĂŤTĂS: callBackend ---
-        // NEM kĂĽldjĂĽk a currentUserEmail-t! (A Router intĂ©zi)
-        // ParamĂ©terek sorrendje a Backendben: (email, senderName, recipientName, messageText)
-        // Itt csak a maradĂ©k hĂˇrmat kĂĽldjĂĽk:
+        // --- JAVÍTÁS: callBackend ---
+        // NEM küldjük a currentUserEmail-t! (A Router intézi)
+        // Paraméterek sorrendje a Backendben: (email, senderName, recipientName, messageText)
+        // Itt csak a maradék hármat küldjük:
         callBackend('sendTavernaMessage', [senderName, recipientName, messageText],
             function (response) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 document.getElementById('pult-feedback-text').innerText = response.message;
 
                 if (response.success) {
-                    updateCreditDisplay(); // Ez mĂˇr a javĂ­tott verziĂł
+                    updateCreditDisplay(); // Ez már a javított verzió
                     document.getElementById('pult-recipient-name').value = '';
                     document.getElementById('pult-message-text').value = '';
                     const composeAgainBtn = document.getElementById('pult-feedback-compose-again-btn');
@@ -1686,8 +1686,8 @@ function initializeTavernaPage() {
 
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // --- JAVĂŤTĂS: callBackend ---
-        // NEM kĂĽldjĂĽk a currentUserEmail-t!
+        // --- JAVÍTÁS: callBackend ---
+        // NEM küldjük a currentUserEmail-t!
         callBackend('checkMessageStatusByRecipient', [recipientName],
             function (response) {
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -1703,7 +1703,7 @@ function initializeTavernaPage() {
         );
     };
 
-    // 3. ASZTAL (CHAT) FUNKCIĂ“K
+    // 3. ASZTAL (CHAT) FUNKCIÓK
     asztalBtn.onclick = () => {
         if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
         asztalConfirmModal.style.display = 'flex';
@@ -1711,7 +1711,7 @@ function initializeTavernaPage() {
 
     csevegBtn.onclick = () => {
         const userName = document.querySelector('.header-title').innerText;
-        // Itt HASZNĂLHATJUK a globĂˇlis vĂˇltozĂłt az URL Ă©pĂ­tĂ©shez (ez nem backend hĂ­vĂˇs)
+        // Itt HASZNÁLHATJUK a globális változót az URL építéshez (ez nem backend hívás)
         if (!userName || !currentUserEmail) {
             if (typeof uiAlert === 'function') uiAlert(t('taverna_user_data_missing'));
             return;
@@ -1734,7 +1734,7 @@ function initializeTavernaPage() {
         chatIframe.src = 'about:blank';
     };
 
-    // 4. JĂTĂ‰KTEREM (MĂˇr jĂł volt, de biztos ami biztos)
+    // 4. JÁTÉKTEREM (Már jó volt, de biztos ami biztos)
     jatekteremBtn.onclick = () => {
         if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
 
@@ -1754,7 +1754,7 @@ function initializeTavernaPage() {
 
                     document.getElementById('loading-overlay').style.display = 'flex';
 
-                    // callBackend Helyes hasznĂˇlata (Nincs paramĂ©ter, nincs email)
+                    // callBackend Helyes használata (Nincs paraméter, nincs email)
                     callBackend('getGameInitialData', [],
                         function (data) {
                             document.getElementById('loading-overlay').style.display = 'none';
@@ -1780,12 +1780,12 @@ function initializeTavernaPage() {
     closeGameBtn.onclick = () => { jatekteremModal.style.display = 'none'; };
 }
 
-// === JĂTĂ‰KVEZĂ‰RLĹ FĂśGGVĂ‰NYEK ===
+// === JÁTÉKVEZÉRLŐ FÜGGVÉNYEK ===
 
 function resetGame() {
     gameState = 'betting';
 
-    // 1. SzĂ¶vegek alaphelyzetbe
+    // 1. Szövegek alaphelyzetbe
     const infoText = document.getElementById('game-info-text');
     const feedbackText = document.getElementById('game-feedback-text');
     const cardArea = document.getElementById('game-card-area');
@@ -1794,7 +1794,7 @@ function resetGame() {
     if (infoText) infoText.innerText = t('game_info_bet_prompt');
     if (feedbackText) feedbackText.innerText = '';
 
-    // 2. KĂRTYĂK KIRAJZOLĂSA (Csak dekorĂˇciĂł, NINCS kattintĂˇs esemĂ©ny!)
+    // 2. KÁRTYÁK KIRAJZOLÁSA (Csak dekoráció, NINCS kattintás esemény!)
     if (typeof tavernaImageSources !== 'undefined' && tavernaImageSources.kartya_hatlap && cardArea) {
         cardArea.innerHTML =
             '<div class="card" style="width: 120px; height: 180px; background-size: contain; background-repeat: no-repeat; background-image: url(' + tavernaImageSources.kartya_hatlap + '); cursor: default; margin: 0 5px;"></div>' +
@@ -1808,9 +1808,9 @@ function resetGame() {
         cardArea.innerHTML = '<p>(' + t('game_cards_loading') + ')</p>';
     }
 
-    // 3. TĂ‰T MEZĹ Ă‰S GOMB LĂ‰TREHOZĂSA
+    // 3. TÉT MEZŐ ÉS GOMB LÉTREHOZÁSA
     if (bettingArea) {
-        bettingArea.innerHTML = ''; // TĂ¶rlĂ©s
+        bettingArea.innerHTML = ''; // Törlés
 
         var label = document.createElement('span');
         label.innerText = t('game_bet_label');
@@ -1851,14 +1851,14 @@ function handlePlayButtonClick() {
 
     if (!bet || bet <= 0) { gameFeedbackText.innerText = t('game_invalid_bet'); return; }
 
-    // playerCredit globĂˇlis vĂˇltozĂł
+    // playerCredit globális változó
     if (typeof playerCredit !== 'undefined' && bet > playerCredit) {
         gameInfoText.innerText = t('game_all_in_warning');
         gameFeedbackText.innerText = t('game_not_enough_credit');
         gameBetInput.value = playerCredit;
         return;
     }
-    // prizePool globĂˇlis vĂˇltozĂł
+    // prizePool globális változó
     if (typeof prizePool !== 'undefined' && bet > prizePool) {
         gameInfoText.innerText = t('game_pool_limit_warning');
         gameFeedbackText.innerText = t('game_pool_limit_detail');
@@ -1875,10 +1875,10 @@ function startGameAnimation(bet) {
     document.getElementById('game-info-text').innerText = t('game_shuffling');
 
     const cardArea = document.getElementById('game-card-area');
-    // Backtick helyett string Ă¶sszefĹ±zĂ©s a biztonsĂˇg kedvĂ©Ă©rt
+    // Backtick helyett string összefűzés a biztonság kedvéért
     cardArea.innerHTML = '<img id="shuffle-gif" src="' + tavernaImageSources.kartyakeveres_gif + '" style="height: 300px; max-width: 100%;">';
 
-    // Az animĂˇciĂł ideje (pl. 3 mĂˇsodperc)
+    // Az animáció ideje (pl. 3 másodperc)
     setTimeout(function () {
         showCardsForChoice(bet);
     }, 3000);
@@ -1894,7 +1894,7 @@ function showCardsForChoice(bet) {
         '<div class="card" id="card-2"></div>' +
         '<div class="card" id="card-3"></div>';
 
-    // StĂ­lus beszĂşrĂˇsa dinamikusan (hogy a hover mĹ±kĂ¶djĂ¶n)
+    // Stílus beszúrása dinamikusan (hogy a hover működjön)
     var styleId = 'card-game-style';
     if (!document.getElementById(styleId)) {
         var style = document.createElement('style');
@@ -1903,8 +1903,8 @@ function showCardsForChoice(bet) {
         document.head.appendChild(style);
     }
 
-    // EsemĂ©nykezelĹ‘k hozzĂˇadĂˇsa
-    // ITT adjuk Ăˇt a 'bet' vĂˇltozĂłt a handleCardChoice-nak!
+    // Eseménykezelők hozzáadása
+    // ITT adjuk át a 'bet' változót a handleCardChoice-nak!
     var cards = cardArea.querySelectorAll('.card');
     for (var i = 0; i < cards.length; i++) {
         (function (cardElement) {
@@ -1919,28 +1919,28 @@ function handleCardChoice(bet, chosenCard) {
     if (gameState !== 'choosing') return;
     gameState = 'result';
 
-    // UI frissĂ­tĂ©s: TĂ¶ltĂ©s
+    // UI frissítés: Töltés
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // GlobĂˇlis currentTavernPin hasznĂˇlata
+    // Globális currentTavernPin használata
     var pin = (typeof currentTavernPin !== 'undefined') ? currentTavernPin : null;
 
-    // Backend hĂ­vĂˇs (Nincs email paramĂ©ter!)
+    // Backend hívás (Nincs email paraméter!)
     callBackend('playCardGame', [bet, pin],
         function (result) {
             document.getElementById('loading-overlay').style.display = 'none';
 
             if (result.success) {
-                // GlobĂˇlis vĂˇltozĂłk frissĂ­tĂ©se
+                // Globális változók frissítése
                 if (typeof playerCredit !== 'undefined') playerCredit = result.newCredit;
                 updateCreditDisplay();
 
-                // KĂˇrtyĂˇk felfordĂ­tĂˇsa
-                // A vĂˇlasztott kĂˇrtya
+                // Kártyák felfordítása
+                // A választott kártya
                 if (result.outcome === 'win') {
                     chosenCard.style.backgroundImage = 'url(' + tavernaImageSources.kartya_pirosasz + ')';
                 } else {
-                    // VĂ©letlenszerĹ± vesztes kĂˇrtya (Bub vagy KirĂˇly)
+                    // Véletlenszerű vesztes kártya (Bub vagy Király)
                     var lossCards = ['kartya_fekbub', 'kartya_fekkar'];
                     var randomLoss = lossCards[Math.floor(Math.random() * lossCards.length)];
                     chosenCard.style.backgroundImage = 'url(' + tavernaImageSources[randomLoss] + ')';
@@ -1953,7 +1953,7 @@ function handleCardChoice(bet, chosenCard) {
                     infoText.innerText = t('game_lose_prefix') + bet + t('game_lose_suffix');
                 }
 
-                // Gombok visszaĂˇllĂ­tĂˇsa
+                // Gombok visszaállítása
                 var playBtn = document.getElementById('game-play-btn');
                 var betArea = document.getElementById('game-betting-area');
                 var betInput = document.getElementById('game-bet-input');
@@ -1963,7 +1963,7 @@ function handleCardChoice(bet, chosenCard) {
                     playBtn.onclick = resetGame;
                 }
                 if (betArea) betArea.style.display = 'block';
-                if (betInput) betInput.style.display = 'none'; // ElrejtjĂĽk az inputot az eredmĂ©ny kĂ©pernyĹ‘n
+                if (betInput) betInput.style.display = 'none'; // Elrejtjük az inputot az eredmény képernyőn
 
             } else {
                 if (typeof uiAlert === 'function') uiAlert(t('game_error_prefix') + result.error);
@@ -1978,15 +1978,15 @@ function handleCardChoice(bet, chosenCard) {
     );
 }
 
-// --- BĂ‰TA ASZTAL FRONTEND LOGIKA ---
+// --- BÉTA ASZTAL FRONTEND LOGIKA ---
 
-// Pult nĂ©zetvĂˇltĂł bĹ‘vĂ­tĂ©se
+// Pult nézetváltó bővítése
 /**
-* VĂˇltogat a Pult belsĹ‘ nĂ©zetei kĂ¶zĂ¶tt.
-* @param {string} viewSuffix A nĂ©zet azonosĂ­tĂłja (pl. 'read', 'compose', 'beta_menu').
+* Váltogat a Pult belső nézetei között.
+* @param {string} viewSuffix A nézet azonosítója (pl. 'read', 'compose', 'beta_menu').
 */
 function showPultView(viewSuffix) {
-    // A lehetsĂ©ges nĂ©zetek ID-jainak listĂˇja
+    // A lehetséges nézetek ID-jainak listája
     const views = [
         'pult-view-read',
         'pult-view-compose',
@@ -1998,73 +1998,73 @@ function showPultView(viewSuffix) {
         'pult-view-beta_my_works' // Ezt is kezelni kell!
     ];
 
-    // Mindenkit elrejtĂĽnk
+    // Mindenkit elrejtünk
     views.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });
 
-    // A kivĂˇlasztottat megjelenĂ­tjĂĽk
+    // A kiválasztottat megjelenítjük
     const targetId = `pult-view-${viewSuffix}`;
     const target = document.getElementById(targetId);
     if (target) {
         target.style.display = 'block';
     } else {
-        console.warn(`Figyelem: A kĂ©rt nĂ©zet (${targetId}) nem talĂˇlhatĂł.`);
+        console.warn(`Figyelem: A kért nézet (${targetId}) nem található.`);
     }
 
-    // --- SpeciĂˇlis betĂ¶ltĂ©si logikĂˇk ---
+    // --- Speciális betöltési logikák ---
 
-    // Ha visszalĂ©pĂĽnk a fĹ‘menĂĽbe, frissĂ­tsĂĽk az ĂĽzeneteket
+    // Ha visszalépünk a főmenübe, frissítsük az üzeneteket
     if (viewSuffix === 'read') {
         loadTavernaMessages();
     }
 
-    // Ha a bĂ©ta listĂˇt nyitjuk, tĂ¶ltsĂĽk le az adatokat
+    // Ha a béta listát nyitjuk, töltsük le az adatokat
     if (viewSuffix === 'beta_list') {
-        loadBetaWorks(); // Ez a fĂĽggvĂ©ny mĂˇr lĂ©tezik a kĂłdodban
+        loadBetaWorks(); // Ez a függvény már létezik a kódodban
     }
 }
 
-// 1. JAVĂŤTOTT MODAL NYITĂ“ (Flex display + Suffix hĂ­vĂˇs)
+// 1. JAVÍTOTT MODAL NYITÓ (Flex display + Suffix hívás)
 function openPultModal() {
     const modal = document.getElementById('pult-modal');
     if (modal) {
-        modal.style.display = 'flex'; // FONTOS: Flex a kĂ¶zĂ©pre igazĂ­tĂˇshoz!
+        modal.style.display = 'flex'; // FONTOS: Flex a középre igazításhoz!
 
-        // FONTOS: Csak a 'read' utĂłtagot adjuk Ăˇt, a showPultView kiegĂ©szĂ­ti!
+        // FONTOS: Csak a 'read' utótagot adjuk át, a showPultView kiegészíti!
         showPultView('read');
     } else {
-        console.error("Hiba: Nem talĂˇlhatĂł a 'pult-modal' elem!");
+        console.error("Hiba: Nem található a 'pult-modal' elem!");
     }
 }
 
-// 1.B Ăšj Taverna AsztaltĂˇrsasĂˇg hĂ­vĂˇsa
+// 1.B Új Taverna Asztaltársaság hívása
 function openTavernJobs() {
     const modal = document.getElementById('tavern-jobs-modal');
     if (modal) {
         modal.style.display = 'flex';
         const contentDiv = document.getElementById('tavern-jobs-content');
-        contentDiv.innerHTML = '<p style="text-align: center;"><i>OdalĂ©psz a leghangosabb asztalhoz...<br>A rendszer hallgatĂłzik...</i></p>';
+        contentDiv.innerHTML = '<p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...<br>A rendszer hallgatózik...</i></p>';
         
         if (typeof callBackend === 'function') {
             callBackend("getTavernJobs", [], function(response) {
                 if (response && response.text) {
                     contentDiv.innerHTML = response.text.replace(/\n/g, '<br>');
                 } else {
-                    contentDiv.innerHTML = '<p>Az asztalnĂˇl lĂ©vĹ‘k csak morognak. (Hiba: ' + (response.error || "Nincs vĂˇlasz") + ')</p>';
+                    contentDiv.innerHTML = '<p>Az asztalnál lévők csak morognak. (Hiba: ' + (response.error || "Nincs válasz") + ')</p>';
                 }
             });
         } else {
-             contentDiv.innerHTML = '<p>A hĂˇlĂłzati kapcsolat megszakadt, nem hallod, mit mondanak.</p>';
+             contentDiv.innerHTML = '<p>A hálózati kapcsolat megszakadt, nem hallod, mit mondanak.</p>';
         }
     }
 }
 
-// 2. JAVĂŤTOTT KĂ–LTSĂ‰G SZĂMOLĂ“ (EsemĂ©ny delegĂˇlĂˇs - Nincs tĂ¶bb "null" hiba!)
-// Ez helyettesĂ­ti a rĂ©gi 'DOMContentLoaded' blokkot
+// 2. JAVÍTOTT KÖLTSÉG SZÁMOLÓ (Esemény delegálás - Nincs több "null" hiba!)
+// Ez helyettesíti a régi 'DOMContentLoaded' blokkot
 document.addEventListener('input', function (e) {
-    // FigyeljĂĽk, ha valaki Ă­r a bĂ©ta mezĹ‘kbe
+    // Figyeljük, ha valaki ír a béta mezőkbe
     if (e.target && (e.target.id === 'beta-bonus' || e.target.id === 'beta-max')) {
         updateBetaCost();
     }
@@ -2075,7 +2075,7 @@ function updateBetaCost() {
     const bonusInput = document.getElementById('beta-bonus');
     const maxInput = document.getElementById('beta-max');
 
-    // Ha mĂ©g nincs betĂ¶ltve a HTML, kilĂ©pĂĽnk hiba nĂ©lkĂĽl
+    // Ha még nincs betöltve a HTML, kilépünk hiba nélkül
     if (!bonusInput || !maxInput) return;
 
     const bonus = parseInt(bonusInput.value) || 0;
@@ -2090,7 +2090,7 @@ function updateBetaCost() {
     if (finalCostEl) finalCostEl.textContent = total + " Kr";
 }
 
-// 1. FELTĂ–LTĂ‰S INDĂŤTĂSA (PIN KĂ©rĂ©ssel)
+// 1. FELTÖLTÉS INDÍTÁSA (PIN Kéréssel)
 function initiateBetaUpload() {
     const title = document.getElementById('beta-title').value;
     const content = document.getElementById('beta-content').value;
@@ -2102,28 +2102,28 @@ function initiateBetaUpload() {
         return;
     }
 
-    // Adatok Ă¶sszegyĹ±jtĂ©se
+    // Adatok összegyűjtése
     const payload = {
         title: title,
-        contentHtml: content.replace(/\n/g, '<br>'), // SortĂ¶rĂ©sek konvertĂˇlĂˇsa HTML-re
+        contentHtml: content.replace(/\n/g, '<br>'), // Sortörések konvertálása HTML-re
         bonusPerReader: bonus,
         maxReaders: max
     };
 
-    // PIN bekĂ©rĂ©se a globĂˇlis panellel
+    // PIN bekérése a globális panellel
     if (typeof requestPin === 'function') {
         requestPin(function (pinCode) {
             sendBetaUploadToServer(pinCode, payload);
         }, t('beta_upload_confirm_html'));
     } else {
-        // Ha valami csoda folytĂˇn mĂ©gsem lenne betĂ¶ltve (fallback)
+        // Ha valami csoda folytán mégsem lenne betöltve (fallback)
         const p = prompt(t('pin_prompt_label'));
         if (p) sendBetaUploadToServer(p, payload);
     }
 }
 
 // =========================================
-// === BĂ‰TA FELTĂ–LTĂ‰S KĂśLDĂ‰SE (VISSZAJELZĂ‰SSEL) ===
+// === BÉTA FELTÖLTÉS KÜLDÉSE (VISSZAJELZÉSSEL) ===
 // =========================================
 
 function sendBetaUploadToServer(pinCode, payload) {
@@ -2136,7 +2136,7 @@ function sendBetaUploadToServer(pinCode, payload) {
             if (response.success) {
                 var feedbackEl = document.getElementById('pult-feedback-text');
 
-                // JAVĂŤTVA: Sima string Ă¶sszefĹ±zĂ©s
+                // JAVÍTVA: Sima string összefűzés
                 feedbackEl.innerHTML = '<div style="text-align: center; color: #5d3a1a;">' +
                     '<i class="fas fa-feather-alt" style="font-size: 3em; color: #8b0000; margin-bottom: 15px;"></i>' +
                     '<br><strong>' + t('beta_upload_success_title') + '</strong><br><br>' +
@@ -2162,37 +2162,37 @@ function sendBetaUploadToServer(pinCode, payload) {
     );
 }
 
-// 2. LISTA BETĂ–LTĂ‰SE
+// 2. LISTA BETÖLTÉSE
 function loadBetaWorks() {
     var container = document.getElementById('beta-list-container');
     container.innerHTML = '<p style="text-align:center;">' + t('beta_list_loading') + '</p>';
 
-    // === ĂšJ HĂŤVĂS (callBackend) ===
+    // === ÚJ HÍVÁS (callBackend) ===
     // Backend: getAvailableBetaWorks
-    // ParamĂ©terek: [] (ĂĽres tĂ¶mb, mert az emailt a Router intĂ©zi a TokenbĹ‘l!)
+    // Paraméterek: [] (üres tömb, mert az emailt a Router intézi a Tokenből!)
     callBackend('getAvailableBetaWorks', [],
         function (res) {
             if (res.success) {
-                // Ez hĂ­vja meg a renderelĹ‘t, ami kirajzolja a cĂ­meket!
+                // Ez hívja meg a renderelőt, ami kirajzolja a címeket!
                 renderBetaList(res.works);
             } else {
-                // JAVĂŤTVA: Backtick helyett sima string Ă¶sszefĹ±zĂ©s
+                // JAVÍTVA: Backtick helyett sima string összefűzés
                 container.innerHTML = '<p style="color:red;">' + t('error_prefix') + res.error + '</p>';
             }
         },
         function (err) {
-            // JAVĂŤTVA: Backtick helyett sima string Ă¶sszefĹ±zĂ©s
+            // JAVÍTVA: Backtick helyett sima string összefűzés
             container.innerHTML = '<p style="color:red;">' + t('server_error_prefix') + err.message + '</p>';
         }
     );
 }
 
-// A lista kirajzolĂˇsa (Kliens oldal)
+// A lista kirajzolása (Kliens oldal)
 function renderBetaList(works) {
     const container = document.getElementById('beta-list-container');
     container.innerHTML = '';
 
-    // --- 1. ĂśRES ĂLLAPOT KEZELĂ‰SE ---
+    // --- 1. ÜRES ÁLLAPOT KEZELÉSE ---
     if (!works || works.length === 0) {
         container.innerHTML = '<div style="text-align:center; padding: 20px; color: #5d3a1a;">' +
             '<i class="fas fa-feather-alt" style="font-size: 3em; opacity: 0.5; margin-bottom: 10px;"></i>' +
@@ -2207,7 +2207,7 @@ function renderBetaList(works) {
         return;
     }
 
-    // --- 2. HA VANNAK MĹ°VEK, LISTĂZZUK ---
+    // --- 2. HA VANNAK MŰVEK, LISTÁZZUK ---
     works.forEach(function (work) {
         var div = document.createElement('div');
         div.style.cssText = "background: #fff; padding: 10px; margin-bottom: 5px; border-bottom: 1px dashed #8b4513; border-radius: 4px;";
@@ -2233,11 +2233,11 @@ function renderBetaList(works) {
                 t('beta_list_read_button_prefix') + bonusText + t('beta_list_read_button_suffix') + '</button>';
         }
 
-        // JAVĂŤTVA: Sima string Ă¶sszefĹ±zĂ©s
+        // JAVÍTVA: Sima string összefűzés
         div.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center;">' +
             '<div style="flex: 1; padding-right: 10px;">' +
             '<strong style="color: #8b0000; font-size: 1.1em;">' + work.title + '</strong><br>' +
-            '<small style="color: #555;">' + t('beta_list_author_label') + ' <strong>' + work.author + '</strong> | đź“… ' + work.date + '</small>' +
+            '<small style="color: #555;">' + t('beta_list_author_label') + ' <strong>' + work.author + '</strong> | 📅 ' + work.date + '</small>' +
             '</div>' +
             '<div>' + actionBtn + '</div>' +
             '</div>';
@@ -2247,14 +2247,14 @@ function renderBetaList(works) {
 }
 
 // ===================================
-// === BĂ‰TA OLVASĂ“ (FRONTEND) ===
+// === BÉTA OLVASÓ (FRONTEND) ===
 // ===================================
 
 let currentBetaWorkId = null;
 let currentBetaWorkTitle = null;
 
-// 1. OlvasĂł MegnyitĂˇsa
-// (Ezt hĂ­vja a lista "OlvasĂˇs" gombja)
+// 1. Olvasó Megnyitása
+// (Ezt hívja a lista "Olvasás" gombja)
 function openBetaReader(workId, workTitle) {
     currentBetaWorkId = workId;
     currentBetaWorkTitle = workTitle;
@@ -2270,55 +2270,55 @@ function openBetaReader(workId, workTitle) {
             contentArea.innerHTML = content;
         },
         function (e) {
-            // JAVĂŤTVA: Sima string
+            // JAVÍTVA: Sima string
             contentArea.innerHTML = '<div class="status-box error">' + t('beta_reader_error_prefix') + e.message + '</div>';
         }
     );
 }
 
-// Ezt a fĂĽggvĂ©nyt hĂ­vja a "đź“– Olvasok (KreditszerzĂ©s)" gomb
+// Ezt a függvényt hívja a "📖 Olvasok (Kreditszerzés)" gomb
 function listBetaWorksForReader() {
-    // 1. ĂtvĂˇltunk a listĂˇzĂł nĂ©zetre a pulton belĂĽl
+    // 1. Átváltunk a listázó nézetre a pulton belül
     showPultView('beta_list');
 
-    // 2. MeghĂ­vjuk az adatbetĂ¶ltĹ‘ fĂĽggvĂ©nyt (ami mĂˇr lĂ©tezik loadBetaWorks nĂ©ven)
-    // EllenĹ‘rizzĂĽk, hogy lĂ©tezik-e, hogy ne legyen hiba
+    // 2. Meghívjuk az adatbetöltő függvényt (ami már létezik loadBetaWorks néven)
+    // Ellenőrizzük, hogy létezik-e, hogy ne legyen hiba
     if (typeof loadBetaWorks === 'function') {
         loadBetaWorks();
     } else {
-        console.error("Hiba: A 'loadBetaWorks' fĂĽggvĂ©ny nem talĂˇlhatĂł!");
+        console.error("Hiba: A 'loadBetaWorks' függvény nem található!");
         document.getElementById('beta-list-container').innerHTML = t('beta_reader_loader_missing');
     }
 }
 
-// 2. KilĂ©pĂ©s (MegerĹ‘sĂ­tĂ©ssel)
+// 2. Kilépés (Megerősítéssel)
 function closeBetaReader() {
-    // EllenĹ‘rizzĂĽk, Ă­rt-e mĂˇr valamit
+    // Ellenőrizzük, írt-e már valamit
     const opinion = document.getElementById('log-opinion').value;
 
-    // BelsĹ‘ fĂĽggvĂ©ny: Ez vĂ©gzi a tĂ©nyleges bezĂˇrĂˇst Ă©s tĂ¶rlĂ©st
+    // Belső függvény: Ez végzi a tényleges bezárást és törlést
     const veglegesBezaras = function () {
         document.getElementById('beta-reader-modal').style.display = 'none';
         document.getElementById('beta-log-form').reset();
     };
 
     if (opinion.length > 10) {
-        // 1. ESET: Van szĂ¶veg -> KĂ©rdezĂĽnk
+        // 1. ESET: Van szöveg -> Kérdezünk
         uiConfirm(
-            t('beta_reader_exit_confirm'), // Ăśzenet
-            t('beta_reader_exit_title'), // CĂ­m
+            t('beta_reader_exit_confirm'), // Üzenet
+            t('beta_reader_exit_title'), // Cím
             function () {
                 // Ez a CALLBACK: Csak akkor fut le, ha az "Igen"-re nyomott
                 veglegesBezaras();
             }
         );
     } else {
-        // 2. ESET: Nincs szĂ¶veg -> Azonnal bezĂˇrjuk kĂ©rdĂ©s nĂ©lkĂĽl
+        // 2. ESET: Nincs szöveg -> Azonnal bezárjuk kérdés nélkül
         veglegesBezaras();
     }
 }
 
-// 3. NaplĂł BekĂĽldĂ©se
+// 3. Napló Beküldése
 function submitLogbook() {
     const gender = document.getElementById('log-gender').value;
     const age = document.getElementById('log-age').value;
@@ -2326,7 +2326,7 @@ function submitLogbook() {
     const language = document.getElementById('log-language').value;
     const opinion = document.getElementById('log-opinion').value;
 
-    // ValidĂˇciĂł
+    // Validáció
     if (!gender || !age || !genre || !language) {
         uiAlert(t('beta_log_missing_demo'));
         return;
@@ -2341,7 +2341,7 @@ function submitLogbook() {
         age: age,
         genre: genre,
         language: language,
-        opinionHtml: opinion.replace(/\n/g, '<br>'), // SortĂ¶rĂ©sek megĹ‘rzĂ©se
+        opinionHtml: opinion.replace(/\n/g, '<br>'), // Sortörések megőrzése
         workTitle: currentBetaWorkTitle
     };
 
@@ -2367,19 +2367,19 @@ function submitLogbook() {
 }
 
 // ===================================
-// === SZERZĹI STATISZTIKA (FRONTEND) ===
+// === SZERZŐI STATISZTIKA (FRONTEND) ===
 // ===================================
 
-// 1. SajĂˇt mĹ±vek listĂˇzĂˇsa
+// 1. Saját művek listázása
 function showMyBetaStats() {
     showPultView('beta_my_works');
 
     const container = document.getElementById('beta-my-works-container');
     container.innerHTML = '<p style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> ' + t('beta_my_works_loading') + '</p>';
 
-    // === ĂšJ HĂŤVĂS ===
+    // === ÚJ HÍVÁS ===
     // Backend: getAuthorBetaWorks
-    // ParamĂ©terek: []
+    // Paraméterek: []
     callBackend('getAuthorBetaWorks', [],
         function (res) {
             if (res.success) {
@@ -2392,7 +2392,7 @@ function showMyBetaStats() {
     );
 }
 
-// Lista kirajzolĂˇsa (SajĂˇt MĹ±vek) - BĹVĂŤTETT VERZIĂ“
+// Lista kirajzolása (Saját Művek) - BŐVÍTETT VERZIÓ
 function renderMyWorksList(works) {
     var container = document.getElementById('beta-my-works-container');
     container.innerHTML = '';
@@ -2406,26 +2406,26 @@ function renderMyWorksList(works) {
         var div = document.createElement('div');
         div.style.cssText = "background: #fff; padding: 10px; margin-bottom: 8px; border-bottom: 1px dashed #8b4513; border-radius: 5px;";
 
-        var statusColor = work.status === 'AKTĂŤV' ? 'green' : 'gray';
+        var statusColor = work.status === 'AKTÍV' ? 'green' : 'gray';
 
         var controlButtons = '';
-        if (work.status === 'AKTĂŤV') {
-            // JAVĂŤTVA: String Ă¶sszefĹ±zĂ©s
+        if (work.status === 'AKTÍV') {
+            // JAVÍTVA: String összefűzés
             controlButtons = '<div style="margin-top: 8px; display: flex; gap: 5px; justify-content: flex-end;">' +
-                '<button class="btn btn-sm" style="background-color: #d2691e; color: white; padding: 4px 8px; font-size: 0.85em;" onclick="initiateBetaRefill(\'' + work.id + '\', \'' + work.title + '\')">đź’° ' + t('beta_my_works_refill_button') + '</button> ' +
-                '<button class="btn btn-sm" style="background-color: #8b0000; color: white; padding: 4px 8px; font-size: 0.85em;" onclick="initiateBetaClose(\'' + work.id + '\', \'' + work.title + '\')">âťŚ ' + t('beta_my_works_close_button') + '</button>' +
+                '<button class="btn btn-sm" style="background-color: #d2691e; color: white; padding: 4px 8px; font-size: 0.85em;" onclick="initiateBetaRefill(\'' + work.id + '\', \'' + work.title + '\')">💰 ' + t('beta_my_works_refill_button') + '</button> ' +
+                '<button class="btn btn-sm" style="background-color: #8b0000; color: white; padding: 4px 8px; font-size: 0.85em;" onclick="initiateBetaClose(\'' + work.id + '\', \'' + work.title + '\')">❌ ' + t('beta_my_works_close_button') + '</button>' +
                 '</div>';
         } else {
             controlButtons = '<div style="text-align: right; font-size: 0.8em; color: gray; margin-top:5px;">' + t('beta_my_works_closed_note') + '</div>';
         }
 
-        // JAVĂŤTVA: String Ă¶sszefĹ±zĂ©s
+        // JAVÍTVA: String összefűzés
         div.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">' +
             '<div>' +
             '<strong style="color: #5d3a1a;">' + work.title + '</strong><br>' +
             '<small style="color: #555;">' + work.date + ' | <span style="color:' + statusColor + '; font-weight:bold;">' + work.status + '</span></small>' +
             '</div>' +
-            '<button class="btn btn-sm" style="background-color: #4682b4; color: white;" onclick="initiateStatPurchase(\'' + work.id + '\')">đź“Š ' + t('beta_my_works_report_button') + '</button>' +
+            '<button class="btn btn-sm" style="background-color: #4682b4; color: white;" onclick="initiateStatPurchase(\'' + work.id + '\')">📊 ' + t('beta_my_works_report_button') + '</button>' +
             '</div>' +
             controlButtons;
 
@@ -2433,34 +2433,34 @@ function renderMyWorksList(works) {
     });
 }
 
-// 2. VĂˇsĂˇrlĂˇs indĂ­tĂˇsa (PIN bekĂ©rĂ©se)
+// 2. Vásárlás indítása (PIN bekérése)
 function initiateStatPurchase(workId) {
     uiConfirm(
-        t('beta_stats_purchase_message'), // Ăśzenet
-        t('beta_stats_purchase_title'), // CĂ­m
+        t('beta_stats_purchase_message'), // Üzenet
+        t('beta_stats_purchase_title'), // Cím
         function () {
-            // Ez a kĂłd fut le, ha a felhasznĂˇlĂł az IGEN-re kattintott
+            // Ez a kód fut le, ha a felhasználó az IGEN-re kattintott
             if (typeof requestPin === 'function') {
                 requestPin(function (pinCode) {
-                    // Ez fut le, ha beĂ­rta a PIN-t Ă©s rĂˇnyomott a rendben gombra
+                    // Ez fut le, ha beírta a PIN-t és rányomott a rendben gombra
                     fetchBetaStats(workId, pinCode);
                 }, t('beta_stats_purchase_confirm_title'));
             } else {
-                // Ha valamiĂ©rt nincs betĂ¶ltve a PIN bekĂ©rĹ‘ script, szĂłlunk (szĂ©pen)
+                // Ha valamiért nincs betöltve a PIN bekérő script, szólunk (szépen)
                 uiAlert(t('pin_module_missing'), t('system_error_title'));
             }
         }
     );
 }
 
-// 3. Adatok lekĂ©rĂ©se Ă©s megjelenĂ­tĂ©se
+// 3. Adatok lekérése és megjelenítése
 function fetchBetaStats(workId, pinCode) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // === ĂšJ HĂŤVĂS ===
+    // === ÚJ HÍVÁS ===
     // Backend: buyBetaReport
-    // ParamĂ©terek: [pinCode, workId] (Figyelj a sorrendre a backendben!)
-    // RĂ©gi hĂ­vĂˇs: buyBetaReport(email, pin, workId) -> Ăšj backendben: (userEmail, pin, workId)
+    // Paraméterek: [pinCode, workId] (Figyelj a sorrendre a backendben!)
+    // Régi hívás: buyBetaReport(email, pin, workId) -> Új backendben: (userEmail, pin, workId)
     callBackend('buyBetaReport', [pinCode, workId],
         function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
@@ -2477,13 +2477,13 @@ function fetchBetaStats(workId, pinCode) {
     );
 }
 
-// TĂˇblĂˇzat kirajzolĂˇsa a Modalban
+// Táblázat kirajzolása a Modalban
 function renderStatsTable(title, rows) {
     var modal = document.getElementById('beta-stats-modal');
     var titleEl = document.getElementById('stats-modal-title');
     var tbody = document.getElementById('stats-table-body');
 
-    // JAVĂŤTVA
+    // JAVÍTVA
     titleEl.textContent = t('beta_report_title_prefix') + title;
     tbody.innerHTML = '';
 
@@ -2494,7 +2494,7 @@ function renderStatsTable(title, rows) {
             var tr = document.createElement('tr');
             var cellStyle = "padding: 8px; border: 1px solid #eee; vertical-align: top;";
 
-            // JAVĂŤTVA: HosszĂş string Ă¶sszefĹ±zĂ©s
+            // JAVÍTVA: Hosszú string összefűzés
             tr.innerHTML = '<td style="' + cellStyle + ' white-space: nowrap;">' + row.date + '</td>' +
                 '<td style="' + cellStyle + '"><strong>' + row.readerName + '</strong></td>' +
                 '<td style="' + cellStyle + '">' + row.age + '<br>' + row.gender + '</td>' +
@@ -2510,14 +2510,14 @@ function renderStatsTable(title, rows) {
 }
 
 // ===================================
-// === BĂ‰TA MĹ°VEK KEZELĂ‰SE (USER) ===
+// === BÉTA MŰVEK KEZELÉSE (USER) ===
 // ===================================
 
-// 1. UTĂNTĂ–LTĂ‰S INDĂŤTĂSA
+// 1. UTÁNTÖLTÉS INDÍTÁSA
 function initiateBetaRefill(workId, title) {
-    // Mennyit tĂ¶ltsĂĽnk?
+    // Mennyit töltsünk?
     const amountStr = prompt(t('beta_refill_prompt_prefix') + title + t('beta_refill_prompt_suffix'));
-    if (!amountStr) return; // MĂ©gse
+    if (!amountStr) return; // Mégse
 
     const amount = parseInt(amountStr);
     if (!amount || amount <= 0) {
@@ -2525,7 +2525,7 @@ function initiateBetaRefill(workId, title) {
         return;
     }
 
-    // PIN bekĂ©rĂ©se
+    // PIN bekérése
     if (typeof requestPin === 'function') {
         requestPin(function (pinCode) {
             sendManageRequest(pinCode, 'REFILL', workId, amount);
@@ -2536,9 +2536,9 @@ function initiateBetaRefill(workId, title) {
     }
 }
 
-// 2. LEZĂRĂS INDĂŤTĂSA
+// 2. LEZÁRÁS INDÍTÁSA
 function initiateBetaClose(workId, title) {
-    // A szĂ¶veg formĂˇzĂˇsa HTML-lel a szebb megjelenĂ©sĂ©rt
+    // A szöveg formázása HTML-lel a szebb megjelenésért
     const message = t('beta_close_confirm_html_prefix') + title + t('beta_close_confirm_html_suffix');
 
     uiConfirm(
@@ -2548,30 +2548,30 @@ function initiateBetaClose(workId, title) {
             // Ez fut le, ha az IGEN-re kattintott
             if (typeof requestPin === 'function') {
                 requestPin(function (pinCode) {
-                    // Ez fut le, ha beĂ­rta a PIN-t
+                    // Ez fut le, ha beírta a PIN-t
                     sendManageRequest(pinCode, 'CLOSE', workId, 0);
                 }, t('beta_close_confirm_title'));
             } else {
-                // Prompt helyett hibaĂĽzenet, ha nincs PIN modul
+                // Prompt helyett hibaüzenet, ha nincs PIN modul
                 uiAlert(t('pin_module_missing'), t('system_error_title'));
             }
         }
     );
 }
 
-// KĂ¶zĂ¶s szerverhĂ­vĂł
+// Közös szerverhívó
 function sendManageRequest(pinCode, action, workId, amount) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // === ĂšJ HĂŤVĂS ===
+    // === ÚJ HÍVÁS ===
     // Backend: manageBetaWork
-    // ParamĂ©terek: [pinCode, action, workId, amount]
+    // Paraméterek: [pinCode, action, workId, amount]
     callBackend('manageBetaWork', [pinCode, action, workId, amount],
         function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (res.success) {
                 uiAlert(t('success_prefix') + res.message);
-                showMyBetaStats(); // Lista frissĂ­tĂ©se
+                showMyBetaStats(); // Lista frissítése
             } else {
                 uiAlert(t('error_prefix') + res.error);
             }
@@ -2589,7 +2589,7 @@ function sendManageRequest(pinCode, action, workId, amount) {
 //  ========
 
 /**
- * SEGĂ‰DFĂśGGVĂ‰NY: InicializĂˇlja a Bank szekciĂłt a Piac oldalon.
+ * SEGÉDFÜGGVÉNY: Inicializálja a Bank szekciót a Piac oldalon.
  */
 function initializeBankSection() {
     var exchangeBtn = document.getElementById('bank-exchange-btn');
@@ -2633,7 +2633,7 @@ function initializeBankSection() {
             var amountInput = document.createElement('input');
             amountInput.type = 'number';
             amountInput.id = 'bank-send-item-identifier';
-            // JAVĂŤTVA: String Ă¶sszefĹ±zĂ©s
+            // JAVÍTVA: String összefűzés
             amountInput.placeholder = t('bank_send_amount_placeholder_prefix') + selectedType + t('bank_send_amount_placeholder_suffix');
             amountInput.style.width = '100%';
             amountInput.style.padding = '8px';
@@ -2651,7 +2651,7 @@ function initializeBankSection() {
             }
 
             if (!userTradableItemsCache) {
-                // JAVĂŤTVA: Sima string
+                // JAVÍTVA: Sima string
                 itemSelectorDiv.innerHTML = '<p>' + t('bank_items_loading') + '</p>';
 
                 callBackend('getUserTradableItems', [],
@@ -2682,7 +2682,7 @@ function initializeBankSection() {
 
                 items.forEach(function (item) {
                     if (item.identifier) {
-                        // JAVĂŤTVA: String Ă¶sszefĹ±zĂ©s
+                        // JAVÍTVA: String összefűzés
                         optionsHTML += '<option value="' + item.identifier + '">' + item.name + '</option>';
                     }
                 });
@@ -2734,7 +2734,7 @@ function initializeBankSection() {
             function (response) {
                 if (response.success) {
                     userTradableItemsCache = response.items;
-                    console.log("Bank: EladhatĂł tĂ©telek gyorsĂ­tĂłtĂˇrazva.");
+                    console.log("Bank: Eladható tételek gyorsítótárazva.");
                     if (itemTypeSelect.value && itemTypeSelect.value !== 'kredit' && itemTypeSelect.value !== 'talentum') {
                         itemTypeSelect.onchange();
                     }
@@ -2746,18 +2746,18 @@ function initializeBankSection() {
 }
 
 // =========================================
-// === PIAC RENDSZER (HIBRID SZĹ°RĂ‰SSEL) ===
+// === PIAC RENDSZER (HIBRID SZŰRÉSSEL) ===
 // =========================================
 
-// GlobĂˇlis vĂˇltozĂłk a piachoz
+// Globális változók a piachoz
 var currentItemToSell = { identifier: null, type: null };
 var currentOfferAction = { action: null, listingId: null, offerId: null };
 var userTradableItemsCache = null;
 var marketListingsCache = [];
-var CLIENT_SIDE_FILTER_THRESHOLD = 100; // E felett szerver oldali a keresĂ©s
+var CLIENT_SIDE_FILTER_THRESHOLD = 100; // E felett szerver oldali a keresés
 
 /**
- * Piac oldal inicializĂˇlĂˇsa (HIBRID SZĹ°RĂ‰SSEL)
+ * Piac oldal inicializálása (HIBRID SZŰRÉSSEL)
  */
 function initializePiacOldal() {
     var loaders = {
@@ -2769,7 +2769,7 @@ function initializePiacOldal() {
         ajanlatok: document.getElementById('aktiv-ajanlatok-lista')
     };
 
-    // Loader megjelenĂ­tĂ©se
+    // Loader megjelenítése
     if (loaders.piaci) loaders.piaci.style.display = 'block';
     if (loaders.ajanlatok) loaders.ajanlatok.style.display = 'block';
 
@@ -2777,7 +2777,7 @@ function initializePiacOldal() {
     initializeSellableItemsSection();
     loadMyActiveOffers(containers.ajanlatok, loaders.ajanlatok);
 
-    // BANK SZEKCIĂ“ INDĂŤTĂSA (FeltĂ©telezzĂĽk, hogy a fĂĽggvĂ©ny mĂˇr lĂ©tezik feljebb!)
+    // BANK SZEKCIÓ INDÍTÁSA (Feltételezzük, hogy a függvény már létezik feljebb!)
     if (typeof initializeBankSection === 'function') {
         initializeBankSection();
     }
@@ -2785,27 +2785,27 @@ function initializePiacOldal() {
     var searchInput = document.getElementById('piac-kereso');
     var searchButton = document.getElementById('piac-kereso-gomb');
 
-    // 1. TĂ©telszĂˇm lekĂ©rĂ©se a dĂ¶ntĂ©shez (callBackend)
+    // 1. Tételszám lekérése a döntéshez (callBackend)
     callBackend('getMarketItemCount', [], function (response) {
         if (!response.success) {
             containers.piaci.innerHTML = '<p style="color:red;">' + t('market_load_error_prefix') + response.error + '</p>';
             return;
         }
 
-        // 2. DĂ¶ntĂ©s a szĹ±rĂ©si mĂłd kĂ¶zĂ¶tt
+        // 2. Döntés a szűrési mód között
         if (response.count <= CLIENT_SIDE_FILTER_THRESHOLD) {
-            // --- KLIENSOLDALI MĂ“D (Gyors, mindent letĂ¶lt) ---
+            // --- KLIENSOLDALI MÓD (Gyors, mindent letölt) ---
             if (searchButton) searchButton.style.display = 'none';
             if (searchInput) searchInput.placeholder = t('market_filter_placeholder');
 
-            // Null paramĂ©terrel mindent lekĂ©rĂĽnk
+            // Null paraméterrel mindent lekérünk
             callBackend('getMarketListings', [null], function (listingResponse) {
                 if (loaders.piaci) loaders.piaci.style.display = 'none';
                 if (listingResponse.success) {
                     marketListingsCache = listingResponse.listings;
                     displayListings(marketListingsCache, containers.piaci);
 
-                    // Kliens oldali keresĂ©s esemĂ©nykezelĹ‘je
+                    // Kliens oldali keresés eseménykezelője
                     searchInput.onkeyup = function () {
                         var searchTerm = this.value.toLowerCase();
                         var filteredList = marketListingsCache.filter(function (item) {
@@ -2817,7 +2817,7 @@ function initializePiacOldal() {
             });
 
         } else {
-            // --- SZERVEROLDALI MĂ“D (KĂ­mĂ©lĹ‘, csak keresĂ©sre tĂ¶lt) ---
+            // --- SZERVEROLDALI MÓD (Kímélő, csak keresésre tölt) ---
             if (loaders.piaci) loaders.piaci.style.display = 'none';
             if (searchButton) searchButton.style.display = 'inline-block';
             if (searchInput) searchInput.placeholder = t('market_search_placeholder');
@@ -2859,12 +2859,12 @@ function toggleBuyNowInput(isFixedSelected) {
 function displayListings(listings, container) {
     container.innerHTML = '';
     if (listings.length === 0) {
-        container.innerHTML = "<p>Nincsenek a keresĂ©snek megfelelĹ‘ hirdetĂ©sek.</p>";
+        container.innerHTML = "<p>Nincsenek a keresésnek megfelelő hirdetések.</p>";
         return;
     }
 
     listings.forEach(function (listing) {
-        // SajĂˇt hirdetĂ©s szĹ±rĂ©se (ha a szerver nem tette meg)
+        // Saját hirdetés szűrése (ha a szerver nem tette meg)
         if (listing.sellerEmail && currentUserEmail && listing.sellerEmail.toLowerCase() === currentUserEmail.toLowerCase()) return;
 
         var entryDiv = document.createElement('div');
@@ -2874,24 +2874,24 @@ function displayListings(listings, container) {
         var priceOrOfferInfo = '';
 
         if (listing.isFixedPrice) {
-            priceOrOfferInfo = 'Fix Ăˇr: ' + listing.price + ' kr';
+            priceOrOfferInfo = 'Fix ár: ' + listing.price + ' kr';
             actionButtonHTML = '<button class="btn buy-now-btn">Megveszem (' + listing.price + ' kr)</button>';
         } else {
-            priceOrOfferInfo = 'AjĂˇnlat alapĂş';
+            priceOrOfferInfo = 'Ajánlat alapú';
             if (listing.buyNowPrice) {
-                priceOrOfferInfo += ' (Azonnali vĂ©tel: ' + listing.buyNowPrice + ' kr)';
-                actionButtonHTML = '<button class="btn make-offer-btn">AjĂˇnlatot teszek</button> ' +
+                priceOrOfferInfo += ' (Azonnali vétel: ' + listing.buyNowPrice + ' kr)';
+                actionButtonHTML = '<button class="btn make-offer-btn">Ajánlatot teszek</button> ' +
                     '<button class="btn buy-now-btn">Megveszem (' + listing.buyNowPrice + ' kr)</button>';
             } else {
-                actionButtonHTML = '<button class="btn make-offer-btn">AjĂˇnlatot teszek</button>';
+                actionButtonHTML = '<button class="btn make-offer-btn">Ajánlatot teszek</button>';
             }
         }
 
-        // HTML Ă¶sszeĂˇllĂ­tĂˇsa string Ă¶sszefĹ±zĂ©ssel (NEM backtick)
+        // HTML összeállítása string összefűzéssel (NEM backtick)
         entryDiv.innerHTML = '<div class="item-details">' +
             '<div class="item-title">' + listing.itemName + '</div>' +
             '<div class="item-author"><em>' + priceOrOfferInfo + '</em></div>' +
-            '<small>EladĂł: ' + listing.sellerEmail + '</small>' +
+            '<small>Eladó: ' + listing.sellerEmail + '</small>' +
             '</div>' +
             '<div class="item-actions">' + actionButtonHTML + '</div>';
 
@@ -2917,7 +2917,7 @@ function loadMyListedItems() {
     loader.style.display = 'block';
     container.innerHTML = '';
 
-    // callBackend hasznĂˇlata (email nĂ©lkĂĽl)
+    // callBackend használata (email nélkül)
     callBackend('getMyListedItems', [], function (response) {
         loader.style.display = 'none';
         if (!response.success) {
@@ -2926,7 +2926,7 @@ function loadMyListedItems() {
         }
 
         if (response.listings.length === 0) {
-            container.innerHTML = "<p>Nincsenek jelenleg meghirdetett tĂ©teleid.</p>";
+            container.innerHTML = "<p>Nincsenek jelenleg meghirdetett tételeid.</p>";
         } else {
             response.listings.forEach(function (listing) {
                 var priceInfo = listing.isFixedPrice ? t('market_fixed_price_prefix') + listing.price + t('market_price_suffix') : t('market_offer_based');
@@ -2935,7 +2935,7 @@ function loadMyListedItems() {
                 var entryDiv = document.createElement('div');
                 entryDiv.className = 'item-entry';
 
-                // HTML Ă¶sszeĂˇllĂ­tĂˇsa
+                // HTML összeállítása
                 entryDiv.innerHTML = '<div class="item-details">' +
                     '<div class="item-title">' + listing.itemName + '</div>' +
                     '<div class="item-author"><em>' + priceInfo + '</em></div>' +
@@ -2954,7 +2954,7 @@ function withdrawListingAction(listingId, itemName) {
     if (pinCode === null || !pinCode) return;
 
     document.getElementById('loading-overlay').style.display = 'flex';
-    // callBackend hasznĂˇlata (email nĂ©lkĂĽl)
+    // callBackend használata (email nélkül)
     callBackend('withdrawListing', [listingId, pinCode], handleServerResponse);
 }
 
@@ -3009,7 +3009,7 @@ function loadMyActiveOffers(container, loader) {
                 var entryDiv = document.createElement('div');
                 entryDiv.className = 'item-entry';
 
-                // HTML Ă¶sszeĂˇllĂ­tĂˇsa
+                // HTML összeállítása
                 entryDiv.innerHTML = '<div class="item-details"><div class="item-title">' + t('market_offer_label_prefix') + offer.listingItemName + '</div></div>' +
                     '<div><button class="btn retract-offer-btn" style="background-color: #c82333;">' + t('market_retract_button') + '</button></div>';
 
@@ -3024,7 +3024,7 @@ function buyNowAction(listingId) {
     var pinCode = prompt(t('market_buy_pin_prompt'));
     if (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
-        // callBackend, email nĂ©lkĂĽl
+        // callBackend, email nélkül
         callBackend('buyNow', [listingId, pinCode], handleServerResponse);
     }
 }
@@ -3033,7 +3033,7 @@ function retractOfferAction(offerId) {
     var pinCode = prompt(t('market_retract_pin_prompt'));
     if (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
-        // callBackend, email nĂ©lkĂĽl
+        // callBackend, email nélkül
         callBackend('retractOffer', [offerId, pinCode], handleServerResponse);
     }
 }
@@ -3047,7 +3047,7 @@ function openOfferModal(action, listingId, offerId, itemName) {
 
     if (userTradableItemsCache && userTradableItemsCache.kincsek) {
         userTradableItemsCache.kincsek.forEach(function (kincs) {
-            // String Ă¶sszefĹ±zĂ©s
+            // String összefűzés
             kincsekContainer.innerHTML += '<label><input type="checkbox" class="kincs-checkbox" value="' + kincs.identifier + '"> ' + kincs.name + '</label><br>';
         });
     }
@@ -3065,7 +3065,7 @@ function setupOfferModalListeners() {
             };
             document.getElementById('loading-overlay').style.display = 'flex';
             var func = (currentOfferAction.action === 'make') ? 'makeOffer' : 'addToOffer';
-            // listingId vagy offerId attĂłl fĂĽggĹ‘en mi az action, email nĂ©lkĂĽl
+            // listingId vagy offerId attól függően mi az action, email nélkül
             var params = (currentOfferAction.action === 'make') ? [currentOfferAction.listingId, offeredItems, pinCode] : [currentOfferAction.offerId, offeredItems, pinCode];
 
             callBackend(func, params, handleServerResponse);
@@ -3074,7 +3074,7 @@ function setupOfferModalListeners() {
 }
 
 function setupSellModalListeners() {
-    // --- SZĂśKSĂ‰GES ELEMEK ---
+    // --- SZÜKSÉGES ELEMEK ---
     var fixedPriceContainer = document.getElementById('fixed-price-container');
     var buyNowPriceContainer = document.getElementById('buy-now-price-container');
     var priceTypeRadios = document.querySelectorAll('input[name="priceType"]');
@@ -3082,7 +3082,7 @@ function setupSellModalListeners() {
 
     if (!fixedPriceContainer || !buyNowPriceContainer || !priceTypeRadios || !submitBtn) return;
 
-    // --- RĂDIĂ“GOMBOK ESEMĂ‰NYKEZELĹJE ---
+    // --- RÁDIÓGOMBOK ESEMÉNYKEZELŐJE ---
     for (var i = 0; i < priceTypeRadios.length; i++) {
         priceTypeRadios[i].onchange = function () {
             var isFixedSelected = (this.value === 'fixed');
@@ -3122,7 +3122,7 @@ function setupSellModalListeners() {
 
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // callBackend, email nĂ©lkĂĽl
+        // callBackend, email nélkül
         callBackend('listItemForSale', [currentItemToSell.identifier, currentItemToSell.type, isFixedPrice, priceValue, pinCode, buyNowValue],
             handleServerResponse,
             function (err) {
@@ -3135,17 +3135,17 @@ function setupSellModalListeners() {
     };
 }
 
-// KĂ¶zĂ¶s vĂˇlaszkezelĹ‘ fĂĽggvĂ©ny
+// Közös válaszkezelő függvény
 function handleServerResponse(response) {
     document.getElementById('loading-overlay').style.display = 'none';
 
-    // Modalok bezĂˇrĂˇsa, ha vannak
+    // Modalok bezárása, ha vannak
     var hModal = document.getElementById('hirdetes-modal');
     if (hModal) hModal.style.display = 'none';
     var aModal = document.getElementById('ajanlat-modal');
     if (aModal) aModal.style.display = 'none';
 
-    // Reset mezĹ‘k
+    // Reset mezők
     var idsToReset = ['hirdetes-pin', 'hirdetes-ar', 'ajanlat-pin', 'ajanlat-kredit', 'hirdetes-buy-now-ar'];
     idsToReset.forEach(function (id) {
         var el = document.getElementById(id);
@@ -3161,20 +3161,20 @@ function handleServerResponse(response) {
 }
 
 // =========================================
-// === HAJĂ“MĹ°HELY FUNKCIĂ“K (JAVĂŤTOTT)    ===
+// === HAJÓMŰHELY FUNKCIÓK (JAVÍTOTT)    ===
 // =========================================
 
 var shipyardData = null;
-var userCredits = 0; // Helyi vĂˇltozĂł a pontos szĂˇmĂ­tĂˇshoz
+var userCredits = 0; // Helyi változó a pontos számításhoz
 
-// InicializĂˇlĂˇs
+// Inicializálás
 function initShipyard() {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
 
     callBackend('getShipyardData', [],
         function (data) {
-            // SIKER ĂG
+            // SIKER ÁG
             shipyardData = data;
 
             if (typeof playerCredit !== 'undefined') {
@@ -3188,7 +3188,7 @@ function initShipyard() {
             if (overlay) overlay.style.display = 'none';
         },
         function (err) {
-            // HIBA ĂG
+            // HIBA ÁG
             if (overlay) overlay.style.display = 'none';
             uiAlert(t('shipyard_load_error_prefix') + err.message);
         }
@@ -3240,20 +3240,20 @@ function renderRepairList() {
                 var amount = parseInt(val) || 0;
                 var total = amount * 100;
 
-                // JAVĂŤTVA: A szinkronizĂˇlt userCredits vĂˇltozĂłt hasznĂˇljuk
+                // JAVÍTVA: A szinkronizált userCredits változót használjuk
                 var currentMoney = userCredits;
 
                 var display = document.getElementById('repair-cost-' + ship.id);
                 if (display) {
                     display.innerText = t('shipyard_cost_prefix') + total + ' ' + t('credit_long');
 
-                    // JAVĂŤTVA: Csak akkor Ă­rjuk ki a hibĂˇt, ha TĂ‰NYLEG nincs elĂ©g pĂ©nz
+                    // JAVÍTVA: Csak akkor írjuk ki a hibát, ha TÉNYLEG nincs elég pénz
                     if (total > currentMoney) {
                         display.style.color = 'red';
                         display.innerText += t('shipyard_no_funds_suffix');
                     } else {
                         display.style.color = '#666';
-                        // Ha van fedezet, nem Ă­runk ki semmit, csak az Ăˇrat (a szĂ­n visszaĂˇllĂ­tĂˇsa elĂ©g)
+                        // Ha van fedezet, nem írunk ki semmit, csak az árat (a szín visszaállítása elég)
                     }
                 }
             });
@@ -3273,13 +3273,13 @@ function confirmRepair(shipId) {
 
     var cost = amount * 100;
 
-    // FeltĂ©telezzĂĽk, hogy a requestPin lĂ©tezik
+    // Feltételezzük, hogy a requestPin létezik
     requestPin(function (pin) {
         var overlay = document.getElementById('loading-overlay');
         if (overlay) overlay.style.display = 'flex';
 
         var ship = null;
-        // BiztonsĂˇgi ellenĹ‘rzĂ©s, hogy lĂ©tezik-e a globĂˇlis adat
+        // Biztonsági ellenőrzés, hogy létezik-e a globális adat
         if (typeof shipyardData !== 'undefined' && shipyardData.playerShips) {
             for (var i = 0; i < shipyardData.playerShips.length; i++) {
                 if (shipyardData.playerShips[i].id === shipId) { ship = shipyardData.playerShips[i]; break; }
@@ -3292,9 +3292,9 @@ function confirmRepair(shipId) {
             return;
         }
 
-        // --- JAVĂŤTOTT RĂ‰SZ: callBackend ---
-        // NEM kĂĽldjĂĽk a currentUserEmail-t!
-        // ParamĂ©terek sorrendje: transactionType, dataObject, pin
+        // --- JAVÍTOTT RÉSZ: callBackend ---
+        // NEM küldjük a currentUserEmail-t!
+        // Paraméterek sorrendje: transactionType, dataObject, pin
         callBackend('processShipyardTransaction', ['repair', {
             sheetName: ship.category,
             rowIndex: ship.rowIndex,
@@ -3307,14 +3307,14 @@ function confirmRepair(shipId) {
                 if (res.success) {
                     if (typeof uiAlert === 'function') uiAlert(res.message);
 
-                    // Kredit frissĂ­tĂ©se
+                    // Kredit frissítése
                     if (res.newBalance !== undefined && typeof updateLocalCredit === 'function') {
                         updateLocalCredit(res.newBalance);
                     } else {
                         updateCreditDisplay(); // Fallback
                     }
 
-                    // ĂšjratĂ¶ltjĂĽk a mĹ±helyt
+                    // Újratöltjük a műhelyt
                     if (typeof initShipyard === 'function') initShipyard();
                 } else {
                     if (typeof uiAlert === 'function') uiAlert(t('error_prefix') + res.error);
@@ -3399,9 +3399,9 @@ function updateBuildOptions() {
     select.innerHTML = '';
 
     var typesToShow = [];
-    if (cat === 'hajok') typesToShow = ['Dingi', 'Daysailer', 'Sloop', 'Ketch', 'Yawl', 'Cutter', 'KatamarĂˇn', 'Schooner', 'Brigantin', 'Bark / Barque', 'Tall ship'];
-    if (cat === 'buvarhajok') typesToShow = ['Mini bĂşvĂˇrhajĂł', 'KĂ¶nnyĹ± bĂşvĂˇrhajĂł', 'Delejes bĂşvĂˇrhajĂł', 'VadĂˇsz bĂşvĂˇrhajĂł', 'NehĂ©z hordozĂł bĂşvĂˇrhajĂł', 'SzupernehĂ©z bĂşvĂˇrhajĂł'];
-    if (cat === 'leghajok') typesToShow = ['Mini lĂ©ghajĂł (blimp)', 'KĂ¶nnyĹ± nem merev lĂ©ghajĂł', 'FĂ©lmerev lĂ©ghajĂł', 'Merev lĂ©ghajĂł (Zeppelin-tĂ­pus)', 'SzuperlĂ©ghajĂł'];
+    if (cat === 'hajok') typesToShow = ['Dingi', 'Daysailer', 'Sloop', 'Ketch', 'Yawl', 'Cutter', 'Katamarán', 'Schooner', 'Brigantin', 'Bark / Barque', 'Tall ship'];
+    if (cat === 'buvarhajok') typesToShow = ['Mini búvárhajó', 'Könnyű búvárhajó', 'Delejes búvárhajó', 'Vadász búvárhajó', 'Nehéz hordozó búvárhajó', 'Szupernehéz búvárhajó'];
+    if (cat === 'leghajok') typesToShow = ['Mini léghajó (blimp)', 'Könnyű nem merev léghajó', 'Félmerev léghajó', 'Merev léghajó (Zeppelin-típus)', 'Szuperléghajó'];
 
     for (var k = 0; k < typesToShow.length; k++) {
         var opt = document.createElement('option');
@@ -3437,31 +3437,31 @@ function initiateBuild() {
     if (!name) { uiAlert(t('shipyard_name_required')); return; }
 
     requestPin(function (pin) {
-        // JAVĂŤTVA: Callback fĂĽggvĂ©nyt adunk Ăˇt, ami ĂˇtvĂˇlt a Repair fĂĽlre
+        // JAVÍTVA: Callback függvényt adunk át, ami átvált a Repair fülre
         sendTransaction('build_new', { type: type, name: name, category: category, baseHp: hp }, pin, function () {
-            showWorkshopTab('repair'); // Sikeres Ă©pĂ­tĂ©s utĂˇn a "SajĂˇt hajĂłk" listĂˇra ugrunk
+            showWorkshopTab('repair'); // Sikeres építés után a "Saját hajók" listára ugrunk
         });
     }, t('shipyard_build_prefix') + type + t('shipyard_build_cost_prefix') + cost + ' ' + t('credit_long') + '.');
 }
 
-// JAVĂŤTVA: A sendTransaction most mĂˇr elfogad egy 4. (opcionĂˇlis) callback paramĂ©tert
+// JAVÍTVA: A sendTransaction most már elfogad egy 4. (opcionális) callback paramétert
 function sendTransaction(action, data, pin, onSuccess) {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
 
     callBackend('processShipyardTransaction', [action, data, pin],
         function (res) {
-            // SIKER ĂG
+            // SIKER ÁG
             if (overlay) overlay.style.display = 'none';
 
             if (res.success) {
                 uiAlert(res.message);
                 if (res.newBalance !== undefined) updateLocalCredit(res.newBalance);
 
-                // ĂšjratĂ¶ltjĂĽk az adatokat, hogy lĂˇssuk a vĂˇltozĂˇst
+                // Újratöltjük az adatokat, hogy lássuk a változást
                 initShipyard();
 
-                // Ha volt extra teendĹ‘ (pl. fĂĽl vĂˇltĂˇs Ă©pĂ­tĂ©s utĂˇn)
+                // Ha volt extra teendő (pl. fül váltás építés után)
                 if (onSuccess && typeof onSuccess === 'function') {
                     onSuccess();
                 }
@@ -3470,7 +3470,7 @@ function sendTransaction(action, data, pin, onSuccess) {
             }
         },
         function (err) {
-            // HIBA ĂG
+            // HIBA ÁG
             if (overlay) overlay.style.display = 'none';
             uiAlert(t('shipyard_transaction_server_error_prefix') + err.message);
         }
@@ -3478,16 +3478,16 @@ function sendTransaction(action, data, pin, onSuccess) {
 }
 
 function updateLocalCredit(amount) {
-    // FrissĂ­tjĂĽk a globĂˇlis Ă©s helyi vĂˇltozĂłt is
+    // Frissítjük a globális és helyi változót is
     amount = Number(amount);
     userCredits = amount;
     if (typeof playerCredit !== 'undefined') playerCredit = amount;
 
-    // FrissĂ­tjĂĽk a fĹ‘ fejlĂ©cet
+    // Frissítjük a fő fejlécet
     var headerCredit = document.getElementById('creditCell');
     if (headerCredit) {
         if (amount < 0) {
-            headerCredit.innerHTML = '<span style="color:red; font-weight:bold;"><i class="fas fa-exclamation-circle"></i> TartozĂˇs: ' + Math.abs(amount) + '</span>';
+            headerCredit.innerHTML = '<span style="color:red; font-weight:bold;"><i class="fas fa-exclamation-circle"></i> Tartozás: ' + Math.abs(amount) + '</span>';
         } else {
             headerCredit.innerHTML = '<i class="fas fa-coins"></i> ' + amount;
         }
@@ -3495,51 +3495,51 @@ function updateLocalCredit(amount) {
 }
 
 /* ================================================= */
-/* === KĂ–NYVSZENTĂ‰LY (ROUTERESĂŤTVE) START === */
+/* === KÖNYVSZENTÉLY (ROUTERESÍTVE) START === */
 /* ================================================= */
 
-// GlobĂˇlis vĂˇltozĂłk (var hasznĂˇlata)
+// Globális változók (var használata)
 var selectedCopy = null;
 var searchBtn = null;
 var upgradeBtn = null;
 var searchTypeSelect = null;
 
 /**
- * A konyvszentely_oldal.html logikĂˇja (InicializĂˇlĂˇs)
+ * A konyvszentely_oldal.html logikája (Inicializálás)
  */
 function initializeKonyvszentely() {
-    // EllenĹ‘rzĂ©s
-    // (A Router mĂˇr tudja az emailt, de a UI miatt maradhat a kliens oldali check)
+    // Ellenőrzés
+    // (A Router már tudja az emailt, de a UI miatt maradhat a kliens oldali check)
     // if (typeof currentUserEmail === 'undefined' || !currentUserEmail) ... 
 
-    // Elemek keresĂ©se
+    // Elemek keresése
     searchBtn = document.getElementById('ksz-search-btn');
     upgradeBtn = document.getElementById('ksz-upgrade-btn');
     searchTypeSelect = document.getElementById('ksz-search-type');
 
-    // Ha valami hiĂˇnyzik, kilĂ©pĂĽnk
+    // Ha valami hiányzik, kilépünk
     if (!searchBtn || !searchTypeSelect || !upgradeBtn) {
-        console.error("KĂ¶nyvszentĂ©ly elemek nem talĂˇlhatĂłak!");
+        console.error("Könyvszentély elemek nem találhatóak!");
         return;
     }
 
-    // EsemĂ©nykezelĹ‘k
+    // Eseménykezelők
     searchBtn.onclick = searchCopies;
     searchTypeSelect.onchange = toggleSearchTerm;
     upgradeBtn.onclick = processUpgrade;
 
-    // 1. Vagyon betĂ¶ltĂ©se Ă©s eladĂˇs gomb
+    // 1. Vagyon betöltése és eladás gomb
     loadWalletStats();
 
-    // 2. IndĂ­tĂł keresĂ©s
+    // 2. Indító keresés
     searchCopies();
 }
 
 /**
- * Vagyon lekĂ©rdezĂ©se (KristĂˇly, TĂˇlentum)
+ * Vagyon lekérdezése (Kristály, Tálentum)
  */
 function loadWalletStats() {
-    // ĂšJ HĂŤVĂS (callBackend)
+    // ÚJ HÍVÁS (callBackend)
     callBackend('getKonyvszentelyStats', [],
         function (data) {
             var crystalEl = document.getElementById('ksz-crystal-count');
@@ -3548,7 +3548,7 @@ function loadWalletStats() {
             if (crystalEl) crystalEl.textContent = data.letkristaly;
             if (talentEl) talentEl.textContent = data.talentum;
 
-            // Gomb megjelenĂ­tĂ©se
+            // Gomb megjelenítése
             renderSellButton();
         },
         function (err) {
@@ -3558,7 +3558,7 @@ function loadWalletStats() {
 }
 
 /**
- * LetkristĂˇly eladĂˇs gomb
+ * Letkristály eladás gomb
  */
 function renderSellButton() {
     var sellContainer = document.getElementById('ksz-sell-container');
@@ -3578,13 +3578,13 @@ function renderSellButton() {
 
             uiConfirm(msg, t('crystal_sacrifice_title'), function () {
 
-                // PIN modul ellenĹ‘rzĂ©se
+                // PIN modul ellenőrzése
                 if (typeof requestPin === 'function') {
 
                     requestPin(function (pinCode) {
                         document.getElementById('loading-overlay').style.display = 'flex';
 
-                        // ĂšJ HĂŤVĂS (callBackend)
+                        // ÚJ HÍVÁS (callBackend)
                         callBackend('sellLetkristalyToPapno', [pinCode],
                             function (res) {
                                 document.getElementById('loading-overlay').style.display = 'none';
@@ -3593,7 +3593,7 @@ function renderSellButton() {
                                 uiAlert(res.message || res.error, title);
 
                                 if (res.success) {
-                                    // UI frissĂ­tĂ©s
+                                    // UI frissítés
                                     var cEl = document.getElementById('ksz-crystal-count');
                                     var tEl = document.getElementById('ksz-talent-count');
                                     if (cEl) cEl.textContent = res.newCrystal;
@@ -3632,7 +3632,7 @@ function searchCopies() {
     var searchTerm = searchTermInput ? searchTermInput.value : '';
     var searchType = searchTypeSelect ? searchTypeSelect.value : 'all';
 
-    // ĂšJ HĂŤVĂS (callBackend)
+    // ÚJ HÍVÁS (callBackend)
     callBackend('getUserCopies', [searchTerm, searchType],
         function (copies) {
             displayResults(copies);
@@ -3666,7 +3666,7 @@ function displayResults(copies) {
                     '<div class="item-title" style="font-weight:bold;">' + copy.title + '</div>' +
                     '<small class="item-author" style="color:#666;">' + copy.author + ' (Kod: ' + copy.code + ')</small>' +
                     '</div>' +
-                    '<div style="font-size: 1.2em;">đź‘‰</div>';
+                    '<div style="font-size: 1.2em;">👉</div>';
 
                 item.onclick = function () { selectCopy(item, copy); };
                 list.appendChild(item);
@@ -3718,12 +3718,12 @@ function processUpgrade() {
 
             var data = {
                 productCode: selectedCopy.code,
-                // currentUserEmail NEM KELL, a Router intĂ©zi!
+                // currentUserEmail NEM KELL, a Router intézi!
                 giftToEmail: giftEmail,
                 pinCode: pinCode
             };
 
-            // ĂšJ HĂŤVĂS (callBackend)
+            // ÚJ HÍVÁS (callBackend)
             callBackend('initiateUpgradeProcess', [data],
                 function (result) {
                     handleProcessResult(result);
@@ -3733,7 +3733,7 @@ function processUpgrade() {
                     uiAlert(t('error_prefix') + err.message);
                 }
             );
-        }, "KĂ©rlek add meg a PIN kĂłdodat a(z) <b>" + selectedCopy.title + "</b> felszentelĂ©sĂ©hez:");
+        }, "Kérlek add meg a PIN kódodat a(z) <b>" + selectedCopy.title + "</b> felszenteléséhez:");
     });
 }
 
@@ -3769,10 +3769,10 @@ function setLoadingState(isLoading, type) {
 }
 
 // ===============================
-// === FELHĹKOLOSTOR FUNKCIĂ“K (JAVĂŤTOTT - ES5 BIZTOS) ===
+// === FELHŐKOLOSTOR FUNKCIÓK (JAVÍTOTT - ES5 BIZTOS) ===
 // ===============================
 
-// GlobĂˇlis callback a PIN modalhoz
+// Globális callback a PIN modalhoz
 var pinCallback = null;
 
 function requestPin(callback, customMessage) {
@@ -3781,18 +3781,18 @@ function requestPin(callback, customMessage) {
     var input = document.getElementById('monk-pin-input');
     var messageP = modal ? modal.querySelector('p') : null;
 
-    // Ăśzenet beĂˇllĂ­tĂˇsa
+    // Üzenet beállítása
     if (messageP) {
         messageP.innerHTML = customMessage || t('monk_pin_default_html');
     }
 
-    // MezĹ‘ ĂĽrĂ­tĂ©se Ă©s modal nyitĂˇsa
+    // Mező ürítése és modal nyitása
     if (input) input.value = '';
     if (modal) {
         modal.style.display = 'flex';
         if (input) input.focus();
     } else {
-        // BiztonsĂˇgi tartalĂ©k
+        // Biztonsági tartalék
         var p = prompt((customMessage || t('pin_prompt_fallback')).replace(/<br>/g, '\n'));
         if (p) callback(p);
     }
@@ -3813,7 +3813,7 @@ function closeMonkPinModal() {
     pinCallback = null;
 }
 
-// FĂĽlvĂˇltĂł logika
+// Fülváltó logika
 function openMonasteryTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tab-content");
@@ -3833,13 +3833,13 @@ function openMonasteryTab(evt, tabName) {
         evt.currentTarget.className += " active";
     }
 
-    // Adatok betĂ¶ltĂ©se
+    // Adatok betöltése
     if (tabName === 'Munkapad') refreshMonasteryWork();
     if (tabName === 'Forum') loadForumPosts();
     if (tabName === 'Suttogo') loadChatPartners();
 }
 
-// --- MUNKAPAD FUNKCIĂ“K ---
+// --- MUNKAPAD FUNKCIÓK ---
 
 function toggleUploadType() {
     var type = document.querySelector('input[name="uploadType"]:checked').value;
@@ -3873,17 +3873,17 @@ var ALL_MONK_ROLES = [
     {val: 'szkriptor', text: 'Szkriptor'},
     {val: 'piktor', text: 'Piktor'},
     {val: 'inspektor', text: 'Inspektor'},
-    {val: 'translator_Angol', text: 'FordĂ­tĂł (Angol)'},
-    {val: 'translator_Spanyol', text: 'FordĂ­tĂł (Spanyol)'},
-    {val: 'translator_NĂ©met', text: 'FordĂ­tĂł (NĂ©met)'},
-    {val: 'translator_Francia', text: 'FordĂ­tĂł (Francia)'},
-    {val: 'translator_Orosz', text: 'FordĂ­tĂł (Orosz)'},
-    {val: 'translator_Lengyel', text: 'FordĂ­tĂł (Lengyel)'}
+    {val: 'translator_Angol', text: 'Fordító (Angol)'},
+    {val: 'translator_Spanyol', text: 'Fordító (Spanyol)'},
+    {val: 'translator_Német', text: 'Fordító (Német)'},
+    {val: 'translator_Francia', text: 'Fordító (Francia)'},
+    {val: 'translator_Orosz', text: 'Fordító (Orosz)'},
+    {val: 'translator_Lengyel', text: 'Fordító (Lengyel)'}
 ];
 
 function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
     var html = '<details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin: 10px 0; text-align: left;">';
-    html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">MunkakĂ¶rĂ¶k kivĂˇlasztĂˇsa...</summary>';
+    html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása...</summary>';
     html += '<div style="display:flex; flex-direction:column; padding:10px; max-height:250px; overflow-y:auto;">';
     ALL_MONK_ROLES.forEach(function(r, index) {
         var isChecked = checkedRolesArray.includes(r.val) ? 'checked' : '';
@@ -3901,7 +3901,7 @@ async function submitMonasteryWork() {
     var title = document.getElementById('monk-upload-title').value;
     var fileInput = document.getElementById('monk-upload-file');
     var coverInput = document.getElementById('monk-upload-cover');
-    // Itt a biztonsĂˇg kedvĂ©Ă©rt sima 'var' Ă©s nincs backtick a selectorban
+    // Itt a biztonság kedvéért sima 'var' és nincs backtick a selectorban
     var submissionType = document.querySelector('input[name="uploadType"]:checked').value;
 
     var manuscriptFile = fileInput.files[0];
@@ -3910,11 +3910,11 @@ async function submitMonasteryWork() {
     if (!title) { uiAlert(t('monk_upload_title_required')); return; }
     if (!manuscriptFile) { uiAlert(t('monk_upload_file_required')); return; }
 
-    // Itt az async function marad callbackkĂ©nt!
+    // Itt az async function marad callbackként!
     requestPin(async function (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // BelsĹ‘ segĂ©dfĂĽggvĂ©ny Promise-al (ez kell az await-hez)
+        // Belső segédfüggvény Promise-al (ez kell az await-hez)
         var readFileToBase64 = function (file) {
             return new Promise(function (resolve, reject) {
                 var reader = new FileReader();
@@ -3932,7 +3932,7 @@ async function submitMonasteryWork() {
         };
 
         try {
-            // Itt hasznĂˇljuk az AWAIT-et, ahogy kĂ©rted!
+            // Itt használjuk az AWAIT-et, ahogy kérted!
             var manuscriptData = await readFileToBase64(manuscriptFile);
             var coverData = null;
 
@@ -3954,7 +3954,7 @@ async function submitMonasteryWork() {
                 payload.roles = checkedRoles;
             }
 
-            // callBackend hĂ­vĂˇs
+            // callBackend hívás
             callBackend('uploadWorkToMonastery', [payload, pinCode],
                 function (res) {
                     document.getElementById('loading-overlay').style.display = 'none';
@@ -3966,7 +3966,7 @@ async function submitMonasteryWork() {
                         refreshMonasteryWork();
                         updateCreditDisplay();
                     } else {
-                        // Sima string Ă¶sszefĹ±zĂ©s
+                        // Sima string összefűzés
                         uiAlert(t('monk_upload_error_prefix') + res.error);
                     }
                 },
@@ -3977,8 +3977,8 @@ async function submitMonasteryWork() {
             );
 
         } catch (err) {
-            // Catch Ăˇg: ez dobta a hibĂˇt, ha elĹ‘tte nem volt lezĂˇrva valami. 
-            // Most ellenĹ‘riztem, a fenti blokkban minden zĂˇrĂłjel a helyĂ©n van.
+            // Catch ág: ez dobta a hibát, ha előtte nem volt lezárva valami. 
+            // Most ellenőriztem, a fenti blokkban minden zárójel a helyén van.
             document.getElementById('loading-overlay').style.display = 'none';
             uiAlert(t('monk_upload_prep_error_prefix') + err);
         }
@@ -3993,7 +3993,7 @@ function setupAgentPolling(hasPending) {
         agentPollingInterval = null;
     }
     if (hasPending) {
-        // FrissĂ­tjĂĽk a kolostort csendben minden 15 mĂˇsodpercben
+        // Frissítjük a kolostort csendben minden 15 másodpercben
         agentPollingInterval = setInterval(function () {
             if (document.getElementById('monastery-work-list')) {
                 refreshMonasteryWork(true);
@@ -4013,7 +4013,7 @@ function refreshMonasteryWork(silent) {
             if (!res.success) { if (!silent) container.innerHTML = '<p style="color:red;">' + t('error_prefix') + res.error + '</p>'; return; }
             if (res.works.length === 0) { if (!silent) container.innerHTML = '<p>' + t('monk_work_none') + '</p>'; return; }
 
-            var hasPendingAgent = res.works.some(function (w) { return w.status === 'Agent elemzĂ©s alatt'; });
+            var hasPendingAgent = res.works.some(function (w) { return w.status === 'Agent elemzés alatt'; });
             setupAgentPolling(hasPendingAgent);
 
             var html = '';
@@ -4028,39 +4028,39 @@ function refreshMonasteryWork(silent) {
             res.works.forEach(function (work) {
                 var topControls = '';
 
-                // --- 0. FORDĂŤTĂSI KĂRTYĂK ---
-                if (work.status && work.status.indexOf('[FORDĂŤTĂS') === 0) {
-                    var langMatch = work.status.match(/\[FORDĂŤTĂS\s+([^\]]+)\]/);
+                // --- 0. FORDÍTÁSI KÁRTYÁK ---
+                if (work.status && work.status.indexOf('[FORDÍTÁS') === 0) {
+                    var langMatch = work.status.match(/\[FORDÍTÁS\s+([^\]]+)\]/);
                     var targetLang = langMatch ? langMatch[1] : 'Ismeretlen';
                     
-                    if ((work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === '[FORDĂŤTĂS ' + targetLang + '] VĂ©glegesĂ­tĂ©sre vĂˇr') {
+                    if ((work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === '[FORDÍTÁS ' + targetLang + '] Véglegesítésre vár') {
                         var safeTitle = work.title.replace(/'/g, "\\'");
                         var btnId = 'pub-trans-btn-' + work.id;
                         topControls = '<div style="background:#f4ebf9; padding:10px; text-align:center; border:1px solid #8e44ad; margin-top:10px; border-radius:5px;">' +
-                            '<h4 style="margin-top:0; color:#8e44ad;"><i class="fas fa-language"></i> FordĂ­tĂˇs ElfogadĂˇsa</h4>' +
-                            '<p>A(z) <b>' + targetLang + '</b> nyelvĹ± fordĂ­tĂˇs elkĂ©szĂĽlt Ă©s lektorĂˇlva lett.</p>' +
-                            '<button id="' + btnId + '" class="btn btn-success" onclick="openPublishWindow(\'' + btnId + '\', \'' + work.id + '\', \'' + work.gdocId + '\', \'' + safeTitle + ' (' + targetLang + ')\', \'\')">FordĂ­tĂˇs PublikĂˇlĂˇsa</button>' +
+                            '<h4 style="margin-top:0; color:#8e44ad;"><i class="fas fa-language"></i> Fordítás Elfogadása</h4>' +
+                            '<p>A(z) <b>' + targetLang + '</b> nyelvű fordítás elkészült és lektorálva lett.</p>' +
+                            '<button id="' + btnId + '" class="btn btn-success" onclick="openPublishWindow(\'' + btnId + '\', \'' + work.id + '\', \'' + work.gdocId + '\', \'' + safeTitle + ' (' + targetLang + ')\', \'\')">Fordítás Publikálása</button>' +
                             '</div>';
-                    } else if (work.status === 'Folyamatban' || work.status === 'EllenĹ‘rzĂ©s alatt' || 
-                               work.status === '[FORDĂŤTĂS ' + targetLang + '] folyamatban' || work.status === '[FORDĂŤTĂS ' + targetLang + '] Folyamatban' || 
-                               work.status === '[FORDĂŤTĂS ' + targetLang + '] EllenĹ‘rzĂ©s alatt') {
+                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt' || 
+                               work.status === '[FORDÍTÁS ' + targetLang + '] folyamatban' || work.status === '[FORDÍTÁS ' + targetLang + '] Folyamatban' || 
+                               work.status === '[FORDÍTÁS ' + targetLang + '] Ellenőrzés alatt') {
                         if (work.isPapat || work.userRoles.length > 0) {
                            topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                         }
                     }
                 } 
-                // --- 1. PAPĂT JOGKĂ–RĂ–K (Eredeti) ---
+                // --- 1. PAPÁT JOGKÖRÖK (Eredeti) ---
                 else if (work.isPapat) {
                     var isApplication = work.checklist && work.checklist.hasOwnProperty('referencia');
 
-                    if (work.status === 'ElbĂ­rĂˇlĂˇs alatt') {
+                    if (work.status === 'Elbírálás alatt') {
                         if (isApplication) {
                             var requestedRolesStr = (work.checklist && work.checklist.referencia && work.checklist.referencia.extraInfo) ? work.checklist.referencia.extraInfo : "";
                             var appliedRolesArray = requestedRolesStr ? requestedRolesStr.split(',') : [];
                             
                             topControls =
                                 '<div style="margin:5px 0; background:#f0f8ff; padding:10px; border:1px solid blue; border-radius:5px; text-align:center;">' +
-                                '<strong>Szerzetes felvĂ©tele szerepkĂ¶rĂ¶kbe:</strong><br>' +
+                                '<strong>Szerzetes felvétele szerepkörökbe:</strong><br>' +
                                 getRoleCheckboxesHtml(appliedRolesArray, work.id) +
                                 '<button class="btn btn-sm" style="margin-top:5px; background-color:#28a745; width:48%;" onclick="hireMinistransMulti(\'' + work.id + '\', \'' + work.author + '\')">' + t('monk_hire_button') + '</button> ' +
                                 '<button class="btn btn-sm btn-danger" style="margin-top:5px; width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
@@ -4069,34 +4069,34 @@ function refreshMonasteryWork(silent) {
                             if (work.checklist && work.checklist.papat_report) {
                                 topControls = '<div style="margin:5px 0; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; padding:10px;">' +
                                     '<div style="text-align:center; margin-bottom:10px;">' +
-                                    '<strong><i class="fas fa-robot"></i> AI ElemzĂ©s KĂ©sz</strong><br>' +
-                                    '<button class="btn btn-sm" style="background-color:#8e44ad; margin-top:5px; width:100%;" onclick="openPapatReportModal(\'' + work.id + '\')"><i class="fas fa-eye"></i> Ă‰rtĂ©kelĹ‘ JelentĂ©s OlvasĂˇsa</button>' +
+                                    '<strong><i class="fas fa-robot"></i> AI Elemzés Kész</strong><br>' +
+                                    '<button class="btn btn-sm" style="background-color:#8e44ad; margin-top:5px; width:100%;" onclick="openPapatReportModal(\'' + work.id + '\')"><i class="fas fa-eye"></i> Értékelő Jelentés Olvasása</button>' +
                                     '</div>' +
                                     '<button class="btn btn-sm" style="background-color:#28a745; width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' +
                                     '<button class="btn btn-sm btn-danger" style="width:48%;" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
                                     '</div>';
                             } else {
                                 topControls = '<div style="margin:5px 0;">' +
-                                    '<button class="btn btn-sm" style="background-color:#8e44ad; margin-bottom: 5px; width: 100%; color:white; border:1px solid #ffd700;" onclick="triggerAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-robot"></i> ElemzĂ©s IndĂ­tĂˇsa (PapĂˇt AI)</button><br>' +
+                                    '<button class="btn btn-sm" style="background-color:#8e44ad; margin-bottom: 5px; width: 100%; color:white; border:1px solid #ffd700;" onclick="triggerAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-robot"></i> Elemzés Indítása (Papát AI)</button><br>' +
                                     '<button class="btn btn-sm" style="background-color:#28a745;" onclick="doWorkAction(\'' + work.id + '\', \'approve_submission\')">' + t('monk_approve_button') + '</button> ' +
                                     '<button class="btn btn-sm btn-danger" onclick="doWorkAction(\'' + work.id + '\', \'reject_submission\')">' + t('monk_reject_button') + '</button>' +
                                     '</div>';
                             }
                         }
-                    } else if (work.status === 'Agent elemzĂ©s alatt') {
+                    } else if (work.status === 'Agent elemzés alatt') {
                         topControls = '<div style="margin:5px 0; padding:10px; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; text-align:center; color: #8e44ad;">' +
-                                      '<strong><i class="fas fa-robot"></i> PapĂˇt AI elemzĂ©se folyamatban...</strong><br>' +
-                                      '<small>A kĂ©zirat le van foglalva az elemzĹ‘modul szĂˇmĂˇra.</small><br>' +
-                                      '<button class="btn btn-sm btn-warning" style="margin-top:10px; color:#333; font-weight:bold; width:100%;" onclick="cancelAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-undo"></i> AI ElemzĂ©s MegszakĂ­tĂˇsa (VisszavonĂˇs)</button>' +
+                                      '<strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br>' +
+                                      '<small>A kézirat le van foglalva az elemzőmodul számára.</small><br>' +
+                                      '<button class="btn btn-sm btn-warning" style="margin-top:10px; color:#333; font-weight:bold; width:100%;" onclick="cancelAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-undo"></i> AI Elemzés Megszakítása (Visszavonás)</button>' +
                                       '</div>';
 
-                    } else if (work.status === 'Folyamatban' || work.status === 'EllenĹ‘rzĂ©s alatt') {
+                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
                         topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                     }
                 }
 
-                // --- 2. SZERZĹ / PAPĂT PUBLIKĂLĂS ---
-                if (!work.title.startsWith('[FORDĂŤTĂS') && (work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === 'VĂ©glegesĂ­tĂ©sre vĂˇr') {
+                // --- 2. SZERZŐ / PAPÁT PUBLIKÁLÁS ---
+                if (!work.title.startsWith('[FORDÍTÁS') && (work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === 'Véglegesítésre vár') {
 
                     var safeTitleForOnclick = work.title.replace(/'/g, "\\'");
                     var btnId = 'pub-btn-' + work.id;
@@ -4125,7 +4125,7 @@ function refreshMonasteryWork(silent) {
                     }
                 }
 
-                // KĂRTYA HTML
+                // KÁRTYA HTML
                 html += '<div class="work-card">' +
                     '<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">' +
                     '<div>' +
@@ -4142,14 +4142,14 @@ function refreshMonasteryWork(silent) {
                     '</div>';
             });
 
-            // --- 3. SZEMĂ‰THALOM ---
+            // --- 3. SZEMÉTHALOM ---
             if (res.isAntipat && res.trashItems && res.trashItems.length > 0) {
                 html += '<div style="margin-top:40px; padding-top:20px; border-top:3px dashed #8b0000; text-align:center;">';
                 html += '<h3 style="color:#8b0000;">' + t('monk_trash_title') + '</h3>';
                 html += '<p style="font-size:0.9em;">' + t('monk_trash_body') + '</p>';
 
                 res.trashItems.forEach(function (item) {
-                    // --- BIZTONSĂGI JAVĂŤTĂS: CĂ­m escaping ---
+                    // --- BIZTONSÁGI JAVÍTÁS: Cím escaping ---
                     var safeTrashTitle = item.title.replace(/'/g, "\\'");
 
                     html += '<div class="work-card" style="border-left-color:darkred; background-color:#fff5f5;">' +
@@ -4158,7 +4158,7 @@ function refreshMonasteryWork(silent) {
                         '<small>' + t('author_label') + ' ' + item.authorEmail + '</small></div>' +
                         '<div style="text-align:right;">' +
                         '<button class="btn btn-sm btn-secondary" onclick="window.open(\'' + item.url + '\', \'_blank\')">' + t('open_button') + '</button> ' +
-                        // ITT HASZNĂLJUK A JAVĂŤTOTT CĂŤMET:
+                        // ITT HASZNÁLJUK A JAVÍTOTT CÍMET:
                         '<button class="btn btn-sm btn-danger" style="margin-left:10px;" onclick="purgeWork(\'' + item.workId + '\', \'' + safeTrashTitle + '\')">' + t('monk_purge_button') + '</button>' +
                         '</div>' +
                         '</div>' +
@@ -4202,7 +4202,7 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
         if (btnElement.parentNode) {
             var msg = document.createElement('span');
             msg.id = 'pub-status-' + workId;
-            msg.innerHTML = "KĂ¶nyv adatainak lekĂ©rĂ©se...";
+            msg.innerHTML = "Könyv adatainak lekérése...";
             msg.style.color = '#d9534f';
             msg.style.fontWeight = 'bold';
             btnElement.parentNode.appendChild(msg);
@@ -4219,7 +4219,7 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
         setLoadingState(false, 'monastery');
         if (!res.success) {
             var statusMsg = document.getElementById('pub-status-' + workId);
-            if (statusMsg) statusMsg.innerHTML = "Hiba az adatok betĂ¶ltĂ©sekor.";
+            if (statusMsg) statusMsg.innerHTML = "Hiba az adatok betöltésekor.";
             uiAlert(res.error);
             return;
         }
@@ -4331,7 +4331,7 @@ function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
 
 function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootCode, targetLangCode) {
     if (!rootCode || rootCode === 'null') {
-        uiAlert("Hiba: A kĂ¶nyv forrĂˇskĂłdja nem talĂˇlhatĂł a fordĂ­tĂˇshoz!");
+        uiAlert("Hiba: A könyv forráskódja nem található a fordításhoz!");
         return;
     }
     
@@ -4352,43 +4352,43 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
             function(res) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success) {
-                    uiAlert("Sikeresen publikĂˇlva! Ăšj KĂłd: " + res.newBaseCode, "FordĂ­tĂˇs Elfogadva");
+                    uiAlert("Sikeresen publikálva! Új Kód: " + res.newBaseCode, "Fordítás Elfogadva");
                     refreshMonasteryWork();
                 } else {
-                    uiAlert("Hiba tĂ¶rtĂ©nt: " + res.error, "PublikĂˇciĂłs hiba");
+                    uiAlert("Hiba történt: " + res.error, "Publikációs hiba");
                 }
             },
             function(err) {
                 document.getElementById('loading-overlay').style.display = 'none';
-                uiAlert("HĂˇlĂłzati hiba: " + err.message);
+                uiAlert("Hálózati hiba: " + err.message);
             }
         );
-    }, "Add meg a MesterkĂłdot a <b>" + title + "</b> publikĂˇlĂˇsĂˇhoz:");
+    }, "Add meg a Mesterkódot a <b>" + title + "</b> publikálásához:");
 }
 
-// --- PAPĂT CLOUD INDĂŤTĂSA ---
+// --- PAPÁT CLOUD INDÍTÁSA ---
 function triggerPapatAgent(workId) {
-    if (!confirm("Biztosan elindĂ­tod az AI elemzĂ©st (PapĂˇt)? Ez eltarthat 1-2 percig.")) return;
+    if (!confirm("Biztosan elindítod az AI elemzést (Papát)? Ez eltarthat 1-2 percig.")) return;
 
-    showLoading("PapĂˇt hĂ­vĂˇsa...");
+    showLoading("Papát hívása...");
 
-    // 1. Ăllapot frissĂ­tĂ©se (hogy lĂˇtszĂłdjon a folyamat)
-    callBackend('manageWorkStatus', [workId, 'set_status', 'Agent elemzĂ©s alatt'], function (res) {
+    // 1. Állapot frissítése (hogy látszódjon a folyamat)
+    callBackend('manageWorkStatus', [workId, 'set_status', 'Agent elemzés alatt'], function (res) {
         if (!res || !res.success) {
             hideLoading();
-            alert("Hiba az Ăˇllapot frissĂ­tĂ©sekor: " + (res ? res.error : "Ismeretlen hiba"));
+            alert("Hiba az állapot frissítésekor: " + (res ? res.error : "Ismeretlen hiba"));
             return;
         }
 
-        // 2. FelhĹ‘ alapĂş folyamat elindĂ­tĂˇsa a Backend-en keresztĂĽl
+        // 2. Felhő alapú folyamat elindítása a Backend-en keresztül
         callBackend('triggerPapatCloudProcess', [workId], function (papatRes) {
             hideLoading();
             if (papatRes && papatRes.success) {
-                alert("PapĂˇt megkezdte az elemzĂ©st! KĂ©rlek vĂˇrj pĂˇr percet, majd frissĂ­ts rĂˇ a munkapadra.");
+                alert("Papát megkezdte az elemzést! Kérlek várj pár percet, majd frissíts rá a munkapadra.");
                 refreshMonasteryWork();
             } else {
-                alert("PapĂˇt sajnos nem tudott elindulni: " + (papatRes ? papatRes.error : "Szerver hiba. Ha a helyi AI ĂĽgynĂ¶k fut, az automatikusan Ăˇtveszi a feladatot!"));
-                // FrissĂ­tsĂĽk a munkapadot, hogy lĂˇtszĂłdjon az "Agent elemzĂ©s alatt" stĂˇtusz!
+                alert("Papát sajnos nem tudott elindulni: " + (papatRes ? papatRes.error : "Szerver hiba. Ha a helyi AI ügynök fut, az automatikusan átveszi a feladatot!"));
+                // Frissítsük a munkapadot, hogy látszódjon az "Agent elemzés alatt" státusz!
                 refreshMonasteryWork();
             }
         });
@@ -4396,10 +4396,10 @@ function triggerPapatAgent(workId) {
 }
 
 function cancelAgentAnalysis(workId) {
-    if (!confirm("Biztosan megszakĂ­tod az AI elemzĂ©st? A mĹ± visszakerĂĽl 'ElbĂ­rĂˇlĂˇs alatt' stĂˇtuszba, Ă©s kĂ©zzel kell elbĂ­rĂˇlnod.")) return;
+    if (!confirm("Biztosan megszakítod az AI elemzést? A mű visszakerül 'Elbírálás alatt' státuszba, és kézzel kell elbírálnod.")) return;
     
     document.getElementById('loading-overlay').style.display = 'flex';
-    callBackend('manageWorkStatus', [workId, 'set_status', 'ElbĂ­rĂˇlĂˇs alatt'], function (res) {
+    callBackend('manageWorkStatus', [workId, 'set_status', 'Elbírálás alatt'], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res && res.success) {
             refreshMonasteryWork();
@@ -4411,11 +4411,11 @@ function cancelAgentAnalysis(workId) {
 
 function getMonasteryWorkStatusLabel(status) {
     var statusMap = {
-        'ElbĂ­rĂˇlĂˇs alatt': 'monk_work_status_under_review',
+        'Elbírálás alatt': 'monk_work_status_under_review',
         'Folyamatban': 'monk_work_status_in_progress',
-        'EllenĹ‘rzĂ©s alatt': 'monk_work_status_quality_check',
-        'VĂ©glegesĂ­tĂ©sre vĂˇr': 'monk_work_status_waiting_finalize',
-        'ElutasĂ­tva': 'monk_work_status_rejected'
+        'Ellenőrzés alatt': 'monk_work_status_quality_check',
+        'Véglegesítésre vár': 'monk_work_status_waiting_finalize',
+        'Elutasítva': 'monk_work_status_rejected'
     };
     var key = statusMap[status];
     if (!key) return status;
@@ -4425,11 +4425,11 @@ function getMonasteryWorkStatusLabel(status) {
 
 function getMonasteryTaskStatusLabel(status) {
     var statusMap = {
-        'inaktĂ­v': 'monk_task_status_inactive',
-        'vĂˇrakozĂł': 'monk_task_status_waiting',
+        'inaktív': 'monk_task_status_inactive',
+        'várakozó': 'monk_task_status_waiting',
         'folyamatban': 'monk_task_status_in_progress',
-        'javĂ­tĂˇs alatt': 'monk_task_status_revision',
-        'ellenĹ‘rzĂ©s alatt': 'monk_task_status_under_review',
+        'javítás alatt': 'monk_task_status_revision',
+        'ellenőrzés alatt': 'monk_task_status_under_review',
         'elfogadva': 'monk_task_status_accepted'
     };
     var key = statusMap[status];
@@ -4453,20 +4453,20 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
         var userHasRole = work.userRoles && work.userRoles.some(function (r) { return r.includes(task.requiredRole); });
         var isOwnerOrPapat = work.isMyWork || work.isPapat;
 
-        // BelsĹ‘ segĂ©dfĂĽggvĂ©ny (closure) a gombokhoz
+        // Belső segédfüggvény (closure) a gombokhoz
         var makeBtn = (function () {
             return function (txt, clr, func) {
                 return '<button class="btn" style="background-color:' + clr + '; padding:4px 8px; font-size:0.8em; margin:2px;" onclick="' + func + '">' + txt + '</button>';
             };
         })();
 
-        var isWorkInProgress = work.status === 'Folyamatban' || work.status.indexOf('[FORDĂŤTĂS') !== -1;
+        var isWorkInProgress = work.status === 'Folyamatban' || work.status.indexOf('[FORDÍTÁS') !== -1;
 
-        if (task.status === 'inaktĂ­v') {
+        if (task.status === 'inaktív') {
             if (isOwnerOrPapat) action = makeBtn(t('monk_task_activate'), '#17a2b8', 'doWorkAction(\'' + work.id + '\', \'activate_task\', \'' + key + '\')');
             else action = '<span style="color:#999;">' + t('monk_task_inactive') + '</span>';
         }
-        else if (isWorkInProgress && (task.status === 'vĂˇrakozĂł' || task.status === 'javĂ­tĂˇs alatt')) {
+        else if (isWorkInProgress && (task.status === 'várakozó' || task.status === 'javítás alatt')) {
             if (isOwnerOrPapat) {
                 if (task.applicants.length > 0) {
                     var opts = '<option value="">' + t('monk_select_placeholder') + '</option>';
@@ -4487,7 +4487,7 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
                 action = '<span style="color:orange;">' + t('monk_applied') + '</span>';
             }
         }
-        else if (task.status === 'ellenĹ‘rzĂ©s alatt') {
+        else if (task.status === 'ellenőrzés alatt') {
             if (isOwnerOrPapat) {
                 action = makeBtn(t('monk_task_accept'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'accept_task_work\', \'' + key + '\')') +
                     makeBtn(t('monk_task_revision'), '#f0ad4e', 'doWorkAction(\'' + work.id + '\', \'request_revision\', \'' + key + '\')');
@@ -4496,7 +4496,7 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
             }
         }
 
-        if (task.selectedMonk === currentUser && task.paymentStatus === 'none' && task.status !== 'inaktĂ­v') {
+        if (task.selectedMonk === currentUser && task.paymentStatus === 'none' && task.status !== 'inaktív') {
             action = '<input type="number" id="price-' + key + '" placeholder="' + t('talentum_short') + '" style="width:50px; padding:2px;"> ' +
                 makeBtn(t('ok_button'), '#2e8b57', 'offerPrice(\'' + work.id + '\', \'' + key + '\')');
         }
@@ -4507,23 +4507,23 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
                 makeBtn(t('credit_button'), '#f0ad4e', 'acceptCredit(\'' + work.id + '\', \'' + key + '\')');
         }
 
-        if (task.paymentStatus === 'paid_direct' || task.paymentStatus === 'paid_out') action += ' <span title="' + t('paid_title') + '">đź’°</span>';
-        if (task.paymentStatus === 'credit_agreed') action += ' <span title="' + t('credit_title') + '">âš ď¸Ź</span>';
+        if (task.paymentStatus === 'paid_direct' || task.paymentStatus === 'paid_out') action += ' <span title="' + t('paid_title') + '">💰</span>';
+        if (task.paymentStatus === 'credit_agreed') action += ' <span title="' + t('credit_title') + '">⚠️</span>';
 
-        if (task.selectedMonk === currentUser && task.status !== 'elfogadva' && task.status !== 'ellenĹ‘rzĂ©s alatt' && task.status !== 'inaktĂ­v') {
+        if (task.selectedMonk === currentUser && task.status !== 'elfogadva' && task.status !== 'ellenőrzés alatt' && task.status !== 'inaktív') {
             if (action.indexOf('button') === -1) action = '';
             action += makeBtn(t('ready_button'), '#2e8b57', 'doWorkAction(\'' + work.id + '\', \'report_ready\', \'' + key + '\')') +
                 makeBtn(t('cancel_short_button'), '#c82333', 'resignTask(\'' + work.id + '\', \'' + key + '\')');
         }
 
         if (key === 'borito' && (isOwnerOrPapat || task.selectedMonk === currentUser)) {
-            if (task.status === 'vĂˇrakozĂł' || task.status === 'javĂ­tĂˇs alatt') {
+            if (task.status === 'várakozó' || task.status === 'javítás alatt') {
                 action = '<input type="file" id="cover-upload-' + work.id + '" accept="image/png" style="width:180px; font-size:0.8em;">' +
                     makeBtn(t('upload_button'), '#2e8b57', 'uploadCoverFromCard(\'' + work.id + '\', \'' + key + '\')');
             }
         }
 
-        if (isOwnerOrPapat && task.selectedMonk && task.status !== 'elfogadva' && task.status !== 'ellenĹ‘rzĂ©s alatt') {
+        if (isOwnerOrPapat && task.selectedMonk && task.status !== 'elfogadva' && task.status !== 'ellenőrzés alatt') {
             if (action.indexOf('button') !== -1 || action.indexOf('select') !== -1) action += '<br>';
             action += makeBtn(t('monk_revoke_penalty_button'), '#d9534f', 'resignTask(\'' + work.id + '\', \'' + key + '\')');
         }
@@ -4571,7 +4571,7 @@ function doWorkAction(workId, action, param1, param2) {
     );
 }
 
-// --- 2. FĂ“RUM (KĂ¶zĂ¶s Terem) ---
+// --- 2. FÓRUM (Közös Terem) ---
 function loadForumPosts() {
     var container = document.getElementById('monastery-forum-posts');
     if (!container) return;
@@ -4580,7 +4580,7 @@ function loadForumPosts() {
     callBackend('getMonasteryForumPostsSecure', [],
         function (res) {
             if (!res.success) {
-                container.innerHTML = '<div style="padding:20px; color:#8b0000;"><h3>đźš« ' + t('monk_forum_closed_title') + '</h3><p>' + res.error + '</p></div>';
+                container.innerHTML = '<div style="padding:20px; color:#8b0000;"><h3>🚫 ' + t('monk_forum_closed_title') + '</h3><p>' + res.error + '</p></div>';
                 document.getElementById('forum-post-input').disabled = true;
                 return;
             }
@@ -4621,7 +4621,7 @@ function submitForumPost() {
     );
 }
 
-// --- 3. SUTTOGĂ“ (Chat) ---
+// --- 3. SUTTOGÓ (Chat) ---
 var currentChatPartnerEmail = null;
 
 function loadChatPartners() {
@@ -4737,13 +4737,13 @@ function hireMinistransMulti(workId, applicantName) {
         return;
     }
 
-    var message = t('monk_hire_confirm_prefix') + applicantName + " felvĂ©tele a megjelĂ¶lt szerepkĂ¶r(Ă¶k)be?";
+    var message = t('monk_hire_confirm_prefix') + applicantName + " felvétele a megjelölt szerepkör(ök)be?";
     uiConfirm(message, t('monk_hire_title'), function () {
         doWorkAction(workId, 'hire_ministrans', { roles: roles.join(","), applicantName: applicantName });
     });
 }
 
-// --- SZEMĂ‰LYZETI KEZELĹ FUNKCIĂ“K ---
+// --- SZEMÉLYZETI KEZELŐ FUNKCIÓK ---
 
 function loadPersonnelData() {
     var panel = document.getElementById('personnel-panel');
@@ -4782,9 +4782,9 @@ function loadPersonnelData() {
                     '<div class="item-title">' + monk.name + '</div>' +
                     '<small>' + monk.email + '</small><br>' +
                     '<div style="margin-top: 5px;">' +
-                    '<span style="color: var(--color-secondary); font-weight:bold;">SzerepkĂ¶rĂ¶k mĂłdosĂ­tĂˇsa:</span><br>' +
+                    '<span style="color: var(--color-secondary); font-weight:bold;">Szerepkörök módosítása:</span><br>' +
                     getRoleCheckboxesHtml(monk.roles ? monk.roles.split(',').map(function(s){return s.trim();}) : [], 'admin_' + CSS.escape(monk.email)) +
-                    '<button class="btn btn-sm" style="background-color:var(--color-primary); color:white; margin-top:5px;" onclick="adminUpdateMonkRoles(\'' + monk.email + '\')">SzerepkĂ¶rĂ¶k MentĂ©se</button>' +
+                    '<button class="btn btn-sm" style="background-color:var(--color-primary); color:white; margin-top:5px;" onclick="adminUpdateMonkRoles(\'' + monk.email + '\')">Szerepkörök Mentése</button>' +
                     '</div>' +
                     '</div>' +
                     '<button class="btn btn-danger" onclick="adminExpelMonk(\'' + monk.email + '\')">' + t('monk_expel_button') + '</button>' +
@@ -4812,7 +4812,7 @@ function adminUpdateMonkRoles(email) {
         function(res) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (res.success) {
-                uiAlert("SzerepkĂ¶rĂ¶k sikeresen frissĂ­tve!", t('success_title'));
+                uiAlert("Szerepkörök sikeresen frissítve!", t('success_title'));
                 loadPersonnelData();
             } else {
                 uiAlert(res.error, t('error_title'));
@@ -4871,7 +4871,7 @@ function uploadCoverFromCard(workId, taskKey) {
             var reader = new FileReader();
             var dataUrl = await new Promise(function(resolve, reject) {
                 reader.onload = function(e) { resolve(e.target.result); };
-                reader.onerror = function(e) { reject(new Error("Hiba a fĂˇjl olvasĂˇsa kĂ¶zben")); };
+                reader.onerror = function(e) { reject(new Error("Hiba a fájl olvasása közben")); };
                 reader.readAsDataURL(file);
             });
             
@@ -4895,7 +4895,7 @@ function uploadCoverFromCard(workId, taskKey) {
             );
         } catch (err) {
             document.getElementById('loading-overlay').style.display = 'none';
-            uiAlert("Hiba a kĂ©p konvertĂˇlĂˇsa sorĂˇn: " + err.message, t('system_error_title'));
+            uiAlert("Hiba a kép konvertálása során: " + err.message, t('system_error_title'));
         }
     });
 }
@@ -4941,56 +4941,56 @@ function finalizeResignation(leaveGame) {
 }
 
 // ============================================================================
-// KĂ–NYVFELTĂ–LTĹ Ă‰S SZENTELĹ MODUL (Eredeti, szĂ©tvĂˇlasztott logika)
+// KÖNYVFELTÖLTŐ ÉS SZENTELŐ MODUL (Eredeti, szétválasztott logika)
 // ============================================================================
 
-(function () { // BezĂˇrjuk egy fĂĽggvĂ©nybe, hogy a vĂˇltozĂłk ne szennyezzĂ©k a globĂˇlis teret, de a globĂˇlis esemĂ©nyek mĹ±kĂ¶djenek
+(function () { // Bezárjuk egy függvénybe, hogy a változók ne szennyezzék a globális teret, de a globális események működjenek
 
-    // --- HELYI VĂLTOZĂ“K ---
+    // --- HELYI VÁLTOZÓK ---
     var submitButton = null;
     var statusDiv = null;
     var modalText = null;
     var isSubmitting = false;
     var serverParams = {};
 
-    // SzentelĂ©shez szĂĽksĂ©ges vĂˇltozĂłk
+    // Szenteléshez szükséges változók
     var globalGdocId = null;
     var globalCoverId = null;
     var globalLogId = null;
     var globalUserEmail = null;
     var isSzentelesMode = false;
 
-    // --- PARAMĂ‰TEREK BEOLVASĂSA (URL-bĹ‘l) ---
+    // --- PARAMÉTEREK BEOLVASÁSA (URL-ből) ---
     try {
         if (typeof window !== 'undefined' && window.location && window.location.search) {
             const params = new URLSearchParams(window.location.search);
             const obj = {};
             for (const [k, v] of params.entries()) {
-                obj[k] = [v]; // Apps Script kompatibilis formĂˇtum (tĂ¶mb)
+                obj[k] = [v]; // Apps Script kompatibilis formátum (tömb)
             }
             serverParams = obj;
         }
-    } catch (e) { console.warn('ParamĂ©ter feldolgozĂˇsi hiba:', e); }
+    } catch (e) { console.warn('Paraméter feldolgozási hiba:', e); }
 
     function getParam(key) {
         return (serverParams && serverParams[key] && serverParams[key][0]) ? serverParams[key][0] : null;
     }
 
-    // --- INICIALIZĂLĂS (DOM betĂ¶ltĂ©skor) ---
+    // --- INICIALIZÁLÁS (DOM betöltéskor) ---
     document.addEventListener("DOMContentLoaded", function () {
-        // Csak akkor fusson, ha van kĂ¶nyvfeltĂ¶ltĹ‘ Ĺ±rlap az oldalon
+        // Csak akkor fusson, ha van könyvfeltöltő űrlap az oldalon
         var form = document.getElementById('bookForm');
-        if (!form) return; // Ha nincs Ĺ±rlap, kilĂ©pĂĽnk (ne zavarja a tĂ¶bbi oldalt)
+        if (!form) return; // Ha nincs űrlap, kilépünk (ne zavarja a többi oldalt)
 
-        console.log("KĂ¶nyvfeltĂ¶ltĹ‘ modul inicializĂˇlĂˇsa...");
+        console.log("Könyvfeltöltő modul inicializálása...");
 
         try {
-            // UI elemek mentĂ©se
+            // UI elemek mentése
             submitButton = document.getElementById('submitButton');
             statusDiv = document.getElementById('status');
             modalText = document.getElementById('modal-status-text');
 
-            // ParamĂ©terek
+            // Paraméterek
             globalGdocId = getParam('gdocId');
             globalUserEmail = getParam('userEmail');
             globalLogId = getParam('logId');
@@ -4998,19 +4998,19 @@ function finalizeResignation(leaveGame) {
             var action = getParam('action');
             var titleParam = getParam('title');
 
-            // --- 1. ĂG: SZENTELĂ‰S MĂ“D (FelhĹ‘kolostorbĂłl jĂ¶tt) ---
+            // --- 1. ÁG: SZENTELÉS MÓD (Felhőkolostorból jött) ---
             if (action === 'szenteles' && globalGdocId && globalUserEmail && globalLogId) {
-                console.log(">>> MĂ“D: SzentelĂ©s aktĂ­v.");
+                console.log(">>> MÓD: Szentelés aktív.");
                 isSzentelesMode = true;
 
-                // FĂˇjlmezĹ‘k elrejtĂ©se (a szerver adja Ĺ‘ket)
+                // Fájlmezők elrejtése (a szerver adja őket)
                 var epubElem = document.getElementById('epubFile');
                 var coverElem = document.getElementById('coverImageFile');
 
                 if (epubElem) {
                     var epubGroup = epubElem.closest('.form-group');
                     if (epubGroup) epubGroup.style.display = 'none';
-                    epubElem.required = false; // KĂ¶telezĹ‘sĂ©g levĂ©tele
+                    epubElem.required = false; // Kötelezőség levétele
                 }
 
                 if (coverElem) {
@@ -5018,14 +5018,14 @@ function finalizeResignation(leaveGame) {
                     if (coverGroup) coverGroup.style.display = 'none';
                 }
 
-                // Adatok elĹ‘tĂ¶ltĂ©se
+                // Adatok előtöltése
                 if (titleParam) document.getElementById('title').value = titleParam;
                 var ownerEmailField = document.getElementById('ownerEmail');
                 if (ownerEmailField) ownerEmailField.value = globalUserEmail;
 
                 var origAuthor = getParam('origAuthor');
                 var authorNameField = document.getElementById('authorName');
-                if (authorNameField) authorNameField.value = origAuthor ? origAuthor : "FelhĹ‘kolostor SzerzĹ‘je";
+                if (authorNameField) authorNameField.value = origAuthor ? origAuthor : "Felhőkolostor Szerzője";
                 
                 var origPublisher = getParam('origPublisher');
                 var publisherNameField = document.getElementById('publisherName');
@@ -5042,29 +5042,29 @@ function finalizeResignation(leaveGame) {
                 if (origType) window.prefillProductType = origType;
                 if (targetLang) window.prefillLanguage = targetLang;
 
-                // Backend hĂ­vĂˇsok (SzentelĂ©s specifikus vagy kĂ¶zĂ¶s)
+                // Backend hívások (Szentelés specifikus vagy közös)
                 callBackend('getDropdownData', [], populateDropdowns, showError);
                 callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
 
             } else {
-                // --- 2. ĂG: NORMĂL MĂ“D ---
-                console.log(">>> MĂ“D: NormĂˇl feltĂ¶ltĂ©s.");
+                // --- 2. ÁG: NORMÁL MÓD ---
+                console.log(">>> MÓD: Normál feltöltés.");
 
-                // Backend hĂ­vĂˇsok (NormĂˇl specifikus)
+                // Backend hívások (Normál specifikus)
                 callBackend('getDropdownData', [], populateDropdowns, showError);
                 callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
                 callBackend('getCentralImageAsset', ['book_upload'], displayLoadingGif, function (e) { console.warn('Gif hiba', e); });
             }
 
-            // Ĺ°rlap bekĂĽldĂ©s esemĂ©nykezelĹ‘ csatolĂˇsa
+            // Űrlap beküldés eseménykezelő csatolása
             form.addEventListener('submit', handleFormSubmit);
 
         } catch (e) {
-            showError(new Error("InicializĂˇlĂˇsi hiba: " + e.message));
+            showError(new Error("Inicializálási hiba: " + e.message));
         }
     });
 
-    // --- Ĺ°RLAP BEKĂśLDĂ‰SE (A KĂ‰T ĂG KEZELĂ‰SE) ---
+    // --- ŰRLAP BEKÜLDÉSE (A KÉT ÁG KEZELÉSE) ---
     function handleFormSubmit(event) {
         event.preventDefault();
         if (isSubmitting) return;
@@ -5072,37 +5072,37 @@ function finalizeResignation(leaveGame) {
         var formObject = event.target;
         var formData = buildBaseFormData(formObject, null);
 
-        // ParamĂ©terek ĂşjraolvasĂˇsa a biztonsĂˇg kedvĂ©Ă©rt
+        // Paraméterek újraolvasása a biztonság kedvéért
         var gdocId = getParam('gdocId');
         var logId = getParam('logId');
         var coverId = getParam('coverId');
         var action = getParam('action');
 
         if (action === 'szenteles' && gdocId && logId) {
-            // === SZENTELĂ‰S ĂG ===
-            setUiState('loading', 'Szentelt kĂ¶nyv adatainak feldolgozĂˇsa a szerveren...');
+            // === SZENTELÉS ÁG ===
+            setUiState('loading', 'Szentelt könyv adatainak feldolgozása a szerveren...');
 
-            // Itt a 'initiateGDocSzenteles' backend fĂĽggvĂ©nyt hĂ­vjuk
+            // Itt a 'initiateGDocSzenteles' backend függvényt hívjuk
             callBackend('initiateGDocSzenteles', [gdocId, formData.ownerEmail, logId, coverId, formData],
                 function (response) {
                     if (!response.success) {
                         showError(new Error(response.error));
                         return;
                     }
-                    // Ha sikeres, a kliens oldalon dolgozzuk fel a vĂˇlaszt
+                    // Ha sikeres, a kliens oldalon dolgozzuk fel a választ
                     handleSzentelesResponse(response, formData);
                 },
                 showError
             );
 
         } else {
-            // === NORMĂL ĂG ===
-            setUiState('loading', 'AzonosĂ­tĂł foglalĂˇsa a szerveren...');
+            // === NORMÁL ÁG ===
+            setUiState('loading', 'Azonosító foglalása a szerveren...');
 
-            // Itt a 'initiateUploadAndGetId' backend fĂĽggvĂ©nyt hĂ­vjuk
+            // Itt a 'initiateUploadAndGetId' backend függvényt hívjuk
             callBackend('initiateUploadAndGetId', [formData],
                 function (response) {
-                    // Ha megvan az ID, indul a helyi fĂˇjlfeldolgozĂˇs
+                    // Ha megvan az ID, indul a helyi fájlfeldolgozás
                     processFilesAndFinalize(formObject, response.basicCode, response.rowNumber, null, null, formData.ownerEmail);
                 },
                 showError
@@ -5110,16 +5110,16 @@ function finalizeResignation(leaveGame) {
         }
     }
 
-    // --- SZENTELĂ‰S SPECIFIKUS FELDOLGOZĂ“ ---
+    // --- SZENTELÉS SPECIFIKUS FELDOLGOZÓ ---
     function handleSzentelesResponse(response, formData) {
-        setUiState('loading', 'FĂˇjlok visszaalakĂ­tĂˇsa Ă©s vĂ©glegesĂ­tĂ©s...');
+        setUiState('loading', 'Fájlok visszaalakítása és véglegesítés...');
         try {
-            // 1. ePub visszaalakĂ­tĂˇsa base64-bĹ‘l Blob-bĂˇ
+            // 1. ePub visszaalakítása base64-ből Blob-bá
             var epubBlob = base64ToBlob(response.base64Epub);
             var cleanTitle = sanitizeForFilename(formData.title);
             epubBlob.name = cleanTitle + ".epub";
 
-            // 2. BorĂ­tĂł visszaalakĂ­tĂˇsa (ha van)
+            // 2. Borító visszaalakítása (ha van)
             var coverFilesArray = [];
             if (response.base64Cover) {
                 var coverBlob = base64ToBlob(response.base64Cover, 'image/png');
@@ -5127,8 +5127,8 @@ function finalizeResignation(leaveGame) {
                 coverFilesArray = [coverBlob];
             }
 
-            // 3. Mock (szimulĂˇlt) Ĺ±rlap objektum lĂ©trehozĂˇsa
-            // Ez azĂ©rt kell, hogy a kĂ¶zĂ¶s 'processFilesAndFinalize' fĂĽggvĂ©ny azt higgye, Ĺ±rlaprĂłl jĂ¶tt az adat
+            // 3. Mock (szimulált) űrlap objektum létrehozása
+            // Ez azért kell, hogy a közös 'processFilesAndFinalize' függvény azt higgye, űrlapról jött az adat
             var mockFormObject = {
                 title: { value: formData.title },
                 epubFile: { files: [epubBlob] },
@@ -5136,20 +5136,20 @@ function finalizeResignation(leaveGame) {
                 epubBaseName: cleanTitle
             };
 
-            // 4. ĂtadĂˇs a kĂ¶zĂ¶s feldolgozĂłnak
+            // 4. Átadás a közös feldolgozónak
             processFilesAndFinalize(mockFormObject, response.basicCode, response.rowNumber, globalGdocId, globalLogId, globalUserEmail);
 
         } catch (e) {
-            showError(new Error("FeldolgozĂˇsi hiba (SzentelĂ©s): " + e.message));
+            showError(new Error("Feldolgozási hiba (Szentelés): " + e.message));
         }
     }
 
-    // --- KĂ–ZĂ–S FĂJLFELDOLGOZĂ“ Ă‰S FELTĂ–LTĹ (Core Logic) ---
+    // --- KÖZÖS FÁJLFELDOLGOZÓ ÉS FELTÖLTŐ (Core Logic) ---
     async function processFilesAndFinalize(formObject, basicCode, rowNumber, gdocId, logId, userEmail) {
         try {
-            setUiState('loading', 'FĂˇjlok vĂ­zjelezĂ©se, kicsomagolĂˇsa Ă©s feltĂ¶ltĂ©se...');
+            setUiState('loading', 'Fájlok vízjelezése, kicsomagolása és feltöltése...');
 
-            // CĂ­m meghatĂˇrozĂˇsa (tĂˇmogatja a Mock objektumot Ă©s a HTML elemet is)
+            // Cím meghatározása (támogatja a Mock objektumot és a HTML elemet is)
             var bookTitle = (formObject.title && formObject.title.value) ? formObject.title.value : "Nocim";
             if (!bookTitle && typeof formObject.title === 'string') bookTitle = formObject.title;
             var sanitizedTitle = sanitizeForFilename(bookTitle);
@@ -5157,7 +5157,7 @@ function finalizeResignation(leaveGame) {
             var epubFile = (formObject.epubFile && formObject.epubFile.files) ? formObject.epubFile.files[0] : null;
             var coverFile = (formObject.coverImageFile && formObject.coverImageFile.files) ? formObject.coverImageFile.files[0] : null;
 
-            // VĂ©gsĹ‘ adatcsomag
+            // Végső adatcsomag
             var finalData = {
                 rowNumber: rowNumber,
                 gdocId: gdocId,
@@ -5167,7 +5167,7 @@ function finalizeResignation(leaveGame) {
                 quizData: getVerificationData()
             };
 
-            // 1. BorĂ­tĂł vĂ­zjelezĂ©se
+            // 1. Borító vízjelezése
             if (coverFile) {
                 var watermarkedCoverBase64 = await embedIdInImage(coverFile, basicCode);
                 finalData.coverImageData = watermarkedCoverBase64.split(',')[1];
@@ -5175,18 +5175,18 @@ function finalizeResignation(leaveGame) {
                 finalData.coverImageMimeType = 'image/png';
             }
 
-            // 2. ePub feldolgozĂˇsa
+            // 2. ePub feldolgozása
             if (epubFile) {
-                var zip = new JSZip(); // FeltĂ©telezzĂĽk, hogy a JSZip globĂˇlisan elĂ©rhetĹ‘
+                var zip = new JSZip(); // Feltételezzük, hogy a JSZip globálisan elérhető
                 var epubData = await epubFile.arrayBuffer();
                 var loadedZip = await zip.loadAsync(epubData);
                 var zeroWidthId = encodeIdToZeroWidth(basicCode);
 
-                // XHTML fĂˇjlok tisztĂ­tĂˇsa
+                // XHTML fájlok tisztítása
                 var xhtmlFileNames = Object.keys(loadedZip.files).filter(name => name.toLowerCase().endsWith('.xhtml'));
                 var xhtmlPromises = xhtmlFileNames.map(async (fileName) => {
                     var content = await loadedZip.file(fileName).async('string');
-                    // CSS tisztĂ­tĂˇs (eredeti regexek)
+                    // CSS tisztítás (eredeti regexek)
                     content = content.replace(/(background-color|background):\s*[^;"]+;?/gi, '');
                     content = content.replace(/color:\s*[^;"]+;?/gi, '');
                     content = content.replace(/font-family:[^;"]+;?/gi, '');
@@ -5198,7 +5198,7 @@ function finalizeResignation(leaveGame) {
                 });
                 finalData.xhtmlFiles = await Promise.all(xhtmlPromises);
 
-                // KĂ©pek vĂ­zjelezĂ©se
+                // Képek vízjelezése
                 var imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
                 var imageFileNames = Object.keys(loadedZip.files).filter(fileName =>
                     imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !fileName.startsWith('__MACOSX')
@@ -5219,7 +5219,7 @@ function finalizeResignation(leaveGame) {
                 });
                 finalData.base64Images = (await Promise.all(imagePromises)).filter(img => img);
 
-                // SzĂ¶veges vĂ­zjel beszĂşrĂˇsa
+                // Szöveges vízjel beszúrása
                 try {
                     var containerXmlContent = await loadedZip.file('META-INF/container.xml').async('string');
                     var containerParser = new DOMParser();
@@ -5240,7 +5240,7 @@ function finalizeResignation(leaveGame) {
                             loadedZip.file(pathPrefix + href, watermarkedChapterContent);
                         }
                     }
-                } catch (err) { console.warn("VĂ­zjelezĂ©si hiba (nem blokkolĂł):", err); }
+                } catch (err) { console.warn("Vízjelezési hiba (nem blokkoló):", err); }
 
                 var watermarkedEpubBlob = await loadedZip.generateAsync({ type: 'blob' });
                 var epubBase64 = await readFileAsBase64(watermarkedEpubBlob);
@@ -5249,12 +5249,12 @@ function finalizeResignation(leaveGame) {
                 finalData.epubMimeType = epubFile.type;
 
             } else {
-                throw new Error("ePub fĂˇjl hiĂˇnyzik a csomagbĂłl!");
+                throw new Error("ePub fájl hiányzik a csomagból!");
             }
 
-            setUiState('loading', 'VĂ©glegesĂ­tĂ©s Ă©s fĂˇjlfeltĂ¶ltĂ©s...');
+            setUiState('loading', 'Véglegesítés és fájlfeltöltés...');
 
-            // VĂ©glegesĂ­tĂ©s a szerveren
+            // Véglegesítés a szerveren
             callBackend('finalizeUpload', [finalData], showResult, showError);
 
         } catch (error) {
@@ -5263,7 +5263,7 @@ function finalizeResignation(leaveGame) {
     }
 
 
-    // --- SEGĂ‰DFĂśGGVĂ‰NYEK ---
+    // --- SEGÉDFÜGGVÉNYEK ---
 
     function buildBaseFormData(form, basicCode) {
         var data = {
@@ -5302,15 +5302,15 @@ function finalizeResignation(leaveGame) {
         if (state === 'loading') {
             isSubmitting = true;
             if (submitButton) submitButton.disabled = true;
-            if (statusDiv) { statusDiv.textContent = message || 'FeldolgozĂˇs...'; statusDiv.className = ''; }
-            if (modalTextLocal) modalTextLocal.textContent = message || 'FeldolgozĂˇs folyamatban...';
+            if (statusDiv) { statusDiv.textContent = message || 'Feldolgozás...'; statusDiv.className = ''; }
+            if (modalTextLocal) modalTextLocal.textContent = message || 'Feldolgozás folyamatban...';
             if (modal) modal.style.display = 'flex';
         } else {
             isSubmitting = false;
             if (submitButton) submitButton.disabled = false;
             if (statusDiv) {
                 statusDiv.textContent = message || '';
-                statusDiv.className = (message && (message.startsWith('Hiba') || message.startsWith('IdĹ‘tĂşllĂ©pĂ©s'))) ? 'error' : 'success';
+                statusDiv.className = (message && (message.startsWith('Hiba') || message.startsWith('Időtúllépés'))) ? 'error' : 'success';
             }
             if (modal) modal.style.display = 'none';
         }
@@ -5324,7 +5324,7 @@ function finalizeResignation(leaveGame) {
             var logo = document.getElementById('logo-container');
             if (logo) logo.style.display = 'none';
             if (statusDiv) {
-                statusDiv.innerHTML = '<div style="padding:30px; background-color:#e3fcef; color:#006644; border:2px solid #006644; border-radius:8px;"><h3>âś… ' + t('upload_success_title') + '</h3><p>' + message + '</p></div>';
+                statusDiv.innerHTML = '<div style="padding:30px; background-color:#e3fcef; color:#006644; border:2px solid #006644; border-radius:8px;"><h3>✅ ' + t('upload_success_title') + '</h3><p>' + message + '</p></div>';
             }
             var title = document.getElementById('page-title');
             if (title) title.innerText = t('upload_completed_title');
@@ -5366,34 +5366,34 @@ function finalizeResignation(leaveGame) {
         }
     }
 
-    function displayLogoError(error) { console.error("Logo betĂ¶ltĂ©si hiba:", error); }
+    function displayLogoError(error) { console.error("Logo betöltési hiba:", error); }
 
     function displayLoadingGif(imageData) {
         var gifElement = document.getElementById('book_upload-image');
         if (gifElement && imageData && imageData.data) gifElement.src = `data:${imageData.mime};base64,${imageData.data}`;
     }
 
-    // --- Utilitik (VĂ­zjelezĂ©shez, stb.) ---
+    // --- Utilitik (Vízjelezéshez, stb.) ---
     function sanitizeForFilename(text) { if (!text) return "nevtelen_konyv"; return text.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, ''); }
     function encodeIdToZeroWidth(id) { var b = ''; for (var i = 0; i < id.length; i++) b += id[i].charCodeAt(0).toString(2).padStart(8, '0'); var z = ''; for (const x of b) z += (x === '0') ? '\u200b' : '\u200c'; return z + '\u200d'; }
     function readFileAsBase64(file) { return new Promise((res, rej) => { var r = new FileReader(); r.onload = () => res(r.result); r.onerror = e => rej(e); r.readAsDataURL(file); }); }
     function readBlobAsDataURL(blob) { return new Promise((res, rej) => { var r = new FileReader(); r.onload = () => res(r.result); r.onerror = e => rej(e); r.readAsDataURL(blob); }); }
     function base64ToBlob(b64, mime) { mime = mime || 'application/epub+zip'; var c = atob(b64); var b = new Uint8Array(c.length); for (var i = 0; i < c.length; i++) b[i] = c.charCodeAt(i); return new Blob([b], { type: mime }); }
-    function embedIdInImage(src, id) { return new Promise((res, rej) => { var i = new Image(); i.onload = function () { var c = document.createElement('canvas'); c.width = i.width; c.height = i.height; var x = c.getContext('2d'); x.drawImage(i, 0, 0); var b = ''; for (var k = 0; k < id.length; k++) b += id[k].charCodeAt(0).toString(2).padStart(8, '0'); b += "11111111"; var p = x.getImageData(0, 0, c.width, c.height); var d = 0; for (var k = 0; k < b.length; k++) { if ((d + 1) % 4 === 0) d++; var v = p.data[d]; p.data[d] = (b[k] === '1') ? (v | 1) : (v & 254); d++; } x.putImageData(p, 0, 0); res(c.toDataURL('image/png')); }; i.onerror = e => rej(new Error("KĂ©p hiba")); if (typeof src === 'string') i.src = src; else { var r = new FileReader(); r.onload = e => i.src = e.target.result; r.readAsDataURL(src); } }); }
+    function embedIdInImage(src, id) { return new Promise((res, rej) => { var i = new Image(); i.onload = function () { var c = document.createElement('canvas'); c.width = i.width; c.height = i.height; var x = c.getContext('2d'); x.drawImage(i, 0, 0); var b = ''; for (var k = 0; k < id.length; k++) b += id[k].charCodeAt(0).toString(2).padStart(8, '0'); b += "11111111"; var p = x.getImageData(0, 0, c.width, c.height); var d = 0; for (var k = 0; k < b.length; k++) { if ((d + 1) % 4 === 0) d++; var v = p.data[d]; p.data[d] = (b[k] === '1') ? (v | 1) : (v & 254); d++; } x.putImageData(p, 0, 0); res(c.toDataURL('image/png')); }; i.onerror = e => rej(new Error("Kép hiba")); if (typeof src === 'string') i.src = src; else { var r = new FileReader(); r.onload = e => i.src = e.target.result; r.readAsDataURL(src); } }); }
 
 })();
 
 
 // =========================================
-// === ĂšJ Ă‰S ĂTHELYEZETT TĂ‰RKĂ‰P FUNKCIĂ“K ===
+// === ÚJ ÉS ÁTHELYEZETT TÉRKÉP FUNKCIÓK ===
 // =========================================
 
 
-// === 1. BIZTONSĂGI SEGĂ‰DFĂśGGVĂ‰NYEK (VISSZAĂLLĂŤTVA) ===
+// === 1. BIZTONSÁGI SEGÉDFÜGGVÉNYEK (VISSZAÁLLÍTVA) ===
 
 
 /**
- * MegakadĂˇlyozza az alapĂ©rtelmezett jobbklikk menĂĽt.
+ * Megakadályozza az alapértelmezett jobbklikk menüt.
  */
 function preventContextMenuDefault(event) {
     event.preventDefault();
@@ -5401,18 +5401,18 @@ function preventContextMenuDefault(event) {
 }
 
 /**
- * SzigorĂş jobbklikk-tiltĂˇs egy adott elemen Ă©s annak gyermekein.
+ * Szigorú jobbklikk-tiltás egy adott elemen és annak gyermekein.
  * @param {string} elementId Az elem ID-ja.
  */
 function disableContextMenuOnElement(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
-        // EltĂˇvolĂ­tjuk a rĂ©git, hogy ne halmozĂłdjon
+        // Eltávolítjuk a régit, hogy ne halmozódjon
         element.removeEventListener('contextmenu', preventContextMenuDefault);
-        // HozzĂˇadjuk az Ăşjat
+        // Hozzáadjuk az újat
         element.addEventListener('contextmenu', preventContextMenuDefault);
 
-        // Extra vĂ©delem: Ha az elem egy kĂ©p, tiltjuk a "drag"-ot is (hogy ne lehessen kihĂşzni asztalra)
+        // Extra védelem: Ha az elem egy kép, tiltjuk a "drag"-ot is (hogy ne lehessen kihúzni asztalra)
         if (element.tagName === 'IMG') {
             element.setAttribute('draggable', 'false');
         }
@@ -5420,15 +5420,15 @@ function disableContextMenuOnElement(elementId) {
 }
 
 // =====================================
-// === ĂšJ TĂ‰RKĂ‰P (FREE MOVE & ZOOM) ===
+// === ÚJ TÉRKÉP (FREE MOVE & ZOOM) ===
 // =====================================
 
-// ĂllapotvĂˇltozĂłk
+// Állapotváltozók
 let mapState = {
     scale: 1,
     panning: false,
-    pointX: 0, // X koordinĂˇta (eltolĂˇs)
-    pointY: 0, // Y koordinĂˇta (eltolĂˇs)
+    pointX: 0, // X koordináta (eltolás)
+    pointY: 0, // Y koordináta (eltolás)
     startX: 0,
     startY: 0
 };
@@ -5438,7 +5438,7 @@ const MAX_ZOOM = 5.0;
 const MIN_ZOOM = 0.5;
 
 /**
- * MegnyitĂˇs Ă©s inicializĂˇlĂˇs
+ * Megnyitás és inicializálás
  */
 function openMapViewer(fileId, mapName) {
     const modal = document.getElementById('map-viewer-modal');
@@ -5450,19 +5450,19 @@ function openMapViewer(fileId, mapName) {
 
     // Reset UI
     img.src = '';
-    // Backtick maradhat, ha modern a kĂ¶rnyezeted
-    img.alt = `${mapName} betĂ¶ltĂ©se...`;
-    img.style.transform = ''; // TĂ¶rĂ¶ljĂĽk az elĹ‘zĹ‘ pozĂ­ciĂłt
+    // Backtick maradhat, ha modern a környezeted
+    img.alt = `${mapName} betöltése...`;
+    img.style.transform = ''; // Töröljük az előző pozíciót
     modal.style.display = 'flex';
     if (loading) loading.style.display = 'flex';
 
-    // --- JAVĂŤTĂS: callBackend ---
-    // ParamĂ©ter: csak a fileId (emailt a router intĂ©zi)
+    // --- JAVÍTÁS: callBackend ---
+    // Paraméter: csak a fileId (emailt a router intézi)
     callBackend('getMapImageData', [fileId],
         function (base64Uri) {
             if (loading) loading.style.display = 'none';
             if (base64Uri) {
-                // EllenĹ‘rzĂ©s: ha nincs 'data:image' elĹ‘tag, pĂłtoljuk
+                // Ellenőrzés: ha nincs 'data:image' előtag, pótoljuk
                 if (!base64Uri.startsWith('data:image')) {
                     img.src = 'data:image/png;base64,' + base64Uri;
                 } else {
@@ -5470,17 +5470,17 @@ function openMapViewer(fileId, mapName) {
                 }
                 img.alt = mapName;
 
-                // 1. ReseteljĂĽk a koordinĂˇtĂˇkat kĂ¶zĂ©pre (0,0)
+                // 1. Reseteljük a koordinátákat középre (0,0)
                 resetMapState();
 
-                // 2. BekĂ¶tjĂĽk a vezĂ©rlĹ‘ket
+                // 2. Bekötjük a vezérlőket
                 setupFreeControls(wrapper);
 
-                // 3. BiztonsĂˇg
+                // 3. Biztonság
                 disableContextMenuOnElement('map-viewer-modal');
             } else {
                 closeMapViewer();
-                alert(`Hiba: Nem sikerĂĽlt betĂ¶lteni a tĂ©rkĂ©pet.`);
+                alert(`Hiba: Nem sikerült betölteni a térképet.`);
             }
         },
         function (err) {
@@ -5497,7 +5497,7 @@ function closeMapViewer() {
 }
 
 /**
- * Alaphelyzetbe ĂˇllĂ­tja a vĂˇltozĂłkat
+ * Alaphelyzetbe állítja a változókat
  */
 function resetMapState() {
     mapState = {
@@ -5512,19 +5512,19 @@ function resetMapState() {
 }
 
 /**
- * A transzformĂˇciĂł (CSS) alkalmazĂˇsa a kĂ©pre
- * Ez a "motor", ami mozgatja a kĂ©pet
+ * A transzformáció (CSS) alkalmazása a képre
+ * Ez a "motor", ami mozgatja a képet
  */
 function updateMapTransform() {
     const img = document.getElementById('map-viewer-image');
     if (!img) return;
 
-    // Itt tĂ¶rtĂ©nik a varĂˇzslat: egyszerre mozgatjuk (translate) Ă©s nagyĂ­tjuk (scale)
+    // Itt történik a varázslat: egyszerre mozgatjuk (translate) és nagyítjuk (scale)
     img.style.transform = `translate(${mapState.pointX}px, ${mapState.pointY}px) scale(${mapState.scale})`;
 }
 
 /**
- * EsemĂ©nykezelĹ‘k (Drag & Zoom)
+ * Eseménykezelők (Drag & Zoom)
  */
 function setupFreeControls(wrapper) {
     // --- GOMBOK ---
@@ -5532,17 +5532,17 @@ function setupFreeControls(wrapper) {
     document.getElementById('zoom-out-btn').onclick = () => zoomFree('out');
     document.getElementById('reset-zoom-btn').onclick = resetMapState;
 
-    // --- EGĂ‰RGĂ–RGĹ (WHEEL) ---
+    // --- EGÉRGÖRGŐ (WHEEL) ---
     wrapper.onwheel = (e) => {
         e.preventDefault();
         if (e.deltaY < 0) zoomFree('in');
         else zoomFree('out');
     };
 
-    // --- VONSZOLĂS (DRAG) ---
+    // --- VONSZOLÁS (DRAG) ---
     wrapper.onmousedown = (e) => {
         if (e.button !== 0) return; // Csak bal klikk
-        e.preventDefault(); // SzellemkĂ©p tiltĂˇsa!
+        e.preventDefault(); // Szellemkép tiltása!
 
         mapState.panning = true;
         mapState.startX = e.clientX - mapState.pointX;
@@ -5565,8 +5565,8 @@ function setupFreeControls(wrapper) {
         if (!mapState.panning) return;
         e.preventDefault();
 
-        // KiszĂˇmoljuk az Ăşj pozĂ­ciĂłt
-        // AzĂ©rt vonjuk ki az egĂ©rbĹ‘l a startot, mert a translate koordinĂˇtĂˇkat frissĂ­tjĂĽk
+        // Kiszámoljuk az új pozíciót
+        // Azért vonjuk ki az egérből a startot, mert a translate koordinátákat frissítjük
         mapState.pointX = e.clientX - mapState.startX;
         mapState.pointY = e.clientY - mapState.startY;
 
@@ -5584,12 +5584,12 @@ function zoomFree(direction) {
         mapState.scale -= ZOOM_SPEED;
     }
 
-    // KerekĂ­tĂ©s
+    // Kerekítés
     mapState.scale = Math.round(mapState.scale * 10) / 10;
     updateMapTransform();
 }
 
-// BiztonsĂˇg
+// Biztonság
 function disableContextMenuOnElement(elementId) {
     const el = document.getElementById(elementId);
     if (el) {
@@ -5600,7 +5600,7 @@ function disableContextMenuOnElement(elementId) {
 // ===============================
 
 /**
- * ElindĂ­tja a tĂ©rkĂ©pmĂˇsolĂˇsi folyamatot.
+ * Elindítja a térképmásolási folyamatot.
  */
 function initiateMapCopy(mapSheetRowIndex, mapName) {
     const pinCodeInput = document.getElementById('copy-map-pin');
@@ -5630,7 +5630,7 @@ function initiateMapCopy(mapSheetRowIndex, mapName) {
 }
 
 /**
- * Kezeli a tĂ©rkĂ©pfeltĂ¶ltĹ‘ modal "FeltĂ¶ltĂ©s" gombjĂˇnak megnyomĂˇsĂˇt.
+ * Kezeli a térképfeltöltő modal "Feltöltés" gombjának megnyomását.
  */
 function handleMapUploadSubmit() {
     var identifierInput = document.getElementById('map-identifier');
@@ -5654,13 +5654,13 @@ function handleMapUploadSubmit() {
     }
 
     submitBtn.disabled = true;
-    statusDiv.textContent = 'FĂˇjl olvasĂˇsa Ă©s konvertĂˇlĂˇsa...';
+    statusDiv.textContent = 'Fájl olvasása és konvertálása...';
     statusDiv.style.color = 'black';
     document.getElementById('loading-overlay').style.display = 'flex';
 
     var reader = new FileReader();
 
-    // ASYNC FĂśGGVĂ‰NY MARADT, de nyĂ­l (=>) helyett function()
+    // ASYNC FÜGGVÉNY MARADT, de nyíl (=>) helyett function()
     reader.onload = async function (e) {
         try {
             // AWAIT MARADT
@@ -5673,7 +5673,7 @@ function handleMapUploadSubmit() {
                 mimeType: 'image/png'
             };
 
-            statusDiv.textContent = 'FeltĂ¶ltĂ©s a szerverre...';
+            statusDiv.textContent = 'Feltöltés a szerverre...';
 
             callBackend('uploadMapImage', [mapData],
                 function (response) {
@@ -5699,7 +5699,7 @@ function handleMapUploadSubmit() {
         } catch (convertError) {
             document.getElementById('loading-overlay').style.display = 'none';
             submitBtn.disabled = false;
-            statusDiv.textContent = 'Hiba a kĂ©p konvertĂˇlĂˇsa kĂ¶zben: ' + convertError.message;
+            statusDiv.textContent = 'Hiba a kép konvertálása közben: ' + convertError.message;
             statusDiv.style.color = 'red';
         }
     };
@@ -5707,14 +5707,14 @@ function handleMapUploadSubmit() {
     reader.onerror = function () {
         document.getElementById('loading-overlay').style.display = 'none';
         submitBtn.disabled = false;
-        statusDiv.textContent = 'Hiba a fĂˇjl olvasĂˇsa kĂ¶zben.';
+        statusDiv.textContent = 'Hiba a fájl olvasása közben.';
         statusDiv.style.color = 'red';
     };
     reader.readAsDataURL(file);
 }
 
 /**
- * SEGĂ‰DFĂśGGVĂ‰NY: BĂˇrmilyen kĂ©p DataURL-t PNG DataURL-lĂ© konvertĂˇl Canvas segĂ­tsĂ©gĂ©vel.
+ * SEGÉDFÜGGVÉNY: Bármilyen kép DataURL-t PNG DataURL-lé konvertál Canvas segítségével.
  */
 function convertToPngDataUrl(inputDataUrl) {
     return new Promise(function (resolve, reject) {
@@ -5737,21 +5737,21 @@ function convertToPngDataUrl(inputDataUrl) {
             }
         };
         img.onerror = function () {
-            reject(new Error("A kĂ©pfĂˇjl nem tĂ¶lthetĹ‘ be a konvertĂˇlĂˇshoz."));
+            reject(new Error("A képfájl nem tölthető be a konvertáláshoz."));
         };
         img.src = inputDataUrl;
     });
 }
 
 // =====================================
-// --- KĂ–NYVTĂR Ă‰S LETĂ–LTĂ‰S FUNKCIĂ“K ---
+// --- KÖNYVTÁR ÉS LETÖLTÉS FUNKCIÓK ---
 // =====================================
 
 /**
-* === ĂšJ, KIBĹVĂŤTETT KĂ–NYVTĂR INICIALIZĂLĂ“ ===
-* FeltĂ¶lti a KĂ¶nyvtĂˇr oldalt kĂ¶nyvekkel, mĂˇsolatokkal, tekercsekkel Ă‰S a felhasznĂˇlĂł tĂ©rkĂ©peivel.
-* Kezeli a tĂ©rkĂ©p feltĂ¶ltĂ©s gomb lĂˇthatĂłsĂˇgĂˇt Ă©s a modalokat.
-* @param {object} data A szerverrĹ‘l kapott, elĹ‘re betĂ¶ltĂ¶tt adatcsomag.
+* === ÚJ, KIBŐVÍTETT KÖNYVTÁR INICIALIZÁLÓ ===
+* Feltölti a Könyvtár oldalt könyvekkel, másolatokkal, tekercsekkel ÉS a felhasználó térképeivel.
+* Kezeli a térkép feltöltés gomb láthatóságát és a modalokat.
+* @param {object} data A szerverről kapott, előre betöltött adatcsomag.
 */
 function initializeLibraryAndMapPage(data) {
     var booksContainer = document.getElementById('konyvtar-books-content');
@@ -5761,46 +5761,46 @@ function initializeLibraryAndMapPage(data) {
     var logsContainer = document.getElementById('konyvtar-logs-content');
     var uploadButton = document.getElementById('upload-map-button');
 
-    // EllenĹ‘rzĂ©s
+    // Ellenőrzés
     if (!booksContainer || !copiesContainer || !scrollsContainer || !mapsContainer || !logsContainer || !uploadButton) {
-        console.error("Hiba: A KĂ¶nyvtĂˇr oldal szĂĽksĂ©ges HTML kontĂ©nerei hiĂˇnyosak!");
+        console.error("Hiba: A Könyvtár oldal szükséges HTML konténerei hiányosak!");
         return;
     }
 
-    // TĂ¶ltĹ‘ ĂĽzenetek eltĂˇvolĂ­tĂˇsa/alaphelyzet
+    // Töltő üzenetek eltávolítása/alaphelyzet
     booksContainer.innerHTML = '';
     copiesContainer.innerHTML = '';
     scrollsContainer.innerHTML = '';
     mapsContainer.innerHTML = '';
     logsContainer.innerHTML = '';
 
-    // ĂltalĂˇnos hiba kezelĂ©se
+    // Általános hiba kezelése
     if (data.error) {
-        booksContainer.innerHTML = '<p style="color: red;">Hiba a kĂ¶nyvtĂˇr betĂ¶ltĂ©sekor: ' + data.error + '</p>';
+        booksContainer.innerHTML = '<p style="color: red;">Hiba a könyvtár betöltésekor: ' + data.error + '</p>';
         return;
     }
 
     // ============================================================
-    // 1. LETĂ–LTHETĹ KĂ–NYVEK (BIZTONSĂGOS JAVĂŤTĂS)
+    // 1. LETÖLTHETŐ KÖNYVEK (BIZTONSÁGOS JAVÍTÁS)
     // ============================================================
     if (data.books && data.books.length > 0) {
         data.books.forEach(function (book) {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'item-entry';
 
-            // 1. LĂ©trehozzuk a szĂ¶veges rĂ©szt stringkĂ©nt (ez biztonsĂˇgos)
+            // 1. Létrehozzuk a szöveges részt stringként (ez biztonságos)
             entryDiv.innerHTML = '<div class="item-details">' +
                 '<div class="item-title">' + book.title + '</div>' +
                 '<div class="item-author">' + book.author + '</div>' +
                 '</div>';
 
-            // 2. A gombot programkĂłddal hozzuk lĂ©tre, hogy a speciĂˇlis karakterek (pl. "idĂ©zĹ‘jel") 
-            // ne tĂ¶rjĂ©k el a HTML-t a data-title attribĂştumban.
+            // 2. A gombot programkóddal hozzuk létre, hogy a speciális karakterek (pl. "idézőjel") 
+            // ne törjék el a HTML-t a data-title attribútumban.
             var downloadBtn = document.createElement('button');
             downloadBtn.className = 'download-btn';
-            downloadBtn.textContent = 'LetĂ¶ltĂ©s';
+            downloadBtn.textContent = 'Letöltés';
 
-            // ĂŤgy a rendszer automatikusan kezeli az idĂ©zĹ‘jeleket
+            // Így a rendszer automatikusan kezeli az idézőjeleket
             downloadBtn.setAttribute('data-id', book.downloadLink);
             downloadBtn.setAttribute('data-title', book.title);
 
@@ -5814,18 +5814,18 @@ function initializeLibraryAndMapPage(data) {
             booksContainer.appendChild(entryDiv);
         });
     } else {
-        booksContainer.innerHTML = "<p>Nincsenek letĂ¶lthetĹ‘ kĂ¶nyveid.</p>";
+        booksContainer.innerHTML = "<p>Nincsenek letölthető könyveid.</p>";
     }
 
     // ============================================================
-    // 2. OLVASHATĂ“ MĂSOLATOK
+    // 2. OLVASHATÓ MÁSOLATOK
     // ============================================================
     if (data.copies && data.copies.length > 0) {
         data.copies.forEach(function (copy) {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'item-entry';
-            var inPlayHtml = copy.inPlay ? '<small style="color: orange; display: block;"><i>(JĂˇtĂ©kban van)</i></small>' : '';
-            var btnDisabled = copy.inPlay ? 'disabled title="JĂˇtĂ©kban lĂ©vĹ‘ mĂˇsolat nem olvashatĂł itt."' : '';
+            var inPlayHtml = copy.inPlay ? '<small style="color: orange; display: block;"><i>(Játékban van)</i></small>' : '';
+            var btnDisabled = copy.inPlay ? 'disabled title="Játékban lévő másolat nem olvasható itt."' : '';
 
             entryDiv.innerHTML = '<div class="item-details">' +
                 '<div class="item-title">' + copy.title + '</div>' +
@@ -5842,7 +5842,7 @@ function initializeLibraryAndMapPage(data) {
             copiesContainer.appendChild(entryDiv);
         });
     } else {
-        copiesContainer.innerHTML = "<p>Nincsenek olvashatĂł mĂˇsolataid.</p>";
+        copiesContainer.innerHTML = "<p>Nincsenek olvasható másolataid.</p>";
     }
 
     // ============================================================
@@ -5868,17 +5868,17 @@ function initializeLibraryAndMapPage(data) {
     }
 
     // ============================================================
-    // 4. HAJĂ“NAPLĂ“K
+    // 4. HAJÓNAPLÓK
     // ============================================================
     if (data.logs && data.logs.length > 0) {
         data.logs.forEach(function (log) {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'item-entry';
-            var logName = log.name || ('NaplĂł (' + log.id + ')');
+            var logName = log.name || ('Napló (' + log.id + ')');
 
             entryDiv.innerHTML = '<div class="item-details">' +
                 '<div class="item-title">' + logName + '</div>' +
-                '<small class="item-author">NaplĂł ID: ' + log.id + '</small>' +
+                '<small class="item-author">Napló ID: ' + log.id + '</small>' +
                 '</div>' +
                 '<button class="btn">Olvasom</button>';
 
@@ -5888,11 +5888,11 @@ function initializeLibraryAndMapPage(data) {
             logsContainer.appendChild(entryDiv);
         });
     } else {
-        logsContainer.innerHTML = "<p>Nincsenek olvashatĂł hajĂłnaplĂłid.</p>";
+        logsContainer.innerHTML = "<p>Nincsenek olvasható hajónaplóid.</p>";
     }
 
     // ============================================================
-    // 5. SAJĂT TĂ‰RKĂ‰PEK
+    // 5. SAJÁT TÉRKÉPEK
     // ============================================================
     if (data.maps && data.maps.length > 0) {
         data.maps.forEach(function (map) {
@@ -5902,10 +5902,10 @@ function initializeLibraryAndMapPage(data) {
 
             entryDiv.innerHTML = '<div class="map-details item-details">' +
                 '<div class="map-name item-title">' + map.identifier + '</div>' +
-                '<small class="item-author">FeltĂ¶ltve: ' + dateStr + '</small>' +
+                '<small class="item-author">Feltöltve: ' + dateStr + '</small>' +
                 '</div>' +
                 '<div class="map-actions">' +
-                '<button class="btn">MegnĂ©z</button>' +
+                '<button class="btn">Megnéz</button>' +
                 '</div>';
 
             entryDiv.querySelector('.map-actions button').onclick = function () {
@@ -5914,11 +5914,11 @@ function initializeLibraryAndMapPage(data) {
             mapsContainer.appendChild(entryDiv);
         });
     } else {
-        mapsContainer.innerHTML = "<p>Nincsenek sajĂˇt tĂ©rkĂ©peid.</p>";
+        mapsContainer.innerHTML = "<p>Nincsenek saját térképeid.</p>";
     }
 
     // ============================================================
-    // 6. FELTĂ–LTĂ‰S GOMB
+    // 6. FELTÖLTÉS GOMB
     // ============================================================
     if (data.canUpload) {
         uploadButton.style.display = 'block';
@@ -5935,7 +5935,7 @@ function initializeLibraryAndMapPage(data) {
                     submitBtn.setAttribute('data-listener-added', 'true');
                 }
             } else {
-                console.error("Hiba: A feltĂ¶ltĹ‘ modal HTML ('upload-map-modal') hiĂˇnyzik!");
+                console.error("Hiba: A feltöltő modal HTML ('upload-map-modal') hiányzik!");
             }
         };
     } else {
@@ -5943,7 +5943,7 @@ function initializeLibraryAndMapPage(data) {
     }
 
     // ============================================================
-    // 7. PAPĂT FUNKCIĂ“K (TĂ‰RKĂ‰PEK ELBĂŤRĂLĂSA)
+    // 7. PAPÁT FUNKCIÓK (TÉRKÉPEK ELBÍRÁLÁSA)
     // ============================================================
     var papatApprovalSection = document.getElementById('papat-map-approval-section');
     var pendingMapsContainer = document.getElementById('konyvtar-pending-maps-content');
@@ -5961,12 +5961,12 @@ function initializeLibraryAndMapPage(data) {
                         '<div class="item-icon"><i class="fas fa-map" style="color: #b71c1c;"></i></div>' +
                         '<div class="item-details">' +
                             '<div class="item-title">' + map.identifier + '</div>' +
-                            '<small class="item-author">FeltĂ¶ltĹ‘: ' + map.email + '</small>' +
+                            '<small class="item-author">Feltöltő: ' + map.email + '</small>' +
                         '</div>' +
                         '<div class="map-actions">' +
-                            '<button class="btn view-btn" style="background:#17a2b8;">MegtekintĂ©s</button>' +
-                            '<button class="btn approve-btn" style="background:#28a745;">JĂłvĂˇhagyĂˇs</button>' +
-                            '<button class="btn reject-btn" style="background:#dc3545;">ElutasĂ­tĂˇs</button>' +
+                            '<button class="btn view-btn" style="background:#17a2b8;">Megtekintés</button>' +
+                            '<button class="btn approve-btn" style="background:#28a745;">Jóváhagyás</button>' +
+                            '<button class="btn reject-btn" style="background:#dc3545;">Elutasítás</button>' +
                         '</div>';
                     
                     entryDiv.querySelector('.view-btn').onclick = function() {
@@ -5975,7 +5975,7 @@ function initializeLibraryAndMapPage(data) {
                     
                     entryDiv.querySelector('.approve-btn').onclick = function() {
                         if(typeof uiConfirm === 'function') {
-                            uiConfirm('Biztosan jĂłvĂˇhagyod ezt a tĂ©rkĂ©pet?', 'MegerĹ‘sĂ­tĂ©s', function() {
+                            uiConfirm('Biztosan jóváhagyod ezt a térképet?', 'Megerősítés', function() {
                                 handleMapApproval(map.rowIndex, 'approve');
                             });
                         }
@@ -5983,7 +5983,7 @@ function initializeLibraryAndMapPage(data) {
                     
                     entryDiv.querySelector('.reject-btn').onclick = function() {
                         if(typeof uiConfirm === 'function') {
-                            uiConfirm('Biztosan elutasĂ­tod ezt a tĂ©rkĂ©pet?', 'MegerĹ‘sĂ­tĂ©s', function() {
+                            uiConfirm('Biztosan elutasítod ezt a térképet?', 'Megerősítés', function() {
                                 handleMapApproval(map.rowIndex, 'reject');
                             });
                         }
@@ -5992,7 +5992,7 @@ function initializeLibraryAndMapPage(data) {
                     pendingMapsContainer.appendChild(entryDiv);
                 });
             } else {
-                pendingMapsContainer.innerHTML = '<p>Nincs elbĂ­rĂˇlĂˇsra vĂˇrĂł tĂ©rkĂ©p.</p>';
+                pendingMapsContainer.innerHTML = '<p>Nincs elbírálásra váró térkép.</p>';
             }
         } else {
             papatApprovalSection.style.display = 'none';
@@ -6001,7 +6001,7 @@ function initializeLibraryAndMapPage(data) {
 }
 
 /**
- * PapĂˇt tĂ©rkĂ©p elbĂ­rĂˇlĂˇs backend hĂ­vĂˇs
+ * Papát térkép elbírálás backend hívás
  */
 function handleMapApproval(rowIndex, action) {
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -6012,7 +6012,7 @@ function handleMapApproval(rowIndex, action) {
             document.getElementById('loading-overlay').style.display = 'none';
             if(typeof uiAlert === 'function') uiAlert(res.message || res.error);
             if(res.success) {
-                loadPage('konyvtar'); // ĂšjratĂ¶ltjĂĽk a kĂ¶nyvtĂˇrat a frissĂ­tett listĂˇĂ©rt
+                loadPage('konyvtar'); // Újratöltjük a könyvtárat a frissített listáért
             }
         },
         function(err) {
@@ -6023,10 +6023,10 @@ function handleMapApproval(rowIndex, action) {
 }
 
 // =========================================================
-// === KĂ–NYVTĂR OLVASĂ“K (VĂ‰GLEGES, MĹ°KĂ–DĹ VERZIĂ“) ===
+// === KÖNYVTÁR OLVASÓK (VÉGLEGES, MŰKÖDŐ VERZIÓ) ===
 // =========================================================
 
-// SEGĂ‰DFĂśGGVĂ‰NY: MegjelenĂ­tĂ©s (VĂ‰DELEMMEL Ă‰S SCROLL JAVĂŤTĂSSAL)
+// SEGÉDFÜGGVÉNY: Megjelenítés (VÉDELEMMEL ÉS SCROLL JAVÍTÁSSAL)
 function displayInReader(htmlContent) {
     var modal = document.getElementById('reader-modal');
     var readerContent = document.getElementById('reader-content-display');
@@ -6034,37 +6034,37 @@ function displayInReader(htmlContent) {
     var container = document.querySelector('.reader-container');
 
     if (!modal || !readerContent) {
-        console.error("Hiba: OlvasĂł elemek nem talĂˇlhatĂłk!");
+        console.error("Hiba: Olvasó elemek nem találhatók!");
         return;
     }
 
-    // Tartalom beillesztĂ©se
+    // Tartalom beillesztése
     readerContent.innerHTML = htmlContent;
 
-    // MegjelenĂ­tĂ©s
+    // Megjelenítés
     modal.style.display = 'flex';
 
-    // === VĂ‰DELEM VISSZAĂLLĂŤTĂSA ===
+    // === VÉDELEM VISSZAÁLLÍTÁSA ===
 
-    // 1. Jobbklikk tiltĂˇsa az EGĂ‰SZ olvasĂłban (nem csak a kĂ©peken)
-    // Ez megakadĂˇlyozza a "KĂ©p mentĂ©se mĂˇskĂ©nt" Ă©s a "MĂˇsolĂˇs" menĂĽt is.
+    // 1. Jobbklikk tiltása az EGÉSZ olvasóban (nem csak a képeken)
+    // Ez megakadályozza a "Kép mentése másként" és a "Másolás" menüt is.
     modal.oncontextmenu = function (e) {
         e.preventDefault();
         return false;
     };
 
-    // 2. KijelĂ¶lĂ©s, mĂˇsolĂˇs, vĂˇgĂˇs tiltĂˇsa billentyĹ±zettel (Ctrl+C, stb.)
+    // 2. Kijelölés, másolás, vágás tiltása billentyűzettel (Ctrl+C, stb.)
     modal.oncopy = function (e) { e.preventDefault(); return false; };
     modal.oncut = function (e) { e.preventDefault(); return false; };
     modal.onselectstart = function (e) { e.preventDefault(); return false; };
 
-    // === SCROLL POZĂŤCIĂ“ JAVĂŤTĂSA ===
-    // Azonnal a tetejĂ©re gĂ¶rgetĂĽnk mindent
+    // === SCROLL POZÍCIÓ JAVÍTÁSA ===
+    // Azonnal a tetejére görgetünk mindent
     if (container) container.scrollTop = 0;
     modal.scrollTop = 0;
     window.scrollTo(0, 0);
 
-    // Shield (OpcionĂˇlis extra vĂ©delem) mĂ©retezĂ©se
+    // Shield (Opcionális extra védelem) méretezése
     setTimeout(function () {
         if (readerContent && readerShield) {
             readerShield.style.height = readerContent.scrollHeight + 'px';
@@ -6072,77 +6072,77 @@ function displayInReader(htmlContent) {
     }, 200);
 }
 
-// 1. HAJĂ“NAPLĂ“ OLVASĂ“ (Biztos mĂłdszer: getLogEntry + Kliens oldali HTML)
+// 1. HAJÓNAPLÓ OLVASÓ (Biztos módszer: getLogEntry + Kliens oldali HTML)
 function openLogReader(logId) {
     if (!logId) return;
-    console.log(`NaplĂł olvasĂˇsĂˇnak indĂ­tĂˇsa: ${logId}`);
+    console.log(`Napló olvasásának indítása: ${logId}`);
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // --- JAVĂŤTĂS: callBackend ---
-    // ParamĂ©ter: csak [logId] (emailt a router intĂ©zi)
+    // --- JAVÍTÁS: callBackend ---
+    // Paraméter: csak [logId] (emailt a router intézi)
     callBackend('getLogContentForReading', [logId],
         function (response) { // Objektumot kapunk: { htmlContent, imageData }
             try {
-                // HibakezelĂ©s a szerver vĂˇlasza alapjĂˇn
+                // Hibakezelés a szerver válasza alapján
                 if (response.error) {
                     throw new Error(response.error);
                 }
                 if (!response.htmlContent) {
-                    throw new Error("HiĂˇnyzĂł HTML tartalom a szerver vĂˇlaszĂˇban.");
+                    throw new Error("Hiányzó HTML tartalom a szerver válaszában.");
                 }
 
                 let htmlToShow = response.htmlContent;
                 const imageDataMap = response.imageData || {};
 
-                // KĂ©p placeholder-ek keresĂ©se Ă©s cserĂ©je a kliens oldalon
+                // Kép placeholder-ek keresése és cseréje a kliens oldalon
                 const imagePlaceholderRegex = /\[IMAGE:([^:]+):([^\]]+)\]/g;
                 htmlToShow = htmlToShow.replace(imagePlaceholderRegex, (match, fileId, fileName) => {
-                    const dataUri = imageDataMap[fileId]; // Itt mĂˇr a teljes "data:image/png;base64,..." URI van
+                    const dataUri = imageDataMap[fileId]; // Itt már a teljes "data:image/png;base64,..." URI van
 
                     if (dataUri) {
-                        // KĂ¶zvetlenĂĽl hasznĂˇljuk a kapott Data URI-t az src attribĂştumban
+                        // Közvetlenül használjuk a kapott Data URI-t az src attribútumban
                         const escapedFileName = fileName.replace('.txt', '').replace(/"/g, '&quot;'); // Alap escape
 
-                        // EllenĹ‘rzĂ©s: ha nincs 'data:image' elĹ‘tag, pĂłtoljuk
+                        // Ellenőrzés: ha nincs 'data:image' előtag, pótoljuk
                         const src = dataUri.startsWith('data:image') ? dataUri : `data:image/png;base64,${dataUri}`;
 
                         // Visszaadjuk az img taget a teljes Data URI-val
                         return `<img src="${src}" alt="${escapedFileName}" style="max-width: 100%; height: auto; display: block; margin: 1em auto;">`;
                     } else {
-                        // Ha a szerver nem tudta lekĂ©rni a kĂ©p adatĂˇt (null-t adott vissza)
-                        console.warn(`HiĂˇnyzĂł kĂ©p adat a naplĂłban: ID=${fileId}, FĂˇjlnĂ©v=${fileName}`);
-                        // JelenĂ­tsĂĽnk meg egyĂ©rtelmĹ± hibaĂĽzenetet a felhasznĂˇlĂłnak
-                        return `<p style="color:orange; border: 1px dashed orange; padding: 5px; text-align: center;">[KĂ©p (${fileName.replace('.txt', '')}) nem tĂ¶lthetĹ‘ be]</p>`;
+                        // Ha a szerver nem tudta lekérni a kép adatát (null-t adott vissza)
+                        console.warn(`Hiányzó kép adat a naplóban: ID=${fileId}, Fájlnév=${fileName}`);
+                        // Jelenítsünk meg egyértelmű hibaüzenetet a felhasználónak
+                        return `<p style="color:orange; border: 1px dashed orange; padding: 5px; text-align: center;">[Kép (${fileName.replace('.txt', '')}) nem tölthető be]</p>`;
                     }
                 });
 
-                // Body tartalom kinyerĂ©se a teljes HTML-bĹ‘l
+                // Body tartalom kinyerése a teljes HTML-ből
                 const bodyMatch = htmlToShow.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-                // Csak a body tartalmĂˇt, vagy ha nincs body, a teljes stringet adjuk Ăˇt
+                // Csak a body tartalmát, vagy ha nincs body, a teljes stringet adjuk át
                 const bodyContent = (bodyMatch && bodyMatch[1]) ? bodyMatch[1] : htmlToShow;
 
-                // Tartalom megjelenĂ­tĂ©se az olvasĂłban
+                // Tartalom megjelenítése az olvasóban
                 displayInReader(bodyContent);
 
             } catch (e) {
-                // Kliensoldali hiba esetĂ©n
+                // Kliensoldali hiba esetén
                 uiAlert(t('log_content_process_error_prefix') + e.message);
-                console.error("NaplĂł olvasĂˇsi hiba (kliens):", e);
+                console.error("Napló olvasási hiba (kliens):", e);
             } finally {
-                // Biztosan elrejtjĂĽk a tĂ¶ltĹ‘kĂ©pernyĹ‘t
+                // Biztosan elrejtjük a töltőképernyőt
                 document.getElementById('loading-overlay').style.display = 'none';
             }
         },
         function (err) {
-            // SzerverhĂ­vĂˇs hiba esetĂ©n
+            // Szerverhívás hiba esetén
             document.getElementById('loading-overlay').style.display = 'none';
             uiAlert(t('log_content_fetch_error_prefix') + err.message);
-            console.error("NaplĂł olvasĂˇsi hiba (szerver hĂ­vĂˇs):", err);
+            console.error("Napló olvasási hiba (szerver hívás):", err);
         }
     );
 }
 
-// 2. MĂSOLAT OLVASĂ“ (A TE LOGIKĂDDAL!)
+// 2. MÁSOLAT OLVASÓ (A TE LOGIKÁDDAL!)
 function openReaderFor(copyCode) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -6158,7 +6158,7 @@ function openReaderFor(copyCode) {
             var fullHtmlContent = '';
 
             try {
-                // 1. Fejezetek Ă¶sszefĹ±zĂ©se
+                // 1. Fejezetek összefűzése
                 result.chapters.forEach(function (chapterHtml) {
                     var bodyMatch = chapterHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
                     if (bodyMatch && bodyMatch[1]) {
@@ -6168,7 +6168,7 @@ function openReaderFor(copyCode) {
                     }
                 });
 
-                // 2. KĂ©pek cserĂ©je
+                // 2. Képek cseréje
                 var coverFoundInText = false;
 
                 if (result.embeddedImages && Object.keys(result.embeddedImages).length > 0) {
@@ -6190,7 +6190,7 @@ function openReaderFor(copyCode) {
                         if (foundKey) {
                             var newDataUri = result.embeddedImages[foundKey];
 
-                            // BorĂ­tĂł ellenĹ‘rzĂ©s
+                            // Borító ellenőrzés
                             if (foundKey.toLowerCase().indexOf('cover') !== -1 ||
                                 (result.coverBase64 && newDataUri.indexOf(result.coverBase64.substring(0, 50)) !== -1)) {
                                 coverFoundInText = true;
@@ -6203,7 +6203,7 @@ function openReaderFor(copyCode) {
                     });
                 }
 
-                // 3. BorĂ­tĂł beszĂşrĂˇsa (ha nem volt a szĂ¶vegben)
+                // 3. Borító beszúrása (ha nem volt a szövegben)
                 if (result.coverBase64 && !coverFoundInText) {
                     var srcData = result.coverBase64.indexOf('data:') === 0
                         ? result.coverBase64
@@ -6228,11 +6228,11 @@ function openReaderFor(copyCode) {
     );
 }
 
-// 3. TEKERCS OLVASĂ“ (Ugyanazzal a logikĂˇval)
+// 3. TEKERCS OLVASÓ (Ugyanazzal a logikával)
 function openReaderForScroll(tekercsToken) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // callBackend hĂ­vĂˇs
+    // callBackend hívás
     callBackend('getContentForReading', [tekercsToken, 'tekercs'],
         function (fileData) {
             document.getElementById('loading-overlay').style.display = 'none';
@@ -6244,11 +6244,11 @@ function openReaderForScroll(tekercsToken) {
 
             var contentToShow = '';
 
-            // Tartalom kinyerĂ©se
+            // Tartalom kinyerése
             var bodyMatch = fileData.content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
             var bodyContent = (bodyMatch && bodyMatch[1]) ? bodyMatch[1] : fileData.content;
 
-            // KĂ©pcsere logika
+            // Képcsere logika
             if (fileData.embeddedImages) {
                 for (var imgName in fileData.embeddedImages) {
                     var imgData = fileData.embeddedImages[imgName];
@@ -6258,7 +6258,7 @@ function openReaderForScroll(tekercsToken) {
                 }
             }
 
-            // BorĂ­tĂł beszĂşrĂˇsa
+            // Borító beszúrása
             if (fileData.coverBase64) {
                 var srcData = fileData.coverBase64.indexOf('data:') === 0
                     ? fileData.coverBase64
@@ -6278,7 +6278,7 @@ function openReaderForScroll(tekercsToken) {
 }
 
 // =====================================
-// === TEKERCSMESTER FUNKCIĂ“K (ROUTERESĂŤTVE) ===
+// === TEKERCSMESTER FUNKCIÓK (ROUTERESÍTVE) ===
 // =====================================
 
 function initializeTekercsmesterPage(preloadedData) {
@@ -6288,13 +6288,13 @@ function initializeTekercsmesterPage(preloadedData) {
 
     loader.style.display = 'block';
 
-    // callBackend hĂ­vĂˇs (paramĂ©ter nĂ©lkĂĽli lekĂ©rdezĂ©s)
+    // callBackend hívás (paraméter nélküli lekérdezés)
     callBackend('getTekercsmesterData', [],
         function (data) {
             loader.style.display = 'none';
 
             if (data.error) {
-                // String Ă¶sszefĹ±zĂ©s
+                // String összefűzés
                 sajatListaDiv.innerHTML = '<p style="color:red;">' + t('error_prefix') + data.error + '</p>';
                 return;
             }
@@ -6352,15 +6352,15 @@ function initializeTekercsmesterPage(preloadedData) {
 
 function setupTekercsButtons(currentHartya) {
     var hartyaCountSpan = document.getElementById('hartya-count');
-    // .closest() helyett biztonsĂˇgosabb parentNode bejĂˇrĂˇst is hasznĂˇlhatnĂˇnk, de a modern bĂ¶ngĂ©szĹ‘k ismerik
+    // .closest() helyett biztonságosabb parentNode bejárást is használhatnánk, de a modern böngészők ismerik
     var hartyaContainer = hartyaCountSpan ? hartyaCountSpan.parentNode : null;
-    // KeresĂĽnk felfelĂ©, ha nem kĂ¶zvetlen szĂĽlĹ‘
+    // Keresünk felfelé, ha nem közvetlen szülő
     while (hartyaContainer && !hartyaContainer.classList.contains('stat-box')) {
         hartyaContainer = hartyaContainer.parentNode;
     }
 
     if (hartyaContainer) {
-        // 1. TEKERCSPRĂ‰S GOMB
+        // 1. TEKERCSPRÉS GOMB
         if (!document.getElementById('press-scroll-btn')) {
             var pressButton = document.createElement('button');
             pressButton.id = 'press-scroll-btn';
@@ -6395,7 +6395,7 @@ function setupTekercsButtons(currentHartya) {
             hartyaContainer.appendChild(pressButton);
         }
 
-        // 2. HĂRTYA ELADĂS GOMB
+        // 2. HÁRTYA ELADÁS GOMB
         if (!document.getElementById('sell-hartya-btn')) {
             var sellButton = document.createElement('button');
             sellButton.id = 'sell-hartya-btn';
@@ -6446,13 +6446,13 @@ function renderMyScrollList(myTekercs, container) {
 
             var reszletekDiv = document.createElement('div');
             reszletekDiv.className = 'item-details';
-            // String Ă¶sszefĹ±zĂ©s
+            // String összefűzés
             reszletekDiv.innerHTML = '<div class="item-title">' + szett.title + ' (' + szett.tekercsek.length + ' db)</div>' +
                 '<div class="item-author">' + szett.author + '</div>';
 
             var gombokDiv = document.createElement('div');
 
-            // --- A. Ă–sszefĹ±zĂ©s gomb ---
+            // --- A. Összefűzés gomb ---
             if (szett.tekercsek.length >= 48) {
                 var assembleButton = document.createElement('button');
                 assembleButton.className = 'btn';
@@ -6476,7 +6476,7 @@ function renderMyScrollList(myTekercs, container) {
                 gombokDiv.appendChild(assembleButton);
             }
 
-            // --- B. Egyedi tekercsek eladĂˇsa ---
+            // --- B. Egyedi tekercsek eladása ---
             szett.tekercsek.forEach(function (tekercs) {
                 var sellButton = document.createElement('button');
                 sellButton.className = 'btn';
@@ -6516,12 +6516,12 @@ function renderMyScrollList(myTekercs, container) {
 }
 
 // =====================================
-// === MĂSOLATOK OLDAL INICIALIZĂLĂ“ ===
+// === MÁSOLATOK OLDAL INICIALIZÁLÓ ===
 // =====================================
 
 /**
- * InicializĂˇlja a MĂˇsolatok oldalt.
- * JAVĂŤTVA: callBackend hĂ­vĂˇsokbĂłl kivĂ©ve a currentUserEmail.
+ * Inicializálja a Másolatok oldalt.
+ * JAVÍTVA: callBackend hívásokból kivéve a currentUserEmail.
  */
 function initializeMasolatokAndCopyMapPage(data) {
     var myCopiesLoader = document.getElementById('sajat-masolat-lista-loader');
@@ -6532,14 +6532,14 @@ function initializeMasolatokAndCopyMapPage(data) {
     var buyCopyBtn = document.getElementById('buy-copy-btn');
     var buyCopyPinInput = document.getElementById('buy-copy-pin-code');
 
-    // Ăšj elemek a tĂ©rkĂ©pmĂˇsolĂˇshoz
+    // Új elemek a térképmásoláshoz
     var availableMapsLoader = document.getElementById('available-maps-list-loader');
     var availableMapsContainer = document.getElementById('available-maps-list-content');
     var copyMapPinInput = document.getElementById('copy-map-pin');
     var copyMapPinLabel = copyMapPinInput ? copyMapPinInput.previousElementSibling : null;
 
     if (!myCopiesLoader || !myCopiesContainer || !forSaleCopiesSelect || !buyCopySection || !buyCopyDetailsDiv || !buyCopyBtn || !buyCopyPinInput || !availableMapsLoader || !availableMapsContainer || !copyMapPinInput || !copyMapPinLabel) {
-        console.error("Hiba: A MĂˇsolatok oldal szĂĽksĂ©ges HTML elemei hiĂˇnyosak! EllenĹ‘rizd az ID-kat.");
+        console.error("Hiba: A Másolatok oldal szükséges HTML elemei hiányosak! Ellenőrizd az ID-kat.");
         return;
     }
 
@@ -6552,7 +6552,7 @@ function initializeMasolatokAndCopyMapPage(data) {
         return;
     }
 
-    // --- SajĂˇt mĂˇsolatok listĂˇzĂˇsa ---
+    // --- Saját másolatok listázása ---
     myCopiesContainer.innerHTML = '';
     if (data.myCopies && data.myCopies.length > 0) {
         data.myCopies.forEach(function (copy) {
@@ -6561,7 +6561,7 @@ function initializeMasolatokAndCopyMapPage(data) {
             entryDiv.innerHTML = '<div class="item-details"><div class="item-title">' + copy.title + '</div><div class="item-author">' + copy.author + '</div></div>';
             var gombokDiv = document.createElement('div');
             if (!copy.inPlay) {
-                // JĂˇtĂ©kba viszem gomb
+                // Játékba viszem gomb
                 var playBtn = document.createElement('button');
                 playBtn.className = 'btn';
                 playBtn.textContent = t('copy_play_button');
@@ -6575,7 +6575,7 @@ function initializeMasolatokAndCopyMapPage(data) {
         var loaderId = "loader-" + Date.now();
         var loader = document.createElement('div');
         loader.id = loaderId;
-        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A JĂˇtĂ©kmester felkĂ©szĂĽl...</i>';
+        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester felkészül...</i>';
         chatArea.appendChild(loader);
         
         callBackend('handleNPCInteraction', ['gamemaster', '', 'START_GM_SESSION', copy.code], 
@@ -6610,8 +6610,8 @@ function initializeMasolatokAndCopyMapPage(data) {
                             function () {
                                 document.getElementById('loading-overlay').style.display = 'flex';
 
-                                // --- JAVĂŤTĂS: callBackend ---
-                                // currentUserEmail KIVĂ‰VE!
+                                // --- JAVÍTÁS: callBackend ---
+                                // currentUserEmail KIVÉVE!
                                 callBackend('sellCopy', [copy.code],
                                     function (res) {
                                         document.getElementById('loading-overlay').style.display = 'none';
@@ -6647,13 +6647,13 @@ function initializeMasolatokAndCopyMapPage(data) {
         myCopiesContainer.innerHTML = '<p>' + t('no_copies_yet') + '</p>';
     }
 
-    // --- EladĂł mĂˇsolatok listĂˇzĂˇsa ---
+    // --- Eladó másolatok listázása ---
     forSaleCopiesSelect.innerHTML = '<option value="">' + t('select_copy_option') + '</option>';
     if (data.forSale && data.forSale.length > 0) {
         data.forSale.forEach(function (item) {
             var option = document.createElement('option');
             option.value = item.rowIndex;
-            // JSON stringify, hogy adatot tĂˇroljunk
+            // JSON stringify, hogy adatot tároljunk
             option.setAttribute('data-item-data', JSON.stringify(item));
             option.textContent = item.title + ' (' + item.author + ')';
             forSaleCopiesSelect.appendChild(option);
@@ -6666,7 +6666,7 @@ function initializeMasolatokAndCopyMapPage(data) {
             var selectedOption = this.options[this.selectedIndex];
             var selectedData = JSON.parse(selectedOption.getAttribute('data-item-data'));
             var cost = (selectedData.seller.toLowerCase() === currentUserEmail.toLowerCase()) ? 11 : 110;
-            // String Ă¶sszefĹ±zĂ©s
+            // String összefűzés
             buyCopyDetailsDiv.innerHTML = '<p><strong>' + t('copy_price_label') + '</strong> ' + cost + ' ' + t('credit_label') + '</p><p><small>' + t('copy_seller_label') + ': ' + selectedData.seller + '</small></p>';
             buyCopySection.style.display = 'block';
         } else {
@@ -6688,8 +6688,8 @@ function initializeMasolatokAndCopyMapPage(data) {
         }
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // --- JAVĂŤTĂS: callBackend ---
-        // currentUserEmail KIVĂ‰VE!
+        // --- JAVÍTÁS: callBackend ---
+        // currentUserEmail KIVÉVE!
         callBackend('buyCopy', [selectedRowIndex, pinCode],
             function (res) {
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -6707,13 +6707,13 @@ function initializeMasolatokAndCopyMapPage(data) {
         );
     };
 
-    // --- MĂˇsolhatĂł tĂ©rkĂ©pek listĂˇzĂˇsa ---
+    // --- Másolható térképek listázása ---
     availableMapsContainer.innerHTML = '';
 
     if (data.availableMaps && data.availableMaps.length > 0) {
-        console.log("ElĂ©rhetĹ‘ tĂ©rkĂ©pek talĂˇlva.");
+        console.log("Elérhető térképek találva.");
 
-        // CsoportosĂ­tĂˇs (manuĂˇlis loop)
+        // Csoportosítás (manuális loop)
         var mapGroups = {};
         data.availableMaps.forEach(function (map) {
             var baseIdentifier = map.identifier.indexOf('-') !== -1 ? map.identifier.substring(0, map.identifier.lastIndexOf('-')) : map.identifier;
@@ -6727,7 +6727,7 @@ function initializeMasolatokAndCopyMapPage(data) {
             mapGroups[baseIdentifier].count++;
         });
 
-        // Object.values manuĂˇlis emulĂˇlĂˇsa (vagy hasznĂˇlata, ha tĂˇmogatott) Ă©s rendezĂ©s
+        // Object.values manuális emulálása (vagy használata, ha támogatott) és rendezés
         var groupsArray = [];
         for (var key in mapGroups) {
             if (mapGroups.hasOwnProperty(key)) {
@@ -6739,16 +6739,16 @@ function initializeMasolatokAndCopyMapPage(data) {
         groupsArray.forEach(function (group) {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'item-entry map-entry';
-            // FeltĂ©telezzĂĽk, hogy MAP_COPY_COST definiĂˇlva van globĂˇlisan
+            // Feltételezzük, hogy MAP_COPY_COST definiálva van globálisan
             var cost = (typeof MAP_COPY_COST !== 'undefined') ? MAP_COPY_COST : 10;
 
             entryDiv.innerHTML =
                 '<div class="map-details item-details">' +
                 '<div class="map-name item-title">' + group.name + ' (' + group.count + ' db)</div>' +
-                '<small class="item-author">MĂˇsolĂˇs Ăˇra: ' + cost + ' kredit</small>' +
+                '<small class="item-author">Másolás ára: ' + cost + ' kredit</small>' +
                 '</div>' +
                 '<div class="map-actions">' +
-                '<button class="btn">MĂˇsolĂˇs</button>' +
+                '<button class="btn">Másolás</button>' +
                 '</div>';
 
             entryDiv.querySelector('.map-actions button').onclick = function () {
@@ -6761,15 +6761,15 @@ function initializeMasolatokAndCopyMapPage(data) {
         if (copyMapPinLabel) copyMapPinLabel.style.display = 'block';
 
     } else {
-        availableMapsContainer.innerHTML = "<p>Jelenleg nincsenek mĂˇsolhatĂł tĂ©rkĂ©pek.</p>";
+        availableMapsContainer.innerHTML = "<p>Jelenleg nincsenek másolható térképek.</p>";
         if (copyMapPinInput) copyMapPinInput.style.display = 'none';
         if (copyMapPinLabel) copyMapPinLabel.style.display = 'none';
     }
 
-    // --- HajĂłnaplĂł KivonatolĂˇs ListĂˇzĂˇsa ---
+    // --- Hajónapló Kivonatolás Listázása ---
     var logExtractSelect = document.getElementById('log-extract-select');
     if (logExtractSelect) {
-        logExtractSelect.innerHTML = '<option value="">VĂˇlassz hajĂłnaplĂłt...</option>';
+        logExtractSelect.innerHTML = '<option value="">Válassz hajónaplót...</option>';
         if (data.logs && data.logs.length > 0) {
             data.logs.forEach(function (log) {
                 var option = document.createElement('option');
@@ -6780,7 +6780,7 @@ function initializeMasolatokAndCopyMapPage(data) {
         }
     }
 
-    // --- PapĂˇt FunkciĂłk MegjelenĂ­tĂ©se ---
+    // --- Papát Funkciók Megjelenítése ---
     var papatUploadSection = document.getElementById('papat-log-upload-section');
     if (papatUploadSection) {
         if (data.isPapat === true) {
@@ -6792,7 +6792,7 @@ function initializeMasolatokAndCopyMapPage(data) {
 }
 
 /**
- * BetĂ¶lti a kivĂˇlasztott hajĂłnaplĂłt kivonatolĂˇs cĂ©ljĂˇbĂłl
+ * Betölti a kiválasztott hajónaplót kivonatolás céljából
  */
 function loadLogForExtraction() {
     var select = document.getElementById('log-extract-select');
@@ -6842,12 +6842,12 @@ function loadLogForExtraction() {
             
             var entries = tempDiv.querySelectorAll('.log-entry');
             if (entries.length === 0) {
-                entriesDiv.innerHTML = '<p>A naplĂł ĂĽres.</p>';
+                entriesDiv.innerHTML = '<p>A napló üres.</p>';
             } else {
                 entries.forEach(function(entry) {
                     var entryId = entry.getAttribute('data-entry-id');
                     var dateAttr = entry.getAttribute('data-date');
-                    var entryTitle = 'BejegyzĂ©s: ' + (dateAttr || 'Ismeretlen dĂˇtum');
+                    var entryTitle = 'Bejegyzés: ' + (dateAttr || 'Ismeretlen dátum');
 
                     var wrapper = document.createElement('div');
                     wrapper.style.marginBottom = '10px';
@@ -6869,7 +6869,7 @@ function loadLogForExtraction() {
                         var checked = document.querySelectorAll('.log-extract-checkbox:checked').length;
                         costSpan.textContent = (checked * 10).toString();
                         var btn = document.getElementById('log-extract-btn');
-                        if (btn) btn.textContent = 'KivonatolĂˇs (' + (checked * 10) + ' Kredit)';
+                        if (btn) btn.textContent = 'Kivonatolás (' + (checked * 10) + ' Kredit)';
                     };
 
                     var textContainer = document.createElement('div');
@@ -6879,7 +6879,7 @@ function loadLogForExtraction() {
                     headerDiv.style.cursor = 'pointer';
                     headerDiv.style.display = 'flex';
                     headerDiv.style.justifyContent = 'space-between';
-                    headerDiv.innerHTML = '<strong>' + entryTitle + '</strong><small style="color: #666; font-weight: bold;">â–Ľ OlvasĂˇs</small>';
+                    headerDiv.innerHTML = '<strong>' + entryTitle + '</strong><small style="color: #666; font-weight: bold;">▼ Olvasás</small>';
                     
                     var contentDiv = document.createElement('div');
                     contentDiv.style.display = 'none';
@@ -6894,7 +6894,7 @@ function loadLogForExtraction() {
                     headerDiv.onclick = function() {
                         var isHidden = contentDiv.style.display === 'none';
                         contentDiv.style.display = isHidden ? 'block' : 'none';
-                        headerDiv.querySelector('small').innerHTML = isHidden ? 'â–˛ BezĂˇrĂˇs' : 'â–Ľ OlvasĂˇs';
+                        headerDiv.querySelector('small').innerHTML = isHidden ? '▲ Bezárás' : '▼ Olvasás';
                     };
                     
                     textContainer.appendChild(headerDiv);
@@ -6909,27 +6909,27 @@ function loadLogForExtraction() {
         },
         function(err) {
             loader.style.display = 'none';
-            if (typeof uiAlert === 'function') uiAlert("Hiba tĂ¶rtĂ©nt a naplĂł betĂ¶ltĂ©sekor: " + err.message);
+            if (typeof uiAlert === 'function') uiAlert("Hiba történt a napló betöltésekor: " + err.message);
             select.value = '';
         }
     );
 }
 
 /**
- * PapĂˇt feltĂ¶lti a GDoc naplĂłmĂˇsolatot.
+ * Papát feltölti a GDoc naplómásolatot.
  */
 function submitPapatLogUpload() {
     var gdocUrl = document.getElementById('papat-log-gdoc').value.trim();
     var copyName = document.getElementById('papat-log-name').value.trim();
 
     if (!gdocUrl || !copyName) {
-        if (typeof uiAlert === 'function') uiAlert("Minden mezĹ‘ kitĂ¶ltĂ©se kĂ¶telezĹ‘!", "Hiba");
+        if (typeof uiAlert === 'function') uiAlert("Minden mező kitöltése kötelező!", "Hiba");
         return;
     }
 
     var urlMatch = gdocUrl.match(/[-\w]{25,}/);
     if (!urlMatch) {
-        if (typeof uiAlert === 'function') uiAlert("KĂ©rlek adj meg egy Ă©rvĂ©nyes Google Docs linket!", "Hiba");
+        if (typeof uiAlert === 'function') uiAlert("Kérlek adj meg egy érvényes Google Docs linket!", "Hiba");
         return;
     }
 
@@ -6950,14 +6950,14 @@ function submitPapatLogUpload() {
         function(err) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (typeof uiAlert === 'function') {
-                uiAlert("Szerverhiba tĂ¶rtĂ©nt: " + err.message, "Hiba");
+                uiAlert("Szerverhiba történt: " + err.message, "Hiba");
             }
         }
     );
 }
 
 /**
- * VĂ©grehajtja a kivĂˇlasztott bejegyzĂ©sek kivonatolĂˇsĂˇt Ă©s a kifizetĂ©st
+ * Végrehajtja a kiválasztott bejegyzések kivonatolását és a kifizetést
  */
 function executeLogExtraction() {
     var select = document.getElementById('log-extract-select');
@@ -6966,11 +6966,11 @@ function executeLogExtraction() {
     var logId = select.value;
     
     if (!logId) {
-        if (typeof uiAlert === 'function') uiAlert("VĂˇlassz ki egy hajĂłnaplĂłt!");
+        if (typeof uiAlert === 'function') uiAlert("Válassz ki egy hajónaplót!");
         return;
     }
     if (checkboxes.length === 0) {
-        if (typeof uiAlert === 'function') uiAlert("LegalĂˇbb egy bejegyzĂ©st ki kell vĂˇlasztanod!");
+        if (typeof uiAlert === 'function') uiAlert("Legalább egy bejegyzést ki kell választanod!");
         return;
     }
 
@@ -6980,7 +6980,7 @@ function executeLogExtraction() {
     }
     
     var totalCost = selectedIds.length * 10;
-    var customMessage = "A mĹ±velet dĂ­ja " + totalCost + " KalĂłzkredit.<br>KĂ©rlek, add meg a PIN kĂłdodat a folytatĂˇshoz!";
+    var customMessage = "A művelet díja " + totalCost + " Kalózkredit.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!";
 
     if (typeof requestPin === 'function') {
         requestPin(function (pinCode) {
@@ -6992,7 +6992,7 @@ function executeLogExtraction() {
                     if (res.error) {
                         if (typeof uiAlert === 'function') uiAlert(res.error, "Hiba");
                     } else {
-                        if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolĂˇs");
+                        if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolás");
                         select.value = '';
                         var modalDiv = document.getElementById('log-extract-modal');
                         if(modalDiv) modalDiv.style.display = 'none';
@@ -7002,18 +7002,18 @@ function executeLogExtraction() {
                 },
                 function(err) {
                     document.getElementById('loading-overlay').style.display = 'none';
-                    if (typeof uiAlert === 'function') uiAlert("Rendszerhiba tĂ¶rtĂ©nt: " + err.message, "Hiba");
+                    if (typeof uiAlert === 'function') uiAlert("Rendszerhiba történt: " + err.message, "Hiba");
                 }
             );
         }, customMessage);
     } else {
-        if (typeof uiAlert === 'function') uiAlert("A PIN bekĂ©rĹ‘ modul nem elĂ©rhetĹ‘!");
+        if (typeof uiAlert === 'function') uiAlert("A PIN bekérő modul nem elérhető!");
     }
 }
 
 /**
- * ElindĂ­tja a kliensoldali letĂ¶ltĂ©si Ă©s vĂ­zjelezĂ©si folyamatot.
- * @param {string} contentId A kĂ¶nyv forrĂˇsĂˇnak azonosĂ­tĂłja (Mappa ID az O oszlopbĂłl).
+ * Elindítja a kliensoldali letöltési és vízjelezési folyamatot.
+ * @param {string} contentId A könyv forrásának azonosítója (Mappa ID az O oszlopból).
  */
 async function startClientSideDownloadProcess(contentId, bookTitle) {
     var statusOverlay = document.getElementById('loading-overlay');
@@ -7023,12 +7023,12 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
     allDownloadButtons.forEach(function (btn) { btn.disabled = true; });
 
     try {
-        console.log("LetĂ¶ltĂ©s indĂ­tĂˇsa. ID:", contentId, "CĂ­m:", bookTitle);
+        console.log("Letöltés indítása. ID:", contentId, "Cím:", bookTitle);
 
-        if (!contentId) throw new Error("HiĂˇnyzĂł kĂ¶nyv azonosĂ­tĂł!");
+        if (!contentId) throw new Error("Hiányzó könyv azonosító!");
 
-        // 1. ADATOK LEKĂ‰RĂ‰SE A SZERVERRĹL
-        // Ătadjuk a cĂ­met is mĂˇsodik paramĂ©terkĂ©nt!
+        // 1. ADATOK LEKÉRÉSE A SZERVERRŐL
+        // Átadjuk a címet is második paraméterként!
         var data = await new Promise(function (resolve, reject) {
             callBackend('getRawFilesForDownload', [contentId, bookTitle],
                 function (res) { resolve(res); },
@@ -7037,32 +7037,32 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
         });
 
         if (data.error) throw new Error(data.error);
-        if (!data.epubBase64 || !data.coverBase64) throw new Error("HiĂˇnyos adat Ă©rkezett a szervertĹ‘l.");
+        if (!data.epubBase64 || !data.coverBase64) throw new Error("Hiányos adat érkezett a szervertől.");
 
-        // 2. ADATOK VISSZAALAKĂŤTĂSA (Base64 -> Blob)
-        // String Ă¶sszefĹ±zĂ©s backtick helyett
+        // 2. ADATOK VISSZAALAKÍTÁSA (Base64 -> Blob)
+        // String összefűzés backtick helyett
         var epubRes = await fetch('data:application/epub+zip;base64,' + data.epubBase64);
         var epubBlob = await epubRes.blob();
 
         var coverRes = await fetch('data:image/png;base64,' + data.coverBase64);
         var coverBlob = await coverRes.blob();
 
-        // 3. VĂŤZJELEZĂ‰S (KĂ‰P)
-        // A data.bookCode a felhasznĂˇlĂł egyedi kĂłdja, amit a szerver kĂĽld vissza
+        // 3. VÍZJELEZÉS (KÉP)
+        // A data.bookCode a felhasználó egyedi kódja, amit a szerver küld vissza
         var finalImageBlob = coverBlob;
         if (typeof embedIdInImage === 'function') {
             var watermarkedCoverBase64 = await embedIdInImage(coverBlob, data.bookCode);
             var finalImageRes = await fetch(watermarkedCoverBase64);
             finalImageBlob = await finalImageRes.blob();
         } else {
-            console.warn("embedIdInImage hiĂˇnyzik, a borĂ­tĂł vĂ­zjelezĂ©se kimaradt.");
+            console.warn("embedIdInImage hiányzik, a borító vízjelezése kimaradt.");
         }
 
-        // 4. EPUB CSOMAGOLĂS Ă‰S VĂŤZJELEZĂ‰S (SZĂ–VEG)
-        // Ez a fĂĽggvĂ©ny (processEpubFile) vĂ©gzi a szĂ¶veges vĂ­zjelezĂ©st Ă©s az Ăşj borĂ­tĂł beillesztĂ©sĂ©t
+        // 4. EPUB CSOMAGOLÁS ÉS VÍZJELEZÉS (SZÖVEG)
+        // Ez a függvény (processEpubFile) végzi a szöveges vízjelezést és az új borító beillesztését
         var finalEpubBlob = await processEpubFile(epubBlob, finalImageBlob, data.bookCode, data.coverFilename);
 
-        // 5. LETĂ–LTĂ‰S INDĂŤTĂSA A BĂ–NGĂ‰SZĹBEN
+        // 5. LETÖLTÉS INDÍTÁSA A BÖNGÉSZŐBEN
         var downloadAnchor = document.createElement('a');
         downloadAnchor.href = URL.createObjectURL(finalEpubBlob);
         downloadAnchor.download = data.epubFilename || 'konyv.epub';
@@ -7070,13 +7070,13 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
         downloadAnchor.click();
         document.body.removeChild(downloadAnchor);
 
-        // MemĂłria felszabadĂ­tĂˇsa
+        // Memória felszabadítása
         setTimeout(function () { URL.revokeObjectURL(downloadAnchor.href); }, 1000);
 
         if (typeof uiAlert === 'function') uiAlert(t('download_success'));
 
     } catch (error) {
-        console.error("LetĂ¶ltĂ©si hiba:", error);
+        console.error("Letöltési hiba:", error);
         var msg = error.message || error;
         if (typeof uiAlert === "function") {
             uiAlert(t('download_error_prefix') + msg);
@@ -7091,13 +7091,13 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
 
 
 /**
- * Feldolgozza az ePub fĂˇjlt Ă©s QR KĂ“DOT is beszĂşr a link mellĂ©.
- * JAVĂŤTOTT MARKETINGES VERZIĂ“.
+ * Feldolgozza az ePub fájlt és QR KÓDOT is beszúr a link mellé.
+ * JAVÍTOTT MARKETINGES VERZIÓ.
  * @param {Blob} epubBlob Az eredeti ePub.
- * @param {Blob} newCoverBlob Az Ăşj, vĂ­zjeles borĂ­tĂł (PNG).
- * @param {string} bookCode Az Ăşj, beillesztendĹ‘ kĂłd.
- * @param {string} newCoverFilename Az Ăşj borĂ­tĂł kĂ­vĂˇnt fĂˇjlneve (pl. "kep.png").
- * @returns {Promise<Blob>} A kĂ©sz, vĂ©gleges ePub fĂˇjl.
+ * @param {Blob} newCoverBlob Az új, vízjeles borító (PNG).
+ * @param {string} bookCode Az új, beillesztendő kód.
+ * @param {string} newCoverFilename Az új borító kívánt fájlneve (pl. "kep.png").
+ * @returns {Promise<Blob>} A kész, végleges ePub fájl.
  */
 async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilename) {
     var zip = new JSZip();
@@ -7105,24 +7105,24 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
 
     var zeroWidthId = (typeof encodeIdToZeroWidth === 'function') ? encodeIdToZeroWidth(bookCode) : bookCode;
 
-    // FĂˇjlok szĹ±rĂ©se (ES5)
+    // Fájlok szűrése (ES5)
     var allFiles = Object.keys(loadedZip.files);
     var xhtmlFiles = allFiles.filter(function (name) {
         return name.indexOf('.xhtml') !== -1 || name.indexOf('.html') !== -1;
     });
 
-    // === MARKETING LINK Ă‰S QR KĂ“D ===
+    // === MARKETING LINK ÉS QR KÓD ===
     var appUrl = "https://script.google.com/macros/s/AKfycbzZZV2QQ4fOExg_dv0ddkWVEFgNTCXzYtFhWlOs1Kn5R3wUCHDXV7IpE3Kx3DNT53Npbw/exec";
     var feedbackLink = appUrl + "?page=marketing&bookId=" + bookCode;
     var qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(feedbackLink);
 
-    // HTML Blokk (String Ă¶sszefĹ±zĂ©s backtick helyett!)
+    // HTML Blokk (String összefűzés backtick helyett!)
     var feedbackHtmlBlock = "";
     feedbackHtmlBlock += '<div style="margin-top: 50px; padding: 20px; border-top: 2px solid #ccc; text-align: center; font-family: sans-serif; page-break-before: always;">';
     feedbackHtmlBlock += '<hr/>';
-    feedbackHtmlBlock += '<h3>â ď¸Ź Tetszett a zsĂˇkmĂˇny? â ď¸Ź</h3>';
-    feedbackHtmlBlock += '<p>Oszd meg vĂ©lemĂ©nyedet a szerzĹ‘vel Ă©s a kĂ©szĂ­tĹ‘kkel!</p>';
-    feedbackHtmlBlock += '<p>Minden vĂˇlaszodĂ©rt <strong>KalĂłzkreditet</strong> kapsz jutalmul.</p>';
+    feedbackHtmlBlock += '<h3>☠️ Tetszett a zsákmány? ☠️</h3>';
+    feedbackHtmlBlock += '<p>Oszd meg véleményedet a szerzővel és a készítőkkel!</p>';
+    feedbackHtmlBlock += '<p>Minden válaszodért <strong>Kalózkreditet</strong> kapsz jutalmul.</p>';
 
     feedbackHtmlBlock += '<div style="margin: 20px auto;">';
     feedbackHtmlBlock += '<img src="' + qrImageUrl + '" alt="Szkenneld be" style="width: 150px; height: 150px; border: 2px solid #333; padding: 5px;"/>';
@@ -7131,10 +7131,10 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
 
     feedbackHtmlBlock += '<p>';
     feedbackHtmlBlock += '<a href="' + feedbackLink + '" target="_blank" style="background-color: #8b0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">';
-    feedbackHtmlBlock += 'VĂ©lemĂ©ny Ă­rĂˇsa a bĂ¶ngĂ©szĹ‘ben';
+    feedbackHtmlBlock += 'Vélemény írása a böngészőben';
     feedbackHtmlBlock += '</a>';
     feedbackHtmlBlock += '</p>';
-    feedbackHtmlBlock += '<p><small>(Ha az olvasĂłd nem kezeli a bĂ¶ngĂ©szĹ‘t, hasznĂˇld a fenti kĂłdot)</small></p>';
+    feedbackHtmlBlock += '<p><small>(Ha az olvasód nem kezeli a böngészőt, használd a fenti kódot)</small></p>';
     feedbackHtmlBlock += '</div>';
 
     var lastFile = xhtmlFiles[xhtmlFiles.length - 1];
@@ -7143,9 +7143,9 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
         var fileName = xhtmlFiles[i];
         var content = await loadedZip.file(fileName).async('string');
 
-        // VĂ­zjel csere
+        // Vízjel csere
         content = content.replace(/[\u200b-\u2d0d]/g, '');
-        // RegExp objektum a vĂˇltozĂł miatt
+        // RegExp objektum a változó miatt
         var pRegex = new RegExp('</p>', 'i');
         content = content.replace(pRegex, zeroWidthId + '</p>');
 
@@ -7161,15 +7161,15 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
         loadedZip.file(fileName, content);
     }
 
-    // === HIBRID BORĂŤTĂ“AZONOSĂŤTĂS Ă‰S CSERE ===
+    // === HIBRID BORÍTÓAZONOSÍTÁS ÉS CSERE ===
     var oldCoverFullPath = null;
     var opfFile = allFiles.find(function (name) { return name.indexOf('.opf') !== -1; });
 
-    if (!opfFile) throw new Error("Hiba: A kĂ¶nyv tartalomjegyzĂ©ke (.opf fĂˇjl) nem talĂˇlhatĂł.");
+    if (!opfFile) throw new Error("Hiba: A könyv tartalomjegyzéke (.opf fájl) nem található.");
 
     var opfContent = await loadedZip.file(opfFile).async('string');
 
-    // 1. KĂŤSĂ‰RLET: cover.xhtml
+    // 1. KÍSÉRLET: cover.xhtml
     var coverXhtmlFile = allFiles.find(function (name) { return name.toLowerCase().indexOf('cover.xhtml') !== -1; });
     if (coverXhtmlFile) {
         var coverXhtmlContent = await loadedZip.file(coverXhtmlFile).async('string');
@@ -7180,7 +7180,7 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
         }
     }
 
-    // 2. KĂŤSĂ‰RLET: Manifeszt
+    // 2. KÍSÉRLET: Manifeszt
     if (!oldCoverFullPath) {
         var coverMetaRegex = /<meta\s+name="cover"\s+content="([^"]+)"\s*\/>/;
         var coverMetaMatch = opfContent.match(coverMetaRegex);
@@ -7196,7 +7196,7 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
 
     if (oldCoverFullPath) {
         var oldCoverFilename = oldCoverFullPath.split('/').pop();
-        // Regex escape nĂ©lkĂĽl veszĂ©lyes lehet, de feltĂ©telezzĂĽk a normĂˇl fĂˇjlnevet
+        // Regex escape nélkül veszélyes lehet, de feltételezzük a normál fájlnevet
         opfContent = opfContent.replace(new RegExp(oldCoverFilename, "g"), newCoverFilename);
         opfContent = opfContent.replace(/media-type="image\/jpeg"/g, 'media-type="image/png"');
         loadedZip.file(opfFile, opfContent);
@@ -7213,54 +7213,54 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
 }
 
 // ===================================
-// === MARKETING (VĂ‰LEMĂ‰NY) MODUL ===
+// === MARKETING (VÉLEMÉNY) MODUL ===
 // ===================================
 
 var currentMarketingBookId = null;
 var currentMarketingFolderId = null;
 
-// URL ParamĂ©terek ellenĹ‘rzĂ©se
+// URL Paraméterek ellenőrzése
 function checkUrlParametersForMarketing() {
     try {
-        // 1. SzabvĂˇnyos URL paramĂ©ter olvasĂˇs (BĂ¶ngĂ©szĹ‘ fĂĽggetlen)
+        // 1. Szabványos URL paraméter olvasás (Böngésző független)
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
 
-        // Keresett paramĂ©terek
+        // Keresett paraméterek
         const bookId = urlParams.get('bookId');
         const folderId = urlParams.get('folderId');
 
         if (bookId) {
-            console.log("Marketing paramĂ©ter talĂˇlat:", bookId);
+            console.log("Marketing paraméter találat:", bookId);
 
-            // GlobĂˇlis vĂˇltozĂłba mentjĂĽk a kĂ©sĹ‘bbi hasznĂˇlatra
+            // Globális változóba mentjük a későbbi használatra
             window.pendingMarketingData = {
                 bookId: bookId,
                 folderId: folderId
             };
 
-            // --- EZT HOZTUK VISSZA A RĂ‰GIBĹL (UI Ăśzenet) ---
+            // --- EZT HOZTUK VISSZA A RÉGIBŐL (UI Üzenet) ---
             var loginStatus = document.getElementById('login-status');
             var loginView = document.getElementById('login-view');
 
-            // Ha a belĂ©pĹ‘ kĂ©pernyĹ‘n vagyunk, jelezzĂĽk a felhasznĂˇlĂłnak
+            // Ha a belépő képernyőn vagyunk, jelezzük a felhasználónak
             if (loginStatus && loginView && window.getComputedStyle(loginView).display !== 'none') {
-                loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">â ď¸Ź A zsĂˇkmĂˇny Ă©rtĂ©kelĂ©sĂ©hez Ă©s a jutalom ĂˇtvĂ©telĂ©hez kĂ©rlek, lĂ©pj be!</span>';
+                loginStatus.innerHTML = '<span style="color:#2e8b57; font-weight:bold;">☠️ A zsákmány értékeléséhez és a jutalom átvételéhez kérlek, lépj be!</span>';
             }
         }
     } catch (e) {
-        console.error("Hiba az URL paramĂ©terek olvasĂˇsakor:", e);
+        console.error("Hiba az URL paraméterek olvasásakor:", e);
     }
 }
 
-// BetĂ¶lti a kĂ©rdĹ‘Ă­vet
+// Betölti a kérdőívet
 function loadMarketingView(bookId, folderId) {
-    console.log(">>> loadMarketingView MEGHĂŤVVA: " + bookId);
+    console.log(">>> loadMarketingView MEGHÍVVA: " + bookId);
 
     currentMarketingBookId = bookId;
     currentMarketingFolderId = folderId;
 
-    // 1. NĂ‰ZETEK KEZELĂ‰SE
+    // 1. NÉZETEK KEZELÉSE
     document.getElementById('app-view').style.display = 'none';
     document.getElementById('login-view').style.display = 'none';
 
@@ -7268,23 +7268,23 @@ function loadMarketingView(bookId, folderId) {
     if (marketingView) {
         marketingView.style.display = 'block';
     } else {
-        console.error("KRITIKUS HIBA: Nem talĂˇlhatĂł a 'marketing-view' div!");
+        console.error("KRITIKUS HIBA: Nem található a 'marketing-view' div!");
         return;
     }
 
-    // 2. TĂ–LTĂ‰S JELZĹ
+    // 2. TÖLTÉS JELZŐ
     var container = document.getElementById('marketing-questions-area');
     if (container) {
         container.innerHTML = '<div style="text-align:center; padding:50px; color:#555;">' +
             '<i class="fas fa-spinner fa-spin fa-3x"></i>' +
-            '<p style="margin-top:15px;">KĂ©rdĂ©seink a kĂ¶nyvrĹ‘l...</p>' +
+            '<p style="margin-top:15px;">Kérdéseink a könyvről...</p>' +
             '</div>';
     }
 
-    // 3. SZERVER HĂŤVĂS (callBackend)
-    callBackend('getFeedbackFormConfig', [bookId, folderId], // currentUserEmail-t a Router adja hozzĂˇ
+    // 3. SZERVER HÍVÁS (callBackend)
+    callBackend('getFeedbackFormConfig', [bookId, folderId], // currentUserEmail-t a Router adja hozzá
         function (response) {
-            console.log(">>> SZERVER VĂLASZ:", response);
+            console.log(">>> SZERVER VÁLASZ:", response);
 
             if (response.success) {
                 renderMarketingQuestions(response.config, response.isOwner, bookId, folderId);
@@ -7292,11 +7292,11 @@ function loadMarketingView(bookId, folderId) {
             else if (response.error === "ALREADY_VOTED") {
                 container.innerHTML = '';
                 showSystemModal(
-                    "MĂˇr szavaztĂˇl!",
+                    "Már szavaztál!",
                     response.message,
                     "fas fa-check-double",
                     [{
-                        text: "Rendben, vissza a KikĂ¶tĹ‘be",
+                        text: "Rendben, vissza a Kikötőbe",
                         color: "#2e8b57",
                         textColor: "white",
                         callback: function () { returnToPort(); }
@@ -7306,7 +7306,7 @@ function loadMarketingView(bookId, folderId) {
             else {
                 container.innerHTML = '';
                 showSystemModal(
-                    "Hiba tĂ¶rtĂ©nt",
+                    "Hiba történt",
                     response.error,
                     "fas fa-exclamation-triangle",
                     [{
@@ -7317,11 +7317,11 @@ function loadMarketingView(bookId, folderId) {
             }
         },
         function (err) {
-            console.error(">>> HĂLĂ“ZATI HIBA:", err);
+            console.error(">>> HÁLÓZATI HIBA:", err);
             if (container) container.innerHTML = '';
             showSystemModal(
-                "KapcsolĂłdĂˇsi Hiba",
-                "Nem sikerĂĽlt elĂ©rni a szervert: " + err.message,
+                "Kapcsolódási Hiba",
+                "Nem sikerült elérni a szervert: " + err.message,
                 "fas fa-wifi",
                 [{ text: "Vissza", callback: function () { returnToPort(); } }]
             );
@@ -7342,11 +7342,11 @@ function returnToPort() {
 }
 
 /**
- * Dinamikusan kirajzolja a kĂ©rdĂ©seket.
- * KĂ©tlĂ©pcsĹ‘s folyamat: EllenĹ‘rzĂ©s -> Ă‰rtĂ©kelĂ©s
+ * Dinamikusan kirajzolja a kérdéseket.
+ * Kétlépcsős folyamat: Ellenőrzés -> Értékelés
  */
 function renderMarketingQuestions(config, isOwner, bookId, folderId) {
-    console.log(">>> RENDER START. Kapott kĂ©rdĂ©sek:", config.questions);
+    console.log(">>> RENDER START. Kapott kérdések:", config.questions);
 
     var container = document.getElementById('marketing-questions-area');
     if (!container) return;
@@ -7356,15 +7356,15 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
     var verifyDiv = document.createElement('div');
     verifyDiv.id = 'verify-section';
     verifyDiv.style.cssText = "background:#fff3e0; padding:20px; border-radius:8px; border:1px solid #ffcc80; margin-bottom:20px;";
-    verifyDiv.innerHTML = '<h3 style="margin-top:0; color:#e65100;"><i class="fas fa-shield-alt"></i> 1. LĂ©pĂ©s: OlvasottsĂˇgi PrĂłba</h3>' +
-        '<p style="margin-bottom:15px; font-style:italic;">VĂˇlaszolj helyesen, kĂĽlĂ¶nben a rendszer visszakĂĽld a kikĂ¶tĹ‘be!</p>';
+    verifyDiv.innerHTML = '<h3 style="margin-top:0; color:#e65100;"><i class="fas fa-shield-alt"></i> 1. Lépés: Olvasottsági Próba</h3>' +
+        '<p style="margin-bottom:15px; font-style:italic;">Válaszolj helyesen, különben a rendszer visszaküld a kikötőbe!</p>';
 
     var marketingDiv = document.createElement('div');
     marketingDiv.id = 'marketing-section';
     marketingDiv.style.display = 'none';
-    marketingDiv.innerHTML = '<h3 style="margin-top:20px; color:#2e8b57; border-top:1px dashed #ccc; padding-top:20px;"><i class="fas fa-star"></i> 2. LĂ©pĂ©s: Ă‰rtĂ©kelĂ©s</h3>';
+    marketingDiv.innerHTML = '<h3 style="margin-top:20px; color:#2e8b57; border-top:1px dashed #ccc; padding-top:20px;"><i class="fas fa-star"></i> 2. Lépés: Értékelés</h3>';
 
-    // --- KĂ‰RDĂ‰SEK GENERĂLĂSA ---
+    // --- KÉRDÉSEK GENERÁLÁSA ---
     var verifyCount = 0;
 
     // forEach + function
@@ -7378,7 +7378,7 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
         if (q.type === 'rating') {
             inputHtml = '<div class="star-rating">';
             for (var i = 5; i >= 1; i--) {
-                inputHtml += '<input type="radio" id="' + q.id + '_' + i + '" name="' + q.id + '" value="' + i + '"><label for="' + q.id + '_' + i + '">â…</label>';
+                inputHtml += '<input type="radio" id="' + q.id + '_' + i + '" name="' + q.id + '" value="' + i + '"><label for="' + q.id + '_' + i + '">★</label>';
             }
             inputHtml += '</div>';
         }
@@ -7390,7 +7390,7 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
         }
         else {
             var correct = q.gatekeeper || "";
-            // Dataset hasznĂˇlata helyett data- attribĂştum stringben is jĂł, vagy JS-bĹ‘l ĂˇllĂ­tva
+            // Dataset használata helyett data- attribútum stringben is jó, vagy JS-ből állítva
             inputHtml = '<input type="text" name="' + q.id + '" ' +
                 'data-answer="' + correct + '" ' +
                 'autocomplete="off" ' +
@@ -7408,11 +7408,11 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
         }
     });
 
-    // --- VEZĂ‰RLĂ‰S ---
+    // --- VEZÉRLÉS ---
     var submitBtn = document.getElementById('submit-marketing-btn');
     if (submitBtn) submitBtn.style.display = 'none';
 
-    // HA VAN ELLENĹRZĹ KĂ‰RDĂ‰S
+    // HA VAN ELLENŐRZŐ KÉRDÉS
     if (verifyCount > 0) {
         var nextBtn = document.createElement('button');
         nextBtn.type = 'button';
@@ -7427,13 +7427,13 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
             var failed = false;
 
             // forEach + function
-            // NodeList forEach tĂˇmogatĂˇs IE-ben nincs, de modern bĂ¶ngĂ©szĹ‘ben okĂ©. BiztonsĂˇgosabb lenne Array.from().forEach
+            // NodeList forEach támogatás IE-ben nincs, de modern böngészőben oké. Biztonságosabb lenne Array.from().forEach
             for (var k = 0; k < inputs.length; k++) {
                 var input = inputs[k];
                 var userAnswer = input.value.trim().toLowerCase();
                 var correctAnswer = (input.dataset.answer || "").trim().toLowerCase();
 
-                console.log('EllenĹ‘rzĂ©s: User="' + userAnswer + '" vs Correct="' + correctAnswer + '"');
+                console.log('Ellenőrzés: User="' + userAnswer + '" vs Correct="' + correctAnswer + '"');
 
                 if (userAnswer === '') {
                     failed = true;
@@ -7450,11 +7450,11 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
 
             if (failed) {
                 showSystemModal(
-                    "HibĂˇs vĂˇlasz!",
-                    "SajnĂˇlom, de az ellenĹ‘rzĹ‘ kĂ©rdĂ©sekre adott vĂˇlaszaid nem megfelelĹ‘ek. A rendszer most visszairĂˇnyĂ­t.",
+                    "Hibás válasz!",
+                    "Sajnálom, de az ellenőrző kérdésekre adott válaszaid nem megfelelőek. A rendszer most visszairányít.",
                     "fas fa-ban",
                     [{
-                        text: "KilĂ©pĂ©s",
+                        text: "Kilépés",
                         color: "#8b0000",
                         textColor: "white",
                         callback: function () {
@@ -7470,7 +7470,7 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
             verifyDiv.style.pointerEvents = 'none';
             nextBtn.style.display = 'none';
             marketingDiv.style.display = 'block';
-            // scrollIntoView smooth opciĂłval
+            // scrollIntoView smooth opcióval
             try { marketingDiv.scrollIntoView({ behavior: "smooth" }); } catch (e) { marketingDiv.scrollIntoView(); }
             if (submitBtn) submitBtn.style.display = 'inline-block';
         };
@@ -7488,30 +7488,30 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
         if (submitBtn) submitBtn.style.display = 'inline-block';
     }
 
-    // SzerzĹ‘i panel
+    // Szerzői panel
     if (isOwner) {
         var authorPanel = document.createElement('div');
         authorPanel.style.cssText = "margin-bottom: 20px; padding: 15px; background: #e6fffa; border: 2px dashed #319795; text-align: center; border-radius:8px;";
-        authorPanel.innerHTML = '<h3 style="margin-top:0; color:#2c7a7b;">âś’ď¸Ź ĂśdvĂ¶zlet, SzerzĹ‘!</h3>' +
-            '<button class="btn" style="background:#319795; color:white;" onclick="openAuthorDashboard(\'' + bookId + '\', \'' + folderId + '\', \'A KĂ¶nyved\')">đź“Š StatisztikĂˇk</button>';
+        authorPanel.innerHTML = '<h3 style="margin-top:0; color:#2c7a7b;">✒️ Üdvözlet, Szerző!</h3>' +
+            '<button class="btn" style="background:#319795; color:white;" onclick="openAuthorDashboard(\'' + bookId + '\', \'' + folderId + '\', \'A Könyved\')">📊 Statisztikák</button>';
         container.insertBefore(authorPanel, container.firstChild);
     }
 }
 
 /**
- * VĂˇlaszok Ă¶sszegyĹ±jtĂ©se Ă©s bekĂĽldĂ©se.
+ * Válaszok összegyűjtése és beküldése.
  */
 function submitMarketingForm() {
     var form = document.getElementById('marketing-form');
     var formData = new FormData(form);
     var answers = {};
 
-    // FormData iterĂˇlĂˇs ES5 mĂłdon (nem for...of)
-    // A modern bĂ¶ngĂ©szĹ‘k tĂˇmogatjĂˇk a for...of-ot, de a biztonsĂˇg kedvĂ©Ă©rt:
-    // Mivel a FormData.entries() iterĂˇtort ad, Ă©s az IE nem tĂˇmogatja,
-    // a legbiztosabb, ha manuĂˇlisan szedjĂĽk Ă¶ssze az inputokat, 
-    // VAGY bĂ­zunk benne, hogy a Chrome/FF futtatja.
-    // JavĂ­tĂˇs: Sima DOM bejĂˇrĂˇs a form elemein.
+    // FormData iterálás ES5 módon (nem for...of)
+    // A modern böngészők támogatják a for...of-ot, de a biztonság kedvéért:
+    // Mivel a FormData.entries() iterátort ad, és az IE nem támogatja,
+    // a legbiztosabb, ha manuálisan szedjük össze az inputokat, 
+    // VAGY bízunk benne, hogy a Chrome/FF futtatja.
+    // Javítás: Sima DOM bejárás a form elemein.
     var elements = form.elements;
     var hasAnswer = false;
 
@@ -7534,8 +7534,8 @@ function submitMarketingForm() {
 
     if (!hasAnswer) {
         showSystemModal(
-            "Ăśres a palack?",
-            "KĂ©rlek, vĂˇlaszolj legalĂˇbb egy kĂ©rdĂ©sre, mielĹ‘tt a tengerbe dobnĂˇd az ĂĽzenetet!",
+            "Üres a palack?",
+            "Kérlek, válaszolj legalább egy kérdésre, mielőtt a tengerbe dobnád az üzenetet!",
             "fas fa-exclamation-circle",
             [{ text: "Rendben", color: "#e65100", textColor: "white" }]
         );
@@ -7550,14 +7550,14 @@ function submitMarketingForm() {
 
             if (res.success) {
                 showSystemModal(
-                    "Sikeres KĂĽldetĂ©s!",
+                    "Sikeres Küldetés!",
                     '<div style="text-align:center;">' +
                     '<p style="font-size:1.1em; margin-bottom:15px;">' + res.message + '</p>' +
-                    '<p style="color:#2e8b57; font-weight:bold;">+1 KalĂłzkredit jĂłvĂˇĂ­rva!</p>' +
+                    '<p style="color:#2e8b57; font-weight:bold;">+1 Kalózkredit jóváírva!</p>' +
                     '</div>',
                     "fas fa-gem",
                     [{
-                        text: "Kreditek ZsebretĂ©tele & KilĂ©pĂ©s",
+                        text: "Kreditek Zsebretétele & Kilépés",
                         color: "#2e8b57",
                         textColor: "white",
                         callback: function () {
@@ -7568,18 +7568,18 @@ function submitMarketingForm() {
                 );
             } else {
                 showSystemModal(
-                    "Hiba tĂ¶rtĂ©nt",
-                    "A szerver visszautasĂ­totta a kĂ©rĂ©st:<br><b>" + res.error + "</b>",
+                    "Hiba történt",
+                    "A szerver visszautasította a kérést:<br><b>" + res.error + "</b>",
                     "fas fa-skull-crossbones",
-                    [{ text: "MegĂ©rtettem", color: "#8b0000", textColor: "white" }]
+                    [{ text: "Megértettem", color: "#8b0000", textColor: "white" }]
                 );
             }
         },
         function (err) {
             document.getElementById('loading-overlay').style.display = 'none';
             showSystemModal(
-                "KapcsolĂłdĂˇsi Hiba",
-                "Nem sikerĂĽlt elĂ©rni a szervert. EllenĹ‘rizd az internetkapcsolatot!<br><small>" + err.message + "</small>",
+                "Kapcsolódási Hiba",
+                "Nem sikerült elérni a szervert. Ellenőrizd az internetkapcsolatot!<br><small>" + err.message + "</small>",
                 "fas fa-wifi",
                 [{ text: "Rendben", color: "#555", textColor: "white" }]
             );
@@ -7588,13 +7588,13 @@ function submitMarketingForm() {
 }
 
 // ===============================================
-// === SZERZĹI DASHBOARD FUNKCIĂ“K MARKETINGHEZ ===
+// === SZERZŐI DASHBOARD FUNKCIÓK MARKETINGHEZ ===
 // ===============================================
 
 let currentDashBookId = null;
 let currentDashFolderId = null;
 
-// FĂĽlvĂˇltĂł a Dashboardon belĂĽl
+// Fülváltó a Dashboardon belül
 function openDashboardTab(evt, tabName) {
     var tabs = document.querySelectorAll('#author-dashboard-modal .tab-content');
     for (var i = 0; i < tabs.length; i++) { tabs[i].style.display = 'none'; }
@@ -7607,21 +7607,21 @@ function openDashboardTab(evt, tabName) {
 }
 
 /**
- * Megnyitja a Dashboardot egy adott kĂ¶nyvhĂ¶z.
- * @param {string} bookId - A kĂ¶nyv azonosĂ­tĂłja (KĂłdja).
- * @param {string} folderId - A kĂ¶nyv mappĂˇjĂˇnak ID-ja (ahol a JSON van).
- * @param {string} title - A kĂ¶nyv cĂ­me (fejlĂ©chez).
+ * Megnyitja a Dashboardot egy adott könyvhöz.
+ * @param {string} bookId - A könyv azonosítója (Kódja).
+ * @param {string} folderId - A könyv mappájának ID-ja (ahol a JSON van).
+ * @param {string} title - A könyv címe (fejléchez).
  */
 function openAuthorDashboard(bookId, folderId, title) {
     currentDashBookId = bookId;
     currentDashFolderId = folderId;
 
-    document.getElementById('dashboard-book-title').textContent = title + " - Marketing ElemzĹ‘";
+    document.getElementById('dashboard-book-title').textContent = title + " - Marketing Elemző";
     document.getElementById('author-dashboard-modal').style.display = 'flex';
     document.getElementById('dashboard-loading').style.display = 'block';
     document.getElementById('dashboard-content').style.display = 'none';
 
-    // Alaphelyzetbe ĂˇllĂ­tĂˇs
+    // Alaphelyzetbe állítás
     document.querySelector('#author-dashboard-modal .tab-button').click();
 
     callBackend('getAuthorMarketingStats', [bookId, folderId],
@@ -7634,8 +7634,8 @@ function openAuthorDashboard(bookId, folderId, title) {
 
 /**
  * Kirajzolja a Dashboard adatait.
- * 1. FeltĂ¶lti a "MeglĂ©vĹ‘ kĂ©rdĂ©sek" listĂˇt a Settings fĂĽlĂ¶n.
- * 2. Kirajzolja a StatisztikĂˇkat az EredmĂ©nyek fĂĽlĂ¶n.
+ * 1. Feltölti a "Meglévő kérdések" listát a Settings fülön.
+ * 2. Kirajzolja a Statisztikákat az Eredmények fülön.
  */
 function renderDashboardStats(response) {
     const loadingEl = document.getElementById('dashboard-loading');
@@ -7650,7 +7650,7 @@ function renderDashboardStats(response) {
         return;
     }
 
-    // === 0. LĂ‰PĂ‰S: VERIFY KĂ‰RDĂ‰SEK ===
+    // === 0. LÉPÉS: VERIFY KÉRDÉSEK ===
     const allQuestions = (response.config && response.config.questions) ? response.config.questions : [];
     const verifyQs = allQuestions.filter(q => q.type === 'verify');
 
@@ -7669,7 +7669,7 @@ function renderDashboardStats(response) {
         }
     }
 
-    // === 1. MEGLĂ‰VĹ KĂ‰RDĂ‰SEK LISTĂZĂSA ===
+    // === 1. MEGLÉVŐ KÉRDÉSEK LISTÁZÁSA ===
     const questionsListContainer = document.getElementById('existing-questions-list');
 
     if (questionsListContainer) {
@@ -7677,7 +7677,7 @@ function renderDashboardStats(response) {
         const questions = (response.config && response.config.questions) ? response.config.questions : [];
 
         if (questions.length === 0) {
-            questionsListContainer.innerHTML = '<p style="color:#888;">Nincsenek aktĂ­v kĂ©rdĂ©sek.</p>';
+            questionsListContainer.innerHTML = '<p style="color:#888;">Nincsenek aktív kérdések.</p>';
         } else {
             const ul = document.createElement('ul');
             ul.style.cssText = "list-style: none; padding: 0; margin: 0;";
@@ -7686,8 +7686,8 @@ function renderDashboardStats(response) {
                 const li = document.createElement('li');
                 li.style.cssText = "padding: 8px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;";
 
-                let typeIcon = '<i class="fas fa-font" title="SzĂ¶veges"></i>';
-                if (q.type === 'rating') typeIcon = '<i class="fas fa-star" style="color: gold;" title="Ă‰rtĂ©kelĂ©s"></i>';
+                let typeIcon = '<i class="fas fa-font" title="Szöveges"></i>';
+                if (q.type === 'rating') typeIcon = '<i class="fas fa-star" style="color: gold;" title="Értékelés"></i>';
                 if (q.type === 'yesno') typeIcon = '<i class="fas fa-check-circle" style="color: blue;" title="Igen/Nem"></i>';
 
                 li.innerHTML = `
@@ -7701,13 +7701,13 @@ function renderDashboardStats(response) {
         }
     }
 
-    // === 2. STATISZTIKĂK KIRAJZOLĂSA ===
+    // === 2. STATISZTIKÁK KIRAJZOLÁSA ===
     const stats = response.stats;
     const detailsList = document.getElementById('dashboard-details-list');
     const totalRespEl = document.getElementById('stat-total-responses');
 
     if (!stats) {
-        if (detailsList) detailsList.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">MĂ©g nem Ă©rkezett vĂˇlasz az olvasĂłktĂłl.</p>`;
+        if (detailsList) detailsList.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Még nem érkezett válasz az olvasóktól.</p>`;
         if (totalRespEl) totalRespEl.textContent = "0";
         return;
     }
@@ -7724,15 +7724,15 @@ function renderDashboardStats(response) {
         let visualHtml = '';
 
         if (data.type === 'rating') {
-            const avg = parseFloat(data.average) || 0; // BiztonsĂˇgos parszolĂˇs
+            const avg = parseFloat(data.average) || 0; // Biztonságos parszolás
             const percent = (avg / 5) * 100;
-            // BiztonsĂˇgos csillag generĂˇlĂˇs
+            // Biztonságos csillag generálás
             const starCount = Math.round(avg);
-            const stars = 'â…'.repeat(starCount) + 'â†'.repeat(5 - starCount);
+            const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
 
             visualHtml = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>Ătlag: <strong>${avg.toFixed(1)}</strong> / 5</span>
+                    <span>Átlag: <strong>${avg.toFixed(1)}</strong> / 5</span>
                     <span style="color:#f6e05e;">${stars}</span>
                 </div>
                 <div class="progress-container" style="background:#edf2f7; height:10px; border-radius:5px; overflow:hidden;">
@@ -7741,7 +7741,7 @@ function renderDashboardStats(response) {
         } else if (data.type === 'yesno') {
             visualHtml = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>Igen vĂˇlaszok: <strong>${data.yesPercent}%</strong></span>
+                    <span>Igen válaszok: <strong>${data.yesPercent}%</strong></span>
                 </div>
                 <div class="progress-container" style="background:#edf2f7; height:10px; border-radius:5px; overflow:hidden;">
                     <div class="progress-bar" style="width: ${data.yesPercent}%; background:#4299e1; height:100%;"></div>
@@ -7749,7 +7749,7 @@ function renderDashboardStats(response) {
         } else if (data.type === 'text') {
             let answersHtml = (data.answers && data.answers.length > 0)
                 ? data.answers.map(ans => `<div style="background:#f7fafc; padding:8px; border-left:3px solid #cbd5e0; margin-bottom:5px; font-style:italic;">"${ans}"</div>`).join('')
-                : '<div style="color:#aaa; font-style:italic;">(Nincs szĂ¶veges vĂˇlasz)</div>';
+                : '<div style="color:#aaa; font-style:italic;">(Nincs szöveges válasz)</div>';
             visualHtml = `<div style="margin-top:10px;">${answersHtml}</div>`;
         }
 
@@ -7759,7 +7759,7 @@ function renderDashboardStats(response) {
 }
 
 /**
- * Ă–sszeszedi a 3 Verify mezĹ‘t Ă©s elkĂĽldi a szervernek mentĂ©sre.
+ * Összeszedi a 3 Verify mezőt és elküldi a szervernek mentésre.
  */
 function submitVerificationQuiz() {
     var questionsToSave = [];
@@ -7917,23 +7917,23 @@ function initializeKincsekPage(response) {
         }
     }
 
-    // A feltĂ©tel maradhat (kliens oldali ellenĹ‘rzĂ©snek jĂł), de a hĂ­vĂˇsbĂłl kivesszĂĽk!
+    // A feltétel maradhat (kliens oldali ellenőrzésnek jó), de a hívásból kivesszük!
     if (currentUserEmail && data.rang) {
-        console.log('[initializeKincsekPage] Rang frissĂ­tĂ©sĂ©nek indĂ­tĂˇsa: ' + currentUserEmail + ', ' + data.rang);
+        console.log('[initializeKincsekPage] Rang frissítésének indítása: ' + currentUserEmail + ', ' + data.rang);
 
-        // --- JAVĂŤTOTT callBackend ---
-        // Csak a [data.rang]-ot kĂĽldjĂĽk! Az emailt a Router intĂ©zi.
+        // --- JAVÍTOTT callBackend ---
+        // Csak a [data.rang]-ot küldjük! Az emailt a Router intézi.
         callBackend('updatePlayerRank', [data.rang],
-            function () { }, // Siker esetĂ©n csendben maradunk
+            function () { }, // Siker esetén csendben maradunk
             function (error) {
-                console.error('!!! HIBA a rang szerveroldali frissĂ­tĂ©sekor: ' + error.message);
+                console.error('!!! HIBA a rang szerveroldali frissítésekor: ' + error.message);
             }
         );
     } else {
-        console.warn("[initializeKincsekPage] FigyelmeztetĂ©s: HiĂˇnyzĂł currentUserEmail vagy data.rang a rangfrissĂ­tĂ©shez.");
+        console.warn("[initializeKincsekPage] Figyelmeztetés: Hiányzó currentUserEmail vagy data.rang a rangfrissítéshez.");
     }
 
-    // --- ZSOLDOSOK BETĂ–LTĂ‰SE ---
+    // --- ZSOLDOSOK BETÖLTÉSE ---
     var mercContainer = document.getElementById('char-sheet-mercenaries');
     if (mercContainer) {
         callBackend('getMyMercenaries', [],
@@ -7943,27 +7943,27 @@ function initializeKincsekPage(response) {
                     mercResponse.forEach(function (merc) {
                         html += '<div style="background: rgba(255, 255, 255, 0.85); padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid #8b4513; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">';
                         html += '<strong style="color:#000; font-size:1.1em;">' + merc.name + '</strong> <span style="font-size:0.9em; color:#3e2723; font-style:italic;">(' + merc.role + ')</span><br>';
-                        html += '<span style="font-size:0.9em; color:#8b0000; font-weight:bold;">SzerzĹ‘dĂ©s: ' + merc.remainingDays + ' nap hĂˇtra (lejĂˇr: ' + merc.endDateStr + ')</span><br>';
+                        html += '<span style="font-size:0.9em; color:#8b0000; font-weight:bold;">Szerződés: ' + merc.remainingDays + ' nap hátra (lejár: ' + merc.endDateStr + ')</span><br>';
                         html += '<div style="margin-top:8px; display:flex; gap:5px;">';
-                        html += '<button class="btn btn-sm" onclick="handleMercenaryAction(\'extend\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">MeghosszabbĂ­tom (' + merc.cost + ' Kr)</button>';
-                        html += '<button class="btn btn-danger btn-sm" onclick="handleMercenaryAction(\'dismiss\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">ElkĂĽldĂ¶m</button>';
+                        html += '<button class="btn btn-sm" onclick="handleMercenaryAction(\'extend\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">Meghosszabbítom (' + merc.cost + ' Kr)</button>';
+                        html += '<button class="btn btn-danger btn-sm" onclick="handleMercenaryAction(\'dismiss\', \'' + merc.name + '\')" style="flex:1; padding:5px; font-size:0.8em;">Elküldöm</button>';
                         html += '</div></div>';
                     });
                     mercContainer.innerHTML = html;
                 } else {
-                    mercContainer.innerHTML = '<div class="stat-line">Nincs aktĂ­v zsoldosod.</div>';
+                    mercContainer.innerHTML = '<div class="stat-line">Nincs aktív zsoldosod.</div>';
                 }
             },
             function (err) {
-                console.error("Zsoldosok betĂ¶ltĂ©se sikertelen:", err);
-                mercContainer.innerHTML = '<div class="stat-line" style="color:red;">Hiba a lekĂ©rdezĂ©snĂ©l.</div>';
+                console.error("Zsoldosok betöltése sikertelen:", err);
+                mercContainer.innerHTML = '<div class="stat-line" style="color:red;">Hiba a lekérdezésnél.</div>';
             }
         );
     }
 }
 
 function handleMercenaryAction(actionType, targetEmail) {
-    if (!confirm("Biztosan " + (actionType === 'extend' ? "meghosszabbĂ­tod" : "elkĂĽldĂ¶d") + " ezt a zsoldost: " + npcName + "?")) {
+    if (!confirm("Biztosan " + (actionType === 'extend' ? "meghosszabbítod" : "elküldöd") + " ezt a zsoldost?")) {
         return;
     }
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -7972,25 +7972,25 @@ function handleMercenaryAction(actionType, targetEmail) {
         function (response) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (response.success) {
-                uiAlert("Sikeres mĹ±velet: " + response.message);
-                loadPage('kincsek'); // ĂšjratĂ¶ltjĂĽk a kincsek oldalt
+                uiAlert("Sikeres művelet: " + response.message);
+                loadPage('kincsek'); // Újratöltjük a kincsek oldalt
             } else {
                 uiAlert("Hiba: " + response.error);
             }
         },
         function (err) {
             document.getElementById('loading-overlay').style.display = 'none';
-            uiAlert("HĂˇlĂłzati hiba: " + err.message);
+            uiAlert("Hálózati hiba: " + err.message);
         }
     );
 }
 
 
 // ==========================
-// === TITKOSĂŤTĂS SEGĂ‰DEK ===
+// === TITKOSÍTÁS SEGÉDEK ===
 // ==========================
 
-// RelatĂ­v Ă©s valĂłs Ăştvonal Ă¶sszefĹ±zĂ©se
+// Relatív és valós útvonal összefűzése
 function resolvePath(basePath, relativePath) {
     var baseParts = basePath.split('/');
     var relativeParts = relativePath.split('/');
@@ -8009,7 +8009,7 @@ function resolvePath(basePath, relativePath) {
     return baseParts.join('/');
 }
 
-// LSB VĂ­zjelezĂ©s BorĂ­tĂłkĂ©pnĂ©l (Async marad, de szintaxis tisztĂ­tĂˇs)
+// LSB Vízjelezés Borítóképnél (Async marad, de szintaxis tisztítás)
 function embedIdInImage(imageFile, id) {
     return new Promise(function (resolve, reject) {
         var reader = new FileReader();
@@ -8028,7 +8028,7 @@ function embedIdInImage(imageFile, id) {
 
                 var binaryId = '';
                 for (var i = 0; i < id.length; i++) {
-                    // padStart helyett manuĂˇlis kiegĂ©szĂ­tĂ©s
+                    // padStart helyett manuális kiegészítés
                     var bin = id[i].charCodeAt(0).toString(2);
                     while (bin.length < 8) bin = "0" + bin;
                     binaryId += bin;
@@ -8039,7 +8039,7 @@ function embedIdInImage(imageFile, id) {
                 var data = pixelData.data;
 
                 if (binaryId.length > (data.length / 4) * 3) {
-                    return reject(new Error("A kĂ©p tĂşl kicsi az azonosĂ­tĂł elrejtĂ©sĂ©hez."));
+                    return reject(new Error("A kép túl kicsi az azonosító elrejtéséhez."));
                 }
 
                 var dataIndex = 0;
@@ -8051,7 +8051,7 @@ function embedIdInImage(imageFile, id) {
                     }
 
                     if (dataIndex >= data.length) {
-                        return reject(new Error("Hiba a vĂ­zjel Ă­rĂˇsa kĂ¶zben: a kĂ©p mĂ©rete nem elegendĹ‘."));
+                        return reject(new Error("Hiba a vízjel írása közben: a kép mérete nem elegendő."));
                     }
 
                     var oldValue = data[dataIndex];
@@ -8063,19 +8063,19 @@ function embedIdInImage(imageFile, id) {
                 ctx.putImageData(pixelData, 0, 0);
 
                 var finalDataURL = canvas.toDataURL('image/png');
-                console.log("DEBUG: VĂ­zjelezett kĂ©p kĂ©sz.");
+                console.log("DEBUG: Vízjelezett kép kész.");
 
                 resolve(finalDataURL);
             };
-            img.onerror = function (err) { reject(new Error("A kĂ©pfĂˇjl nem tĂ¶lthetĹ‘ be. Lehet, hogy sĂ©rĂĽlt.")); };
+            img.onerror = function (err) { reject(new Error("A képfájl nem tölthető be. Lehet, hogy sérült.")); };
             img.src = event.target.result;
         };
-        reader.onerror = function (err) { reject(new Error("A fĂˇjl olvasĂˇsa sikertelen.")); };
+        reader.onerror = function (err) { reject(new Error("A fájl olvasása sikertelen.")); };
         reader.readAsDataURL(imageFile);
     });
 }
 
-// nulla szĂ©les titkos kĂłd
+// nulla széles titkos kód
 function encodeIdToZeroWidth(id) {
     var binaryId = '';
     for (var i = 0; i < id.length; i++) {
@@ -8091,7 +8091,7 @@ function encodeIdToZeroWidth(id) {
     return zeroWidthCode + '\u200d';
 }
 
-// JelszĂł lĂˇthatĂłsĂˇg
+// Jelszó láthatóság
 var togglePassword = document.querySelector('#togglePassword');
 var passwordInput = document.querySelector('#jelszo');
 
@@ -8103,20 +8103,20 @@ if (togglePassword && passwordInput) {
         this.classList.toggle('fa-eye-slash');
     });
 } else {
-    console.warn("A jelszĂł lĂˇthatĂłsĂˇg kapcsolĂł elemei (ikon vagy input) nem talĂˇlhatĂłak!");
+    console.warn("A jelszó láthatóság kapcsoló elemei (ikon vagy input) nem találhatóak!");
 }
 
 // ==========================
-// === HAJĂ“NAPLĂ“ FUNKCIĂ“K ===
+// === HAJÓNAPLÓ FUNKCIÓK ===
 // ==========================
 
-var MIN_LOG_RANK = 'FregattkapitĂˇny';
+var MIN_LOG_RANK = 'Fregattkapitány';
 
 function checkRankAndOpenLogModal() {
-    console.log("Rang ellenĹ‘rzĂ©se Ă©s naplĂł ID lekĂ©rĂ©se a naplĂłĂ­rĂˇshoz...");
+    console.log("Rang ellenőrzése és napló ID lekérése a naplóíráshoz...");
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // 1. LĂ‰PĂ‰S: Rang ellenĹ‘rzĂ©se
+    // 1. LÉPÉS: Rang ellenőrzése
     callBackend('getCharacterSheetData', [],
         function (rankResponse) {
             if (!rankResponse.success || !rankResponse.data || !rankResponse.data.rang) {
@@ -8125,18 +8125,18 @@ function checkRankAndOpenLogModal() {
                 return;
             }
 
-            // 2. LĂ‰PĂ‰S: ĂŤrĂˇsi jogosultsĂˇg Ă©s NaplĂł ID
+            // 2. LÉPÉS: Írási jogosultság és Napló ID
             callBackend('checkLogWritePermission', [],
                 function (logId) {
                     document.getElementById('loading-overlay').style.display = 'none';
-                    console.log("checkLogWritePermission vĂˇlasz: " + logId);
+                    console.log("checkLogWritePermission válasz: " + logId);
 
                     if (logId && typeof logId === 'string') {
-                        console.log("NaplĂł ID rendben (" + logId + "), modal megnyitĂˇsa.");
+                        console.log("Napló ID rendben (" + logId + "), modal megnyitása.");
                         openLogEntryModal();
                     } else {
                         uiAlert(t('log_prepare_failed'));
-                        console.error("checkLogWritePermission Ă©rvĂ©nytelen vĂˇlasz:", logId);
+                        console.error("checkLogWritePermission érvénytelen válasz:", logId);
                     }
                 },
                 function (err) {
@@ -8201,7 +8201,7 @@ function openLogEntryModal(entryId, logIdForContext) {
 
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // 1. Log ID lekĂ©rĂ©se (IsmĂ©tlĂ©s a biztonsĂˇgĂ©rt)
+    // 1. Log ID lekérése (Ismétlés a biztonságért)
     callBackend('checkLogWritePermission', [],
         function (currentLogId) {
             if (!currentLogId || typeof currentLogId !== 'string') {
@@ -8211,7 +8211,7 @@ function openLogEntryModal(entryId, logIdForContext) {
                 return;
             }
 
-            // 2. BejegyzĂ©s lekĂ©rĂ©se
+            // 2. Bejegyzés lekérése
             callBackend('getLogEntry', [currentLogId, entryId || 'last'], // currentUserEmail-t a Router adja
                 function (entry) {
                     document.getElementById('loading-overlay').style.display = 'none';
@@ -8225,7 +8225,7 @@ function openLogEntryModal(entryId, logIdForContext) {
                     window.currentLogEntryData = entry;
 
                     if (entryId === null || entry.id === null) {
-                        // === ĂšJ BEJEGYZĂ‰S ===
+                        // === ÚJ BEJEGYZÉS ===
                         title.textContent = t('log_new_entry_title');
                         entryIdInput.value = '';
                         var now = new Date();
@@ -8249,7 +8249,7 @@ function openLogEntryModal(entryId, logIdForContext) {
                         nextBtn.style.visibility = 'hidden';
 
                     } else {
-                        // === SZERKESZTĂ‰S ===
+                        // === SZERKESZTÉS ===
                         title.textContent = t('log_edit_entry_title');
                         entryIdInput.value = entry.id || '';
                         document.getElementById('log-date').value = entry.date || '';
@@ -8261,7 +8261,7 @@ function openLogEntryModal(entryId, logIdForContext) {
                         document.getElementById('log-report').value = entry.report || '';
 
                         if (entry.imageId) {
-                            imagePreview.innerHTML = '<p><small><i>KĂ©p csatolva. Ăšj kĂ©p feltĂ¶ltĂ©se felĂĽlĂ­rja.</i></small></p>';
+                            imagePreview.innerHTML = '<p><small><i>Kép csatolva. Új kép feltöltése felülírja.</i></small></p>';
                         }
 
                         if (entry.prevId) {
@@ -8328,7 +8328,7 @@ function getGeoLocation(silentMode) {
     }
 }
 
-// Async maradhat, mert a kĂ©pfeldolgozĂˇshoz kell
+// Async maradhat, mert a képfeldolgozáshoz kell
 async function submitLogEntry() {
     var form = document.getElementById('log-entry-form');
     var statusDiv = document.getElementById('log-entry-status');
@@ -8351,12 +8351,12 @@ async function submitLogEntry() {
     };
 
     if (!entryData.date || !entryData.time) {
-        statusDiv.textContent = 'A dĂˇtum Ă©s idĹ‘ megadĂˇsa kĂ¶telezĹ‘!';
+        statusDiv.textContent = 'A dátum és idő megadása kötelező!';
         submitBtn.disabled = false;
         return;
     }
     if (!entryData.report.trim()) {
-        statusDiv.textContent = 'A napi jelentĂ©s kitĂ¶ltĂ©se kĂ¶telezĹ‘!';
+        statusDiv.textContent = 'A napi jelentés kitöltése kötelező!';
         submitBtn.disabled = false;
         return;
     }
@@ -8371,16 +8371,16 @@ async function submitLogEntry() {
             var fileReader = new FileReader();
             var dataUrl = await new Promise(function (resolve, reject) {
                 fileReader.onload = function (e) { resolve(e.target.result); };
-                fileReader.onerror = function (e) { reject(new Error("Hiba a kĂ©pfĂˇjl olvasĂˇsa kĂ¶zben.")); };
+                fileReader.onerror = function (e) { reject(new Error("Hiba a képfájl olvasása közben.")); };
                 fileReader.readAsDataURL(file);
             });
             var pngDataUrl = await convertToPngDataUrl(dataUrl);
             entryData.imageBase64 = pngDataUrl.split(',')[1];
         }
 
-        console.log("MentĂ©sre kĂĽldĂ¶tt adatok:", entryData);
+        console.log("Mentésre küldött adatok:", entryData);
 
-        // callBackend hĂ­vĂˇs
+        // callBackend hívás
         callBackend('saveLogEntry', [entryData],
             function (response) {
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -8390,14 +8390,14 @@ async function submitLogEntry() {
                     closeLogEntryModal();
                 } else {
                     statusDiv.textContent = t('log_save_error_prefix') + response.error;
-                    console.error("MentĂ©si hiba:", response.error);
+                    console.error("Mentési hiba:", response.error);
                 }
             },
             function (err) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 submitBtn.disabled = false;
                 statusDiv.textContent = t('server_error_short_prefix') + err.message;
-                console.error("Szerverhiba mentĂ©skor:", err);
+                console.error("Szerverhiba mentéskor:", err);
             }
         );
 
@@ -8405,7 +8405,7 @@ async function submitLogEntry() {
         document.getElementById('loading-overlay').style.display = 'none';
         submitBtn.disabled = false;
         statusDiv.textContent = t('image_process_error_prefix') + error.message;
-        console.error("KĂ©pfeldolgozĂˇsi hiba:", error);
+        console.error("Képfeldolgozási hiba:", error);
     }
 }
 
@@ -8419,11 +8419,11 @@ function toggleLogSplash() {
 function showLogPublishingSection(logId, gdocId) {
     var section = document.getElementById('log-publish-section');
     if (!section) {
-        console.error("Hiba: A 'log-publish-section' HTML elem nem talĂˇlhatĂł!");
+        console.error("Hiba: A 'log-publish-section' HTML elem nem található!");
         return;
     }
 
-    // Backtick helyett string Ă¶sszefĹ±zĂ©s
+    // Backtick helyett string összefűzés
     var gdocUrl = 'https://docs.google.com/document/d/' + gdocId + '/edit';
 
     section.style.display = 'block';
@@ -8437,7 +8437,7 @@ function showLogPublishingSection(logId, gdocId) {
 
     var submitBtn = document.getElementById('log-publish-submit-btn');
 
-    // KlĂłnozĂˇssal eltĂˇvolĂ­tjuk a rĂ©gi listenereket
+    // Klónozással eltávolítjuk a régi listenereket
     var newSubmitBtn = submitBtn.cloneNode(true);
     submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
 
@@ -8482,9 +8482,9 @@ function showLogPublishingSection(logId, gdocId) {
     };
 }
 
-// ===================== NPC INTERFĂ‰SZEK =====================================
+// ===================== NPC INTERFÉSZEK =====================================
 
-// === UNIVERZĂLIS MEGJELENĂŤTĹ ===
+// === UNIVERZÁLIS MEGJELENÍTŐ ===
 
 var ACTIVE_NPC_CONFIG = {};
 
@@ -8494,16 +8494,16 @@ function openUniversalNPC(npcId, config) {
     var portraitPanel = document.getElementById('npc-portrait-panel');
     var portraitImg = document.getElementById('npc-portrait-image');
 
-    // 1. Ăllapot mentĂ©se
+    // 1. Állapot mentése
     document.getElementById('current-npc-id').value = npcId;
-    // GlobĂˇlis vĂˇltozĂłba mentjĂĽk, hogy elĂ©rhetĹ‘ legyen mĂˇshol is
+    // Globális változóba mentjük, hogy elérhető legyen máshol is
     window.currentNPCConfig = config || {};
     ACTIVE_NPC_CONFIG = window.currentNPCConfig;
 
     config = ACTIVE_NPC_CONFIG;
     var name = config.name || 'NPC';
     var role = config.role || '';
-    var icon = config.icon || 'đź‘¤';
+    var icon = config.icon || '👤';
     var headerColor = config.headerColor || '#333';
 
     document.getElementById('npc-name').innerText = name;
@@ -8515,7 +8515,7 @@ function openUniversalNPC(npcId, config) {
     modalContent.style.cssText = "";
     modalContent.className = "gamemode-modal-content";
 
-    // 4. PORTRĂ‰ KEZELĂ‰S
+    // 4. PORTRÉ KEZELÉS
     portraitPanel.className = 'npc-portrait-closed';
     portraitImg.src = '';
 
@@ -8553,7 +8553,7 @@ function openUniversalNPC(npcId, config) {
 
     modal.style.display = 'flex';
 
-    // callBackend hasznĂˇlata
+    // callBackend használata
     if (!config || !config.skipInit) {
         callBackend('handleNPCInteraction', [npcId, "", "INIT", null], handleUniversalResponse);
     }
@@ -8672,14 +8672,14 @@ function adjustColorBrightness(col, amt) {
     return "#" + (0x1000000 + (newColor < 0 ? 0 : newColor > 0xFFFFFF ? 0xFFFFFF : newColor)).toString(16).slice(1);
 }
 
-// === SZERVER VĂLASZ FELDOLGOZĂSA ===
+// === SZERVER VÁLASZ FELDOLGOZÁSA ===
 function handleUniversalResponse(response) {
     var chatArea = document.getElementById('universal-chat-area');
-    console.log("Szerver vĂˇlasz Ă©rkezett:", response);
+    console.log("Szerver válasz érkezett:", response);
 
     if (!response) {
-        console.error("Hiba: A szerver ĂĽres vĂˇlaszt kĂĽldĂ¶tt!");
-        addBubbleToUniversal("System", "Hiba: A szerver nem kĂĽldĂ¶tt adatot. (Null Response)", "system");
+        console.error("Hiba: A szerver üres választ küldött!");
+        addBubbleToUniversal("System", "Hiba: A szerver nem küldött adatot. (Null Response)", "system");
         return;
     }
 
@@ -8762,7 +8762,7 @@ function handleUniversalResponse(response) {
 
         var defaultOpt = document.createElement('option');
         defaultOpt.value = "";
-        defaultOpt.text = "--- VĂˇlassz egyet ---";
+        defaultOpt.text = "--- Válassz egyet ---";
         defaultOpt.disabled = true;
         defaultOpt.selected = true;
         select.appendChild(defaultOpt);
@@ -8779,11 +8779,11 @@ function handleUniversalResponse(response) {
         var submitBtn = document.createElement('button');
         submitBtn.className = 'btn';
         submitBtn.style.cssText = "width: 100%; font-size: 0.9em; padding: 8px;";
-        submitBtn.innerHTML = response.dropdown.submitText || "KivĂˇlaszt";
+        submitBtn.innerHTML = response.dropdown.submitText || "Kiválaszt";
         
         submitBtn.onclick = function() {
             if (!select.value) {
-                addBubbleToUniversal("System", "Hiba: KĂ©rlek, vĂˇlassz a listĂˇbĂłl!", "system");
+                addBubbleToUniversal("System", "Hiba: Kérlek, válassz a listából!", "system");
                 return;
             }
             if (dpContainer.parentNode) dpContainer.parentNode.removeChild(dpContainer);
@@ -8809,13 +8809,13 @@ function handleUniversalResponse(response) {
             if (typeof window[fnName] === 'function') {
                 window[fnName]();
             } else {
-                console.error("Hiba: A '" + fnName + "' automatikus fĂĽggvĂ©ny nem lĂ©tezik.");
+                console.error("Hiba: A '" + fnName + "' automatikus függvény nem létezik.");
             }
-        }, 1500); // KĂ©sleltetĂ©s, hogy a jĂˇtĂ©kos elolvashassa a siker ĂĽzenetet
+        }, 1500); // Késleltetés, hogy a játékos elolvashassa a siker üzenetet
     }
 }
 
-// === UNIVERZĂLIS GOMBKEZELĹ ===
+// === UNIVERZÁLIS GOMBKEZELŐ ===
 function handleNPCButtonAction(btn) {
     console.log("Gomb megnyomva:", btn);
 
@@ -8827,7 +8827,7 @@ function handleNPCButtonAction(btn) {
         if (typeof window[fnName] === 'function') {
             window[fnName]();
         } else {
-            console.error("Hiba: A '" + fnName + "' fĂĽggvĂ©ny nem lĂ©tezik.");
+            console.error("Hiba: A '" + fnName + "' függvény nem létezik.");
         }
         return;
     }
@@ -8959,7 +8959,7 @@ function triggerNPCPayment(amount) {
     );
 }
 
-// Enter tĂˇmogatĂˇs
+// Enter támogatás
 var univInput = document.getElementById('universal-chat-input');
 if (univInput) {
     univInput.addEventListener("keypress", function (e) {
@@ -8967,9 +8967,9 @@ if (univInput) {
     });
 }
 
-// ================================= UNIVERZĂLIS NPC VEZĂ‰RLĹ VĂ‰GE ====================================
+// ================================= UNIVERZÁLIS NPC VEZÉRLŐ VÉGE ====================================
 
-// SegĂ©dfĂĽggvĂ©ny a harmonikĂˇhoz
+// Segédfüggvény a harmonikához
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     var panel = this.nextElementSibling;
@@ -8980,22 +8980,22 @@ function toggleAccordionPanel() {
     }
 }
 
-// ... (elĹ‘zĹ‘ kĂłdok vĂ©ge) ...
+// ... (előző kódok vége) ...
 
-// === WINDOW ONLOAD (INDĂŤTĂS) ===
+// === WINDOW ONLOAD (INDÍTÁS) ===
 window.onload = function () {
-    console.log(">>> OLLDAL BETĂ–LTVE. Rendszer indĂ­tĂˇsa...");
+    console.log(">>> OLLDAL BETÖLTVE. Rendszer indítása...");
 
-    // 1. AUTOMATIKUS BELĂ‰PĂ‰S
+    // 1. AUTOMATIKUS BELÉPÉS
     try {
-        console.log("1. Auto-login indĂ­tĂˇsa...");
+        console.log("1. Auto-login indítása...");
         if (typeof checkSession === 'function') {
             checkSession();
         } else {
-            console.error("HIBA: A checkSession fĂĽggvĂ©ny nem lĂ©tezik!");
+            console.error("HIBA: A checkSession függvény nem létezik!");
         }
     } catch (e) {
-        console.error("KRITIKUS HIBA az Auto-login sorĂˇn:", e);
+        console.error("KRITIKUS HIBA az Auto-login során:", e);
     }
 
     // 2. HARMONIKA GOMBOK (Accordion)
@@ -9006,10 +9006,10 @@ window.onload = function () {
                 acc[i].removeEventListener("click", toggleAccordionPanel);
                 acc[i].addEventListener("click", toggleAccordionPanel);
             }
-            console.log("2. Harmonika gombok beĂˇllĂ­tva.");
+            console.log("2. Harmonika gombok beállítva.");
         }
     } catch (e) {
-        console.warn("Hiba a harmonika gomboknĂˇl (nem kritikus):", e);
+        console.warn("Hiba a harmonika gomboknál (nem kritikus):", e);
     }
 
     // 3. MARKETING URL
@@ -9021,7 +9021,7 @@ window.onload = function () {
         console.warn("Marketing hiba:", e);
     }
 
-    // 5. === MONK PIN KĂ“D LĂTHATĂ“SĂGA ===
+    // 5. === MONK PIN KÓD LÁTHATÓSÁGA ===
     try {
         var monkPinToggle = document.getElementById('monk-pin-toggle');
         var monkPinInput = document.getElementById('monk-pin-input');
@@ -9033,18 +9033,18 @@ window.onload = function () {
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });
-            console.log("5. Monk PIN gomb beĂˇllĂ­tva.");
+            console.log("5. Monk PIN gomb beállítva.");
         } else {
-            console.warn("A Monk PIN mezĹ‘ vagy az ikon nem talĂˇlhatĂł.");
+            console.warn("A Monk PIN mező vagy az ikon nem található.");
         }
     } catch (e) {
         console.warn("Monk PIN hiba:", e);
     }
 
-    console.log(">>> Minden rendszer kĂ©sz.");
+    console.log(">>> Minden rendszer kész.");
 };
 
-// SegĂ©dfĂĽggvĂ©ny a harmonikĂˇhoz (KĂŤVĂśL HAGYJUK, hogy globĂˇlis legyen)
+// Segédfüggvény a harmonikához (KÍVÜL HAGYJUK, hogy globális legyen)
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     var panel = this.nextElementSibling;
@@ -9056,35 +9056,35 @@ function toggleAccordionPanel() {
 }
 
 /**
- * ElindĂ­tja a jĂˇtĂ©kot a szerverrĹ‘l lekĂ©rt mentett jĂˇtĂ©kĂˇllĂˇssal.
- * Ezt a 'tutorial_oldal.html'-en lĂ©vĹ‘ "UgrĂˇs a mentett ĂˇllĂˇshoz" gomb hĂ­vja.
+ * Elindítja a játékot a szerverről lekért mentett játékállással.
+ * Ezt a 'tutorial_oldal.html'-en lévő "Ugrás a mentett álláshoz" gomb hívja.
  */
 function jumpToSavedState() {
-    console.log("KĂ­sĂ©rlet a mentett jĂˇtĂ©kĂˇllĂˇs betĂ¶ltĂ©sĂ©re...");
+    console.log("Kísérlet a mentett játékállás betöltésére...");
     document.getElementById('loading-overlay').style.display = 'flex';
 
-    // 1. Backend hĂ­vĂˇs a jĂˇtĂ©kĂˇllĂˇs (AH oszlop) Ă©s a Unity URL lekĂ©rĂ©sĂ©hez
+    // 1. Backend hívás a játékállás (AH oszlop) és a Unity URL lekéréséhez
     callBackend('getGameState', [],
         function (response) {
             if (response && response.success && response.gameState && response.unityUrl) {
-                console.log("Sikeresen megkapva a jĂˇtĂ©kĂˇllĂˇs, Unity indĂ­tĂˇsa...");
+                console.log("Sikeresen megkapva a játékállás, Unity indítása...");
 
-                // A 'tryLaunchUnity' egy 'flow' objektumot vĂˇr, ezt itt Ă¶sszeĂˇllĂ­tjuk.
+                // A 'tryLaunchUnity' egy 'flow' objektumot vár, ezt itt összeállítjuk.
                 const flow = {
                     unityUrl: response.unityUrl,
-                    gameStateToken: response.gameState, // A 'gameStateToken' nevet hasznĂˇljuk a konzisztencia Ă©rdekĂ©ben.
-                    tutorialCompleted: true // FeltĂ©telezzĂĽk, hogy ha van mentĂ©se, a tutorialt mĂˇr befejezte.
+                    gameStateToken: response.gameState, // A 'gameStateToken' nevet használjuk a konzisztencia érdekében.
+                    tutorialCompleted: true // Feltételezzük, hogy ha van mentése, a tutorialt már befejezte.
                 };
 
-                // 2. IndĂ­tjuk a Unity-t a tryLaunchUnity fĂĽggvĂ©nnyel.
-                // Az 'autoStart' paramĂ©ter (true) biztosĂ­tja, hogy a jĂˇtĂ©k azonnal induljon.
+                // 2. Indítjuk a Unity-t a tryLaunchUnity függvénnyel.
+                // Az 'autoStart' paraméter (true) biztosítja, hogy a játék azonnal induljon.
                 tryLaunchUnity(flow, true);
 
             } else {
                 document.getElementById('loading-overlay').style.display = 'none';
-                var errorMessage = response.error || "A mentett jĂˇtĂ©kĂˇllĂˇs nem Ă©rhetĹ‘ el vagy hibĂˇs a vĂˇlasz.";
+                var errorMessage = response.error || "A mentett játékállás nem érhető el vagy hibás a válasz.";
                 if (typeof uiAlert === 'function') {
-                    uiAlert(errorMessage, "BetĂ¶ltĂ©si Hiba");
+                    uiAlert(errorMessage, "Betöltési Hiba");
                 } else {
                     alert("Hiba: " + errorMessage);
                 }
@@ -9093,7 +9093,7 @@ function jumpToSavedState() {
         function (error) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (typeof uiAlert === 'function') {
-                uiAlert("Hiba tĂ¶rtĂ©nt a szerverrel valĂł kommunikĂˇciĂł sorĂˇn: " + error.message, "Szerver Hiba");
+                uiAlert("Hiba történt a szerverrel való kommunikáció során: " + error.message, "Szerver Hiba");
             } else {
                 alert("Szerver Hiba: " + error.message);
             }
@@ -9102,7 +9102,7 @@ function jumpToSavedState() {
 }
 
 function triggerAgentAnalysis(workId) {
-    if (!confirm('Biztosan Ăˇtadod ezt a kĂ©ziratot a PapĂˇt AI asszisztensnek elemzĂ©sre? A hĂˇttĂ©rfolyamat perceket is igĂ©nybe vehet.')) return;
+    if (!confirm('Biztosan átadod ezt a kéziratot a Papát AI asszisztensnek elemzésre? A háttérfolyamat perceket is igénybe vehet.')) return;
 
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
@@ -9110,80 +9110,80 @@ function triggerAgentAnalysis(workId) {
     callBackend('manageWorkStatus', [workId, 'agent_analysis_start', null],
         function (res) {
             if (loading) loading.style.display = 'none';
-            uiAlert(res.message || "Az elemzĂ©s elindult. NemsokĂˇra jelentkezik az Agent egy Ă©rtĂ©kelĂ©ssel.", "Siker");
+            uiAlert(res.message || "Az elemzés elindult. Nemsokára jelentkezik az Agent egy értékeléssel.", "Siker");
             refreshMonasteryWork();
         },
         function (err) {
             if (loading) loading.style.display = 'none';
-            uiAlert("Hiba a szerverhĂ­vĂˇsban: " + err.message, "Rendszerhiba");
+            uiAlert("Hiba a szerverhívásban: " + err.message, "Rendszerhiba");
         }
     );
 }
 
-// --- PAPĂT REPORT MEGJELENĂŤTĹ LOGIKA ---
+// --- PAPÁT REPORT MEGJELENÍTŐ LOGIKA ---
 function openPapatReportModal(workId) {
     if (!window.currentMonasteryWorks) {
-        uiAlert("Hiba: Nem talĂˇlhatĂłak a mĹ±vek a memĂłriĂˇban. FrissĂ­tsd a listĂˇt!", "Rendszerhiba");
+        uiAlert("Hiba: Nem találhatóak a művek a memóriában. Frissítsd a listát!", "Rendszerhiba");
         return;
     }
 
     var foundWork = window.currentMonasteryWorks.find(function (w) { return w.id === workId; });
     if (!foundWork || !foundWork.checklist || !foundWork.checklist.papat_report) {
-        uiAlert("Ehhez a kĂ©zirathoz nem talĂˇlhatĂł PapĂˇt AI jelentĂ©s!", "Hiba");
+        uiAlert("Ehhez a kézirathoz nem található Papát AI jelentés!", "Hiba");
         return;
     }
 
     var report = foundWork.checklist.papat_report;
     var html = "";
 
-    html += "<p><strong>MĹ± cĂ­me:</strong> " + foundWork.title + "</p>";
-    html += "<p><strong>KiĂˇllĂ­tĂˇs DĂˇtuma:</strong> " + (report.timestamp || 'N/A') + "</p>";
+    html += "<p><strong>Mű címe:</strong> " + foundWork.title + "</p>";
+    html += "<p><strong>Kiállítás Dátuma:</strong> " + (report.timestamp || 'N/A') + "</p>";
     html += "<hr>";
 
-    // BELSĹ PLĂGIUM
+    // BELSŐ PLÁGIUM
     var plagColor = "green";
-    var plagText = "Tiszta (Nincs BelsĹ‘ PlĂˇgium)";
+    var plagText = "Tiszta (Nincs Belső Plágium)";
     if (report.plagiarism && report.plagiarism.status === "failed") {
         plagColor = "red";
-        plagText = "VIGYĂZAT: RĂ©szleges vagy teljes Ă–NPLĂGIUM/MĂSOLAT! (" + report.plagiarism.score_percent + "%)";
+        plagText = "VIGYÁZAT: Részleges vagy teljes ÖNPLÁGIUM/MÁSOLAT! (" + report.plagiarism.score_percent + "%)";
     }
     html += "<div style='margin-bottom: 15px; padding: 10px; border: 1px solid " + plagColor + "; background-color: " + (plagColor === 'red' ? '#ffe6e6' : '#e6ffe6') + "; border-radius: 5px;'>";
-    html += "<strong><i class='fas fa-search'></i> FĂˇjl-alapĂş PlĂˇgiumszĹ±rĂ©s:</strong> <span style='color: " + plagColor + "; font-weight: bold;'>" + plagText + "</span>";
+    html += "<strong><i class='fas fa-search'></i> Fájl-alapú Plágiumszűrés:</strong> <span style='color: " + plagColor + "; font-weight: bold;'>" + plagText + "</span>";
     if (report.plagiarism && report.plagiarism.message) {
         html += "<br><small>" + report.plagiarism.message + "</small>";
     }
     html += "</div>";
 
-    // PONTOZĂ“ SĂVOK (KohĂ©ziĂł)
+    // PONTOZÓ SÁVOK (Kohézió)
     var coheScore = report.cohesion_score || 0;
     var coheColor = coheScore > 75 ? '#28a745' : (coheScore > 50 ? '#f39c12' : '#dc3545');
     html += "<div style='margin-bottom: 10px;'>";
-    html += "<strong>Logikai KohĂ©ziĂł Ă©s StĂ­lus:</strong> <span style='float:right; font-weight:bold; color:" + coheColor + "'>" + coheScore + "/100</span>";
+    html += "<strong>Logikai Kohézió és Stílus:</strong> <span style='float:right; font-weight:bold; color:" + coheColor + "'>" + coheScore + "/100</span>";
     html += "<div style='width: 100%; background-color: #e9ecef; border-radius: 4px; overflow: hidden; height: 15px; margin-top: 5px;'>";
     html += "  <div style='height: 100%; width: " + coheScore + "%; background-color: " + coheColor + ";'></div>";
     html += "</div></div>";
 
-    // PONTOZĂ“ SĂVOK (FelĂĽtĂ©s/Hook)
+    // PONTOZÓ SÁVOK (Felütés/Hook)
     var hookScore = report.hook_score || 0;
     var hookColor = hookScore > 75 ? '#28a745' : (hookScore > 50 ? '#f39c12' : '#dc3545');
     html += "<div style='margin-bottom: 15px;'>";
-    html += "<strong>FelĂĽtĂ©s (FigyelemfelkeltĂ©s):</strong> <span style='float:right; font-weight:bold; color:" + hookColor + "'>" + hookScore + "/100</span>";
+    html += "<strong>Felütés (Figyelemfelkeltés):</strong> <span style='float:right; font-weight:bold; color:" + hookColor + "'>" + hookScore + "/100</span>";
     html += "<div style='width: 100%; background-color: #e9ecef; border-radius: 4px; overflow: hidden; height: 15px; margin-top: 5px;'>";
     html += "  <div style='height: 100%; width: " + hookScore + "%; background-color: " + hookColor + ";'></div>";
     html += "</div></div>";
 
-    // FANFIC RIASZTĂS
+    // FANFIC RIASZTÁS
     if (report.is_fanfic) {
         html += "<div style='margin-bottom: 15px; padding: 10px; border: 1px solid #ff9800; background-color: #fff3e0; border-radius: 5px; color: #d84315;'>";
-        html += "<strong><i class='fas fa-exclamation-triangle'></i> Fanfic GYANĂš!</strong> A tĂ¶rtĂ©net valĂłszĂ­nĹ±leg egy ismert szellemi termĂ©khez kĂ¶tĹ‘dik.";
+        html += "<strong><i class='fas fa-exclamation-triangle'></i> Fanfic GYANÚ!</strong> A történet valószínűleg egy ismert szellemi termékhez kötődik.";
         html += "</div>";
     }
 
-    html += "<h4>đź“ť Ă–sszefoglalĂł:</h4>";
-    html += "<p style='font-style: italic; border-left: 3px solid #8e44ad; padding-left: 10px; color: #555;'>" + (report.summary || 'Nincs Ă¶sszefoglalĂł.') + "</p>";
+    html += "<h4>📝 Összefoglaló:</h4>";
+    html += "<p style='font-style: italic; border-left: 3px solid #8e44ad; padding-left: 10px; color: #555;'>" + (report.summary || 'Nincs összefoglaló.') + "</p>";
 
-    html += "<h4>âš–ď¸Ź Kritikai VisszajelzĂ©s:</h4>";
-    html += "<p>" + (report.feedback || 'Nincs visszajelzĂ©s.') + "</p>";
+    html += "<h4>⚖️ Kritikai Visszajelzés:</h4>";
+    html += "<p>" + (report.feedback || 'Nincs visszajelzés.') + "</p>";
 
     document.getElementById('papat-report-content').innerHTML = html;
     var modal = document.getElementById('papat-report-modal');
@@ -9203,18 +9203,18 @@ function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
     if(modal) modal.style.display = 'flex';
     var boardDiv = document.getElementById('notice-board-content');
-    if(boardDiv) boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiĂş Ă©pp szĂ¶geli fel az Ăşj papĂ­rokat...</p>';
+    if(boardDiv) boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiú épp szögeli fel az új papírokat...</p>';
 
     if (typeof callBackend === 'function') {
         callBackend("getNoticeBoardData", [], function(response) {
             if (response && response.success && response.data) {
                 renderNoticeBoard(response.data);
             } else {
-                if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">A szĂ©l lefĂşjta az Ă¶sszes papĂ­rt. (Hiba: ' + (response ? response.error : 'Nincs vĂˇlasz') + ')</p>';
+                if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">A szél lefújta az összes papírt. (Hiba: ' + (response ? response.error : 'Nincs válasz') + ')</p>';
             }
         });
     } else {
-        if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">HĂˇlĂłzati hiba: A backend nem elĂ©rhetĹ‘.</p>';
+        if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">Hálózati hiba: A backend nem elérhető.</p>';
     }
 }
 
@@ -9223,32 +9223,32 @@ function renderNoticeBoard(data) {
     if(!boardDiv) return;
     boardDiv.innerHTML = '';
 
-    // 1. WANTED PlakĂˇtok
+    // 1. WANTED Plakátok
     if (data.wanted && data.wanted.length > 0) {
         data.wanted.forEach(function(item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #e0d8b0; padding: 15px; width: 220px; border: 2px dashed #8b4513; box-shadow: 2px 2px 8px rgba(0,0,0,0.7); transform: rotate(" + (Math.random() * 8 - 4) + "deg); position: relative; font-family: 'Courier New', monospace;";
-            card.innerHTML = '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: silver; font-size: 1.5em; text-shadow: 1px 1px 2px black;">đź—ˇď¸Ź</div>' +
+            card.innerHTML = '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: silver; font-size: 1.5em; text-shadow: 1px 1px 2px black;">🗡️</div>' +
                              '<h3 style="margin: 10px 0 5px 0; color: black; text-align: center; font-size: 1.8em; letter-spacing: 2px; font-weight: 900;">WANTED</h3>' +
                              '<p style="text-align: center; margin-bottom: 10px;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Skull_and_crossbones.svg/120px-Skull_and_crossbones.svg.png" style="width:60px; opacity: 0.8; filter: sepia(1);"></p>' +
                              '<p style="font-weight: bold; text-align: center; font-size: 1.2em; margin-bottom: 5px; color: #8b0000; text-transform: uppercase;">' + item.name + '</p>' +
-                             '<p style="text-align: center; margin-bottom: 10px; font-size: 0.85em; color: #333;"><b>BĹ±ntette:</b><br>' + item.crime + '</p>' +
-                             '<h4 style="text-align: center; color: black; margin-bottom: 0; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 3px;">VĂ©rdĂ­j: ' + item.bounty + ' Kr</h4>';
+                             '<p style="text-align: center; margin-bottom: 10px; font-size: 0.85em; color: #333;"><b>Bűntette:</b><br>' + item.crime + '</p>' +
+                             '<h4 style="text-align: center; color: black; margin-bottom: 0; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 3px;">Vérdíj: ' + item.bounty + ' Kr</h4>';
             boardDiv.appendChild(card);
         });
     }
 
-    // 2. Priori ĂšjdonsĂˇgok
+    // 2. Priori Újdonságok
     if (data.priori && data.priori.length > 0) {
         data.priori.forEach(function(item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #fdf5e6; padding: 15px; width: 220px; border: 1px solid #d2b48c; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); transform: rotate(" + (Math.random() * 6 - 3) + "deg); position: relative; font-family: 'Georgia', serif;";
-            card.innerHTML = '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #8b0000; font-size: 1.5em; text-shadow: 1px 1px 1px #000;">đź“Ś</div>' +
-                             '<h4 style="margin: 10px 0 10px 0; color: #8b4513; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #d2b48c; padding-bottom: 5px;">ĂšjdonsĂˇg a KikĂ¶tĹ‘ben!</h4>' +
+            card.innerHTML = '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #8b0000; font-size: 1.5em; text-shadow: 1px 1px 1px #000;">📌</div>' +
+                             '<h4 style="margin: 10px 0 10px 0; color: #8b4513; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #d2b48c; padding-bottom: 5px;">Újdonság a Kikötőben!</h4>' +
                              '<p style="font-size: 0.85em; margin: 0 0 10px 0; text-align: center; color: #666;">' + item.date + '</p>' +
                              '<p style="font-weight: bold; text-align: center; margin-bottom: 5px; color: #2c1a0b; font-size: 1.1em;">' + item.title + '</p>' +
-                             '<p style="font-style: italic; text-align: center; margin-bottom: 15px; color: #5c3a21;">SzerzĹ‘: ' + item.author + '</p>' +
-                             '<p style="text-align: center; color: #1b5e20; font-weight: bold; font-size: 1.1em; background: rgba(27,94,32,0.1); padding: 5px; border-radius: 3px;">Ăr: ' + item.price + ' Kr</p>';
+                             '<p style="font-style: italic; text-align: center; margin-bottom: 15px; color: #5c3a21;">Szerző: ' + item.author + '</p>' +
+                             '<p style="text-align: center; color: #1b5e20; font-weight: bold; font-size: 1.1em; background: rgba(27,94,32,0.1); padding: 5px; border-radius: 3px;">Ár: ' + item.price + ' Kr</p>';
             boardDiv.appendChild(card);
         });
     }
@@ -9258,23 +9258,23 @@ function renderNoticeBoard(data) {
         data.jobs.forEach(function(item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #f0ebd8; padding: 15px; width: 220px; border: 2px solid #3e2723; box-shadow: 2px 2px 6px rgba(0,0,0,0.6); transform: rotate(" + (Math.random() * 6 - 3) + "deg); position: relative; font-family: 'Georgia', serif;";
-            card.innerHTML = '<div style="position: absolute; top: -10px; left: 10px; color: gold; font-size: 1.5em; text-shadow: 1px 1px 1px #000;">đź“Ś</div>' +
-                             '<h4 style="margin: 10px 0 10px 0; color: #1b5e20; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><i class="fas fa-scroll"></i> KĂĽldetĂ©s!</h4>' +
+            card.innerHTML = '<div style="position: absolute; top: -10px; left: 10px; color: gold; font-size: 1.5em; text-shadow: 1px 1px 1px #000;">📌</div>' +
+                             '<h4 style="margin: 10px 0 10px 0; color: #1b5e20; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><i class="fas fa-scroll"></i> Küldetés!</h4>' +
                              '<p style="font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 1.1em; color: #3e2723;">' + item.title + '</p>' +
                              '<p style="font-size: 0.9em; margin-bottom: 5px; color: #4e342e;"><strong>Keresnek:</strong><br>' + item.specialists + '</p>' +
-                             '<p style="font-size: 0.9em; margin-bottom: 10px; color: #8b0000;"><strong>VeszĂ©ly:</strong> ' + item.danger + '</p>' +
-                             '<p style="text-align: center; color: #1b5e20; font-style: italic; font-size: 0.85em; margin-bottom: 5px;">(Jelentkezz a csaposnĂˇl!)</p>' +
+                             '<p style="font-size: 0.9em; margin-bottom: 10px; color: #8b0000;"><strong>Veszély:</strong> ' + item.danger + '</p>' +
+                             '<p style="text-align: center; color: #1b5e20; font-style: italic; font-size: 0.85em; margin-bottom: 5px;">(Jelentkezz a csaposnál!)</p>' +
                              '<p style="text-align: center; color: #b71c1c; font-weight: bold; font-size: 1.1em; background: rgba(183,28,28,0.1); padding: 5px; border-radius: 3px;">Jutalom: ' + item.reward + '</p>';
             boardDiv.appendChild(card);
         });
     }
 
-    // 4. PletykĂˇk (Gossip)
+    // 4. Pletykák (Gossip)
     if (data.gossip && data.gossip.length > 0) {
         data.gossip.forEach(function(item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #fffafa; padding: 15px; width: 220px; border: 1px solid #ccc; box-shadow: 2px 2px 4px rgba(0,0,0,0.4); transform: rotate(" + (Math.random() * 8 - 4) + "deg); position: relative; font-family: 'Comic Sans MS', cursive, sans-serif;";
-            card.innerHTML = '<div style="position: absolute; top: -10px; right: 10px; color: #555; font-size: 1.5em; transform: rotate(45deg);">đź“Ž</div>' +
+            card.innerHTML = '<div style="position: absolute; top: -10px; right: 10px; color: #555; font-size: 1.5em; transform: rotate(45deg);">📎</div>' +
                              '<h4 style="margin: 5px 0 10px 0; color: #4b0082; text-align: left; font-size: 1.1em;"><i class="fas fa-comment-dots"></i> Hallottad...?</h4>' +
                              '<p style="font-size: 0.9em; text-align: left; margin-bottom: 15px; color: #333; line-height: 1.4;"><i>' + item.text + '</i></p>' +
                              '<p style="text-align: right; font-size: 0.8em; color: #666; font-style: italic;">- ' + item.npc + '</p>';
@@ -9283,7 +9283,7 @@ function renderNoticeBoard(data) {
     }
 
     if (boardDiv.innerHTML === '') {
-        boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.5em; font-family: \'Pirata One\', cursive;">A tĂˇbla jelenleg kong az ĂĽressĂ©gtĹ‘l...</p>';
+        boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.5em; font-family: \'Pirata One\', cursive;">A tábla jelenleg kong az ürességtől...</p>';
     }
 }
 
@@ -9294,7 +9294,7 @@ function reloadCopiesPage() {
     loadPage('masolatok_oldal');
 }
 
-// --- TOBORZĂ“BARAKK LOGIKA ---
+// --- TOBORZÓBARAKK LOGIKA ---
 
 function openToborzoBarakk() {
     // UI Initialization
@@ -9309,7 +9309,7 @@ function openToborzoBarakk() {
             if (data.success) {
                 // Populate Worker Tab
                 if (data.playerStatus) {
-                    document.getElementById('toborzo-status-select').value = data.playerStatus.status || "Keresek munkĂˇt";
+                    document.getElementById('toborzo-status-select').value = data.playerStatus.status || "Keresek munkát";
                     document.getElementById('toborzo-role-select').value = data.playerStatus.role || "";
                 }
 
@@ -9317,22 +9317,22 @@ function openToborzoBarakk() {
                 window.toborzoOwnedShips = data.ownedShips || [];
                 window.toborzoAvailableCrew = data.availableCrew || [];
                 const myshipsSelect = document.getElementById('toborzo-myships-select');
-                myshipsSelect.innerHTML = '<option value="">Nincs kivĂˇlasztott hajĂł</option>';
+                myshipsSelect.innerHTML = '<option value="">Nincs kiválasztott hajó</option>';
                 window.toborzoOwnedShips.forEach(ship => {
                     const opt = document.createElement('option');
                     opt.value = ship.id;
-                    opt.textContent = ship.name + (ship.inHarbor ? "" : " (ExpedĂ­ciĂłn)");
+                    opt.textContent = ship.name + (ship.inHarbor ? "" : " (Expedíción)");
                     opt.disabled = !ship.inHarbor;
                     myshipsSelect.appendChild(opt);
                 });
                 renderSelectedShipCrew(); // clear details
             } else {
-                uiAlert('Hiba az adatok lekĂ©rdezĂ©sekor: ' + (data.error || 'Ismeretlen hiba'));
+                uiAlert('Hiba az adatok lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
             }
         },
         function(err) {
             document.getElementById('toborzo-loading').style.display = 'none';
-            uiAlert('HĂˇlĂłzati hiba a ToborzĂłbarakk lekĂ©rdezĂ©sekor: ' + err.message);
+            uiAlert('Hálózati hiba a Toborzóbarakk lekérdezésekor: ' + err.message);
         }
     );
 }
@@ -9347,20 +9347,20 @@ function switchToborzoTab(tab) {
 
 function hasRequiredRank(playerRank, role) {
     var rankHierarchy = [
-      '4. osztĂˇlyĂş kalĂłz', '3. osztĂˇlyĂş kalĂłz', '2. osztĂˇlyĂş kalĂłz', '1. osztĂˇlyĂş kalĂłz',
-      'AlhajĂłmester', 'TĂ¶rzshajĂłmester', 'TĂ¶rzsfĹ‘hajĂłmester',
-      'TengerĂ©sz-hadaprĂłd', 'Korvetthadnagy', 'Fregatthadnagy', 'SorhajĂłhadnagy',
-      'KorvettkapitĂˇny', 'FregattkapitĂˇny', 'SorhajĂłkapitĂˇny',
-      'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'FĹ‘tengernagy'
+      '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
+      'Alhajómester', 'Törzshajómester', 'Törzsfőhajómester',
+      'Tengerész-hadapród', 'Korvetthadnagy', 'Fregatthadnagy', 'Sorhajóhadnagy',
+      'Korvettkapitány', 'Fregattkapitány', 'Sorhajókapitány',
+      'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'Főtengernagy'
     ];
-    var szakmaiTisztek = ['HajĂłorvos', 'HajĂłszakĂˇcs', 'TĂ©rkĂ©prajzolĂł', 'Tekercsmester', 'FelfedezĹ‘', 'Letmester', 'Monk'];
-    var parancsnokiTisztek = ['NavigĂˇtor', 'KormĂˇnyos', 'Vitorlamester', 'FedĂ©lzetmester', 'GĂ©pĂ©sz'];
+    var szakmaiTisztek = ['Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester', 'Felfedező', 'Letmester', 'Monk'];
+    var parancsnokiTisztek = ['Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester', 'Gépész'];
     
     var playerIdx = rankHierarchy.indexOf(playerRank);
     if (playerIdx === -1) playerIdx = 0; // fallback
     
     var requiredIdx = 0;
-    if (role === 'KapitĂˇny') {
+    if (role === 'Kapitány') {
         requiredIdx = 11;
     } else if (parancsnokiTisztek.indexOf(role) !== -1) {
         requiredIdx = 7;
@@ -9377,8 +9377,8 @@ function savePlayerJobStatus() {
     const costInput = document.getElementById('toborzo-cost-input');
     const cost = costInput ? (parseInt(costInput.value, 10) || 10) : 10;
     
-    if (status === 'Keresek munkĂˇt' && !role) {
-        uiAlert("KĂ©rlek, vĂˇlassz ki egy keresett pozĂ­ciĂłt!");
+    if (status === 'Keresek munkát' && !role) {
+        uiAlert("Kérlek, válassz ki egy keresett pozíciót!");
         return;
     }
 
@@ -9387,14 +9387,14 @@ function savePlayerJobStatus() {
         function(data) {
             document.getElementById('toborzo-loading').style.display = 'none';
             if (data.success) {
-                uiAlert("StĂˇtuszod sikeresen mentve! A kapitĂˇnyok mostantĂłl lĂˇthatjĂˇk a faliĂşjsĂˇgon.");
+                uiAlert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.");
             } else {
-                uiAlert("Hiba a mentĂ©s sorĂˇn: " + data.error);
+                uiAlert("Hiba a mentés során: " + data.error);
             }
         },
         function(err) {
             document.getElementById('toborzo-loading').style.display = 'none';
-            uiAlert("HĂˇlĂłzati hiba: " + err.message);
+            uiAlert("Hálózati hiba: " + err.message);
         }
     );
 }
@@ -9423,17 +9423,17 @@ function renderSelectedShipCrew() {
     formDiv.id = 'bulk-crew-form';
     
     var allRoles = [
-        "KapitĂˇny", "NavigĂˇtor", "KormĂˇnyos", "Vitorlamester", "FedĂ©lzetmester", 
-        "TĂĽzĂ©r", "HajĂłorvos", "HajĂłszakĂˇcs", "TĂ©rkĂ©prajzolĂł", 
-        "Tekercsmester", "FelfedezĹ‘", "GĂ©pĂ©sz", "HajĂłĂˇcs", 
-        "Letmester", "Monk", "TengerĂ©sz"
+        "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
+        "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló", 
+        "Tekercsmester", "Felfedező", "Gépész", "Hajóács", 
+        "Letmester", "Monk", "Tengerész"
     ];
     
     var availableCrew = window.toborzoAvailableCrew || []; 
     var sortedCrew = availableCrew.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
     
     allRoles.forEach(function(role) {
-        var isSingle = (role !== 'TengerĂ©sz');
+        var isSingle = (role !== 'Tengerész');
         var currentEmails = ship.crew[role] ? ship.crew[role].split(',').map(function(e) { return e.trim().toLowerCase(); }).filter(function(e) { return e; }) : [];
         
         var rowDiv = document.createElement('div');
@@ -9444,19 +9444,19 @@ function renderSelectedShipCrew() {
         
         var roleLabel = document.createElement('strong');
         roleLabel.style.color = '#1f0901';
-        roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: var(--color-gold);"></i> ' + role + (isSingle ? ' <span style="font-size:0.8em; color:#888;">(1 fĹ‘)</span>' : ' <span style="font-size:0.8em; color:#888;">(TĂ¶bb fĹ‘)</span>');
+        roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: var(--color-gold);"></i> ' + role + (isSingle ? ' <span style="font-size:0.8em; color:#888;">(1 fő)</span>' : ' <span style="font-size:0.8em; color:#888;">(Több fő)</span>');
         
         roleHeader.appendChild(roleLabel);
         rowDiv.appendChild(roleHeader);
         
-        // Dropdown kontĂ©ner a kijelĂ¶lĂ©shez
+        // Dropdown konténer a kijelöléshez
         var customSelectContainer = document.createElement('div');
         customSelectContainer.style.cssText = 'position: relative; width: 100%; border: 1px solid #aaa; border-radius: 4px; background: white;';
         
         var selectHeader = document.createElement('div');
         selectHeader.style.cssText = 'padding: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #555;';
         
-        var currentNamesHtml = "--- Ăśres ---";
+        var currentNamesHtml = "--- Üres ---";
         if (currentEmails.length > 0) {
             var namesArr = currentEmails.map(function(e) {
                 var match = availableCrew.find(function(c) { return c.email.toLowerCase() === e; });
@@ -9488,10 +9488,10 @@ function renderSelectedShipCrew() {
                     });
                 }
                 
-                // CĂ­msor frissĂ­tĂ©se
+                // Címsor frissítése
                 var checkedCbs = optionsContainer.querySelectorAll('input[type="checkbox"]:checked');
                 if (checkedCbs.length === 0) {
-                    selectHeader.innerHTML = '<span>--- Ăśres ---</span> <i class="fas fa-chevron-down"></i>';
+                    selectHeader.innerHTML = '<span>--- Üres ---</span> <i class="fas fa-chevron-down"></i>';
                 } else {
                     var nArr = [];
                     checkedCbs.forEach(function(cb) { nArr.push(cb.getAttribute('data-name')); });
@@ -9500,10 +9500,10 @@ function renderSelectedShipCrew() {
             }
         });
 
-        // HozzĂˇadjuk az Ă¶sszes elĂ©rhetĹ‘ jĂˇtĂ©kost, akik ehhez a hajĂłhoz kijelĂ¶lhetĹ‘k
+        // Hozzáadjuk az összes elérhető játékost, akik ehhez a hajóhoz kijelölhetők
         var optionAdded = false;
         
-        // Akik mĂˇr ezen a pozĂ­ciĂłn vannak
+        // Akik már ezen a pozíción vannak
         currentEmails.forEach(function(currEmail) {
             var cMatch = availableCrew.find(function(c) { return c.email.toLowerCase() === currEmail; });
             var dName = cMatch ? cMatch.name : currEmail;
@@ -9514,12 +9514,12 @@ function renderSelectedShipCrew() {
             optionAdded = true;
         });
 
-        // Akik szabadok (nincsenek ezen a pozĂ­ciĂłn, de nincsenek mĂˇshol sem a hajĂłn - VAGY ha mĂˇshol vannak, az szerveroldalon ki lesz szĹ±rve, de itt mindent mutatunk)
+        // Akik szabadok (nincsenek ezen a pozíción, de nincsenek máshol sem a hajón - VAGY ha máshol vannak, az szerveroldalon ki lesz szűrve, de itt mindent mutatunk)
         sortedCrew.forEach(function(player) {
             if (currentEmails.includes(player.email.toLowerCase())) return;
             if (player.isBusy) return; // SKIP BUSY PLAYERS
             
-            // KiszĹ±rjĂĽk azokat, akiknek nincs meg a megfelelĹ‘ rangjuk
+            // Kiszűrjük azokat, akiknek nincs meg a megfelelő rangjuk
             if (!hasRequiredRank(player.rank, role)) return;
             
             var label = document.createElement('label');
@@ -9532,7 +9532,7 @@ function renderSelectedShipCrew() {
         if (!optionAdded) {
             var noMore = document.createElement('div');
             noMore.style.cssText = 'padding: 8px; color: #888; font-style: italic;';
-            noMore.innerText = 'Nincs felbĂ©relhetĹ‘ tag.';
+            noMore.innerText = 'Nincs felbérelhető tag.';
             optionsContainer.appendChild(noMore);
         }
 
@@ -9552,7 +9552,7 @@ function renderSelectedShipCrew() {
     var submitBtn = document.createElement('button');
     submitBtn.className = 'btn';
     submitBtn.style.cssText = 'width: 100%; padding: 12px; background: var(--color-primary); color: white; border: 2px solid var(--color-gold); font-size: 1.1em; font-weight: bold; margin-top: 15px; border-radius: 4px; cursor: pointer; transition: 0.2s;';
-    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> KijelĂ¶ltek FelĂ­rĂˇsa (OK)';
+    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Kijelöltek Felírása (OK)';
     submitBtn.onmouseover = function() { submitBtn.style.background = '#3e2723'; };
     submitBtn.onmouseout = function() { submitBtn.style.background = 'var(--color-primary)'; };
     submitBtn.onclick = function() { submitBulkCrewAssignment(ship.id); };
@@ -9563,10 +9563,10 @@ function renderSelectedShipCrew() {
 
 function submitBulkCrewAssignment(shipId) {
     var assignmentsMap = {
-        "KapitĂˇny": [], "NavigĂˇtor": [], "KormĂˇnyos": [], "Vitorlamester": [], "FedĂ©lzetmester": [], 
-        "TĂĽzĂ©r": [], "HajĂłorvos": [], "HajĂłszakĂˇcs": [], "TĂ©rkĂ©prajzolĂł": [], 
-        "Tekercsmester": [], "FelfedezĹ‘": [], "GĂ©pĂ©sz": [], "HajĂłĂˇcs": [], 
-        "Letmester": [], "Monk": [], "TengerĂ©sz": []
+        "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [], 
+        "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [], 
+        "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [], 
+        "Letmester": [], "Monk": [], "Tengerész": []
     };
     
     var checkboxes = document.querySelectorAll('#bulk-crew-form input[type="checkbox"]');
@@ -9590,9 +9590,9 @@ function submitBulkCrewAssignment(shipId) {
 
     if (hasDuplicates) {
         if (typeof uiAlert === 'function') {
-            uiAlert("Egy kalĂłz egyszerre csak EGY pozĂ­ciĂłt tĂ¶lthet be a hajĂłn! KĂ©rlek javĂ­tsd a kijelĂ¶lĂ©st.");
+            uiAlert("Egy kalóz egyszerre csak EGY pozíciót tölthet be a hajón! Kérlek javítsd a kijelölést.");
         } else {
-            alert("Egy kalĂłz egyszerre csak EGY pozĂ­ciĂłt tĂ¶lthet be a hajĂłn! KĂ©rlek javĂ­tsd a kijelĂ¶lĂ©st.");
+            alert("Egy kalóz egyszerre csak EGY pozíciót tölthet be a hajón! Kérlek javítsd a kijelölést.");
         }
         return;
     }
@@ -9601,7 +9601,7 @@ function submitBulkCrewAssignment(shipId) {
     callBackend('saveBulkCrewAssignment', [shipId, assignmentsMap], 
         function(data) {
             if (data.success) {
-                uiAlert(data.message || "A legĂ©nysĂ©g beosztĂˇsa sikeresen frissĂ­tve!", "Siker");
+                uiAlert(data.message || "A legénység beosztása sikeresen frissítve!", "Siker");
                 openToborzoBarakk();
             } else {
                 document.getElementById('toborzo-loading').style.display = 'none';
@@ -9610,13 +9610,13 @@ function submitBulkCrewAssignment(shipId) {
         },
         function(err) {
             document.getElementById('toborzo-loading').style.display = 'none';
-            uiAlert("HĂˇlĂłzati hiba: " + err.message);
+            uiAlert("Hálózati hiba: " + err.message);
         }
     );
 }
 
 function assignToRole(shipId, role) {
-    var targetEmail = prompt("Kit szeretnĂ©l beosztani a(z) " + role + " pozĂ­ciĂłra ezen a hajĂłn?\\n\\nĂŤrd be a zsoldos/jĂˇtĂ©kos email cĂ­mĂ©t. Ha SAJĂT MAGADAT akarod beosztani, hagyd ĂĽresen a mezĹ‘t!", "");
+    var targetEmail = prompt("Kit szeretnél beosztani a(z) " + role + " pozícióra ezen a hajón?\\n\\nÍrd be a zsoldos/játékos email címét. Ha SAJÁT MAGADAT akarod beosztani, hagyd üresen a mezőt!", "");
     
     if (targetEmail === null) return;
 
@@ -9640,7 +9640,7 @@ function assignToRole(shipId, role) {
 }
 
 function removeRole(shipId, roleToClear, specificEmail) {
-    var msg = specificEmail ? "Biztosan ki akarod rĂşgni ezt a szemĂ©lyt: " + specificEmail + "?" : "Biztosan ki akarod rĂşgni a(z) " + roleToClear + " pozĂ­ciĂłn lĂ©vĹ‘ Ă¶sszes szemĂ©lyt?";
+    var msg = specificEmail ? "Biztosan ki akarod rúgni ezt a személyt: " + specificEmail + "?" : "Biztosan ki akarod rúgni a(z) " + roleToClear + " pozíción lévő összes személyt?";
     if (!confirm(msg)) return;
 
     document.getElementById('toborzo-loading').style.display = 'flex';
@@ -9650,12 +9650,12 @@ function removeRole(shipId, roleToClear, specificEmail) {
                 openToborzoBarakk();
             } else {
                 document.getElementById('toborzo-loading').style.display = 'none';
-                uiAlert("Hiba a kirĂşgĂˇs sorĂˇn: " + data.error);
+                uiAlert("Hiba a kirúgás során: " + data.error);
             }
         },
         function(err) {
             document.getElementById('toborzo-loading').style.display = 'none';
-            uiAlert("HĂˇlĂłzati hiba: " + err.message);
+            uiAlert("Hálózati hiba: " + err.message);
         }
     );
 }
@@ -9670,22 +9670,18 @@ function tryGoToDeck() {
             if (loading) loading.style.display = 'none';
             if (response.success) {
                 if (response.ships && response.ships.length > 0) {
-                    window.userShips = response.ships; // MentsĂĽk el a frontendnek
+                    window.userShips = response.ships; // Mentsük el a frontendnek
                     loadPage('fedelzet_oldal');
                 } else {
-                    uiAlert("MĂ©g egy rozzant tutajod sincs, hova akarsz felszĂˇllni?! Jelentkezz egy hajĂłra a ToborzĂłbarakkban vagy vĂˇsĂˇrolj egyet a HajĂłmĹ±helyben!", "Nincs hajĂłd!");
+                    uiAlert("Még egy rozzant tutajod sincs, hova akarsz felszállni?! Jelentkezz egy hajóra a Toborzóbarakkban vagy vásárolj egyet a Hajóműhelyben!", "Nincs hajód!");
                 }
             } else {
-                uiAlert("Hiba a hajĂłk lekĂ©rdezĂ©sekor: " + response.error);
+                uiAlert("Hiba a hajók lekérdezésekor: " + response.error);
             }
         },
         function(err) {
             if (loading) loading.style.display = 'none';
-            uiAlert("HĂˇlĂłzati hiba: " + err.message);
+            uiAlert("Hálózati hiba: " + err.message);
         }
     );
 }
-
-
-
-

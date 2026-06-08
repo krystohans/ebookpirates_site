@@ -9376,8 +9376,6 @@ function savePlayerJobStatus() {
     const role = document.getElementById('toborzo-role-select').value;
     const costInput = document.getElementById('toborzo-cost-input');
     const cost = costInput ? (parseInt(costInput.value, 10) || 10) : 10;
-    const costInput = document.getElementById('toborzo-cost-input');
-    const cost = costInput ? (parseInt(costInput.value, 10) || 10) : 10;
     
     if (status === 'Keresek munkĂˇt' && !role) {
         uiAlert("KĂ©rlek, vĂˇlassz ki egy keresett pozĂ­ciĂłt!");
@@ -9687,6 +9685,7 @@ function tryGoToDeck() {
         }
     );
 }
+
 
 
 

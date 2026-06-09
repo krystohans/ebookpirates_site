@@ -401,6 +401,7 @@ function login() {
 }
 
 function initializeApp(user) {
+    window.inGame = user.inGame === true;
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
     document.querySelector('.header-title').innerText = user.name;
     ensureCreditDisplayIsPresent();
@@ -598,6 +599,14 @@ function ensureCreditDisplayIsPresent() {
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
 function loadPage(pageName) {
+    // === JÁTÉK STÁTUSZ BLOKKOLÁS ===
+    if (window.inGame && pageName !== 'fedelzet_oldal' && pageName !== 'konyvtar' && pageName !== 'kincsek') {
+        if (typeof uiAlert === 'function') {
+            uiAlert("Nem hagyhatod el a hajót, amíg játékban vagy! (Kivéve Könyvtár és Karakterlap)", "Kikötőmester: Megtagadva");
+        }
+        return;
+    }
+    
     currentPageName = pageName;
     document.getElementById('content').style.display = 'block';
     // document.getElementById('marketing-view').style.display = 'none'; // Ha van ilyen div

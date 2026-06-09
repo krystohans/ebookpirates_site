@@ -2040,6 +2040,99 @@ function openPultModal() {
 }
 
 // 1.B Új Taverna Asztaltársaság hívása
+
+function sendTavernJobsChat() {
+    var inputEl = document.getElementById('tavern-jobs-chat-input');
+    if (!inputEl) return;
+    var message = inputEl.value.trim();
+    if (!message) return;
+
+    inputEl.value = '';
+    var contentDiv = document.getElementById('tavern-jobs-content');
+    contentDiv.innerHTML += '<p style="color: #000;"><b>Te:</b> ' + message + '</p>';
+    contentDiv.scrollTop = contentDiv.scrollHeight;
+
+    var loading = document.getElementById('loading-overlay');
+    if (loading) loading.style.display = 'flex';
+
+    callBackend('handleTavernTableChat', [message], function(response) {
+        if (loading) loading.style.display = 'none';
+        if (response && response.reply) {
+            contentDiv.innerHTML += '<p style="color: #8b0000;"><b>Munkások (NPC):</b> ' + response.reply.replace(/\n/g, '<br>') + '</p>';
+        } else {
+            contentDiv.innerHTML += '<p style="color: #8b0000;"><b>Munkások (NPC):</b> (Morgás és egyet nem értés hallatszik, de nincs érdemi válasz.)</p>';
+        }
+        contentDiv.scrollTop = contentDiv.scrollHeight;
+    }, function(err) {
+        if (loading) loading.style.display = 'none';
+        contentDiv.innerHTML += '<p style="color: red;"><i>A kocsmazaj elnyomta a hangodat. (Hálózati hiba: ' + err.message + ')</i></p>';
+    });
+}
+
+function openMercenaryMarketFromTavern() {
+    var modal = document.getElementById('mercenary-market-modal');
+    var listContainer = document.getElementById('mercenary-market-list');
+    
+    if (modal) modal.style.display = 'flex';
+    if (listContainer) listContainer.innerHTML = '<p>Zsoldosok keresése a kocsmában...</p>';
+    
+    var loading = document.getElementById('loading-overlay');
+    if (loading) loading.style.display = 'flex';
+
+    callBackend('getAvailableMercenaries', [], function(response) {
+        if (loading) loading.style.display = 'none';
+        
+        if (response && response.success) {
+            var html = '';
+            var mercenaries = response.mercenaries || [];
+            
+            if (mercenaries.length === 0) {
+                html = '<p>Jelenleg senki sem keres munkát a kocsmában.</p>';
+            } else {
+                mercenaries.forEach(function(merc) {
+                    var mercCost = parseInt(merc.cost) || 10;
+                    html += '<div style="background: rgba(255, 255, 255, 0.9); padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid #8b4513; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">';
+                    html += '<strong style="color:#000; font-size:1.1em;">' + merc.name + '</strong> <span style="font-size:0.9em; color:#3e2723; font-style:italic;">(' + merc.role + ')</span><br>';
+                    html += '<span style="font-size:0.9em; color:#8b0000; font-weight:bold;">Bérigény: ' + mercCost + ' Kr / hónap</span><br>';
+                    html += '<span style="font-size:0.8em; color:#555;">Típus: ' + merc.type + '</span><br>';
+                    html += '<div style="margin-top:8px; text-align:right;">';
+                    // We call handleHireMercenary
+                    html += '<button class="btn btn-sm" onclick="handleHireMercenary(\'' + merc.name + '\', ' + mercCost + ')" style="padding:5px 15px; font-size:0.9em;">Felbérel (' + mercCost + ' Kr)</button>';
+                    html += '</div></div>';
+                });
+            }
+            if (listContainer) listContainer.innerHTML = html;
+        } else {
+            if (listContainer) listContainer.innerHTML = '<p style="color:red;">Hiba a zsoldosok betöltésekor: ' + (response ? response.error : 'Ismeretlen hiba') + '</p>';
+        }
+    }, function(err) {
+        if (loading) loading.style.display = 'none';
+        if (listContainer) listContainer.innerHTML = '<p style="color:red;">Hálózati hiba: ' + err.message + '</p>';
+    });
+}
+
+function handleHireMercenary(mercName, cost) {
+    var pinCode = prompt("Zsoldos felbérlése: " + mercName + "\nÁr: " + cost + " Kr\n\nKérlek, add meg a Munkavállalói PIN kódodat a szerződés hitelesítéséhez:");
+    if (!pinCode) return;
+    
+    var loading = document.getElementById('loading-overlay');
+    if (loading) loading.style.display = 'flex';
+    
+    callBackend('BT_hireMercenary', [pinCode, mercName, cost], function(response) {
+        if (loading) loading.style.display = 'none';
+        
+        if (response && response.npcResponse && !response.npcResponse.includes("Hiba")) {
+            uiAlert("Sikeres bérlés!", response.npcResponse);
+            openMercenaryMarketFromTavern(); // Refresh the list!
+        } else {
+            uiAlert("Hiba", response ? response.npcResponse : "Ismeretlen hiba történt.");
+        }
+    }, function(err) {
+        if (loading) loading.style.display = 'none';
+        uiAlert("Hálózati hiba", err.message);
+    });
+}
+
 function openTavernJobs() {
     const modal = document.getElementById('tavern-jobs-modal');
     if (modal) {

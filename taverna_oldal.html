@@ -245,8 +245,21 @@
             <div id="tavern-jobs-content" style="min-height: 150px; margin-top: 15px; font-size: 1.05em; line-height: 1.4;">
                 <p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...</i></p>
             </div>
-            <button class="btn" onclick="document.getElementById('tavern-jobs-modal').style.display='none'" style="margin-top: 15px; width: 100%;">Vissza a pulthoz</button>
+            
+            <div id="tavern-jobs-chat-controls" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #ccc; padding-top: 10px;">
+                <p style="font-size: 0.9em; color: #555; margin: 0;"><b>Asztaltársaság:</b> Kérdezz a kalandokról, a toborzásról, vagy a Hajónapló vezetéséről!</p>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="tavern-jobs-chat-input" placeholder="Mit mondasz nekik?" style="flex: 1; padding: 8px;">
+                    <button class="btn" onclick="sendTavernJobsChat()">Kérdez</button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn" onclick="openMercenaryMarketFromTavern()" style="flex: 1; background-color: #8b4513; color: white;">👥 Zsoldosok felbérlése</button>
+                <button class="btn" onclick="document.getElementById('tavern-jobs-modal').style.display='none'" style="flex: 1;">Vissza a pulthoz</button>
+            </div>
         </div>
+      </div>
     </div>
 
     <!-- Notice Board Modal -->
@@ -404,3 +417,16 @@
 
 <!-- End Universal NPC Modal -->
 </div>
+
+
+    <!-- Zsoldos Piac Modal -->
+    <div id="mercenary-market-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 105;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 500px; width: 95%; max-height: 80vh; display: flex; flex-direction: column;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('mercenary-market-modal').style.display='none'">X</button>
+            <h4 style="color: #8b0000; border-bottom: 2px solid #8b0000; padding-bottom: 5px; margin-top: 0;">Felvehető Zsoldosok</h4>
+            <div id="mercenary-market-list" style="flex: 1; overflow-y: auto; margin-top: 15px; font-size: 1.05em; line-height: 1.4; padding-right: 5px;">
+                <!-- Lista ide töltődik -->
+            </div>
+            <button class="btn" onclick="document.getElementById('mercenary-market-modal').style.display='none'" style="margin-top: 15px; width: 100%;">Bezárás</button>
+        </div>
+    </div>

@@ -13,15 +13,55 @@
 
     <div class="page-container">
         <div class="page-section" style="text-align: center;">
-            <h1 style="color: var(--color-accent); font-family: var(--font-serif);" data-lang="deck_welcome_title">Üdv a fedélzeten!</h1>
+            <h1 id="active-ship-name" style="color: var(--color-accent); font-family: var(--font-serif); text-transform: uppercase;">Rakodás alatt...</h1>
 
-            <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 20px auto;">
-                <button id="jump-to-save-btn" class="btn" style="background-color: var(--color-secondary); padding: 15px; font-size: 1.1em;" onclick="jumpToSavedState()" data-lang="deck_resume_button">
-                    <i class="fas fa-anchor"></i> Ugrás a mentett álláshoz
+            <!-- HAJÓ VÁLASZTÓ (Csak akkor látszik, ha több hajó van) -->
+            <div id="ship-selector-container" style="display: none; margin-bottom: 20px;">
+                <p>Melyik hajódra mész?</p>
+                <select id="ship-selector" class="input-field" onchange="selectShip(this.value)" style="padding: 10px; font-size: 1.1em;"></select>
+            </div>
+
+            <!-- KIHAJÓZÁS VEZÉRLŐK -->
+            <div style="background: rgba(0,0,0,0.05); border-radius: 8px; padding: 20px; max-width: 500px; margin: 0 auto 20px auto; border: 1px solid #ccc;">
+                <h3 style="margin-top: 0;">Kihajózunk!</h3>
+                <p style="font-size: 0.9em; color: #555;">Válassz küldetést és add meg a célt!</p>
+                
+                <input type="text" id="departure-target" class="input-field" placeholder="Mi a cél? (Kaland neve vagy Zsánersziget)" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #999; border-radius: 4px; display: none;">
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn" style="background-color: var(--color-gold); color: #333; padding: 15px; font-size: 1.1em;" onclick="prepareDeparture('Hártyahalászat')">
+                        <i class="fas fa-fish"></i> Hártyahalászat
+                    </button>
+                    <button class="btn" style="background-color: #8b0000; padding: 15px; font-size: 1.1em;" onclick="prepareDeparture('Kalandjáték')">
+                        <i class="fas fa-skull-crossbones"></i> Kalandjáték
+                    </button>
+                    <button class="btn" style="background-color: #2e7d32; padding: 15px; font-size: 1.1em;" onclick="prepareDeparture('Könyvexpedíció')">
+                        <i class="fas fa-book"></i> Könyvexpedíció
+                    </button>
+                </div>
+                
+                <button id="confirm-departure-btn" class="btn" style="background-color: #ff9800; width: 100%; padding: 15px; font-size: 1.2em; margin-top: 15px; display: none;" onclick="executeDeparture()">
+                    INDULÁS!
                 </button>
+            </div>
 
-                <button class="btn" style="background-color: var(--color-gold); color: #333; padding: 15px; font-size: 1.1em;" onclick="launchGame()" data-lang="deck_fish_button">
-                    <i class="fas fa-fish"></i> Gyerünk hártyát halászni!
+            <!-- FEDÉLZETI CHAT -->
+            <div style="background: #eceff1; border-radius: 8px; border: 1px solid #ccc; max-width: 500px; margin: 0 auto; overflow: hidden; display: flex; flex-direction: column; height: 300px;">
+                <div style="background: #37474f; color: white; padding: 10px; font-weight: bold;">
+                    Fedélzeti Megbeszélés
+                </div>
+                <div id="deck-chat-history" style="flex: 1; padding: 10px; overflow-y: auto; text-align: left; font-size: 0.9em; background: #fff;">
+                    <p style="color: #888;"><i>Csend van a fedélzeten. A legénység a parancsaidra vár...</i></p>
+                </div>
+                <div style="display: flex; padding: 5px; background: #ddd; border-top: 1px solid #ccc;">
+                    <input type="text" id="deck-chat-input" placeholder="Szólj a legénységhez..." style="flex: 1; padding: 8px; border: 1px solid #aaa; border-radius: 4px;">
+                    <button class="btn" onclick="sendDeckChat()" style="margin-left: 5px; padding: 8px 15px;">Mond</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button id="jump-to-save-btn" class="btn" style="background-color: var(--color-secondary); padding: 10px;" onclick="jumpToSavedState()" data-lang="deck_resume_button">
+                    <i class="fas fa-anchor"></i> Ugrás a mentett álláshoz
                 </button>
             </div>
         </div>

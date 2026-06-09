@@ -639,6 +639,9 @@ function loadPage(pageName) {
                     } else if (pageName === 'felhokolostor_oldal') {
                         initializePage(pageName);
                         if (typeof refreshMonasteryWork === 'function') refreshMonasteryWork();
+                    } else if (pageName === 'fedelzet_oldal') {
+                        initializePage(pageName);
+                        if (typeof initFedelzetOldal === 'function') initFedelzetOldal();
                     } else if (pageName === 'konyvtar') {
                         initializePage(pageName);
                         if (typeof initializeLibraryAndMapPage === 'function') initializeLibraryAndMapPage(pageData);
@@ -9777,4 +9780,117 @@ function tryGoToDeck() {
             uiAlert("Hálózati hiba: " + err.message);
         }
     );
+}
+
+
+// ==========================================
+// === FEDÉLZET LOGIKA (Hajók, Indulás) ===
+// ==========================================
+
+let selectedShipForDeparture = null;
+let selectedGameTypeForDeparture = null;
+
+function initFedelzetOldal() {
+    callBackend('getAvailableShips', [], function(response) {
+        if (response.success && response.ships) {
+            window.userShips = response.ships;
+            var selectorContainer = document.getElementById('ship-selector-container');
+            var selector = document.getElementById('ship-selector');
+            var nameHeader = document.getElementById('active-ship-name');
+            
+            if (window.userShips.length === 0) {
+                nameHeader.textContent = "Nincs elérhető hajód a kikötőben!";
+            } else if (window.userShips.length === 1) {
+                selectorContainer.style.display = 'none';
+                selectShip(window.userShips[0].id);
+            } else {
+                selectorContainer.style.display = 'block';
+                selector.innerHTML = '';
+                window.userShips.forEach(function(ship) {
+                    var opt = document.createElement('option');
+                    opt.value = ship.id;
+                    opt.textContent = ship.name + " (" + ship.type + ")";
+                    selector.appendChild(opt);
+                });
+                selectShip(window.userShips[0].id);
+            }
+        }
+    });
+}
+
+function selectShip(shipId) {
+    if (!window.userShips) return;
+    var ship = window.userShips.find(function(s) { return s.id === shipId; });
+    if (ship) {
+        selectedShipForDeparture = ship;
+        document.getElementById('active-ship-name').textContent = ship.name;
+    }
+}
+
+function prepareDeparture(gameType) {
+    selectedGameTypeForDeparture = gameType;
+    var targetInput = document.getElementById('departure-target');
+    var confirmBtn = document.getElementById('confirm-departure-btn');
+    
+    if (gameType === 'Hártyahalászat') {
+        targetInput.style.display = 'none';
+    } else {
+        targetInput.style.display = 'block';
+        targetInput.placeholder = gameType === 'Könyvexpedíció' ? 'Add meg a Zsánersziget nevét!' : 'Add meg a Kaland nevét pontosan!';
+    }
+    
+    confirmBtn.style.display = 'block';
+    confirmBtn.innerHTML = "INDULÁS: " + gameType + "!";
+}
+
+function executeDeparture() {
+    if (!selectedShipForDeparture) {
+        uiAlert("Nincs kiválasztva hajó!");
+        return;
+    }
+    
+    var targetName = document.getElementById('departure-target').value;
+    if (selectedGameTypeForDeparture !== 'Hártyahalászat' && (!targetName || targetName.trim().length < 3)) {
+        uiAlert("Meg kell adnod egy érvényes célt (min 3 karakter)!");
+        return;
+    }
+    
+    document.getElementById('loading-overlay').style.display = 'flex';
+    
+    callBackend('requestDeparture', [selectedShipForDeparture.id, selectedGameTypeForDeparture, targetName], function(res) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        if (res.success) {
+            uiAlert(res.message, "Sikeres Kihajózás!");
+            document.getElementById('departure-target').value = '';
+        } else {
+            uiAlert(res.error, "Kikötőmester: Megtagadva!");
+        }
+    }, function(err) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        uiAlert("Szerverhiba: " + err.message);
+    });
+}
+
+function sendDeckChat() {
+    var input = document.getElementById('deck-chat-input');
+    var msg = input.value.trim();
+    if (!msg) return;
+    
+    input.value = '';
+    var chatHistory = document.getElementById('deck-chat-history');
+    chatHistory.innerHTML += '<p style="color: blue; margin: 5px 0;"><b>Te:</b> ' + msg + '</p>';
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+    
+    // Ideiglenes Mimic válaszadó (Phase 3 előtt)
+    setTimeout(function() {
+        var responses = [
+            "Értettem, Kapitány! Mindenki a posztján!",
+            "A vitorlák rendben, várjuk a parancsot!",
+            "Igenis! A raktár feltöltve, indulásra készen állunk.",
+            "*(A legénység némán teszi a dolgát, csak a tenger zúgása hallatszik.)*"
+        ];
+        var reply = responses[Math.floor(Math.random() * responses.length)];
+        chatHistory.innerHTML += '<p style="color: #444; margin: 5px 0;"><b>Legénység (Mimic):</b> ' + reply + '</p>';
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }, 1500);
 }

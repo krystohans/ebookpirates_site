@@ -7978,7 +7978,13 @@ function initializeKincsekPage(response) {
     if (hartyaEl) hartyaEl.innerText = data.hartya;
 
     var talentumEl = document.getElementById('char-sheet-talentum');
-    if (talentumEl) talentumEl.innerText = data.talentum;
+    if (talentumEl) {
+                var rawTalentum = Number(data.talentum) || 0;
+                talentumEl.innerText = Math.floor(rawTalentum);
+                talentumEl.title = "Pontos Tálentum: " + rawTalentum;
+                talentumEl.style.cursor = 'help';
+                talentumEl.style.borderBottom = '1px dotted #D2E505'; // Kis vizuális jelzés a tooltiphez
+            }
 
     var letkristalyEl = document.getElementById('char-sheet-letkristaly');
     if (letkristalyEl) letkristalyEl.innerText = data.letkristaly;

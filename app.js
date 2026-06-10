@@ -10066,7 +10066,7 @@ function showVehicleDetails(index) {
   html += '<div style="background:var(--color-bg); padding:10px; border-radius:5px; border:1px solid var(--color-border); font-size:0.9em; line-height:1.4;">';
   
   // Alapadatok elöl
-  var priorityKeys = ['Hajó típusa', 'Jellemző hossz', 'Leírás', 'Mérettartomány', 'Tüzérségi szint', 'Védelmi szint', 'Lokátor szint', 'Sebesség max.', 'Utazási magasság max.', 'Merülési mélység max.', 'Élettartam'];
+  var priorityKeys = ['Hajó típusa', 'Jellemző hossz', 'Leírás', 'Mérettartomány', 'Tüzérségi szint', 'Védelmi szint', 'Lokátor szint', 'Sebesség max.', 'Utazási magasság max.', 'Merülési mélÉlettartam'];
   
   for (var i=0; i<priorityKeys.length; i++) {
     var k = priorityKeys[i];

@@ -10063,6 +10063,14 @@ function showVehicleDetails(index) {
   var html = '<button onclick="renderVehicleList()" class="btn" style="margin-bottom:15px; width:100%;"><i class="fas fa-arrow-left"></i> Vissza a listához</button>';
   
   html += '<h3 style="margin-top:0; color:var(--color-accent);">' + vName + '</h3>';
+    
+    // Hajókép helye a típus alapján
+    var rawType = v['Hajó típusa'] || 'ismeretlen';
+    var safeType = rawType.toLowerCase().replace(/[\s\/\(\)]+/g, '_').replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ö/g, 'o').replace(/ő/g, 'o').replace(/ú/g, 'u').replace(/ü/g, 'u').replace(/ű/g, 'u');
+    html += '<div style="text-align:center; margin-bottom:15px; padding:10px; background:rgba(0,0,0,0.3); border-radius:5px; border:1px dashed var(--color-accent);">';
+    html += '<img src="assets/ships/' + safeType + '.png" alt="' + rawType + '" style="max-width:100%; max-height:200px; object-fit:contain;" onerror="this.onerror=null; this.src=\'assets/ship_placeholder.png\'; this.style.opacity=\'0.5\';">';
+    html += '<div style="font-size:0.8em; color:#aaa; margin-top:5px;">Látványterv (' + safeType + '.png)</div>';
+    html += '</div>';
   html += '<div class="stat-block">';
   
   // Alapadatok elöl

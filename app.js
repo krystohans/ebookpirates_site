@@ -9993,3 +9993,96 @@ function bindScrolls(baseCode) {
         uiAlert("Hálózati hiba: " + err.message);
     });
 }
+
+
+// --- JÁRMŰ MODAL LOGIKA ---
+var currentFetchedVehicles = [];
+
+function openVehicleModal(category) {
+  var modal = document.getElementById('vehicle-modal');
+  var title = document.getElementById('vehicle-modal-title');
+  var body = document.getElementById('vehicle-modal-body');
+  
+  if (!modal || !title || !body) return;
+  
+  title.innerText = category + " flottád";
+  body.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Hajónaplók felnyitása...</div>';
+  modal.style.display = 'block';
+  
+  var token = localStorage.getItem('session_token');
+  callBackend('getUserVehiclesByCategory', [category])
+    .then(res => {
+      if (res.success) {
+        currentFetchedVehicles = res.vehicles;
+        renderVehicleList();
+      } else {
+        body.innerHTML = '<div style="color:red;">Hiba: ' + res.message + '</div>';
+      }
+    })
+    .catch(err => {
+      body.innerHTML = '<div style="color:red;">Hálózati hiba történt.</div>';
+    });
+}
+
+function closeVehicleModal() {
+  var modal = document.getElementById('vehicle-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function renderVehicleList() {
+  var body = document.getElementById('vehicle-modal-body');
+  if (currentFetchedVehicles.length === 0) {
+    body.innerHTML = '<div>Nincs a neveden ilyen kategóriájú jármű.</div>';
+    return;
+  }
+  
+  var html = '<ul style="list-style:none; padding:0; margin:0;">';
+  for (var i = 0; i < currentFetchedVehicles.length; i++) {
+    var v = currentFetchedVehicles[i];
+    var vName = v['Hajó neve'] || 'Névtelen jármű';
+    var vType = v['Hajó típusa'] || '';
+    
+    html += '<li style="margin-bottom:10px; padding:10px; background:var(--color-bg); border:1px solid var(--color-border); border-radius:5px; cursor:pointer;" onclick="showVehicleDetails(' + i + ')">';
+    html += '<strong style="color:var(--color-accent); font-size:1.1em;">' + vName + '</strong>';
+    if (vType) html += '<br><small style="color:#aaa;">' + vType + '</small>';
+    html += '</li>';
+  }
+  html += '</ul>';
+  body.innerHTML = html;
+}
+
+function showVehicleDetails(index) {
+  var v = currentFetchedVehicles[index];
+  if (!v) return;
+  
+  var body = document.getElementById('vehicle-modal-body');
+  var vName = v['Hajó neve'] || 'Névtelen jármű';
+  
+  var html = '<button onclick="renderVehicleList()" style="margin-bottom:15px; background:transparent; border:1px solid var(--color-accent); color:var(--color-text); padding:5px 10px; border-radius:3px; cursor:pointer;"><i class="fas fa-arrow-left"></i> Vissza a listához</button>';
+  
+  html += '<h3 style="margin-top:0; color:var(--color-accent);">' + vName + '</h3>';
+  html += '<div style="background:var(--color-bg); padding:10px; border-radius:5px; border:1px solid var(--color-border); font-size:0.9em; line-height:1.4;">';
+  
+  // Alapadatok elöl
+  var priorityKeys = ['Hajó típusa', 'Jellemző hossz', 'Leírás', 'Mérettartomány', 'Tüzérségi szint', 'Védelmi szint', 'Lokátor szint', 'Sebesség max.', 'Utazási magasság max.', 'Merülési mélység max.', 'Élettartam'];
+  
+  for (var i=0; i<priorityKeys.length; i++) {
+    var k = priorityKeys[i];
+    if (v[k]) {
+      html += '<div style="margin-bottom:5px;"><strong>' + k + ':</strong> ' + v[k] + '</div>';
+    }
+  }
+  
+  html += '<hr style="border-color:var(--color-border); margin:10px 0;">';
+  
+  // Többi adat (pl. Legénység, Utasok, Felszerelések)
+  for (var key in v) {
+    if (priorityKeys.indexOf(key) !== -1) continue;
+    if (key === 'Hajó neve') continue;
+    
+    html += '<div style="margin-bottom:5px;"><strong>' + key + ':</strong> ' + v[key] + '</div>';
+  }
+  
+  html += '</div>';
+  body.innerHTML = html;
+}

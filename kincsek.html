@@ -38,10 +38,10 @@
 
         <div class="stat-block">
           <h4 data-lang="treasures_vehicles_title">Járművek</h4>
-          <div class="stat-line"><i class="fas fa-ship"></i> <span data-lang="treasures_vehicle_sail_label">Vitorlás:</span> <span class="value" id="char-sheet-vitorlas">Nincs</span></div>
-          <div class="stat-line"><i class="fas fa-anchor"></i> <span data-lang="treasures_vehicle_boat_label">Csónak:</span> <span class="value" id="char-sheet-csonak">Nincs</span></div>
-          <div class="stat-line"><i class="fas fa-water"></i> <span data-lang="treasures_vehicle_sub_label">Merülő:</span> <span class="value" id="char-sheet-merulo">Nincs</span></div>
-          <div class="stat-line"><i class="fas fa-wind"></i> <span data-lang="treasures_vehicle_airship_label">Léghajó:</span> <span class="value" id="char-sheet-leghajo">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-ship"></i> <span data-lang="treasures_vehicle_sail_label" style="cursor: pointer; color: var(--color-accent); text-decoration: underline dotted;" onclick="openVehicleModal('Vitorlás')">Vitorlás:</span> <span class="value" id="char-sheet-vitorlas">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-anchor"></i> <span data-lang="treasures_vehicle_boat_label" style="cursor: pointer; color: var(--color-accent); text-decoration: underline dotted;" onclick="openVehicleModal('Csónak')">Csónak:</span> <span class="value" id="char-sheet-csonak">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-water"></i> <span data-lang="treasures_vehicle_sub_label" style="cursor: pointer; color: var(--color-accent); text-decoration: underline dotted;" onclick="openVehicleModal('Búvárhajó')">Búvárhajó:</span> <span class="value" id="char-sheet-merulo">Nincs</span></div>
+          <div class="stat-line"><i class="fas fa-wind"></i> <span data-lang="treasures_vehicle_airship_label" style="cursor: pointer; color: var(--color-accent); text-decoration: underline dotted;" onclick="openVehicleModal('Léghajó')">Léghajó:</span> <span class="value" id="char-sheet-leghajo">Nincs</span></div>
         <div class="stat-block">
           <details>
             <summary style="font-weight: bold; cursor: pointer; outline: none;"><h4 data-lang="treasures_mercenaries_title" style="display:inline; margin:0; border-bottom: none; color: var(--color-accent);">Legénység</h4></summary>
@@ -51,6 +51,16 @@
           </details>
         </div>
       </div>
+  
+  <!-- Járművek Modal -->
+  <div id="vehicle-modal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8);">
+    <div class="modal-content" style="background-color: var(--color-bg-secondary); margin: 5% auto; padding: 20px; border: 1px solid var(--color-accent); width: 90%; max-width: 600px; border-radius: 8px; color: var(--color-text);">
+      <span class="close" onclick="closeVehicleModal()" style="color: var(--color-text); float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+      <h2 id="vehicle-modal-title" style="color: var(--color-accent); border-bottom: 1px solid var(--color-border); padding-bottom: 10px; margin-top: 0;">Járművek</h2>
+      <div id="vehicle-modal-body" style="margin-top: 15px;">
+        <!-- Ide jön a dinamikus tartalom -->
+      </div>
+    </div>
   </div>
 
   <div id="navigation" style="text-align: center; margin: 20px 0;">

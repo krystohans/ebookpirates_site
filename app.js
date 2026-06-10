@@ -657,6 +657,7 @@ function loadPage(pageName) {
                     } else if (pageName === 'tekercsmester_oldal') {
                         initializePage(pageName);
                         if (typeof initializeTekercsmesterPage === 'function') initializeTekercsmesterPage(pageData);
+                        if (typeof loadCompletableScrolls === 'function') loadCompletableScrolls();
                     } else if (pageName === 'piac_oldal') {
                         initializePage(pageName);
                         if (typeof initializePiacOldal === 'function') initializePiacOldal();
@@ -9933,4 +9934,56 @@ function sendDeckChat() {
         chatHistory.innerHTML += '<p style="color: #444; margin: 5px 0;"><b>Legénység (Mimic):</b> ' + reply + '</p>';
         chatHistory.scrollTop = chatHistory.scrollHeight;
     }, 1500);
+}
+
+
+// ===============================================
+// === TEKERCSMESTER: MÁSOLATTÁ FŰZÉS LOGIKA ===
+// ===============================================
+
+function loadCompletableScrolls() {
+    callBackend('getCompletableScrollSets', [], function(res) {
+        var container = document.getElementById('completable-scrolls-list');
+        var section = document.getElementById('masolatta-fuzes-section');
+        if (!container || !section) return;
+        
+        container.innerHTML = '';
+        if (res && res.length > 0) {
+            section.style.display = 'block';
+            res.forEach(function(item) {
+                var div = document.createElement('div');
+                div.style.border = '1px solid #d2b48c';
+                div.style.borderRadius = '5px';
+                div.style.padding = '15px';
+                div.style.marginBottom = '10px';
+                div.style.backgroundColor = 'rgba(255,255,255,0.6)';
+                
+                div.innerHTML = '<h4 style="margin:0 0 5px 0;">' + item.title + '</h4>' + 
+                                '<p style="margin:0 0 10px 0; font-style:italic;">' + item.author + '</p>' + 
+                                '<button class="btn" style="background-color: var(--color-gold); color: #000; width: 100%;" ' + 
+                                'onclick="bindScrolls(\'' + item.code + '\')"><i class="fas fa-scroll"></i> Másolattá Fűzöm!</button>';
+                container.appendChild(div);
+            });
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+function bindScrolls(baseCode) {
+    if (!confirm("Biztosan összefűzöd a tekercseket? A felhasznált fejezetek eltűnnek, és egy új Másolat jön létre!")) return;
+    
+    document.getElementById('loading-overlay').style.display = 'flex';
+    callBackend('bindScrollsToCopy', [baseCode], function(res) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        if (res && res.success) {
+            uiAlert("Sikeresen összefűzted a tekercseket! A Másolat bekerült a gyűjteményedbe.", "Siker!");
+            loadPage('tekercsmester_oldal');
+        } else {
+            uiAlert("Hiba: " + (res ? res.error : "Ismeretlen hiba történt."), "Kudarc");
+        }
+    }, function(err) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        uiAlert("Hálózati hiba: " + err.message);
+    });
 }

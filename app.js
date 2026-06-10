@@ -10034,7 +10034,7 @@ function closeVehicleModal() {
 function renderVehicleList() {
   var body = document.getElementById('vehicle-modal-body');
   if (currentFetchedVehicles.length === 0) {
-    body.innerHTML = '<div>Nincs a neveden ilyen kategóriájú jármű.</div>';
+    body.innerHTML = '<div class="stat-block" style="text-align:center;">Nincs a neveden ilyen kategóriájú jármű.</div>';
     return;
   }
   
@@ -10044,7 +10044,7 @@ function renderVehicleList() {
     var vName = v['Hajó neve'] || 'Névtelen jármű';
     var vType = v['Hajó típusa'] || '';
     
-    html += '<li style="margin-bottom:10px; padding:10px; background:var(--color-bg); border:1px solid var(--color-border); border-radius:5px; cursor:pointer;" onclick="showVehicleDetails(' + i + ')">';
+    html += '<li class="stat-block" style="margin-bottom:10px; cursor:pointer;" onclick="showVehicleDetails(' + i + ')">';
     html += '<strong style="color:var(--color-accent); font-size:1.1em;">' + vName + '</strong>';
     if (vType) html += '<br><small style="color:#aaa;">' + vType + '</small>';
     html += '</li>';
@@ -10060,10 +10060,10 @@ function showVehicleDetails(index) {
   var body = document.getElementById('vehicle-modal-body');
   var vName = v['Hajó neve'] || 'Névtelen jármű';
   
-  var html = '<button onclick="renderVehicleList()" style="margin-bottom:15px; background:transparent; border:1px solid var(--color-accent); color:var(--color-text); padding:5px 10px; border-radius:3px; cursor:pointer;"><i class="fas fa-arrow-left"></i> Vissza a listához</button>';
+  var html = '<button onclick="renderVehicleList()" class="btn" style="margin-bottom:15px; width:100%;"><i class="fas fa-arrow-left"></i> Vissza a listához</button>';
   
   html += '<h3 style="margin-top:0; color:var(--color-accent);">' + vName + '</h3>';
-  html += '<div style="background:var(--color-bg); padding:10px; border-radius:5px; border:1px solid var(--color-border); font-size:0.9em; line-height:1.4;">';
+  html += '<div class="stat-block">';
   
   // Alapadatok elöl
   var priorityKeys = ['Hajó típusa', 'Jellemző hossz', 'Leírás', 'Mérettartomány', 'Tüzérségi szint', 'Védelmi szint', 'Lokátor szint', 'Sebesség max.', 'Utazási magasság max.', 'Merülési mélÉlettartam'];
@@ -10071,7 +10071,7 @@ function showVehicleDetails(index) {
   for (var i=0; i<priorityKeys.length; i++) {
     var k = priorityKeys[i];
     if (v[k]) {
-      html += '<div style="margin-bottom:5px;"><strong>' + k + ':</strong> ' + v[k] + '</div>';
+      html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>' + k + ':</strong> <span>' + v[k] + '</span></div>';
     }
   }
   
@@ -10082,7 +10082,7 @@ function showVehicleDetails(index) {
     if (priorityKeys.indexOf(key) !== -1) continue;
     if (key === 'Hajó neve') continue;
     
-    html += '<div style="margin-bottom:5px;"><strong>' + key + ':</strong> ' + v[key] + '</div>';
+    html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>' + key + ':</strong> <span style="color:#d4af37;">' + v[key] + '</span></div>';
   }
   
   html += '</div>';

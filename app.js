@@ -9800,31 +9800,62 @@ let selectedShipForDeparture = null;
 let selectedGameTypeForDeparture = null;
 
 function initFedelzetOldal() {
-    callBackend('getAvailableShips', [], function(response) {
-        if (response.success && response.ships) {
-            window.userShips = response.ships;
-            var selectorContainer = document.getElementById('ship-selector-container');
-            var selector = document.getElementById('ship-selector');
-            var nameHeader = document.getElementById('active-ship-name');
-            
-            if (window.userShips.length === 0) {
-                nameHeader.textContent = "Nincs elérhető hajód a kikötőben!";
-            } else if (window.userShips.length === 1) {
-                selectorContainer.style.display = 'none';
-                selectShip(window.userShips[0].id);
+    var kihajDiv = document.getElementById('kihajozunk-container');
+    var jumpBtn = document.getElementById('jump-to-save-btn');
+    var selectorContainer = document.getElementById('ship-selector-container');
+    var selector = document.getElementById('ship-selector');
+    var nameHeader = document.getElementById('active-ship-name');
+
+    if (window.inGame) {
+        // JÁTÉKBAN LÉVŐ NÉZET
+        if (kihajDiv) kihajDiv.style.display = 'none';
+        if (jumpBtn) jumpBtn.style.display = 'block';
+        if (selectorContainer) selectorContainer.style.display = 'none';
+        
+        nameHeader.textContent = "Hajó keresése...";
+        
+        // Mivel a getUserDataByToken lehozza az activeShipId-t, de az app.js-ben nincs globális user objektumunk ami itt elérhető
+        // Ezért a biztos megoldás: egy külön lekérdezés, ami a mi tokenünk alapján visszaadja a játékban lévő hajónk nevét
+        // De még jobb: az initializeApp elmentette a window.activeShipId-t? Nem, azt még hozzá kell adnunk!
+        // Egyelőre hívjuk meg a backendet
+        callBackend('getActiveShipDetails', [window.activeShipId || ''], function(res) {
+            if (res.success && res.shipName) {
+                nameHeader.textContent = res.shipName.toUpperCase();
+                selectedShipForDeparture = { id: window.activeShipId, name: res.shipName };
             } else {
-                selectorContainer.style.display = 'block';
-                selector.innerHTML = '';
-                window.userShips.forEach(function(ship) {
-                    var opt = document.createElement('option');
-                    opt.value = ship.id;
-                    opt.textContent = ship.name + " (" + ship.type + ")";
-                    selector.appendChild(opt);
-                });
-                selectShip(window.userShips[0].id);
+                nameHeader.textContent = "ISMERETLEN HAJÓ A TENGEREN";
             }
-        }
-    });
+        });
+        
+    } else {
+        // KIKÖTŐI NÉZET
+        if (kihajDiv) kihajDiv.style.display = 'block';
+        if (jumpBtn) jumpBtn.style.display = 'none';
+        
+        callBackend('getAvailableShips', [], function(response) {
+            if (response.success && response.ships) {
+                window.userShips = response.ships;
+                
+                if (window.userShips.length === 0) {
+                    nameHeader.textContent = "Nincs elérhető hajód a kikötőben!";
+                    if (selectorContainer) selectorContainer.style.display = 'none';
+                } else if (window.userShips.length === 1) {
+                    if (selectorContainer) selectorContainer.style.display = 'none';
+                    selectShip(window.userShips[0].id);
+                } else {
+                    if (selectorContainer) selectorContainer.style.display = 'block';
+                    selector.innerHTML = '';
+                    window.userShips.forEach(function(ship) {
+                        var opt = document.createElement('option');
+                        opt.value = ship.id;
+                        opt.textContent = ship.name + " (" + ship.type + ")";
+                        selector.appendChild(opt);
+                    });
+                    selectShip(window.userShips[0].id);
+                }
+            }
+        });
+    }
 }
 
 function selectShip(shipId) {

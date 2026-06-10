@@ -10010,18 +10010,20 @@ function openVehicleModal(category) {
   modal.style.display = 'block';
   
   var token = localStorage.getItem('session_token');
-  callBackend('getUserVehiclesByCategory', [category])
-    .then(res => {
-      if (res.success) {
+  callBackend('getUserVehiclesByCategory', [category],
+    function(res) {
+      if (res && res.success) {
         currentFetchedVehicles = res.vehicles;
         renderVehicleList();
       } else {
-        body.innerHTML = '<div style="color:red;">Hiba: ' + res.message + '</div>';
+        var msg = res ? res.message : "Ismeretlen hiba";
+        body.innerHTML = '<div style="color:red;">Hiba: ' + msg + '</div>';
       }
-    })
-    .catch(err => {
+    },
+    function(err) {
       body.innerHTML = '<div style="color:red;">Hálózati hiba történt.</div>';
-    });
+    }
+  );
 }
 
 function closeVehicleModal() {

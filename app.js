@@ -9881,6 +9881,9 @@ function prepareDeparture(gameType) {
     
     if (gameType === 'Hártyahalászat') {
         targetInput.style.display = 'none';
+        confirmBtn.style.display = 'none';
+        executeDeparture();
+        return;
     } else {
         targetInput.style.display = 'block';
         targetInput.placeholder = gameType === 'Könyvexpedíció' ? 'Add meg a Zsánersziget nevét!' : 'Add meg a Kaland nevét pontosan!';

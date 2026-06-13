@@ -9871,6 +9871,11 @@ function selectShip(shipId) {
     if (ship) {
         selectedShipForDeparture = ship;
         document.getElementById('active-ship-name').textContent = ship.name;
+        
+        // ÚJ: Indítsuk el a session pollingot, ha a fedélzeten vagyunk!
+        if (currentPageId === 'fedelzet_oldal') {
+            startSessionPolling();
+        }
     }
 }
 
@@ -9879,14 +9884,22 @@ function prepareDeparture(gameType) {
     var targetInput = document.getElementById('departure-target');
     var confirmBtn = document.getElementById('confirm-departure-btn');
     
+    var bookInput = document.getElementById('departure-book-target');
     if (gameType === 'Hártyahalászat') {
         targetInput.style.display = 'none';
+        bookInput.style.display = 'none';
         confirmBtn.style.display = 'none';
         executeDeparture();
         return;
     } else {
         targetInput.style.display = 'block';
         targetInput.placeholder = gameType === 'Könyvexpedíció' ? 'Add meg a Zsánersziget nevét!' : 'Add meg a Kaland nevét pontosan!';
+        if (gameType === 'Könyvexpedíció') {
+            bookInput.style.display = 'block';
+        } else {
+            bookInput.style.display = 'none';
+            bookInput.value = '';
+        }
     }
     
     confirmBtn.style.display = 'block';
@@ -9900,14 +9913,23 @@ function executeDeparture() {
     }
     
     var targetName = document.getElementById('departure-target').value;
+    var targetBook = document.getElementById('departure-book-target').value;
+    
     if (selectedGameTypeForDeparture !== 'Hártyahalászat' && (!targetName || targetName.trim().length < 3)) {
         uiAlert("Meg kell adnod egy érvényes célt (min 3 karakter)!");
         return;
     }
     
+    if (selectedGameTypeForDeparture === 'Könyvexpedíció' && (!targetBook || targetBook.trim().length < 2)) {
+        uiAlert("Könyvexpedíció esetén meg kell adnod a keresett könyv címét is!");
+        return;
+    }
+    
     document.getElementById('loading-overlay').style.display = 'flex';
     
-    callBackend('requestDeparture', [selectedShipForDeparture.id, selectedGameTypeForDeparture, targetName], function(res) {
+    var finalTarget = selectedGameTypeForDeparture === 'Könyvexpedíció' ? targetName + "|||" + targetBook : targetName;
+    
+    callBackend('requestDeparture', [selectedShipForDeparture.id, selectedGameTypeForDeparture, finalTarget], function(res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res.success) {
             uiAlert(res.message, "Sikeres Kihajózás!");
@@ -10099,3 +10121,74 @@ function showVehicleDetails(index) {
   html += '</div>';
   body.innerHTML = html;
 }
+
+
+// --- VÁRÓTEREM ÉS SESSION POLLING LOGIKA ---
+var sessionPollInterval = null;
+
+function startSessionPolling() {
+    stopSessionPolling();
+    checkActiveSessionStatus(); // Első hívás azonnal
+    sessionPollInterval = setInterval(checkActiveSessionStatus, 15000); // 15 másodpercenként
+}
+
+function stopSessionPolling() {
+    if (sessionPollInterval) {
+        clearInterval(sessionPollInterval);
+        sessionPollInterval = null;
+    }
+}
+
+function checkActiveSessionStatus() {
+    if (!selectedShipForDeparture || currentPageId !== 'fedelzet_oldal') {
+        stopSessionPolling();
+        return;
+    }
+    
+    callBackend('getActiveSessionStatus', [selectedShipForDeparture.id], function(res) {
+        if (!res || res.error) return;
+        
+        var kihajozunkPanel = document.getElementById('kihajozunk-container');
+        var waitingRoomPanel = document.getElementById('waiting-room-container');
+        var fishingBtn = document.getElementById('waiting-room-fishing-btn');
+        var pvpOverlay = document.getElementById('pvp-alarm-overlay');
+        
+        if (kihajozunkPanel && waitingRoomPanel) {
+            if (res.isActive) {
+                // Hajó aktív sessionben van
+                kihajozunkPanel.style.display = 'none';
+                waitingRoomPanel.style.display = 'block';
+                
+                if (res.status === 'WAITING') {
+                    pvpOverlay.style.display = 'none';
+                    if (res.waitingRoom && res.waitingRoom.allowFishing) {
+                        fishingBtn.style.display = 'block';
+                    } else {
+                        fishingBtn.style.display = 'none';
+                    }
+                } else if (res.status === 'DIVERTED_TO_PVP') {
+                    fishingBtn.style.display = 'none';
+                    pvpOverlay.style.display = 'flex';
+                } else if (res.status === 'ACTIVE') {
+                    // Már a nyílt tengeren van, kalandozik
+                    pvpOverlay.style.display = 'none';
+                    fishingBtn.style.display = 'none';
+                    waitingRoomPanel.querySelector('p').innerHTML = "Az expedíció jelenleg folyamatban van... (" + res.gameType + ")";
+                }
+            } else {
+                // Nincs aktív session, szabad a pálya
+                kihajozunkPanel.style.display = 'block';
+                waitingRoomPanel.style.display = 'none';
+            }
+        }
+    });
+}
+
+function startFishingMiniGame() {
+    uiAlert("A Hártyahalászat hamarosan indul... (MiniGame modul betöltése)", "Horgászat");
+}
+
+function joinPvpDefense() {
+    uiAlert("Mindenki a fedélzetre! Fegyvereket tölts! (PvP Harci modul betöltése)", "Riadó");
+}
+// ---------------------------------------------

@@ -10227,23 +10227,54 @@ function loadGamePage(sessionData) {
     // HA HÁRTYAHALÁSZAT
     if (sessionData && sessionData.gameType === 'Hártyahalászat') {
         titleEl.textContent = "Helyszín megközelítése...";
-        narrativeOverlay.style.display = 'none'; // Rejtjük, amíg a videó megy
+        narrativeOverlay.style.display = 'none';
         
-        // Egyelőre egy hardcoded fallback videót használunk, később ezt a backend adja át (pl. sessionData.introVideo)
-        var introVid = sessionData.introVideo || { fallback_image: 'placeholder_fish.jpg' };
+        // Ideiglenes: az Assets mappából hívjuk meg az aranyvar01.mp4-et, ha nincs backend által küldött URL
+        var introVid = sessionData.introVideo || { video_url: 'assets/aranyvar01.mp4', fallback_image: 'placeholder_fish.jpg' };
         
         playMediaSequence([introVid], function() {
-            // Videó után megjelenik a narratíva és a gomb
             titleEl.textContent = "Hártyahalászat";
             narrativeOverlay.style.display = 'block';
             narrativeText.textContent = "A környezet csendes. A hálók és szigonyok előkészítve. Készülj fel a halászatra!";
             
             var startBtn = document.createElement('button');
             startBtn.className = 'btn-primary';
-            startBtn.textContent = 'Háló kivetése (Mini-játék)';
+            startBtn.textContent = 'Háló kivetése (Unity Játék indítása)';
             startBtn.onclick = function() {
-                minigameContainer.style.display = 'block';
-                minigameFrame.src = "about:blank"; 
+                document.getElementById('loading-overlay').style.display = 'flex';
+                
+                // Bekérjük a Unity URL-t és State-et a szervertől a minijáték indításához
+                callBackend('getGameState', [], function (response) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    if (response && response.success && response.unityUrl) {
+                        narrativeOverlay.style.display = 'none';
+                        
+                        // Teljes képernyőssé tesszük a konténert a game_oldalon
+                        minigameContainer.style.top = '0';
+                        minigameContainer.style.left = '0';
+                        minigameContainer.style.right = '0';
+                        minigameContainer.style.bottom = '0';
+                        minigameContainer.style.border = 'none';
+                        minigameContainer.style.borderRadius = '0';
+                        minigameContainer.style.zIndex = '100'; // Hogy minden felett legyen
+                        minigameContainer.style.display = 'block';
+                        
+                        var unityLaunchUrl = buildUnityLaunchUrl(response.unityUrl, 'hartyahalaszat', response.gameState || '');
+                        minigameFrame.src = unityLaunchUrl;
+                        
+                        // Vissza/Bezár gomb pozícionálása, hogy mindig látszódjon a jobb felső sarokban
+                        var closeBtn = document.getElementById('btn-close-minigame');
+                        if (closeBtn) {
+                            var parentDiv = closeBtn.parentNode;
+                            parentDiv.style.display = 'block';
+                            parentDiv.style.top = '20px';
+                            parentDiv.style.right = '20px';
+                            parentDiv.style.bottom = 'auto'; // Felülre rakjuk
+                        }
+                    } else {
+                        uiAlert("Nem sikerült elérni a Unity szervert!");
+                    }
+                });
             };
             actionsContainer.appendChild(startBtn);
             

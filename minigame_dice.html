@@ -246,6 +246,9 @@
             if (e.code === 'Space') releaseDice();
         });
 
+        // Fókusz az iframe-re, hogy a billentyűzet azonnal menjen
+        window.focus();
+
         // --- JÁTÉK VÉGE LOGIKA ---
         function finishRoll() {
             gameState = 'finished';
@@ -272,7 +275,7 @@
                 if (window.parent && window.parent !== window) {
                     window.parent.postMessage(gameData, '*');
                 }
-            }, 2000);
+            }, 2500);
         }
 
         // --- ANIMÁCIÓS CIKLUS ---

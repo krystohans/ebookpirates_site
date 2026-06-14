@@ -10761,6 +10761,7 @@ function launchDiceRoller(callback) {
     
     // Betöltjük a D100 minijátékot (Lokálisan is működik!)
     minigameFrame.src = 'minigame_dice.html';
+    minigameFrame.onload = function() { minigameFrame.contentWindow.focus(); };
 }
 
 // Figyeljük a postMessage üzeneteket az iframe-ből

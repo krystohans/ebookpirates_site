@@ -10356,6 +10356,61 @@ var GameAssetPreloader = {
 // =====================================================================
 // GAME RENDERER (A Játékmenet Megjelenítő Motorja)
 // =====================================================================
+
+// Szekvenciális videólejátszó segédfüggvény
+function playMediaSequence(mediaArray, onCompleteCallback) {
+    var videoEl = document.getElementById('game-video-player');
+    var fallbackImg = document.getElementById('game-fallback-image');
+    
+    if (!mediaArray || mediaArray.length === 0) {
+        if (onCompleteCallback) onCompleteCallback();
+        return;
+    }
+    
+    var currentIndex = 0;
+    
+    function playNext() {
+        if (currentIndex >= mediaArray.length) {
+            if (onCompleteCallback) onCompleteCallback();
+            return;
+        }
+        
+        var media = mediaArray[currentIndex];
+        currentIndex++;
+        
+        if (media.video_url) {
+            videoEl.src = media.video_url; // Később itt kezeljük a Drive nyers mp4 linkeket is
+            videoEl.style.display = 'block';
+            fallbackImg.style.display = 'none';
+            videoEl.onended = playNext;
+            videoEl.onerror = function() {
+                // Ha a videó nem tölt be, jön a fallback
+                videoEl.style.display = 'none';
+                if (media.fallback_image) {
+                    fallbackImg.src = media.fallback_image;
+                    fallbackImg.style.display = 'block';
+                    setTimeout(playNext, 3000); // Kép esetén 3 másodperc várakozás
+                } else {
+                    playNext();
+                }
+            };
+            videoEl.play().catch(function(e) {
+                // Autoplay block esetén is ugrik a fallbackre
+                videoEl.onerror();
+            });
+        } else if (media.fallback_image) {
+            videoEl.style.display = 'none';
+            fallbackImg.src = media.fallback_image;
+            fallbackImg.style.display = 'block';
+            setTimeout(playNext, 3000);
+        } else {
+            playNext();
+        }
+    }
+    
+    playNext();
+}
+
 function renderGameCheckpoint(sessionData, currentCheckpoint) {
     if (!sessionData || !sessionData.nodes) {
         console.error("Érvénytelen JSON struktúra a renderelőben!");
@@ -10363,14 +10418,16 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
     }
     
     var titleEl = document.getElementById('game-title');
-    var iframeEl = document.getElementById('game-video-iframe');
+    var videoEl = document.getElementById('game-video-player');
     var fallbackImg = document.getElementById('game-fallback-image');
     var narrativeText = document.getElementById('game-narrative-text');
     var actionsContainer = document.getElementById('game-actions-container');
+    var narrativeOverlay = document.getElementById('game-narrative-overlay');
     
     // Alaphelyzet
-    iframeEl.style.display = 'none';
-    fallbackImg.style.display = 'none';
+    if(videoEl) videoEl.style.display = 'none';
+    if(fallbackImg) fallbackImg.style.display = 'none';
+    narrativeOverlay.style.display = 'block';
     actionsContainer.innerHTML = '';
     
     var currentNode = null;
@@ -10435,27 +10492,35 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             });
         }
     }
-    // UTAZÁS ESET
+    // UTAZÁS ESET (Folyamatos videólejátszás 15s megszakítás nélkül!)
     else if (isTravel) {
         titleEl.textContent = "Úton a következő pont felé...";
-        narrativeText.textContent = "Az expedíció elindult. Vajon mi vár rátok a célállomáson?";
+        narrativeText.textContent = "Az utazás folyamatban van...";
+        actionsContainer.innerHTML = "<em>Kérlek várj, a videók betöltése folyamatban...</em>";
         
-        var media = currentNode.mediaSequence.departure; // Alapesetben induló videó
-        if (media.video_url && media.video_url.includes('drive.google')) {
-            iframeEl.src = media.video_url.replace('/view', '/preview');
-            iframeEl.style.display = 'block';
-        } else if (media.fallback_image) {
-            fallbackImg.src = media.fallback_image;
-            fallbackImg.style.display = 'block';
+        // Összeállítjuk a lejátszandó videók sorrendjét
+        var mediaToPlay = [];
+        if (currentNode.mediaSequence.departure) mediaToPlay.push(currentNode.mediaSequence.departure);
+        if (currentNode.mediaSequence.map_directives) {
+            // Itt dől el a hasMap alapján, hogy blind vagy detailed (Később integrálva)
+            mediaToPlay.push(currentNode.mediaSequence.map_directives.blind); 
         }
+        if (currentNode.mediaSequence.arrival) mediaToPlay.push(currentNode.mediaSequence.arrival);
         
-        var btnArrive = document.createElement('button');
-        btnArrive.className = 'btn-primary';
-        btnArrive.textContent = 'Képzettségpróba (Minigame)';
-        btnArrive.onclick = function() {
-            uiAlert("Ide jön a dobókockás minigame iframe indítása!");
-        };
-        actionsContainer.appendChild(btnArrive);
+        playMediaSequence(mediaToPlay, function() {
+            // Miután lement az összes videó szépen folyamatosan, megjelenik az akció
+            narrativeText.textContent = "Megérkeztetek a célhoz. Itt az ideje a Képzettségpróbának!";
+            actionsContainer.innerHTML = '';
+            
+            var btnArrive = document.createElement('button');
+            btnArrive.className = 'btn-primary';
+            btnArrive.textContent = 'Képzettségpróba (Minigame)';
+            btnArrive.onclick = function() {
+                // ITT szinkronizálunk a backenddel!
+                uiAlert("Ide jön a dobókockás minigame iframe indítása, backend sync!");
+            };
+            actionsContainer.appendChild(btnArrive);
+        });
     }
     // LELŐHELY ESET
     else {

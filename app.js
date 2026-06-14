@@ -10649,6 +10649,9 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         };
         actionsContainer.appendChild(btnReturnLoc);
     }
+
+    // Intelligens előtöltés indítása a háttérben!
+    GameAssetPreloader.analyzeAndPreloadNext(sessionData, currentCheckpoint);
 }
 
 function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer) {
@@ -10706,6 +10709,4 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
 }
 
     
-    // Intelligens előtöltés indítása a háttérben!
-    GameAssetPreloader.analyzeAndPreloadNext(sessionData, currentCheckpoint);
-}
+

@@ -9934,6 +9934,10 @@ function executeDeparture() {
         if (res.success) {
             uiAlert(res.message, "Sikeres Kihajózás!");
             document.getElementById('departure-target').value = '';
+            
+            if (selectedGameTypeForDeparture === 'Hártyahalászat') {
+                loadGamePage({ gameType: 'Hártyahalászat' });
+            }
         } else {
             uiAlert(res.error, "Kikötőmester: Megtagadva!");
         }
@@ -10169,11 +10173,16 @@ function checkActiveSessionStatus() {
                 } else if (res.status === 'DIVERTED_TO_PVP') {
                     fishingBtn.style.display = 'none';
                     pvpOverlay.style.display = 'flex';
-                } else if (res.status === 'ACTIVE') {
+                } else if (res.status === 'ACTIVE' || res.status === 'IN_PROGRESS') {
                     // Már a nyílt tengeren van, kalandozik
                     pvpOverlay.style.display = 'none';
                     fishingBtn.style.display = 'none';
-                    waitingRoomPanel.querySelector('p').innerHTML = "Az expedíció jelenleg folyamatban van... (" + res.gameType + ")";
+                    
+                    // Ha még nem vagyunk a game_oldal-on, váltsunk át!
+                    if (currentPageId !== 'game_oldal') {
+                        uiAlert("A Játékmenet aktív! Átirányítás a kalandmezőre...", "Indulás");
+                        loadGamePage(res);
+                    }
                 }
             } else {
                 // Nincs aktív session, szabad a pálya
@@ -10185,7 +10194,8 @@ function checkActiveSessionStatus() {
 }
 
 function startFishingMiniGame() {
-    uiAlert("A Hártyahalászat hamarosan indul... (MiniGame modul betöltése)", "Horgászat");
+    uiAlert("A Hártyahalászat elindult!", "Horgászat");
+    loadGamePage({ gameType: 'Hártyahalászat' });
 }
 
 function joinPvpDefense() {
@@ -10195,28 +10205,70 @@ function joinPvpDefense() {
 
 
 // --- GAME OLDAL LOGIKA ---
-function loadGamePage() {
+function loadGamePage(sessionData) {
     loadPage('game_oldal');
     
-    // Alaphelyzetbe állítás
-    document.getElementById('game-title').textContent = "Expedíció betöltése...";
-    document.getElementById('game-media-container').style.display = 'block';
-    document.getElementById('game-narrative-overlay').style.display = 'none';
-    document.getElementById('game-minigame-container').style.display = 'none';
-    document.getElementById('btn-return-ship').style.display = 'block';
+    // UI Alaphelyzetbe állítása
+    var titleEl = document.getElementById('game-title');
+    var mediaContainer = document.getElementById('game-media-container');
+    var narrativeOverlay = document.getElementById('game-narrative-overlay');
+    var minigameContainer = document.getElementById('game-minigame-container');
+    var returnShipBtn = document.getElementById('btn-return-ship');
+    var actionsContainer = document.getElementById('game-actions-container');
+    var narrativeText = document.getElementById('game-narrative-text');
+    var minigameFrame = document.getElementById('game-minigame-frame');
     
-    // TODO: Itt kezdjük majd el lekérni a backendtől az aktuális checkpoint adatait (videó URL, narratíva)
+    mediaContainer.style.display = 'block';
+    narrativeOverlay.style.display = 'none';
+    minigameContainer.style.display = 'none';
+    returnShipBtn.style.display = 'block';
+    actionsContainer.innerHTML = ''; // Gombok törlése
     
-    // Gomb eseménykezelők
-    document.getElementById('btn-return-ship').onclick = function() {
-        uiAlert("Visszatérés a hajóra... (backend mentés következik)", "Útirány");
-        // Ha sikeres a visszatérés:
+    // HA HÁRTYAHALÁSZAT
+    if (sessionData && sessionData.gameType === 'Hártyahalászat') {
+        titleEl.textContent = "Hártyahalászat a Dingin";
+        narrativeOverlay.style.display = 'block';
+        narrativeText.textContent = "Kivetted a hálót és a szigonyokat. Készülj fel a halászatra!";
+        
+        // Halászat minijáték indító gomb
+        var startBtn = document.createElement('button');
+        startBtn.className = 'btn-primary';
+        startBtn.textContent = 'Háló kivetése (Mini-játék)';
+        startBtn.onclick = function() {
+            minigameContainer.style.display = 'block';
+            minigameFrame.src = "about:blank"; // Később ide jön a konkrét hártyahalász Unity/HTML5 URL
+        };
+        actionsContainer.appendChild(startBtn);
+        return;
+    }
+    
+    // HA KALANDJÁTÉK VAGY KÖNYVEXPEDÍCIÓ
+    if (sessionData) {
+        titleEl.textContent = sessionData.targetName ? sessionData.targetName + " (" + sessionData.gameType + ")" : "Aktív Játékmenet";
+        narrativeOverlay.style.display = 'block';
+        narrativeText.textContent = "A kaland elkezdődött. Az adatok szinkronizálása a szerverrel folyamatban van...";
+        
+        // Placeholder gomb, amíg a Játékmester AI meg nem érkezik
+        var placeholderBtn = document.createElement('button');
+        placeholderBtn.className = 'btn-primary';
+        placeholderBtn.textContent = 'Kaland Folytatása';
+        placeholderBtn.onclick = function() {
+            uiAlert("A Játékmester modul még fejlesztés alatt áll. Checkpoint adat bekérése...", "Rendszerüzenet");
+        };
+        actionsContainer.appendChild(placeholderBtn);
+    } else {
+        titleEl.textContent = "Ismeretlen Kaland";
+    }
+    
+    // Gomb eseménykezelők (statikusak)
+    returnShipBtn.onclick = function() {
+        uiAlert("Visszatérés a hajóra... (Itt kell backend mentést indítani)", "Útirány");
         setTimeout(function() {
             loadPage('fedelzet_oldal');
         }, 1500);
     };
     
     document.getElementById('btn-close-minigame').onclick = function() {
-        document.getElementById('game-minigame-container').style.display = 'none';
+        minigameContainer.style.display = 'none';
     };
 }

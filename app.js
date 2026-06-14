@@ -10407,15 +10407,33 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         titleEl.textContent = "Horgonyvetés: " + sessionData.ship.shipName;
         narrativeText.textContent = "A hajó biztonságos vizeken ringatózik. Legénység várja a parancsot!";
         
-        // Gombok (Placeholder logika)
-        var btnDepart = document.createElement('button');
-        btnDepart.className = 'btn-primary';
-        btnDepart.textContent = 'Indulás az első Lelőhelyre';
-        btnDepart.onclick = function() {
-            uiAlert("Backend hívás: Keresési fázis indítása...");
-            // callBackend('updateCheckpoint', ...)
-        };
-        actionsContainer.appendChild(btnDepart);
+        // Gombok generálása az actions tömb alapján
+        if (currentNode.actions) {
+            currentNode.actions.forEach(function(action) {
+                var btn = document.createElement('button');
+                if (action === 'DEPART_TO_FIRST_LOCATION') {
+                    btn.className = 'btn-primary';
+                    btn.textContent = 'Indulás az Expedícióra';
+                    btn.onclick = function() { uiAlert("Backend hívás: Keresési fázis indítása..."); };
+                } else if (action === 'START_FISHING') {
+                    btn.className = 'btn-info';
+                    btn.textContent = 'Hártyahalászat (Minigame)';
+                    btn.onclick = function() { 
+                        document.getElementById('game-minigame-container').style.display = 'block';
+                        document.getElementById('game-minigame-frame').src = "about:blank"; // Ide jön a horgász minijáték
+                    };
+                } else if (action === 'MANAGE_INVENTORY') {
+                    btn.className = 'btn-secondary';
+                    btn.textContent = 'Közös Zsákmány Megtekintése';
+                    btn.onclick = function() { uiAlert("Zsákmány UI megnyitása..."); };
+                } else if (action === 'TRIGGER_ASSEMBLY') {
+                    btn.className = 'btn-warning';
+                    btn.textContent = 'Tekercsmester Meghívása';
+                    btn.onclick = function() { uiAlert("Tekercsmester UI megnyitása..."); };
+                }
+                actionsContainer.appendChild(btn);
+            });
+        }
     }
     // UTAZÁS ESET
     else if (isTravel) {

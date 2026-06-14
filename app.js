@@ -9873,7 +9873,7 @@ function selectShip(shipId) {
         document.getElementById('active-ship-name').textContent = ship.name;
         
         // ÚJ: Indítsuk el a session pollingot, ha a fedélzeten vagyunk!
-        if (currentPageId === 'fedelzet_oldal') {
+        if (typeof currentPageName !== 'undefined' && currentPageName === 'fedelzet_oldal') {
             startSessionPolling();
         }
     }

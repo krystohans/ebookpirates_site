@@ -10471,7 +10471,17 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
                 if (action === 'DEPART_TO_FIRST_LOCATION') {
                     btn.className = 'btn-primary';
                     btn.textContent = 'Indulás az Expedícióra';
-                    btn.onclick = function() { uiAlert("Backend hívás: Keresési fázis indítása..."); };
+                    btn.onclick = function() { 
+                        document.getElementById('loading-overlay').style.display = 'flex';
+                        callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'DEPART_TO_FIRST_LOCATION' }], function(res) {
+                            document.getElementById('loading-overlay').style.display = 'none';
+                            if (res.success && res.sessionData) {
+                                renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint); // Egyszerűsített checkpoint frissítés
+                            } else {
+                                uiAlert(res.error || "Hiba az induláskor!");
+                            }
+                        });
+                    };
                 } else if (action === 'START_FISHING') {
                     btn.className = 'btn-info';
                     btn.textContent = 'Hártyahalászat (Minigame)';
@@ -10514,10 +10524,17 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             
             var btnArrive = document.createElement('button');
             btnArrive.className = 'btn-primary';
-            btnArrive.textContent = 'Képzettségpróba (Minigame)';
+            btnArrive.textContent = 'Utazás folytatása (Ideiglenes)';
             btnArrive.onclick = function() {
-                // ITT szinkronizálunk a backenddel!
-                uiAlert("Ide jön a dobókockás minigame iframe indítása, backend sync!");
+                document.getElementById('loading-overlay').style.display = 'flex';
+                callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.toNode || 'LOC_1' } }], function(res) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    if (res.success && res.sessionData) {
+                        renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint);
+                    } else {
+                        uiAlert(res.error || "Hiba a továbbutazáskor!");
+                    }
+                });
             };
             actionsContainer.appendChild(btnArrive);
         });
@@ -10541,7 +10558,15 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         btnReturn.className = 'btn-danger';
         btnReturn.textContent = 'Visszatérés a Hajóra';
         btnReturn.onclick = function() {
-            uiAlert("Visszaindulás a hajóra...");
+            document.getElementById('loading-overlay').style.display = 'flex';
+            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function(res) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                if (res.success && res.sessionData) {
+                    renderGameCheckpoint(res.sessionData, 'HAJO_START');
+                } else {
+                    uiAlert(res.error || "Hiba a hajóra téréskor!");
+                }
+            });
         };
         actionsContainer.appendChild(btnReturn);
     }

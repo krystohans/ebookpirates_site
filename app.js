@@ -10226,19 +10226,33 @@ function loadGamePage(sessionData) {
     
     // HA HÁRTYAHALÁSZAT
     if (sessionData && sessionData.gameType === 'Hártyahalászat') {
-        titleEl.textContent = "Hártyahalászat a Dingin";
-        narrativeOverlay.style.display = 'block';
-        narrativeText.textContent = "Kivetted a hálót és a szigonyokat. Készülj fel a halászatra!";
+        titleEl.textContent = "Helyszín megközelítése...";
+        narrativeOverlay.style.display = 'none'; // Rejtjük, amíg a videó megy
         
-        // Halászat minijáték indító gomb
-        var startBtn = document.createElement('button');
-        startBtn.className = 'btn-primary';
-        startBtn.textContent = 'Háló kivetése (Mini-játék)';
-        startBtn.onclick = function() {
-            minigameContainer.style.display = 'block';
-            minigameFrame.src = "about:blank"; // Később ide jön a konkrét hártyahalász Unity/HTML5 URL
-        };
-        actionsContainer.appendChild(startBtn);
+        // Egyelőre egy hardcoded fallback videót használunk, később ezt a backend adja át (pl. sessionData.introVideo)
+        var introVid = sessionData.introVideo || { fallback_image: 'placeholder_fish.jpg' };
+        
+        playMediaSequence([introVid], function() {
+            // Videó után megjelenik a narratíva és a gomb
+            titleEl.textContent = "Hártyahalászat";
+            narrativeOverlay.style.display = 'block';
+            narrativeText.textContent = "A környezet csendes. A hálók és szigonyok előkészítve. Készülj fel a halászatra!";
+            
+            var startBtn = document.createElement('button');
+            startBtn.className = 'btn-primary';
+            startBtn.textContent = 'Háló kivetése (Mini-játék)';
+            startBtn.onclick = function() {
+                minigameContainer.style.display = 'block';
+                minigameFrame.src = "about:blank"; 
+            };
+            actionsContainer.appendChild(startBtn);
+            
+            var returnBtn = document.createElement('button');
+            returnBtn.className = 'btn-danger';
+            returnBtn.textContent = 'Visszatérés (Mégsem)';
+            returnBtn.onclick = function() { loadPage('fedelzet_oldal'); };
+            actionsContainer.appendChild(returnBtn);
+        });
         return;
     }
     

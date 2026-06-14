@@ -10249,13 +10249,26 @@ function loadGamePage(sessionData) {
         narrativeText.textContent = "A kaland elkezdődött. Az adatok szinkronizálása a szerverrel folyamatban van...";
         
         // Placeholder gomb, amíg a Játékmester AI meg nem érkezik
-        var placeholderBtn = document.createElement('button');
-        placeholderBtn.className = 'btn-primary';
-        placeholderBtn.textContent = 'Kaland Folytatása';
-        placeholderBtn.onclick = function() {
-            uiAlert("A Játékmester modul még fejlesztés alatt áll. Checkpoint adat bekérése...", "Rendszerüzenet");
-        };
-        actionsContainer.appendChild(placeholderBtn);
+        // Meghívjuk a Játékmegjelenítő Motort!
+        var currentJsonTree = null;
+        if (sessionData.adventureTree) {
+            // Ha közvetlenül benne van a JSON
+            currentJsonTree = typeof sessionData.adventureTree === 'string' ? JSON.parse(sessionData.adventureTree) : sessionData.adventureTree;
+        } else if (sessionData.kalandfa) {
+             currentJsonTree = typeof sessionData.kalandfa === 'string' ? JSON.parse(sessionData.kalandfa) : sessionData.kalandfa;
+        }
+        
+        if (currentJsonTree && currentJsonTree.nodes) {
+            renderGameCheckpoint(currentJsonTree, sessionData.currentCheckpoint || 'HAJO_START');
+        } else {
+            var placeholderBtn = document.createElement('button');
+            placeholderBtn.className = 'btn-primary';
+            placeholderBtn.textContent = 'Kaland Folytatása (Fallback)';
+            placeholderBtn.onclick = function() {
+                uiAlert("Várakozás a Játékmester AI JSON generálására...", "Rendszerüzenet");
+            };
+            actionsContainer.appendChild(placeholderBtn);
+        }
     } else {
         titleEl.textContent = "Ismeretlen Kaland";
     }
@@ -10271,4 +10284,185 @@ function loadGamePage(sessionData) {
     document.getElementById('btn-close-minigame').onclick = function() {
         minigameContainer.style.display = 'none';
     };
+}
+
+
+// =====================================================================
+// GAME ASSET PRELOADER (Okos Előtöltéses Rendszer)
+// =====================================================================
+var GameAssetPreloader = {
+    preloadedImages: {},
+    preloadedIframes: {}, // Google Drive / Minigame iframe-ek
+    
+    // Képek előtöltése (Fallback)
+    preloadImage: function(url) {
+        if (!url || this.preloadedImages[url]) return;
+        var img = new Image();
+        img.src = url;
+        this.preloadedImages[url] = img;
+        console.log("[Preloader] Kép előtöltve: " + url);
+    },
+    
+    // Videó / Iframe előtöltése (Láthatatlan DOM elemmel)
+    preloadIframe: function(url) {
+        if (!url || this.preloadedIframes[url]) return;
+        
+        // Memória-gazdálkodás: Egyszerre max 2 előtöltött videó/minijáték lehet a RAM-ban!
+        var keys = Object.keys(this.preloadedIframes);
+        if (keys.length >= 2) {
+            var oldestKey = keys[0];
+            var oldIframe = this.preloadedIframes[oldestKey];
+            if (oldIframe.parentNode) {
+                oldIframe.parentNode.removeChild(oldIframe); // DOM-ból törlés
+            }
+            delete this.preloadedIframes[oldestKey];
+            console.log("[Preloader] Memória felszabadítva: " + oldestKey);
+        }
+        
+        var iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.top = '-9999px';
+        iframe.style.left = '-9999px';
+        iframe.style.width = '1px';
+        iframe.style.height = '1px';
+        iframe.style.opacity = '0';
+        
+        // Ha Google Drive link, át kell alakítani /view-ról /preview-ra a beágyazáshoz
+        var finalUrl = url;
+        if (url.includes('drive.google.com') && url.includes('/view')) {
+            finalUrl = url.replace('/view', '/preview');
+        }
+        
+        iframe.src = finalUrl;
+        document.body.appendChild(iframe);
+        this.preloadedIframes[url] = iframe;
+        console.log("[Preloader] Videó/Minigame Iframe előtöltve: " + finalUrl);
+    },
+    
+    // Intelligens fa-elemző (Kiolvassa a következő lehetséges utakat)
+    analyzeAndPreloadNext: function(sessionData, currentCheckpoint) {
+        if (!sessionData) return;
+        
+        // TODO: A JSON fa bejárása és a checkpoint utáni közvetlen csomópontok media fájljainak kiszedése
+        // Jelenleg egy Placeholder logika:
+        console.log("[Preloader] Elemzés a következő csomópontokhoz (" + currentCheckpoint + ")...");
+        // Pl. ha a hajón vagyunk, a DEPARTURE_VIDEO és BLIND_MAP a következő
+        // this.preloadImage("fallback_url.jpg");
+        // this.preloadIframe("https://drive.google.com/.../preview");
+    }
+};
+
+
+// =====================================================================
+// GAME RENDERER (A Játékmenet Megjelenítő Motorja)
+// =====================================================================
+function renderGameCheckpoint(sessionData, currentCheckpoint) {
+    if (!sessionData || !sessionData.nodes) {
+        console.error("Érvénytelen JSON struktúra a renderelőben!");
+        return;
+    }
+    
+    var titleEl = document.getElementById('game-title');
+    var iframeEl = document.getElementById('game-video-iframe');
+    var fallbackImg = document.getElementById('game-fallback-image');
+    var narrativeText = document.getElementById('game-narrative-text');
+    var actionsContainer = document.getElementById('game-actions-container');
+    
+    // Alaphelyzet
+    iframeEl.style.display = 'none';
+    fallbackImg.style.display = 'none';
+    actionsContainer.innerHTML = '';
+    
+    var currentNode = null;
+    var isTravel = false;
+    
+    // Node kikeresése
+    if (currentCheckpoint === 'HAJO' || currentCheckpoint === 'HAJO_START') {
+        currentNode = sessionData.nodes.HAJO_START;
+    } else if (currentCheckpoint.startsWith('TRAVEL')) {
+        isTravel = true;
+        // Példa: Megkeressük az adott travelId-t
+        for (var i = 0; i < sessionData.nodes.TRAVEL_EVENTS.length; i++) {
+            if (sessionData.nodes.TRAVEL_EVENTS[i].travelId === currentCheckpoint) {
+                currentNode = sessionData.nodes.TRAVEL_EVENTS[i];
+                break;
+            }
+        }
+    } else if (currentCheckpoint.startsWith('LOC')) {
+        for (var j = 0; j < sessionData.nodes.LOCATIONS.length; j++) {
+            if (sessionData.nodes.LOCATIONS[j].locationId === currentCheckpoint) {
+                currentNode = sessionData.nodes.LOCATIONS[j];
+                break;
+            }
+        }
+    }
+    
+    if (!currentNode) {
+        narrativeText.textContent = "Hiba: Az aktuális állomás (" + currentCheckpoint + ") nem található a térképen!";
+        return;
+    }
+    
+    // HAJÓ ESET
+    if (currentNode.type === "SAFE_ZONE") {
+        titleEl.textContent = "Horgonyvetés: " + sessionData.ship.shipName;
+        narrativeText.textContent = "A hajó biztonságos vizeken ringatózik. Legénység várja a parancsot!";
+        
+        // Gombok (Placeholder logika)
+        var btnDepart = document.createElement('button');
+        btnDepart.className = 'btn-primary';
+        btnDepart.textContent = 'Indulás az első Lelőhelyre';
+        btnDepart.onclick = function() {
+            uiAlert("Backend hívás: Keresési fázis indítása...");
+            // callBackend('updateCheckpoint', ...)
+        };
+        actionsContainer.appendChild(btnDepart);
+    }
+    // UTAZÁS ESET
+    else if (isTravel) {
+        titleEl.textContent = "Úton a következő pont felé...";
+        narrativeText.textContent = "Az expedíció elindult. Vajon mi vár rátok a célállomáson?";
+        
+        var media = currentNode.mediaSequence.departure; // Alapesetben induló videó
+        if (media.video_url && media.video_url.includes('drive.google')) {
+            iframeEl.src = media.video_url.replace('/view', '/preview');
+            iframeEl.style.display = 'block';
+        } else if (media.fallback_image) {
+            fallbackImg.src = media.fallback_image;
+            fallbackImg.style.display = 'block';
+        }
+        
+        var btnArrive = document.createElement('button');
+        btnArrive.className = 'btn-primary';
+        btnArrive.textContent = 'Képzettségpróba (Minigame)';
+        btnArrive.onclick = function() {
+            uiAlert("Ide jön a dobókockás minigame iframe indítása!");
+        };
+        actionsContainer.appendChild(btnArrive);
+    }
+    // LELŐHELY ESET
+    else {
+        titleEl.textContent = "Felfedezés: " + currentNode.name;
+        narrativeText.textContent = "Megérkeztetek. Itt az idő belevetni magatokat a feladatba, hátha lapul itt egy fejezet!";
+        
+        var btnPlay = document.createElement('button');
+        btnPlay.className = 'btn-primary';
+        btnPlay.textContent = 'Minijáték Indítása';
+        btnPlay.onclick = function() {
+            uiAlert("Minijáték (" + currentNode.minigameData.id + ") betöltése...");
+            document.getElementById('game-minigame-container').style.display = 'block';
+            document.getElementById('game-minigame-frame').src = "about:blank"; 
+        };
+        actionsContainer.appendChild(btnPlay);
+        
+        var btnReturn = document.createElement('button');
+        btnReturn.className = 'btn-danger';
+        btnReturn.textContent = 'Visszatérés a Hajóra';
+        btnReturn.onclick = function() {
+            uiAlert("Visszaindulás a hajóra...");
+        };
+        actionsContainer.appendChild(btnReturn);
+    }
+    
+    // Intelligens előtöltés indítása a háttérben!
+    GameAssetPreloader.analyzeAndPreloadNext(sessionData, currentCheckpoint);
 }

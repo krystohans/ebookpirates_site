@@ -9,7 +9,8 @@
 
   <!-- Multimédia Megjelenítő (Videó / Kép Fallback) -->
   <div id="game-media-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;">
-    <video id="game-video-player" style="width: 100%; height: 100%; object-fit: cover; display: none;" playsinline></video>
+    <!-- Megjegyzés: Google Drive és Unity esetén az iframes beágyazás a biztosabb, nem a native video tag -->
+    <iframe id="game-video-iframe" style="width: 100%; height: 100%; border: none; display: none;" allow="autoplay; fullscreen"></iframe>
     <img id="game-fallback-image" style="width: 100%; height: 100%; object-fit: cover; display: none;" alt="Jelenet képe">
   </div>
 

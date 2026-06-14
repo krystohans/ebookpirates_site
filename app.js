@@ -10208,8 +10208,13 @@ function joinPvpDefense() {
 function loadGamePage(sessionData) {
     loadPage('game_oldal');
     
-    // UI Alaphelyzetbe állítása
-    var titleEl = document.getElementById('game-title');
+    // Várjuk meg, amíg a loadPage aszinkron fetch-e betölti a game_oldal.html-t a DOM-ba
+    var checkExist = setInterval(function() {
+        if (document.getElementById('game-media-container')) {
+            clearInterval(checkExist);
+            
+            // UI Alaphelyzetbe állítása
+            var titleEl = document.getElementById('game-title');
     var mediaContainer = document.getElementById('game-media-container');
     var narrativeOverlay = document.getElementById('game-narrative-overlay');
     var minigameContainer = document.getElementById('game-minigame-container');
@@ -10329,6 +10334,8 @@ function loadGamePage(sessionData) {
     document.getElementById('btn-close-minigame').onclick = function() {
         minigameContainer.style.display = 'none';
     };
+        }
+    }, 100);
 }
 
 

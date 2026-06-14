@@ -9176,7 +9176,7 @@ function jumpToSavedState() {
     document.getElementById('loading-overlay').style.display = 'flex';
 
     // 1. Backend hívás a játékállás (AH oszlop) és a Unity URL lekéréséhez
-    callBackend('getGameState', [],
+    callBackend('getTutorialFlowState', [],
         function (response) {
             if (response && response.success && response.gameState && response.unityUrl) {
                 console.log("Sikeresen megkapva a játékállás, Unity indítása...");
@@ -9184,7 +9184,7 @@ function jumpToSavedState() {
                 // A 'tryLaunchUnity' egy 'flow' objektumot vár, ezt itt összeállítjuk.
                 const flow = {
                     unityUrl: response.unityUrl,
-                    gameStateToken: response.gameState, // A 'gameStateToken' nevet használjuk a konzisztencia érdekében.
+                    gameStateToken: response.gameStateToken, // A 'gameStateToken' nevet használjuk a konzisztencia érdekében.
                     tutorialCompleted: true // Feltételezzük, hogy ha van mentése, a tutorialt már befejezte.
                 };
 
@@ -10249,7 +10249,7 @@ function loadGamePage(sessionData) {
                 document.getElementById('loading-overlay').style.display = 'flex';
                 
                 // Bekérjük a Unity URL-t és State-et a szervertől a minijáték indításához
-                callBackend('getGameState', [], function (response) {
+                callBackend('getTutorialFlowState', [], function (response) {
                     document.getElementById('loading-overlay').style.display = 'none';
                     if (response && response.success && response.unityUrl) {
                         narrativeOverlay.style.display = 'none';
@@ -10264,7 +10264,7 @@ function loadGamePage(sessionData) {
                         minigameContainer.style.zIndex = '100'; // Hogy minden felett legyen
                         minigameContainer.style.display = 'block';
                         
-                        var unityLaunchUrl = buildUnityLaunchUrl(response.unityUrl, 'hartyahalaszat', response.gameState || '');
+                        var unityLaunchUrl = buildUnityLaunchUrl(response.unityUrl, 'hartyahalaszat', response.gameStateToken || '');
                         minigameFrame.src = unityLaunchUrl;
                         
                         // Vissza/Bezár gomb pozícionálása, hogy mindig látszódjon a jobb felső sarokban

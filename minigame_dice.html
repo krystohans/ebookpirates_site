@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D100 Képzettségpróba - eBookPirates</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            color: #d4af37; /* Arany színű szöveg */
+        }
+        #ui-container {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+            width: 100%;
+        }
+        h1 {
+            margin: 0;
+            font-size: 42px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(to bottom, #fffbcc 0%, #d4af37 40%, #8a5a19 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke: 1.5px #2a1a05;
+            filter: drop-shadow(0px 5px 3px rgba(0,0,0,0.8));
+        }
+        #instruction {
+            font-size: 22px;
+            margin-top: 10px;
+            color: #eaddb5;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            text-shadow: 0 3px 5px rgba(0,0,0,0.9);
+            font-style: italic;
+        }
+        #result-display {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            font-size: 140px;
+            font-weight: 900;
+            font-family: 'Georgia', 'Times New Roman', serif; /* Vastagabb, régies betűtípus */
+            pointer-events: none;
+            
+            /* Belső arany domborulat színátmenettel */
+            background: linear-gradient(to bottom, #fffbcc 0%, #d4af37 35%, #8a5a19 75%, #fffbcc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            /* Sötétbarna/Fekete kontúrvonal a tökéletes olvashatóságért */
+            -webkit-text-stroke: 3px #2a1a05;
+            
+            /* Valódi 3D térhatás és glow a filter segítségével (a text-shadow bugos az átlátszó betűkkel) */
+            filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.9)) drop-shadow(0px 0px 15px rgba(212, 175, 55, 0.5));
+            
+            transition: all 0.3s ease-out;
+            z-index: 20;
+        }
+        #interaction-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            cursor: pointer;
+        }
+    </style>
+    <!-- Three.js betöltése -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="ui-container">
+        <h1>Dobj próbát!</h1>
+        <div id="instruction">Tartsd lenyomva a Szóközt vagy az egeret a rázáshoz...</div>
+    </div>
+    
+    <!-- Itt jelenik meg a dobás eredménye pörgetés közben és a végén -->
+    <div id="result-display">00</div>
+    
+    <!-- Láthatatlan réteg a kattintások érzékelésére -->
+    <div id="interaction-layer"></div>
+
+    <script>
+        // --- JÁTÉK ÁLLAPOTOK ---
+        let gameState = 'idle'; // idle, shaking, rolling, finished
+        let finalResult = 0;
+        let shakeIntensity = 0;
+        let rollVelocity = 0;
+
+        // --- THREE.JS ALAPOK ---
+        const scene = new THREE.Scene();
+        // scene.fog eltávolítva a transparent overlay miatt
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 2, 6);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // --- FÉNYEK (Kalózos, meleg fények) ---
+        const ambientLight = new THREE.AmbientLight(0x403020, 1.5); 
+        scene.add(ambientLight);
+
+        const spotLight = new THREE.SpotLight(0xffddaa, 2);
+        spotLight.position.set(0, 5, 2);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        scene.add(spotLight);
+
+        // --- IKOZAÉDER D10 LÉTREHOZÁSA ---
+        function createD10Mesh(colorHex, isTens) {
+            const geometry = new THREE.IcosahedronGeometry(1, 0);
+            const mat = new THREE.MeshStandardMaterial({
+                color: colorHex,
+                roughness: 0.7,
+                metalness: 0.1,
+                flatShading: true
+            });
+            const mesh = new THREE.Mesh(geometry, mat);
+            const group = new THREE.Group();
+            group.add(mesh);
+
+            const posAttr = geometry.getAttribute('position');
+            const indexAttr = geometry.getIndex();
+            
+            const nums = isTens ? ['00','10','20','30','40','50','60','70','80','90'] : ['0','1','2','3','4','5','6','7','8','9'];
+            const faceNormals = [];
+            
+            // Az ikozaédernek pontosan 20 háromszög lapja van.
+            for(let i = 0; i < 20; i++) {
+                let vA = new THREE.Vector3();
+                let vB = new THREE.Vector3();
+                let vC = new THREE.Vector3();
+                
+                if (indexAttr) {
+                    let a = indexAttr.getX(i * 3);
+                    let b = indexAttr.getX(i * 3 + 1);
+                    let c = indexAttr.getX(i * 3 + 2);
+                    vA.fromBufferAttribute(posAttr, a);
+                    vB.fromBufferAttribute(posAttr, b);
+                    vC.fromBufferAttribute(posAttr, c);
+                } else {
+                    vA.fromBufferAttribute(posAttr, i * 3);
+                    vB.fromBufferAttribute(posAttr, i * 3 + 1);
+                    vC.fromBufferAttribute(posAttr, i * 3 + 2);
+                }
+                
+                // Középpont = Súlypont
+                let center = new THREE.Vector3().add(vA).add(vB).add(vC).divideScalar(3);
+                // Ikozaéder esetén a normális pontosan a középpontból kifelé mutató vektor
+                let normal = center.clone().normalize();
+                
+                faceNormals.push({ normal: normal });
+                
+                let numIndex = i % 10;
+                let numStr = nums[numIndex];
+                
+                let canvas = document.createElement('canvas');
+                canvas.width = 128; canvas.height = 128;
+                let ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 50px "Segoe UI", Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(numStr, 64, 64);
+                
+                if (numStr === '6' || numStr === '9' || numStr === '60' || numStr === '90') {
+                    ctx.fillRect(44, 92, 40, 5);
+                }
+                
+                let tex = new THREE.CanvasTexture(canvas);
+                let textMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, polygonOffset: true, polygonOffsetFactor: -1 });
+                let textPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.7), textMat);
+                
+                textPlane.position.copy(center).add(normal.clone().multiplyScalar(0.01));
+                textPlane.lookAt(textPlane.position.clone().add(normal));
+                
+                group.add(textPlane);
+            }
+            
+            group.userData.faces = faceNormals;
+            return group;
+        }
+
+        const tensDie = createD10Mesh(0xeeeedd, true);
+        tensDie.position.set(-1.6, 0, 0);
+        scene.add(tensDie);
+
+        const onesDie = createD10Mesh(0xddccaa, false);
+        onesDie.position.set(1.6, 0, 0);
+        scene.add(onesDie);
+
+
+
+        // --- INTERAKCIÓ (RÁZÁS ÉS DOBÁS) ---
+        const interactionLayer = document.getElementById('interaction-layer');
+        const resultDisplay = document.getElementById('result-display');
+        const instruction = document.getElementById('instruction');
+
+        function startShaking() {
+            if (gameState === 'idle') {
+                gameState = 'shaking';
+                instruction.innerText = "Engedd el, amikor jónak érzed!";
+                shakeIntensity = 0;
+            }
+        }
+
+        function releaseDice() {
+            if (gameState === 'shaking') {
+                gameState = 'rolling';
+                instruction.innerText = "A sors kereke forog...";
+                rollVelocity = 0.5 + (shakeIntensity * 0.05); // Minél tovább ráztad, annál gyorsabban pörög
+                
+                // Végeredmény kiszámolása előre (1-100)
+                finalResult = Math.floor(Math.random() * 100) + 1;
+            }
+        }
+
+        // Egér/Érintés
+        interactionLayer.addEventListener('mousedown', startShaking);
+        interactionLayer.addEventListener('mouseup', releaseDice);
+        interactionLayer.addEventListener('touchstart', (e) => { e.preventDefault(); startShaking(); });
+        interactionLayer.addEventListener('touchend', releaseDice);
+
+        // Billentyűzet (Szóköz)
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') startShaking();
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') releaseDice();
+        });
+
+        // --- JÁTÉK VÉGE LOGIKA ---
+        function finishRoll() {
+            gameState = 'finished';
+            instruction.innerHTML = "A dobás megtörtént!";
+            
+            // Szám beállítása pontosan a végeredményre (01-100 formátumban)
+            let displayStr = finalResult.toString();
+            if (finalResult < 10 && finalResult > 0) displayStr = '0' + finalResult;
+            if (finalResult === 100) displayStr = '00'; // D100-nál a 100 gyakran '00' a két kockán, de kiírhatjuk 100-nak is
+            resultDisplay.innerText = finalResult === 100 ? '100' : displayStr;
+            // A végén a 3D arany betű mögé egy erős "Sikeres" fényárnyékot és pici nagyítást teszünk
+            resultDisplay.style.filter = "drop-shadow(0px 12px 6px rgba(0,0,0,0.9)) drop-shadow(0px 0px 50px rgba(0, 255, 170, 0.7))";
+            resultDisplay.style.transform = "translate(-50%, -50%) scale(1.15)";
+
+            // Visszaküldés a Főrendszernek (NPC motor)
+            setTimeout(() => {
+                const gameData = {
+                    source: 'threejs-minigame',
+                    status: 'COMPLETED',
+                    finalScore: finalResult,
+                    gameType: 'D100_ROLL'
+                };
+                
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage(gameData, '*');
+                }
+            }, 2000);
+        }
+
+        // --- ANIMÁCIÓS CIKLUS ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (gameState === 'idle') {
+                // Finom lebegés várakozás közben
+                tensDie.rotation.x += 0.005;
+                tensDie.rotation.y += 0.005;
+                onesDie.rotation.x -= 0.005;
+                onesDie.rotation.y += 0.005;
+                
+                tensDie.position.y = Math.sin(Date.now() * 0.002) * 0.1;
+                onesDie.position.y = Math.sin(Date.now() * 0.002 + 1) * 0.1;
+            } 
+            else if (gameState === 'shaking') {
+                // Rázkódás intenzitásának növelése (max 10)
+                if (shakeIntensity < 10) shakeIntensity += 0.1;
+                
+                // Vad forgás és rázkódás
+                tensDie.rotation.x += 0.2 + (shakeIntensity * 0.02);
+                tensDie.rotation.y += 0.2 + (shakeIntensity * 0.02);
+                onesDie.rotation.z -= 0.2 + (shakeIntensity * 0.02);
+                onesDie.rotation.x += 0.2 + (shakeIntensity * 0.02);
+
+                tensDie.position.x = -1.5 + (Math.random() - 0.5) * (shakeIntensity * 0.05);
+                tensDie.position.y = (Math.random() - 0.5) * (shakeIntensity * 0.05);
+                onesDie.position.x = 1.5 + (Math.random() - 0.5) * (shakeIntensity * 0.05);
+                onesDie.position.y = (Math.random() - 0.5) * (shakeIntensity * 0.05);
+
+                // Számok pörgetése a képernyőn
+                resultDisplay.innerText = Math.floor(Math.random() * 10) + "" + Math.floor(Math.random() * 10);
+            }
+            else if (gameState === 'rolling') {
+                // Lassulás
+                rollVelocity *= 0.95; 
+                
+                // Még forog össze-vissza
+                if (rollVelocity > 0.1) {
+                    tensDie.rotation.x += rollVelocity;
+                    tensDie.rotation.y += rollVelocity;
+                    onesDie.rotation.z -= rollVelocity;
+                    onesDie.rotation.x += rollVelocity;
+                    
+                    resultDisplay.innerText = Math.floor(Math.random() * 10) + "" + Math.floor(Math.random() * 10);
+                } else {
+                    // Cél beállítása a finalResult alapján
+                    let tVal = Math.floor(finalResult / 10);
+                    let oVal = finalResult % 10;
+                    if (finalResult === 100) { tVal = 0; oVal = 0; } // 00 a D100-on a 100
+                    
+                    // Kiszámítjuk a cél Quaternionokat
+                    let tTarget = new THREE.Quaternion().setFromUnitVectors(tensDie.userData.faces[tVal].normal, new THREE.Vector3(0, 1, 0));
+                    let oTarget = new THREE.Quaternion().setFromUnitVectors(onesDie.userData.faces[oVal].normal, new THREE.Vector3(0, 1, 0));
+                    
+                    // Finom átfordulás a célra (Slerp)
+                    tensDie.quaternion.slerp(tTarget, 0.1);
+                    onesDie.quaternion.slerp(oTarget, 0.1);
+                    
+                    if (rollVelocity < 0.001) {
+                        finishRoll();
+                        gameState = 'done'; // Hogy ne hívja meg újra
+                    }
+                }
+
+                // Visszatérés a középpontba
+                tensDie.position.x += (-1.6 - tensDie.position.x) * 0.1;
+                tensDie.position.y += (0 - tensDie.position.y) * 0.1;
+                onesDie.position.x += (1.6 - onesDie.position.x) * 0.1;
+                onesDie.position.y += (0 - onesDie.position.y) * 0.1;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Reszponzív kamera beállítás
+        function adjustCamera() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Ha szűkebb a képernyő (vagy az iframe panel), hátrébb húzzuk a kamerát, 
+            // hogy a dobótestek ne lógjanak ki a felületből!
+            if (window.innerWidth < 800) {
+                camera.position.z = 6 + (800 - window.innerWidth) * 0.015;
+            } else {
+                camera.position.z = 6; // Alapértelmezett távolság
+            }
+        }
+        
+        window.addEventListener('resize', adjustCamera);
+        adjustCamera(); // Induláskor is beállítjuk!
+
+        animate();
+    </script>
+</body>
+</html>

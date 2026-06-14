@@ -10717,3 +10717,85 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
 
     
 
+
+
+// =====================================================================
+// THREE.JS MINIGAME (D100 KOCKADOBÁS) INTEGRÁCIÓ
+// =====================================================================
+
+// Globális változó az utolsó dobás eredményének
+window.lastDiceRollResult = 0;
+window.onDiceRollCompleted = null; // Callback a Kalandjátékhoz
+
+// Ez a függvény bármelyik kaland-gombra ráköthető!
+function launchDiceRoller(callback) {
+    var minigameContainer = document.getElementById('game-minigame-container');
+    var minigameFrame = document.getElementById('game-minigame-frame');
+    
+    if (!minigameContainer || !minigameFrame) {
+        console.error("Nem található a minigame konténer a DOM-ban!");
+        return;
+    }
+
+    // Callback elmentése
+    if (typeof callback === 'function') {
+        window.onDiceRollCompleted = callback;
+    }
+
+    // Középre igazított elegáns felugró panel
+    minigameContainer.style.position = 'fixed';
+    minigameContainer.style.top = '50%';
+    minigameContainer.style.left = '50%';
+    minigameContainer.style.transform = 'translate(-50%, -50%)';
+    minigameContainer.style.width = '800px';
+    minigameContainer.style.height = '500px';
+    minigameContainer.style.maxWidth = '95vw';
+    minigameContainer.style.maxHeight = '90vh';
+    minigameContainer.style.border = '3px solid #d4af37'; // Arany keret
+    minigameContainer.style.borderRadius = '15px';
+    minigameContainer.style.zIndex = '1000'; 
+    minigameContainer.style.backgroundColor = 'rgba(100, 10, 15, 0.9)'; // Bársonyvörös, 90% áttetszőség
+    minigameContainer.style.backdropFilter = 'blur(10px)'; // Mögötte lévő blur
+    minigameContainer.style.boxShadow = '0 0 50px rgba(0,0,0,0.8), 0 0 0 9999px rgba(0,0,0,0.6)'; // Külső sötétítés
+    minigameContainer.style.display = 'block';
+    
+    // Betöltjük a D100 minijátékot (Lokálisan is működik!)
+    minigameFrame.src = 'minigame_dice.html';
+}
+
+// Figyeljük a postMessage üzeneteket az iframe-ből
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.source === 'threejs-minigame' && event.data.status === 'COMPLETED') {
+        console.log("Kockadobás sikeresen befejeződött! Eredmény: " + event.data.finalScore);
+        
+        // Eltüntetjük a 3D játékot
+        var minigameContainer = document.getElementById('game-minigame-container');
+        if (minigameContainer) {
+            minigameContainer.style.display = 'none';
+        }
+        
+        // Töltőképernyő bekapcsolása amíg a szerverre mentünk
+        document.getElementById('loading-overlay').style.display = 'flex';
+        
+        // 1. Mentés a Google Sheets-be (I oszlop) a biztonság és perzisztencia érdekében!
+        callBackend('saveDiceRoll', [event.data.finalScore], function(response) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            
+            if (response && response.success) {
+                console.log("Szerver válasza: " + response.message);
+            } else {
+                console.error("Hiba a dobás mentésekor a szerverre!", response);
+                // Opcionális: Jelezhetjük a játékosnak, de a sztorit azért folytatjuk.
+            }
+            
+            // Eltároljuk a lokális változót is a gyors eléréshez
+            window.lastDiceRollResult = event.data.finalScore;
+            
+            // Továbbítjuk az eredményt a Kalandjátéknak, ha van aktív callback
+            if (typeof window.onDiceRollCompleted === 'function') {
+                window.onDiceRollCompleted(window.lastDiceRollResult);
+                window.onDiceRollCompleted = null; // Reset
+            }
+        });
+    }
+});

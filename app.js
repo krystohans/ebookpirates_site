@@ -10192,3 +10192,31 @@ function joinPvpDefense() {
     uiAlert("Mindenki a fedélzetre! Fegyvereket tölts! (PvP Harci modul betöltése)", "Riadó");
 }
 // ---------------------------------------------
+
+
+// --- GAME OLDAL LOGIKA ---
+function loadGamePage() {
+    loadPage('game_oldal');
+    
+    // Alaphelyzetbe állítás
+    document.getElementById('game-title').textContent = "Expedíció betöltése...";
+    document.getElementById('game-media-container').style.display = 'block';
+    document.getElementById('game-narrative-overlay').style.display = 'none';
+    document.getElementById('game-minigame-container').style.display = 'none';
+    document.getElementById('btn-return-ship').style.display = 'block';
+    
+    // TODO: Itt kezdjük majd el lekérni a backendtől az aktuális checkpoint adatait (videó URL, narratíva)
+    
+    // Gomb eseménykezelők
+    document.getElementById('btn-return-ship').onclick = function() {
+        uiAlert("Visszatérés a hajóra... (backend mentés következik)", "Útirány");
+        // Ha sikeres a visszatérés:
+        setTimeout(function() {
+            loadPage('fedelzet_oldal');
+        }, 1500);
+    };
+    
+    document.getElementById('btn-close-minigame').onclick = function() {
+        document.getElementById('game-minigame-container').style.display = 'none';
+    };
+}

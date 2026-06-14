@@ -10778,23 +10778,35 @@ window.addEventListener('message', function(event) {
         document.getElementById('loading-overlay').style.display = 'flex';
         
         // 1. Mentés a Google Sheets-be (I oszlop) a biztonság és perzisztencia érdekében!
-        callBackend('saveDiceRoll', [event.data.finalScore], function(response) {
-            document.getElementById('loading-overlay').style.display = 'none';
+        callBackend('saveDiceRoll', [event.data.finalScore], 
+        // Sikeres lefutás
+        function(response) {
+            var loader = document.getElementById('loading-overlay');
+            if(loader) loader.style.display = 'none';
             
             if (response && response.success) {
                 console.log("Szerver válasza: " + response.message);
             } else {
                 console.error("Hiba a dobás mentésekor a szerverre!", response);
-                // Opcionális: Jelezhetjük a játékosnak, de a sztorit azért folytatjuk.
             }
             
-            // Eltároljuk a lokális változót is a gyors eléréshez
             window.lastDiceRollResult = event.data.finalScore;
-            
-            // Továbbítjuk az eredményt a Kalandjátéknak, ha van aktív callback
             if (typeof window.onDiceRollCompleted === 'function') {
                 window.onDiceRollCompleted(window.lastDiceRollResult);
-                window.onDiceRollCompleted = null; // Reset
+                window.onDiceRollCompleted = null;
+            }
+        }, 
+        // Hiba esetén
+        function(err) {
+            var loader = document.getElementById('loading-overlay');
+            if(loader) loader.style.display = 'none';
+            console.error("FATAL: Nem sikerült elérni a szervert vagy a mentés összeomlott!", err);
+            
+            // Azért lokálisan tovább engedjük a játékost, hogy ne akadjon el!
+            window.lastDiceRollResult = event.data.finalScore;
+            if (typeof window.onDiceRollCompleted === 'function') {
+                window.onDiceRollCompleted(window.lastDiceRollResult);
+                window.onDiceRollCompleted = null;
             }
         });
     }

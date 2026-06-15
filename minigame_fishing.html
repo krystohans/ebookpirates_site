@@ -131,10 +131,7 @@
         </div>
     </div>
 
-    <!-- Three.js és GLTFLoader betöltése -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-
+    <!-- 2D Canvas Motor -->
     <script>
         // ==========================================
         // 1. GLOBÁLIS VÁLTOZÓK ÉS KOMMUNIKÁCIÓ
@@ -143,7 +140,6 @@
         const playerToken = urlParams.get('token');
         
         let quizQuestions = [];
-        let usedQuestions = [];
         let score = 0;
         let isGameOver = false;
         let gameStarted = false;
@@ -154,7 +150,6 @@
         let timerInterval;
         let timeLeft = 20;
 
-        // Háttérkommunikáció a szülő ablakkal (ahol az apiRouter fut)
         function callBackend(action, params) {
             return new Promise((resolve, reject) => {
                 const messageId = 'msg_' + Math.random().toString(36).substr(2, 9);
@@ -170,191 +165,171 @@
             });
         }
 
-        // Kérdések betöltése
         async function initGameData() {
             try {
                 const response = await callBackend('getQuizQuestions', []);
                 quizQuestions = response || [];
-                console.log(quizQuestions.length + " kérdés betöltve.");
-                
                 const betResponse = await callBackend('getMaximumBet', []);
                 maxBetAmount = betResponse || 0;
                 document.getElementById('max-bet-info').innerText = "Maximális tét: " + maxBetAmount;
-            } catch (e) {
-                console.error("Adatbetöltési hiba:", e);
-            }
+            } catch (e) { console.error("Hiba", e); }
         }
         initGameData();
 
         // ==========================================
-        // 2. THREE.JS MOTOR INICIALIZÁLÁS
+        // 2. 2D CANVAS INICIALIZÁLÁS
         // ==========================================
         const container = document.getElementById('game-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB); // Nappali kék ég
-        scene.fog = new THREE.FogExp2(0x87CEEB, 0.015);
+        const canvas = document.createElement('canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        container.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
 
-        // Kamera felülnézetből, enyhe dőléssel
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 30, 20);
-        camera.lookAt(0, 0, 0);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
-        container.appendChild(renderer.domElement);
+        // ==========================================
+        // 3. JÁTÉK ENTITÁSOK
+        // ==========================================
+        let camera = { x: 0, y: 0 };
+        let zoom = 1.0;
+        let isDragging = false;
+        let lastMouse = { x: 0, y: 0 };
+        let cameraAutoFollow = true;
+        let player = { x: 0, y: 0, speed: 3, radius: 15, angle: 0 };
+        let enemy = { x: 800, y: -800, speed: 1, radius: 25, active: true };
+        let harbor = { x: 0, y: -400, radius: 60 };
+        let obstacles = [];
+        let scrolls = [];
+        let wind = { dx: -0.2, dy: 0.5 };
 
-        // Fények
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffeeb1, 0.8);
-        dirLight.position.set(10, 20, 10);
-        dirLight.castShadow = true;
-        scene.add(dirLight);
-
-        // Víz felület
-        const waterGeo = new THREE.PlaneGeometry(200, 200);
-        const waterMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, opacity: 0.9, transparent: true, opacity: 0.8, roughness: 0.1, metalness: 0.8 });
-        const water = new THREE.Mesh(waterGeo, waterMat);
-        water.rotation.x = -Math.PI / 2;
-        water.receiveShadow = true;
-        scene.add(water);
-
-        // Játék elemek tömbjei
-        let playerBoat = null;
-        let baseHarbor = null;
-        let enemyShip = null;
-        const obstacles = [];
-        const diamonds = [];
-
-        // Modell Betöltő
-        const loader = new THREE.GLTFLoader();
-        function loadModel(path, scale, position, yRotation, castShadow = true) {
-            return new Promise(resolve => {
-                loader.load(path, (gltf) => {
-                    const model = gltf.scene;
-                    model.scale.set(scale, scale, scale);
-                    model.position.copy(position);
-                    model.rotation.y = yRotation;
-                    model.traverse(child => { if (child.isMesh) { child.castShadow = castShadow; child.receiveShadow = true; } });
-                    scene.add(model);
-                    resolve(model);
-                });
+        // Zátonyok generálása
+        for(let i=0; i<15; i++) {
+            obstacles.push({
+                x: (Math.random() - 0.5) * 2000,
+                y: (Math.random() - 0.5) * 2000,
+                radius: 20 + Math.random() * 30
             });
         }
 
-        // Pálya építése
-        async function buildScene() {
-            // Kikötő középen hátul
-            baseHarbor = await loadModel('assets/models/SM_Bld_Shanty_Preset_07.glb', 0.5, new THREE.Vector3(0, 0, -20), 0);
-            
-            // Játékos csónakja
-            playerBoat = await loadModel('assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb', 0.4, new THREE.Vector3(0, 0, -10), Math.PI);
-            
-            // Üldöző hajó
-            enemyShip = await loadModel('assets/models/FantasyShip_v2.glb', 0.3, new THREE.Vector3(40, 0, 50), 0);
-            
-            // Zátonyok generálása
-            for(let i=0; i<8; i++) {
-                let x = (Math.random() - 0.5) * 60;
-                let z = (Math.random() - 0.5) * 60;
-                let rock = await loadModel('assets/models/SM_Env_Rock_Huge_01.fbx.glb', 0.2, new THREE.Vector3(x, -2, z), Math.random() * Math.PI);
-                // Bounding sphere a gyors ütközéshez
-                rock.boundingRadius = 3;
-                obstacles.push(rock);
-            }
-
-            spawnDiamond();
+        function spawnScroll() {
+            scrolls.push({
+                x: player.x + (Math.random() - 0.5) * 1000,
+                y: player.y + (Math.random() - 0.5) * 1000,
+                radius: 12
+            });
         }
+        spawnScroll();
 
-        // Hártya generálása
-        async function spawnDiamond() {
-            let x = (Math.random() - 0.5) * 50;
-            let z = (Math.random() - 0.5) * 50;
-            let scroll = await loadModel('assets/models/SM_Item_Map_03.glb', 1.5, new THREE.Vector3(x, 1, z), 0, false);
-            
-            // Lebegő fény a hártya felett
-            const pointLight = new THREE.PointLight(0xffd700, 1, 10);
-            pointLight.position.set(0, 2, 0);
-            scroll.add(pointLight);
-            
-            scroll.boundingRadius = 2;
-            diamonds.push(scroll);
-        }
-
-        buildScene();
-
-        // ==========================================
-        // 3. JÁTÉK LOGIKA ÉS IRÁNYÍTÁS
-        // ==========================================
         const keys = { w: false, a: false, s: false, d: false };
+
+        canvas.addEventListener('mousedown', e => {
+            isDragging = true;
+            lastMouse = { x: e.clientX, y: e.clientY };
+            cameraAutoFollow = false; // Ha egeret húz, kikapcsoljuk az automatikus követést
+            document.body.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            let dx = e.clientX - lastMouse.x;
+            let dy = e.clientY - lastMouse.y;
+            camera.x -= dx / zoom;
+            camera.y -= dy / zoom;
+            lastMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            let zoomAmount = e.deltaY > 0 ? 0.9 : 1.1;
+            let newZoom = zoom * zoomAmount;
+            if (newZoom >= 0.2 && newZoom <= 3.0) {
+                // Zoom center to mouse position
+                let mouseWorldX = camera.x + e.clientX / zoom;
+                let mouseWorldY = camera.y + e.clientY / zoom;
+                
+                zoom = newZoom;
+                
+                camera.x = mouseWorldX - e.clientX / zoom;
+                camera.y = mouseWorldY - e.clientY / zoom;
+            }
+        });
         window.addEventListener('keydown', e => { if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true; });
         window.addEventListener('keyup', e => { if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false; });
 
-        let playerSpeed = 0.3;
-        let wind = new THREE.Vector3(0.02, 0, 0.05);
+        // ==========================================
+        // 4. JÁTÉK LOGIKA
+        // ==========================================
+        function update() {
+            if (isGameOver || document.getElementById('quiz-overlay').style.display === 'flex') return;
 
-        function updatePhysics() {
-            if (isGameOver || !playerBoat || document.getElementById('quiz-overlay').style.display === 'flex') return;
-
-            // Játékos mozgás
-            let dx = 0, dz = 0;
-            if (keys.w) dz -= 1; if (keys.s) dz += 1;
+            let dx = 0, dy = 0;
+            if (keys.w) dy -= 1; if (keys.s) dy += 1;
             if (keys.a) dx -= 1; if (keys.d) dx += 1;
 
-            if (dx !== 0 || dz !== 0) {
+            if (dx !== 0 || dy !== 0) {
                 gameStarted = true;
                 document.getElementById('start-instruction').style.display = 'none';
-                let angle = Math.atan2(dx, dz);
-                playerBoat.rotation.y = angle; // Hajó beforgatása
-                playerBoat.position.x += dx * playerSpeed;
-                playerBoat.position.z += dz * playerSpeed;
+                player.angle = Math.atan2(dy, dx);
+                let length = Math.sqrt(dx*dx + dy*dy);
+                player.x += (dx/length) * player.speed;
+                player.y += (dy/length) * player.speed;
             }
 
-            // Szél sodrása
-            playerBoat.position.add(wind);
+            // Szél
+            player.x += wind.dx;
+            player.y += wind.dy;
 
-            // Kamera követi a hajót (sima interpolációval)
-            camera.position.x += (playerBoat.position.x - camera.position.x) * 0.05;
-            camera.position.z += (playerBoat.position.z + 20 - camera.position.z) * 0.05;
+            // Kamera követi a játékost
+            if (cameraAutoFollow) {
+                camera.x += (player.x - (canvas.width/2)/zoom - camera.x) * 0.1;
+                camera.y += (player.y - (canvas.height/2)/zoom - camera.y) * 0.1;
+            } else if (dx !== 0 || dy !== 0) {
+                // Ha mozgunk WASD-vel, újra ráfókuszál a kamerával
+                cameraAutoFollow = true;
+            }
 
-            // Ellenség üldözése
-            if (enemyShip && gameStarted) {
-                let ex = playerBoat.position.x - enemyShip.position.x;
-                let ez = playerBoat.position.z - enemyShip.position.z;
-                let dist = Math.sqrt(ex*ex + ez*ez);
-                if (dist > 0.1) {
-                    enemyShip.position.x += (ex/dist) * 0.08;
-                    enemyShip.position.z += (ez/dist) * 0.08;
-                    enemyShip.rotation.y = Math.atan2(ex, ez);
+            // Léghajó üldöz
+            if (gameStarted && enemy.active) {
+                let ex = player.x - enemy.x;
+                let ey = player.y - enemy.y;
+                let dist = Math.sqrt(ex*ex + ey*ey);
+                if (dist > 0) {
+                    enemy.x += (ex/dist) * enemy.speed;
+                    enemy.y += (ey/dist) * enemy.speed;
                 }
-                
-                // Ütközés ellenséggel
-                if (dist < 4) gameOver("Elkapott a Léghajó!");
+                if (dist < player.radius + enemy.radius) gameOver("Elkapott a Léghajó!");
             }
 
             // Ütközés zátonyokkal
             for (let r of obstacles) {
-                let dist = playerBoat.position.distanceTo(r.position);
-                if (dist < r.boundingRadius + 2) gameOver("Zátonyra futottál!");
+                let dist = Math.sqrt(Math.pow(player.x - r.x, 2) + Math.pow(player.y - r.y, 2));
+                if (dist < player.radius + r.radius) gameOver("Zátonyra futottál!");
             }
 
             // Ütközés hártyával
-            for (let i = diamonds.length - 1; i >= 0; i--) {
-                let d = diamonds[i];
-                d.rotation.y += 0.02; // Forog
-                d.position.y = 1 + Math.sin(Date.now() * 0.003) * 0.5; // Lebeg
-                
-                if (playerBoat.position.distanceTo(d.position) < d.boundingRadius + 2) {
-                    activeDiamond = d;
-                    diamonds.splice(i, 1);
+            for (let i = scrolls.length - 1; i >= 0; i--) {
+                let s = scrolls[i];
+                let dist = Math.sqrt(Math.pow(player.x - s.x, 2) + Math.pow(player.y - s.y, 2));
+                if (dist < player.radius + s.radius + 10) {
+                    activeDiamond = s;
+                    scrolls.splice(i, 1);
                     triggerQuiz();
                 }
             }
 
-            // Győzelem ellenőrzése (ha nincs több hártya és a kikötőben vagyunk)
-            if (diamonds.length === 0 && baseHarbor) {
-                if (playerBoat.position.distanceTo(baseHarbor.position) < 8) {
+            // Győzelem
+            if (scrolls.length === 0) {
+                let dist = Math.sqrt(Math.pow(player.x - harbor.x, 2) + Math.pow(player.y - harbor.y, 2));
+                if (dist < player.radius + harbor.radius) {
                     gameOver("Sikeres Expedíció!");
                     saveScoreToBackend();
                 }
@@ -363,10 +338,7 @@
 
         async function saveScoreToBackend() {
             if (score > 0) {
-                try {
-                    await callBackend('saveHartyaScore', [score]);
-                    console.log("Pontszám elmentve!");
-                } catch(e) { console.error("Mentési hiba", e); }
+                try { await callBackend('saveHartyaScore', [score]); } catch(e) {}
             }
         }
 
@@ -377,18 +349,86 @@
         }
 
         // ==========================================
-        // 4. KVÍZ LOGIKA
+        // 5. RENDERELÉS (2D KÉPRE)
         // ==========================================
-        function triggerQuiz() {
-            if (quizQuestions.length === 0) {
-                resumeGame(true);
-                return;
+        function draw() {
+            // Tenger
+            ctx.fillStyle = '#005588';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            ctx.scale(zoom, zoom);
+            ctx.translate(-camera.x, -camera.y);
+
+            // Háttér rács (hogy látszódjon a mozgás)
+            ctx.strokeStyle = '#006699';
+            ctx.lineWidth = 1;
+            let startX = Math.floor(camera.x / 100) * 100 - 1000;
+            let startY = Math.floor(camera.y / 100) * 100 - 1000;
+            let endX = startX + (canvas.width / zoom) + 2000;
+            let endY = startY + (canvas.height / zoom) + 2000;
+            let startY = Math.floor(camera.y / 100) * 100;
+            for(let x = startX; x < endX; x += 100) {
+                ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, endY); ctx.stroke();
+            }
+            for(let y = startY; y < endY; y += 100) {
+                ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(endX, y); ctx.stroke();
             }
 
+            // Kikötő (Zöld sziget)
+            ctx.fillStyle = '#2E7D32';
+            ctx.beginPath(); ctx.arc(harbor.x, harbor.y, harbor.radius, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = "20px Arial";
+            ctx.fillText("Kikötő", harbor.x - 30, harbor.y);
+
+            // Zátonyok (Szürke körök)
+            ctx.fillStyle = '#555';
+            for (let r of obstacles) {
+                ctx.beginPath(); ctx.arc(r.x, r.y, r.radius, 0, Math.PI*2); ctx.fill();
+            }
+
+            // Hártyák (Arany sárga)
+            ctx.fillStyle = '#FFD700';
+            for (let s of scrolls) {
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.radius + Math.sin(Date.now()*0.005)*3, 0, Math.PI*2); ctx.fill();
+            }
+
+            // Játékos (Sötét fa csónak)
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            ctx.rotate(player.angle);
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(-15, -10, 30, 20); // Test
+            ctx.fillStyle = '#A0522D';
+            ctx.beginPath(); ctx.moveTo(15, -10); ctx.lineTo(25, 0); ctx.lineTo(15, 10); ctx.fill(); // Orr
+            ctx.restore();
+
+            // Léghajó (Piros nagy kör)
+            if (enemy.active) {
+                ctx.fillStyle = '#B22222';
+                ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#000';
+                ctx.font = "14px Arial";
+                ctx.fillText("Léghajó", enemy.x - 25, enemy.y + 5);
+            }
+
+            ctx.restore();
+        }
+
+        function loop() {
+            requestAnimationFrame(loop);
+            update();
+            draw();
+        }
+        loop();
+
+        // Kvíz UI logika változatlan
+        function triggerQuiz() {
+            if (quizQuestions.length === 0) { resumeGame(true); return; }
             let qIndex = Math.floor(Math.random() * quizQuestions.length);
             let q = quizQuestions[qIndex];
             correctAnswer = q.correctAnswer;
-            
             document.getElementById('quiz-question').innerText = q.question;
             
             let answers = [q.correctAnswer, ...q.incorrectAnswers].sort(() => Math.random() - 0.5);
@@ -410,23 +450,19 @@
                     btnContainer.appendChild(btn);
                 });
             }
-
             document.getElementById('quiz-overlay').style.display = 'flex';
-            
             timeLeft = 20;
             document.getElementById('timer-bar').style.width = '100%';
             timerInterval = setInterval(() => {
                 timeLeft -= 0.1;
-                document.getElementById('timer-bar').style.width = (timeLeft / 20 * 100) + '%';
+                document.getElementById('timer-bar').style.width = (timeLeft/20*100) + '%';
                 if (timeLeft <= 0) handleAnswer(false);
             }, 100);
         }
 
         document.getElementById('place-bet-btn').onclick = () => {
             currentBet = parseInt(document.getElementById('bet-input').value);
-            if (isNaN(currentBet) || currentBet <= 0 || currentBet > maxBetAmount) {
-                alert("Érvénytelen tét!"); return;
-            }
+            if (isNaN(currentBet) || currentBet <= 0 || currentBet > maxBetAmount) { alert("Érvénytelen tét!"); return; }
             document.getElementById('betting-area').style.display = 'none';
             document.getElementById('answer-buttons').style.display = 'grid';
         };
@@ -434,13 +470,7 @@
         async function handleAnswer(isCorrect) {
             clearInterval(timerInterval);
             document.getElementById('quiz-overlay').style.display = 'none';
-
-            if (currentBet > 0) {
-                try {
-                    await callBackend('handleBetTransaction', [currentBet, isCorrect]);
-                } catch(e) { console.error("Tranzakciós hiba", e); }
-            }
-
+            if (currentBet > 0) { try { await callBackend('handleBetTransaction', [currentBet, isCorrect]); } catch(e) {} }
             currentBet = 0;
             resumeGame(isCorrect);
         }
@@ -450,31 +480,10 @@
                 score++;
                 document.getElementById('score-board').innerText = "Hártyák: " + score;
             }
-            
-            if (activeDiamond) {
-                scene.remove(activeDiamond);
-                activeDiamond = null;
-            }
-            // Ha kell még hártya, spawnoljunk
-            if (score < 3) spawnDiamond(); // Pl. 3-at kell összeszedni
+            activeDiamond = null;
+            if (score < 3) spawnScroll(); 
         }
-
-        // ==========================================
-        // 5. RENDER LOOP
-        // ==========================================
-        function animate() {
-            requestAnimationFrame(animate);
-            updatePhysics();
-            renderer.render(scene, camera);
-        }
-        
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        animate();
     </script>
+
 </body>
 </html>

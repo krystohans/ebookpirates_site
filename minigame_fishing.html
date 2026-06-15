@@ -367,7 +367,6 @@
             let startY = Math.floor(camera.y / 100) * 100 - 1000;
             let endX = startX + (canvas.width / zoom) + 2000;
             let endY = startY + (canvas.height / zoom) + 2000;
-            let startY = Math.floor(camera.y / 100) * 100;
             for(let x = startX; x < endX; x += 100) {
                 ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, endY); ctx.stroke();
             }

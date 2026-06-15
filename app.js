@@ -10753,14 +10753,31 @@ function launchDiceRoller(callback) {
 // Figyeljük a postMessage üzeneteket az iframe-ből
 window.addEventListener('message', function(event) {
     if (event.data && event.data.source === 'threejs-minigame' && event.data.status === 'COMPLETED') {
-        console.log("Kockadobás sikeresen befejeződött! Eredmény: " + event.data.finalScore);
         
         // Eltüntetjük a 3D játékot
         var minigameContainer = document.getElementById('game-minigame-container');
         if (minigameContainer) {
             minigameContainer.style.display = 'none';
         }
-        
+
+        if (event.data.gameType === 'FISHING') {
+            // Hártyahalászat lezárása
+            console.log("Hártyahalászat vége. Típus: " + event.data.exitType);
+            
+            // Céloldal betöltése
+            if (event.data.targetPage) {
+                loadPage(event.data.targetPage);
+            }
+            
+            // Itt majd később bekötjük a Kellektárból letöltött konkrét videó URL-t a playMediaSequence segítségével.
+            // Egyelőre csak a teszt kedvéért meghívunk egy dummy lejátszást
+            playMediaSequence([{ video_url: 'assets/aranyvar01.mp4', fallback_image: 'placeholder_fish.jpg' }], function() {
+                console.log("Hártyahalászat videó lejátszva.");
+            });
+            return;
+        }
+
+        console.log("Kockadobás sikeresen befejeződött! Eredmény: " + event.data.finalScore);
         // Töltőképernyő bekapcsolása amíg a szerverre mentünk
         document.getElementById('loading-overlay').style.display = 'flex';
         

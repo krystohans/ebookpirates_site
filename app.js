@@ -599,14 +599,27 @@ function ensureCreditDisplayIsPresent() {
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
 function loadPage(pageName) {
-    // === JÁTÉK STÁTUSZ BLOKKOLÁS ===
-    if (window.inGame && pageName !== 'fedelzet_oldal' && pageName !== 'konyvtar' && pageName !== 'kincsek') {
-        if (typeof uiAlert === 'function') {
-            uiAlert("Nem hagyhatod el a hajót, amíg játékban vagy! (Kivéve Könyvtár és Karakterlap)", "Kikötőmester: Megtagadva");
-        }
-        return;
+    var closeIcon = document.querySelector('.header-close-icon');
+
+    if (pageName === 'game_oldal') {
+        window.inGame = true;
+        if (closeIcon) closeIcon.style.display = 'none';
+    } else if (pageName === 'fedelzet_oldal') {
+        window.inGame = false;
+        if (closeIcon) closeIcon.style.display = 'block';
     }
-    
+
+    // === JÁTÉK STÁTUSZ BLOKKOLÁS ===
+    if (window.inGame) {
+        if (pageName !== 'game_oldal' && pageName !== 'konyvtar' && pageName !== 'kincsek') {
+            if (typeof uiAlert === 'function') {
+                uiAlert("Nem hagyhatod el a játékot! (Kivéve Könyvtár és Kincsek)", "Kikötőmester: Megtagadva");
+            }
+            return;
+        }
+    } else {
+        if (closeIcon) closeIcon.style.display = 'block';
+    }
     currentPageName = pageName;
     document.getElementById('content').style.display = 'block';
     // document.getElementById('marketing-view').style.display = 'none'; // Ha van ilyen div
@@ -10248,6 +10261,10 @@ function loadGamePage(sessionData) {
                 startBtn.onclick = function() {
                 // Kikerüljük a Unity getTutorialFlowState hívást, azonnal betöltjük a Three.js-t!
                 narrativeOverlay.style.display = 'none';
+                
+                // Letiltjuk a Kikötőbe gombot a fejlécben
+                var closeIcon = document.querySelector('.header-close-icon');
+                if (closeIcon) closeIcon.style.display = 'none';
                 minigameContainer.style.top = '0';
                 minigameContainer.style.left = '0';
                 minigameContainer.style.right = '0';
@@ -10257,7 +10274,8 @@ function loadGamePage(sessionData) {
                 minigameContainer.style.zIndex = '100';
                 minigameContainer.style.display = 'block';
                 var token = sessionStorage.getItem('ebookPiratesToken') || '';
-                minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token);
+                var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
+                minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
                 var closeBtn = document.getElementById('btn-close-minigame');
                 if (closeBtn) {
                     var parentDiv = closeBtn.parentNode;
@@ -10752,7 +10770,27 @@ function launchDiceRoller(callback) {
 
 // Figyeljük a postMessage üzeneteket az iframe-ből
 window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'backendCall') {
+        callBackend(event.data.action, event.data.params, 
+            function(response) {
+                if(event.source) {
+                    event.source.postMessage({ messageId: event.data.messageId, response: response }, '*');
+                }
+            },
+            function(error) {
+                if(event.source) {
+                    event.source.postMessage({ messageId: event.data.messageId, error: error }, '*');
+                }
+            }
+        );
+        return;
+    }
+
     if (event.data && event.data.source === 'threejs-minigame' && event.data.status === 'COMPLETED') {
+        
+        // Visszaállítjuk a kikötő gombot
+        var closeIcon = document.querySelector('.header-close-icon');
+        if (closeIcon) closeIcon.style.display = 'block';
         
         // Eltüntetjük a 3D játékot
         var minigameContainer = document.getElementById('game-minigame-container');

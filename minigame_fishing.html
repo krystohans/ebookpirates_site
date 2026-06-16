@@ -382,7 +382,7 @@
                     <span id="durability-display">10</span>
                 </div>
                 <div class="score-item" data-tooltip="Hártyák a csónakon">
-                    <img src="assets/hajo_r.png" class="score-icon" alt="Csónak">
+                    <img src="assets/hajo_r.PNG" class="score-icon" alt="Csónak">
                     <span id="boat-score-display">0</span>
                 </div>
                 <div class="score-item" data-tooltip="Hártyák a bázison">
@@ -493,20 +493,14 @@
 
         function callBackend(action, params) {
             return new Promise((resolve, reject) => {
-                const messageId = 'msg_' + Math.random().toString(36).substr(2, 9);
-                const listener = (event) => {
-                    if (event.data && event.data.messageId === messageId) {
-                        window.removeEventListener('message', listener);
-                        if (event.data.error) reject(event.data.error);
-                        else resolve(event.data.response);
-                    }
-                };
-                window.addEventListener('message', listener);
-                window.parent.postMessage({ type: 'backendCall', action: action, params: params, messageId: messageId }, '*');
-                setTimeout(() => {
-                    window.removeEventListener('message', listener);
-                    reject("Timeout: Backend nem válaszolt");
-                }, 1500);
+                if (window.parent && typeof window.parent.callBackend === 'function') {
+                    window.parent.callBackend(action, params, 
+                        function(res) { resolve(res); },
+                        function(err) { reject(err); }
+                    );
+                } else {
+                    reject("callBackend nem található a szülő ablakban.");
+                }
             });
         }
 

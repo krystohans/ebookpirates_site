@@ -604,7 +604,7 @@ function loadPage(pageName) {
     if (pageName === 'game_oldal') {
         window.inGame = true;
         if (closeIcon) closeIcon.style.display = 'none';
-    } else if (pageName === 'fedelzet_oldal') {
+    } else if (pageName === 'fedelzet_oldal' || pageName === 'hajomuhely_oldal') {
         window.inGame = false;
         if (closeIcon) closeIcon.style.display = 'block';
     }
@@ -10157,7 +10157,7 @@ function stopSessionPolling() {
 }
 
 function checkActiveSessionStatus() {
-    if (!selectedShipForDeparture || currentPageId !== 'fedelzet_oldal') {
+    if (!selectedShipForDeparture || typeof currentPageName === 'undefined' || currentPageName !== 'fedelzet_oldal') {
         stopSessionPolling();
         return;
     }
@@ -10192,7 +10192,7 @@ function checkActiveSessionStatus() {
                     fishingBtn.style.display = 'none';
                     
                     // Ha még nem vagyunk a game_oldal-on, váltsunk át!
-                    if (currentPageId !== 'game_oldal') {
+                    if (currentPageName !== 'game_oldal') {
                         uiAlert("A Játékmenet aktív! Átirányítás a kalandmezőre...", "Indulás");
                         loadGamePage(res);
                     }

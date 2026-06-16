@@ -1,11 +1,10 @@
 <!-- GAME_OLDAL - A Játékmenet Univerzális Megjelenítője -->
-<div id="game_oldal" class="page-container" style="height: 100vh; background-color: #000; color: #fff; overflow: hidden; position: relative;">
+<div id="game_oldal" class="page-container" style="width: 100vw; height: 100vh; background-color: #000; color: #fff; overflow: hidden; position: relative; touch-action: none; user-select: none;" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
   
-
   <!-- Multimédia Megjelenítő (Videó / Kép Fallback) -->
   <div id="game-media-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;">
-    <video id="game-video-player" style="width: 100%; height: 100%; object-fit: cover; display: none;" playsinline autoplay muted></video>
-    <img id="game-fallback-image" style="width: 100%; height: 100%; object-fit: cover; display: none;" alt="Jelenet képe">
+    <video id="game-video-player" style="width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none;" playsinline autoplay muted></video>
+    <img id="game-fallback-image" style="width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none;" alt="Jelenet képe">
   </div>
 
   <!-- Narratíva és Döntési Felület -->
@@ -17,9 +16,8 @@
   </div>
 
   <!-- Minijáték Container (iframe) -->
-  <div id="game-minigame-container" style="position: absolute; top: 10%; left: 10%; right: 10%; bottom: 10%; background: #111; border: 3px solid #8b6d3b; box-shadow: 0 0 30px rgba(139, 109, 59, 0.5); z-index: 30; display: none; border-radius: 8px; overflow: hidden;">
-    <iframe id="game-minigame-frame" style="width: 100%; height: 100%; border: none; background: transparent;"></iframe>
-
+  <div id="game-minigame-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 30; display: none; overflow: hidden; touch-action: none;">
+    <iframe id="game-minigame-frame" style="width: 100%; height: 100%; border: none; background: transparent; overflow: hidden;" scrolling="no"></iframe>
   </div>
 
 </div>

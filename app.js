@@ -10239,7 +10239,7 @@ function loadGamePage(sessionData) {
     mediaContainer.style.display = 'block';
     narrativeOverlay.style.display = 'none';
     minigameContainer.style.display = 'none';
-    returnShipBtn.style.display = 'block';
+    if (returnShipBtn) returnShipBtn.style.display = 'block';
     actionsContainer.innerHTML = ''; // Gombok törlése
     
     // HA HÁRTYAHALÁSZAT
@@ -10335,9 +10335,12 @@ function loadGamePage(sessionData) {
         }, 1500);
     };
     
-    document.getElementById('btn-close-minigame').onclick = function() {
-        minigameContainer.style.display = 'none';
-    };
+    var btnCloseMinigame = document.getElementById('btn-close-minigame');
+    if (btnCloseMinigame) {
+        btnCloseMinigame.onclick = function() {
+            minigameContainer.style.display = 'none';
+        };
+    }
         }
     }, 100);
 }

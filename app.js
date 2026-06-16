@@ -10244,54 +10244,32 @@ function loadGamePage(sessionData) {
     
     // HA HÁRTYAHALÁSZAT
     if (sessionData && sessionData.gameType === 'Hártyahalászat') {
-        titleEl.textContent = "Helyszín megközelítése...";
+        if (titleEl) titleEl.textContent = "Helyszín megközelítése...";
         narrativeOverlay.style.display = 'none';
         
         // Ideiglenes: az Assets mappából hívjuk meg az aranyvar01.mp4-et, ha nincs backend által küldött URL
         var introVid = sessionData.introVideo || { video_url: 'assets/aranyvar01.mp4', fallback_image: 'placeholder_fish.jpg' };
         
         playMediaSequence([introVid], function() {
-            titleEl.textContent = "Hártyahalászat";
-            narrativeOverlay.style.display = 'block';
-            narrativeText.textContent = "A környezet csendes. A hálók és szigonyok előkészítve. Készülj fel a halászatra!";
+            if (titleEl) titleEl.textContent = "Hártyahalászat";
             
-            var startBtn = document.createElement('button');
-            startBtn.className = 'btn-primary';
-            startBtn.textContent = 'Háló kivetése (Hártyavadász 3D)';
-                startBtn.onclick = function() {
-                // Kikerüljük a Unity getTutorialFlowState hívást, azonnal betöltjük a Three.js-t!
-                narrativeOverlay.style.display = 'none';
-                
-                // Letiltjuk a Kikötőbe gombot a fejlécben
-                var closeIcon = document.querySelector('.header-close-icon');
-                if (closeIcon) closeIcon.style.display = 'none';
-                minigameContainer.style.top = '0';
-                minigameContainer.style.left = '0';
-                minigameContainer.style.right = '0';
-                minigameContainer.style.bottom = '0';
-                minigameContainer.style.border = 'none';
-                minigameContainer.style.borderRadius = '0';
-                minigameContainer.style.zIndex = '100';
-                minigameContainer.style.display = 'block';
-                var token = sessionStorage.getItem('ebookPiratesToken') || '';
-                var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
-                minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
-                var closeBtn = document.getElementById('btn-close-minigame');
-                if (closeBtn) {
-                    var parentDiv = closeBtn.parentNode;
-                    parentDiv.style.display = 'block';
-                    parentDiv.style.top = '20px';
-                    parentDiv.style.right = '20px';
-                    parentDiv.style.bottom = 'auto';
-                }
-            };
-            actionsContainer.appendChild(startBtn);
+            // Azonnal indítjuk a minijátékot a videó lejátszása után, gomb nélkül!
+            narrativeOverlay.style.display = 'none';
+            var closeIcon = document.querySelector('.header-close-icon');
+            if (closeIcon) closeIcon.style.display = 'none';
             
-            var returnBtn = document.createElement('button');
-            returnBtn.className = 'btn-danger';
-            returnBtn.textContent = 'Visszatérés (Mégsem)';
-            returnBtn.onclick = function() { loadPage('fedelzet_oldal'); };
-            actionsContainer.appendChild(returnBtn);
+            minigameContainer.style.top = '0';
+            minigameContainer.style.left = '0';
+            minigameContainer.style.right = '0';
+            minigameContainer.style.bottom = '0';
+            minigameContainer.style.border = 'none';
+            minigameContainer.style.borderRadius = '0';
+            minigameContainer.style.zIndex = '100';
+            minigameContainer.style.display = 'block';
+            
+            var token = sessionStorage.getItem('ebookPiratesToken') || '';
+            var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
+            minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
         });
         return;
     }

@@ -667,7 +667,7 @@
 
             const loader = new THREE.GLTFLoader();
 
-            loader.load('assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb', function (gltf) {
+            loader.load('assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb?v=2', function (gltf) {
                 const model = gltf.scene;
 
                 model.scale.set(10.0, 10.0, 10.0);
@@ -702,7 +702,7 @@
             enemyShip.position.set(-200, 20, 200); // Bal alsó sarokból indul
             scene.add(enemyShip);
 
-            loader.load('assets/models/FantasyShip_v2.glb', function (gltf) {
+            loader.load('assets/models/FantasyShip_v2.glb?v=2', function (gltf) {
                 const model = gltf.scene;
                 const box = new THREE.Box3().setFromObject(model);
                 const size = box.getSize(new THREE.Vector3());

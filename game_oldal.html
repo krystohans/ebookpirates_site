@@ -2,9 +2,9 @@
 <div id="game_oldal" class="page-container" style="width: 100vw; height: 100vh; background-color: #000; color: #fff; overflow: hidden; position: relative; touch-action: none; user-select: none;" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
   
   <!-- Multimédia Megjelenítő (Videó / Kép Fallback) -->
-  <div id="game-media-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;">
-    <video id="game-video-player" style="width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none;" playsinline autoplay muted></video>
-    <img id="game-fallback-image" style="width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none;" alt="Jelenet képe">
+  <div id="game-media-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; background-color: black; display: flex; align-items: center; justify-content: center;">
+    <video id="game-video-player" style="width: 100%; height: 100%; object-fit: contain; display: none; pointer-events: none;" playsinline autoplay muted></video>
+    <img id="game-fallback-image" style="width: 100%; height: 100%; object-fit: contain; display: none; pointer-events: none;" alt="Jelenet képe">
   </div>
 
   <!-- Narratíva és Döntési Felület -->

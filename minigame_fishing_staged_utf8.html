@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>H+Ìrtyavad+Ìsz 3D</title>
+    <style>
+        /* Alapvet+≈ be+Ìll+∫t+Ìsok */
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Georgia', serif; }
+        #game-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        
+        /* UI r+Íteg */
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+        
+        .glass-panel {
+            background: rgba(100, 10, 15, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: #eaddb5;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+        }
+
+        #top-bar {
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            padding: 10px 30px; display: flex; align-items: center; justify-content: space-between;
+            min-width: 300px;
+        }
+        
+        #top-bar h1 { margin: 0; font-size: 24px; color: #d4af37; text-transform: uppercase; letter-spacing: 2px; }
+        #score-board { font-size: 20px; font-weight: bold; }
+
+        /* Kv+∫z Overlay */
+        #quiz-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 20; pointer-events: auto;
+        }
+        
+        #quiz-panel {
+            width: 80%; max-width: 600px; padding: 40px; text-align: center;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        #quiz-question { font-size: 24px; font-weight: bold; color: #fff; line-height: 1.5; text-shadow: 2px 2px 4px #000; }
+        
+        #timer-bar-container { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 5px; overflow: hidden; }
+        #timer-bar { width: 100%; height: 100%; background: #4CAF50; transition: width 0.1s linear; }
+
+        .answer-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .answer-btn {
+            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/ovalis_gomb-rw.png');
+            background-size: 100% 100%;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            border: none; color: #fffbcc;
+            padding: 20px 30px; font-size: 18px; cursor: pointer; transition: transform 0.2s;
+            font-family: 'Georgia', serif; font-weight: bold; text-shadow: 1px 1px 2px #000;
+        }
+        .answer-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .old-btn { 
+            background: linear-gradient(180deg, #8a5a19 0%, #3a2205 100%);
+            border: 2px solid #d4af37; border-radius: 8px; color: #fffbcc;
+            padding: 15px; font-size: 18px; cursor: pointer; transition: transform 0.2s;
+            font-family: 'Georgia', serif; font-weight: bold;
+        }
+        .answer-btn:hover { transform: scale(1.05); border-color: #fff; }
+
+        /* T+Ítes fel+-let */
+        #betting-area { display: none; flex-direction: column; align-items: center; gap: 15px; }
+        #bet-input {
+            padding: 10px; font-size: 20px; text-align: center; width: 150px;
+            background: rgba(0,0,0,0.5); color: #d4af37; border: 2px solid #d4af37; border-radius: 8px;
+        }
+        #place-bet-btn {
+            background: #2E7D32; color: white; border: 2px solid #4CAF50; padding: 12px 30px;
+            font-size: 18px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        }
+        #place-bet-btn:hover { background: #4CAF50; }
+
+        /* +Îrint+≈ Joystick */
+        #joystick-area {
+            position: absolute; bottom: 20px; right: 20px; width: 150px; height: 150px;
+            background: rgba(255,255,255,0.1); border-radius: 50%; border: 2px solid rgba(255,215,0,0.3);
+            display: none; pointer-events: auto; touch-action: none;
+        }
+        #joystick-knob {
+            position: absolute; top: 50%; left: 50%; width: 60px; height: 60px;
+            background: rgba(212, 175, 55, 0.6); border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none;
+        }
+
+        #game-message {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 40px; color: #fff; text-shadow: 0 0 20px red; font-weight: bold; display: none; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container"></div>
+
+    <div id="ui-layer">
+        <div id="top-bar" class="glass-panel">
+            <h1>H+Ìrtyavad+Ìsz</h1>
+            <div id="score-board">H+Ìrty+Ìk: 0</div>
+        </div>
+        
+        <div id="joystick-area">
+            <div id="joystick-knob"></div>
+        </div>
+
+        <div id="game-message">J+Ìt+Ík V+Íge!</div>
+        <div id="start-instruction" style="position: absolute; top: 70%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: #fff; text-shadow: 0 0 10px #000; text-align: center; pointer-events: none;">Nyomd meg a W-A-S-D gombokat az indul+Ìshoz!<br><span style="font-size: 16px; color: #d4af37;">(Szedj +¬ssze h+Ìrty+Ìkat, +Ís ker+-ld el a l+Íghaj+-t!)</span></div>
+    </div>
+
+    <div id="quiz-overlay">
+        <div id="quiz-panel" class="glass-panel">
+            <div id="timer-bar-container"><div id="timer-bar"></div></div>
+            <div id="quiz-question">K+Írd+Ís bet+¬lt+Íse...</div>
+            
+            <div id="answer-buttons" class="answer-buttons"></div>
+            
+            <div id="betting-area">
+                <div id="max-bet-info">Maxim+Ìlis t+Ít lek+Írdez+Íse...</div>
+                <input type="number" id="bet-input" min="1" placeholder="T+Ít">
+                <button id="place-bet-btn">T+Ít Megt+Ítele</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js +Ís GLTFLoader bet+¬lt+Íse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GLTFLoader kikapcsolva az 1. f+Ìzisra -->
+
+    <script>
+        // ==========================================
+        // 1. GLOB+¸LIS V+¸LTOZ+ÙK +ÎS KOMMUNIK+¸CI+Ù
+        // ==========================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const playerToken = urlParams.get('token');
+        
+        let quizQuestions = [];
+        let scoreOnBoat = 0; // H+Ìrty+Ìk a cs+-nakon
+        let baseHarborScore = 0; // H+Ìrty+Ìk a b+Ìzison
+        let isGameOver = false;
+        let gameStarted = false;
+        let currentBet = 0;
+        let maxBetAmount = 0;
+        let correctAnswer = "";
+        let activeDiamond = null;
+        let timerInterval;
+        let timeLeft = 20;
+
+        function callBackend(action, params) {
+            return new Promise((resolve, reject) => {
+                const messageId = 'msg_' + Math.random().toString(36).substr(2, 9);
+                const listener = (event) => {
+                    if (event.data && event.data.messageId === messageId) {
+                        window.removeEventListener('message', listener);
+                        if (event.data.error) reject(event.data.error);
+                        else resolve(event.data.response);
+                    }
+                };
+                window.addEventListener('message', listener);
+                window.parent.postMessage({ type: 'backendCall', action: action, params: params, messageId: messageId }, '*');
+            });
+        }
+
+        async function initGameData() {
+            try {
+                const response = await callBackend('getQuizQuestions', []);
+                quizQuestions = response || [];
+                const betResponse = await callBackend('getMaximumBet', []);
+                maxBetAmount = betResponse || 0;
+                if(document.getElementById('max-bet-info')) {
+                    document.getElementById('max-bet-info').innerText = "Maxim+Ìlis t+Ít: " + maxBetAmount;
+                }
+            } catch (e) { console.error("Adatbet+¬lt+Ísi hiba:", e); }
+        }
+        initGameData();
+
+        // Sz+Ílz+Ìszl+- UI gener+Ìl+Ìsa
+        const windVane = document.createElement('div');
+        windVane.id = 'wind-vane';
+        windVane.style.position = 'absolute';
+        windVane.style.top = '80px';
+        windVane.style.right = '20px';
+        windVane.style.width = '50px';
+        windVane.style.height = '50px';
+        windVane.style.background = 'rgba(0,0,0,0.5)';
+        windVane.style.borderRadius = '50%';
+        windVane.style.display = 'flex';
+        windVane.style.justifyContent = 'center';
+        windVane.style.alignItems = 'center';
+        windVane.style.color = '#fff';
+        windVane.style.fontSize = '24px';
+        windVane.style.zIndex = '15';
+        windVane.innerHTML = '‘◊•';
+        document.body.appendChild(windVane);
+
+        // Pontsz+Ìmjelz+≈ m+-dos+∫t+Ìsa
+        const scoreBoard = document.getElementById('score-board');
+        function updateScoreBoard() {
+            scoreBoard.innerText = Cs+-nakon:  | B+Ìzison: ;
+        }
+
+        // ==========================================
+        // 2. THREE.JS MOTOR INICIALIZ+¸L+¸S
+        // ==========================================
+        const container = document.getElementById('game-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB);
+        scene.fog = new THREE.FogExp2(0x87CEEB, 0.005);
+
+        // Kamera be+Ìll+∫t+Ìsok
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        let cameraDistance = 30; // Zoom szint
+        let cameraAngle = Math.PI / 4; // Orbit sz+¬g (kezd+Ísnek 45 fok h+Ìtulr+-l)
+        const CAMERA_PITCH = Math.PI / 4; // 45 fokos d+≈l+Íssz+¬g lefel+Í
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // F+Íny (Egyetlen Nap)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffeedd, 1.0);
+        sunLight.position.set(100, 200, 50);
+        sunLight.castShadow = true;
+        sunLight.shadow.camera.left = -200;
+        sunLight.shadow.camera.right = 200;
+        sunLight.shadow.camera.top = 200;
+        sunLight.shadow.camera.bottom = -200;
+        sunLight.shadow.camera.far = 500;
+        scene.add(sunLight);
+
+        // V+∫z fel+-let (visszasz+-r+Ìssal)
+        const waterGeo = new THREE.PlaneGeometry(1000, 1000);
+        const waterMat = new THREE.MeshPhongMaterial({ 
+            color: 0x006699, 
+            shininess: 100, 
+            specular: 0x111111,
+            transparent: true, 
+            opacity: 0.9 
+        });
+        const water = new THREE.Mesh(waterGeo, waterMat);
+        water.rotation.x = -Math.PI / 2;
+        water.receiveShadow = true;
+        scene.add(water);
+
+        // J+Ìt+Ík elemek
+        let playerBoat = null;
+        let baseHarbor = null;
+        let enemyShip = null;
+        let battleship = null;
+        const obstacles = [];
+        const diamonds = [];
+        
+        const MAP_RADIUS = 300;
+        // B+Ìzis a jobb fels+≈ sarokban (X+, Z-)
+        const BASE_POS = new THREE.Vector3(150, 0, -150);
+
+        // Egyszer+- Pseudo-Random Gener+Ìtor a permanens p+Ìly+Ìhoz
+        class PRNG {
+            constructor(seed) { this.seed = seed; }
+            next() {
+                this.seed = (this.seed * 9301 + 49297) % 233280;
+                return this.seed / 233280;
+            }
+        }
+        const rng = new PRNG(12345); // Fix seed!
+
+        function buildScene() {
+            // 1. Kik+¬t+≈ (B+Ìzis) - Z+¬ld lapos henger
+            const harborGeo = new THREE.CylinderGeometry(30, 30, 2, 32);
+            const harborMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32 });
+            baseHarbor = new THREE.Mesh(harborGeo, harborMat);
+            baseHarbor.position.copy(BASE_POS);
+            baseHarbor.receiveShadow = true;
+            scene.add(baseHarbor);
+
+            // 2. J+Ìt+Íkos cs+-nakja
+            const boatGeo = new THREE.BoxGeometry(4, 3, 8);
+            const boatMat = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+            playerBoat = new THREE.Mesh(boatGeo, boatMat);
+            playerBoat.position.set(BASE_POS.x - 40, 1.5, BASE_POS.z + 40); // B+Ìzis mell+≈l indul
+            playerBoat.castShadow = true;
+            scene.add(playerBoat);
+
+            // 3. L+Íghaj+- (+ùld+¬z+≈) - Piros g+¬mb er+≈s +Ìrny+Íkkal
+            const enemyGeo = new THREE.SphereGeometry(8, 16, 16);
+            const enemyMat = new THREE.MeshStandardMaterial({ color: 0xB22222 });
+            enemyShip = new THREE.Mesh(enemyGeo, enemyMat);
+            enemyShip.position.set(-200, 20, 200); // Bal als+- sarokb+-l indul
+            enemyShip.castShadow = true;
+            scene.add(enemyShip);
+
+            // 4. Csatahaj+- (Falon k+∫v+-li blokk bal als+- sarokban)
+            const battleGeo = new THREE.BoxGeometry(40, 15, 80);
+            const battleMat = new THREE.MeshStandardMaterial({ color: 0x880000 });
+            battleship = new THREE.Mesh(battleGeo, battleMat);
+            battleship.position.set(-250, 7.5, 250);
+            battleship.rotation.y = Math.PI / 4;
+            battleship.castShadow = true;
+            battleship.boundingRadius = 45;
+            scene.add(battleship);
+            obstacles.push(battleship);
+
+            // 5. Z+Ìtonyok Gauss-eloszl+Ìssal a B+Ìzist+-l t+Ìvolodva
+            const totalRocks = 350;
+            const rockGeo = new THREE.CylinderGeometry(3, 5, 10, 8);
+            const rockMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+
+            for(let i = 0; i < totalRocks; i++) {
+                // Gauss eloszl+Ìs a b+Ìzis t+Ìvols+Ìg+Ìra
+                let u = 0, v = 0;
+                while(u === 0) u = rng.next();
+                while(v === 0) v = rng.next();
+                let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+                num = num / 8.0 + 0.5; 
+                if (num > 1 || num < 0) num = rng.next(); 
+                
+                let r = 40 + Math.pow(num, 0.8) * 400; // T+Ìvols+Ìg a b+Ìzist+-l
+                let theta = rng.next() * 2 * Math.PI;
+
+                let x = BASE_POS.x + r * Math.cos(theta);
+                let z = BASE_POS.z + r * Math.sin(theta);
+
+                // Ha kiesik a vil+Ìgb+-l, kihagyjuk
+                if (Math.sqrt(x*x + z*z) > MAP_RADIUS + 100) continue;
+
+                let rock = new THREE.Mesh(rockGeo, rockMat);
+                rock.position.set(x, 2, z);
+                rock.rotation.x = (rng.next() - 0.5) * 0.4;
+                rock.rotation.z = (rng.next() - 0.5) * 0.4;
+                rock.castShadow = true;
+                rock.receiveShadow = true;
+                rock.boundingRadius = 5;
+                
+                scene.add(rock);
+                obstacles.push(rock);
+            }
+
+            // +¸thatolhatatlan z+Ìtonygy+-r+- a p+Ìlya sz+Íl+Ín (Orig+-t+-l R=350)
+            for(let theta = 0; theta < Math.PI * 2; theta += 0.05) {
+                let x = 350 * Math.cos(theta);
+                let z = 350 * Math.sin(theta);
+                
+                // Ha a csatahaj+- k+¬zel+Íben van, oda nem tesz+-nk szikl+Ìt
+                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 60) continue;
+
+                let rock = new THREE.Mesh(rockGeo, rockMat);
+                rock.position.set(x, 2, z);
+                rock.boundingRadius = 5;
+                scene.add(rock);
+                obstacles.push(rock);
+            }
+
+            // H+Ìrty+Ìk kezdeti felt+¬lt+Íse (mindig 21 darab)
+            for(let i=0; i<21; i++) spawnDiamond();
+            
+            updateScoreBoard();
+        }
+
+        function spawnDiamond() {
+            let x, z, validPos;
+            let attempts = 0;
+            
+            // A h+Ìrty+Ìk a b+Ìzist+-l egyre messzebb jelennek meg, ahogy a baseHarborScore n+≈
+            let minDistance = 50 + (baseHarborScore * 10);
+            
+            do {
+                validPos = true;
+                let r = minDistance + Math.random() * 150;
+                let theta = Math.random() * Math.PI * 2;
+                x = BASE_POS.x + r * Math.cos(theta);
+                z = BASE_POS.z + r * Math.sin(theta);
+
+                // Ne menjen ki a t+Írk+Ípr+≈l
+                if (Math.sqrt(x*x + z*z) > 300) { validPos = false; continue; }
+
+                let testVec = new THREE.Vector3(x, 0, z);
+                for (let obs of obstacles) {
+                    if (testVec.distanceTo(obs.position) < 15) {
+                        validPos = false; break;
+                    }
+                }
+                attempts++;
+            } while (!validPos && attempts < 100);
+
+            const scrollZone = new THREE.Object3D();
+            scrollZone.position.set(x, 0, z);
+            
+            const pointLight = new THREE.PointLight(0xffd700, 2, 25);
+            pointLight.position.set(0, 3, 0);
+            scrollZone.add(pointLight);
+
+            const glowGeo = new THREE.CircleGeometry(5, 32);
+            const glowMat = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.5 });
+            const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+            glowMesh.rotation.x = -Math.PI / 2;
+            glowMesh.position.y = 0.5;
+            scrollZone.add(glowMesh);
+            
+            scrollZone.boundingRadius = 5;
+            scene.add(scrollZone);
+            diamonds.push(scrollZone);
+        }
+
+        buildScene();
+
+        // ==========================================
+        // 3. J+¸T+ÎK LOGIKA +ÎS IR+¸NY+èT+¸S
+        // ==========================================
+        const keys = { w: false, a: false, s: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false };
+
+        window.addEventListener('keydown', e => { 
+            let k = e.key.toLowerCase();
+            if(keys.hasOwnProperty(k)) keys[k] = true; 
+        });
+        window.addEventListener('keyup', e => { 
+            let k = e.key.toLowerCase();
+            if(keys.hasOwnProperty(k)) keys[k] = false; 
+        });
+
+        // Eg+Ír svenkel+Ís (Orbit)
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        
+        window.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                let deltaX = e.clientX - previousMousePosition.x;
+                cameraAngle -= deltaX * 0.01; // Jobbra-balra h+¶z+Ìs = Orbit forg+Ìs
+            }
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+        
+        // Eg+Ír g+¬rg+≈ (Zoom)
+        window.addEventListener('wheel', (e) => {
+            cameraDistance += e.deltaY * 0.05;
+            if (cameraDistance < 10) cameraDistance = 10;
+            if (cameraDistance > 100) cameraDistance = 100;
+        });
+
+        let boatSpeed = 0;
+        const MAX_SPEED = 0.6;
+        const TURN_SPEED = 0.03;
+        let wind = new THREE.Vector3(-0.02, 0, 0.04); // Sz+Íl (+Íszak-nyugati sodr+Ìs)
+
+        function updatePhysics() {
+            if (isGameOver || !playerBoat || document.getElementById('quiz-overlay').style.display === 'flex') return;
+
+            // ---- HAJ+Ù IR+¸NY+èT+¸S (Tank controls) ----
+            if (keys.w) {
+                boatSpeed += 0.02;
+                gameStarted = true;
+                if(document.getElementById('start-instruction')) document.getElementById('start-instruction').style.display = 'none';
+            } else if (keys.s) {
+                boatSpeed -= 0.02; // H+Ìtra
+                gameStarted = true;
+            } else {
+                boatSpeed *= 0.95; // S+¶rl+-d+Ìs
+            }
+
+            // Sebess+Íg limit (h+Ìtra 0.8x)
+            if (boatSpeed > MAX_SPEED) boatSpeed = MAX_SPEED;
+            if (boatSpeed < -MAX_SPEED * 0.8) boatSpeed = -MAX_SPEED * 0.8;
+
+            // Fordul+Ìs (csak ha mozog, vagy egy helyben is tud? Legyen egy helyben is kicsit, mozg+Ìs k+¬zben jobban)
+            if (keys.a) playerBoat.rotation.y += TURN_SPEED;
+            if (keys.d) playerBoat.rotation.y -= TURN_SPEED;
+
+            // Mozg+Ìs alkalmaz+Ìsa az ir+Ìnyba
+            let direction = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerBoat.rotation.y);
+            let moveVec = direction.multiplyScalar(boatSpeed);
+            
+            // Sz+Íl alkalmaz+Ìsa
+            moveVec.add(wind);
+            playerBoat.position.add(moveVec);
+
+            // Sz+Ílz+Ìszl+- friss+∫t+Íse
+            let windAngle = Math.atan2(wind.x, wind.z);
+            windVane.style.transform = 
+otate(rad);
+
+            // ---- KAMERA ORBIT +ÎS ZOOM ----
+            // Billenty+-zet kamera kontroll
+            if (keys.arrowleft) cameraAngle -= 0.03;
+            if (keys.arrowright) cameraAngle += 0.03;
+            if (keys.arrowup) cameraDistance -= 1;
+            if (keys.arrowdown) cameraDistance += 1;
+            if (cameraDistance < 10) cameraDistance = 10;
+            if (cameraDistance > 100) cameraDistance = 100;
+
+            // Kamera poz+∫cion+Ìl+Ìsa a cs+-nak k+¬r+-l
+            let camOffset = new THREE.Vector3(
+                Math.sin(cameraAngle) * cameraDistance,
+                Math.sin(CAMERA_PITCH) * cameraDistance,
+                Math.cos(cameraAngle) * cameraDistance
+            );
+            camera.position.copy(playerBoat.position).add(camOffset);
+            camera.lookAt(playerBoat.position);
+
+            // ---- ELLENS+ÎG (L+ÎGHAJ+Ù) +ùLD+æZ+ÎS ----
+            if (enemyShip && gameStarted) {
+                let ex = playerBoat.position.x - enemyShip.position.x;
+                let ez = playerBoat.position.z - enemyShip.position.z;
+                let dist = Math.sqrt(ex*ex + ez*ez);
+                if (dist > 0.1) {
+                    enemyShip.position.x += (ex/dist) * 0.15;
+                    enemyShip.position.z += (ez/dist) * 0.15;
+                }
+                if (dist < 8) gameOver("Elkapott a L+Íghaj+-!"); // 8 = player r + enemy r
+            }
+
+            // ---- +ùTK+æZ+ÎSEK Z+¸TONYOKKAL ----
+            for (let r of obstacles) {
+                let dist = playerBoat.position.distanceTo(r.position);
+                if (dist < r.boundingRadius + 2) {
+                    // Visszapattan+Ìs
+                    boatSpeed = -boatSpeed * 0.5;
+                    playerBoat.position.sub(moveVec.multiplyScalar(2));
+                    // Opcion+Ìlisan: gameOver("Z+Ìtonyra futott+Ìl!"); - Most csak lepattan, hacsak nem akarjuk instant game overnek. 
+                    // A felhaszn+Ìl+- +∫rta a kor+Ìbbi logik+Ìban hogy "z+Ìtonyra futott+Ìl". Hagyjuk meg.
+                    gameOver("Z+Ìtonyra futott+Ìl!");
+                }
+            }
+
+            // ---- H+¸RTYA FELV+ÎTEL ----
+            for (let i = diamonds.length - 1; i >= 0; i--) {
+                let d = diamonds[i];
+                if (playerBoat.position.distanceTo(d.position) < d.boundingRadius + 2) {
+                    activeDiamond = d;
+                    diamonds.splice(i, 1);
+                    triggerQuiz();
+                }
+            }
+
+            // ---- B+¸ZIS (KIK+æT+ÎS) ----
+            if (playerBoat.position.distanceTo(baseHarbor.position) < 35) {
+                if (scoreOnBoat > 0) {
+                    baseHarborScore += scoreOnBoat;
+                    scoreOnBoat = 0;
+                    updateScoreBoard();
+                    // Sz+Ílv+Ídett hely, nem sodr+-dik el azonnal
+                    boatSpeed = 0; 
+                    // Felt+¬ltj+-k 21-re a h+Ìrty+Ìkat a v+∫zen (t+Ìvolabb!)
+                    while(diamonds.length < 21) {
+                        spawnDiamond();
+                    }
+                }
+            }
+        }
+
+        // ==========================================
+        // 4. KV+èZ LOGIKA
+        // ==========================================
+        function triggerQuiz() {
+            if (quizQuestions.length === 0) {
+                resumeGame(true);
+                return;
+            }
+            let qIndex = Math.floor(Math.random() * quizQuestions.length);
+            let q = quizQuestions[qIndex];
+            correctAnswer = q.correctAnswer;
+            
+            document.getElementById('quiz-question').innerText = q.question;
+            
+            let answers = [q.correctAnswer, ...q.incorrectAnswers].sort(() => Math.random() - 0.5);
+            let btnContainer = document.getElementById('answer-buttons');
+            btnContainer.innerHTML = '';
+            
+            if (q.isStaked && playerToken) {
+                btnContainer.style.display = 'none';
+                document.getElementById('betting-area').style.display = 'flex';
+                document.getElementById('bet-input').value = '';
+            } else {
+                document.getElementById('betting-area').style.display = 'none';
+                btnContainer.style.display = 'grid';
+                answers.forEach(ans => {
+                    let btn = document.createElement('button');
+                    btn.className = 'answer-btn';
+                    btn.innerText = ans;
+                    btn.onclick = () => handleAnswer(ans === correctAnswer);
+                    btnContainer.appendChild(btn);
+                });
+            }
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            
+            timeLeft = 20;
+            document.getElementById('timer-bar').style.width = '100%';
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                document.getElementById('timer-bar').style.width = (timeLeft / 20 * 100) + '%';
+                if (timeLeft <= 0) handleAnswer(false);
+            }, 100);
+        }
+
+        if(document.getElementById('place-bet-btn')) {
+            document.getElementById('place-bet-btn').onclick = () => {
+                currentBet = parseInt(document.getElementById('bet-input').value);
+                if (isNaN(currentBet) || currentBet <= 0 || currentBet > maxBetAmount) {
+                    alert("+Îrv+Ínytelen t+Ít!"); return;
+                }
+                document.getElementById('betting-area').style.display = 'none';
+                document.getElementById('answer-buttons').style.display = 'grid';
+            };
+        }
+
+        async function handleAnswer(isCorrect) {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-overlay').style.display = 'none';
+
+            if (currentBet > 0) {
+                try { await callBackend('handleBetTransaction', [currentBet, isCorrect]); } catch(e) {}
+            }
+            currentBet = 0;
+            resumeGame(isCorrect);
+        }
+
+        function resumeGame(isCorrect) {
+            if (isCorrect) {
+                scoreOnBoat++;
+                updateScoreBoard();
+            }
+            
+            if (activeDiamond) {
+                scene.remove(activeDiamond);
+                activeDiamond = null;
+            }
+            // A h+Ìrty+Ìk sz+Ìma mindig +Ìlland+- 21 marad, ha vesz+∫tett, +¶jat spawnolunk helyette
+            if (!isCorrect) spawnDiamond(); 
+        }
+
+        function gameOver(msg) {
+            isGameOver = true;
+            if(document.getElementById('game-message')) {
+                document.getElementById('game-message').innerText = msg;
+                document.getElementById('game-message').style.display = 'block';
+            }
+            
+            // J+Ìt+Ík v+Íg+Ín a b+Ìzis pontsz+Ìm+Ìnak ment+Íse
+            if (baseHarborScore > 0) saveScoreToBackend();
+        }
+
+        async function saveScoreToBackend() {
+            try { await callBackend('saveHartyaScore', [baseHarborScore]); } catch(e) {}
+        }
+
+        // ==========================================
+        // 5. RENDER LOOP
+        // ==========================================
+        function animate() {
+            requestAnimationFrame(animate);
+            updatePhysics();
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script></script>
+</body>
+</html>

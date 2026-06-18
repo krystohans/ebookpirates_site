@@ -52,7 +52,7 @@
             transform: translateX(-50%);
             width: 650px;
             height: 122px;
-            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/AUS_button_1--r.png');
+            background-image: url('assets/AUS_button_1--r.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
             display: flex;
@@ -155,7 +155,7 @@
             box-sizing: border-box;
             text-align: center;
             display: block;
-            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/Quiz_window_new_2-r.png');
+            background-image: url('assets/Quiz_window_new_2-r.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-color: transparent;
@@ -249,7 +249,7 @@
         }
 
         #base-exit-btn {
-            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/ovalis_gomb-rw.png') !important;
+            background-image: url('assets/ovalis_gomb-rw.png') !important;
             background-size: 100% 100% !important;
             background-color: transparent !important;
             border: none !important;
@@ -312,7 +312,7 @@
             font-weight: bold;
             display: none;
             text-align: center;
-            background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
+            background: url('assets/Zozo_monolog_window_1.jpg') no-repeat center center;
             background-size: 100% 100%;
             padding: 120px 120px 100px 120px;
             width: 750px;
@@ -336,7 +336,7 @@
             color: #4a2c0f;
             font-weight: bold;
             text-align: center;
-            background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
+            background: url('assets/Zozo_monolog_window_1.jpg') no-repeat center center;
             background-size: 100% 100%;
             padding: 120px 120px 100px 120px;
             width: 750px;
@@ -380,30 +380,30 @@
             <h1>Hártyavadász</h1>
             <div id="score-board">
                 <div class="score-item" data-tooltip="Csónak élettartama">
-                    <img src="assets/icons/full_screen-r.png" class="score-icon" alt="Élettartam">
+                    <img src="assets/full_screen-r.png" class="score-icon" alt="Élettartam">
                     <span id="durability-display">10</span>
                 </div>
                 <div class="score-item" data-tooltip="Hártyák a csónakon">
-                    <img src="assets/icons/hajo_r.PNG" class="score-icon" alt="Csónak">
+                    <img src="assets/hajo_r.PNG" class="score-icon" alt="Csónak">
                     <span id="boat-score-display">0</span>
                 </div>
                 <div class="score-item" data-tooltip="Hártyák a bázison">
-                    <img src="assets/icons/lada-r.png" class="score-icon" alt="Bázis">
+                    <img src="assets/lada-r.png" class="score-icon" alt="Bázis">
                     <span id="base-score-display">0</span>
                 </div>
             </div>
         </div>
 
         <div id="ambient-toggle" data-tooltip="Háttérzaj"
-            style="position: absolute; top: 20px; left: 100px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+            style="position: absolute; top: 20px; left: 100px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('assets/sound_mute-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
         </div>
 
         <div id="music-toggle" data-tooltip="Zene"
-            style="position: absolute; top: 25px; right: 100px; width: 50px; height: 50px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+            style="position: absolute; top: 25px; right: 100px; width: 50px; height: 50px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('assets/music_mute_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
         </div>
 
         <div id="info-toggle" data-tooltip="Információ"
-            style="position: absolute; top: 20px; left: 20px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/info-r 1.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+            style="position: absolute; top: 20px; left: 20px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('assets/info-r 1.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
         </div>
 
         <div id="joystick-area">
@@ -438,7 +438,7 @@
     <div id="info-overlay"
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 40; pointer-events: auto; backdrop-filter: blur(4px);">
         <div id="info-panel"
-            style="position: relative; width: 90vw; max-width: 780px; height: 85vh; max-height: 1000px; background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/info_scroll_open.png'); background-size: 100% 100%; background-repeat: no-repeat; box-sizing: border-box;">
+            style="position: relative; width: 90vw; max-width: 780px; height: 85vh; max-height: 1000px; background-image: url('assets/info_scroll_open.png'); background-size: 100% 100%; background-repeat: no-repeat; box-sizing: border-box;">
 
             <div
                 style="position: absolute; top: calc(48% + 5px); left: calc(53% - 5px); transform: translate(-50%, -50%); width: 50%; height: 45%; display: flex; flex-direction: column; text-align: center;">
@@ -464,7 +464,7 @@
             </div>
 
             <div id="close-info-btn"
-                style="position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; cursor: pointer; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/exit_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+                style="position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; cursor: pointer; background-image: url('assets/exit_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
             </div>
         </div>
     </div>
@@ -522,7 +522,7 @@
                 const response = await callBackend('getQuizQuestions', []);
                 quizQuestions = response || [];
                 const durResponse = await callBackend('getBoatDurability', [shipId]);
-                if (durResponse !== undefined && durResponse !== null && durResponse !== '') boatDurability = parseInt(durResponse);
+                if (durResponse) boatDurability = parseInt(durResponse);
             } catch (e) { console.error("Adatbetöltési hiba:", e); }
 
             if (quizQuestions.length === 0) {
@@ -667,7 +667,7 @@
 
             const loader = new THREE.GLTFLoader();
 
-            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb', function (gltf) {
+            loader.load('assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb', function (gltf) {
                 const model = gltf.scene;
 
                 model.scale.set(10.0, 10.0, 10.0);
@@ -702,7 +702,7 @@
             enemyShip.position.set(-200, 20, 200); // Bal alsó sarokból indul
             scene.add(enemyShip);
 
-            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/FantasyShip_v2.glb', function (gltf) {
+            loader.load('assets/models/FantasyShip_v2.glb', function (gltf) {
                 const model = gltf.scene;
                 const box = new THREE.Box3().setFromObject(model);
                 const size = box.getSize(new THREE.Vector3());
@@ -730,7 +730,7 @@
             scene.add(battleship);
             obstacles.push(battleship);
 
-            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Veh_Boat_Warship_01_Hull.glb', function (gltf) {
+            loader.load('assets/models/SM_Veh_Boat_Warship_01_Hull.glb', function (gltf) {
                 const model = gltf.scene;
 
                 // 18-szoros méret a korábbihoz (10.0) képest
@@ -760,13 +760,13 @@
 
             // ---- 5. ZÁTONYOK GENERÁLÁSA (VALÓDI 3D MODELLEKKEL) ----
             const rockModelPaths = [
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_03.glb',             // 0: Piros helyett
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_01.fbx.glb',    // 1: Kék helyett
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_02.fbx.glb',    // 2: Barna helyett
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_03.fbx.glb',    // 3: Sárga helyett
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_04.fbx.glb',    // 4: Fehér helyett
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Large_09.fbx.glb',   // 5: Fekete helyett
-                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Large_010.fbx.glb'   // 6: Szürke helyett
+                'assets/models/SM_Env_Rock_03.glb',             // 0: Piros helyett
+                'assets/models/SM_Env_Rock_Huge_01.fbx.glb',    // 1: Kék helyett
+                'assets/models/SM_Env_Rock_Huge_02.fbx.glb',    // 2: Barna helyett
+                'assets/models/SM_Env_Rock_Huge_03.fbx.glb',    // 3: Sárga helyett
+                'assets/models/SM_Env_Rock_Huge_04.fbx.glb',    // 4: Fehér helyett
+                'assets/models/SM_Env_Rock_Large_09.fbx.glb',   // 5: Fekete helyett
+                'assets/models/SM_Env_Rock_Large_010.fbx.glb'   // 6: Szürke helyett
             ];
 
             const rockPromises = rockModelPaths.map(path => new Promise((resolve, reject) => {
@@ -862,7 +862,7 @@
             // ---- 6. TÁJKÉP ÉS VIZUÁLIS HÁTTÉR GENERÁLÁSA ----
 
             // 6.1 Tengerpart és hegyek a bázis (jobb felső, X+, Z-) oldalán
-            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Beach_01.glb', gltf => {
+            loader.load('assets/models/SM_Env_Beach_01.glb', gltf => {
                 let beachModel = gltf.scene;
                 
                 // Sziluett árnyékolás engedélyezése az alap modellen
@@ -896,7 +896,7 @@
                 }
             });
 
-            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Background_Hills_01.glb', gltf => {
+            loader.load('assets/models/SM_Env_Background_Hills_01.glb', gltf => {
                 let hillsModel = gltf.scene;
                 let s = 900; // 900-szoros méret
                 let dTheta = 0.35; // Nagyjából 10% átfedéshez szükséges szögtávolság
@@ -1072,7 +1072,7 @@
 
                 let testVec = new THREE.Vector3(x, 0, z);
                 for (let obs of obstacles) {
-                    if (testVec.distanceTo(obs.position) < 35) {
+                    if (testVec.distanceTo(obs.position) < 15) {
                         validPos = false; break;
                     }
                 }
@@ -1133,11 +1133,11 @@
             if (isMusicPlaying) {
                 bgMusic.pause();
                 isMusicPlaying = false;
-                musicToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+                musicToggleBtn.style.backgroundImage = "url('assets/music_mute_2-r.png')";
             } else {
                 bgMusic.play().catch(e => console.log("Zene lejátszása blokkolva:", e));
                 isMusicPlaying = true;
-                musicToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')";
+                musicToggleBtn.style.backgroundImage = "url('assets/music-r.png')";
             }
         }
 
@@ -1159,11 +1159,11 @@
             if (isAmbientPlaying) {
                 ambientSound.pause();
                 isAmbientPlaying = false;
-                ambientToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+                ambientToggleBtn.style.backgroundImage = "url('assets/sound_mute-r.png')";
             } else {
                 ambientSound.play().catch(e => console.log("Háttérzaj lejátszása blokkolva:", e));
                 isAmbientPlaying = true;
-                ambientToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')";
+                ambientToggleBtn.style.backgroundImage = "url('assets/sound-r.png')";
             }
         }
 

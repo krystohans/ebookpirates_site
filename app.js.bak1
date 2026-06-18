@@ -564,7 +564,7 @@ function preloadLoadingGif() {
 
     var gifElement = document.getElementById('loading-gif');
     if (gifElement) {
-        gifElement.src = 'https://storage.googleapis.com/kalozsziget-assets/images/download.gif';
+        gifElement.src = 'assets/download.gif';
         console.log("GIF beállítva (Backend hívás nélkül).");
     }
 }
@@ -604,7 +604,7 @@ function loadPage(pageName) {
     if (pageName === 'game_oldal') {
         window.inGame = true;
         if (closeIcon) closeIcon.style.display = 'none';
-    } else if (pageName === 'fedelzet_oldal' || pageName === 'hajomuhely_oldal') {
+    } else if (pageName === 'fedelzet_oldal') {
         window.inGame = false;
         if (closeIcon) closeIcon.style.display = 'block';
     }
@@ -5172,8 +5172,7 @@ function finalizeResignation(leaveGame) {
                 // Backend hívások (Normál specifikus)
                 callBackend('getDropdownData', [], populateDropdowns, showError);
                 callBackend('getCentralImageAsset', ['logo'], displayLogo, displayLogoError);
-                // callBackend('getCentralImageAsset', ['book_upload'], displayLoadingGif, function (e) { console.warn('Gif hiba', e); });
-                displayLoadingGif(); // Helyette direktben hívjuk meg
+                callBackend('getCentralImageAsset', ['book_upload'], displayLoadingGif, function (e) { console.warn('Gif hiba', e); });
             }
 
             // Űrlap beküldés eseménykezelő csatolása
@@ -5490,7 +5489,7 @@ function finalizeResignation(leaveGame) {
 
     function displayLoadingGif(imageData) {
         var gifElement = document.getElementById('book_upload-image');
-        if (gifElement) gifElement.src = 'https://storage.googleapis.com/kalozsziget-assets/images/book_upload.gif';
+        if (gifElement && imageData && imageData.data) gifElement.src = `data:${imageData.mime};base64,${imageData.data}`;
     }
 
     // --- Utilitik (Vízjelezéshez, stb.) ---
@@ -10158,7 +10157,7 @@ function stopSessionPolling() {
 }
 
 function checkActiveSessionStatus() {
-    if (!selectedShipForDeparture || typeof currentPageName === 'undefined' || currentPageName !== 'fedelzet_oldal') {
+    if (!selectedShipForDeparture || currentPageId !== 'fedelzet_oldal') {
         stopSessionPolling();
         return;
     }
@@ -10193,7 +10192,7 @@ function checkActiveSessionStatus() {
                     fishingBtn.style.display = 'none';
                     
                     // Ha még nem vagyunk a game_oldal-on, váltsunk át!
-                    if (currentPageName !== 'game_oldal') {
+                    if (currentPageId !== 'game_oldal') {
                         uiAlert("A Játékmenet aktív! Átirányítás a kalandmezőre...", "Indulás");
                         loadGamePage(res);
                     }
@@ -10245,32 +10244,54 @@ function loadGamePage(sessionData) {
     
     // HA HÁRTYAHALÁSZAT
     if (sessionData && sessionData.gameType === 'Hártyahalászat') {
-        if (titleEl) titleEl.textContent = "Helyszín megközelítése...";
+        titleEl.textContent = "Helyszín megközelítése...";
         narrativeOverlay.style.display = 'none';
         
-        // Ideiglenes: a felhőből hívjuk meg a webhatter02.mp4-et, ha nincs backend által küldött URL
-        var introVid = sessionData.introVideo || { video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/webhatter02.mp4', fallback_image: 'placeholder_fish.jpg' };
+        // Ideiglenes: az Assets mappából hívjuk meg az aranyvar01.mp4-et, ha nincs backend által küldött URL
+        var introVid = sessionData.introVideo || { video_url: 'assets/aranyvar01.mp4', fallback_image: 'placeholder_fish.jpg' };
         
         playMediaSequence([introVid], function() {
-            if (titleEl) titleEl.textContent = "Hártyahalászat";
+            titleEl.textContent = "Hártyahalászat";
+            narrativeOverlay.style.display = 'block';
+            narrativeText.textContent = "A környezet csendes. A hálók és szigonyok előkészítve. Készülj fel a halászatra!";
             
-            // Azonnal indítjuk a minijátékot a videó lejátszása után, gomb nélkül!
-            narrativeOverlay.style.display = 'none';
-            var closeIcon = document.querySelector('.header-close-icon');
-            if (closeIcon) closeIcon.style.display = 'none';
+            var startBtn = document.createElement('button');
+            startBtn.className = 'btn-primary';
+            startBtn.textContent = 'Háló kivetése (Hártyavadász 3D)';
+                startBtn.onclick = function() {
+                // Kikerüljük a Unity getTutorialFlowState hívást, azonnal betöltjük a Three.js-t!
+                narrativeOverlay.style.display = 'none';
+                
+                // Letiltjuk a Kikötőbe gombot a fejlécben
+                var closeIcon = document.querySelector('.header-close-icon');
+                if (closeIcon) closeIcon.style.display = 'none';
+                minigameContainer.style.top = '0';
+                minigameContainer.style.left = '0';
+                minigameContainer.style.right = '0';
+                minigameContainer.style.bottom = '0';
+                minigameContainer.style.border = 'none';
+                minigameContainer.style.borderRadius = '0';
+                minigameContainer.style.zIndex = '100';
+                minigameContainer.style.display = 'block';
+                var token = sessionStorage.getItem('ebookPiratesToken') || '';
+                var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
+                minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
+                var closeBtn = document.getElementById('btn-close-minigame');
+                if (closeBtn) {
+                    var parentDiv = closeBtn.parentNode;
+                    parentDiv.style.display = 'block';
+                    parentDiv.style.top = '20px';
+                    parentDiv.style.right = '20px';
+                    parentDiv.style.bottom = 'auto';
+                }
+            };
+            actionsContainer.appendChild(startBtn);
             
-            minigameContainer.style.top = '0';
-            minigameContainer.style.left = '0';
-            minigameContainer.style.right = '0';
-            minigameContainer.style.bottom = '0';
-            minigameContainer.style.border = 'none';
-            minigameContainer.style.borderRadius = '0';
-            minigameContainer.style.zIndex = '100';
-            minigameContainer.style.display = 'block';
-            
-            var token = sessionStorage.getItem('ebookPiratesToken') || '';
-            var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
-            minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
+            var returnBtn = document.createElement('button');
+            returnBtn.className = 'btn-danger';
+            returnBtn.textContent = 'Visszatérés (Mégsem)';
+            returnBtn.onclick = function() { loadPage('fedelzet_oldal'); };
+            actionsContainer.appendChild(returnBtn);
         });
         return;
     }
@@ -10791,7 +10812,7 @@ window.addEventListener('message', function(event) {
             
             // Itt majd később bekötjük a Kellektárból letöltött konkrét videó URL-t a playMediaSequence segítségével.
             // Egyelőre csak a teszt kedvéért meghívunk egy dummy lejátszást
-            playMediaSequence([{ video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/webhatter02.mp4', fallback_image: 'placeholder_fish.jpg' }], function() {
+            playMediaSequence([{ video_url: 'assets/aranyvar01.mp4', fallback_image: 'placeholder_fish.jpg' }], function() {
                 console.log("Hártyahalászat videó lejátszva.");
             });
             return;

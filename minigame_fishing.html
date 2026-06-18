@@ -523,12 +523,6 @@
                 quizQuestions = response || [];
                 const durResponse = await callBackend('getBoatDurability', [shipId]);
                 if (durResponse !== undefined && durResponse !== null && durResponse !== '') boatDurability = parseInt(durResponse);
-                
-                if (boatDurability <= 1) {
-                    alert("Kikötőmester: A hajó élettartama túl alacsony (" + boatDurability + ") a kihajózáshoz! Irány a Hajóműhely!");
-                    if (window.parent) window.parent.location.reload();
-                    return;
-                }
             } catch (e) { console.error("Adatbetöltési hiba:", e); }
 
             if (quizQuestions.length === 0) {

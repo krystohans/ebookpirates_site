@@ -523,6 +523,12 @@
                 quizQuestions = response || [];
                 const durResponse = await callBackend('getBoatDurability', [shipId]);
                 if (durResponse !== undefined && durResponse !== null && durResponse !== '') boatDurability = parseInt(durResponse);
+                
+                if (boatDurability <= 1) {
+                    alert("Kikötőmester: A hajó élettartama túl alacsony (" + boatDurability + ") a kihajózáshoz! Irány a Hajóműhely!");
+                    if (window.parent) window.parent.location.reload();
+                    return;
+                }
             } catch (e) { console.error("Adatbetöltési hiba:", e); }
 
             if (quizQuestions.length === 0) {
@@ -1462,7 +1468,8 @@
                 hitRock = { isWorldBoundary: true }; // Virtuális szikla
             }
 
-            if (hasCollision) {
+            if (hasCollision && !isInvulnerable) {
+                isInvulnerable = true;
                 boatSpeed = -boatSpeed * 0.5; // Visszapattanás
                 playerBoat.position.sub(moveVec.multiplyScalar(2));
 
@@ -1475,6 +1482,7 @@
                     } else { 
                         boatDurability -= 1; 
                     }
+                    if (boatDurability < 0) boatDurability = 0;
                     updateScoreBoard();
                     if (boatDurability <= 1) {
                         exitMinigame('DESTROYED');

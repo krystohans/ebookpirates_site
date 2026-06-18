@@ -9943,22 +9943,41 @@ function executeDeparture() {
     
     var finalTarget = selectedGameTypeForDeparture === 'Könyvexpedíció' ? targetName + "|||" + targetBook : targetName;
     
-    callBackend('requestDeparture', [selectedShipForDeparture.id, selectedGameTypeForDeparture, finalTarget], function(res) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        if (res.success) {
-            uiAlert(res.message, "Sikeres Kihajózás!");
-            document.getElementById('departure-target').value = '';
-            
-            if (selectedGameTypeForDeparture === 'Hártyahalászat') {
-                loadGamePage({ gameType: 'Hártyahalászat' });
+    if (selectedGameTypeForDeparture === 'Hártyahalászat') {
+        callBackend('getBoatDurability', [selectedShipForDeparture.id], function(dur) {
+            var d = parseInt(dur);
+            if (!isNaN(d) && d < 2) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                uiAlert("A hajó élettartama túl alacsony (" + d + ") a kihajózáshoz! Minimum 2 élettartam pont szükséges. Javíttasd meg a Hajóműhelyben!", "Kikötőmester: Megtagadva!");
+                return;
             }
-        } else {
-            uiAlert(res.error, "Kikötőmester: Megtagadva!");
-        }
-    }, function(err) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        uiAlert("Szerverhiba: " + err.message);
-    });
+            proceedWithDepartureRequest();
+        }, function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert("Hiba az élettartam lekérdezésekor: " + err);
+        });
+    } else {
+        proceedWithDepartureRequest();
+    }
+    
+    function proceedWithDepartureRequest() {
+        callBackend('requestDeparture', [selectedShipForDeparture.id, selectedGameTypeForDeparture, finalTarget], function(res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (res.success) {
+                uiAlert(res.message, "Sikeres Kihajózás!");
+                document.getElementById('departure-target').value = '';
+                
+                if (selectedGameTypeForDeparture === 'Hártyahalászat') {
+                    loadGamePage({ gameType: 'Hártyahalászat' });
+                }
+            } else {
+                uiAlert(res.error, "Kikötőmester: Megtagadva!");
+            }
+        }, function(err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert("Szerverhiba: " + err.message);
+        });
+    }
 }
 
 function sendDeckChat() {

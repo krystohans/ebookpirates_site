@@ -578,7 +578,7 @@
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x87CEEB);
         // A köd sűrűségét 0.0022-re emeljük, hogy szép légköri takarást adjon a hegyeknek és a messzeségnek
-        scene.fog = new THREE.FogExp2(0x87CEEB, 0.0022); 
+        scene.fog = new THREE.FogExp2(0x87CEEB, 0.0022);
 
         // Kamera beállítások
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2500);
@@ -606,13 +606,13 @@
         scene.add(sunLight);
 
         // Víz felület (Brutálisan megnövelve 3000-re, hogy a ritkább ködben se látszódjon a széle)
-        const waterGeo = new THREE.PlaneGeometry(3000, 3000, 128, 128); 
+        const waterGeo = new THREE.PlaneGeometry(3000, 3000, 128, 128);
         let water = new THREE.Water(
             waterGeo,
             {
                 textureWidth: 512,
                 textureHeight: 512,
-                waterNormals: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/waternormals.jpg', function ( texture ) {
+                waterNormals: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/waternormals.jpg', function (texture) {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                     texture.repeat.set(300, 300); // 3x akkora a tenger, a textúra is triplázva lett
                 }),
@@ -633,12 +633,13 @@
         let baseHarbor = null;
         let enemyShip = null;
         let battleship = null;
+        const foamMaterials = []; // Hab textúrák az animációhoz
         const obstacles = [];
         const diamonds = [];
 
         const MAP_RADIUS = 300;
-        // Bázis a jobb felső sarokban (X+, Z-)
-        const BASE_POS = new THREE.Vector3(150, 0, -150);
+        // Bázis a jobb felső sarokban (X+, Z-). Eredetileg (150, 0, -150) volt, kivezetve 100 egységgel az origótól!
+        const BASE_POS = new THREE.Vector3(220.7, 0, -220.7);
 
         // Egyszerű Pseudo-Random Generátor a permanens pályához
         class PRNG {
@@ -651,23 +652,65 @@
         const rng = new PRNG(12345); // Fix seed!
 
         async function buildScene() {
-            // 1. Kikötő (Bázis) - Zöld lapos henger
-            const harborGeo = new THREE.CylinderGeometry(30, 30, 2, 32);
-            const harborMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32 });
-            baseHarbor = new THREE.Mesh(harborGeo, harborMat);
-            baseHarbor.position.copy(BASE_POS);
-            baseHarbor.receiveShadow = true;
-            scene.add(baseHarbor);
-            baseHarbor.boundingRadius = 30;
-            obstacles.push(baseHarbor);
+            // 1. Kikötő (Bázis) - GLB modell betöltése a Blenderből
+            const loader = new THREE.GLTFLoader();
+            loader.load('assets/models/SM_Bld_Fort_Base_03.glb', function (gltf) {
+                baseHarbor = gltf.scene;
+                
+                // Beállítjuk a helyzetét és felnagyítjuk 2x-esre (ahogy kérted)
+                baseHarbor.position.copy(BASE_POS);
+                baseHarbor.scale.set(2.0, 2.0, 2.0);
+                
+                baseHarbor.traverse(node => {
+                    if (node.isMesh) {
+                        node.receiveShadow = true;
+                        node.castShadow = true;
+                        
+                        // Megkeressük a hab gyűrűt, hogy animálhassuk a textúráját
+                        if (node.material && node.material.name === "FoamMaterial") {
+                            foamMaterials.push(node.material);
+                            node.material.transparent = true;
+                            node.material.blending = THREE.AdditiveBlending; // Tökéletes habos áttetszőség
+                            node.material.depthWrite = false; // Ne takarja ki a vizet (fekete bug javítása)
+                            node.material.color = new THREE.Color(0xaad4ff); // Tengerkék-fehér hab szín
+                            
+                            // A gyűrű Blenderben 30.5-ös sugarú volt a 30-as bázishoz képest. Szorosan rátapasztjuk:
+                            node.scale.set(0.985, 1.0, 0.985); 
+                        } else if (node.material && node.material.name === "StoneMaterial") {
+                            // Mivel most már tökéletes a Blender GLB export, hagyjuk, hogy a saját beágyazott textúráját használja!
+                            node.material.transparent = false;
+                            node.material.depthWrite = true;
+                            node.material.opacity = 1.0;
+                            // Fehéren hagyjuk, hogy a rásütött kép valós színe érvényesüljön!
+                            node.material.color = new THREE.Color(0xffffff);
+                            node.material.roughness = 0.9;
+                        }
+                    }
+                });
+
+                baseHarbor.boundingRadius = 60; // Eredetileg 30 volt, 2x-es szorzó -> 60
+                scene.add(baseHarbor);
+                obstacles.push(baseHarbor);
+                console.log("Bázis betöltve!");
+            }, undefined, function (error) {
+                console.error("Hiba a bázis betöltésekor:", error);
+                // Fallback, ha nem találja a fájlt (zöld henger)
+                const harborGeo = new THREE.CylinderGeometry(60, 60, 4, 32); // 2x méret: 30->60, 2->4
+                const harborMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32 });
+                baseHarbor = new THREE.Mesh(harborGeo, harborMat);
+                baseHarbor.position.copy(BASE_POS);
+                baseHarbor.receiveShadow = true;
+                baseHarbor.boundingRadius = 60;
+                scene.add(baseHarbor);
+                obstacles.push(baseHarbor);
+            });
 
             // 2. Játékos csónakja
             playerBoat = new THREE.Group();
-            playerBoat.position.set(BASE_POS.x - 40, 0, BASE_POS.z + 40); // Y=0-ra téve, hogy a tükörkép pontos legyen
+            playerBoat.position.set(BASE_POS.x - 50, 0, BASE_POS.z + 50); // Még 10 egységgel kijjebb (origó felé), hogy ne lógjon a 60-as sugarú bázisba
             scene.add(playerBoat);
-
-            const loader = new THREE.GLTFLoader();
-
+            // A loader már deklarálva van feljebb a bázisnál, így itt is tudjuk használni!
+            
             loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb', function (gltf) {
                 const model = gltf.scene;
 
@@ -722,10 +765,10 @@
             battleship = new THREE.Group();
             battleship.position.set(-250, 0, 250); // Eredeti kiindulópont
             battleship.rotation.y = Math.PI / 4; // Érintőleges forgatás a határkörhöz
-            
+
             // Eltolás 20 egységgel a saját hossztengelye (az orra) mentén!
             // Ha véletlenül a modell hátrafelé mozogna, írd át a -20-at +20-ra (vagy translateX-re).
-            battleship.translateZ(-20); 
+            battleship.translateZ(-20);
             battleship.boundingRadius = 65; // Megnöveltük a broad-phase ellenőrzéshez, hogy a hosszú orra is beleférjen
             battleship.isBattleship = true; // Sebzés mértékéhez
             scene.add(battleship);
@@ -774,7 +817,7 @@
                 loader.load(path, gltf => {
                     let model = gltf.scene;
                     model.scale.set(50.0, 50.0, 50.0); // Visszaállítottuk 50x-esre, hogy zárjon a perem!
-                    
+
                     // Frissítjük a mátrixot, majd lemérjük a tényleges fizikai méretét a nagyítás után
                     model.updateMatrixWorld(true);
                     const box = new THREE.Box3().setFromObject(model);
@@ -790,16 +833,16 @@
                     // Ezért az X és Z kiterjedés ÁTLAGÁT vesszük alapul, és azt szorozzuk 0.8-cal, hogy a hosszúkás sziklák se csináljanak láthatatlan falakat.
                     let avgDiameter = (size.x + size.z) / 2;
                     model.userData = { autoRadius: (avgDiameter / 2) * 0.8 };
-                    
+
                     resolve(model);
                 }, undefined, err => {
                     console.error("Hiba a szikla betöltésekor:", path, err);
                     let emptyGroup = new THREE.Group();
                     emptyGroup.userData = { autoRadius: 10 }; // Biztonsági alapérték
-                    resolve(emptyGroup); 
+                    resolve(emptyGroup);
                 });
             }));
-            
+
             // Itt a kód MEGVÁRJA, amíg az összes szikla letöltődik!
             globalLoadedRockModels = await Promise.all(rockPromises);
             console.log("Minden sziklamodell betöltve, pálya generálása indul!");
@@ -828,13 +871,13 @@
                 // Eleve az igazi modellt klónozzuk
                 let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
                 let rock = globalLoadedRockModels[colorIndex].clone();
-                
+
                 rock.position.set(x, 0, z); // 0-ra téve -2 helyett, hátha túl mélyre csúsztak
                 rock.rotation.x = (rng.next() - 0.5) * 0.4;
                 rock.rotation.z = (rng.next() - 0.5) * 0.4;
                 rock.rotation.y = rng.next() * 2 * Math.PI; // Visszakerült a random forgatás!
                 rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár!
-                rock.userData.modelType = colorIndex; 
+                rock.userData.modelType = colorIndex;
 
                 scene.add(rock);
                 obstacles.push(rock);
@@ -850,12 +893,12 @@
 
                 let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
                 let rock = globalLoadedRockModels[colorIndex].clone();
-                
+
                 rock.position.set(x, 0, z);
                 rock.rotation.y = rng.next() * 2 * Math.PI;
                 rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár a peremnél is!
                 rock.userData.modelType = colorIndex;
-                
+
                 scene.add(rock);
                 obstacles.push(rock);
             }
@@ -865,35 +908,44 @@
             // 6.1 Tengerpart és hegyek a bázis (jobb felső, X+, Z-) oldalán
             loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Beach_01.glb', gltf => {
                 let beachModel = gltf.scene;
-                
+
                 // Sziluett árnyékolás engedélyezése az alap modellen
                 beachModel.traverse(node => { if (node.isMesh) node.receiveShadow = true; });
 
                 // Első sor a sziklák mögött (R=400)
-                beachModel.scale.set(150, 150, 150); 
-                for (let theta = -Math.PI / 4 - 1.4; theta < -Math.PI / 4 + 1.4; theta += 0.15) { 
+                beachModel.scale.set(150, 150, 150);
+                for (let theta = -Math.PI / 4 - 1.4; theta < -Math.PI / 4 + 1.4; theta += 0.15) {
                     let b = beachModel.clone();
-                    b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta)); 
-                    b.rotation.y = -theta - Math.PI/2; 
+                    b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
+                    b.rotation.y = -theta - Math.PI / 2;
+                    b.isBeach = true;
+                    b.boundingRadius = 150; // Széles detektálási sugár a hatalmas mérete miatt!
                     scene.add(b);
+                    obstacles.push(b);
                 }
 
                 // Középső (összekötő) sor a hézag megszüntetésére
                 beachModel.scale.set(300, 300, 300); // Nagyobbra véve, hogy biztosan összeérjenek!
-                for (let theta = -Math.PI / 4 - 1.5; theta < -Math.PI / 4 + 1.5; theta += 0.15) { 
+                for (let theta = -Math.PI / 4 - 1.5; theta < -Math.PI / 4 + 1.5; theta += 0.15) {
                     let b = beachModel.clone();
                     b.position.set(500 * Math.cos(theta), 1.5, 500 * Math.sin(theta)); // Közelebb húzva az első sorhoz (R=500)
-                    b.rotation.y = -theta - Math.PI/2; 
+                    b.rotation.y = -theta - Math.PI / 2;
+                    b.isBeach = true;
+                    b.boundingRadius = 300; // Még szélesebb detektálási sugár
                     scene.add(b);
+                    obstacles.push(b);
                 }
 
                 // Harmadik (külső) sor, ami a hegyek lábát követi (R=650)
                 beachModel.scale.set(350, 350, 350); // Még nagyobb, hogy teljesen fedjen
-                for (let theta = -Math.PI / 4 - 1.6; theta < -Math.PI / 4 + 1.6; theta += 0.15) { 
+                for (let theta = -Math.PI / 4 - 1.6; theta < -Math.PI / 4 + 1.6; theta += 0.15) {
                     let b = beachModel.clone();
                     b.position.set(650 * Math.cos(theta), 3, 650 * Math.sin(theta)); // Feljebb emelve (Y=3)
-                    b.rotation.y = -theta - Math.PI/2; // NEM forgatjuk el 180 fokkal, mert a hátlapja láthatatlan (backface culling)!
+                    b.rotation.y = -theta - Math.PI / 2; // NEM forgatjuk el 180 fokkal, mert a hátlapja láthatatlan (backface culling)!
+                    b.isBeach = true;
+                    b.boundingRadius = 350; // Hatalmas modell
                     scene.add(b);
+                    obstacles.push(b);
                 }
             });
 
@@ -901,25 +953,25 @@
                 let hillsModel = gltf.scene;
                 let s = 900; // 900-szoros méret
                 let dTheta = 0.35; // Nagyjából 10% átfedéshez szükséges szögtávolság
-                
+
                 // 1 eredeti (középen) + 3 balra + 3 jobbra = összesen 7 hegy (vagyis 6-szoros ismétlés)
                 for (let i = -3; i <= 3; i++) {
                     let theta = -Math.PI / 4 + i * dTheta;
                     let m = hillsModel.clone();
-                    
+
                     // Minden hegyet stabilan 1000 méteres sugarú körre rakunk
                     let r = 1000;
-                    
+
                     m.scale.set(s, s, s);
-                    m.position.set(r * Math.cos(theta), -5, r * Math.sin(theta)); 
-                    
+                    m.position.set(r * Math.cos(theta), -5, r * Math.sin(theta));
+
                     // A hegy mindig az origó felé néz, és azon felül be van forgatva 60 fokkal (PI/3) óramutató járása szerint (további 30 fok)
-                    m.rotation.y = -theta - Math.PI / 3; 
-                    
+                    m.rotation.y = -theta - Math.PI / 3;
+
                     // Ha mégis benne lennénk a hegyben, akkor is lássuk a belsejét!
                     m.traverse(node => {
                         if (node.isMesh) {
-                            node.material.side = THREE.DoubleSide; 
+                            node.material.side = THREE.DoubleSide;
                         }
                     });
 
@@ -936,7 +988,7 @@
             for (let theta = Math.PI / 4; theta < Math.PI * 1.25; theta += 0.04) { // Nagyon sűrű lépésköz!
                 let x = 345 * Math.cos(theta);
                 let z = 345 * Math.sin(theta);
-                
+
                 // Ne rakjuk az átjáróba! (70-es sugarú lyuk a csatahajónál)
                 if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 70) continue;
 
@@ -944,47 +996,47 @@
                 let rock = globalLoadedRockModels[colorIndex].clone();
                 let s = 10 + rng.next() * 30; // Változatos méretű (10-40) törmeléksziklák
                 rock.scale.set(s, s, s);
-                rock.position.set(x + (rng.next()-0.5)*30, -5, z + (rng.next()-0.5)*30); // Jobban szórjuk szét őket a térben
+                rock.position.set(x + (rng.next() - 0.5) * 30, -5, z + (rng.next() - 0.5) * 30); // Jobban szórjuk szét őket a térben
                 rock.rotation.x = (rng.next() - 0.5) * 1.2;
                 rock.rotation.z = (rng.next() - 0.5) * 1.2;
                 rock.rotation.y = rng.next() * Math.PI * 2;
-                
-                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s; 
+
+                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
                 rock.userData.modelType = colorIndex;
-                
+
                 scene.add(rock);
                 obstacles.push(rock);
             }
 
             // 6.4 PLUSZ SZIKLÁK A HATÁRVONALRA (Szigorúan csak a 360 - 400 sávba!)
-            for (let i = 0; i < 300; i++) { 
-                let theta = (Math.PI / 4) + rng.next() * Math.PI; 
-                
+            for (let i = 0; i < 300; i++) {
+                let theta = (Math.PI / 4) + rng.next() * Math.PI;
+
                 // Szigorúan a határvonalon kívüli sáv: 360-tól 400-ig
-                let r = 360 + rng.next() * 40; 
-                
+                let r = 360 + rng.next() * 40;
+
                 let x = r * Math.cos(theta);
                 let z = r * Math.sin(theta);
-                
+
                 // Szigorú védelem: ne tegyünk sziklát a csatahajó átjárójába! (90-es sugarú tiszta zóna)
                 if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 90) continue;
 
                 let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
                 let rock = globalLoadedRockModels[colorIndex].clone();
-                
+
                 let s = 15 + rng.next() * 45; // 15-től 60-ig
                 rock.scale.set(s, s, s);
-                
-                rock.position.set(x, (rng.next() - 0.5) * 10 - 2, z); 
+
+                rock.position.set(x, (rng.next() - 0.5) * 10 - 2, z);
                 rock.rotation.x = (rng.next() - 0.5) * Math.PI;
                 rock.rotation.z = (rng.next() - 0.5) * Math.PI;
                 rock.rotation.y = rng.next() * Math.PI * 2;
-                
-                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s; 
+
+                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
                 rock.userData.modelType = colorIndex;
-                
+
                 scene.add(rock);
-                obstacles.push(rock); 
+                obstacles.push(rock);
             }
 
             // Hártyák kezdeti feltöltése (mindig 21 darab)
@@ -1006,7 +1058,7 @@
                                 node.userData.origOpacity = node.material.opacity;
                                 node.userData.origTransparent = node.material.transparent;
                                 node.material.transparent = true;
-                                node.material.opacity = 0.8; 
+                                node.material.opacity = 0.8;
                             }
                         });
                     }
@@ -1017,7 +1069,7 @@
                                     node.userData.origOpacity = node.material.opacity;
                                     node.userData.origTransparent = node.material.transparent;
                                     node.material.transparent = true;
-                                    node.material.opacity = 0.8; 
+                                    node.material.opacity = 0.8;
                                 }
                             });
                         }
@@ -1071,9 +1123,15 @@
                 // Ne menjen ki a térképről
                 if (Math.sqrt(x * x + z * z) > 300) { validPos = false; continue; }
 
+                // Extra védelem a bázis körül! (Mivel a GLB bázis aszinkron tölt be, lehet hogy még nincs az obstacles listában)
+                let distToBase = Math.sqrt((x - BASE_POS.x) * (x - BASE_POS.x) + (z - BASE_POS.z) * (z - BASE_POS.z));
+                if (distToBase < 70) { validPos = false; continue; } // 60 a sugár, hagyunk +10 helyet
+
                 let testVec = new THREE.Vector3(x, 0, z);
                 for (let obs of obstacles) {
-                    if (testVec.distanceTo(obs.position) < 35) {
+                    // Dinamikusan számoljuk a biztonsági távolságot a bázis sugarához (60) mérve is
+                    let minD = obs.boundingRadius ? (obs.boundingRadius + 10) : 35;
+                    if (testVec.distanceTo(obs.position) < minD) {
                         validPos = false; break;
                     }
                 }
@@ -1099,16 +1157,16 @@
             glowGeo.computeVertexNormals();
 
             // Visszatérés a BasicMaterialhoz: fix festés, nem hatnak rá az árnyékok
-            const glowMat = new THREE.MeshBasicMaterial({ 
+            const glowMat = new THREE.MeshBasicMaterial({
                 color: 0xffd700, // Arany/sárga
-                transparent: true, 
+                transparent: true,
                 opacity: 0.7, // Áttetsző, hogy egybeolvadjon a vízzel
                 blending: THREE.AdditiveBlending, // Gyönyörű belső fényhatás a "LED" alá
                 depthWrite: false
             });
             const glowMesh = new THREE.Mesh(glowGeo, glowMat);
             glowMesh.rotation.x = -Math.PI / 2;
-            
+
             // Kezdeti véletlenszerű elforgatás, hogy mind más legyen
             glowMesh.rotation.z = Math.random() * Math.PI * 2;
             scrollZone.add(glowMesh);
@@ -1240,9 +1298,9 @@
             let el = document.getElementById('game-container');
             if (el) {
                 el.style.transition = 'none';
-                el.style.transform = `translate(${(Math.random()-0.5)*40}px, ${(Math.random()-0.5)*40}px)`;
+                el.style.transform = `translate(${(Math.random() - 0.5) * 40}px, ${(Math.random() - 0.5) * 40}px)`;
                 setTimeout(() => {
-                    el.style.transform = `translate(${(Math.random()-0.5)*20}px, ${(Math.random()-0.5)*20}px)`;
+                    el.style.transform = `translate(${(Math.random() - 0.5) * 20}px, ${(Math.random() - 0.5) * 20}px)`;
                     setTimeout(() => { el.style.transform = 'translate(0px, 0px)'; }, 50);
                 }, 50);
             }
@@ -1340,8 +1398,11 @@
             let windAngle = Math.atan2(wind.x, wind.z) + Math.PI;
             windVane.style.transform = 'rotate(' + windAngle + 'rad)';
 
-            // Bázis Kilépés UI
-            let isNearBase = (playerBoat.position.distanceTo(baseHarbor.position) < 45);
+            // Biztonsági check: ha a modell még nem töltött be, ne fusson a fizika!
+            if (!playerBoat || !baseHarbor) return;
+
+            // Bázis Kilépés UI (Sokkal nagyobb távolságból érzékeli, mint a boundingRadius)
+            let isNearBase = (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 20);
             let exitBtn = document.getElementById('base-exit-btn');
             if (isNearBase && !isGameOver) {
                 if (exitBtn) exitBtn.style.display = 'block';
@@ -1404,13 +1465,13 @@
 
             for (let r of obstacles) {
                 let dist = boatCenter.distanceTo(r.position);
-                
+
                 // 1. Broad-phase: Csak azt a sziklát vizsgáljuk, ami tényleg nagyon közel van (optimalizáció)
                 if (dist < (r.boundingRadius || 30) + 15) {
-                    
+
                     // A kikötő marad az egyszerű sugár-alapú (mivel az formája hengeres)
                     if (r === baseHarbor) {
-                        if (dist < r.boundingRadius + 2) {
+                        if (dist < r.boundingRadius + 3) { // +3-ra véve, hogy véletlenül se lógjon bele a hajó a hab-animációba!
                             hasCollision = true;
                             hitRock = r;
                             break;
@@ -1418,17 +1479,17 @@
                     } else if (r === battleship) {
                         // 3 pontos "kapszula" ütközés a csatahajóra (Orr, Közép, Tat)
                         let pMid = battleship.position;
-                        
+
                         // Lokális negatív Z tengely (előre) iránya a világtérben
                         let forward = new THREE.Vector3(0, 0, -1).applyQuaternion(battleship.quaternion);
-                        
+
                         let pBow = pMid.clone().add(forward.clone().multiplyScalar(45)); // Orra (45-re előre)
                         let pStern = pMid.clone().add(forward.clone().multiplyScalar(-40)); // Tatja (40-re hátra)
-                        
+
                         let d1 = boatCenter.distanceTo(pMid);
                         let d2 = boatCenter.distanceTo(pBow);
                         let d3 = boatCenter.distanceTo(pStern);
-                        
+
                         // Három, egyenként 25-ös sugarú kör alkotja a masszív hajótestet
                         if (d1 < 25 || d2 < 25 || d3 < 25) {
                             hasCollision = true;
@@ -1471,27 +1532,27 @@
                     playerBoat.position.sub(moveVec);
                 } else {
                     // Sziklák, Csatahajó, Világperem: Visszapattanás
-                    boatSpeed = -boatSpeed; 
-                    playerBoat.position.sub(moveVec.multiplyScalar(2)); 
+                    boatSpeed = -boatSpeed;
+                    playerBoat.position.sub(moveVec.multiplyScalar(2));
                 }
 
-                // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak mentünk neki)
-                if (hitRock !== baseHarbor && !isInvulnerable) {
+                // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak és nem a homokpartnak mentünk neki)
+                if (hitRock !== baseHarbor && !hitRock.isBeach && !isInvulnerable) {
                     isInvulnerable = true;
                     setTimeout(() => { isInvulnerable = false; }, 1000); // 1 mp sérthetetlenség
 
-                    if (hitRock.isBattleship) { 
-                        boatDurability -= 2; 
+                    if (hitRock.isBattleship) {
+                        boatDurability -= 2;
                         cannonEffect(); // Ágyútűz effekt a csatahajónál!
                     } else if (hitRock.isWorldBoundary) {
                         boatDurability -= 1; // Sebződés a peremtől
-                    } else { 
-                        boatDurability -= 1; 
+                    } else {
+                        boatDurability -= 1;
                     }
-                    
+
                     if (boatDurability < 0) boatDurability = 0;
                     updateScoreBoard();
-                    
+
                     if (boatDurability <= 1) {
                         exitMinigame('DESTROYED');
                         return;
@@ -1510,7 +1571,7 @@
             }
 
             // ---- BÁZIS (KIKÖTÉS) ----
-            if (playerBoat.position.distanceTo(baseHarbor.position) < 35) {
+            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 10) {
                 if (scoreOnBoat > 0) {
                     baseHarborScore += scoreOnBoat;
                     scoreOnBoat = 0;
@@ -1708,8 +1769,21 @@
         // ==========================================
         function animate() {
             requestAnimationFrame(animate);
+            let elapsedTime = Date.now() * 0.001; // Idő másodpercben (a THREE.Clock helyett)
+
             if (water && water.material && water.material.uniforms) {
                 water.material.uniforms['time'].value += 1.0 / 60.0;
+            }
+
+            // HAB TEXTÚRA (Vízesés/Visszaverődés) ANIMÁCIÓJA
+            for (let i = 0; i < foamMaterials.length; i++) {
+                if (foamMaterials[i].map) {
+                    // Y irányú ofszet pörgetése - a vízesés hatás lefelé
+                    foamMaterials[i].map.offset.y = -(elapsedTime * 0.4) % 1;
+                    
+                    // Kis oldalirányú billegés, hogy tajtékzóbb legyen
+                    foamMaterials[i].map.offset.x = Math.sin(elapsedTime * 2) * 0.05;
+                }
             }
 
             // ---- HABCSÍK (WAKE) ANIMÁLÁSA ÉS ELTÜNTETÉSE ----
@@ -1733,12 +1807,12 @@
             for (let d of diamonds) {
                 // A hártya a vízen lebeg (a hullámok mozgását imitálva)
                 d.position.y = Math.sin(t + d.position.x * 0.1) * 0.3;
-                
+
                 // Szabálytalan "légzés" (pulzálás)
                 let s = 0.8 + Math.sin(t * 2 + d.position.z) * 0.2;
                 d.scale.set(s, s, s);
             }
-            
+
             // Filmes léghajó-ereszkedés
             if (isGameOver && isCaughtByAirship && enemyShip) {
                 if (enemyShip.position.y > 6.0) { // 6 egység az árbóc körüli magasság

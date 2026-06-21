@@ -493,6 +493,7 @@
         let battleshipEventTriggered = false;
         let gameStarted = false;
         let isCaughtByAirship = false; // Állapot a filmes léghajó-ereszkedéshez
+        let isInvulnerable = false; // HIBAJAVÍTÁS: Deklaráljuk a sérthetetlenséget
         let currentBet = 0;
         let maxBetAmount = 0;
         let correctAnswer = "";
@@ -1462,12 +1463,23 @@
                 hitRock = { isWorldBoundary: true }; // Virtuális szikla
             }
 
-            if (hasCollision && !isInvulnerable) {
-                isInvulnerable = true;
-                boatSpeed = -boatSpeed * 0.5; // Visszapattanás
-                playerBoat.position.sub(moveVec.multiplyScalar(2));
+            if (hasCollision) {
+                // 1. FIZIKAI ÜTKÖZÉS (MINDIG lefut, hogy ne mehessen át a modelleken)
+                if (hitRock === baseHarbor) {
+                    // Bázisnál nincs visszapattanás, csak megállítás
+                    boatSpeed = 0;
+                    playerBoat.position.sub(moveVec);
+                } else {
+                    // Sziklák, Csatahajó, Világperem: Visszapattanás
+                    boatSpeed = -boatSpeed; 
+                    playerBoat.position.sub(moveVec.multiplyScalar(2)); 
+                }
 
-                if (hitRock !== baseHarbor) {
+                // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak mentünk neki)
+                if (hitRock !== baseHarbor && !isInvulnerable) {
+                    isInvulnerable = true;
+                    setTimeout(() => { isInvulnerable = false; }, 1000); // 1 mp sérthetetlenség
+
                     if (hitRock.isBattleship) { 
                         boatDurability -= 2; 
                         cannonEffect(); // Ágyútűz effekt a csatahajónál!
@@ -1476,8 +1488,10 @@
                     } else { 
                         boatDurability -= 1; 
                     }
+                    
                     if (boatDurability < 0) boatDurability = 0;
                     updateScoreBoard();
+                    
                     if (boatDurability <= 1) {
                         exitMinigame('DESTROYED');
                         return;

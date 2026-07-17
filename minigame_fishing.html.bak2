@@ -472,6 +472,7 @@
         // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
         const playerToken = urlParams.get('token');
+        const shipId = urlParams.get('shipId');
 
         let quizQuestions = [];
         let scoreOnBoat = 0;
@@ -513,7 +514,7 @@
             try {
                 const response = await callBackend('getQuizQuestions', []);
                 quizQuestions = response || [];
-                const durResponse = await callBackend('getBoatDurability', []);
+                const durResponse = await callBackend('getBoatDurability', [shipId]);
                 if (durResponse) boatDurability = parseInt(durResponse);
             } catch (e) { console.error("Adatbetöltési hiba:", e); }
 
@@ -1190,7 +1191,7 @@
         async function saveDataToBackend() {
             try {
                 if (baseHarborScore > 0) { await callBackend('saveHartyaScore', [baseHarborScore]); }
-                await callBackend('saveBoatDurability', [boatDurability]);
+                await callBackend('saveBoatDurability', [boatDurability, shipId]);
             } catch (e) { console.error("Adatmentési hiba a backend felé:", e); }
         }
 

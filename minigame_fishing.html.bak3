@@ -326,6 +326,32 @@
             cursor: pointer;
         }
 
+        #start-instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #4a2c0f;
+            font-weight: bold;
+            text-align: center;
+            background: url('assets/Zozo_monolog_window_1.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            padding: 120px 120px 100px 120px;
+            width: 750px;
+            min-height: 250px;
+            box-sizing: border-box;
+            z-index: 25;
+            font-family: 'Georgia', serif;
+            text-shadow: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
         #info-scroll-container::-webkit-scrollbar {
             display: none;
         }
@@ -384,10 +410,10 @@
 
         <div id="game-message" onclick="this.style.display='none';">Játék Vége!</div>
         <button id="base-exit-btn">Befejezés és visszatérés a fedélzetre</button>
-        <div id="start-instruction"
-            style="position: absolute; top: 70%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: #fff; text-shadow: 0 0 10px #000; text-align: center; pointer-events: none;">
-            Nyomd meg a W-A-S-D gombokat az induláshoz!<br><span style="font-size: 16px; color: #d4af37;">(Szedj össze
-                hártyákat, és kerüld el a léghajót!)</span></div>
+        <div id="start-instruction">
+            Nyomd meg a W-A-S-D gombokat az induláshoz!<br>
+            <span style="font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;">(Szedj össze hártyákat, és kerüld el a léghajót!)</span>
+        </div>
     </div>
 
     <div id="quiz-overlay">

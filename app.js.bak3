@@ -10239,7 +10239,7 @@ function loadGamePage(sessionData) {
     mediaContainer.style.display = 'block';
     narrativeOverlay.style.display = 'none';
     minigameContainer.style.display = 'none';
-    returnShipBtn.style.display = 'block';
+    if (returnShipBtn) returnShipBtn.style.display = 'block';
     actionsContainer.innerHTML = ''; // Gombok törlése
     
     // HA HÁRTYAHALÁSZAT

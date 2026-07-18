@@ -46,18 +46,51 @@
 </div>
 </div>
 </section>
-<script src="welcome_fordito.js"></script>
+<script src="../web_fordito.js"></script>
 <script src="app.js"></script>
 <script>
-      // Az initializeKerdesbekuldoPage() a beágyazott javascript.html fájlban van definiálva.
-      // A DOMContentLoaded biztosítja, hogy az oldal elemei már léteznek, mire a szkript lefut.
+      // Nyelvváltó és oldal-újrafordító shimek (Archy Lead Architect)
+      function changeLang(lang) {
+        if (typeof switchLanguage === 'function') {
+          switchLanguage(lang);
+        }
+      }
+      function translatePage() {
+        if (typeof updateLanguageUI === 'function') {
+          updateLanguageUI();
+        }
+      }
+
       document.addEventListener("DOMContentLoaded", function() {
-        // A bejelentkezést nem ellenőrizzük, de a függvényt meg kell hívni, hogy a gomb működjön.
-        // Feltételezzük, hogy az initializeKerdesbekuldoPage létezik a javascript.html-ben.
+        // Nyelvi szótár betöltése és oldal fordítása
+        translatePage();
+
+        // Helyi nyelvválasztó gombok kezelése
+        var buttons = document.querySelectorAll('.lang-btn');
+        buttons.forEach(function(btn) {
+          // Kattintáskor nyelvváltás és gomb állapot frissítése
+          btn.addEventListener('click', function() {
+            var lang = btn.getAttribute('data-lang-id');
+            if (lang) {
+              changeLang(lang);
+              buttons.forEach(function(b) {
+                var bLang = b.getAttribute('data-lang-id');
+                b.classList.toggle('active', bLang === lang);
+              });
+            }
+          });
+
+          // Kezdeti aktív kijelölés beállítása
+          var bLang = btn.getAttribute('data-lang-id');
+          var currentLang = localStorage.getItem('siteLang') || 'hu';
+          btn.classList.toggle('active', bLang === currentLang);
+        });
+
+        // Eredeti oldal-kiszolgáló inicializáló hívás
         if (typeof initializeKerdesbekuldoPage === 'function') {
           initializeKerdesbekuldoPage();
         } else {
-          console.error("Hiba: Az 'initializeKerdesbekuldoPage' funkció nem található. Ellenőrizze a 'javascript.html' fájlt.");
+          console.error("Hiba: Az 'initializeKerdesbekuldoPage' funkció nem található.");
         }
       });
     </script>

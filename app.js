@@ -4127,6 +4127,41 @@ function refreshMonasteryWork(silent) {
         container.innerHTML = '<p><i>' + t('monk_work_loading') + '</i></p>';
     }
 
+    // Várakozó kvízkérdések lekérése a jóváhagyó panelhez
+    callBackend('getPendingQuizQuestions', [], function (quizRes) {
+        var quizPanel = document.getElementById('monk-quiz-approval-panel');
+        var quizList = document.getElementById('monk-quiz-approval-list');
+        if (!quizPanel || !quizList) return;
+
+        if (quizRes && quizRes.success && quizRes.questions && quizRes.questions.length > 0) {
+            quizPanel.style.display = 'block';
+            var qHtml = '<div style="display: flex; flex-direction: column; gap: 15px;">';
+            quizRes.questions.forEach(function (q) {
+                qHtml += '<div style="background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #ffe066; display: flex; flex-direction: column; gap: 6px; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.02); color: #333;">' +
+                    '<div><b>' + t('monk_quiz_question_prefix') + '</b> <span style="font-style: italic;">' + escapeHtml(q.question) + '</span></div>' +
+                    '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">' +
+                        '<div><span style="color: green; font-weight: bold;">' + t('monk_quiz_correct_prefix') + '</span> ' + escapeHtml(q.correctAnswer) + '</div>' +
+                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt1_prefix') + '</span> ' + escapeHtml(q.alt1) + '</div>' +
+                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt2_prefix') + '</span> ' + escapeHtml(q.alt2) + '</div>' +
+                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt3_prefix') + '</span> ' + escapeHtml(q.alt3) + '</div>' +
+                    '</div>' +
+                    '<div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; border-top: 1px dashed #eee; padding-top: 8px;">' +
+                        '<button class="btn btn-sm" style="background-color: #2f855a; color: white;" onclick="handleQuizDecision(' + q.rowIndex + ', \'OK\')"><i class="fas fa-check"></i> ' + t('monk_approve_button') + '</button>' +
+                        '<button class="btn btn-sm btn-danger" style="margin-top: 0;" onclick="handleQuizDecision(' + q.rowIndex + ', \'ELUTASÍTVA\')"><i class="fas fa-times"></i> ' + t('monk_reject_button') + '</button>' +
+                    '</div>' +
+                '</div>';
+            });
+            qHtml += '</div>';
+            quizList.innerHTML = qHtml;
+        } else {
+            quizPanel.style.display = 'none';
+            quizList.innerHTML = '';
+        }
+    }, function (err) {
+        var quizPanel = document.getElementById('monk-quiz-approval-panel');
+        if (quizPanel) quizPanel.style.display = 'none';
+    });
+
     callBackend('getMonasteryWorks', [],
         function (res) {
             if (!res.success) { if (!silent) container.innerHTML = '<p style="color:red;">' + t('error_prefix') + res.error + '</p>'; return; }
@@ -4292,6 +4327,38 @@ function refreshMonasteryWork(silent) {
             container.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>';
         }
     );
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function handleQuizDecision(rowIndex, decision) {
+    var confirmMsg = decision === 'OK' ? 
+        t('monk_quiz_approve_confirm') : 
+        t('monk_quiz_reject_confirm');
+        
+    if (!confirm(confirmMsg)) return;
+
+    document.getElementById('loading-overlay').style.display = 'flex';
+    callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        if (res && res.success) {
+            alert(res.message || t('monk_quiz_evaluation_success'));
+            refreshMonasteryWork();
+        } else {
+            alert(t('error_prefix') + (res ? res.message || res.error : 'Szerver hiba'));
+        }
+    }, function (err) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        alert(t('error_prefix') + err.message);
+    });
 }
 
 function purgeWork(workId, title) {

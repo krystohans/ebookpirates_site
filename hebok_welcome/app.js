@@ -188,14 +188,14 @@ function initializeKerdesbekuldoPage() {
         feedbackDiv.style.color = 'var(--szin-cim)';
         submitBtn.disabled = true;
 
-        // CSERÉLD LE EZT A VALÓDI BACKEND URL-RE:
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwdopBsZ3GHKRW5GwNc9EQ4kO6stoF9HLGRCzR8nzvwPr9T-6W4p4VCd3DBlbTy7dBo/exec';
+        // A kalozsziget backend URL-je, ahová most felírtuk a doPost-ot és az értékelő funkciókat
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec';
 
         fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({
                action: 'submitNewQuestion',
-               data: formData
+               data: [formData]
             })
         }).then(res => res.json())
           .then(response => {

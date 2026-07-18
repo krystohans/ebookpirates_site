@@ -72,71 +72,80 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // ELLENŐRIZZÜK, HOGY AZ INDEX OLDALON VAGYUNK-E
-    if (document.getElementById('public-logo')) {
-        
-        const initialImages = {
-            'logo': { elementId: 'public-logo', isBackground: false },
-            'kaloz_sziget_fejlec': { elementId: 'kikoto', isBackground: true },
-            'dark_wood': { elementId: 'document-body', isBackground: true },
-            'soft_wallpaper': { elementClasses: ['.item-wrapper', '.accordion-body'], isBackground: true },
-            'rang_matroz_4': { elementId: 'rang_matroz_4', isBackground: false },
-            'rang_matroz_3': { elementId: 'rang_matroz_3', isBackground: false },
-            'rang_matroz_2': { elementId: 'rang_matroz_2', isBackground: false },
-            'rang_matroz_1': { elementId: 'rang_matroz_1', isBackground: false },
-            'rang_alhajomester': { elementId: 'rang_alhajomester', isBackground: false },
-            'rang_torzshajomester': { elementId: 'rang_torzshajomester', isBackground: false },
-            'rang_torzsfohajomester': { elementId: 'rang_torzsfohajomester', isBackground: false },
-            'rang_hadaprod': { elementId: 'rang_hadaprod', isBackground: false },
-            'rang_korvetthadnagy': { elementId: 'rang_korvetthadnagy', isBackground: false },
-            'rang_fregatthadnagy': { elementId: 'rang_fregatthadnagy', isBackground: false },
-            'rang_sorhajohadnagy': { elementId: 'rang_sorhajohadnagy', isBackground: false },
-            'rang_korvettkapitany': { elementId: 'rang_korvettkapitany', isBackground: false },
-            'rang_fregattkapitany': { elementId: 'rang_fregattkapitany', isBackground: false },
-            'rang_sorhajokapitany': { elementId: 'rang_sorhajokapitany', isBackground: false },
-            'rang_ellentengernagy': { elementId: 'rang_ellentengernagy', isBackground: false },
-            'rang_altengernagy': { elementId: 'rang_altengernagy', isBackground: false },
-            'rang_tengernagy': { elementId: 'rang_tengernagy', isBackground: false },
-            'rang_fotengernagy': { elementId: 'rang_fotengernagy', isBackground: false }
-        };
+    window.refreshAppImages = function() {
+        // ELLENŐRIZZÜK, HOGY AZ INDEX OLDALON VAGYUNK-E
+        if (document.getElementById('public-logo')) {
+            
+            const initialImages = {
+                'logo': { elementId: 'public-logo', isBackground: false },
+                'kaloz_sziget_fejlec': { elementId: 'kikoto', isBackground: true },
+                'dark_wood': { elementId: 'document-body', isBackground: true },
+                'soft_wallpaper': { elementClasses: ['.item-wrapper', '.accordion-body'], isBackground: true },
+                'rang_matroz_4': { elementId: 'rang_matroz_4', isBackground: false },
+                'rang_matroz_3': { elementId: 'rang_matroz_3', isBackground: false },
+                'rang_matroz_2': { elementId: 'rang_matroz_2', isBackground: false },
+                'rang_matroz_1': { elementId: 'rang_matroz_1', isBackground: false },
+                'rang_alhajomester': { elementId: 'rang_alhajomester', isBackground: false },
+                'rang_torzshajomester': { elementId: 'rang_torzshajomester', isBackground: false },
+                'rang_torzsfohajomester': { elementId: 'rang_torzsfohajomester', isBackground: false },
+                'rang_hadaprod': { elementId: 'rang_hadaprod', isBackground: false },
+                'rang_korvetthadnagy': { elementId: 'rang_korvetthadnagy', isBackground: false },
+                'rang_fregatthadnagy': { elementId: 'rang_fregatthadnagy', isBackground: false },
+                'rang_sorhajohadnagy': { elementId: 'rang_sorhajohadnagy', isBackground: false },
+                'rang_korvettkapitany': { elementId: 'rang_korvettkapitany', isBackground: false },
+                'rang_fregattkapitany': { elementId: 'rang_fregattkapitany', isBackground: false },
+                'rang_sorhajokapitany': { elementId: 'rang_sorhajokapitany', isBackground: false },
+                'rang_ellentengernagy': { elementId: 'rang_ellentengernagy', isBackground: false },
+                'rang_altengernagy': { elementId: 'rang_altengernagy', isBackground: false },
+                'rang_tengernagy': { elementId: 'rang_tengernagy', isBackground: false },
+                'rang_fotengernagy': { elementId: 'rang_fotengernagy', isBackground: false }
+            };
 
-        document.body.id = 'document-body';
+            document.body.id = 'document-body';
 
-        for (const [assetId, details] of Object.entries(initialImages)) {
-            if (details.elementId) {
-                loadImage(assetId, details.elementId, details.isBackground);
-            } else if (details.elementClasses) {
-                const url = getAssetUrl(assetId);
-                details.elementClasses.forEach(className => {
-                    document.querySelectorAll(className).forEach(el => {
-                        el.style.backgroundImage = `url('${url}')`;
+            for (const [assetId, details] of Object.entries(initialImages)) {
+                if (details.elementId) {
+                    loadImage(assetId, details.elementId, details.isBackground);
+                } else if (details.elementClasses) {
+                    const url = getAssetUrl(assetId);
+                    details.elementClasses.forEach(className => {
+                        document.querySelectorAll(className).forEach(el => {
+                            el.style.backgroundImage = `url('${url}')`;
+                        });
                     });
-                });
+                }
             }
-        }
 
-        // Csapattagok animációjának kezelése (Közvetlen betöltés a Bucketből!)
-        const teamImages = document.querySelectorAll('img[data-static-id]');
-        teamImages.forEach(img => {
-            const staticId = img.dataset.staticId; // Pl. betti_kaloz
-            
-            // Jelenlegi statikus JPG beállítása
-            img.src = `${BUCKET_URL}/${staticId}.jpg`;
-            
-            // Animált GIF betöltése a memóriába
-            const animatedImage = new Image();
-            animatedImage.src = `${BUCKET_URL}/${staticId}.gif`;
+            // Csapattagok animációjának kezelése (Közvetlen betöltés a Bucketből!)
+            const teamImages = document.querySelectorAll('img[data-static-id]');
+            teamImages.forEach(img => {
+                const staticId = img.dataset.staticId; // Pl. betti_kaloz
+                
+                // Jelenlegi statikus JPG beállítása
+                img.src = `${BUCKET_URL}/${staticId}.jpg`;
+                
+                // Csak egyszer adjuk hozzá az eseménykezelőket
+                if (!img.dataset.eventsBound) {
+                    // Animált GIF betöltése a memóriába
+                    const animatedImage = new Image();
+                    animatedImage.src = `${BUCKET_URL}/${staticId}.gif`;
 
-            img.addEventListener('mouseover', function() {
-                if (animatedImage.complete) {
-                    this.src = animatedImage.src;
+                    img.addEventListener('mouseover', function() {
+                        if (animatedImage.complete) {
+                            this.src = animatedImage.src;
+                        }
+                    });
+                    img.addEventListener('mouseout', function() {
+                        this.src = `${BUCKET_URL}/${staticId}.jpg`;
+                    });
+                    img.dataset.eventsBound = 'true';
                 }
             });
-            img.addEventListener('mouseout', function() {
-                this.src = `${BUCKET_URL}/${staticId}.jpg`;
-            });
-        });
-    }
+        }
+    };
+
+    // Futtatás betöltéskor
+    window.refreshAppImages();
 
     initializeKerdesbekuldoPage();
 

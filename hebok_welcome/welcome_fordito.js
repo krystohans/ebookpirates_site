@@ -1210,4 +1210,9 @@ function setLanguage(lang) {
             el.innerHTML = transDict[key];
         }
     });
+
+    // Újratöltjük azokat a képeket, amik a lefordított HTML-en belül voltak
+    if (typeof window.refreshAppImages === 'function') {
+        window.refreshAppImages();
+    }
 }

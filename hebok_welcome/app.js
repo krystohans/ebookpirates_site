@@ -156,6 +156,13 @@ function initializeKerdesbekuldoPage() {
     if (!submitBtn) return;
 
     submitBtn.onclick = function() {
+        // Honeypot (bot védelem)
+        const honeypot = document.getElementById('website-url-hp');
+        if (honeypot && honeypot.value !== "") {
+            console.warn("Spam bot detektálva!");
+            return;
+        }
+
         const emailInput = document.getElementById('submitter-email');
         const email = emailInput.value;
         const feedbackDiv = document.getElementById('question-feedback-message');
@@ -182,7 +189,7 @@ function initializeKerdesbekuldoPage() {
         submitBtn.disabled = true;
 
         // CSERÉLD LE EZT A VALÓDI BACKEND URL-RE:
-        const API_URL = 'https://script.google.com/macros/s/IDE_JON_A_VALODI_WEBAPP_URL/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwdopBsZ3GHKRW5GwNc9EQ4kO6stoF9HLGRCzR8nzvwPr9T-6W4p4VCd3DBlbTy7dBo/exec';
 
         fetch(API_URL, {
             method: 'POST',

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * web_fordito.js
  * A kliens oldali többnyelvűsítés motorja.
  * * Működés elve:
@@ -4586,7 +4586,7 @@ const translations = {
         'index_li_83': "<strong data-lang=\"index_strong_60\">Courrier en bouteille :</strong> hic.debrecen@google.com",
         'index_li_84': "<strong data-lang=\"index_strong_61\">Quai:</strong> Jamaïque, Secret Harbour",
         'index_li_85': "<strong data-lang=\"index_strong_62\">Horaires d'ouverture :</strong> Quand le vent souffle ! (0h00-24h00)",
-        'vilagterkep_h1_1': "<strong>Carte d\\'Abrigo</strong>",
+        'vilagterkep_h1_1': "<strong>Carte d'Abrigo</strong>",
         'vilagterkep_h3_2': "Les montagnes de la Crête du Dragon",
         'vilagterkep_h3_3': "Cœur d'Aria",
         'vilagterkep_h3_4': "Le portail des tempêtes",

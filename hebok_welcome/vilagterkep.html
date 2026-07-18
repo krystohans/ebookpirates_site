@@ -221,11 +221,9 @@
         const panel = document.getElementById(panelId);
         if (!panel) return;
 
-        const cim = panel.querySelector('h3').textContent;
-
         // --- EGÉRMUTATÓ ESEMÉNYEK A SZÖVEGBUBORÉKHOZ ---
         terulet.addEventListener('mouseover', () => {
-            tooltip.textContent = cim;
+            tooltip.textContent = panel.querySelector('h3').textContent;
             tooltip.style.display = 'block';
         });
 

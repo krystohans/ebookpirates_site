@@ -322,17 +322,24 @@ h1, h2, h3, h4, h5 {
 /* --- ÚJ RÉSZ: A térkép szövegbuboréka (tooltip) --- */
 .tooltip-panel {
   display: none; /* Alapból rejtve van */
-  position: absolute; /* Hogy az egérhez tudjuk pozicionálni */
-  z-index: 1001; /* Legyen a legtetején, még az infó panel felett is */
+  position: absolute; /* Hogy a relatív szülőhöz (térkép) igazodjon */
+  z-index: 3000; /* Legyen a legtetején, még az infó panel felett is */
+  
+  /* Pozíciót JavaScriptből állítjuk */
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%); /* Hogy középre zárva a kurzor FELETT jelenjen meg */
   
   /* Kinézet */
-  padding: 5px 10px;
-  background-color: rgba(0, 0, 0, 0.8); /* Sötét, áttetsző háttér */
-  color: #f0e6d2; /* Világos szöveg */
+  padding: 8px 12px;
+  background-color: rgba(26, 20, 15, 0.9); /* Sötét, áttetsző háttér */
+  color: var(--szin-cim); /* Világos szöveg */
+  border: 1px solid var(--szin-cim);
   border-radius: 4px;
   font-family: var(--betu-szoveg);
   font-size: 0.9em;
   pointer-events: none; /* Fontos: Így az egér "átkattinthat" rajta, nem zavarja a térképet */
+  white-space: nowrap;
 }
 
 /* === szótár választáshoz zászlók megjelenítése === */

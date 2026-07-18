@@ -1,0 +1,364 @@
+/* Google Fonts importálása: Cinzel a címekhez, Merriweather a szöveghez */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Merriweather:wght@400;700&display=swap');
+
+/* --- Változók a könnyű testreszabáshoz --- */
+:root {
+  --szin-hatter: #3d2c1d; /* Sötét fa */
+  --szin-szoveg: #f0e6d2; /* Régi papír / csontszín */
+  --szin-cim: #c89b3f;   /* Arany / Bronz */
+  --szin-kiemeles: #8b4513; /* Nyeregbarna / Réz */
+  --betu-cim: 'Cinzel', serif;
+  --betu-szoveg: 'Merriweather', serif;
+}
+
+/* --- Alapbeállítások --- */
+body {
+  font-family: var(--betu-szoveg);
+  background-color: var(--szin-hatter);
+  color: var(--szin-szoveg);
+  line-height: 1.6;
+  padding-top: 80px; /* HOZZÁADVA: Helyet hagy a fix menünek. Állítsd be, ha szükséges. */
+
+  /* A görgetősáv elrejtése (Firefox) */
+  scrollbar-width: none;
+  /* A görgetősáv elrejtése (IE és Edge) */
+  -ms-overflow-style: none;
+}
+
+/* A görgetősáv elrejtése (Chrome, Safari, Opera) */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Szekciók és Konténerek --- */
+section {
+  padding: 60px 20px;
+  border-bottom: 2px solid var(--szin-kiemeles); /* Díszes elválasztó */
+}
+
+.container, .container-fluid {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* A menü konténerének kinullázása, hogy kitapadjon a szélre */
+.menu2 {
+  padding: 0 !important;
+}
+
+/* --- Navigációs Menü --- */
+.navbar {
+  position: fixed; /* VÁLTOZÁS: A 'sticky' helyett 'fixed' lesz */
+  top: 0;
+  width: 100%;     /* HOZZÁADVA: Biztosítja, hogy a menü teljes szélességű legyen */
+  z-index: 1000;   /* Biztosítja, hogy a menü minden más felett legyen */
+  background-color: rgba(29, 20, 13, 0.9); /* A háttér enyhe sötétítése a jobb olvashatóságért */
+  border-bottom: 2px solid var(--szin-cim);
+}
+
+.navbar-brand .navbar-caption {
+  font-family: var(--betu-cim);
+  color: var(--szin-cim) !important;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  font-family: var(--betu-szoveg);
+  color: var(--szin-szoveg) !important;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0 15px;
+}
+.nav-link:hover {
+  color: var(--szin-cim) !important;
+}
+
+/* --- Címek és Szövegek --- */
+h1, h2, h3, h4, h5 {
+  font-family: var(--betu-cim);
+  color: var(--szin-cim);
+  text-shadow: 1px 1px 2px black;
+}
+
+.mbr-section-title {
+  font-weight: bold;
+}
+
+/* --- Gombok --- */
+.btn {
+  font-family: var(--betu-cim);
+  background-color: var(--szin-kiemeles);
+  border: 2px solid var(--szin-cim);
+  color: var(--szin-szoveg);
+  padding: 12px 25px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: var(--szin-cim);
+  color: #000;
+  border-color: var(--szin-szoveg);
+}
+
+/* --- Kártya stílus (Vélemények, Hírek) --- */
+.item-wrapper {
+  background-color: rgba(240, 230, 210, 0.1); /* Áttetsző papír hatás */
+  border: 1px solid var(--szin-kiemeles);
+  border-radius: 5px;
+  padding: 20px;
+  height: 100%;
+}
+
+/* --- Lábléc --- */
+.footer4 {
+  background-color: #1a140f;
+  border-top: 2px solid var(--szin-cim);
+  padding: 30px 0;
+  text-align: center;
+}
+/* --- Kalóz Csapat Galéria Stílusok --- */
+.csapat-galeria .item-wrapper {
+  background-color: transparent; /* A belső wrapper ne kapjon hátteret */
+  background-image: none;
+  border: none;
+  padding: 0;
+}
+
+.kep-tarolo {
+  border: 4px solid var(--szin-kiemeles);
+  border-radius: 5px;
+  overflow: hidden; /* Lekerekített sarkok a képen is */
+  position: relative;
+}
+
+.kep-tarolo img {
+  width: 100%;
+  height: 300px; /* Egységes magasság */
+  object-fit: cover; /* A képek ne torzuljanak */
+  display: block;
+}
+
+/* --- Lenyitható (Accordion) Panel Stílus --- */
+.accordion-button, .accordion-button:not(.collapsed) {
+  font-family: var(--betu-cim);
+  background-color: var(--szin-kiemeles);
+  color: var(--szin-szoveg);
+  border: 1px solid var(--szin-cim);
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-button:hover {
+  background-color: var(--szin-cim);
+  color: #000;
+}
+
+.accordion-button::after {
+  /* Lenyitást jelző ikon (pl. egy + jel) */
+  content: '+';
+  float: right;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.accordion-button:not(.collapsed)::after {
+   /* Nyitott állapotot jelző ikon (pl. egy - jel) */
+  content: '−';
+}
+
+.accordion-body {
+  padding: 15px;
+  background-color: rgba(240, 230, 210, 0.9); /* Áttetsző papír hatás */
+  color: #1a140f; /* Sötét szöveg a világos háttéren */
+  border: 1px solid var(--szin-kiemeles);
+  border-top: none;
+}
+
+/* --- GYIK Accordion Stílusok --- */
+#gyik .card {
+  background-color: transparent;
+  border: none;
+  margin-bottom: 10px;
+}
+
+#gyik .card-header {
+  padding: 0;
+  border: none;
+}
+
+#gyik .accordion-button {
+  border-radius: 5px !important;
+  border: 2px solid var(--szin-kiemeles);
+}
+
+#gyik .accordion-button:not(.collapsed) {
+  background-color: var(--szin-cim);
+  color: #000;
+  border-bottom: 2px solid var(--szin-kiemeles);
+}
+
+#gyik .accordion-body {
+  border: 2px solid var(--szin-kiemeles);
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+}
+/* ---Táblázat stílusok --- */
+
+.rang-kep { max-width: 50px; height: auto; display: block; margin: 0 auto; }
+    
+
+//  VILÁGTÉRKÉP OLDAL
+
+/* A "kalitka", ami egyben tartja a hátteret és az SVG réteget */
+.terkep-kontener {
+  position: relative; /* Ez a pozicionálás viszonyítási pontja. */
+  width: 100%;
+  max-width: 1408px; /* A térképed eredeti szélessége. Módosítsd, ha szükséges! */
+  margin: 2rem auto; /* Középre igazítja a térképet az oldalon. */
+  
+  /* A képarány megőrzése (modern módszer) */
+  /* Add meg a kép eredeti szélességét és magasságát */
+  aspect-ratio: 1408 / 768; 
+
+  /* A háttérkép majd JavaScriptből lesz beállítva, de a pozíciót itt adjuk meg */
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Az SVG réteg, ami tökéletesen rásimul a kalitkára */
+.terkep-kontener svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Az SVG-n belüli, kattintható területek alap stílusa */
+.terkep-terulet {
+  fill: transparent; /* Alapból teljesen átlátszó */
+  transition: all 0.2s ease-in-out; /* Finom átmenet a színváltozáshoz */
+}
+
+/* A kattintható terület stílusa, amikor az egér fölötte van */
+.terkep-terulet:hover {
+  /* A te projektedben definiált kiemelő színt használjuk, 50%-os áttetszőséggel */
+  fill: var(--szin-kiemeles); 
+  opacity: 0.5;
+  cursor: pointer; /* Változzon az egérmutató kézre */
+}
+
+/* --- ÚJ RÉSZ: A Világtérkép felugró info-panelei --- */
+
+.info-panel {
+  display: none; /* Alapból rejtve van, a JavaScript fogja megjeleníteni. */
+  
+  /* ÚJ: Rögzített pozíció a képernyő közepén */
+  position: fixed; 
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Ez a trükk a tökéletes középre igazításhoz */
+
+   /* ÚJ: Méretezés és görgethetőség */
+  width: 60vw; /* A képernyő szélességének 60%-a */
+  max-width: 700px; /* De legfeljebb 700px széles, hogy ne legyen túl nagy */
+  max-height: 80vh; /* A képernyő magasságának maximum 80%-a */
+  overflow-y: auto; /* Ha a tartalom hosszabb, GÖRGETHETŐ lesz! */
+  
+  /* Kinézet a te stílusod alapján */
+  padding: 15px;
+  border: 2px solid var(--szin-cim); /* A meglévő arany/bronz keretszín. */
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5); /* Árnyék a jobb kiemelésért. */
+  
+  /* A HÁTTÉRKÉP és a biztonsági háttérszín */
+  /* A 'soft_wallpaper' képet a JavaScript fogja beállítani. */
+  background-color: #f0e6d2; /* Biztonsági háttérszín, ha a kép nem töltődne be. */
+  color: #1a140f; /* Sötét szöveg a világos háttéren. */
+  background-image: var(--hatter-soft-wallpaper);
+  background-size: repeat; /* 'cover' vagy 'repeat' ha mozaikos */
+}
+
+/* A panelen belüli cím stílusa */
+.info-panel h3 {
+   font-family: var(--betu-cim);
+   color: var(--szin-kiemeles); /* A meglévő nyeregbarna/réz szín. */
+   margin-top: 0;
+   margin-bottom: 10px;
+   padding-bottom: 10px;
+   font-size: 1.2em;
+   border-bottom: 1px solid rgba(139, 69, 19, 0.4); /* Halvány elválasztóvonal a kiemelő színből. */
+}
+
+/* A panelen belüli bekezdés stílusa */
+.info-panel p {
+  font-size: 0.9em;
+  margin-bottom: 0;
+}
+
+.info-panel .bezaro-gomb {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--szin-kiemeles);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.info-panel .bezaro-gomb:hover {
+  color: var(--szin-cim);
+}
+
+/* --- ÚJ RÉSZ: A térkép szövegbuboréka (tooltip) --- */
+.tooltip-panel {
+  display: none; /* Alapból rejtve van */
+  position: absolute; /* Hogy az egérhez tudjuk pozicionálni */
+  z-index: 1001; /* Legyen a legtetején, még az infó panel felett is */
+  
+  /* Kinézet */
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.8); /* Sötét, áttetsző háttér */
+  color: #f0e6d2; /* Világos szöveg */
+  border-radius: 4px;
+  font-family: var(--betu-szoveg);
+  font-size: 0.9em;
+  pointer-events: none; /* Fontos: Így az egér "átkattinthat" rajta, nem zavarja a térképet */
+}
+
+/* === szótár választáshoz zászlók megjelenítése === */
+.lang-switch {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.lang-btn {
+    background: rgba(255, 255, 255, 0.1); /* 90% átlátszó háttér */
+    border: 1px solid transparent;
+    padding: 4px;
+    cursor: pointer;
+    line-height: 1;
+    border-radius: 4px;
+}
+
+.lang-btn .fi {
+    width: 24px;
+    height: 16px;
+    display: inline-block;
+}
+
+.lang-btn.active {
+    border-color: #8b0000;
+}

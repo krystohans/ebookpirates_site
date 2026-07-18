@@ -27,7 +27,7 @@
 <h1 class="mbr-section-title mbr-fonts-style display-2" data-lang="vilagterkep_h1_1"><strong>Abrigo térképe</strong></h1>
 <p class="mbr-text mbr-fonts-style display-7 mb-4" data-lang="vilagterkep_p_19">Navigálj az egérrel a területek fölé, és kattints a részletekért!</p>
 <div class="terkep-kontener" id="terkep-kontener-div">
-<svg height="768" id="svg1" version="1.1" viewbox="0 0 1408 768" width="1408" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="768" id="svg1" version="1.1" viewBox="0 0 1408 768" width="1408" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs id="defs1"></defs>
 <g id="vilagterkep" style="stroke:none">
 <a href="#" target="_blank">
@@ -202,18 +202,11 @@
 
     // A 'soft_wallpaper' háttér betöltése a panelekhez
     // (A CSS gondoskodik a megjelenítésről, de a képet a JS tölti be)
-    google.script.run.withSuccessHandler(function(imageData) {
-        if (imageData && imageData.data) {
-            const dataUrl = `data:${imageData.mime};base64,${imageData.data}`;
-            // Létrehozunk egy új stílusszabályt a :root-ban, amit a CSS használhat
-            document.documentElement.style.setProperty('--hatter-soft-wallpaper', `url(${dataUrl})`);
-        }
-    }).getCentralImageAsset('soft_wallpaper');
+    const softWallpaperUrl = getAssetUrl('soft_wallpaper');
+    document.documentElement.style.setProperty('--hatter-soft-wallpaper', `url('${softWallpaperUrl}')`);
 
-    
-    // Meghívjuk a te 'loadImageByClass' függvényedet, hogy betöltse a térkép hátterét a Drive-ról
-    // CSERÉLD LE AZ AZONOSÍTÓT A SAJÁT PNG FÁJLODÉRA!
-    loadImage('vilagterkep_png', 'terkep-kontener-div', true);
+    // Meghívjuk a loadImage függvényt, hogy betöltse a térkép hátterét a Cloud Storage-ból
+    loadImage('vilagterkep', 'terkep-kontener-div', true);
 
     // 2. VÉGLEGES "BÁBMESTER": SZÖVEGBUBORÉK ÉS KATTINTHATÓ PANELEK
     const teruletek = document.querySelectorAll('.terkep-terulet');

@@ -10,6 +10,7 @@ const ASSET_MAP = {
     'kaloz_sziget_fejlec': 'ebookpirates_harbour1.jpg', // kikötő háttere
     'dark_wood': 'dark-wood.png',
     'soft_wallpaper': 'soft-wallpaper.png',
+    'vilagterkep': 'vilagterkep.png',
     
     // Tengerészeti rangok (közelítőleges megfeleltetés a letöltött fájlok alapján)
     'rang_matroz_4': 'KUK-Navy-Seekadett.svg',

@@ -14,7 +14,7 @@ const ASSET_MAP = {
     // Tengerészeti rangok (közelítőleges megfeleltetés a letöltött fájlok alapján)
     'rang_matroz_4': 'KUK-Navy-Seekadett.svg',
     'rang_matroz_3': 'KUK-Navy-Maate.svg.png',
-    'rang_matroz_2': 'KUK-Navy-Geschützvormeister.svg.png',
+    'rang_matroz_2': 'KUK-Navy-Geschützvormeister_1._Klasse.svg.png',
     'rang_matroz_1': 'KUK-Navy-Geschützgast.svg.png',
     'rang_alhajomester': 'KUK-Navy-Korvettenkapitän.svg',
     'rang_torzshajomester': 'KUK-Navy-Fregattenkapitän.svg',

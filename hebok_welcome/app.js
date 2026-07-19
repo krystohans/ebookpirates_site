@@ -151,6 +151,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
+function safeParseJSON(text) {
+    if (!text) return null;
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        var match = text.match(/\{[\s\S]*\}/);
+        if (match) {
+            try {
+                return JSON.parse(match[0]);
+            } catch (err) {
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
 function initializeKerdesbekuldoPage() {
     const submitBtn = document.getElementById('submit-question-btn');
     if (!submitBtn) return;
@@ -164,16 +181,18 @@ function initializeKerdesbekuldoPage() {
         if (nameInput) nameInput.value = 'Ismeretlen kalóz';
         submitBtn.disabled = true;
     } else {
-        // Backend call to check token and get user name
         fetch(API_URL, {
             method: 'POST',
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
                 action: 'getUserDataByToken',
-                token: token
+                token: token,
+                data: [token]
             })
         })
-        .then(res => res.json())
-        .then(response => {
+        .then(res => res.text())
+        .then(text => {
+            const response = safeParseJSON(text);
             if (response && response.isValid && response.name) {
                 if (nameInput) nameInput.value = response.name;
                 submitBtn.disabled = false;
@@ -217,13 +236,15 @@ function initializeKerdesbekuldoPage() {
 
         fetch(API_URL, {
             method: 'POST',
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
                action: 'submitNewQuestion',
                token: token,
                data: [formData]
             })
-        }).then(res => res.json())
-          .then(response => {
+        }).then(res => res.text())
+          .then(text => {
+              const response = safeParseJSON(text);
               if (response && response.success) {
                   feedbackDiv.textContent = response.message || 'Sikeres beküldés!';
                   feedbackDiv.style.color = 'green';

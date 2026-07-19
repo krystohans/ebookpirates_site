@@ -4447,9 +4447,10 @@ function submitQuizFromModal() {
             feedbackDiv.textContent = res.message || 'Sikeres beküldés!';
             feedbackDiv.style.color = 'green';
 
-            // 2 másodperc múlva automatikus bezárás
+            // 2 másodperc múlva automatikus bezárás és aloldal frissítés
             setTimeout(function () {
                 closeQuizBookModal();
+                loadPage('felhokolostor_oldal');
             }, 2000);
         } else {
             feedbackDiv.textContent = (res && res.message) || 'Hiba a beküldés során!';

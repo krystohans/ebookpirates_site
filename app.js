@@ -4344,20 +4344,20 @@ function handleQuizDecision(rowIndex, decision) {
         t('monk_quiz_approve_confirm') : 
         t('monk_quiz_reject_confirm');
         
-    if (!confirm(confirmMsg)) return;
-
-    document.getElementById('loading-overlay').style.display = 'flex';
-    callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        if (res && res.success) {
-            alert(res.message || t('monk_quiz_evaluation_success'));
-            refreshMonasteryWork();
-        } else {
-            alert(t('error_prefix') + (res ? res.message || res.error : 'Szerver hiba'));
-        }
-    }, function (err) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        alert(t('error_prefix') + err.message);
+    uiConfirm(confirmMsg, t('modal_confirm_title'), function () {
+        document.getElementById('loading-overlay').style.display = 'flex';
+        callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (res && res.success) {
+                uiAlert(res.message || t('monk_quiz_evaluation_success'), t('modal_notice_title'));
+                refreshMonasteryWork();
+            } else {
+                uiAlert(t('error_prefix') + (res ? res.message || res.error : 'Szerver hiba'), t('modal_notice_title'));
+            }
+        }, function (err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            uiAlert(t('error_prefix') + err.message, t('modal_notice_title'));
+        });
     });
 }
 

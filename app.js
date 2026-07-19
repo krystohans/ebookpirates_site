@@ -4361,6 +4361,108 @@ function handleQuizDecision(rowIndex, decision) {
     });
 }
 
+// --- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK ---
+
+function openQuizBookModal() {
+    var modal = document.getElementById('quiz-book-modal');
+    if (!modal) return;
+
+    // Bejelentkezett kalóz nevének beállítása
+    var nameField = document.getElementById('modal-submitter-name');
+    if (nameField && typeof currentUserEmail !== 'undefined') {
+        nameField.value = currentUserEmail;
+    }
+
+    // Feedback és form tisztítása nyitáskor
+    var feedback = document.getElementById('modal-question-feedback');
+    if (feedback) {
+        feedback.textContent = '';
+        feedback.style.color = '';
+    }
+
+    // Submit gomb engedélyezése
+    var submitBtn = document.getElementById('modal-submit-question-btn');
+    if (submitBtn) submitBtn.disabled = false;
+
+    modal.style.display = 'flex';
+}
+
+function closeQuizBookModal() {
+    var modal = document.getElementById('quiz-book-modal');
+    if (!modal) return;
+
+    // Minden beviteli mező törlése
+    var fields = ['modal-question-text', 'modal-correct-answer', 'modal-alt-1', 'modal-alt-2', 'modal-alt-3'];
+    for (var i = 0; i < fields.length; i++) {
+        var el = document.getElementById(fields[i]);
+        if (el) el.value = '';
+    }
+
+    // Feedback törlése
+    var feedback = document.getElementById('modal-question-feedback');
+    if (feedback) {
+        feedback.textContent = '';
+        feedback.style.color = '';
+    }
+
+    // Honeypot törlése
+    var hp = document.getElementById('modal-website-url-hp');
+    if (hp) hp.value = '';
+
+    modal.style.display = 'none';
+}
+
+function submitQuizFromModal() {
+    // Honeypot ellenőrzés (bot védelem)
+    var honeypot = document.getElementById('modal-website-url-hp');
+    if (honeypot && honeypot.value !== '') {
+        console.warn('Spam bot detektálva!');
+        return;
+    }
+
+    var formData = {
+        question: document.getElementById('modal-question-text').value,
+        correctAnswer: document.getElementById('modal-correct-answer').value,
+        alt1: document.getElementById('modal-alt-1').value,
+        alt2: document.getElementById('modal-alt-2').value,
+        alt3: document.getElementById('modal-alt-3').value
+    };
+
+    if (!formData.question || !formData.correctAnswer) {
+        var fb = document.getElementById('modal-question-feedback');
+        fb.textContent = t('kerdesbekuldo_validation_error') !== 'kerdesbekuldo_validation_error' ? t('kerdesbekuldo_validation_error') : 'Kérlek, töltsd ki a kérdés és a helyes válasz mezőket!';
+        fb.style.color = 'red';
+        return;
+    }
+
+    var feedbackDiv = document.getElementById('modal-question-feedback');
+    var submitBtn = document.getElementById('modal-submit-question-btn');
+
+    feedbackDiv.textContent = t('kerdesbekuldo_sending') !== 'kerdesbekuldo_sending' ? t('kerdesbekuldo_sending') : 'Beküldés folyamatban...';
+    feedbackDiv.style.color = '#b38600';
+    submitBtn.disabled = true;
+
+    callBackend('submitNewQuestion', [formData], function (res) {
+        if (res && res.success) {
+            feedbackDiv.textContent = res.message || 'Sikeres beküldés!';
+            feedbackDiv.style.color = 'green';
+
+            // 2 másodperc múlva automatikus bezárás
+            setTimeout(function () {
+                closeQuizBookModal();
+            }, 2000);
+        } else {
+            feedbackDiv.textContent = (res && res.message) || 'Hiba a beküldés során!';
+            feedbackDiv.style.color = 'red';
+            submitBtn.disabled = false;
+        }
+    }, function (err) {
+        feedbackDiv.textContent = 'Hálózati hiba: ' + err.message;
+        feedbackDiv.style.color = 'red';
+        submitBtn.disabled = false;
+    });
+}
+
 function purgeWork(workId, title) {
     var message = t('monk_purge_confirm_html_prefix') + title + t('monk_purge_confirm_html_suffix');
 

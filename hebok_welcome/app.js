@@ -155,6 +155,40 @@ function initializeKerdesbekuldoPage() {
     const submitBtn = document.getElementById('submit-question-btn');
     if (!submitBtn) return;
 
+    const token = localStorage.getItem('ebookPiratesToken');
+    const nameInput = document.getElementById('submitter-name');
+    const feedbackDiv = document.getElementById('question-feedback-message');
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec';
+
+    if (!token) {
+        if (nameInput) nameInput.value = 'Ismeretlen kalóz';
+        submitBtn.disabled = true;
+    } else {
+        // Backend call to check token and get user name
+        fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'getUserDataByToken',
+                token: token
+            })
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response && response.isValid && response.name) {
+                if (nameInput) nameInput.value = response.name;
+                submitBtn.disabled = false;
+            } else {
+                if (nameInput) nameInput.value = 'Ismeretlen kalóz';
+                submitBtn.disabled = true;
+            }
+        })
+        .catch(err => {
+            console.error("Hiba a felhasználó ellenőrzésekor:", err);
+            if (nameInput) nameInput.value = 'Ismeretlen kalóz';
+            submitBtn.disabled = true;
+        });
+    }
+
     submitBtn.onclick = function() {
         // Honeypot (bot védelem)
         const honeypot = document.getElementById('website-url-hp');
@@ -163,52 +197,47 @@ function initializeKerdesbekuldoPage() {
             return;
         }
 
-        const emailInput = document.getElementById('submitter-email');
-        const email = emailInput.value;
-        const feedbackDiv = document.getElementById('question-feedback-message');
-        
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            feedbackDiv.textContent = 'Kérlek, adj meg egy érvényes e-mail címet!';
-            feedbackDiv.style.color = 'red';
-            emailInput.focus();
-            return;
-        }
-
         const formData = {
             question: document.getElementById('new-question-text').value,
             correctAnswer: document.getElementById('new-correct-answer').value,
             alt1: document.getElementById('new-alt-1').value,
             alt2: document.getElementById('new-alt-2').value,
-            alt3: document.getElementById('new-alt-3').value,
-            email: email
+            alt3: document.getElementById('new-alt-3').value
         };
         
+        if (!formData.question || !formData.correctAnswer) {
+            feedbackDiv.textContent = 'Kérlek, töltsd ki a kérdés és a helyes válasz mezőket!';
+            feedbackDiv.style.color = 'red';
+            return;
+        }
+
         feedbackDiv.textContent = 'Beküldés folyamatban...';
         feedbackDiv.style.color = 'var(--szin-cim)';
         submitBtn.disabled = true;
-
-        // A kalozsziget backend URL-je, ahová most felírtuk a doPost-ot és az értékelő funkciókat
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec';
 
         fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({
                action: 'submitNewQuestion',
+               token: token,
                data: [formData]
             })
         }).then(res => res.json())
           .then(response => {
-              feedbackDiv.textContent = response.message || 'Sikeres beküldés!';
-              feedbackDiv.style.color = 'green';
+              if (response && response.success) {
+                  feedbackDiv.textContent = response.message || 'Sikeres beküldés!';
+                  feedbackDiv.style.color = 'green';
+                  
+                  document.getElementById('new-question-text').value = '';
+                  document.getElementById('new-correct-answer').value = '';
+                  document.getElementById('new-alt-1').value = '';
+                  document.getElementById('new-alt-2').value = '';
+                  document.getElementById('new-alt-3').value = '';
+              } else {
+                  feedbackDiv.textContent = (response && response.message) || 'Hiba a beküldés során!';
+                  feedbackDiv.style.color = 'red';
+              }
               submitBtn.disabled = false;
-              
-              document.getElementById('new-question-text').value = '';
-              document.getElementById('new-correct-answer').value = '';
-              document.getElementById('new-alt-1').value = '';
-              document.getElementById('new-alt-2').value = '';
-              document.getElementById('new-alt-3').value = '';
-              emailInput.value = '';
           }).catch(err => {
               feedbackDiv.textContent = 'Súlyos hiba: Hálózati hiba.';
               feedbackDiv.style.color = 'red';

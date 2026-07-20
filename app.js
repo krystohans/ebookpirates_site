@@ -4450,7 +4450,9 @@ function submitQuizFromModal() {
             // 2 másodperc múlva automatikus bezárás és aloldal frissítés
             setTimeout(function () {
                 closeQuizBookModal();
-                loadPage('felhokolostor_oldal');
+                if (typeof currentPageName !== 'undefined' && currentPageName === 'felhokolostor_oldal') {
+                    loadPage('felhokolostor_oldal');
+                }
             }, 2000);
         } else {
             feedbackDiv.textContent = (res && res.message) || 'Hiba a beküldés során!';

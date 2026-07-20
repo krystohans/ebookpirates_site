@@ -155,36 +155,6 @@
 
     <button id="open-personnel-btn" class="btn btn-danger" style="display: none; margin-bottom: 15px; width: 100%;" onclick="loadPersonnelData()" data-lang="monastery_personnel_open_button">Személyzeti Ügyek & Vészleállítás</button>
 
-    <!-- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK -->
-    <div id="quiz-book-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 200;">
-        <div class="gamemode-modal-content" style="max-width: 550px; position: relative;">
-            <button class="close-btn" onclick="closeQuizBookModal()">&times;</button>
-            <h3 style="text-align: center;"><i class="fas fa-book"></i> Kvízkérdések Könyve</h3>
-            <p style="font-size: 0.9em; color: #666;" data-lang="kerdesbekuldo_p_1">Ezen a felületen új kérdéseket adhatsz a játékhoz. Kérjük, ügyelj a helyesírásra és a kérdések egyediségére!</p>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label data-lang="kerdesbekuldo_label_2" for="modal-question-text">Kérdés szövege:</label>
-                <input id="modal-question-text" placeholder="Pl. Ki írta az Anyám tyúkját?" style="width: 100%; padding: 8px; box-sizing: border-box;" type="text"/>
-            </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label data-lang="kerdesbekuldo_label_3" for="modal-correct-answer">Helyes válasz:</label>
-                <input id="modal-correct-answer" placeholder="Pl. Petőfi Sándor" style="border: 2px solid green; width: 100%; padding: 8px; box-sizing: border-box;" type="text"/>
-            </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label data-lang="kerdesbekuldo_label_4">Helytelen válaszlehetőségek:</label>
-                <input id="modal-alt-1" placeholder="1. alternatíva (pl. Arany László)" style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text"/>
-                <input id="modal-alt-2" placeholder="2. alternatíva (pl. Toldi Miklós)" style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text"/>
-                <input id="modal-alt-3" placeholder="3. alternatíva (pl. Tyukodi Bence)" style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text"/>
-            </div>
-            <div class="form-group" style="margin-bottom: 20px;">
-                <label data-lang="kerdesbekuldo_label_5" for="modal-submitter-name">Beküldő kalóz neve:</label>
-                <input id="modal-submitter-name" value="" readonly style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #2a2a2a; color: #fff; border: 1px solid #444; cursor: not-allowed;" type="text"/>
-            </div>
-            <input id="modal-website-url-hp" style="display:none" type="text" autocomplete="off" tabindex="-1" />
-            <button class="btn" style="width: 100%; background-color: #2c3e50;" id="modal-submit-question-btn" onclick="submitQuizFromModal()" data-lang="kerdesbekuldo_button_6">Kérdés beküldése</button>
-            <div id="modal-question-feedback" style="margin-top: 20px; font-weight: bold; text-align: center; font-size: 1.2em;"></div>
-        </div>
-    </div>
-
     <div id="navigation" style="margin-top: 30px; text-align: center;">
         <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')" data-lang="monastery_nav_back_button">Vissza a kikötőbe</button>
         <button class="btn btn-danger" onclick="logout()" data-lang="monastery_nav_logout_button">Kijelentkezés</button>

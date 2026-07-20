@@ -19,3 +19,6 @@ Archy_Master.code-workspace
 *.py
 
 *.blend
+*.blend1
+*.glb
+assets/

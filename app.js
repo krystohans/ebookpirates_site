@@ -4408,6 +4408,9 @@ function openQuizBookModal() {
 }
 
 function openQuizBookModalDirect() {
+    var npcModal = document.getElementById('universal-npc-modal');
+    if (npcModal) npcModal.style.display = 'none';
+
     var modal = document.getElementById('quiz-book-modal');
     if (!modal) return;
 
@@ -9028,6 +9031,28 @@ function handleUniversalResponse(response) {
         console.error("Hiba: A szerver üres választ küldött!");
         addBubbleToUniversal("System", "Hiba: A szerver nem küldött adatot. (Null Response)", "system");
         return;
+    }
+
+    // --- RENDSZERMODAL KEZELÉS ---
+    if (response.systemModal) {
+        var sm = response.systemModal;
+        if (typeof showSystemModal === 'function') {
+            showSystemModal(
+                sm.title || "Rendszerüzenet",
+                sm.body || sm.message || "",
+                sm.icon || "fas fa-info-circle",
+                [{ text: "Rendben", color: "#2e8b57", textColor: "white", callback: function() {
+                    if (typeof updateCreditDisplay === 'function') {
+                        updateCreditDisplay();
+                    }
+                }}]
+            );
+        } else {
+            alert((sm.title || "Rendszerüzenet") + "\n\n" + (sm.body || sm.message || ""));
+            if (typeof updateCreditDisplay === 'function') {
+                updateCreditDisplay();
+            }
+        }
     }
 
     if (response.text) {

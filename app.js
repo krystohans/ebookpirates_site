@@ -4364,6 +4364,50 @@ function handleQuizDecision(rowIndex, decision) {
 // --- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK ---
 
 function openQuizBookModal() {
+    try {
+        console.log("openQuizBookModal() elindult");
+        var loading = document.getElementById('loading-overlay');
+        if (loading) loading.style.display = 'flex';
+
+        callBackend('checkIfUserIsMonk', [], function(res) {
+            try {
+                if (loading) loading.style.display = 'none';
+                console.log("checkIfUserIsMonk válasz:", res);
+                if (res && res.success && res.isMonk) {
+                    openQuizBookModalDirect();
+                } else {
+                    console.log("Nem szerzetes kalóz, Anonymus testvér NPC megnyitása...");
+                    openUniversalNPC('anonymus', {
+                        name: 'Anonymus testvér',
+                        role: 'Kvízkérdések Könyvének Őre',
+                        icon: '👤',
+                        headerColor: '#2d3748',
+                        skipInit: false
+                    });
+                }
+            } catch (innerErr) {
+                console.error("Hiba a checkIfUserIsMonk sikeres ágában:", innerErr);
+                alert("Hiba a válasz feldolgozásakor: " + innerErr.message);
+                openQuizBookModalDirect();
+            }
+        }, function(err) {
+            try {
+                if (loading) loading.style.display = 'none';
+                console.warn("checkIfUserIsMonk sikertelen (hibás ág):", err);
+                alert("Szerver hiba történt a Monk ellenőrzéskor. Fallback mód: Kvízkönyv megnyitása.");
+                openQuizBookModalDirect();
+            } catch (fallbackErr) {
+                console.error("Hiba a checkIfUserIsMonk hibakezelő ágában:", fallbackErr);
+                openQuizBookModalDirect();
+            }
+        });
+    } catch (globalErr) {
+        console.error("Kritikus hiba az openQuizBookModal-ban:", globalErr);
+        alert("Kritikus kliens hiba: " + globalErr.message);
+    }
+}
+
+function openQuizBookModalDirect() {
     var modal = document.getElementById('quiz-book-modal');
     if (!modal) return;
 
@@ -4385,6 +4429,11 @@ function openQuizBookModal() {
     if (submitBtn) submitBtn.disabled = false;
 
     modal.style.display = 'flex';
+}
+
+function closeUniversalNPCChat() {
+    var modal = document.getElementById('universal-npc-modal');
+    if (modal) modal.style.display = 'none';
 }
 
 function closeQuizBookModal() {

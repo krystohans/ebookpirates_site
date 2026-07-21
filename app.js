@@ -4378,10 +4378,34 @@ function openQuizBookModal() {
                 } else {
                     console.log("Nem szerzetes kalóz, Anonymus testvér NPC megnyitása...");
                     openUniversalNPC('anonymus', {
-                        name: 'Anonymus testvér',
-                        role: 'Kvízkérdések Könyvének Őre',
-                        icon: '👤',
-                        headerColor: '#2d3748',
+                        name: 'Anonymus Testvér',
+                        role: 'Rendi Írnok',
+                        icon: '<i class=\'fas fa-scroll\'></i>',
+                        headerColor: '#37474f',
+                        portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                        msgIcon: '<i class=\'fas fa-scroll\' style=\'color:#d4af37; margin-right:5px;\'></i>',
+                        loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
+                        styles: {
+                            modal: {
+                                justifyContent: 'flex-end', 
+                                alignItems: 'stretch',
+                                background: '',
+                                padding: '0'
+                            },
+                            content: {
+                                width: '350px',              
+                                height: '100vh',            
+                                maxWidth: '85vw',           
+                                margin: '0',                
+                                borderRadius: '2',          
+                                border: 'none',
+                                borderLeft: '5px solid #d4af37', 
+                                backgroundColor: '#1f0901',
+                                color: '#241512',
+                                backgroundImage: 'url(https://www.transparenttextures.com/patterns/wood-pattern.png)',
+                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
+                            }
+                        },
                         skipInit: false
                     });
                 }

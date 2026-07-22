@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hártyavadász 3D</title>
+    <style>
+        /* Alapvető beállítások */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Georgia', serif;
+        }
+
+        #game-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        /* UI réteg */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .glass-panel {
+            background: rgba(100, 10, 15, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            color: #eaddb5;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+        }
+
+        #top-bar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 650px;
+            height: 122px;
+            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/AUS_button_1--r.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-sizing: border-box;
+            padding: 0 15%;
+            pointer-events: auto;
+            z-index: 15;
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+        }
+
+        #top-bar h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #4a2c0f;
+            text-transform: uppercase;
+            letter-spacing: 0px;
+            font-family: 'Georgia', serif;
+            text-shadow: none;
+        }
+
+        #score-board {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a2c0f;
+            font-family: 'Georgia', serif;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .score-icon {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        /* Tooltip stílusok */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4a2c0f;
+            border: 2px solid #d4af37;
+            color: #fffbcc;
+            padding: 6px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            z-index: 100;
+            margin-top: 10px;
+            pointer-events: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            text-shadow: none;
+            text-transform: none;
+            font-weight: normal;
+        }
+
+        /* Kvíz Overlay (Unity stílus) */
+        #quiz-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            pointer-events: auto;
+            backdrop-filter: blur(4px);
+        }
+
+        #quiz-panel {
+            position: relative;
+            width: 80vw;
+            max-width: 800px;
+            min-height: 600px;
+            padding-top: 40px;
+            padding-left: 10%;
+            padding-right: 10%;
+            box-sizing: border-box;
+            text-align: center;
+            display: block;
+            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/Quiz_window_new_2-r.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        #quiz-question {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fffbcc;
+            line-height: 1.6;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+            padding-bottom: 20px;
+            margin: 70px 0 0 0;
+        }
+
+        #timer-bar-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            box-shadow: inset 0 0 5px #000;
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37 0%, #ff5722 100%);
+            transition: width 0.1s linear;
+        }
+
+        .answer-buttons {
+            position: absolute;
+            top: 50%;
+            left: 12.5%;
+            right: 12.5%;
+            display: block;
+            text-align: center;
+            margin-top: -33.6px;
+        }
+
+        .answer-btn {
+            background: transparent;
+            border: none;
+            color: #fffbcc;
+            padding: 0;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s, text-shadow 0.2s;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
+            display: block;
+            width: 100%;
+            text-align: center;
+            pointer-events: auto;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .answer-btn:hover {
+            transform: scale(1.05);
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 1);
+        }
+
+        .bet-btn-yes {
+            color: #ffcc00;
+            margin-bottom: 15px;
+        }
+
+        .bet-btn-no {
+            color: #aaaaaa;
+        }
+
+        #betting-area {
+            position: absolute;
+            top: 50%;
+            left: 12.5%;
+            right: 12.5%;
+            display: none;
+            text-align: center;
+            margin-top: -33.6px;
+        }
+
+        #base-exit-btn {
+            background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') !important;
+            background-size: 100% 100% !important;
+            background-color: transparent !important;
+            border: none !important;
+            color: #fffbcc !important;
+            padding: 20px 40px !important;
+            font-size: 24px !important;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.8);
+            transition: transform 0.2s, filter 0.2s !important;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            z-index: 20;
+            display: none;
+            pointer-events: auto !important;
+        }
+
+        #base-exit-btn:hover {
+            transform: translateX(-50%) scale(1.05) !important;
+            filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.8)) brightness(1.1) !important;
+        }
+
+        /* Érintő Joystick */
+        #joystick-area {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            display: none;
+            pointer-events: auto;
+            touch-action: none;
+        }
+
+        #joystick-knob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        #game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 26px;
+            color: #4a2c0f;
+            font-weight: bold;
+            display: none;
+            text-align: center;
+            background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            padding: 120px 120px 100px 120px;
+            width: 750px;
+            min-height: 250px;
+            box-sizing: border-box;
+            z-index: 30;
+            font-family: 'Georgia', serif;
+            text-shadow: none;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        #start-instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #4a2c0f;
+            font-weight: bold;
+            text-align: center;
+            background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            padding: 120px 120px 100px 120px;
+            width: 750px;
+            min-height: 250px;
+            box-sizing: border-box;
+            z-index: 25;
+            font-family: 'Georgia', serif;
+            text-shadow: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #info-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        #info-scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"
+    style="margin: 0; overflow: hidden; background-color: #000; touch-action: none; user-select: none;">
+    <audio id="bg-music" loop>
+        <source src="../assets/music/A Kincsek Szelleme.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="ambient-sound" loop>
+        <source src="../assets/music/waves-and-seagulls.wav" type="audio/wav">
+    </audio>
+
+    <div id="game-container"></div>
+
+    <div id="ui-layer">
+        <div id="top-bar">
+            <h1>Hártyavadász</h1>
+            <div id="score-board">
+                <div class="score-item" data-tooltip="Csónak élettartama">
+                    <img src="../assets/icons/full_screen-r.png" class="score-icon" alt="Élettartam">
+                    <span id="durability-display">10</span>
+                </div>
+                <div class="score-item" data-tooltip="Hártyák a csónakon">
+                    <img src="../assets/icons/hajo_r.PNG" class="score-icon" alt="Csónak">
+                    <span id="boat-score-display">0</span>
+                </div>
+                <div class="score-item" data-tooltip="Hártyák a bázison">
+                    <img src="../assets/icons/lada-r.png" class="score-icon" alt="Bázis">
+                    <span id="base-score-display">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="ambient-toggle" data-tooltip="Háttérzaj"
+            style="position: absolute; top: 20px; left: 100px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+        </div>
+
+        <div id="music-toggle" data-tooltip="Zene"
+            style="position: absolute; top: 25px; right: 100px; width: 50px; height: 50px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+        </div>
+
+        <div id="info-toggle" data-tooltip="Információ"
+            style="position: absolute; top: 20px; left: 20px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/info-r 1.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+        </div>
+
+        <div id="joystick-area">
+            <div id="joystick-knob"></div>
+        </div>
+
+        <div id="game-message" onclick="this.style.display='none';">Játék Vége!</div>
+        <button id="base-exit-btn">Befejezés és visszatérés a fedélzetre</button>
+        <div id="start-instruction">
+            Nyomd meg a W-A-S-D gombokat az induláshoz!<br>
+            <span style="font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;">(Szedj össze hártyákat, és
+                kerüld el a léghajót!)</span>
+        </div>
+    </div>
+
+    <div id="quiz-overlay">
+        <div id="quiz-panel" class="glass-panel">
+            <div id="timer-bar-container">
+                <div id="timer-bar"></div>
+            </div>
+            <div id="quiz-question">Kérdés betöltése...</div>
+
+            <div id="answer-buttons" class="answer-buttons"></div>
+
+            <div id="betting-area">
+                <button id="bet-yes-btn" class="answer-btn bet-btn-yes">Dupla vagy semmi, kockáztatok!</button>
+                <button id="bet-no-btn" class="answer-btn bet-btn-no">Kérem a sima kérdést</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-overlay"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 40; pointer-events: auto; backdrop-filter: blur(4px);">
+        <div id="info-panel"
+            style="position: relative; width: 90vw; max-width: 780px; height: 85vh; max-height: 1000px; background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/info_scroll_open.png'); background-size: 100% 100%; background-repeat: no-repeat; box-sizing: border-box;">
+
+            <div
+                style="position: absolute; top: calc(48% + 5px); left: calc(53% - 5px); transform: translate(-50%, -50%); width: 50%; height: 45%; display: flex; flex-direction: column; text-align: center;">
+                <h2
+                    style="color: #4a2c0f; font-family: 'Georgia', serif; font-size: 32px; border-bottom: 2px solid #8b5a2b; margin-bottom: 15px; padding-bottom: 5px; margin-top: 0;">
+                    Játékszabályok</h2>
+                <div id="info-scroll-container"
+                    style="flex: 1; overflow-y: auto; color: #4a2c0f; font-family: 'Georgia', serif; font-size: 20px; line-height: 1.6; text-align: justify; padding-right: 5px;">
+                    <p><strong>Irányítás:</strong> Használd a <strong>W, A, S, D</strong> gombokat a csónak vezetéséhez.
+                        Az
+                        egeret (bal gomb nyomva tartása) használhatod a kamera forgatásához, és a görgővel tudsz
+                        közelíteni-távolítani. A zenét az <strong>M</strong> betűvel kapcsolhatod.</p>
+                    <p><strong>Cél:</strong> Szedj össze annyi hártyát a tengeren, amennyit csak tudsz! Vigyázz, mert a
+                        léghajó üldözőbe vehet.</p>
+                    <p><strong>Kvíz:</strong> Amikor felveszel egy hártyát, válaszolnod kell egy kérdésre. Egyes hártyák
+                        lehetőséget adnak a "Dupla vagy semmi" kockáztatásra is!</p>
+                    <p><strong>Bázis:</strong> Visszatérve a kikötői bázisra (a zöld fénnyel világító sziget),
+                        biztonságban
+                        vagy az ellenségtől. A kikötőben megjelenő pecsétre kattintva visszatérhetsz a fedélzetre,
+                        lementve
+                        a hártyákat és a csónakod állapotát.</p>
+                </div>
+            </div>
+
+            <div id="close-info-btn"
+                style="position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; cursor: pointer; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/exit_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js és GLTFLoader betöltése -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Water.js"></script>
+
+    <script>
+        // ==========================================
+        // 1. GLOBÁLIS VÁLTOZÓK ÉS KOMMUNIKÁCIÓ
+        // ==========================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const playerToken = urlParams.get('token');
+        const shipId = urlParams.get('shipId');
+
+        let quizQuestions = [];
+        let scoreOnBoat = 0;
+        let baseHarborScore = 0;
+        let boatDurability = 10;
+        let isGameOver = false;
+        let isQuizActive = false;
+        let isDoubleOrNothingActive = false;
+        let usedQuestionIndexes = [];
+        let battleshipEventTriggered = false;
+        let gameStarted = false;
+        let isCaughtByAirship = false; // Állapot a filmes léghajó-ereszkedéshez
+        let isInvulnerable = false; // HIBAJAVÍTÁS: Deklaráljuk a sérthetetlenséget
+        let currentBet = 0;
+        let maxBetAmount = 0;
+        let correctAnswer = "";
+        let activeDiamond = null;
+        let timerInterval;
+        let timeLeft = 20;
+        let globalLoadedRockModels = []; // Globális tömb a sziklák megosztott textúráihoz
+
+        function callBackend(action, params) {
+            return new Promise((resolve, reject) => {
+                if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
+                    window.parent.callBackend(action, params,
+                        function (res) { resolve(res); },
+                        function (err) { reject(err); }
+                    );
+                } else {
+                    console.warn("Helyi futtatás (mock): " + action);
+                    if (action === 'getBoatDurability') resolve(10);
+                    else if (action === 'getQuizQuestions') resolve([]);
+                    else resolve({ status: "LOCAL_MOCK_OK" });
+                }
+            });
+        }
+
+        async function initGameData() {
+            try {
+                const response = await callBackend('getQuizQuestions', []);
+                quizQuestions = response || [];
+                const durResponse = await callBackend('getBoatDurability', [shipId]);
+                if (durResponse !== undefined && durResponse !== null && durResponse !== '') boatDurability = parseInt(durResponse);
+            } catch (e) { console.error("Adatbetöltési hiba:", e); }
+
+            if (quizQuestions.length === 0) {
+                quizQuestions = [{
+                    question: "Teszt Kérdés a Grafika ellenőrzéséhez. Szerinted szép az új dizájn?",
+                    correctAnswer: "Igen, tökéletes!",
+                    incorrectAnswers: ["Nem rossz", "Még finomítani kell"],
+                    isStaked: true,
+                    rowIndex: 1,
+                    weight: 1
+                }];
+            }
+            updateScoreBoard();
+        }
+        initGameData();
+
+        // Szélzászló UI generálása
+        const windVane = document.createElement('div');
+        windVane.id = 'wind-vane';
+        windVane.style.position = 'absolute';
+        windVane.style.top = '80px';
+        windVane.style.right = '20px';
+        windVane.style.width = '50px';
+        windVane.style.height = '50px';
+        windVane.style.background = 'rgba(0,0,0,0.5)';
+        windVane.style.borderRadius = '50%';
+        windVane.style.display = 'flex';
+        windVane.style.justifyContent = 'center';
+        windVane.style.alignItems = 'center';
+        windVane.style.color = '#fff';
+        windVane.style.fontSize = '24px';
+        windVane.style.zIndex = '15';
+        windVane.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24"><path fill="#fff" d="M12 2L22 20L12 16L2 20Z"/></svg>';
+        document.body.appendChild(windVane);
+
+        // Pontszámjelző módosítása
+        const scoreBoard = document.getElementById('score-board');
+        function updateScoreBoard() {
+            const durabilityDisplay = document.getElementById('durability-display');
+            const boatScoreDisplay = document.getElementById('boat-score-display');
+            const baseScoreDisplay = document.getElementById('base-score-display');
+
+            if (durabilityDisplay) durabilityDisplay.innerText = boatDurability;
+            if (boatScoreDisplay) boatScoreDisplay.innerText = scoreOnBoat;
+            if (baseScoreDisplay) baseScoreDisplay.innerText = baseHarborScore;
+        }
+
+        // ==========================================
+        // 2. THREE.JS MOTOR INICIALIZÁLÁS
+        // ==========================================
+        const container = document.getElementById('game-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB);
+        // A köd sűrűségét 0.0022-re emeljük, hogy szép légköri takarást adjon a hegyeknek és a messzeségnek
+        scene.fog = new THREE.FogExp2(0x87CEEB, 0.0022);
+
+        // Kamera beállítások
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2500);
+        let cameraDistance = 30; // Zoom szint
+        let cameraAngle = Math.PI / 4; // Orbit szög (kezdésnek 45 fok hátulról)
+        const CAMERA_PITCH = Math.PI / 4; // 45 fokos dőlésszög lefelé
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Fény (Egyetlen Nap)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffeedd, 1.0);
+        sunLight.position.set(100, 200, 50);
+        sunLight.castShadow = true;
+        sunLight.shadow.camera.left = -200;
+        sunLight.shadow.camera.right = 200;
+        sunLight.shadow.camera.top = 200;
+        sunLight.shadow.camera.bottom = -200;
+        sunLight.shadow.camera.far = 500;
+        scene.add(sunLight);
+
+        // Víz felület (Brutálisan megnövelve 3000-re, hogy a ritkább ködben se látszódjon a széle)
+        const waterGeo = new THREE.PlaneGeometry(3000, 3000, 128, 128);
+        let water = new THREE.Water(
+            waterGeo,
+            {
+                textureWidth: 512,
+                textureHeight: 512,
+                waterNormals: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/waternormals.jpg', function (texture) {
+                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    texture.repeat.set(300, 300); // 3x akkora a tenger, a textúra is triplázva lett
+                }),
+                sunDirection: sunLight.position.clone().normalize(),
+                sunColor: 0x4466aa, // Lágy kék napfény, hogy a hullámok szélei látszódjanak, de ne legyen vakító fehér folt
+                waterColor: 0x005588,
+                distortionScale: 8.0, // Erősítjük a fodorzódást, hogy mozgónak tűnjön!
+                size: 25.0,
+                alpha: 0.9,
+                fog: scene.fog !== undefined
+            }
+        );
+        water.rotation.x = -Math.PI / 2;
+        scene.add(water);
+
+        // Játék elemek
+        let playerBoat = null;
+        let baseHarbor = null;
+        let enemyShip = null;
+        let battleship = null;
+        const foamMaterials = []; // Hab textúrák az animációhoz
+        const obstacles = [];
+        const diamonds = [];
+
+        const MAP_RADIUS = 300;
+        // Bázis a jobb felső sarokban (X+, Z-). Eredetileg (150, 0, -150) volt, kivezetve 100 egységgel az origótól!
+        const BASE_POS = new THREE.Vector3(220.7, 0, -220.7);
+
+        // Egyszerű Pseudo-Random Generátor a permanens pályához
+        class PRNG {
+            constructor(seed) { this.seed = seed; }
+            next() {
+                this.seed = (this.seed * 9301 + 49297) % 233280;
+                return this.seed / 233280;
+            }
+        }
+        const rng = new PRNG(12345); // Fix seed!
+
+        async function buildScene() {
+            // 1. Kikötő (Bázis) - GLB modell betöltése a Blenderből
+            const loader = new THREE.GLTFLoader();
+            loader.load('../assets/models/SM_Bld_Fort_Base_03.glb', function (gltf) {
+                baseHarbor = gltf.scene;
+                
+                // Beállítjuk a helyzetét és felnagyítjuk 2x-esre (ahogy kérted)
+                baseHarbor.position.copy(BASE_POS);
+                baseHarbor.scale.set(2.0, 2.0, 2.0);
+                
+                baseHarbor.traverse(node => {
+                    if (node.isMesh) {
+                        node.receiveShadow = true;
+                        node.castShadow = true;
+                        
+                        // Megkeressük a hab gyűrűt, hogy animálhassuk a textúráját
+                        if (node.material && node.material.name === "FoamMaterial") {
+                            foamMaterials.push(node.material);
+                            node.material.transparent = true;
+                            node.material.blending = THREE.AdditiveBlending; // Tökéletes habos áttetszőség
+                            node.material.depthWrite = false; // Ne takarja ki a vizet (fekete bug javítása)
+                            node.material.color = new THREE.Color(0xaad4ff); // Tengerkék-fehér hab szín
+                            
+                            // A gyűrű Blenderben 30.5-ös sugarú volt a 30-as bázishoz képest. Szorosan rátapasztjuk:
+                            node.scale.set(0.985, 1.0, 0.985); 
+                        } else if (node.material && node.material.name === "StoneMaterial") {
+                            // Mivel most már tökéletes a Blender GLB export, hagyjuk, hogy a saját beágyazott textúráját használja!
+                            node.material.transparent = false;
+                            node.material.depthWrite = true;
+                            node.material.opacity = 1.0;
+                            // Fehéren hagyjuk, hogy a rásütött kép valós színe érvényesüljön!
+                            node.material.color = new THREE.Color(0xffffff);
+                            node.material.roughness = 0.9;
+                        }
+                    }
+                });
+
+                baseHarbor.boundingRadius = 60; // Eredetileg 30 volt, 2x-es szorzó -> 60
+                scene.add(baseHarbor);
+                obstacles.push(baseHarbor);
+                console.log("Bázis betöltve!");
+            }, undefined, function (error) {
+                console.error("Hiba a bázis betöltésekor:", error);
+                // Fallback, ha nem találja a fájlt (zöld henger)
+                const harborGeo = new THREE.CylinderGeometry(60, 60, 4, 32); // 2x méret: 30->60, 2->4
+                const harborMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32 });
+                baseHarbor = new THREE.Mesh(harborGeo, harborMat);
+                baseHarbor.position.copy(BASE_POS);
+                baseHarbor.receiveShadow = true;
+                baseHarbor.boundingRadius = 60;
+                scene.add(baseHarbor);
+                obstacles.push(baseHarbor);
+            });
+
+            // 2. Játékos csónakja
+            playerBoat = new THREE.Group();
+            playerBoat.position.set(BASE_POS.x - 50, 0, BASE_POS.z + 50); // Még 10 egységgel kijjebb (origó felé), hogy ne lógjon a 60-as sugarú bázisba
+            scene.add(playerBoat);
+            // A loader már deklarálva van feljebb a bázisnál, így itt is tudjuk használni!
+            
+            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Veh_Boat_Medium_01_Hull_Pirate.glb', function (gltf) {
+                const model = gltf.scene;
+
+                model.scale.set(10.0, 10.0, 10.0);
+                model.updateMatrixWorld(true);
+
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+
+                // Középpont korrekció (Pivot point középre helyezése a Z és X tengelyen)
+                model.position.x -= center.x;
+                model.position.z -= center.z;
+
+                // Hajó kiemelése a vízből a teljes magasság 40%-ával (merülési vonal)
+                model.position.y += size.y * 0.4;
+
+                model.traverse(function (node) {
+                    if (node.isMesh) {
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                        if (node.material) {
+                            node.material.emissive = new THREE.Color(0x333333); // Világosítás (derítés)
+                            node.material.emissiveIntensity = 1.0;
+                        }
+                    }
+                });
+                playerBoat.add(model);
+            });
+
+            // 3. Léghajó (Üldöző)
+            enemyShip = new THREE.Group();
+            enemyShip.position.set(-200, 20, 200); // Bal alsó sarokból indul
+            scene.add(enemyShip);
+
+            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/FantasyShip_v2.glb', function (gltf) {
+                const model = gltf.scene;
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                console.log("🎈 Léghajó eredeti mérete:", size);
+
+                model.scale.set(40.0, 40.0, 40.0);
+                model.traverse(function (node) {
+                    if (node.isMesh) {
+                        node.castShadow = true;
+                    }
+                });
+                enemyShip.add(model);
+            });
+
+            // 4. Csatahajó (Falon kívüli blokk bal alsó sarokban)
+            battleship = new THREE.Group();
+            battleship.position.set(-250, 0, 250); // Eredeti kiindulópont
+            battleship.rotation.y = Math.PI / 4; // Érintőleges forgatás a határkörhöz
+
+            // Eltolás 20 egységgel a saját hossztengelye (az orra) mentén!
+            // Ha véletlenül a modell hátrafelé mozogna, írd át a -20-at +20-ra (vagy translateX-re).
+            battleship.translateZ(-20);
+            battleship.boundingRadius = 65; // Megnöveltük a broad-phase ellenőrzéshez, hogy a hosszú orra is beleférjen
+            battleship.isBattleship = true; // Sebzés mértékéhez
+            scene.add(battleship);
+            obstacles.push(battleship);
+
+            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Veh_Boat_Warship_01_Hull.glb', function (gltf) {
+                const model = gltf.scene;
+
+                // 18-szoros méret a korábbihoz (10.0) képest
+                model.scale.set(180.0, 180.0, 180.0);
+                model.updateMatrixWorld(true);
+
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                console.log("⚓ Csatahajó eredeti mérete:", size);
+
+                // Középpont korrekció
+                model.position.x -= center.x;
+                model.position.z -= center.z;
+
+                // Víz feletti emelés (40%)
+                model.position.y += size.y * 0.4;
+
+                model.traverse(function (node) {
+                    if (node.isMesh) {
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                    }
+                });
+                battleship.add(model);
+            });
+
+            // ---- 5. ZÁTONYOK GENERÁLÁSA (VALÓDI 3D MODELLEKKEL) ----
+            const rockModelPaths = [
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_03.glb',             // 0: Piros helyett
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_01.fbx.glb',    // 1: Kék helyett
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_02.fbx.glb',    // 2: Barna helyett
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_03.fbx.glb',    // 3: Sárga helyett
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Huge_04.fbx.glb',    // 4: Fehér helyett
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Large_09.fbx.glb',   // 5: Fekete helyett
+                'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Large_010.fbx.glb'   // 6: Szürke helyett
+            ];
+
+            const rockPromises = rockModelPaths.map(path => new Promise((resolve, reject) => {
+                loader.load(path, gltf => {
+                    let model = gltf.scene;
+                    model.scale.set(50.0, 50.0, 50.0); // Visszaállítottuk 50x-esre, hogy zárjon a perem!
+
+                    // Frissítjük a mátrixot, majd lemérjük a tényleges fizikai méretét a nagyítás után
+                    model.updateMatrixWorld(true);
+                    const box = new THREE.Box3().setFromObject(model);
+                    const size = box.getSize(new THREE.Vector3());
+                    model.traverse(node => {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                        }
+                    });
+
+                    // 2. SUGÁR JAVÍTÁSA: Ha a szikla nagyon hosszúkás (pl. 100x20), a Math.max miatt egy hatalmas, 100-as sugarú kört húzna, ami tele lenne "üres" ütközőzónával.
+                    // Ezért az X és Z kiterjedés ÁTLAGÁT vesszük alapul, és azt szorozzuk 0.8-cal, hogy a hosszúkás sziklák se csináljanak láthatatlan falakat.
+                    let avgDiameter = (size.x + size.z) / 2;
+                    model.userData = { autoRadius: (avgDiameter / 2) * 0.8 };
+
+                    resolve(model);
+                }, undefined, err => {
+                    console.error("Hiba a szikla betöltésekor:", path, err);
+                    let emptyGroup = new THREE.Group();
+                    emptyGroup.userData = { autoRadius: 10 }; // Biztonsági alapérték
+                    resolve(emptyGroup);
+                });
+            }));
+
+            // Itt a kód MEGVÁRJA, amíg az összes szikla letöltődik!
+            globalLoadedRockModels = await Promise.all(rockPromises);
+            console.log("Minden sziklamodell betöltve, pálya generálása indul!");
+
+            // Ezután azonnal legeneráljuk a pályát, DE már eleve a letöltött modellt rakjuk le!
+            const totalRocks = 350;
+
+            for (let i = 0; i < totalRocks; i++) {
+                // Gauss eloszlás a bázis távolságára
+                let u = 0, v = 0;
+                while (u === 0) u = rng.next();
+                while (v === 0) v = rng.next();
+                let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+                num = num / 8.0 + 0.5;
+                if (num > 1 || num < 0) num = rng.next();
+
+                let r = 40 + Math.pow(num, 0.8) * 400; // Távolság a bázistól
+                let theta = rng.next() * 2 * Math.PI;
+
+                let x = BASE_POS.x + r * Math.cos(theta);
+                let z = BASE_POS.z + r * Math.sin(theta);
+
+                // Ha kiesik a világból, kihagyjuk
+                if (Math.sqrt(x * x + z * z) > MAP_RADIUS + 100) continue;
+
+                // Eleve az igazi modellt klónozzuk
+                let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
+                let rock = globalLoadedRockModels[colorIndex].clone();
+
+                rock.position.set(x, 0, z); // 0-ra téve -2 helyett, hátha túl mélyre csúsztak
+                rock.rotation.x = (rng.next() - 0.5) * 0.4;
+                rock.rotation.z = (rng.next() - 0.5) * 0.4;
+                rock.rotation.y = rng.next() * 2 * Math.PI; // Visszakerült a random forgatás!
+                rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár!
+                rock.userData.modelType = colorIndex;
+
+                scene.add(rock);
+                obstacles.push(rock);
+            }
+
+            // Áthatolhatatlan zátonygyűrű a pálya szélén (Origótól R=350)
+            for (let theta = 0; theta < Math.PI * 2; theta += 0.05) {
+                let x = 350 * Math.cos(theta);
+                let z = 350 * Math.sin(theta);
+
+                // Ha a csatahajó közelében van, oda nem teszünk sziklát
+                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 60) continue;
+
+                let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
+                let rock = globalLoadedRockModels[colorIndex].clone();
+
+                rock.position.set(x, 0, z);
+                rock.rotation.y = rng.next() * 2 * Math.PI;
+                rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár a peremnél is!
+                rock.userData.modelType = colorIndex;
+
+                scene.add(rock);
+                obstacles.push(rock);
+            }
+
+            // ---- 6. TÁJKÉP ÉS VIZUÁLIS HÁTTÉR GENERÁLÁSA ----
+
+            // 6.1 Tengerpart és hegyek a bázis (jobb felső, X+, Z-) oldalán
+            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Beach_01.glb', gltf => {
+                let beachModel = gltf.scene;
+
+                // Sziluett árnyékolás engedélyezése az alap modellen
+                beachModel.traverse(node => { if (node.isMesh) node.receiveShadow = true; });
+
+                // Első sor a sziklák mögött (R=400)
+                beachModel.scale.set(150, 150, 150);
+                for (let theta = -Math.PI / 4 - 1.4; theta < -Math.PI / 4 + 1.4; theta += 0.15) {
+                    let b = beachModel.clone();
+                    b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
+                    b.rotation.y = -theta - Math.PI / 2;
+                    b.isBeach = true;
+                    b.boundingRadius = 150; // Széles detektálási sugár a hatalmas mérete miatt!
+                    scene.add(b);
+                    obstacles.push(b);
+                }
+
+                // Középső (összekötő) sor a hézag megszüntetésére
+                beachModel.scale.set(300, 300, 300); // Nagyobbra véve, hogy biztosan összeérjenek!
+                for (let theta = -Math.PI / 4 - 1.5; theta < -Math.PI / 4 + 1.5; theta += 0.15) {
+                    let b = beachModel.clone();
+                    b.position.set(500 * Math.cos(theta), 1.5, 500 * Math.sin(theta)); // Közelebb húzva az első sorhoz (R=500)
+                    b.rotation.y = -theta - Math.PI / 2;
+                    b.isBeach = true;
+                    b.boundingRadius = 300; // Még szélesebb detektálási sugár
+                    scene.add(b);
+                    obstacles.push(b);
+                }
+
+                // Harmadik (külső) sor, ami a hegyek lábát követi (R=650)
+                beachModel.scale.set(350, 350, 350); // Még nagyobb, hogy teljesen fedjen
+                for (let theta = -Math.PI / 4 - 1.6; theta < -Math.PI / 4 + 1.6; theta += 0.15) {
+                    let b = beachModel.clone();
+                    b.position.set(650 * Math.cos(theta), 3, 650 * Math.sin(theta)); // Feljebb emelve (Y=3)
+                    b.rotation.y = -theta - Math.PI / 2; // NEM forgatjuk el 180 fokkal, mert a hátlapja láthatatlan (backface culling)!
+                    b.isBeach = true;
+                    b.boundingRadius = 350; // Hatalmas modell
+                    scene.add(b);
+                    obstacles.push(b);
+                }
+            });
+
+            loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Background_Hills_01.glb', gltf => {
+                let hillsModel = gltf.scene;
+                let s = 900; // 900-szoros méret
+                let dTheta = 0.35; // Nagyjából 10% átfedéshez szükséges szögtávolság
+
+                // 1 eredeti (középen) + 3 balra + 3 jobbra = összesen 7 hegy (vagyis 6-szoros ismétlés)
+                for (let i = -3; i <= 3; i++) {
+                    let theta = -Math.PI / 4 + i * dTheta;
+                    let m = hillsModel.clone();
+
+                    // Minden hegyet stabilan 1000 méteres sugarú körre rakunk
+                    let r = 1000;
+
+                    m.scale.set(s, s, s);
+                    m.position.set(r * Math.cos(theta), -5, r * Math.sin(theta));
+
+                    // A hegy mindig az origó felé néz, és azon felül be van forgatva 60 fokkal (PI/3) óramutató járása szerint (további 30 fok)
+                    m.rotation.y = -theta - Math.PI / 3;
+
+                    // Ha mégis benne lennénk a hegyben, akkor is lássuk a belsejét!
+                    m.traverse(node => {
+                        if (node.isMesh) {
+                            node.material.side = THREE.DoubleSide;
+                        }
+                    });
+
+                    scene.add(m);
+                }
+
+                // Direkt konzol üzenet, hogy lásd a betöltést!
+                console.log("⛰️ Hegyvonulat (7 db) generálva az origótól 1000 sugarú távolságra a bázis oldalán!");
+            });
+
+            // 6.2 (KIVÉVE) A szigeteket eltávolítottuk, mert nincs rájuk szükség.
+
+            // 6.3 Sűrűbb, apró zátonyok a csatahajó oldalán a rések kitöltésére (Eredeti terep visszaállítva!)
+            for (let theta = Math.PI / 4; theta < Math.PI * 1.25; theta += 0.04) { // Nagyon sűrű lépésköz!
+                let x = 345 * Math.cos(theta);
+                let z = 345 * Math.sin(theta);
+
+                // Ne rakjuk az átjáróba! (70-es sugarú lyuk a csatahajónál)
+                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 70) continue;
+
+                let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
+                let rock = globalLoadedRockModels[colorIndex].clone();
+                let s = 10 + rng.next() * 30; // Változatos méretű (10-40) törmeléksziklák
+                rock.scale.set(s, s, s);
+                rock.position.set(x + (rng.next() - 0.5) * 30, -5, z + (rng.next() - 0.5) * 30); // Jobban szórjuk szét őket a térben
+                rock.rotation.x = (rng.next() - 0.5) * 1.2;
+                rock.rotation.z = (rng.next() - 0.5) * 1.2;
+                rock.rotation.y = rng.next() * Math.PI * 2;
+
+                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
+                rock.userData.modelType = colorIndex;
+
+                scene.add(rock);
+                obstacles.push(rock);
+            }
+
+            // 6.4 PLUSZ SZIKLÁK A HATÁRVONALRA (Szigorúan csak a 360 - 400 sávba!)
+            for (let i = 0; i < 300; i++) {
+                let theta = (Math.PI / 4) + rng.next() * Math.PI;
+
+                // Szigorúan a határvonalon kívüli sáv: 360-tól 400-ig
+                let r = 360 + rng.next() * 40;
+
+                let x = r * Math.cos(theta);
+                let z = r * Math.sin(theta);
+
+                // Szigorú védelem: ne tegyünk sziklát a csatahajó átjárójába! (90-es sugarú tiszta zóna)
+                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 90) continue;
+
+                let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
+                let rock = globalLoadedRockModels[colorIndex].clone();
+
+                let s = 15 + rng.next() * 45; // 15-től 60-ig
+                rock.scale.set(s, s, s);
+
+                rock.position.set(x, (rng.next() - 0.5) * 10 - 2, z);
+                rock.rotation.x = (rng.next() - 0.5) * Math.PI;
+                rock.rotation.z = (rng.next() - 0.5) * Math.PI;
+                rock.rotation.y = rng.next() * Math.PI * 2;
+
+                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
+                rock.userData.modelType = colorIndex;
+
+                scene.add(rock);
+                obstacles.push(rock);
+            }
+
+            // Hártyák kezdeti feltöltése (mindig 21 darab)
+            for (let i = 0; i < 21; i++) spawnDiamond();
+
+
+
+            // Szelektív tükröződés: csak a léghajót és a csatahajót tükrözzük!
+            if (water && water.onBeforeRender) {
+                const originalOnBeforeRender = water.onBeforeRender.bind(water);
+                water.onBeforeRender = function (renderer, scene, camera) {
+                    // Elrejtjük azokat az objektumokat, amiket NEM akarunk tükrözni
+                    if (baseHarbor) baseHarbor.visible = false;
+
+                    // Csónak és sziklák átlátszósítása KIZÁRÓLAG a tükörkép erejéig
+                    if (playerBoat) {
+                        playerBoat.traverse(node => {
+                            if (node.isMesh && node.material) {
+                                node.userData.origOpacity = node.material.opacity;
+                                node.userData.origTransparent = node.material.transparent;
+                                node.material.transparent = true;
+                                node.material.opacity = 0.8;
+                            }
+                        });
+                    }
+                    if (globalLoadedRockModels.length > 0) {
+                        for (let model of globalLoadedRockModels) {
+                            model.traverse(node => {
+                                if (node.isMesh && node.material) {
+                                    node.userData.origOpacity = node.material.opacity;
+                                    node.userData.origTransparent = node.material.transparent;
+                                    node.material.transparent = true;
+                                    node.material.opacity = 0.8;
+                                }
+                            });
+                        }
+                    }
+
+                    // Eredeti render hívása (ez készíti a tükörképet)
+                    originalOnBeforeRender(renderer, scene, camera);
+
+                    // Visszaállítjuk a csónak és sziklák normál, szilárd állapotát a fő kirajzoláshoz
+                    if (playerBoat) {
+                        playerBoat.traverse(node => {
+                            if (node.isMesh && node.material) {
+                                if (node.userData.origOpacity !== undefined) node.material.opacity = node.userData.origOpacity;
+                                if (node.userData.origTransparent !== undefined) node.material.transparent = node.userData.origTransparent;
+                            }
+                        });
+                    }
+                    if (globalLoadedRockModels.length > 0) {
+                        for (let model of globalLoadedRockModels) {
+                            model.traverse(node => {
+                                if (node.isMesh && node.material) {
+                                    if (node.userData.origOpacity !== undefined) node.material.opacity = node.userData.origOpacity;
+                                    if (node.userData.origTransparent !== undefined) node.material.transparent = node.userData.origTransparent;
+                                }
+                            });
+                        }
+                    }
+
+                    // Visszaállítjuk a láthatóságot a normál rendereléshez
+                    if (baseHarbor) baseHarbor.visible = true;
+                };
+            }
+
+            updateScoreBoard();
+        }
+
+        function spawnDiamond() {
+            let x, z, validPos;
+            let attempts = 0;
+
+            // A hártyák a bázistól egyre messzebb jelennek meg, ahogy a baseHarborScore nő
+            let minDistance = 50 + (baseHarborScore * 10);
+
+            do {
+                validPos = true;
+                let r = minDistance + Math.random() * 150;
+                let theta = Math.random() * Math.PI * 2;
+                x = BASE_POS.x + r * Math.cos(theta);
+                z = BASE_POS.z + r * Math.sin(theta);
+
+                // Ne menjen ki a térképről
+                if (Math.sqrt(x * x + z * z) > 300) { validPos = false; continue; }
+
+                // Extra védelem a bázis körül! (Mivel a GLB bázis aszinkron tölt be, lehet hogy még nincs az obstacles listában)
+                let distToBase = Math.sqrt((x - BASE_POS.x) * (x - BASE_POS.x) + (z - BASE_POS.z) * (z - BASE_POS.z));
+                if (distToBase < 70) { validPos = false; continue; } // 60 a sugár, hagyunk +10 helyet
+
+                let testVec = new THREE.Vector3(x, 0, z);
+                for (let obs of obstacles) {
+                    // Dinamikusan számoljuk a biztonsági távolságot a bázis sugarához (60) mérve is
+                    let minD = obs.boundingRadius ? (obs.boundingRadius + 10) : 35;
+                    if (testVec.distanceTo(obs.position) < minD) {
+                        validPos = false; break;
+                    }
+                }
+                attempts++;
+            } while (!validPos && attempts < 100);
+
+            const scrollZone = new THREE.Object3D();
+            scrollZone.position.set(x, 0, z);
+
+            const pointLight = new THREE.PointLight(0xffd700, 2, 25);
+            pointLight.position.set(0, 3, 0);
+            scrollZone.add(pointLight);
+
+            // Hártya drasztikus kicsinyítése (tizedére)
+            const glowGeo = new THREE.CircleGeometry(1.5, 16); // Egy kicsit nagyobb, de szabálytalan
+            const pos = glowGeo.attributes.position;
+            for (let i = 1; i < pos.count; i++) {
+                // Véletlenszerűen "gyűrött" forma a szélén
+                let rOffset = 0.5 + Math.random() * 0.5;
+                pos.setX(i, pos.getX(i) * rOffset);
+                pos.setY(i, pos.getY(i) * rOffset);
+            }
+            glowGeo.computeVertexNormals();
+
+            // Visszatérés a BasicMaterialhoz: fix festés, nem hatnak rá az árnyékok
+            const glowMat = new THREE.MeshBasicMaterial({
+                color: 0xffd700, // Arany/sárga
+                transparent: true,
+                opacity: 0.7, // Áttetsző, hogy egybeolvadjon a vízzel
+                blending: THREE.AdditiveBlending, // Gyönyörű belső fényhatás a "LED" alá
+                depthWrite: false
+            });
+            const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+            glowMesh.rotation.x = -Math.PI / 2;
+
+            // Kezdeti véletlenszerű elforgatás, hogy mind más legyen
+            glowMesh.rotation.z = Math.random() * Math.PI * 2;
+            scrollZone.add(glowMesh);
+
+            scrollZone.boundingRadius = 0.5;
+            scene.add(scrollZone);
+            diamonds.push(scrollZone);
+        }
+
+        buildScene();
+
+        // ==========================================
+        // 3. JÁTÉK LOGIKA ÉS IRÁNYÍTÁS
+        // ==========================================
+        const keys = { w: false, a: false, s: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false };
+
+        // ---- ZENE VEZÉRLÉS ----
+        const bgMusic = document.getElementById('bg-music');
+        const musicToggleBtn = document.getElementById('music-toggle');
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                musicToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+            } else {
+                bgMusic.play().catch(e => console.log("Zene lejátszása blokkolva:", e));
+                isMusicPlaying = true;
+                musicToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')";
+            }
+        }
+
+        if (musicToggleBtn) {
+            musicToggleBtn.addEventListener('click', () => {
+                toggleMusic();
+                window.focus();
+            });
+            musicToggleBtn.addEventListener('mouseenter', () => musicToggleBtn.style.transform = 'scale(1.1)');
+            musicToggleBtn.addEventListener('mouseleave', () => musicToggleBtn.style.transform = 'scale(1)');
+        }
+
+        // ---- AMBIENT (HÁTTÉRZAJ) VEZÉRLÉS ----
+        const ambientSound = document.getElementById('ambient-sound');
+        const ambientToggleBtn = document.getElementById('ambient-toggle');
+        let isAmbientPlaying = false;
+
+        function toggleAmbient() {
+            if (isAmbientPlaying) {
+                ambientSound.pause();
+                isAmbientPlaying = false;
+                ambientToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+            } else {
+                ambientSound.play().catch(e => console.log("Háttérzaj lejátszása blokkolva:", e));
+                isAmbientPlaying = true;
+                ambientToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')";
+            }
+        }
+
+        if (ambientToggleBtn) {
+            ambientToggleBtn.addEventListener('click', () => {
+                toggleAmbient();
+                window.focus();
+            });
+            ambientToggleBtn.addEventListener('mouseenter', () => ambientToggleBtn.style.transform = 'scale(1.1)');
+            ambientToggleBtn.addEventListener('mouseleave', () => ambientToggleBtn.style.transform = 'scale(1)');
+        }
+
+        // ---- INFÓ PANEL VEZÉRLÉS ----
+        const infoOverlay = document.getElementById('info-overlay');
+        const infoToggleBtn = document.getElementById('info-toggle');
+        const closeInfoBtn = document.getElementById('close-info-btn');
+
+        if (infoToggleBtn) {
+            infoToggleBtn.addEventListener('click', () => {
+                infoOverlay.style.display = 'flex';
+            });
+            infoToggleBtn.addEventListener('mouseenter', () => infoToggleBtn.style.transform = 'scale(1.1)');
+            infoToggleBtn.addEventListener('mouseleave', () => infoToggleBtn.style.transform = 'scale(1)');
+        }
+
+        if (closeInfoBtn) {
+            closeInfoBtn.addEventListener('click', () => {
+                infoOverlay.style.display = 'none';
+                window.focus();
+            });
+            closeInfoBtn.addEventListener('mouseenter', () => closeInfoBtn.style.transform = 'translateX(-50%) scale(1.1)');
+            closeInfoBtn.addEventListener('mouseleave', () => closeInfoBtn.style.transform = 'translateX(-50%) scale(1)');
+        }
+
+        window.addEventListener('keydown', e => {
+            let k = e.key.toLowerCase();
+            if (k === 'm') { toggleMusic(); return; }
+            if (keys.hasOwnProperty(k)) keys[k] = true;
+        });
+        window.addEventListener('keyup', e => {
+            let k = e.key.toLowerCase();
+            if (keys.hasOwnProperty(k)) keys[k] = false;
+        });
+
+        // Egér svenkelés (Orbit)
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+
+        window.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                let deltaX = e.clientX - previousMousePosition.x;
+                cameraAngle -= deltaX * 0.01; // Jobbra-balra húzás = Orbit forgás
+            }
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        // Egér görgő (Zoom)
+        window.addEventListener('wheel', (e) => {
+            cameraDistance += e.deltaY * 0.05;
+            if (cameraDistance < 10) cameraDistance = 10;
+            if (cameraDistance > 100) cameraDistance = 100;
+        });
+
+        let boatSpeed = 0;
+        const MAX_SPEED = 0.6;
+        const TURN_SPEED = 0.03;
+        let wind = new THREE.Vector3((Math.random() - 0.5) * 0.06, 0, (Math.random() - 0.5) * 0.06);
+
+        function cannonEffect() {
+            // Képernyőrázkódás
+            let el = document.getElementById('game-container');
+            if (el) {
+                el.style.transition = 'none';
+                el.style.transform = `translate(${(Math.random() - 0.5) * 40}px, ${(Math.random() - 0.5) * 40}px)`;
+                setTimeout(() => {
+                    el.style.transform = `translate(${(Math.random() - 0.5) * 20}px, ${(Math.random() - 0.5) * 20}px)`;
+                    setTimeout(() => { el.style.transform = 'translate(0px, 0px)'; }, 50);
+                }, 50);
+            }
+
+            // Vörös felvillanás (Ágyútűz)
+            let flash = document.getElementById('damage-flash');
+            if (!flash) {
+                flash = document.createElement('div');
+                flash.id = 'damage-flash';
+                flash.style.position = 'fixed';
+                flash.style.top = '0';
+                flash.style.left = '0';
+                flash.style.width = '100%';
+                flash.style.height = '100%';
+                flash.style.background = 'radial-gradient(circle, rgba(255,100,0,0.4) 0%, rgba(255,0,0,0.8) 100%)';
+                flash.style.opacity = '0';
+                flash.style.pointerEvents = 'none';
+                flash.style.zIndex = '100';
+                flash.style.transition = 'opacity 0.1s ease-out';
+                document.body.appendChild(flash);
+            }
+            flash.style.opacity = '1';
+            setTimeout(() => { flash.style.opacity = '0'; }, 150);
+        }
+
+        function updatePhysics() {
+            if (isGameOver || !playerBoat || isQuizActive) return;
+
+            // ---- HAJÓ IRÁNYÍTÁS (Tank controls) ----
+            if (keys.w) {
+                boatSpeed += 0.02;
+                if (!gameStarted) {
+                    gameStarted = true;
+                    if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
+                    if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
+                }
+                if (document.getElementById('start-instruction')) document.getElementById('start-instruction').style.display = 'none';
+            } else if (keys.s) {
+                boatSpeed -= 0.02; // Hátra
+                if (!gameStarted) {
+                    gameStarted = true;
+                    if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
+                    if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
+                }
+            } else {
+                boatSpeed *= 0.95; // Súrlódás
+            }
+
+            // ---- HAJÓ HABCSÍKJA (WAKE TRAIL) ----
+            if (Math.abs(boatSpeed) > 0.05) {
+                // Csak akkor spanyolunk habot, ha elég gyors
+                // Sűrűbb megjelenés (60% esély képkockánként, ami egy sokkal összefüggőbb vonalat ad)
+                if (Math.random() < 0.6) {
+                    let wakeGeo = new THREE.CircleGeometry(0.6 + Math.random() * 0.4, 6);
+                    let wakeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+                    let wake = new THREE.Mesh(wakeGeo, wakeMat);
+                    wake.rotation.x = -Math.PI / 2;
+
+                    // Kicsit hátrébb húzva az orrtól (2.0 helyett 1.2)
+                    let offset = new THREE.Vector3(0, 0, 1.2).applyEuler(playerBoat.rotation);
+                    wake.position.copy(playerBoat.position).add(offset);
+                    wake.position.y = 0.05;
+
+                    // Sokkal kisebb szórás (0.5 helyett 0.2), így sűrű, egybefüggő csíkot alkot
+                    wake.position.x += (Math.random() - 0.5) * 0.2;
+                    wake.position.z += (Math.random() - 0.5) * 0.2;
+
+                    scene.add(wake);
+                    if (!window.boatWakes) window.boatWakes = [];
+                    window.boatWakes.push(wake);
+                }
+            }
+
+            // Sebesség limit (hátra 0.8x)
+            if (boatSpeed > MAX_SPEED) boatSpeed = MAX_SPEED;
+            if (boatSpeed < -MAX_SPEED * 0.8) boatSpeed = -MAX_SPEED * 0.8;
+
+            // Fordulás (csak ha mozog, vagy egy helyben is tud? Legyen egy helyben is kicsit, mozgás közben jobban)
+            if (keys.a) playerBoat.rotation.y += TURN_SPEED;
+            if (keys.d) playerBoat.rotation.y -= TURN_SPEED;
+
+            // Mozgás alkalmazása az irányba
+            let direction = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerBoat.rotation.y);
+            let moveVec = direction.multiplyScalar(boatSpeed);
+
+            // Szél alkalmazása
+            wind.x += (Math.random() - Math.random()) * 0.001;
+            wind.z += (Math.random() - Math.random()) * 0.001;
+            wind.x = Math.max(-0.04, Math.min(0.04, wind.x));
+            wind.z = Math.max(-0.04, Math.min(0.04, wind.z));
+
+            moveVec.add(wind);
+            playerBoat.position.add(moveVec);
+
+            let windAngle = Math.atan2(wind.x, wind.z) + Math.PI;
+            windVane.style.transform = 'rotate(' + windAngle + 'rad)';
+
+            // Biztonsági check: ha a modell még nem töltött be, ne fusson a fizika!
+            if (!playerBoat || !baseHarbor) return;
+
+            // Bázis Kilépés UI (Sokkal nagyobb távolságból érzékeli, mint a boundingRadius)
+            let isNearBase = (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 20);
+            let exitBtn = document.getElementById('base-exit-btn');
+            if (isNearBase && !isGameOver) {
+                if (exitBtn) exitBtn.style.display = 'block';
+            } else if (exitBtn) {
+                exitBtn.style.display = 'none';
+            }
+
+            // ---- KAMERA ORBIT ÉS ZOOM ----
+            // Billentyűzet kamera kontroll
+            if (keys.arrowleft) cameraAngle -= 0.03;
+            if (keys.arrowright) cameraAngle += 0.03;
+            if (keys.arrowup) cameraDistance -= 1;
+            if (keys.arrowdown) cameraDistance += 1;
+            if (cameraDistance < 10) cameraDistance = 10;
+            if (cameraDistance > 100) cameraDistance = 100;
+
+            // Kamera pozícionálása a csónak körül
+            let camOffset = new THREE.Vector3(
+                Math.sin(cameraAngle) * cameraDistance,
+                Math.sin(CAMERA_PITCH) * cameraDistance,
+                Math.cos(cameraAngle) * cameraDistance
+            );
+            camera.position.copy(playerBoat.position).add(camOffset);
+            camera.lookAt(playerBoat.position);
+
+            // ---- ELLENSÉG (LÉGHAJÓ) ÜLDÖZÉS ----
+            if (enemyShip && gameStarted) {
+                let ex = playerBoat.position.x - enemyShip.position.x;
+                let ez = playerBoat.position.z - enemyShip.position.z;
+                let dist = Math.sqrt(ex * ex + ez * ez);
+                if (dist > 0.1) {
+                    enemyShip.position.x += (ex / dist) * 0.15;
+                    enemyShip.position.z += (ez / dist) * 0.15;
+
+                    // Léghajó beforgatása a mozgás irányába
+                    // A Math.atan2 megadja a szöget a cél felé. 
+                    enemyShip.rotation.y = Math.atan2(ex, ez);
+                }
+                if (dist < 8) {
+                    isCaughtByAirship = true; // Elindítja a süllyedő animációt
+                    exitMinigame('AIRSHIP');
+                }
+            }
+
+            // ---- ÜTKÖZÉSEK ZÁTONYOKKAL ÉS HAJÓKKAL (TÖKÉLETES MESH ÜTKÖZÉS) ----
+            let boatCenter = playerBoat.position.clone();
+            boatCenter.y = 1; // A sugarakat a vízszint felett lőjük ki, a csónak közepéből
+
+            // 8 irány, amibe a csónak "kiterjed" (Lézersugarak)
+            const directions = [
+                new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
+                new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1),
+                new THREE.Vector3(0.7, 0, 0.7).normalize(), new THREE.Vector3(-0.7, 0, 0.7).normalize(),
+                new THREE.Vector3(0.7, 0, -0.7).normalize(), new THREE.Vector3(-0.7, 0, -0.7).normalize()
+            ];
+
+            let raycaster = new THREE.Raycaster();
+            let hasCollision = false;
+            let hitRock = null;
+
+            for (let r of obstacles) {
+                let dist = boatCenter.distanceTo(r.position);
+
+                // 1. Broad-phase: Csak azt a sziklát vizsgáljuk, ami tényleg nagyon közel van (optimalizáció)
+                if (dist < (r.boundingRadius || 30) + 15) {
+
+                    // A kikötő marad az egyszerű sugár-alapú (mivel az formája hengeres)
+                    if (r === baseHarbor) {
+                        if (dist < r.boundingRadius + 3) { // +3-ra véve, hogy véletlenül se lógjon bele a hajó a hab-animációba!
+                            hasCollision = true;
+                            hitRock = r;
+                            break;
+                        }
+                    } else if (r === battleship) {
+                        // 3 pontos "kapszula" ütközés a csatahajóra (Orr, Közép, Tat)
+                        let pMid = battleship.position;
+
+                        // Lokális negatív Z tengely (előre) iránya a világtérben
+                        let forward = new THREE.Vector3(0, 0, -1).applyQuaternion(battleship.quaternion);
+
+                        let pBow = pMid.clone().add(forward.clone().multiplyScalar(45)); // Orra (45-re előre)
+                        let pStern = pMid.clone().add(forward.clone().multiplyScalar(-40)); // Tatja (40-re hátra)
+
+                        let d1 = boatCenter.distanceTo(pMid);
+                        let d2 = boatCenter.distanceTo(pBow);
+                        let d3 = boatCenter.distanceTo(pStern);
+
+                        // Három, egyenként 25-ös sugarú kör alkotja a masszív hajótestet
+                        if (d1 < 25 || d2 < 25 || d3 < 25) {
+                            hasCollision = true;
+                            hitRock = r;
+                            break;
+                        }
+                    } else {
+                        // 2. Pontos 3D Mesh vizsgálat: A csónak sugarakat lő a 3D modell valódi poligonjaira (Sziklák)
+                        for (let dir of directions) {
+                            raycaster.set(boatCenter, dir);
+                            // Megnézi, hogy a sugár metszi-e a szikla bármelyik textúra-háromszögét
+                            let intersects = raycaster.intersectObject(r, true);
+                            if (intersects.length > 0 && intersects[0].distance < 3.5) { // 3.5 a csónak nagyjábóli sugara
+                                hasCollision = true;
+                                hitRock = r;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (hasCollision) break; // Ha ütköztünk, nem vizsgáljuk a többit
+            }
+
+            // ---- 3. MATEMATIKAI VILÁGPEREM PAJZS (Kiesés ellen) ----
+            let distFromCenter = Math.sqrt(playerBoat.position.x * playerBoat.position.x + playerBoat.position.z * playerBoat.position.z);
+            let exitPos = new THREE.Vector3(-250, 0, 250);
+            let isNearExit = (playerBoat.position.distanceTo(exitPos) < 65);
+
+            // Ha eléri a 360-as sugarat (pontosan a sziklák közepe/mögötti rész), és NINCS a nyitott kapuban
+            if (!hasCollision && distFromCenter > 360 && !(battleshipEventTriggered && isNearExit)) {
+                hasCollision = true;
+                hitRock = { isWorldBoundary: true }; // Virtuális szikla
+            }
+
+            if (hasCollision) {
+                // 1. FIZIKAI ÜTKÖZÉS (MINDIG lefut, hogy ne mehessen át a modelleken)
+                if (hitRock === baseHarbor) {
+                    // Bázisnál nincs visszapattanás, csak megállítás
+                    boatSpeed = 0;
+                    playerBoat.position.sub(moveVec);
+                } else {
+                    // Sziklák, Csatahajó, Világperem: Visszapattanás
+                    boatSpeed = -boatSpeed;
+                    playerBoat.position.sub(moveVec.multiplyScalar(2));
+                }
+
+                // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak és nem a homokpartnak mentünk neki)
+                if (hitRock !== baseHarbor && !hitRock.isBeach && !isInvulnerable) {
+                    isInvulnerable = true;
+                    setTimeout(() => { isInvulnerable = false; }, 1000); // 1 mp sérthetetlenség
+
+                    if (hitRock.isBattleship) {
+                        boatDurability -= 2;
+                        cannonEffect(); // Ágyútűz effekt a csatahajónál!
+                    } else if (hitRock.isWorldBoundary) {
+                        boatDurability -= 1; // Sebződés a peremtől
+                    } else {
+                        boatDurability -= 1;
+                    }
+
+                    if (boatDurability < 0) boatDurability = 0;
+                    updateScoreBoard();
+
+                    if (boatDurability <= 1) {
+                        exitMinigame('DESTROYED');
+                        return;
+                    }
+                }
+            }
+
+            // ---- HÁRTYA FELVÉTEL ----
+            for (let i = diamonds.length - 1; i >= 0; i--) {
+                let d = diamonds[i];
+                if (playerBoat.position.distanceTo(d.position) < d.boundingRadius + 2) {
+                    activeDiamond = d;
+                    diamonds.splice(i, 1);
+                    triggerQuiz();
+                }
+            }
+
+            // ---- BÁZIS (KIKÖTÉS) ----
+            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 10) {
+                if (scoreOnBoat > 0) {
+                    baseHarborScore += scoreOnBoat;
+                    scoreOnBoat = 0;
+                    updateScoreBoard();
+                    boatSpeed = 0;
+                    while (diamonds.length < 21) { spawnDiamond(); }
+
+                    if (baseHarborScore >= 30 && !battleshipEventTriggered) {
+                        battleshipEventTriggered = true;
+                        if (battleship) {
+                            scene.remove(battleship);
+                            const index = obstacles.indexOf(battleship);
+                            if (index > -1) obstacles.splice(index, 1);
+                        }
+                        let msgDiv = document.getElementById('game-message');
+                        if (msgDiv) {
+                            msgDiv.innerText = "Hallottad, miről pletykálnak a kikötőben? A csatahajó kifutott a nyílt vízre, szabad az öböl kijárata! Megkockáztatsz egy utat a zsánerzátonyokig?";
+                            msgDiv.style.display = 'flex';
+                            setTimeout(() => { msgDiv.style.display = 'none'; }, 8000);
+                        }
+                    }
+                }
+            }
+
+            if (battleshipEventTriggered) {
+                let exitPos = new THREE.Vector3(-250, 0, 250);
+                if (playerBoat.position.distanceTo(exitPos) < 50) {
+                    exitMinigame('SECRET_PATH');
+                }
+            }
+        }
+
+        // ==========================================
+        // 4. KVÍZ LOGIKA
+        // ==========================================
+        let currentAnswers = [];
+
+        function triggerQuiz() {
+            isQuizActive = true;
+            if (quizQuestions.length === 0) {
+                resumeGame(true, false);
+                return;
+            }
+
+            let availableQuestions = quizQuestions.filter(q => !usedQuestionIndexes.includes(q.rowIndex));
+            if (availableQuestions.length === 0) {
+                usedQuestionIndexes = [];
+                availableQuestions = quizQuestions;
+            }
+
+            const weightedList = [];
+            availableQuestions.forEach(question => {
+                let weight = question.weight || 1;
+                for (let i = 0; i < weight; i++) {
+                    weightedList.push(question);
+                }
+            });
+
+            let qIndex = Math.floor(Math.random() * weightedList.length);
+            let q = weightedList[qIndex];
+
+            usedQuestionIndexes.push(q.rowIndex);
+            correctAnswer = q.correctAnswer;
+
+            document.getElementById('quiz-question').innerText = q.question;
+            currentAnswers = [q.correctAnswer, ...q.incorrectAnswers].sort(() => Math.random() - 0.5);
+
+            if (q.isStaked && scoreOnBoat > 0) {
+                document.getElementById('answer-buttons').style.display = 'none';
+                document.getElementById('betting-area').style.display = 'block';
+            } else {
+                isDoubleOrNothingActive = false;
+                showAnswerButtons();
+            }
+
+            document.getElementById('quiz-overlay').style.display = 'flex';
+
+            timeLeft = 20;
+            document.getElementById('timer-bar').style.width = '100%';
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                document.getElementById('timer-bar').style.width = (timeLeft / 20 * 100) + '%';
+                if (timeLeft <= 0) handleAnswer(false);
+            }, 100);
+        }
+
+        function showAnswerButtons() {
+            document.getElementById('betting-area').style.display = 'none';
+            let btnContainer = document.getElementById('answer-buttons');
+            btnContainer.innerHTML = '';
+            btnContainer.style.display = 'grid';
+
+            currentAnswers.forEach(ans => {
+                let btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.innerText = ans;
+                btn.onclick = () => handleAnswer(ans === correctAnswer);
+                btnContainer.appendChild(btn);
+            });
+        }
+
+        if (document.getElementById('bet-yes-btn')) {
+            document.getElementById('bet-yes-btn').onclick = () => {
+                isDoubleOrNothingActive = true;
+                showAnswerButtons();
+            };
+        }
+        if (document.getElementById('bet-no-btn')) {
+            document.getElementById('bet-no-btn').onclick = () => {
+                isDoubleOrNothingActive = false;
+                showAnswerButtons();
+            };
+        }
+
+        async function handleAnswer(isCorrect) {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-overlay').style.display = 'none';
+
+            let betAmount = isDoubleOrNothingActive ? scoreOnBoat : 0;
+
+            if (betAmount > 0) {
+                try { await callBackend('handleBetTransaction', [betAmount, isCorrect]); } catch (e) { }
+            }
+
+            resumeGame(isCorrect, isDoubleOrNothingActive);
+        }
+
+        function resumeGame(isCorrect, wasDoubleOrNothing) {
+            if (isCorrect) {
+                if (wasDoubleOrNothing) {
+                    scoreOnBoat = scoreOnBoat * 2;
+                } else {
+                    scoreOnBoat++;
+                }
+                updateScoreBoard();
+            } else {
+                if (wasDoubleOrNothing) {
+                    scoreOnBoat = 0;
+                    updateScoreBoard();
+                }
+            }
+
+            if (activeDiamond) {
+                scene.remove(activeDiamond);
+                let index = diamonds.indexOf(activeDiamond);
+                if (index > -1) {
+                    diamonds.splice(index, 1);
+                }
+                activeDiamond = null;
+            }
+
+            spawnDiamond();
+            isQuizActive = false;
+        }
+
+        function exitMinigame(type) {
+            let msg = "";
+            let targetPage = "fedelzet_oldal";
+            if (type === 'AIRSHIP') { msg = "Kisemmizve evezhetsz vissza a kikötőbe!"; targetPage = "fedelzet_oldal"; }
+            else if (type === 'DESTROYED') { msg = "Holckopf ácsmester a fiát küldi, hogy bevonszolja a roncsot a javítóműhelyébe."; targetPage = "hajomuhely_oldal"; }
+            else if (type === 'NORMAL') { msg = "A mai halászatod igazán eredményes volt."; targetPage = "fedelzet_oldal"; }
+            else if (type === 'SECRET_PATH') { msg = "Áthajóztál az öböl kijáratán... Új kaland vár a Zsánerzátonyoknál!"; targetPage = "zsaner_utvalaszto"; }
+
+            isGameOver = true;
+            let msgDiv = document.getElementById('game-message');
+            if (msgDiv) {
+                msgDiv.innerText = msg;
+                msgDiv.style.display = 'flex';
+            }
+            let exitBtn = document.getElementById('base-exit-btn');
+            if (exitBtn) exitBtn.style.display = 'none';
+
+            saveDataToBackend().then(() => {
+                setTimeout(() => {
+                    window.parent.postMessage({
+                        source: 'threejs-minigame',
+                        status: 'COMPLETED',
+                        gameType: 'FISHING',
+                        exitType: type,
+                        targetPage: targetPage
+                    }, '*');
+                }, 4000);
+            });
+        }
+
+        async function saveDataToBackend() {
+            try {
+                if (baseHarborScore > 0) { await callBackend('saveHartyaScore', [baseHarborScore]); }
+                await callBackend('saveBoatDurability', [boatDurability, shipId]);
+            } catch (e) { console.error("Adatmentési hiba a backend felé:", e); }
+        }
+
+        // ==========================================
+        // 5. RENDER LOOP
+        // ==========================================
+        function animate() {
+            requestAnimationFrame(animate);
+            let elapsedTime = Date.now() * 0.001; // Idő másodpercben (a THREE.Clock helyett)
+
+            if (water && water.material && water.material.uniforms) {
+                water.material.uniforms['time'].value += 1.0 / 60.0;
+            }
+
+            // HAB TEXTÚRA (Vízesés/Visszaverődés) ANIMÁCIÓJA
+            for (let i = 0; i < foamMaterials.length; i++) {
+                if (foamMaterials[i].map) {
+                    // Y irányú ofszet pörgetése - a vízesés hatás lefelé
+                    foamMaterials[i].map.offset.y = -(elapsedTime * 0.4) % 1;
+                    
+                    // Kis oldalirányú billegés, hogy tajtékzóbb legyen
+                    foamMaterials[i].map.offset.x = Math.sin(elapsedTime * 2) * 0.05;
+                }
+            }
+
+            // ---- HABCSÍK (WAKE) ANIMÁLÁSA ÉS ELTÜNTETÉSE ----
+            if (window.boatWakes) {
+                for (let i = window.boatWakes.length - 1; i >= 0; i--) {
+                    let w = window.boatWakes[i];
+                    w.scale.x += 0.005; // Lassabb szélesedés, hogy ne nőjön túl nagyra
+                    w.scale.y += 0.005;
+                    w.material.opacity -= 0.01; // Gyorsabb elhalványulás (hogy ne legyen kilométeres csík)
+                    if (w.material.opacity <= 0) {
+                        scene.remove(w);
+                        w.geometry.dispose();
+                        w.material.dispose();
+                        window.boatWakes.splice(i, 1);
+                    }
+                }
+            }
+
+            // ---- HÁRTYÁK ANIMÁLÁSA (LEBEGÉS ÉS PULZÁLÁS) ----
+            let t = Date.now() * 0.002;
+            for (let d of diamonds) {
+                // A hártya a vízen lebeg (a hullámok mozgását imitálva)
+                d.position.y = Math.sin(t + d.position.x * 0.1) * 0.3;
+
+                // Szabálytalan "légzés" (pulzálás)
+                let s = 0.8 + Math.sin(t * 2 + d.position.z) * 0.2;
+                d.scale.set(s, s, s);
+            }
+
+            // Filmes léghajó-ereszkedés
+            if (isGameOver && isCaughtByAirship && enemyShip) {
+                if (enemyShip.position.y > 6.0) { // 6 egység az árbóc körüli magasság
+                    enemyShip.position.y -= 0.15;
+                }
+            }
+
+            updatePhysics();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+
+        let exitBtn = document.getElementById('base-exit-btn');
+        if (exitBtn) {
+            exitBtn.onclick = () => exitMinigame('NORMAL');
+        }
+
+        // Fókusz kezelés
+        window.focus();
+        document.addEventListener('mouseover', () => { window.focus(); });
+        document.addEventListener('click', () => { window.focus(); });
+        window.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+    </script>
+</body>
+
+</html>

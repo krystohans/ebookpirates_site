@@ -411,7 +411,7 @@
         </div>
 
         <div id="game-message" onclick="this.style.display='none';">Játék Vége!</div>
-        <button id="base-exit-btn">Befejezés és visszatérés a fedélzetre</button>
+        <button id="base-exit-btn" onclick="openDemoSubscriptionModal('Mentsd el a hártyáidat!', 'Gratulálunk a sikeres portyázáshoz! A demójáték során gyűjtött hártyáidat elmentheted az e-mail címed megadásával. A későbbi regisztrációd és a tutorial elvégzése után ezek automatikusan jóváíródnak a profilodon!')">Befejezés & Hártyák Elmentése</button>
         <div id="start-instruction">
             Nyomd meg a W-A-S-D gombokat az induláshoz!<br>
             <span style="font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;">(Szedj össze hártyákat, és
@@ -471,6 +471,195 @@
 
     <!-- Three.js és GLTFLoader betöltése -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // ==========================================
+        // DEMÓ JÁTÉK ÉS FELIRATKOZÁSI LOGIKA
+        // ==========================================
+        let airshipQuizActive = false;
+        let victoryZoneTriggered = false;
+
+        function triggerGameOver(reasonText) {
+            isGameOver = true;
+            gameStarted = false;
+            scoreOnBoat = 0;
+            updateScoreBoard();
+
+            const msgEl = document.getElementById('game-message');
+            if (msgEl) {
+                msgEl.innerHTML = "<div style='font-size:26px; color:#8b0000; font-weight:bold; margin-bottom:15px;'>" + reasonText + "</div><div style='font-size:20px; color:#4a2c0f;'>Kattints ide egy új játék indításához!</div>";
+                msgEl.style.display = 'flex';
+                msgEl.onclick = function() {
+                    window.location.reload();
+                };
+            }
+        }
+
+        function openDemoSubscriptionModal(titleText, bodyText) {
+            const totalHartya = scoreOnBoat + baseHarborScore;
+            if (totalHartya <= 0) {
+                alert("Nincs menthető hártyád! Gyűjts össze legalább 1 hártyát a tengeren.");
+                return;
+            }
+            const overlay = document.getElementById('demo-subscription-overlay');
+            if (titleText) document.getElementById('demo-sub-title').innerText = titleText;
+            if (bodyText) document.getElementById('demo-sub-text').innerText = bodyText;
+            document.getElementById('demo-sub-msg').innerText = '';
+            document.getElementById('demo-email-input').value = '';
+            overlay.style.display = 'flex';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const saveSubBtn = document.getElementById('save-demo-sub-btn');
+            if (saveSubBtn) {
+                saveSubBtn.addEventListener('click', async function() {
+                    const emailInput = document.getElementById('demo-email-input');
+                    const msgEl = document.getElementById('demo-sub-msg');
+                    const email = (emailInput.value || '').trim();
+                    const totalHartya = scoreOnBoat + baseHarborScore;
+
+                    if (!email || email.indexOf('@') === -1) {
+                        msgEl.style.color = '#8b0000';
+                        msgEl.innerText = 'Kérjük, adj meg egy érvényes e-mail címet!';
+                        return;
+                    }
+
+                    msgEl.style.color = '#4a2c0f';
+                    msgEl.innerText = 'Hártyák mentése folyamatban...';
+
+                    try {
+                        let res = null;
+                        try {
+                            res = await callBackend('saveDemoGameSubscription', [email, totalHartya]);
+                        } catch (err) {
+                            console.warn("DEBUG: callBackend hiba, de helyi teszt miatt átlépünk szimulációba.", err);
+                        }
+
+                        // Helyi Live Server tesztelés esetén (vagy ha a backend sikeres volt) továbbengedjük a játékost
+                        const isLocalTest = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost');
+                        if ((res && res.success) || isLocalTest) {
+                            msgEl.style.color = '#2e7d32';
+                            if (res && res.success) {
+                                msgEl.innerText = 'Sikeres mentés! Összesen ' + (res.newTotal || totalHartya) + ' hártyád van elmentve. A játék lezárul...';
+                            } else {
+                                msgEl.innerText = '[HELYI TESZT] Mentés szimulálva! A játék lezárul...';
+                            }
+                            setTimeout(() => {
+                                document.getElementById('demo-subscription-overlay').style.display = 'none';
+                                document.getElementById('demo-exit-overlay').style.display = 'flex';
+                            }, 3500);
+                        } else {
+                            msgEl.style.color = '#8b0000';
+                            msgEl.innerText = 'Hiba: ' + ((res && res.error) || 'Nem sikerült az elmentés.');
+                        }
+                    } catch (err) {
+                        msgEl.style.color = '#8b0000';
+                        msgEl.innerText = 'Hálózati hiba a mentés során.';
+                        console.error(err);
+                    }
+                });
+            }
+        });
+
+                const demoStakedFallbackQuestions = [
+            {
+                question: "Mi a legfőbb kincs a Hártyák tengerén?",
+                correctAnswer: "A Tudás",
+                incorrectAnswers: ["Ágyúgolyó", "Tengervíz", "Kincsesláda"]
+            },
+            {
+                question: "Hány hártya után tűnik el a Csatahajó?",
+                correctAnswer: "30 hártya",
+                incorrectAnswers: ["10 hártya", "50 hártya", "100 hártya"]
+            },
+            {
+                question: "Mi történik helyes válasz esetén?",
+                correctAnswer: "Megmenekülsz",
+                incorrectAnswers: ["Elsüllyedsz", "Azonnal nyersz", "Mindent vesztesz"]
+            },
+            {
+                question: "Mikor kapod meg a mentett hártyáidat?",
+                correctAnswer: "Tutorial után",
+                incorrectAnswers: ["Azonnal", "Soha", "Egy hét múlva"]
+            }
+        ];
+
+        function triggerAirshipCatchQuiz() {
+            console.log("DEBUG: triggerAirshipCatchQuiz meghívva!");
+            if (airshipQuizActive) {
+                console.log("DEBUG: airshipQuizActive már true, visszatérés.");
+                return;
+            }
+            airshipQuizActive = true;
+            gameStarted = false;
+
+            // Kiválasztunk egy tétes kérdést a már korábban betöltött kérdések közül
+            let stakedQuestions = [];
+            if (Array.isArray(quizQuestions)) {
+                stakedQuestions = quizQuestions.filter(q => q && q.isStaked);
+            }
+
+            let qData = null;
+            if (stakedQuestions.length > 0) {
+                let rIdx = Math.floor(Math.random() * stakedQuestions.length);
+                qData = stakedQuestions[rIdx];
+            } else {
+                // Fallback helyi tétes kérdések
+                let rIdx = Math.floor(Math.random() * demoStakedFallbackQuestions.length);
+                qData = demoStakedFallbackQuestions[rIdx];
+            }
+
+            showAirshipQuizModal(qData);
+        }
+
+        function showAirshipQuizModal(qData) {
+            console.log("DEBUG: showAirshipQuizModal indítása, kérdés:", qData.question);
+            const overlay = document.getElementById('quiz-overlay');
+            if (!overlay) {
+                console.error("DEBUG HIBA: quiz-overlay elem nem található a DOM-ban!");
+                return;
+            }
+            const qEl = document.getElementById('quiz-question');
+            const btnsEl = document.getElementById('answer-buttons');
+            const betArea = document.getElementById('betting-area');
+
+            if (betArea) betArea.style.display = 'none';
+            // Rövidebb szöveg a kifutás megelőzésére
+            qEl.innerText = qData.question;
+            btnsEl.innerHTML = '';
+
+            let answers = [qData.correctAnswer].concat(qData.incorrectAnswers || []);
+            answers.sort(() => Math.random() - 0.5);
+
+            answers.forEach(ans => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.innerText = ans;
+                btn.onclick = function() {
+                    overlay.style.display = 'none';
+                    if (ans === qData.correctAnswer) {
+                        alert("HELYES VÁLASZ! Megmenekültél a léghajótól! A csónakod visszatért a Kikötőbe.");
+                        if (enemyShip) {
+                            enemyShip.position.set(-200, 20, 200);
+                        }
+                        if (playerBoat && typeof BASE_POS !== 'undefined') {
+                            // Korrekció: a kiindulási helyre rakjuk vissza a csónakot, hogy ne ragadjon be a bázis hengerébe (sugár: 60)
+                            playerBoat.position.set(BASE_POS.x - 50, 0, BASE_POS.z + 50);
+                        }
+                        isCaughtByAirship = false;
+                        isGameOver = false;
+                        airshipQuizActive = false;
+                        gameStarted = true;
+                    } else {
+                        triggerGameOver("HIBÁS VÁLASZ! A Léghajó elkobozta a hártyáidat.");
+                    }
+                };
+                btnsEl.appendChild(btn);
+            });
+
+            overlay.style.display = 'flex';
+        }
+
+</script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Water.js"></script>
 
@@ -502,6 +691,8 @@
         let timeLeft = 20;
         let globalLoadedRockModels = []; // Globális tömb a sziklák megosztott textúráihoz
 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
+
         function callBackend(action, params) {
             return new Promise((resolve, reject) => {
                 if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
@@ -510,31 +701,82 @@
                         function (err) { reject(err); }
                     );
                 } else {
-                    console.warn("Helyi futtatás (mock): " + action);
-                    if (action === 'getBoatDurability') resolve(10);
-                    else if (action === 'getQuizQuestions') resolve([]);
-                    else resolve({ status: "LOCAL_MOCK_OK" });
+                    fetch(WEB_APP_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({ action: action, params: params || [] })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.error) reject(data.error);
+                        else resolve(data);
+                    })
+                    .catch(err => {
+                        console.warn("Backend hívási hiba (" + action + "):", err);
+                        reject(err);
+                    });
                 }
             });
         }
 
         async function initGameData() {
+            boatDurability = 10; // A demójátékban a csónak élettartam pontja mindig 10-el kezdődik
             try {
                 const response = await callBackend('getQuizQuestions', []);
                 quizQuestions = response || [];
-                const durResponse = await callBackend('getBoatDurability', [shipId]);
-                if (durResponse !== undefined && durResponse !== null && durResponse !== '') boatDurability = parseInt(durResponse);
             } catch (e) { console.error("Adatbetöltési hiba:", e); }
 
             if (quizQuestions.length === 0) {
-                quizQuestions = [{
-                    question: "Teszt Kérdés a Grafika ellenőrzéséhez. Szerinted szép az új dizájn?",
-                    correctAnswer: "Igen, tökéletes!",
-                    incorrectAnswers: ["Nem rossz", "Még finomítani kell"],
-                    isStaked: true,
-                    rowIndex: 1,
-                    weight: 1
-                }];
+                quizQuestions = [
+                    {
+                        question: "Mi a Kalózkikötő neve a Hártyák tengerén?",
+                        correctAnswer: "Hebok",
+                        incorrectAnswers: ["Kalózsziget", "Fekete Szikla", "Koponya Sziget"],
+                        isStaked: false, rowIndex: 1, weight: 1
+                    },
+                    {
+                        question: "Hogyan tarthatod biztonságban a megszerzett hártyáidat portya közben?",
+                        correctAnswer: "Visszatérsz a kikötői Bázisra",
+                        incorrectAnswers: ["Elrejted a léghajó elől", "Kidobod a tengerbe", "Elzárod a csónak aljában"],
+                        isStaked: false, rowIndex: 2, weight: 1
+                    },
+                    {
+                        question: "Melyik irányító gombokkal navigálhatod a csónakodat?",
+                        correctAnswer: "W, A, S, D billentyűkkel",
+                        incorrectAnswers: ["Csak az egér kattintásával", "Szóköz és Enter gombbal", "F1 és F2 billentyűkkel"],
+                        isStaked: false, rowIndex: 3, weight: 1
+                    },
+                    {
+                        question: "Mi történik, ha a csónak élettartama (HP) 2 alá csökken?",
+                        correctAnswer: "A csónak elsüllyed és a játék vesztéssel ér véget",
+                        incorrectAnswers: ["Újraindul a játék hártyavesztés nélkül", "A csónak magától megjavul", "Felugrik a főmenü"],
+                        isStaked: true, rowIndex: 4, weight: 1
+                    },
+                    {
+                        question: "Hány hártya megszerzése után tűnik el a Csatahajó a szorosból?",
+                        correctAnswer: "30 hártya elérése után",
+                        incorrectAnswers: ["10 hártya után", "50 hártya után", "Nem tűnik el soha"],
+                        isStaked: true, rowIndex: 5, weight: 1
+                    },
+                    {
+                        question: "Mit kell tenned a Léghajó elkapása esetén a megmeneküléshez?",
+                        correctAnswer: "Helyesen kell válaszolnod a Tétes Kvízkérdésre",
+                        incorrectAnswers: ["Gyorsabban kell evezned", "Le kell lőnöd a léghajót", "Be kell ugranod a vízbe"],
+                        isStaked: true, rowIndex: 6, weight: 1
+                    },
+                    {
+                        question: "Hogyan érvényesítheted a demójátékban elmentett hártyáidat?",
+                        correctAnswer: "Regisztráció után a tutorial sikeres elvégzésével",
+                        incorrectAnswers: ["Azonnal a főoldalon", "Csak fizetéssel", "Nem érvényesíthetők"],
+                        isStaked: false, rowIndex: 7, weight: 1
+                    },
+                    {
+                        question: "Melyik fénnyel derengenek a lebegő hártyák a tengeren?",
+                        correctAnswer: "Aranysárga fénnyel",
+                        incorrectAnswers: ["Kékeszöld fénnyel", "Piros villogással", "Sötétlila árnyékkal"],
+                        isStaked: false, rowIndex: 8, weight: 1
+                    }
+                ];
             }
             updateScoreBoard();
         }
@@ -569,6 +811,25 @@
             if (durabilityDisplay) durabilityDisplay.innerText = boatDurability;
             if (boatScoreDisplay) boatScoreDisplay.innerText = scoreOnBoat;
             if (baseScoreDisplay) baseScoreDisplay.innerText = baseHarborScore;
+            
+            // 30 HÁRTYA GYŐZELMI ZÓNA ÉS CSATAHAJÓ ELTŰNÉS
+            const totalScore = scoreOnBoat + baseHarborScore;
+            if (totalScore >= 30 && typeof battleship !== 'undefined' && battleship && battleship.parent) {
+                scene.remove(battleship);
+                const index = obstacles.indexOf(battleship);
+                if (index > -1) obstacles.splice(index, 1);
+            }
+            if (totalScore >= 30 && !victoryZoneTriggered && typeof playerBoat !== 'undefined' && playerBoat) {
+                let exitZonePos = new THREE.Vector3(-250, 0, 250);
+                if (playerBoat.position.distanceTo(exitZonePos) < 45) {
+                    victoryZoneTriggered = true;
+                    gameStarted = false;
+                    openDemoSubscriptionModal(
+                        "VICTORY! Legyőzted a tengert!",
+                        "HATALMAS GYŐZELEM! Megszerezted a 30 hártyát és sikeresen áthajóztál a nyitott szoroson! Adod meg az e-mail címed, hogy az összegyűjtött " + totalScore + " hártyádat elmenthesd a regisztrációdhoz!"
+                    );
+                }
+            }
         }
 
         // ==========================================
@@ -1554,7 +1815,7 @@
                     updateScoreBoard();
 
                     if (boatDurability <= 1) {
-                        exitMinigame('DESTROYED');
+                        triggerGameOver("Csónakod elsüllyedt! (Az élettartam 2 alá csökkent)");
                         return;
                     }
                 }
@@ -1596,7 +1857,7 @@
                 }
             }
 
-            if (battleshipEventTriggered) {
+            if (battleshipEventTriggered && !isGameOver) {
                 let exitPos = new THREE.Vector3(-250, 0, 250);
                 if (playerBoat.position.distanceTo(exitPos) < 50) {
                     exitMinigame('SECRET_PATH');
@@ -1728,10 +1989,31 @@
         }
 
         function exitMinigame(type) {
+            console.log("DEBUG: exitMinigame meghívva, típus:", type);
+            if (type === 'AIRSHIP') {
+                isGameOver = true;
+                let exitBtn = document.getElementById('base-exit-btn');
+                if (exitBtn) exitBtn.style.display = 'none';
+                // Csak elindítjuk a ráereszkedést, a kvízpanel a süllyedés végén (y <= 6.0) ugrik fel!
+                return;
+            }
+
+            // DEMÓ KORREKCIÓ: Ha a csatahajós kijáraton (SECRET_PATH) hajózunk ki, és még nem nyitottuk meg a panelt, akkor megnyitjuk!
+            if (type === 'SECRET_PATH' && !victoryZoneTriggered) {
+                victoryZoneTriggered = true;
+                isGameOver = true;
+                gameStarted = false;
+                const totalScore = scoreOnBoat + baseHarborScore;
+                openDemoSubscriptionModal(
+                    "VICTORY! Legyőzted a tengert!",
+                    "HATALMAS GYŐZELEM! Megszerezted a 30 hártyát és sikeresen áthajóztál a nyitott szoroson! Adod meg az e-mail címed, hogy az összegyűjtött " + totalScore + " hártyádat elmenthesd a regisztrációdhoz!"
+                );
+                return;
+            }
+
             let msg = "";
             let targetPage = "fedelzet_oldal";
-            if (type === 'AIRSHIP') { msg = "Kisemmizve evezhetsz vissza a kikötőbe!"; targetPage = "fedelzet_oldal"; }
-            else if (type === 'DESTROYED') { msg = "Holckopf ácsmester a fiát küldi, hogy bevonszolja a roncsot a javítóműhelyébe."; targetPage = "hajomuhely_oldal"; }
+            if (type === 'DESTROYED') { msg = "Holckopf ácsmester a fiát küldi, hogy bevonszolja a roncsot a javítóműhelyébe."; targetPage = "hajomuhely_oldal"; }
             else if (type === 'NORMAL') { msg = "A mai halászatod igazán eredményes volt."; targetPage = "fedelzet_oldal"; }
             else if (type === 'SECRET_PATH') { msg = "Áthajóztál az öböl kijáratán... Új kaland vár a Zsánerzátonyoknál!"; targetPage = "zsaner_utvalaszto"; }
 
@@ -1744,24 +2026,33 @@
             let exitBtn = document.getElementById('base-exit-btn');
             if (exitBtn) exitBtn.style.display = 'none';
 
+            // Ha vendég kalóz játszik (nincs token), akkor az üzenet lejárta után megmutatjuk a választópanelt
+            if (!playerToken) {
+                setTimeout(() => {
+                    if (msgDiv) msgDiv.style.display = 'none';
+                    document.getElementById('demo-exit-overlay').style.display = 'flex';
+                }, 4000);
+                return;
+            }
+
             saveDataToBackend().then(() => {
                 setTimeout(() => {
-                    window.parent.postMessage({
-                        source: 'threejs-minigame',
-                        status: 'COMPLETED',
-                        gameType: 'FISHING',
-                        exitType: type,
-                        targetPage: targetPage
-                    }, '*');
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            source: 'threejs-minigame',
+                            status: 'COMPLETED',
+                            gameType: 'FISHING',
+                            exitType: type,
+                            targetPage: targetPage
+                        }, '*');
+                    }
                 }, 4000);
             });
         }
 
         async function saveDataToBackend() {
-            try {
-                if (baseHarborScore > 0) { await callBackend('saveHartyaScore', [baseHarborScore]); }
-                await callBackend('saveBoatDurability', [boatDurability, shipId]);
-            } catch (e) { console.error("Adatmentési hiba a backend felé:", e); }
+            // A demójátékban nincs bejelentkezett felhasználó, így nem mentünk közvetlenül profiladatokat
+            return Promise.resolve();
         }
 
         // ==========================================
@@ -1813,10 +2104,14 @@
                 d.scale.set(s, s, s);
             }
 
-            // Filmes léghajó-ereszkedés
+            // Filmes léghajó-ereszkedés (Eredeti ráereszkedés, majd kvízindítás)
             if (isGameOver && isCaughtByAirship && enemyShip) {
                 if (enemyShip.position.y > 6.0) { // 6 egység az árbóc körüli magasság
                     enemyShip.position.y -= 0.15;
+                } else {
+                    // Ráereszkedés végpontja: Leállítjuk a süllyedési állapotot, hogy ne fusson végtelenül, és indítjuk a kvízt
+                    isCaughtByAirship = false;
+                    triggerAirshipCatchQuiz();
                 }
             }
 
@@ -1832,10 +2127,11 @@
 
         animate();
 
-        let exitBtn = document.getElementById('base-exit-btn');
-        if (exitBtn) {
-            exitBtn.onclick = () => exitMinigame('NORMAL');
-        }
+        // A gomb eseményének felülírását kivesszük, hogy az HTML-ben definiált openDemoSubscriptionModal hívódjon meg
+        // let exitBtn = document.getElementById('base-exit-btn');
+        // if (exitBtn) {
+        //     exitBtn.onclick = () => exitMinigame('NORMAL');
+        // }
 
         // Fókusz kezelés
         window.focus();
@@ -1844,6 +2140,44 @@
         window.addEventListener('contextmenu', e => e.preventDefault());
     </script>
     </script>
+
+    <!-- DEMÓ FELIRATKOZÁSI MODAL -->
+    <div id="demo-subscription-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; backdrop-filter: blur(5px);">
+        <div style="position: relative; width: 90vw; max-width: 720px; background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center; background-size: 100% 100%; padding: 90px 80px 80px 80px; box-sizing: border-box; font-family: 'Georgia', serif; color: #1a0f05; display: flex; justify-content: center; align-items: center;">
+            <div style="width: 85%; height: 80%; display: flex; flex-direction: column; justify-content: center; text-align: center; box-sizing: border-box; margin: auto;">
+                <h2 id="demo-sub-title" style="margin-top: 0; font-size: 24px; border-bottom: 2px solid #8b5a2b; padding-bottom: 8px; color: #1a0f05;">Mentsd el a hártyáidat!</h2>
+                <div id="demo-sub-text" style="font-size: 16px; line-height: 1.4; margin: 10px 0; text-align: justify; color: #1a0f05;">
+                    Gratulálunk a sikeres küldetéshez! A demójáték során gyűjtött hártyáidat elmentheted az e-mail címed megadásával. Amikor később regisztrálsz az eBookPirates kalózszigeten és elvégzed a tutorialt, a felhalmozott hártyáid automatikusan hozzáadódnak a profilodhoz!
+                </div>
+                <div style="margin: 15px 0;">
+                    <input type="email" id="demo-email-input" placeholder="Adod meg az e-mail címed..." style="width: 75%; padding: 10px 12px; font-size: 16px; font-family: 'Georgia', serif; border: 2px solid #8b5a2b; border-radius: 8px; box-sizing: border-box; background: #fff8eb; color: #2c1a08; outline: none;">
+                </div>
+                <div id="demo-sub-msg" style="font-size: 14px; font-weight: bold; margin-bottom: 10px; min-height: 20px;"></div>
+                <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                    <button id="save-demo-sub-btn" style="background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Hártyák Elmentése</button>
+                    <button id="exit-no-save-btn" onclick="document.getElementById('demo-subscription-overlay').style.display='none'; document.getElementById('demo-exit-overlay').style.display='flex';" style="background: #f5ebd5; border: 2px solid #8b5a2b; color: #1a0f05; padding: 10px 20px; font-size: 16px; font-family: 'Georgia', serif; border-radius: 8px; cursor: pointer; font-weight: bold;">Kilépés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMÓ JÁTÉK VÉGE IRÁNYVÁLASZTÓ MODAL -->
+    <div id="demo-exit-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 60; pointer-events: auto; backdrop-filter: blur(5px);">
+        <div style="position: relative; width: 90vw; max-width: 720px; background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center; background-size: 100% 100%; padding: 90px 80px 80px 80px; box-sizing: border-box; font-family: 'Georgia', serif; color: #1a0f05; display: flex; justify-content: center; align-items: center;">
+            <div style="width: 85%; height: 80%; display: flex; flex-direction: column; justify-content: center; text-align: center; box-sizing: border-box; margin: auto;">
+                <h2 style="margin-top: 0; font-size: 24px; border-bottom: 2px solid #8b5a2b; padding-bottom: 8px; color: #1a0f05;">Hogyan folytatod a kalandot?</h2>
+                <div style="font-size: 16px; line-height: 1.4; margin: 15px 0; text-align: justify; color: #1a0f05;">
+                    Válaszd ki a következő úti célodat, kalóz:
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; margin-top: 10px; width: 100%;">
+                    <button onclick="window.location.reload();" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Új játékot indítok</button>
+                    <button onclick="window.open('https://www.patreon.com/cw/u65968802', '_blank');" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">eBookPirates Patreon oldal</button>
+                    <button onclick="window.location.href='https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Behajózás Hebok kikötőbe</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 
 </html>

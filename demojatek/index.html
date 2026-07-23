@@ -1482,7 +1482,7 @@
         // 3. JÁTÉK LOGIKA ÉS IRÁNYÍTÁS
         // ==========================================
         const keys = { w: false, a: false, s: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false };
-        const isAndroid = /Android/i.test(navigator.userAgent) || window.location.hash === '#mobile';
+        const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 0) || window.location.hash === '#mobile';
         let mobileMode = 'boat'; // 'boat' vagy 'camera'
 
         // ---- ZENE VEZÉRLÉS ----
@@ -2338,6 +2338,17 @@
                 startInst.innerHTML = "Érintsd meg és tartsd nyomva a képernyőt az induláshoz!<br><span style='font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;'>(Szedj össze hártyákat, és kerüld el a léghajót!)</span>";
             }
         }
+
+        // Biztonsági tartalék képernyőkoppintásra való indításhoz (minden mobil/érintős eszközhöz)
+        window.addEventListener('touchstart', () => {
+            if (!gameStarted) {
+                gameStarted = true;
+                if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
+                if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
+                const startInst = document.getElementById('start-instruction');
+                if (startInst) startInst.style.display = 'none';
+            }
+        }, { once: true });
     </script>
     </script>
 

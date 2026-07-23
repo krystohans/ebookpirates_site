@@ -1482,6 +1482,8 @@
         // 3. JÁTÉK LOGIKA ÉS IRÁNYÍTÁS
         // ==========================================
         const keys = { w: false, a: false, s: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false };
+        const isAndroid = /Android/i.test(navigator.userAgent) || window.location.hash === '#mobile';
+        let mobileMode = 'boat'; // 'boat' vagy 'camera'
 
         // ---- ZENE VEZÉRLÉS ----
         const bgMusic = document.getElementById('bg-music');
@@ -1718,6 +1720,14 @@
             if (keys.arrowdown) cameraDistance += 1;
             if (cameraDistance < 10) cameraDistance = 10;
             if (cameraDistance > 100) cameraDistance = 100;
+
+            // Mobil eszközön automatikusan lekövetjük a hajó forgását, ha hajóirányítás módban vagyunk
+            if (isAndroid && mobileMode === 'boat') {
+                const targetAngle = playerBoat.rotation.y + Math.PI;
+                let diff = targetAngle - cameraAngle;
+                diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+                cameraAngle += diff * 0.05; // Finom lerp forgás a hajó mögé
+            }
 
             // Kamera pozícionálása a csónak körül
             let camOffset = new THREE.Vector3(
@@ -2177,6 +2187,137 @@
         document.addEventListener('mouseover', () => { window.focus(); });
         document.addEventListener('click', () => { window.focus(); });
         window.addEventListener('contextmenu', e => e.preventDefault());
+
+        // ---- MOBIL IRÁNYÍTÁS BEÁLLÍTÁSA ----
+        function setupMobileControls() {
+            const overlay = document.getElementById('mobile-overlay');
+            const modeBtn = document.getElementById('mobile-mode-btn');
+            
+            overlay.style.display = 'block';
+
+            modeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (mobileMode === 'boat') {
+                    mobileMode = 'camera';
+                    modeBtn.innerHTML = '☸️'; // Hajókormány ikon (visszaváltáshoz)
+                    modeBtn.style.backgroundColor = '#2e7d32'; // Zöld szín a kamera állításhoz
+                } else {
+                    mobileMode = 'boat';
+                    modeBtn.innerHTML = '📷'; // Kamera ikon (visszaváltáshoz)
+                    modeBtn.style.backgroundColor = '#8b5a2b'; // Barna szín a hajóhoz
+                }
+                clearMobileKeys();
+            });
+
+            // Gomb touch start meggátolása, hogy ne kormányozzon közben a játékos
+            modeBtn.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            });
+
+            let activeTouchId = null;
+            let touchQuadrant = null;
+
+            function getTouchQuadrant(touchX, touchY) {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const L1 = touchY * width - touchX * height;
+                const L2 = touchY * width - (width - touchX) * height;
+                
+                if (L1 < 0 && L2 < 0) return 'top';
+                if (L1 > 0 && L2 > 0) return 'bottom';
+                if (L1 > 0 && L2 < 0) return 'left';
+                return 'right';
+            }
+
+            function clearMobileKeys() {
+                keys.w = false;
+                keys.s = false;
+                keys.a = false;
+                keys.d = false;
+                keys.arrowup = false;
+                keys.arrowdown = false;
+                keys.arrowleft = false;
+                keys.arrowright = false;
+            }
+
+            function updateMobileControls() {
+                clearMobileKeys();
+                if (!touchQuadrant) return;
+
+                if (mobileMode === 'boat') {
+                    if (touchQuadrant === 'top') keys.w = true;
+                    if (touchQuadrant === 'bottom') keys.s = true;
+                    if (touchQuadrant === 'left') keys.a = true;
+                    if (touchQuadrant === 'right') keys.d = true;
+                } else {
+                    if (touchQuadrant === 'top') keys.arrowup = true;
+                    if (touchQuadrant === 'bottom') keys.arrowdown = true;
+                    if (touchQuadrant === 'left') keys.arrowleft = true;
+                    if (touchQuadrant === 'right') keys.arrowright = true;
+                }
+            }
+
+            window.addEventListener('touchstart', (e) => {
+                // UI elemeken (gombok, inputok, modalok) ne tiltsuk le az alapértelmezett kattintásokat
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('button') || e.target.closest('input')) {
+                    return;
+                }
+                
+                // Meggátoljuk a képernyő zoomolást és görgetést irányítás közben
+                e.preventDefault();
+
+                if (e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    activeTouchId = touch.identifier;
+                    touchQuadrant = getTouchQuadrant(touch.clientX, touch.clientY);
+                    updateMobileControls();
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (activeTouchId !== null) {
+                    // Meggátoljuk a képernyő elmozdulását
+                    e.preventDefault();
+                    
+                    for (let touch of e.touches) {
+                        if (touch.identifier === activeTouchId) {
+                            touchQuadrant = getTouchQuadrant(touch.clientX, touch.clientY);
+                            updateMobileControls();
+                            break;
+                        }
+                    }
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchend', (e) => {
+                if (activeTouchId !== null) {
+                    let activeStillPresent = false;
+                    for (let touch of e.touches) {
+                        if (touch.identifier === activeTouchId) {
+                            activeStillPresent = true;
+                            break;
+                        }
+                    }
+                    if (!activeStillPresent) {
+                        activeTouchId = null;
+                        touchQuadrant = null;
+                        clearMobileKeys();
+                    }
+                }
+            });
+
+            window.addEventListener('touchcancel', () => {
+                activeTouchId = null;
+                touchQuadrant = null;
+                clearMobileKeys();
+            });
+        }
+
+        // Automatikus indítás, ha Android vagy #mobile tesztmód fut
+        if (isAndroid) {
+            setupMobileControls();
+        }
     </script>
     </script>
 
@@ -2215,6 +2356,20 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- MOBIL IRÁNYÍTÁSI ÉS MÓDVÁLTÓ RÉTEG (ANDROIDRA ÉS TESZTELÉSRE) -->
+    <div id="mobile-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100;">
+        <!-- Vizuális X segédvonalak (átlók) a képernyő felosztásához -->
+        <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.12; pointer-events: none;">
+            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#fffbcc" stroke-width="2" stroke-dasharray="6,6" />
+            <line x1="0" y1="100%" x2="100%" y2="0" stroke="#fffbcc" stroke-width="2" stroke-dasharray="6,6" />
+        </svg>
+        
+        <!-- Lebegő Módváltó Gomb (📷 = kamera mód váltásához, ☸️ = hajó irányításhoz) -->
+        <button id="mobile-mode-btn" style="position: absolute; bottom: 25px; right: 25px; width: 64px; height: 64px; border-radius: 50%; background: #8b5a2b; border: 3px solid #fffbcc; box-shadow: 0 5px 12px rgba(0,0,0,0.6); pointer-events: auto; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; transition: transform 0.15s ease, background-color 0.2s; -webkit-tap-highlight-color: transparent; outline: none; z-index: 105;">
+            📷
+        </button>
     </div>
 </body>
 

@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBookPirates - 3D GLB Modell Nézegető</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #110d08;
+            font-family: 'Georgia', serif;
+            color: #fffbcc;
+        }
+
+        /* 3D Canvas */
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* UI Overlays */
+        #ui-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(26, 15, 5, 0.85);
+            border: 2px solid #8b5a2b;
+            border-radius: 12px;
+            padding: 20px;
+            width: 320px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid #8b5a2b;
+            padding-bottom: 8px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .section {
+            margin-bottom: 15px;
+        }
+
+        .label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #d4b28c;
+        }
+
+        /* Drag & Drop Area */
+        #drop-zone {
+            border: 2px dashed #8b5a2b;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(139, 90, 43, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #drop-zone:hover, #drop-zone.dragover {
+            background: rgba(139, 90, 43, 0.25);
+            border-color: #fffbcc;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Controls */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            background: #8b5a2b;
+            border: 1px solid #5a3818;
+            color: #fffbcc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #a06b3a;
+        }
+
+        /* Model Stats */
+        #stats-panel {
+            font-size: 12px;
+            line-height: 1.5;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Loading Spinner */
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            display: none;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 1px solid #8b5a2b;
+        }
+
+        #help-tip {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: rgba(0,0,0,0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+            text-align: center;
+        }
+    </style>
+
+    <!-- Three.js + OrbitControls + GLTFLoader via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <div id="ui-panel">
+        <h1>3D GLB Nézegető</h1>
+        
+        <div class="section">
+            <span class="label">GLB Modell betöltése</span>
+            <div id="drop-zone">
+                <div style="font-size: 30px; margin-bottom: 5px;">📦</div>
+                Húzz ide fájlokat vagy mappát!
+                <div style="display: flex; gap: 8px; margin-top: 10px; justify-content: center;">
+                    <button class="btn" style="margin: 0; padding: 6px 12px; font-size: 12px; width: auto;" onclick="document.getElementById('file-input').click()">Fájlok</button>
+                    <button class="btn" style="margin: 0; padding: 6px 12px; font-size: 12px; width: auto;" onclick="document.getElementById('folder-input').click()">Mappa</button>
+                </div>
+            </div>
+            <input type="file" id="file-input" accept=".glb" multiple style="display: none;">
+            <input type="file" id="folder-input" webkitdirectory directory style="display: none;">
+        </div>
+
+        <div class="section" id="options-panel">
+            <span class="label">Beállítások</span>
+            <button class="btn" onclick="toggleGrid()">Segédrács ki/be</button>
+            <button class="btn" onclick="resetCamera()">Kamera visszaállítása</button>
+        </div>
+
+        <div class="section">
+            <div id="stats-panel">
+                <strong>Modell információk:</strong><br>
+                Név: <span id="model-name">-</span><br>
+                Méret: <span id="model-size">-</span><br>
+                Geometria: <span id="model-polys">-</span> poligon
+                
+                <!-- OD-VISSZA LÉPTETŐ PANEL -->
+                <div id="navigation-panel" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #8b5a2b; padding-top: 15px;">
+                    <button id="prev-btn" onclick="stepFile(-1)" style="background: #8b5a2b; border: 1px solid #5a3818; color: #fffbcc; padding: 6px 12px; font-size: 13px; font-family: 'Georgia', serif; font-weight: bold; border-radius: 4px; cursor: pointer;" disabled>← Előző</button>
+                    <span id="file-counter" style="font-size: 12px; font-weight: bold; color: #d4b28c;">0 / 0</span>
+                    <button id="next-btn" onclick="stepFile(1)" style="background: #8b5a2b; border: 1px solid #5a3818; color: #fffbcc; padding: 6px 12px; font-size: 13px; font-family: 'Georgia', serif; font-weight: bold; border-radius: 4px; cursor: pointer;" disabled>Következő →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader">Hártyák betöltése folyamatban...</div>
+    <div id="help-tip">Bal gomb: Forgatás | Jobb gomb: Mozgatás | Görgő: Közelítés</div>
+
+    <script>
+        let scene, camera, renderer, controls;
+        let currentModel = null;
+        let gridHelper, axesHelper;
+
+        // Inicializálás
+        function init() {
+            const container = document.getElementById('canvas-container');
+
+            // Jelenet
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x110d08);
+
+            // Kamera
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5);
+
+            // Renderelő
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            container.appendChild(renderer.domElement);
+
+            // Vezérlők
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 + 0.1; // ne mehessen a föld alá nagyon
+
+            // Fények
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight1 = new THREE.DirectionalLight(0xfff7e6, 0.8);
+            dirLight1.position.set(10, 20, 10);
+            dirLight1.castShadow = true;
+            scene.add(dirLight1);
+
+            const dirLight2 = new THREE.DirectionalLight(0xddecff, 0.4);
+            dirLight2.position.set(-10, 10, -10);
+            scene.add(dirLight2);
+
+            // Segédrács és tengelyek
+            gridHelper = new THREE.GridHelper(20, 20, 0x8b5a2b, 0x4a2c0f);
+            gridHelper.position.y = -0.01;
+            scene.add(gridHelper);
+
+            axesHelper = new THREE.AxesHelper(3);
+            scene.add(axesHelper);
+
+            // Ablak átméretezés kezelése
+            window.addEventListener('resize', onWindowResize);
+
+            setupDragAndDrop();
+            animate();
+        }
+
+        // Animációs ciklus
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Segédrács kapcsoló
+        function toggleGrid() {
+            gridHelper.visible = !gridHelper.visible;
+            axesHelper.visible = !axesHelper.visible;
+        }
+
+        // Kamera visszaállítása a modellhez igazítva
+        function resetCamera() {
+            if (currentModel) {
+                fitCameraToModel(currentModel);
+            } else {
+                camera.position.set(5, 5, 5);
+                controls.target.set(0, 0, 0);
+                controls.update();
+            }
+        }
+
+        // Beágyazott statikus fájllisták a mappák kényelmes bejárásához
+        const ALL_PIRATE_ASSETS = [
+    "Characters.glb",
+    "Fish.glb",
+    "SM_Bld_Cuba_Arch_01.glb",
+    "SM_Bld_Cuba_Arch_02.glb",
+    "SM_Bld_Cuba_Balcony_01.glb",
+    "SM_Bld_Cuba_Balcony_02.glb",
+    "SM_Bld_Cuba_Balcony_03.glb",
+    "SM_Bld_Cuba_Balcony_Corner_01.glb",
+    "SM_Bld_Cuba_Hall_Front_01.glb",
+    "SM_Bld_Cuba_Hall_Room_01.glb",
+    "SM_Bld_Cuba_Hall_Room_02.glb",
+    "SM_Bld_Cuba_Hall_Room_03.glb",
+    "SM_Bld_Cuba_Hall_Room_04.glb",
+    "SM_Bld_Cuba_Hall_Tower_01.glb",
+    "SM_Bld_Cuba_Roof_01.glb",
+    "SM_Bld_Cuba_Roof_02.glb",
+    "SM_Bld_Cuba_Roof_03.glb",
+    "SM_Bld_Cuba_Roof_04.glb",
+    "SM_Bld_Cuba_Roof_Square_01.glb",
+    "SM_Bld_Cuba_Room_01.glb",
+    "SM_Bld_Cuba_Room_02.glb",
+    "SM_Bld_Cuba_Room_03.glb",
+    "SM_Bld_Cuba_Room_04.glb",
+    "SM_Bld_Cuba_Room_05.glb",
+    "SM_Bld_Cuba_Room_06.glb",
+    "SM_Bld_Cuba_Room_07.glb",
+    "SM_Bld_Cuba_Room_Long_01.glb",
+    "SM_Bld_Cuba_Room_Long_02.glb",
+    "SM_Bld_Cuba_Room_Long_03.glb",
+    "SM_Bld_Cuba_Room_Long_04.glb",
+    "SM_Bld_Cuba_Room_Long_05.glb",
+    "SM_Bld_Cuba_Room_Short_01.glb",
+    "SM_Bld_Cuba_Sunshade_01.glb",
+    "SM_Bld_Cuba_Sunshade_02.glb",
+    "SM_Bld_Cuba_VineWall_01.glb",
+    "SM_Bld_Dock_01.glb",
+    "SM_Bld_Dock_02.glb",
+    "SM_Bld_Dock_03.glb",
+    "SM_Bld_Dock_Bridge_01.glb",
+    "SM_Bld_Dock_Stairs_01.glb",
+    "SM_Bld_Fort_Base_01.glb",
+    "SM_Bld_Fort_Base_02.glb",
+    "SM_Bld_Fort_Base_03.glb",
+    "SM_Bld_Fort_Base_Circle_01.glb",
+    "SM_Bld_Fort_Base_Circle_02.glb",
+    "SM_Bld_Fort_Base_Circle_03.glb",
+    "SM_Bld_Fort_Base_Circle_04.glb",
+    "SM_Bld_Fort_Door_01.glb",
+    "SM_Bld_Fort_Door_02.glb",
+    "SM_Bld_Fort_Door_03.glb",
+    "SM_Bld_Fort_Door_04.glb",
+    "SM_Bld_Fort_Room_01.glb",
+    "SM_Bld_Fort_Room_02.glb",
+    "SM_Bld_Fort_Room_03.glb",
+    "SM_Bld_Fort_Stairs_01.glb",
+    "SM_Bld_Fort_Tower_01.glb",
+    "SM_Bld_Fort_Tower_Room_01.glb",
+    "SM_Bld_Fort_Wall_01.glb",
+    "SM_Bld_Fort_Wall_02.glb",
+    "SM_Bld_Mansion_Corner_01.glb",
+    "SM_Bld_Mansion_Corner_02.glb",
+    "SM_Bld_Mansion_Door_01.glb",
+    "SM_Bld_Mansion_End_01.glb",
+    "SM_Bld_Mansion_End_02.glb",
+    "SM_Bld_Mansion_End_Flat_01.glb",
+    "SM_Bld_Mansion_Middle_01.glb",
+    "SM_Bld_Mansion_Middle_02.glb",
+    "SM_Bld_Mansion_Pole_01.glb",
+    "SM_Bld_Mansion_Pole_02.glb",
+    "SM_Bld_Mansion_Roof_Corner_01.glb",
+    "SM_Bld_Mansion_Roof_End_01.glb",
+    "SM_Bld_Mansion_Roof_End_Flat_01.glb",
+    "SM_Bld_Mansion_Roof_Middle_01.glb",
+    "SM_Bld_Mansion_Roof_Single_01.glb",
+    "SM_Bld_Mansion_Stairs_01.glb",
+    "SM_Bld_Mansion_Tower_01.glb",
+    "SM_Bld_Mansion_Window_01.glb",
+    "SM_Bld_Rickety_Dock_01.glb",
+    "SM_Bld_Rickety_Dock_02.glb",
+    "SM_Bld_Rickety_Dock_03.glb",
+    "SM_Bld_Rickety_Dock_Platform_01.glb",
+    "SM_Bld_Rickety_Dock_Platform_02.glb",
+    "SM_Bld_Rickety_Dock_Stairs_01.glb",
+    "SM_Bld_Rickety_Dock_Stairs_02.glb",
+    "SM_Bld_Rickety_Dock_Stairs_Curved_01.glb",
+    "SM_Bld_Rickety_House_01.glb",
+    "SM_Bld_Rickety_House_02.glb",
+    "SM_Bld_Rickety_House_03.glb",
+    "SM_Bld_Rickety_Tower_03.glb",
+    "SM_Bld_Shanty_Base_01.glb",
+    "SM_Bld_Shanty_Base_02.glb",
+    "SM_Bld_Shanty_Base_Stilts_01.glb",
+    "SM_Bld_Shanty_Base_Stilts_02.glb",
+    "SM_Bld_Shanty_Deck_01.glb",
+    "SM_Bld_Shanty_Preset_01.glb",
+    "SM_Bld_Shanty_Preset_02.glb",
+    "SM_Bld_Shanty_Preset_03.glb",
+    "SM_Bld_Shanty_Preset_04.glb",
+    "SM_Bld_Shanty_Preset_05.glb",
+    "SM_Bld_Shanty_Preset_06.glb",
+    "SM_Bld_Shanty_Preset_07.glb",
+    "SM_Bld_Shanty_Preset_Bar_01.glb",
+    "SM_Bld_Shanty_Roof_01.glb",
+    "SM_Bld_Shanty_Roof_02.glb",
+    "SM_Bld_Shanty_Roof_03.glb",
+    "SM_Bld_Shanty_Roof_04.glb",
+    "SM_Bld_Shanty_Roof_05.glb",
+    "SM_Bld_Shanty_Room_01.glb",
+    "SM_Bld_Shanty_Room_02.glb",
+    "SM_Bld_Shanty_Room_03.glb",
+    "SM_Bld_Shanty_SideAttachment_01.glb",
+    "SM_Bld_Shanty_SideAttachment_02.glb",
+    "SM_Bld_Shanty_SideAttachment_03.glb",
+    "SM_Bld_Shanty_SideAttachment_04.glb",
+    "SM_Bld_Shanty_Stairs_01.glb",
+    "SM_Bld_Shop_01.glb",
+    "SM_Bld_Shop_02.glb",
+    "SM_Bld_Shop_03.glb",
+    "SM_Bld_Stone_Wall_01.glb",
+    "SM_Bld_Stone_Wall_End_01.glb",
+    "SM_Bld_Stone_Wall_End_Top_01.glb",
+    "SM_Bld_Stone_Wall_Large_01.glb",
+    "SM_Bld_Stone_Wall_Large_End_01.glb",
+    "SM_Bld_Tent_01.glb",
+    "SM_Bld_Tent_02.glb",
+    "SM_Bld_Tent_03.glb",
+    "SM_Bld_Tent_04.glb",
+    "SM_Bld_Tent_05.glb",
+    "SM_Bld_Tent_06.glb",
+    "SM_Bld_Tent_Pole_01.glb",
+    "SM_Env_Background_Hills_01.glb",
+    "SM_Env_Background_Island_01.glb",
+    "SM_Env_Background_Island_02.glb",
+    "SM_Env_Background_Island_03.glb",
+    "SM_Env_Background_Island_04.glb",
+    "SM_Env_Background_Island_05.glb",
+    "SM_Env_Background_Island_06.glb",
+    "SM_Env_Beach_01.glb",
+    "SM_Env_Beach_02.glb",
+    "SM_Env_Beach_03.glb",
+    "SM_Env_Beach_04.glb",
+    "SM_Env_Beach_05.glb",
+    "SM_Env_Beach_06.glb",
+    "SM_Env_Beach_Pile_01.glb",
+    "SM_Env_Beach_Pile_02.glb",
+    "SM_Env_Beach_Pile_03.glb",
+    "SM_Env_Beach_Piles_01.glb",
+    "SM_Env_Bush_01.glb",
+    "SM_Env_Bush_02.glb",
+    "SM_Env_Cloud_01.glb",
+    "SM_Env_Cloud_02.glb",
+    "SM_Env_Cloud_03.glb",
+    "SM_Env_Fern_01.glb",
+    "SM_Env_Flat_Sand_01.glb",
+    "SM_Env_Flat_Sand_02.glb",
+    "SM_Env_Flowers_01.glb",
+    "SM_Env_Flowers_02.glb",
+    "SM_Env_GrassPatch_01.glb",
+    "SM_Env_GrassPatch_02.glb",
+    "SM_Env_GrassPatch_03.glb",
+    "SM_Env_Grass_01.glb",
+    "SM_Env_Grass_02.glb",
+    "SM_Env_Grass_03.glb",
+    "SM_Env_GroundLeaves_01.glb",
+    "SM_Env_GroundLeaves_02.glb",
+    "SM_Env_GroundLeaves_03.glb",
+    "SM_Env_Mangrove_Roots_01.glb",
+    "SM_Env_Mangrove_Tree_01.glb",
+    "SM_Env_Mangrove_Tree_02.glb",
+    "SM_Env_Ocean_Tile_01.glb",
+    "SM_Env_PalmBush_03.glb",
+    "SM_Env_PalmTree_01.glb",
+    "SM_Env_PalmTree_02.glb",
+    "SM_Env_PalmTree_03.glb",
+    "SM_Env_PalmTree_04.glb",
+    "SM_Env_PalmTree_Tall_01.glb",
+    "SM_Env_PalmTree_Tall_02.glb",
+    "SM_Env_Plants_01.glb",
+    "SM_Env_Plants_02.glb",
+    "SM_Env_Plants_03.glb",
+    "SM_Env_Rock_01.glb",
+    "SM_Env_Rock_02.glb",
+    "SM_Env_Rock_03.glb",
+    "SM_Env_Rock_Arch_01.glb",
+    "SM_Env_Rock_Huge_01.glb",
+    "SM_Env_Rock_Huge_02.glb",
+    "SM_Env_Rock_Huge_03.glb",
+    "SM_Env_Rock_Huge_04.glb",
+    "SM_Env_Rock_Large_01.glb",
+    "SM_Env_Rock_Large_010.glb",
+    "SM_Env_Rock_Large_011.glb",
+    "SM_Env_Rock_Large_02.glb",
+    "SM_Env_Rock_Large_03.glb",
+    "SM_Env_Rock_Large_04.glb",
+    "SM_Env_Rock_Large_05.glb",
+    "SM_Env_Rock_Large_06.glb",
+    "SM_Env_Rock_Large_07.glb",
+    "SM_Env_Rock_Large_08.glb",
+    "SM_Env_Rock_Large_09.glb",
+    "SM_Env_Rock_Skull_01.glb",
+    "SM_Env_Rocks_01.glb",
+    "SM_Env_Rocks_02.glb",
+    "SM_Env_Rocks_03.glb",
+    "SM_Env_Seaweed_01.glb",
+    "SM_Env_SmallRock_01.glb",
+    "SM_Env_SmallRock_02.glb",
+    "SM_Env_SugarCane_01.glb",
+    "SM_Env_SugarCane_02.glb",
+    "SM_Env_Sunflower_01.glb",
+    "SM_Env_Sunflower_02.glb",
+    "SM_Env_Tile_Grass_01.glb",
+    "SM_Env_Tile_Sand_01.glb",
+    "SM_Env_Tree_Base_01.glb",
+    "SM_Env_Tree_Base_02.glb",
+    "SM_Env_Tree_Canopy_01.glb",
+    "SM_Env_Tree_Canopy_02.glb",
+    "SM_Env_Tree_Canopy_03.glb",
+    "SM_Env_Tree_Canopy_04.glb",
+    "SM_Env_Tree_Dead_01.glb",
+    "SM_Env_Tree_Large_01.glb",
+    "SM_Env_Tree_Large_02.glb",
+    "SM_Env_Tree_Vines_01.glb",
+    "SM_Env_Tree_Vines_02.glb",
+    "SM_Env_Tree_Vines_03.glb",
+    "SM_Env_Tree_Vines_04.glb",
+    "SM_Env_Tree_Vines_05.glb",
+    "SM_Env_Vines_Wall_01.glb",
+    "SM_Env_Vines_Wall_02.glb",
+    "SM_Flag_British_01.glb",
+    "SM_Flag_Pirate_01.glb",
+    "SM_Flag_Pirate_02.glb",
+    "SM_Flag_Pirate_03.glb",
+    "SM_Flag_Pirate_04.glb",
+    "SM_Flag_Spanish_01.glb",
+    "SM_Item_Bag_01.glb",
+    "SM_Item_Bag_02.glb",
+    "SM_Item_Bag_Attachment_01.glb",
+    "SM_Item_Bag_Attachment_02.glb",
+    "SM_Item_Bag_Attachment_03.glb",
+    "SM_Item_Bomb_01.glb",
+    "SM_Item_Bottle_01.glb",
+    "SM_Item_Bottle_02.glb",
+    "SM_Item_Bottle_03.glb",
+    "SM_Item_Bottle_04.glb",
+    "SM_Item_Bottle_Attachment_01.glb",
+    "SM_Item_Bottle_Candle_01.glb",
+    "SM_Item_Bottle_Candle_02.glb",
+    "SM_Item_Candelabra_01.glb",
+    "SM_Item_Candelabra_02.glb",
+    "SM_Item_Candle_01.glb",
+    "SM_Item_Chalice_01.glb",
+    "SM_Item_Coins_01.glb",
+    "SM_Item_Coins_02.glb",
+    "SM_Item_Coins_03.glb",
+    "SM_Item_Coins_04.glb",
+    "SM_Item_Compass_01.glb",
+    "SM_Item_Cup_01.glb",
+    "SM_Item_Flask_01.glb",
+    "SM_Item_Gem_01.glb",
+    "SM_Item_Gem_02.glb",
+    "SM_Item_Gem_03.glb",
+    "SM_Item_Map_01.glb",
+    "SM_Item_Map_02.glb",
+    "SM_Item_Map_03.glb",
+    "SM_Item_Map_Attachment_01.glb",
+    "SM_Item_Plate_01.glb",
+    "SM_Item_Pomb_Attachment_01.glb",
+    "SM_Item_Potion_01.glb",
+    "SM_Item_Potion_Attachment_01.glb",
+    "SM_Item_Pouch_Attachment_01.glb",
+    "SM_Item_Pouch_Attachment_02.glb",
+    "SM_Item_Roll_Attachment_01.glb",
+    "SM_Item_Rope_Attachment_01.glb",
+    "SM_Item_SkullCandle_01.glb",
+    "SM_Item_Skull_01.glb",
+    "SM_Item_Skull_Attachment_01.glb",
+    "SM_Item_Spyglass_01.glb",
+    "SM_Item_Spyglass_02.glb",
+    "SM_Prop_Anchor_01.glb",
+    "SM_Prop_Barrel_01.glb",
+    "SM_Prop_Barrel_02.glb",
+    "SM_Prop_Barrel_03.glb",
+    "SM_Prop_Barrel_04.glb",
+    "SM_Prop_Barrel_05.glb",
+    "SM_Prop_Barrel_Half_01.glb",
+    "SM_Prop_Bench_01.glb",
+    "SM_Prop_BottleTorch_01.glb",
+    "SM_Prop_Cage_01.glb",
+    "SM_Prop_Cage_02.glb",
+    "SM_Prop_Campfire_01.glb",
+    "SM_Prop_Campfire_Pot_01.glb",
+    "SM_Prop_CannonBalls_01.glb",
+    "SM_Prop_CannonBalls_02.glb",
+    "SM_Prop_CannonBalls_03.glb",
+    "SM_Prop_Cannon_01.glb",
+    "SM_Prop_Cannon_01_Separate.glb",
+    "SM_Prop_Cannon_02.glb",
+    "SM_Prop_Cannon_02_Separate.glb",
+    "SM_Prop_Cannon_03.glb",
+    "SM_Prop_Cannon_03_Separate.glb",
+    "SM_Prop_Cannon_LowDetail_01.glb",
+    "SM_Prop_Cannon_Pole_01.glb",
+    "SM_Prop_Cart_01.glb",
+    "SM_Prop_Chest_01.glb",
+    "SM_Prop_Chest_02.glb",
+    "SM_Prop_Chest_03.glb",
+    "SM_Prop_Chest_Lid_01.glb",
+    "SM_Prop_Chest_Lid_02.glb",
+    "SM_Prop_Chest_Lid_03.glb",
+    "SM_Prop_Chest_Treasure_01.glb",
+    "SM_Prop_Chest_Treasure_02.glb",
+    "SM_Prop_Chest_Treasure_03.glb",
+    "SM_Prop_Chimney_01.glb",
+    "SM_Prop_Chimney_02.glb",
+    "SM_Prop_ClothesLine_01.glb",
+    "SM_Prop_Crane_01.glb",
+    "SM_Prop_Crane_02.glb",
+    "SM_Prop_Crane_03.glb",
+    "SM_Prop_Crane_Shark_01.glb",
+    "SM_Prop_Crank_01.glb",
+    "SM_Prop_Crate_01.glb",
+    "SM_Prop_Crate_02.glb",
+    "SM_Prop_Crate_03.glb",
+    "SM_Prop_Crate_04.glb",
+    "SM_Prop_Crate_05.glb",
+    "SM_Prop_Crate_06.glb",
+    "SM_Prop_Crate_Cannonballs_01.glb",
+    "SM_Prop_Crate_Covered_01.glb",
+    "SM_Prop_Debris_01.glb",
+    "SM_Prop_Debris_02.glb",
+    "SM_Prop_Debris_03.glb",
+    "SM_Prop_Door_01.glb",
+    "SM_Prop_Door_02.glb",
+    "SM_Prop_Door_03.glb",
+    "SM_Prop_Fence_01.glb",
+    "SM_Prop_Fence_02.glb",
+    "SM_Prop_Fence_03.glb",
+    "SM_Prop_Fence_04.glb",
+    "SM_Prop_Fence_05.glb",
+    "SM_Prop_FishRack_01.glb",
+    "SM_Prop_FishingRod_01.glb",
+    "SM_Prop_Fishing_Crate_01.glb",
+    "SM_Prop_FlowerHanging_01.glb",
+    "SM_Prop_FlowerHanging_02.glb",
+    "SM_Prop_Fountain_01.glb",
+    "SM_Prop_Gallows_01.glb",
+    "SM_Prop_Gallows_02.glb",
+    "SM_Prop_Gallows_Trapdoor_01.glb",
+    "SM_Prop_Gallows_Trapdoor_02.glb",
+    "SM_Prop_Gallows_Trapdoor_03.glb",
+    "SM_Prop_Grave_01.glb",
+    "SM_Prop_Grave_02.glb",
+    "SM_Prop_Grave_03.glb",
+    "SM_Prop_Grave_04.glb",
+    "SM_Prop_Grave_05.glb",
+    "SM_Prop_Ladder_01.glb",
+    "SM_Prop_Lantern_01.glb",
+    "SM_Prop_Lantern_02.glb",
+    "SM_Prop_Lantern_Attachment_01.glb",
+    "SM_Prop_Liferaft_01.glb",
+    "SM_Prop_Liferaft_Stand_01.glb",
+    "SM_Prop_LobsterPot_01.glb",
+    "SM_Prop_Oar_01.glb",
+    "SM_Prop_Parrot_01.glb",
+    "SM_Prop_Pillar_01.glb",
+    "SM_Prop_Planter_01.glb",
+    "SM_Prop_Planter_02.glb",
+    "SM_Prop_Pole_01.glb",
+    "SM_Prop_Pot_01.glb",
+    "SM_Prop_Raft_01.glb",
+    "SM_Prop_RoofFence_01.glb",
+    "SM_Prop_RoofFence_02.glb",
+    "SM_Prop_Rope_Fence_01.glb",
+    "SM_Prop_Rope_Hanging_01.glb",
+    "SM_Prop_Sack_01.glb",
+    "SM_Prop_Sack_02.glb",
+    "SM_Prop_Sack_03.glb",
+    "SM_Prop_Sack_04.glb",
+    "SM_Prop_Scrub_Brush_01.glb",
+    "SM_Prop_Scrub_Bucket_01.glb",
+    "SM_Prop_Scrub_Bucket_02.glb",
+    "SM_Prop_Scrub_Mop_01.glb",
+    "SM_Prop_Shanty_BuildingAttachment_01.glb",
+    "SM_Prop_Shanty_BuildingAttachment_02.glb",
+    "SM_Prop_Shanty_BuildingAttachment_03.glb",
+    "SM_Prop_Shanty_BuildingAttachment_04.glb",
+    "SM_Prop_ShipWheel_01.glb",
+    "SM_Prop_ShipWheel_02.glb",
+    "SM_Prop_ShipWheel_03.glb",
+    "SM_Prop_Shipwreck_01.glb",
+    "SM_Prop_Shipwreck_02.glb",
+    "SM_Prop_Shipwreck_03.glb",
+    "SM_Prop_Sign_Attachment_01.glb",
+    "SM_Prop_Sign_Attachment_02.glb",
+    "SM_Prop_Sign_Attachment_03.glb",
+    "SM_Prop_Skeleton_Cage_01.glb",
+    "SM_Prop_Skeleton_Cage_02.glb",
+    "SM_Prop_Skeleton_Chest_01.glb",
+    "SM_Prop_Skeleton_Chest_02.glb",
+    "SM_Prop_Skeleton_Ground_01.glb",
+    "SM_Prop_Skeleton_Ground_02.glb",
+    "SM_Prop_Skeleton_Ground_03.glb",
+    "SM_Prop_Skeleton_Shackle_01.glb",
+    "SM_Prop_Stack_01.glb",
+    "SM_Prop_Stack_02.glb",
+    "SM_Prop_Stack_03.glb",
+    "SM_Prop_Stack_04.glb",
+    "SM_Prop_Stack_05.glb",
+    "SM_Prop_Stack_06.glb",
+    "SM_Prop_StallCover_01.glb",
+    "SM_Prop_Stall_Cloth_01.glb",
+    "SM_Prop_Stall_Cloth_02.glb",
+    "SM_Prop_Stall_Cloth_03.glb",
+    "SM_Prop_Stall_Cloth_04.glb",
+    "SM_Prop_Stool_01.glb",
+    "SM_Prop_Stool_02.glb",
+    "SM_Prop_SugarCane_Holder_01.glb",
+    "SM_Prop_SugarCane_Holder_02.glb",
+    "SM_Prop_SugarCane_Pile_01.glb",
+    "SM_Prop_SugarCane_Pile_02.glb",
+    "SM_Prop_Table_01.glb",
+    "SM_Prop_Table_02.glb",
+    "SM_Prop_Table_03.glb",
+    "SM_Prop_TreasurePile_01.glb",
+    "SM_Prop_TreasurePile_02.glb",
+    "SM_Prop_TreasurePile_03.glb",
+    "SM_Prop_TreasurePile_04.glb",
+    "SM_Prop_Well_01.glb",
+    "SM_Prop_WindowBars_01.glb",
+    "SM_Prop_Window_01.glb",
+    "SM_Prop_Window_02.glb",
+    "SM_Prop_Window_03.glb",
+    "SM_Prop_Window_04.glb",
+    "SM_Prop_Window_Top_01.glb",
+    "SM_Prop_Window_Top_02.glb",
+    "SM_Prop_WoodPlank_01.glb",
+    "SM_Prop_WoodPlank_02.glb",
+    "SM_Veh_Boat_Medium_01_Hull.glb",
+    "SM_Veh_Boat_Medium_01_Hull_Pirate.glb",
+    "SM_Veh_Boat_Rowing_01_Hull.glb",
+    "SM_Veh_Boat_Rowing_01_Hull_Pirate.glb",
+    "SM_Veh_Boat_Small_01_Hull.glb",
+    "SM_Veh_Boat_Small_01_Hull_Pirate.glb",
+    "SM_Veh_Boat_Warship_01_Hull.glb",
+    "SM_Veh_Boat_Warship_01_Hull_Bare.glb",
+    "SM_Veh_Boat_Warship_01_Hull_Pirate.glb",
+    "SM_Veh_Boat_Warship_01_Hull_Pirate_Bare.glb",
+    "SM_Veh_Boat_Warship_01_Hull_Upsized.glb",
+    "SM_Veh_Boat_Warship_01_Hull_Upsized_Pirate.glb",
+    "SM_Veh_Extra_Barrel_01.glb",
+    "SM_Veh_Extra_Barrels_01.glb",
+    "SM_Veh_Extra_Cargo_01.glb",
+    "SM_Veh_Extra_Gun_01.glb",
+    "SM_Veh_Extra_Gun_01_Pirate.glb",
+    "SM_Veh_Veh_Boat_Large_01_Hull.glb",
+    "SM_Veh_Veh_Boat_Large_01_Hull_Pirate.glb",
+    "SM_Wep_Axe_01.glb",
+    "SM_Wep_BlunderBuss_01.glb",
+    "SM_Wep_BlunderBuss_01_Separate.glb",
+    "SM_Wep_BlunderBuss_02.glb",
+    "SM_Wep_BlunderBuss_02_Separate.glb",
+    "SM_Wep_Boarding_Spear_01.glb",
+    "SM_Wep_Broken_01.glb",
+    "SM_Wep_Cutlass_01.glb",
+    "SM_Wep_Cutlass_02.glb",
+    "SM_Wep_Cutlass_02_Sheath.glb",
+    "SM_Wep_Cutlass_03.glb",
+    "SM_Wep_Cutlass_03_Sheath.glb",
+    "SM_Wep_Cutlass_04.glb",
+    "SM_Wep_Cutlass_05.glb",
+    "SM_Wep_Dagger_01.glb",
+    "SM_Wep_Dagger_01_Sheath.glb",
+    "SM_Wep_Dagger_02.glb",
+    "SM_Wep_MusketPistol_01.glb",
+    "SM_Wep_MusketPistol_01_Separate.glb",
+    "SM_Wep_MusketPistol_02.glb",
+    "SM_Wep_MusketPistol_02_Separate.glb",
+    "SM_Wep_MusketPistol_03.glb",
+    "SM_Wep_MusketPistol_03_Separate.glb",
+    "SM_Wep_MusketPistol_04.glb",
+    "SM_Wep_MusketPistol_04_Separate.glb",
+    "SM_Wep_MusketPistol_05.glb",
+    "SM_Wep_MusketPistol_05_Separate.glb",
+    "SM_Wep_MusketPistol_DoubleBarrel_01.glb",
+    "SM_Wep_MusketPistol_DoubleBarrel_01_Separate.glb",
+    "SM_Wep_MusketPistol_DoubleBarrel_02.glb",
+    "SM_Wep_MusketPistol_DoubleBarrel_02_Separate.glb",
+    "SM_Wep_Pistol_01.glb",
+    "SM_Wep_Pistol_01_Separate.glb",
+    "SM_Wep_Pistol_02.glb",
+    "SM_Wep_Pistol_02_Separate.glb",
+    "SM_Wep_Pistol_DoubleBarrel_01.glb",
+    "SM_Wep_Pistol_DoubleBarrel_01_Separate.glb",
+    "SM_Wep_Rapier_01.glb",
+    "SM_Wep_Rapier_01_Sheath.glb",
+    "SM_Wep_Rifle_01.glb",
+    "SM_Wep_Rifle_01_Separate.glb",
+    "SM_Wep_Rifle_DoubleBarrel_01.glb",
+    "SM_Wep_Rifle_DoubleBarrel_01_Separate.glb",
+    "SM_Wep_Sabre_01.glb",
+    "SM_Wep_Sabre_02.glb",
+    "SM_Wep_Sabre_02_Sheath.glb",
+    "SM_Wep_Shortsword_01.glb",
+    "SM_Wep_Shortsword_01_Sheath.glb",
+    "SM_Wep_Shortsword_02.glb",
+    "SM_Wep_Wooden_01.glb",
+    "Shark.glb",
+    "SkyDome.glb"
+];
+        const ALL_LOCAL_ASSETS = [
+    "Blender_Hajomuhely.glb",
+    "Blender_Marketplace.glb",
+    "Blender_Masolomuhely.glb",
+    "Blender_The_Bank.glb",
+    "Hajomuhely_Blender.glb",
+    "Marketplace_Blender.glb",
+    "Masolomuhely_tekercsmester_Blender.glb",
+    "Meshy_AI_Haj\u00f3m\u0171hely_0421031854_generate.glb",
+    "Meshy_AI_HarbourHouse_0421033328_generate.glb",
+    "Meshy_AI_Marketplace_0421030909_generate.glb",
+    "Meshy_AI_Szentely_0421033637_generate.glb",
+    "Meshy_AI_Tavern_0421032123_generate.glb",
+    "Meshy_AI_The_Bank_0421032435_generate.glb",
+    "SM_Env_Rock_03_Foam.glb"
+];
+
+        let loadedFiles = [];
+        let currentFileIndex = -1;
+        let activeList = [];
+        let activeFolder = "";
+        let isUsingHttp = false;
+
+        // Fájlok listájának feldolgozása (szűrés .glb-re és rendezés név szerint)
+        function handleFileList(files) {
+            const glbFiles = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.glb'));
+            if (glbFiles.length === 0) {
+                alert('Nem található .glb fájl a kijelölésben!');
+                return;
+            }
+
+            // Ha egyetlen fájlt töltöttünk be, megpróbáljuk párosítani a beágyazott listákkal
+            if (glbFiles.length === 1) {
+                const singleFile = glbFiles[0];
+                const fileName = singleFile.name;
+                
+                let foundIndex = ALL_PIRATE_ASSETS.indexOf(fileName);
+                if (foundIndex !== -1) {
+                    activeList = ALL_PIRATE_ASSETS;
+                    activeFolder = '../assets/pirates_assets/';
+                    currentFileIndex = foundIndex;
+                    isUsingHttp = true;
+                    updateNavigationUI();
+                    loadLocalFile(singleFile);
+                    return;
+                }
+                
+                foundIndex = ALL_LOCAL_ASSETS.indexOf(fileName);
+                if (foundIndex !== -1) {
+                    activeList = ALL_LOCAL_ASSETS;
+                    activeFolder = '../assets/models/';
+                    currentFileIndex = foundIndex;
+                    isUsingHttp = true;
+                    updateNavigationUI();
+                    loadLocalFile(singleFile);
+                    return;
+                }
+
+                // Ha nem találtuk meg a listában, akkor sima egyedi fájl
+                loadedFiles = glbFiles;
+                currentFileIndex = 0;
+                isUsingHttp = false;
+                updateNavigationUI();
+                loadLocalFile(singleFile);
+            } else {
+                // Ha több fájlt vagy mappát választottunk ki egyszerre
+                glbFiles.sort((a, b) => a.name.localeCompare(b.name, 'hu'));
+                loadedFiles = glbFiles;
+                currentFileIndex = 0;
+                isUsingHttp = false;
+                updateNavigationUI();
+                loadLocalFile(loadedFiles[0]);
+            }
+        }
+
+        function updateNavigationUI() {
+            const counter = document.getElementById('file-counter');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            const total = isUsingHttp ? activeList.length : loadedFiles.length;
+            const current = currentFileIndex + 1;
+
+            if (total > 1) {
+                counter.innerText = current + ' / ' + total;
+                prevBtn.removeAttribute('disabled');
+                nextBtn.removeAttribute('disabled');
+            } else {
+                counter.innerText = total === 1 ? '1 / 1' : '0 / 0';
+                prevBtn.setAttribute('disabled', 'true');
+                nextBtn.setAttribute('disabled', 'true');
+            }
+        }
+
+        function stepFile(direction) {
+            const total = isUsingHttp ? activeList.length : loadedFiles.length;
+            if (total === 0) return;
+
+            currentFileIndex += direction;
+            if (currentFileIndex < 0) currentFileIndex = total - 1;
+            if (currentFileIndex >= total) {
+                currentFileIndex = 0;
+            }
+
+            updateNavigationUI();
+
+            if (isUsingHttp) {
+                loadHttpFile(activeFolder + activeList[currentFileIndex], activeList[currentFileIndex]);
+            } else {
+                loadLocalFile(loadedFiles[currentFileIndex]);
+            }
+        }
+
+        // Fájl drag-and-drop és tallózás beállítása
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const folderInput = document.getElementById('folder-input');
+
+            // Drag események megelőzése
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                window.addEventListener(eventName, e => e.preventDefault());
+                window.addEventListener(eventName, e => e.stopPropagation());
+            });
+
+            dropZone.addEventListener('dragover', () => dropZone.classList.add('dragover'));
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            
+            dropZone.addEventListener('drop', (e) => {
+                dropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileList(files);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleFileList(files);
+                }
+            });
+
+            folderInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleFileList(files);
+                }
+            });
+        }
+
+        // Modell betöltése HTTP URL-ről
+        function loadHttpFile(url, fileName) {
+            const loaderDiv = document.getElementById('loader');
+            loaderDiv.style.display = 'block';
+
+            // Előző modell eltávolítása
+            clearCurrentModel();
+
+            const loader = new THREE.GLTFLoader();
+            loader.load(url, function(gltf) {
+                currentModel = gltf.scene;
+                let polyCount = 0;
+                currentModel.traverse(node => {
+                    if (node.isMesh) {
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                        polyCount += node.geometry.attributes.position.count / 3;
+                        if (node.material) node.material.roughness = 0.6;
+                    }
+                });
+
+                scene.add(currentModel);
+                fitCameraToModel(currentModel);
+
+                document.getElementById('stats-panel').style.display = 'block';
+                document.getElementById('model-name').innerText = fileName;
+                document.getElementById('model-size').innerText = 'HTTP elérés';
+                document.getElementById('model-polys').innerText = Math.round(polyCount).toLocaleString();
+
+                loaderDiv.style.display = 'none';
+            }, undefined, function(error) {
+                console.error('Hiba a HTTP betöltés során:', error);
+                alert('Nem sikerült betölteni a fájlt a kiszolgálóról. Ellenőrizd a szimbolikus linket!');
+                loaderDiv.style.display = 'none';
+            });
+        }
+
+        function clearCurrentModel() {
+            if (currentModel) {
+                scene.remove(currentModel);
+                currentModel.traverse(node => {
+                    if (node.isMesh) {
+                        node.geometry.dispose();
+                        if (Array.isArray(node.material)) {
+                            node.material.forEach(m => m.dispose());
+                        } else {
+                            node.material.dispose();
+                        }
+                    }
+                });
+                currentModel = null;
+            }
+        }
+
+        // Modell betöltése helyi fájlból
+        function loadLocalFile(file) {
+            if (!file.name.toLowerCase().endsWith('.glb')) {
+                alert('Csak .glb fájlokat tudsz betölteni!');
+                return;
+            }
+
+            const loaderDiv = document.getElementById('loader');
+            loaderDiv.style.display = 'block';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const contents = e.target.result;
+
+                // Előző modell eltávolítása
+                if (currentModel) {
+                    scene.remove(currentModel);
+                    currentModel.traverse(node => {
+                        if (node.isMesh) {
+                            node.geometry.dispose();
+                            if (Array.isArray(node.material)) {
+                                node.material.forEach(m => m.dispose());
+                            } else {
+                                node.material.dispose();
+                            }
+                        }
+                    });
+                }
+
+                const loader = new THREE.GLTFLoader();
+                loader.parse(contents, '', function(gltf) {
+                    currentModel = gltf.scene;
+
+                    // Modell árnyékok és beállítások
+                    let polyCount = 0;
+                    currentModel.traverse(node => {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                            polyCount += node.geometry.attributes.position.count / 3;
+                            
+                            // Ha az anyagok nincsenek megfelelően beállítva, adunk nekik alap fémes / durva kinézetet
+                            if (node.material) {
+                                node.material.roughness = 0.6;
+                            }
+                        }
+                    });
+
+                    scene.add(currentModel);
+
+                    // Kamera igazítása a modell méretéhez
+                    fitCameraToModel(currentModel);
+
+                    // Statisztikák frissítése
+                    document.getElementById('stats-panel').style.display = 'block';
+                    document.getElementById('model-name').innerText = file.name;
+                    document.getElementById('model-size').innerText = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                    document.getElementById('model-polys').innerText = Math.round(polyCount).toLocaleString();
+
+                    loaderDiv.style.display = 'none';
+                }, function(error) {
+                    console.error('Hiba a betöltés során:', error);
+                    alert('Hiba a GLB fájl feldolgozása közben!');
+                    loaderDiv.style.display = 'none';
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Kamera automatikus beállítása a modell méreteihez
+        function fitCameraToModel(model) {
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+
+            // Modell középpontba helyezése a föld felett
+            model.position.x += (model.position.x - center.x);
+            model.position.z += (model.position.z - center.z);
+            model.position.y += (model.position.y - box.min.y); // Földre állítás
+
+            // Újraszámoljuk a Box-ot a mozgatás után
+            box.setFromObject(model);
+            box.getCenter(center);
+            
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const fov = camera.fov * (Math.PI / 180);
+            let cameraZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
+            cameraZ *= 1.5; // Kicsi ráhagyás
+
+            camera.position.set(center.x + cameraZ * 1.0, center.y + cameraZ * 0.8, center.z + cameraZ * 1.0);
+            
+            // Orbit vezérlők céljának átállítása a modell közepére
+            controls.target.copy(center);
+            
+            // Kamera vágási síkok korrigálása
+            camera.near = maxDim / 100;
+            camera.far = cameraZ * 10;
+            camera.updateProjectionMatrix();
+
+            // Rács méretének beállítása a modell méretéhez
+            if (gridHelper) {
+                scene.remove(gridHelper);
+                gridHelper = new THREE.GridHelper(maxDim * 3, 20, 0x8b5a2b, 0x4a2c0f);
+                gridHelper.position.y = -0.01;
+                scene.add(gridHelper);
+            }
+
+            controls.update();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

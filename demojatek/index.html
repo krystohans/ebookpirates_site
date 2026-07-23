@@ -913,58 +913,22 @@
         const rng = new PRNG(12345); // Fix seed!
 
         async function buildScene() {
-            // 1. Kikötő (Bázis) - GLB modell betöltése a Blenderből
+            // 1. Kikötő (Bázis) - A dizájn alapját képező Zöld Henger
             const loader = new THREE.GLTFLoader();
-            loader.load('../assets/models/SM_Bld_Fort_Base_03.glb', function (gltf) {
-                baseHarbor = gltf.scene;
-                
-                // Beállítjuk a helyzetét és felnagyítjuk 2x-esre (ahogy kérted)
-                baseHarbor.position.copy(BASE_POS);
-                baseHarbor.scale.set(2.0, 2.0, 2.0);
-                
-                baseHarbor.traverse(node => {
-                    if (node.isMesh) {
-                        node.receiveShadow = true;
-                        node.castShadow = true;
-                        
-                        // Megkeressük a hab gyűrűt, hogy animálhassuk a textúráját
-                        if (node.material && node.material.name === "FoamMaterial") {
-                            foamMaterials.push(node.material);
-                            node.material.transparent = true;
-                            node.material.blending = THREE.AdditiveBlending; // Tökéletes habos áttetszőség
-                            node.material.depthWrite = false; // Ne takarja ki a vizet (fekete bug javítása)
-                            node.material.color = new THREE.Color(0xaad4ff); // Tengerkék-fehér hab szín
-                            
-                            // A gyűrű Blenderben 30.5-ös sugarú volt a 30-as bázishoz képest. Szorosan rátapasztjuk:
-                            node.scale.set(0.985, 1.0, 0.985); 
-                        } else if (node.material && node.material.name === "StoneMaterial") {
-                            // Mivel most már tökéletes a Blender GLB export, hagyjuk, hogy a saját beágyazott textúráját használja!
-                            node.material.transparent = false;
-                            node.material.depthWrite = true;
-                            node.material.opacity = 1.0;
-                            // Fehéren hagyjuk, hogy a rásütött kép valós színe érvényesüljön!
-                            node.material.color = new THREE.Color(0xffffff);
-                            node.material.roughness = 0.9;
-                        }
-                    }
-                });
-
-                baseHarbor.boundingRadius = 60; // Eredetileg 30 volt, 2x-es szorzó -> 60
-                scene.add(baseHarbor);
-                obstacles.push(baseHarbor);
-                console.log("Bázis betöltve!");
-            }, undefined, function (error) {
-                console.error("Hiba a bázis betöltésekor:", error);
-                // Fallback, ha nem találja a fájlt (zöld henger)
-                const harborGeo = new THREE.CylinderGeometry(60, 60, 4, 32); // 2x méret: 30->60, 2->4
-                const harborMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32 });
-                baseHarbor = new THREE.Mesh(harborGeo, harborMat);
-                baseHarbor.position.copy(BASE_POS);
-                baseHarbor.receiveShadow = true;
-                baseHarbor.boundingRadius = 60;
-                scene.add(baseHarbor);
-                obstacles.push(baseHarbor);
-            });
+            const harborGeo = new THREE.CylinderGeometry(60, 60, 4, 32); 
+            const harborMat = new THREE.MeshStandardMaterial({ color: 0x2E7D32, roughness: 0.8 });
+            baseHarbor = new THREE.Mesh(harborGeo, harborMat);
+            baseHarbor.position.copy(BASE_POS);
+            baseHarbor.receiveShadow = true;
+            baseHarbor.castShadow = true;
+            baseHarbor.boundingRadius = 60;
+            scene.add(baseHarbor);
+            obstacles.push(baseHarbor);
+            console.log("Bázis (Zöld Henger) sikeresen betöltve!");
+            
+            // A henger tetejének abszolút y magassága a víz felett:
+            const topY = 2.0;
+            loadHarborDecorations(topY);
 
             // 2. Játékos csónakja
             playerBoat = new THREE.Group();
@@ -1365,6 +1329,81 @@
             }
 
             updateScoreBoard();
+        }
+
+        function loadHarborDecorations(topY) {
+            if (!baseHarbor) return;
+            
+            const loader = new THREE.GLTFLoader();
+            
+            function placeDeco(modelPath, offsetPos, scaleVal, rotY) {
+                loader.load(modelPath, function (gltf) {
+                    const obj = gltf.scene;
+                    
+                    // Pozíció: BASE_POS + eltolás. A magasság (y) a bázis teteje (topY) + eltolás.y
+                    obj.position.set(
+                        BASE_POS.x + offsetPos.x, 
+                        topY + offsetPos.y, 
+                        BASE_POS.z + offsetPos.z
+                    );
+                    
+                    // Skála: abszolút világskálát használunk (10x-es skála, arányos a 10x-es csónakkal!)
+                    obj.scale.set(scaleVal, scaleVal, scaleVal);
+                    obj.rotation.y = rotY;
+                    
+                    obj.traverse(node => {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                            if (node.material) {
+                                // A vertex beégetett színek engedélyezése (a csúcspontok hordozzák a színeket)
+                                node.material.vertexColors = true;
+                                
+                                // Fényesítő alapszín szorzó (1.5x-es értékek), hogy világosabb legyen a Linear színtérben, de tisztán polár fényként!
+                                if (node.material.color) {
+                                    node.material.color.setRGB(1.5, 1.5, 1.5);
+                                }
+                                
+                                // Nincs saját emissive fény (maradjon fekete, hogy a külső napfény világítsa be!)
+                                if (node.material.emissive) {
+                                    node.material.emissive.setHex(0x000000);
+                                    node.material.emissiveIntensity = 0.0;
+                                }
+                                
+                                node.material.roughness = 0.6;
+                                node.material.needsUpdate = true;
+                            }
+                        }
+                    });
+                    scene.add(obj);
+                    console.log("DEKORÁCIÓ SIKERESEN BETÖLTVE:", modelPath, "Pozíció:", obj.position);
+                }, undefined, function (err) {
+                    console.error("DEKORÁCIÓ BETÖLTÉSI HIBA:", modelPath, err);
+                });
+            }
+
+            // A csónak skálája 10.0. A dekorációknak is 400.0 körüli skála kell!
+            const baseScale = 400.0;
+
+            // 1. Fő kalóztanya (Shanty Preset 01) - hátul jobb oldalon
+            placeDeco('../assets/models/SM_Bld_Shanty_Preset_01.glb', new THREE.Vector3(25, -0.2, -25), baseScale, -Math.PI / 4);
+
+            // 2. Kisebb lakóviskó (Rickety House 01) - hátul bal oldalon
+            placeDeco('../assets/models/SM_Bld_Rickety_House_01.glb', new THREE.Vector3(-20, -0.2, -30), baseScale, Math.PI / 4);
+
+            // 3. Kalózzászló eltávolítva kérésre
+
+            // 4. Kikötői daru a víz felé nézve (Crane 02)
+            placeDeco('../assets/models/SM_Prop_Crane_02.glb', new THREE.Vector3(-36, -0.1, -10), baseScale, Math.PI / 2);
+
+            // 5. Nagy horgony a daru mellett
+            placeDeco('../assets/models/SM_Prop_Anchor_01.glb', new THREE.Vector3(-30, 0, 20), baseScale * 1.2, Math.PI / 3);
+
+            // 6. Szétszórt hordók, kincsesládák és rekeszek
+            placeDeco('../assets/models/SM_Prop_Chest_01.glb', new THREE.Vector3(-24, -0.1, -10), baseScale, -Math.PI / 6);
+            placeDeco('../assets/models/SM_Prop_Barrel_01.glb', new THREE.Vector3(-28, -0.1, -6), baseScale, 0);
+            placeDeco('../assets/models/SM_Prop_Barrel_02.glb', new THREE.Vector3(-30, -0.1, -8), baseScale, 0.5);
+            placeDeco('../assets/models/SM_Prop_Crate_01.glb', new THREE.Vector3(-20, -0.1, -16), baseScale, 0.2);
         }
 
         function spawnDiamond() {

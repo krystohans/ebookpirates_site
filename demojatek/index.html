@@ -1639,7 +1639,6 @@
                     if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
                     if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
                 }
-                if (document.getElementById('start-instruction')) document.getElementById('start-instruction').style.display = 'none';
             } else if (keys.s) {
                 boatSpeed -= 0.02; // Hátra
                 if (!gameStarted) {
@@ -1647,8 +1646,23 @@
                     if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
                     if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
                 }
+            } else if (keys.a || keys.d) {
+                // Kormányzásra is indulhasson el a játék
+                if (!gameStarted) {
+                    gameStarted = true;
+                    if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
+                    if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
+                }
             } else {
                 boatSpeed *= 0.95; // Súrlódás
+            }
+
+            // Ha elindult a játék, rejtsük el az indítási segédszöveget
+            if (gameStarted) {
+                const startInst = document.getElementById('start-instruction');
+                if (startInst && startInst.style.display !== 'none') {
+                    startInst.style.display = 'none';
+                }
             }
 
             // ---- HAJÓ HABCSÍKJA (WAKE TRAIL) ----
@@ -2317,6 +2331,12 @@
         // Automatikus indítás, ha Android vagy #mobile tesztmód fut
         if (isAndroid) {
             setupMobileControls();
+            
+            // Szöveg frissítése érintőképernyős irányításhoz
+            const startInst = document.getElementById('start-instruction');
+            if (startInst) {
+                startInst.innerHTML = "Érintsd meg és tartsd nyomva a képernyőt az induláshoz!<br><span style='font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;'>(Szedj össze hártyákat, és kerüld el a léghajót!)</span>";
+            }
         }
     </script>
     </script>

@@ -1738,22 +1738,25 @@
             placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Prop_Barrel_02.glb', new THREE.Vector3(-30, -0.1, -8), baseScale, 0.5);
             placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Prop_Crate_01.glb', new THREE.Vector3(-20, -0.1, -16), baseScale, 0.2);
 
-            // 7. Összefűzött rámpasor (Dock) a horgony mellől a vízbe kifutva a pálya középpontja felé
-            // A horgony mellől (-33, 0, 33) indul, és a pálya középpontja felé fut ki, 47-ig.
-            // a) Rickety Dock Platform a bázison a horgony mellett (y = 0 a bázis tetején)
-            placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Rickety_Dock_Platform.glb', new THREE.Vector3(-31, 0, 31), baseScale, 3 * Math.PI / 4);
+            // 7. Összefűzött egyszerű rámpasor (Dock) a horgonytól indulva a víz felé
+            // A horgony mellől (-33, 0, 33) indul, és kb. két hajóhossznyira kifut a vízbe (-57, -1.8, 57)
+            const dockScale = (baseScale * 1.2) / 10.0;
+            const dockRot = 3 * Math.PI / 4;
+
+            // a) Dock Platform a bázison a horgony mellett (y = 0 a bázis tetején)
+            placeDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-33, 0, 33), dockScale, dockRot);
             
             // b) Dock Bridge elem (híd)
-            placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_Bridge.glb', new THREE.Vector3(-35, -0.3, 35), baseScale, 3 * Math.PI / 4);
+            placeDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-39, -0.3, 39), dockScale, dockRot);
             
             // c) Dock Stairs lépcső elem (levezet a víz szintjére)
-            placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_Stairs.glb', new THREE.Vector3(-39, -0.8, 39), baseScale, 3 * Math.PI / 4);
+            placeDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-45, -0.8, 45), dockScale, dockRot);
             
             // d) Rickety Dock elem a víz felszínén
-            placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Rickety_Dock.glb', new THREE.Vector3(-43, -1.8, 43), baseScale, 3 * Math.PI / 4);
+            placeDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51, -1.8, 51), dockScale, dockRot);
             
             // e) Sima Dock szakasz kifutóként a víz felett
-            placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock.glb', new THREE.Vector3(-47, -1.8, 47), baseScale, 3 * Math.PI / 4);
+            placeDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-57, -1.8, 57), dockScale, dockRot);
         }
 
         function spawnDiamond() {

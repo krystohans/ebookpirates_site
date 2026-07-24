@@ -1743,20 +1743,20 @@
             const dockScale = (baseScale * 1.2) / 10.0;
             const dockRot = 3 * Math.PI / 4;
 
-            // a) Dock Platform a bázison a horgony mellett (y = 0 a bázis tetején)
-            placeDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-33, 0, 33), dockScale, dockRot);
+            // a) Dock Platform a bázison a horgony mellett (y = 0.3 a bázis tetején)
+            placeDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-33, 0.3, 33), dockScale, dockRot);
             
             // b) Dock Bridge elem (híd)
-            placeDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-39, -0.3, 39), dockScale, dockRot);
+            placeDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-39, 0, 39), dockScale, dockRot);
             
             // c) Dock Stairs lépcső elem (levezet a víz szintjére)
-            placeDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-45, -0.8, 45), dockScale, dockRot);
+            placeDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-45, -0.5, 45), dockScale, dockRot);
             
             // d) Rickety Dock elem a víz felszínén
-            placeDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51, -1.8, 51), dockScale, dockRot);
+            placeDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51, -1.5, 51), dockScale, dockRot);
             
             // e) Sima Dock szakasz kifutóként a víz felett
-            placeDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-57, -1.8, 57), dockScale, dockRot);
+            placeDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-57, -1.5, 57), dockScale, dockRot);
         }
 
         function spawnDiamond() {

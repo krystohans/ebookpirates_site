@@ -517,6 +517,117 @@
             width: 60px !important;
             height: 60px !important;
         }
+
+        /* ========================================= */
+        /* === Mobil Kvíz Panel stílusok === */
+        /* ========================================= */
+        .mobile-hud #quiz-overlay {
+            z-index: 130 !important; /* A legfelső rétegen legyen, még az infó panel felett is, ha kvíz van! */
+        }
+
+        .mobile-hud #quiz-panel {
+            background-image: none !important;
+            background-color: #fdf5e6 !important; /* Monokróm, tiszta háttér */
+            border: 4px solid #8b5a2b !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+            width: 95vw !important;
+            height: 90vh !important;
+            max-height: 90vh !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
+        /* Timer-bar sáv helyzete és szélessége */
+        .mobile-hud #timer-bar-container {
+            margin-top: 0 !important;
+            margin-bottom: 10px !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Mobil Kérdés szövegének beállítása */
+        .mobile-hud #quiz-question {
+            font-family: 'Georgia', serif !important;
+            color: #1a0f05 !important; /* Sötétbarna kontrasztos szín */
+            font-size: 20px !important;
+            font-weight: bold !important;
+            text-shadow: none !important;
+            border-bottom: 2px solid #8b5a2b !important;
+            padding-bottom: 10px !important;
+            margin: 10px 0 !important;
+            text-align: center !important;
+            width: 100% !important;
+            flex-shrink: 0 !important;
+            line-height: 1.4 !important;
+        }
+
+        /* Válasz gombok konténere mobilon flexbox-szal */
+        .mobile-hud .answer-buttons {
+            position: static !important; /* Kiszabadítjuk az abszolút pozícióból */
+            margin-top: 0 !important;
+            width: 100% !important;
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 12px !important;
+            padding: 5px 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Egyedi válasz gombok stílusa (Monokróm és kontrasztos) */
+        .mobile-hud .answer-btn {
+            background-color: #8b5a2b !important; /* Szép barna gomb */
+            color: #ffffff !important;
+            border: 2px solid #5c3a21 !important;
+            border-radius: 10px !important;
+            padding: 12px 10px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            font-family: 'Georgia', serif !important;
+            text-shadow: none !important;
+            width: 100% !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
+            box-sizing: border-box !important;
+            transition: background-color 0.2s, transform 0.1s !important;
+            display: block !important;
+            text-align: center !important;
+            line-height: 1.3 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Hover helyett aktív/koppintás állapot */
+        .mobile-hud .answer-btn:active {
+            background-color: #5c3a21 !important;
+            transform: scale(0.98) !important;
+        }
+
+        /* Fogadási/kockáztatási gombok elrendezése és stílusa */
+        .mobile-hud #betting-area {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+            margin-top: auto !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Speciális kockázató gomb színek */
+        .mobile-hud .bet-btn-yes {
+            background-color: #d4af37 !important; /* Arany a kockázatáshoz */
+            color: #1a0f05 !important;
+            border-color: #aa8010 !important;
+        }
+        
+        .mobile-hud .bet-btn-no {
+            background-color: #708090 !important; /* Szürke a sima kérdéshez */
+            color: #ffffff !important;
+            border-color: #4f5d6a !important;
+        }
     </style>
 </head>
 

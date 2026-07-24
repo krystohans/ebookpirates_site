@@ -518,6 +518,16 @@
             height: 60px !important;
         }
 
+        /* Hangszabályozás mobilon az infó panelen belül */
+        .mobile-hud #info-sound-controls {
+            display: flex !important;
+        }
+
+        .mobile-hud #info-ambient-toggle:active,
+        .mobile-hud #info-music-toggle:active {
+            transform: scale(0.9);
+        }
+
         /* ========================================= */
         /* === Mobil Kvíz Panel stílusok === */
         /* ========================================= */
@@ -722,6 +732,11 @@
                         vagy az ellenségtől. A kikötőben megjelenő pecsétre kattintva visszatérhetsz a fedélzetre,
                         lementve
                         a hártyákat és a csónakod állapotát.</p>
+                </div>
+                <!-- Hangkezelő gombok mobilon az infó panel alján -->
+                <div id="info-sound-controls" style="display: none; justify-content: center; align-items: center; gap: 30px; margin-top: 15px; border-top: 1px solid rgba(139, 90, 43, 0.3); padding-top: 10px;">
+                    <div id="info-ambient-toggle" style="width: 50px; height: 50px; cursor: pointer; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;"></div>
+                    <div id="info-music-toggle" style="width: 44px; height: 44px; cursor: pointer; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;"></div>
                 </div>
             </div>
 
@@ -1786,14 +1801,19 @@
         let isMusicPlaying = false;
 
         function toggleMusic() {
+            const infoMusicBtn = document.getElementById('info-music-toggle');
             if (isMusicPlaying) {
                 bgMusic.pause();
                 isMusicPlaying = false;
-                musicToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+                const muteImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+                musicToggleBtn.style.backgroundImage = muteImg;
+                if (infoMusicBtn) infoMusicBtn.style.backgroundImage = muteImg;
             } else {
                 bgMusic.play().catch(e => console.log("Zene lejátszása blokkolva:", e));
                 isMusicPlaying = true;
-                musicToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')";
+                const onImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')";
+                musicToggleBtn.style.backgroundImage = onImg;
+                if (infoMusicBtn) infoMusicBtn.style.backgroundImage = onImg;
             }
         }
 
@@ -1812,14 +1832,19 @@
         let isAmbientPlaying = false;
 
         function toggleAmbient() {
+            const infoAmbientBtn = document.getElementById('info-ambient-toggle');
             if (isAmbientPlaying) {
                 ambientSound.pause();
                 isAmbientPlaying = false;
-                ambientToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+                const muteImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+                ambientToggleBtn.style.backgroundImage = muteImg;
+                if (infoAmbientBtn) infoAmbientBtn.style.backgroundImage = muteImg;
             } else {
                 ambientSound.play().catch(e => console.log("Háttérzaj lejátszása blokkolva:", e));
                 isAmbientPlaying = true;
-                ambientToggleBtn.style.backgroundImage = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')";
+                const onImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')";
+                ambientToggleBtn.style.backgroundImage = onImg;
+                if (infoAmbientBtn) infoAmbientBtn.style.backgroundImage = onImg;
             }
         }
 
@@ -1852,6 +1877,36 @@
             });
             closeInfoBtn.addEventListener('mouseenter', () => closeInfoBtn.style.transform = 'translateX(-50%) scale(1.1)');
             closeInfoBtn.addEventListener('mouseleave', () => closeInfoBtn.style.transform = 'translateX(-50%) scale(1)');
+        }
+
+        // Info panelen belüli hangkezelő gombok inicializálása és eseménykezelői
+        const infoMusicBtn = document.getElementById('info-music-toggle');
+        const infoAmbientBtn = document.getElementById('info-ambient-toggle');
+
+        if (infoMusicBtn) {
+            infoMusicBtn.style.backgroundImage = isMusicPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+            infoMusicBtn.addEventListener('click', (e) => {
+                toggleMusic();
+                window.focus();
+            });
+            infoMusicBtn.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                toggleMusic();
+                window.focus();
+            });
+        }
+
+        if (infoAmbientBtn) {
+            infoAmbientBtn.style.backgroundImage = isAmbientPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+            infoAmbientBtn.addEventListener('click', (e) => {
+                toggleAmbient();
+                window.focus();
+            });
+            infoAmbientBtn.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                toggleAmbient();
+                window.focus();
+            });
         }
 
         window.addEventListener('keydown', e => {
@@ -2581,7 +2636,9 @@
                     e.target.closest('button') || e.target.closest('input') || 
                     e.target.id === 'start-instruction' || e.target.closest('#start-instruction') ||
                     e.target.id === 'info-toggle' || e.target.closest('#info-toggle') ||
-                    e.target.id === 'close-info-btn' || e.target.closest('#close-info-btn')) {
+                    e.target.id === 'close-info-btn' || e.target.closest('#close-info-btn') ||
+                    e.target.id === 'info-music-toggle' || e.target.closest('#info-music-toggle') ||
+                    e.target.id === 'info-ambient-toggle' || e.target.closest('#info-ambient-toggle')) {
                     return;
                 }
                 

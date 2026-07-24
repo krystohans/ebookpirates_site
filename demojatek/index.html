@@ -361,6 +361,96 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* ========================================= */
+        /* === Mobil HUD egyszerűsített fejléc === */
+        /* ========================================= */
+        .mobile-hud #top-bar {
+            top: 10px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: auto !important;
+            height: auto !important;
+            background: rgba(44, 26, 15, 0.85) !important;
+            border: 2px solid #8b5a2b !important;
+            border-radius: 12px !important;
+            padding: 8px 16px !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
+            background-image: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 15px !important;
+            z-index: 15 !important;
+        }
+
+        .mobile-hud #top-bar h1 {
+            display: none !important; /* "Hártyavadász" szöveg elrejtése */
+        }
+
+        .mobile-hud #score-board {
+            gap: 15px !important;
+            font-size: 18px !important;
+            color: #fffbcc !important;
+        }
+
+        .mobile-hud .score-item {
+            gap: 2px !important;
+        }
+
+        .mobile-hud .score-item img {
+            display: none !important; /* Eredeti ikonképek elrejtése */
+        }
+
+        /* Mobil rövídítések beszúrása a képek helyett */
+        .mobile-hud .score-item::before {
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            color: #fffbcc;
+            margin-right: 4px;
+            font-size: 18px;
+        }
+
+        .mobile-hud .score-item[data-tooltip="Csónak élettartama"]::before {
+            content: "HP: ";
+        }
+
+        .mobile-hud .score-item[data-tooltip="Hártyák a csónakon"]::before {
+            content: "L: ";
+        }
+
+        .mobile-hud .score-item[data-tooltip="Hártyák a bázison"]::before {
+            content: "B: ";
+        }
+
+        /* Hangszabályozó gombok eltüntetése */
+        .mobile-hud #ambient-toggle,
+        .mobile-hud #music-toggle {
+            display: none !important;
+        }
+
+        /* Információs gomb átpozícionálása és méretezése */
+        .mobile-hud #info-toggle {
+            top: 10px !important;
+            left: 10px !important;
+            width: 44px !important;
+            height: 44px !important;
+            z-index: 20 !important;
+        }
+
+        /* Kamera / Hajókormány váltógomb áthelyezése a jobb felső sarokba */
+        .mobile-hud #mobile-mode-btn {
+            position: absolute !important;
+            top: 10px !important;
+            right: 10px !important;
+            bottom: auto !important;
+            left: auto !important;
+            width: 44px !important;
+            height: 44px !important;
+            font-size: 22px !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important;
+            z-index: 20 !important;
+        }
     </style>
 </head>
 
@@ -2344,6 +2434,7 @@
 
         // Automatikus indítás, ha Android vagy #mobile tesztmód fut
         if (isAndroid) {
+            document.body.classList.add('mobile-hud');
             setupMobileControls();
             
             // Szöveg frissítése érintőképernyős irányításhoz

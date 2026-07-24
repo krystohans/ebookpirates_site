@@ -2452,17 +2452,19 @@
             });
         }
 
-        // Automatikus indítás, ha Android vagy #mobile tesztmód fut
-        if (isAndroid) {
-            document.body.classList.add('mobile-hud');
-            setupMobileControls();
-            
-            // Szöveg frissítése érintőképernyős irányításhoz
-            const startInst = document.getElementById('start-instruction');
-            if (startInst) {
-                startInst.innerHTML = "Koppints erre a táblára az induláshoz!<br><span style='font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;'>(Szedj össze hártyákat, és kerüld el a léghajót!)</span>";
+        // Automatikus indítás, ha Android vagy #mobile tesztmód fut (csak a DOM betöltődése után!)
+        window.addEventListener('DOMContentLoaded', () => {
+            if (isAndroid) {
+                document.body.classList.add('mobile-hud');
+                setupMobileControls();
+                
+                // Szöveg frissítése érintőképernyős irányításhoz
+                const startInst = document.getElementById('start-instruction');
+                if (startInst) {
+                    startInst.innerHTML = "Koppints erre a táblára az induláshoz!<br><span style='font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;'>(Szedj össze hártyákat, és kerüld el a léghajót!)</span>";
+                }
             }
-        }
+        });
 
         // Biztonsági tartalék képernyőkoppintásra való indításhoz (minden mobil/érintős eszközhöz)
         window.addEventListener('touchstart', () => {

@@ -754,6 +754,10 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Water.js"></script>
 
     <script>
+        // Mobil/Android érzékelés legfelül (hogy a buildScene és a renderer is lássa a beállításokat)
+        const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 0) || window.location.hash === '#mobile';
+        let mobileMode = 'boat'; // 'boat' vagy 'camera'
+
         // ==========================================
         // 1. GLOBÁLIS VÁLTOZÓK ÉS KOMMUNIKÁCIÓ
         // ==========================================
@@ -937,10 +941,13 @@
         let cameraAngle = Math.PI / 4; // Orbit szög (kezdésnek 45 fok hátulról)
         const CAMERA_PITCH = Math.PI / 4; // 45 fokos dőlésszög lefelé
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // Mobilon kikapcsoljuk az élsimítást (antialias), ami sokat javít a teljesítményen
+        const renderer = new THREE.WebGLRenderer({ antialias: !isAndroid });
+        // Mobilon a pixelRatio-t fixen 1.0-ra állítjuk, hogy ne rendereljen feleslegesen nagy felbontásban, asztalin max 2-re korlátozzuk a 4K lag ellen
+        renderer.setPixelRatio(isAndroid ? 1.0 : Math.min(window.devicePixelRatio, 2));
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
+        // Mobilon letiltjuk az árnyékokat a folyamatos, laggolásmentes futásért
+        renderer.shadowMap.enabled = !isAndroid;
         container.appendChild(renderer.domElement);
 
         // Fény (Egyetlen Nap)
@@ -948,34 +955,49 @@
         scene.add(ambientLight);
         const sunLight = new THREE.DirectionalLight(0xffeedd, 1.0);
         sunLight.position.set(100, 200, 50);
-        sunLight.castShadow = true;
-        sunLight.shadow.camera.left = -200;
-        sunLight.shadow.camera.right = 200;
-        sunLight.shadow.camera.top = 200;
-        sunLight.shadow.camera.bottom = -200;
-        sunLight.shadow.camera.far = 500;
+        sunLight.castShadow = !isAndroid;
+        if (!isAndroid) {
+            sunLight.shadow.camera.left = -200;
+            sunLight.shadow.camera.right = 200;
+            sunLight.shadow.camera.top = 200;
+            sunLight.shadow.camera.bottom = -200;
+            sunLight.shadow.camera.far = 500;
+        }
         scene.add(sunLight);
 
         // Víz felület (Brutálisan megnövelve 3000-re, hogy a ritkább ködben se látszódjon a széle)
         const waterGeo = new THREE.PlaneGeometry(3000, 3000, 128, 128);
-        let water = new THREE.Water(
-            waterGeo,
-            {
-                textureWidth: 512,
-                textureHeight: 512,
-                waterNormals: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/waternormals.jpg', function (texture) {
-                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                    texture.repeat.set(300, 300); // 3x akkora a tenger, a textúra is triplázva lett
-                }),
-                sunDirection: sunLight.position.clone().normalize(),
-                sunColor: 0x4466aa, // Lágy kék napfény, hogy a hullámok szélei látszódjanak, de ne legyen vakító fehér folt
-                waterColor: 0x005588,
-                distortionScale: 8.0, // Erősítjük a fodorzódást, hogy mozgónak tűnjön!
-                size: 25.0,
-                alpha: 0.9,
-                fog: scene.fog !== undefined
-            }
-        );
+        let water;
+        if (isAndroid) {
+            // Szuper-könnyű tenger mobilra, hogy ne kelljen tükröződést számolni és ne laggoljon a GPU!
+            const waterMat = new THREE.MeshStandardMaterial({
+                color: 0x005588,
+                roughness: 0.15,
+                metalness: 0.1,
+                transparent: true,
+                opacity: 0.95
+            });
+            water = new THREE.Mesh(waterGeo, waterMat);
+        } else {
+            water = new THREE.Water(
+                waterGeo,
+                {
+                    textureWidth: 512,
+                    textureHeight: 512,
+                    waterNormals: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/waternormals.jpg', function (texture) {
+                        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                        texture.repeat.set(300, 300); // 3x akkora a tenger, a textúra is triplázva lett
+                    }),
+                    sunDirection: sunLight.position.clone().normalize(),
+                    sunColor: 0x4466aa, // Lágy kék napfény, hogy a hullámok szélei látszódjanak, de ne legyen vakító fehér folt
+                    waterColor: 0x005588,
+                    distortionScale: 8.0, // Erősítjük a fodorzódást, hogy mozgónak tűmjön!
+                    size: 25.0,
+                    alpha: 0.9,
+                    fog: scene.fog !== undefined
+                }
+            );
+        }
         water.rotation.x = -Math.PI / 2;
         scene.add(water);
 
@@ -1572,8 +1594,6 @@
         // 3. JÁTÉK LOGIKA ÉS IRÁNYÍTÁS
         // ==========================================
         const keys = { w: false, a: false, s: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false };
-        const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 0) || window.location.hash === '#mobile';
-        let mobileMode = 'boat'; // 'boat' vagy 'camera'
 
         // Indítás gomb/tábla funkciója (mobilon és asztalin is működik)
         function startGameFromInstruction() {

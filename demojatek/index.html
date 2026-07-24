@@ -1862,8 +1862,23 @@
         const infoToggleBtn = document.getElementById('info-toggle');
         const closeInfoBtn = document.getElementById('close-info-btn');
 
+        // Info panelen belüli hangkezelő gombok referenciái
+        const infoMusicBtn = document.getElementById('info-music-toggle');
+        const infoAmbientBtn = document.getElementById('info-ambient-toggle');
+
+        // Segédfüggvény az infó panelen belüli ikonok aktuális állapotának szinkronizálására
+        function syncInfoSoundIcons() {
+            if (infoMusicBtn) {
+                infoMusicBtn.style.backgroundImage = isMusicPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+            }
+            if (infoAmbientBtn) {
+                infoAmbientBtn.style.backgroundImage = isAmbientPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+            }
+        }
+
         if (infoToggleBtn) {
             infoToggleBtn.addEventListener('click', () => {
+                syncInfoSoundIcons(); // Megnyitáskor szinkronizáljuk a gombok képeit
                 infoOverlay.style.display = 'flex';
             });
             infoToggleBtn.addEventListener('mouseenter', () => infoToggleBtn.style.transform = 'scale(1.1)');
@@ -1879,31 +1894,16 @@
             closeInfoBtn.addEventListener('mouseleave', () => closeInfoBtn.style.transform = 'translateX(-50%) scale(1)');
         }
 
-        // Info panelen belüli hangkezelő gombok inicializálása és eseménykezelői
-        const infoMusicBtn = document.getElementById('info-music-toggle');
-        const infoAmbientBtn = document.getElementById('info-ambient-toggle');
-
+        // Info panelen belüli gombok kattintási eseményei (touchstart letiltva a duplázódás elkerülésére, a click emuláció működik)
         if (infoMusicBtn) {
-            infoMusicBtn.style.backgroundImage = isMusicPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
             infoMusicBtn.addEventListener('click', (e) => {
-                toggleMusic();
-                window.focus();
-            });
-            infoMusicBtn.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
                 toggleMusic();
                 window.focus();
             });
         }
 
         if (infoAmbientBtn) {
-            infoAmbientBtn.style.backgroundImage = isAmbientPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
             infoAmbientBtn.addEventListener('click', (e) => {
-                toggleAmbient();
-                window.focus();
-            });
-            infoAmbientBtn.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
                 toggleAmbient();
                 window.focus();
             });

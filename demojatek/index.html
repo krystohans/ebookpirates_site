@@ -571,7 +571,7 @@
             margin-top: 0 !important;
             width: 100% !important;
             flex: 1 !important;
-            display: flex !important;
+            display: flex; /* Nincs !important, hogy a JS le tudja tiltani! */
             flex-direction: column !important;
             justify-content: center !important;
             gap: 12px !important;
@@ -606,14 +606,9 @@
             transform: scale(0.98) !important;
         }
 
-        /* Fogadási/kockáztatási gombok elrendezése és stílusa */
+        /* Mobilon teljesen elrejtjük a tétválasztó sávot a játékmenet egyszerűsítéséért */
         .mobile-hud #betting-area {
-            width: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 12px !important;
-            margin-top: auto !important;
-            flex-shrink: 0 !important;
+            display: none !important;
         }
 
         /* Speciális kockázató gomb színek */
@@ -943,6 +938,7 @@
         const shipId = urlParams.get('shipId');
 
         let quizQuestions = [];
+        let currentActiveQuestion = null;
         let scoreOnBoat = 0;
         let baseHarborScore = 0;
         let boatDurability = 10;
@@ -2258,15 +2254,17 @@
 
             usedQuestionIndexes.push(q.rowIndex);
             correctAnswer = q.correctAnswer;
-
-            document.getElementById('quiz-question').innerText = q.question;
+            currentActiveQuestion = q; // Elmentjük, hogy a tétválasztás után fel tudjuk fedni a kérdést
             currentAnswers = [q.correctAnswer, ...q.incorrectAnswers].sort(() => Math.random() - 0.5);
 
-            if (q.isStaked && scoreOnBoat > 0) {
+            if (!isAndroid && q.isStaked && scoreOnBoat > 0) {
+                // TÉTES KÉRDÉSNÉL NEM mutatjuk meg előre a kérdést, csak a tétválasztót! (Csak PC-n)
+                document.getElementById('quiz-question').innerText = "TÉTES KÉRDÉS KÖVETKEZIK!\nKockáztatod a csónakon lévő hártyáidat egy Dupla vagy Semmi játékban?";
                 document.getElementById('answer-buttons').style.display = 'none';
-                document.getElementById('betting-area').style.display = 'block';
+                document.getElementById('betting-area').style.display = 'flex';
             } else {
                 isDoubleOrNothingActive = false;
+                document.getElementById('quiz-question').innerText = q.question;
                 showAnswerButtons();
             }
 
@@ -2283,9 +2281,15 @@
 
         function showAnswerButtons() {
             document.getElementById('betting-area').style.display = 'none';
+            
+            // Felfedjük a valódi kérdést, miután döntött a játékos a tétről!
+            if (currentActiveQuestion) {
+                document.getElementById('quiz-question').innerText = currentActiveQuestion.question;
+            }
+
             let btnContainer = document.getElementById('answer-buttons');
             btnContainer.innerHTML = '';
-            btnContainer.style.display = 'grid';
+            btnContainer.style.display = isAndroid ? 'flex' : 'grid';
 
             currentAnswers.forEach(ans => {
                 let btn = document.createElement('button');

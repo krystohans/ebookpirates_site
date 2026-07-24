@@ -451,6 +451,67 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important;
             z-index: 20 !important;
         }
+
+        /* ========================================= */
+        /* === Mobil Info Panel és szövegdoboz === */
+        /* ========================================= */
+        .mobile-hud #info-panel {
+            background-image: none !important;
+            background-color: #fdf5e6 !important; /* Nagy kontrasztú pergament tónusú háttér */
+            border: 4px solid #8b5a2b !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+            width: 95vw !important;
+            height: 90vh !important;
+            max-height: 90vh !important;
+            box-sizing: border-box !important;
+        }
+
+        /* A szövegdoboz kitölti a panelt mobilon */
+        .mobile-hud #info-panel > div:first-of-type {
+            position: static !important;
+            transform: none !important;
+            width: 100% !important;
+            height: calc(100% - 100px) !important; /* Hely a bezárógombnak */
+            box-sizing: border-box !important;
+            padding: 25px 20px 10px 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .mobile-hud #info-panel h2 {
+            display: none !important; /* Az eredeti H2 elrejtése, a mobilszöveg tartalmazza a címet */
+        }
+
+        .mobile-hud #info-scroll-container {
+            font-family: 'Georgia', serif !important;
+            color: #1a0f05 !important; /* Sötétbarna, kontrasztos szöveg */
+            font-size: 16px !important;
+            line-height: 1.5 !important;
+            text-align: left !important;
+            flex: 1 !important;
+            overflow-y: auto !important;
+        }
+
+        .mobile-hud #info-scroll-container p {
+            margin: 8px 0 !important;
+        }
+
+        .mobile-hud #info-scroll-container ul {
+            margin: 5px 0 !important;
+            padding-left: 20px !important;
+        }
+
+        .mobile-hud #info-scroll-container li {
+            margin: 3px 0 !important;
+        }
+
+        /* Bezáró gomb igazítása mobilon */
+        .mobile-hud #close-info-btn {
+            bottom: 15px !important;
+            width: 60px !important;
+            height: 60px !important;
+        }
     </style>
 </head>
 
@@ -943,8 +1004,8 @@
 
         // Mobilon kikapcsoljuk az élsimítást (antialias), ami sokat javít a teljesítményen
         const renderer = new THREE.WebGLRenderer({ antialias: !isAndroid });
-        // Mobilon a pixelRatio-t fixen 1.0-ra állítjuk, hogy ne rendereljen feleslegesen nagy felbontásban, asztalin max 2-re korlátozzuk a 4K lag ellen
-        renderer.setPixelRatio(isAndroid ? 1.0 : Math.min(window.devicePixelRatio, 2));
+        // Mobilon a pixelRatio-t 0.75-re csökkentjük a gyenge GPU-k tehermentesítésére, asztalin max 2-re korlátozzuk a 4K lag ellen
+        renderer.setPixelRatio(isAndroid ? 0.75 : Math.min(window.devicePixelRatio, 2));
         renderer.setSize(window.innerWidth, window.innerHeight);
         // Mobilon letiltjuk az árnyékokat a folyamatos, laggolásmentes futásért
         renderer.shadowMap.enabled = !isAndroid;
@@ -965,8 +1026,8 @@
         }
         scene.add(sunLight);
 
-        // Víz felület (Brutálisan megnövelve 3000-re, hogy a ritkább ködben se látszódjon a széle)
-        const waterGeo = new THREE.PlaneGeometry(3000, 3000, 128, 128);
+        // Víz felület (Mobilon minimális 1x1-es felosztással a 32 ezer háromszög helyett, hogy ne laggoljon a GPU)
+        const waterGeo = isAndroid ? new THREE.PlaneGeometry(3000, 3000, 1, 1) : new THREE.PlaneGeometry(3000, 3000, 128, 128);
         let water;
         if (isAndroid) {
             // Szuper-könnyű tenger mobilra, hogy ne kelljen tükröződést számolni és ne laggoljon a GPU!
@@ -2462,6 +2523,36 @@
                 const startInst = document.getElementById('start-instruction');
                 if (startInst) {
                     startInst.innerHTML = "Koppints erre a táblára az induláshoz!<br><span style='font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;'>(Szedj össze hártyákat, és kerüld el a léghajót!)</span>";
+                }
+
+                // Információs szöveg frissítése mobilra (kedvcsináló és érintőképernyős irányítás)
+                const infoContainer = document.getElementById('info-scroll-container');
+                if (infoContainer) {
+                    infoContainer.innerHTML = `
+                        <p style="color: #8b0000; font-weight: bold; font-size: 22px; text-align: center; border-bottom: 2px solid #8b5a2b; padding-bottom: 8px; margin-top: 0;">
+                            📱 Mobil verzió (Kedvcsináló)
+                        </p>
+                        <p>Ez a játék a teljes asztali élmény egy egyszerűsített, mobilos kedvcsinálója. <strong>A teljes, sokkal látványosabb és zökkenőmentesebb verzióért próbáld ki a játékot asztali (PC) böngészőben!</strong></p>
+                        
+                        <p><strong>Mobil irányítás (X-felosztás):</strong></p>
+                        <ul>
+                            <li><strong>Hajó irányítás módban (📷 gomb aktív):</strong> Érintsd meg a képernyőt a haladáshoz és kormányzáshoz!
+                                <ul>
+                                    <li><strong>Fent:</strong> Előrehaladás</li>
+                                    <li><strong>Lent:</strong> Hátramenet</li>
+                                    <li><strong>Balra / Jobbra:</strong> Kormányzás</li>
+                                </ul>
+                            </li>
+                            <li><strong>Kamera módban (☸️ gomb aktív):</strong>
+                                <ul>
+                                    <li><strong>Fent / Lent:</strong> Közelítés / Távolítás</li>
+                                    <li><strong>Balra / Jobbra:</strong> Kamera forgatása</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        <p><strong>Cél:</strong> Gyűjts össze minél több hártyát a tengeren a kérdések helyes megválaszolásával, és kerüld el a közeledő ellenséges léghajót! Vidd vissza a hártyákat a bázisra (zöld henger) a pontok mentéséhez!</p>
+                    `;
                 }
             }
         });

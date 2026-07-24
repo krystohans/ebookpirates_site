@@ -435,7 +435,12 @@
             left: 10px !important;
             width: 44px !important;
             height: 44px !important;
-            z-index: 20 !important;
+            z-index: 110 !important; /* Magasabb z-index, mint a mobil irányító réteg (100) */
+        }
+
+        /* Mobil információs háttér/overlay z-index növelése */
+        .mobile-hud #info-overlay {
+            z-index: 120 !important; /* Mindent lefedő panel */
         }
 
         /* Kamera / Hajókormány váltógomb áthelyezése a jobb felső sarokba */
@@ -2456,10 +2461,12 @@
             }
 
             window.addEventListener('touchstart', (e) => {
-                // UI elemeken (gombok, inputok, modalok, indító tábla) ne tiltsuk le az alapértelmezett kattintásokat
+                // UI elemeken (gombok, inputok, modalok, indító tábla, info gombok) ne tiltsuk le az alapértelmezett kattintásokat
                 if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || 
                     e.target.closest('button') || e.target.closest('input') || 
-                    e.target.id === 'start-instruction' || e.target.closest('#start-instruction')) {
+                    e.target.id === 'start-instruction' || e.target.closest('#start-instruction') ||
+                    e.target.id === 'info-toggle' || e.target.closest('#info-toggle') ||
+                    e.target.id === 'close-info-btn' || e.target.closest('#close-info-btn')) {
                     return;
                 }
                 

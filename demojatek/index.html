@@ -1274,8 +1274,7 @@
                         node.castShadow = true;
                         node.receiveShadow = true;
                         if (node.material) {
-                            node.material.emissive = new THREE.Color(0x333333); // Világosítás (derítés)
-                            node.material.emissiveIntensity = 1.0;
+                            // Plusz fényesség eltávolítva kérésre
                         }
                     }
                 });

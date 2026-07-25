@@ -2010,7 +2010,7 @@
             const scrollZone = new THREE.Object3D();
             scrollZone.position.set(x, 0, z);
 
-            const pointLight = new THREE.PointLight(0xffaa33, 1.2, 15);
+            const pointLight = new THREE.PointLight(0xffaa33, 3.5, 25);
             pointLight.position.set(0, 0.8, 0);
             scrollZone.add(pointLight);
 
@@ -2884,7 +2884,7 @@
                 // Finom meleg gyertyafény pislákolás (flickering effect)
                 let light = d.children.find(c => c.isPointLight);
                 if (light) {
-                    light.intensity = 0.8 + Math.sin(t * 6.0 + d.position.x) * 0.35 + Math.random() * 0.1;
+                    light.intensity = 2.5 + Math.sin(t * 6.0 + d.position.x) * 1.0 + Math.random() * 0.2;
                 }
             }
 

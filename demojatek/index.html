@@ -919,8 +919,8 @@
                             enemyShip.position.set(-200, 20, 200);
                         }
                         if (playerBoat && typeof BASE_POS !== 'undefined') {
-                            // Korrekció: a kiindulási helyre rakjuk vissza a csónakot, hogy ne ragadjon be a bázis hengerébe (sugár: 60)
-                            playerBoat.position.set(BASE_POS.x - 50, 0, BASE_POS.z + 50);
+                            // Korrekció: a kiindulási helyre rakjuk vissza a csónakot az eredeti rámpa utolsó eleme mellé jobbra
+                            playerBoat.position.set(BASE_POS.x - 45, 0, BASE_POS.z + 62);
                         }
                         isCaughtByAirship = false;
                         isGameOver = false;
@@ -1248,7 +1248,7 @@
 
             // 2. Játékos csónakja
             playerBoat = new THREE.Group();
-            playerBoat.position.set(BASE_POS.x - 45, 0, BASE_POS.z + 62); // Közvetlenül az eredeti rámpa utolsó eleme mellett jobbra, biztonságos és esztétikus induláshoz
+            playerBoat.position.set(BASE_POS.x - 45, 0, BASE_POS.z + 62); // Esztétikus indulási pozíció közvetlenül a rámpa mellett
             scene.add(playerBoat);
             // A loader már deklarálva van feljebb a bázisnál, így itt is tudjuk használni!
             
@@ -1755,7 +1755,8 @@
                 scene.add(chainGroup);
 
                 // Belső placeDeco: a chainGroup-ba teszi az elemeket, a pozíció a bázis középponthoz relatív
-                function chainPlaceDeco(modelPath, offsetPos, scaleVal, rotY) {
+                // yCollisionOffset: az ütközési pontok helyi függőleges eltolása, ha lejjebb kell vinni őket a víz szintjére
+                function chainPlaceDeco(modelPath, offsetPos, scaleVal, rotY, customOffsets) {
                     loader.load(modelPath, function (gltf) {
                         var obj = gltf.scene;
                         // Pozíció: offsetPos relatívan a bázis középponthoz, Y a topY-hoz
@@ -1787,10 +1788,28 @@
                             }
                         });
                         chainGroup.add(obj);
-                        obj.boundingRadius = 10;
-                        obj.isDockChain = true;
-                        obstacles.push(obj);
-                        console.log("DOCK CHAIN ELEM BETÖLTVE:", modelPath, "Offset:", rotationOffset.toFixed(2));
+                        // Hozzunk létre kicsi ütközési pontokat közvetlenül a lánc csoportjában (chainGroup) a modell helyi Z-tengelyének hibái helyett
+                        // Az ütközőpontokat a vonal mentén 4 egységgel eltoljuk a bázis középpontja felé
+                        const collisionOffsets = customOffsets || [-4.0, 0.0, 4.0];
+                        let d = Math.sqrt(offsetPos.x * offsetPos.x + offsetPos.z * offsetPos.z);
+                        collisionOffsets.forEach(function(zOffset) {
+                            var collisionPoint = new THREE.Object3D();
+                            
+                            // A bázistól mért távolság a vonalon, eltolva a bázis felé 5 egységgel
+                            let d_shifted = d + zOffset - 5.0;
+                            
+                            // Pozíció a chainGroup lokális rendszerében a (-135 fokos) átló mentén (-0.7071, 0.7071)
+                            let px = d_shifted * -0.7071;
+                            let pz = d_shifted * 0.7071;
+                            
+                            collisionPoint.position.set(px, 0.0, pz);
+                            chainGroup.add(collisionPoint);
+                            
+                            collisionPoint.isDockChain = true;
+                            collisionPoint.boundingRadius = 2.0;
+                            obstacles.push(collisionPoint);
+                        });
+                        console.log("DOCK CHAIN ELEM BETÖLTVE (3 ütközési ponttal):", modelPath, "Offset:", rotationOffset.toFixed(2));
                     }, undefined, function (err) {
                         console.error("DOCK CHAIN BETÖLTÉSI HIBA:", modelPath, err);
                     });
@@ -1806,7 +1825,7 @@
                 chainPlaceDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-49.5, -1.75, 49.5), dockScale, dockRot);
                 // e) Rickety Dock elem
                 chainPlaceDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51.3, -3.0, 51.3), dockScale, dockRot);
-                // f) Sima Dock kifutó
+                // f) Sima Dock kifutó (ez a legbelső elem a működő alap viselkedéssel)
                 chainPlaceDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-53.3, -3.5, 53.3), dockScale, dockRot);
             }
 
@@ -2093,7 +2112,8 @@
         }
 
         function updatePhysics() {
-            if (isGameOver || !playerBoat || isQuizActive) return;
+            if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
+            scene.updateMatrixWorld(true);
 
             // ---- HAJÓ IRÁNYÍTÁS (Tank controls) ----
             if (keys.w) {
@@ -2162,6 +2182,20 @@
             if (keys.a) playerBoat.rotation.y += TURN_SPEED;
             if (keys.d) playerBoat.rotation.y -= TURN_SPEED;
 
+            // ---- BÁZIS PUFFERZÓNA LASSÍTÁS ----
+            // Csak a bázis (kikötő) közvetlen tövében (3.0 egységen belül) alkalmazunk lassítást a zökkenőmentes beérkezéshez
+            // A bázis henger fizikai határa 33 egység a középponttól.
+            let dBase = playerBoat.position.distanceTo(BASE_POS) - 33;
+
+            if (dBase < 3.0 && dBase > 0) {
+                let factor = 0.95; // Alap 5%-os lassulás frame-enként a pufferzónában
+                if (dBase < 0.4) {
+                    factor = 0.50; // Közvetlen a bázis szélénél (0.4) drasztikus sebesség-felezés frame-enként
+                }
+                boatSpeed *= factor;
+            }
+
+
             // Mozgás alkalmazása az irányba
             let direction = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerBoat.rotation.y);
             let moveVec = direction.multiplyScalar(boatSpeed);
@@ -2178,8 +2212,7 @@
             let windAngle = Math.atan2(wind.x, wind.z) + Math.PI;
             windVane.style.transform = 'rotate(' + windAngle + 'rad)';
 
-            // Biztonsági check: ha a modell még nem töltött be, ne fusson a fizika!
-            if (!playerBoat || !baseHarbor) return;
+
 
             // Bázis Kilépés UI (Sokkal nagyobb távolságból érzékeli, mint a boundingRadius)
             let isNearBase = (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 20);
@@ -2226,7 +2259,6 @@
                     enemyShip.position.z += (ez / dist) * 0.15;
 
                     // Léghajó beforgatása a mozgás irányába
-                    // A Math.atan2 megadja a szöget a cél felé. 
                     enemyShip.rotation.y = Math.atan2(ex, ez);
                 }
                 if (dist < 8) {
@@ -2235,17 +2267,9 @@
                 }
             }
 
-            // ---- ÜTKÖZÉSEK ZÁTONYOKKAL ÉS HAJÓKKAL (TÖKÉLETES MESH ÜTKÖZÉS) ----
+            // ---- ÜTKÖZÉSEK ÉS FIZIKA ----
             let boatCenter = playerBoat.position.clone();
-            boatCenter.y = 1; // A sugarakat a vízszint felett lőjük ki, a csónak közepéből
-
-            // 8 irány, amibe a csónak "kiterjed" (Lézersugarak)
-            const directions = [
-                new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
-                new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1),
-                new THREE.Vector3(0.7, 0, 0.7).normalize(), new THREE.Vector3(-0.7, 0, 0.7).normalize(),
-                new THREE.Vector3(0.7, 0, -0.7).normalize(), new THREE.Vector3(-0.7, 0, -0.7).normalize()
-            ];
+            boatCenter.y = 1;
 
             let raycaster = new THREE.Raycaster();
             let hasCollision = false;
@@ -2256,43 +2280,55 @@
                 r.getWorldPosition(rWorldPos);
                 let dist = boatCenter.distanceTo(rWorldPos);
 
-                // 1. Broad-phase: Csak azt a sziklát vizsgáljuk, ami tényleg nagyon közel van (optimalizáció)
+                // 2D vízszintes távolság az Y eltolás kiküszöbölésére (bázisnál és rámpáknál fontos)
+                let dist2D = Math.sqrt(
+                    (boatCenter.x - rWorldPos.x) * (boatCenter.x - rWorldPos.x) +
+                    (boatCenter.z - rWorldPos.z) * (boatCenter.z - rWorldPos.z)
+                );
+
+                // Broad-phase: Csak azt a sziklát vizsgáljuk, ami tényleg nagyon közel van (optimalizáció)
                 if (dist < (r.boundingRadius || 30) + 15) {
 
-                    // A kikötő marad az egyszerű sugár-alapú (mivel az formája hengeres)
                     if (r === baseHarbor) {
-                        if (dist < r.boundingRadius + 3) { // +3-ra véve, hogy véletlenül se lógjon bele a hajó a hab-animációba!
+                        // Kikötő hengeres matematikai ütközés
+                        if (dist < r.boundingRadius + 3) {
+                            hasCollision = true;
+                            hitRock = r;
+                            break;
+                        }
+                    } else if (r.isDockChain) {
+                        // Rámpa segédpontok: 2D vízszintes távolságvizsgálat
+                        if (dist2D < 2.5) { // boundingRadius (2.0) + 0.5 = 2.5
                             hasCollision = true;
                             hitRock = r;
                             break;
                         }
                     } else if (r === battleship) {
-                        // 3 pontos "kapszula" ütközés a csatahajóra (Orr, Közép, Tat)
+                        // Csatahajó 3 pontos kapszula ütközése
                         let pMid = battleship.position;
-
-                        // Lokális negatív Z tengely (előre) iránya a világtérben
                         let forward = new THREE.Vector3(0, 0, -1).applyQuaternion(battleship.quaternion);
-
-                        let pBow = pMid.clone().add(forward.clone().multiplyScalar(45)); // Orra (45-re előre)
-                        let pStern = pMid.clone().add(forward.clone().multiplyScalar(-40)); // Tatja (40-re hátra)
+                        let pBow = pMid.clone().add(forward.clone().multiplyScalar(45));
+                        let pStern = pMid.clone().add(forward.clone().multiplyScalar(-40));
 
                         let d1 = boatCenter.distanceTo(pMid);
                         let d2 = boatCenter.distanceTo(pBow);
                         let d3 = boatCenter.distanceTo(pStern);
 
-                        // Három, egyenként 25-ös sugarú kör alkotja a masszív hajótestet
                         if (d1 < 25 || d2 < 25 || d3 < 25) {
                             hasCollision = true;
                             hitRock = r;
                             break;
                         }
                     } else {
-                        // 2. Pontos 3D Mesh vizsgálat: A csónak sugarakat lő a 3D modell valódi poligonjaira (Sziklák)
+                        // Pontos 3D Mesh vizsgálat: Sziklák és homokpadok
+                        const directions = [
+                            new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
+                            new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1)
+                        ];
                         for (let dir of directions) {
                             raycaster.set(boatCenter, dir);
-                            // Megnézi, hogy a sugár metszi-e a szikla bármelyik textúra-háromszögét
                             let intersects = raycaster.intersectObject(r, true);
-                            if (intersects.length > 0 && intersects[0].distance < 3.5) { // 3.5 a csónak nagyjábóli sugara
+                            if (intersects.length > 0 && intersects[0].distance < 3.5) {
                                 hasCollision = true;
                                 hitRock = r;
                                 break;
@@ -2300,7 +2336,6 @@
                         }
                     }
                 }
-                if (hasCollision) break; // Ha ütköztünk, nem vizsgáljuk a többit
             }
 
             // ---- 3. MATEMATIKAI VILÁGPEREM PAJZS (Kiesés ellen) ----
@@ -2317,13 +2352,63 @@
             if (hasCollision) {
                 // 1. FIZIKAI ÜTKÖZÉS (MINDIG lefut, hogy ne mehessen át a modelleken)
                 if (hitRock === baseHarbor || hitRock.isDockChain) {
-                    // Bázisnál és a kikötői láncolatoknál nincs visszapattanás, csak megállítás
-                    boatSpeed = 0;
-                    playerBoat.position.sub(moveVec);
+                    // Penetration Resolution (Kitolás a behatolás mértékével a visszaléptetés helyett, hogy a szél ne nyomhassa be a csónakot)
+                    let hitPos = new THREE.Vector3();
+                    hitRock.getWorldPosition(hitPos);
+                    
+                    let normal = new THREE.Vector3().subVectors(playerBoat.position, hitPos);
+                    normal.y = 0; // csak vízszintesen számolunk
+                    let currentDist = normal.length();
+                    normal.normalize();
+
+                    let limit = (hitRock === baseHarbor) ? (baseHarbor.boundingRadius + 3) : 5.5;
+                    let penetration = limit - currentDist;
+
+                    if (penetration > 0) {
+                        // Visszatoljuk a csónakot pontosan az akadály határára
+                        playerBoat.position.add(normal.clone().multiplyScalar(penetration));
+                    }
+
+                    // Csúszó mozgás (Sliding): Csak a normális felé mutató mozgáskomponenst vonjuk le, a párhuzamos szabadon marad
+                    let dot = moveVec.dot(normal);
+                    if (dot < 0) {
+                        moveVec.sub(normal.clone().multiplyScalar(dot));
+                    }
+
+                    // A boatSpeed-et SOHASE nullázzuk le! Ha a játékos elfordul és gázt ad, vagy hátramenetbe kapcsol,
+                    // a sebesség megmarad és a csónak azonnal el tud indulni az akadálytól elfelé!
                 } else {
-                    // Sziklák, Csatahajó, Világperem: Visszapattanás
-                    boatSpeed = -boatSpeed;
-                    playerBoat.position.sub(moveVec.multiplyScalar(2));
+                    // Sziklák, Csatahajó, Világperem: Csúszó ütközés
+                    playerBoat.position.sub(moveVec);
+
+                    let hitPos = new THREE.Vector3();
+                    if (hitRock.getWorldPosition) {
+                        hitRock.getWorldPosition(hitPos);
+                    } else {
+                        hitPos.copy(hitRock.position || new THREE.Vector3());
+                    }
+
+                    let normal = new THREE.Vector3().subVectors(playerBoat.position, hitPos);
+                    normal.y = 0; // csak vízszintes síkban számolunk
+                    let currentDist = normal.length();
+                    normal.normalize();
+
+                    // Csak az objektum felé mutató mozgáskomponenst nullázzuk le (csúszó ütközés)
+                    let dot = moveVec.dot(normal);
+                    if (dot < 0) {
+                        moveVec.sub(normal.clone().multiplyScalar(dot));
+                    }
+
+                    // Alkalmazzuk a korrigált csúszó mozgást
+                    playerBoat.position.add(moveVec);
+
+                    // Sziklák és csatahajó esetén csökkentjük a sebességet (lefékeződés)
+                    let moveLen = moveVec.length();
+                    if (moveLen > 0.001) {
+                        boatSpeed = Math.sign(boatSpeed) * moveLen * 0.3; // Szikláknál lassulás 30%-ra
+                    } else {
+                        boatSpeed = 0;
+                    }
                 }
 
                 // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak, nem a láncolatoknak és nem a homokpartnak mentünk neki)

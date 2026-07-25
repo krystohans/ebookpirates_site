@@ -2483,7 +2483,7 @@
 
             if (hasCollision) {
                 // 1. FIZIKAI ÜTKÖZÉS (MINDIG lefut, hogy ne mehessen át a modelleken)
-                if (hitRock === baseHarbor || hitRock.isDockChain) {
+                if (hitRock === baseHarbor || hitRock.isDockChain || hitRock.isBeach) {
                     // Penetration Resolution (Kitolás a behatolás mértékével a visszaléptetés helyett, hogy a szél ne nyomhassa be a csónakot)
                     let hitPos = new THREE.Vector3();
                     hitRock.getWorldPosition(hitPos);
@@ -2493,7 +2493,7 @@
                     let currentDist = normal.length();
                     normal.normalize();
 
-                    let limit = (hitRock === baseHarbor) ? (baseHarbor.boundingRadius + 3) : 5.5;
+                    let limit = (hitRock === baseHarbor) ? (baseHarbor.boundingRadius + 3) : (hitRock.isBeach ? 12.0 : 5.5);
                     let penetration = limit - currentDist;
 
                     if (penetration > 0) {
@@ -2507,8 +2507,11 @@
                         moveVec.sub(normal.clone().multiplyScalar(dot));
                     }
 
-                    // A boatSpeed-et SOHASE nullázzuk le! Ha a játékos elfordul és gázt ad, vagy hátramenetbe kapcsol,
+                    // A baseHarbor és isDockChain esetén a boatSpeed-et SOHASE nullázzuk le! Ha a játékos elfordul és gázt ad,
                     // a sebesség megmarad és a csónak azonnal el tud indulni az akadálytól elfelé!
+                    if (hitRock.isBeach) {
+                        boatSpeed = 0; // A homokpad megállítja a csónakot
+                    }
                 } else {
                     // Sziklák, Csatahajó, Világperem: Csúszó ütközés
                     playerBoat.position.sub(moveVec);

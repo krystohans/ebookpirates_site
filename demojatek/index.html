@@ -1951,17 +1951,17 @@
                 }
 
                 // a) Lépcső (180 fokos fordulat, fele szélesség/mélység, dupla magasság)
-                chainPlaceDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-39, 0.3, 39), new THREE.Vector3(dockScale / 2.0, dockScale, dockScale / 2.0), dockRot + Math.PI);
+                chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-39, 0.3, 39), new THREE.Vector3(dockScale / 2.0, dockScale, dockScale / 2.0), dockRot + Math.PI);
                 // b) Híd (fele méret)
-                chainPlaceDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-44.8, 1.7, 44.8), dockScale / 2.0, dockRot);
+                chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-44.8, 1.7, 44.8), dockScale / 2.0, dockRot);
                 // c) Platform
-                chainPlaceDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-48.0, -0.8, 48.0), dockScale, dockRot);
+                chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-48.0, -0.8, 48.0), dockScale, dockRot);
                 // d) Sima Dock másolat
-                chainPlaceDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-49.5, -1.75, 49.5), dockScale, dockRot);
+                chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-49.5, -1.75, 49.5), dockScale, dockRot);
                 // e) Rickety Dock elem
-                chainPlaceDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51.3, -3.0, 51.3), dockScale, dockRot);
+                chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51.3, -3.0, 51.3), dockScale, dockRot);
                 // f) Sima Dock kifutó (ez a legbelső elem a működő alap viselkedéssel)
-                chainPlaceDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-53.3, -3.5, 53.3), dockScale, dockRot);
+                chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-53.3, -3.5, 53.3), dockScale, dockRot);
             }
 
             // Eredeti lánc (0° offset = eredeti helyen)
@@ -2591,6 +2591,13 @@
                     obs.getWorldPosition(tempPos);
                     if (playerBoat.position.distanceTo(tempPos) < 6.0) {
                         nearDockChain = true;
+                        break;
+                    }
+                }
+                if (obs.isBeach) {
+                    obs.getWorldPosition(tempPos);
+                    if (playerBoat.position.distanceTo(tempPos) < 13.5) {
+                        nearDockChain = true; // A homokpad is kikötési pontnak számít
                         break;
                     }
                 }

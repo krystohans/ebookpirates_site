@@ -2026,11 +2026,15 @@
             glowGeo.computeVertexNormals();
 
             // Visszatérés a BasicMaterialhoz: fix festés, nem hatnak rá az árnyékok
-            const glowMat = new THREE.MeshBasicMaterial({
+            const glowMat = new THREE.MeshStandardMaterial({
                 color: 0xffaa33, // Aranysárga meleg gyertyafény
+                roughness: 0.05, // Rendkívül sima felület a tükörsima csillogáshoz
+                metalness: 1.0,  // Teljesen fémes, tükröződő anyag
                 transparent: true,
-                opacity: 0.7, // Áttetsző, hogy egybeolvadjon a vízzel
-                blending: THREE.AdditiveBlending, // Gyönyörű belső fényhatás a "LED" alá
+                opacity: 0.8,    // Kicsit magasabb alap opacity a csillogás kiemeléséhez
+                emissive: 0xffaa33, // Meleg aranysárga önvilágítás
+                emissiveIntensity: 0.4,
+                blending: THREE.AdditiveBlending, // Átengedő fényhatás
                 depthWrite: false
             });
             const glowMesh = new THREE.Mesh(glowGeo, glowMat);

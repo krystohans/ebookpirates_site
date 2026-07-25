@@ -2594,16 +2594,10 @@
                         break;
                     }
                 }
-                if (obs.isBeach) {
-                    obs.getWorldPosition(tempPos);
-                    if (playerBoat.position.distanceTo(tempPos) < 13.5) {
-                        nearDockChain = true; // A homokpad is kikötési pontnak számít
-                        break;
-                    }
-                }
+
             }
 
-            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 1.0 || nearDockChain) {
+            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 5.0 || nearDockChain) {
                 if (scoreOnBoat > 0) {
                     baseHarborScore += scoreOnBoat;
                     scoreOnBoat = 0;

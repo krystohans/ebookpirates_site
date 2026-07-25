@@ -1681,6 +1681,9 @@
                     // Skála: abszolút világskálát használunk (Vector3-at is elfogad a nem-egyenletes skálázáshoz)
                     if (scaleVal && scaleVal.isVector3) {
                         obj.scale.copy(scaleVal);
+                    } else if (isBeach) {
+                        // Nem-egyenletes skálázás a homokpadok magasságának (Y) megnyújtására, hogy leérjenek a vízig
+                        obj.scale.set(scaleVal, scaleVal * 3.0, scaleVal);
                     } else {
                         obj.scale.set(scaleVal, scaleVal, scaleVal);
                     }
@@ -1792,7 +1795,7 @@
                 let beachType = 2 + Math.floor(decoRng.next() * 5); // SM_Env_Beach_02 - SM_Env_Beach_06
                 let path = 'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Beach_0' + beachType + '.glb';
                 let r = 57;
-                placeDeco(path, new THREE.Vector3(r * Math.cos(theta), -0.2, r * Math.sin(theta)), baseScale, -theta - Math.PI / 2, true);
+                placeDeco(path, new THREE.Vector3(r * Math.cos(theta), -1.2, r * Math.sin(theta)), baseScale, -theta - Math.PI / 2, true);
             }
 
             // 2.2 Véletlenszerűen elszórt sík homokfoltok a bázis belsejében a fű megtörésére

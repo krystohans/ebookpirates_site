@@ -1248,7 +1248,7 @@
 
             // 2. Játékos csónakja
             playerBoat = new THREE.Group();
-            playerBoat.position.set(BASE_POS.x - 50, 0, BASE_POS.z + 50); // Még 10 egységgel kijjebb (origó felé), hogy ne lógjon a 60-as sugarú bázisba
+            playerBoat.position.set(BASE_POS.x - 45, 0, BASE_POS.z + 62); // Közvetlenül az eredeti rámpa utolsó eleme mellett jobbra, biztonságos és esztétikus induláshoz
             scene.add(playerBoat);
             // A loader már deklarálva van feljebb a bázisnál, így itt is tudjuk használni!
             
@@ -1678,8 +1678,12 @@
                         BASE_POS.z + offsetPos.z
                     );
                     
-                    // Skála: abszolút világskálát használunk (100x-es skála a korábbi 400x helyett)
-                    obj.scale.set(scaleVal, scaleVal, scaleVal);
+                    // Skála: abszolút világskálát használunk (Vector3-at is elfogad a nem-egyenletes skálázáshoz)
+                    if (scaleVal && scaleVal.isVector3) {
+                        obj.scale.copy(scaleVal);
+                    } else {
+                        obj.scale.set(scaleVal, scaleVal, scaleVal);
+                    }
                     obj.rotation.y = rotY;
                     
                     obj.traverse(node => {
@@ -1737,25 +1741,81 @@
             placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Prop_Barrel_02.glb', new THREE.Vector3(-30, -0.1, -8), baseScale, 0.5);
             placeDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Prop_Crate_01.glb', new THREE.Vector3(-20, -0.1, -16), baseScale, 0.2);
 
-            // 7. Összefűzött egyszerű rámpasor (Dock) a horgonytól indulva a víz felé
-            // A horgony mellől (-33, 0, 33) indul, és kb. két hajóhossznyira kifut a vízbe (-57, -1.8, 57)
+            // 7. Összefűzött egyszerű rámpasor (Dock) - csoportos forgatással másolva
             const dockScale = (baseScale * 1.2) / 10.0;
             const dockRot = 3 * Math.PI / 4;
 
-            // a) Dock Stairs lépcső elem (helycsere után itt lépcső, 180 fokos fordulat)
-            placeDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-33, 0.3, 33), dockScale, dockRot + Math.PI);
-            
-            // b) Dock Bridge elem (híd) (y = 3.6, megemelve a saját magassága duplájával ismét, saját hosszával előre tolva)
-            placeDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-39, 3.6, 45), dockScale, dockRot);
-            
-            // c) Dock Platform a bázison (helycsere után itt platform, 180 fokos fordulat)
-            placeDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-45, -0.5, 45), dockScale, dockRot + Math.PI);
-            
-            // d) Rickety Dock elem a víz felszínén
-            placeDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51, -1.5, 51), dockScale, dockRot);
-            
-            // e) Sima Dock szakasz kifutóként a víz felett
-            placeDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-57, -1.5, 57), dockScale, dockRot);
+            // === Teljes rámpasor lerakó függvény ===
+            // rotationOffset: a csoport Y forgatása radiánban a bázis középpont körül (0 = eredeti pozíció)
+            function placeDockChain(rotationOffset) {
+                var chainGroup = new THREE.Group();
+                // A csoport a bázis középpontba kerül (BASE_POS), onnan forgatjuk
+                chainGroup.position.set(BASE_POS.x, 0, BASE_POS.z);
+                chainGroup.rotation.y = rotationOffset;
+                scene.add(chainGroup);
+
+                // Belső placeDeco: a chainGroup-ba teszi az elemeket, a pozíció a bázis középponthoz relatív
+                function chainPlaceDeco(modelPath, offsetPos, scaleVal, rotY) {
+                    loader.load(modelPath, function (gltf) {
+                        var obj = gltf.scene;
+                        // Pozíció: offsetPos relatívan a bázis középponthoz, Y a topY-hoz
+                        obj.position.set(offsetPos.x, topY + offsetPos.y, offsetPos.z);
+                        
+                        if (scaleVal && scaleVal.isVector3) {
+                            obj.scale.copy(scaleVal);
+                        } else {
+                            obj.scale.set(scaleVal, scaleVal, scaleVal);
+                        }
+                        obj.rotation.y = rotY;
+                        
+                        obj.traverse(function(node) {
+                            if (node.isMesh) {
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                                if (node.material) {
+                                    node.material.vertexColors = true;
+                                    if (node.material.color) {
+                                        node.material.color.setRGB(2.5, 2.5, 2.5);
+                                    }
+                                    if (node.material.emissive) {
+                                        node.material.emissive.setHex(0x332211);
+                                        node.material.emissiveIntensity = 1.0;
+                                    }
+                                    node.material.roughness = 0.6;
+                                    node.material.needsUpdate = true;
+                                }
+                            }
+                        });
+                        chainGroup.add(obj);
+                        obj.boundingRadius = 10;
+                        obj.isDockChain = true;
+                        obstacles.push(obj);
+                        console.log("DOCK CHAIN ELEM BETÖLTVE:", modelPath, "Offset:", rotationOffset.toFixed(2));
+                    }, undefined, function (err) {
+                        console.error("DOCK CHAIN BETÖLTÉSI HIBA:", modelPath, err);
+                    });
+                }
+
+                // a) Lépcső (180 fokos fordulat, fele szélesség/mélység, dupla magasság)
+                chainPlaceDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-39, 0.3, 39), new THREE.Vector3(dockScale / 2.0, dockScale, dockScale / 2.0), dockRot + Math.PI);
+                // b) Híd (fele méret)
+                chainPlaceDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-44.8, 1.7, 44.8), dockScale / 2.0, dockRot);
+                // c) Platform
+                chainPlaceDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-48.0, -0.8, 48.0), dockScale, dockRot);
+                // d) Sima Dock másolat
+                chainPlaceDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-49.5, -1.75, 49.5), dockScale, dockRot);
+                // e) Rickety Dock elem
+                chainPlaceDeco('../assets/models/SM_Bld_Dock_02.glb', new THREE.Vector3(-51.3, -3.0, 51.3), dockScale, dockRot);
+                // f) Sima Dock kifutó
+                chainPlaceDeco('../assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-53.3, -3.5, 53.3), dockScale, dockRot);
+            }
+
+            // Eredeti lánc (0° offset = eredeti helyen)
+            placeDockChain(0);
+            // Jobbra 60 fokkal elforgatott másolat
+            placeDockChain(-Math.PI / 3);
+            // Balra 60 fokkal elforgatott másolat
+            placeDockChain(Math.PI / 3);
         }
 
         function spawnDiamond() {
@@ -1780,10 +1840,12 @@
                 if (distToBase < 70) { validPos = false; continue; } // 60 a sugár, hagyunk +10 helyet
 
                 let testVec = new THREE.Vector3(x, 0, z);
+                let obsPos = new THREE.Vector3();
                 for (let obs of obstacles) {
                     // Dinamikusan számoljuk a biztonsági távolságot a bázis sugarához (60) mérve is
                     let minD = obs.boundingRadius ? (obs.boundingRadius + 10) : 35;
-                    if (testVec.distanceTo(obs.position) < minD) {
+                    obs.getWorldPosition(obsPos);
+                    if (testVec.distanceTo(obsPos) < minD) {
                         validPos = false; break;
                     }
                 }
@@ -2189,8 +2251,10 @@
             let hasCollision = false;
             let hitRock = null;
 
+            let rWorldPos = new THREE.Vector3();
             for (let r of obstacles) {
-                let dist = boatCenter.distanceTo(r.position);
+                r.getWorldPosition(rWorldPos);
+                let dist = boatCenter.distanceTo(rWorldPos);
 
                 // 1. Broad-phase: Csak azt a sziklát vizsgáljuk, ami tényleg nagyon közel van (optimalizáció)
                 if (dist < (r.boundingRadius || 30) + 15) {
@@ -2252,8 +2316,8 @@
 
             if (hasCollision) {
                 // 1. FIZIKAI ÜTKÖZÉS (MINDIG lefut, hogy ne mehessen át a modelleken)
-                if (hitRock === baseHarbor) {
-                    // Bázisnál nincs visszapattanás, csak megállítás
+                if (hitRock === baseHarbor || hitRock.isDockChain) {
+                    // Bázisnál és a kikötői láncolatoknál nincs visszapattanás, csak megállítás
                     boatSpeed = 0;
                     playerBoat.position.sub(moveVec);
                 } else {
@@ -2262,8 +2326,8 @@
                     playerBoat.position.sub(moveVec.multiplyScalar(2));
                 }
 
-                // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak és nem a homokpartnak mentünk neki)
-                if (hitRock !== baseHarbor && !hitRock.isBeach && !isInvulnerable) {
+                // 2. SEBZŐDÉS (Csak ha nincs pajzs, és nem a bázisnak, nem a láncolatoknak és nem a homokpartnak mentünk neki)
+                if (hitRock !== baseHarbor && !hitRock.isDockChain && !hitRock.isBeach && !isInvulnerable) {
                     isInvulnerable = true;
                     setTimeout(() => { isInvulnerable = false; }, 1000); // 1 mp sérthetetlenség
 
@@ -2297,7 +2361,19 @@
             }
 
             // ---- BÁZIS (KIKÖTÉS) ----
-            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 10) {
+            let nearDockChain = false;
+            let tempPos = new THREE.Vector3();
+            for (let obs of obstacles) {
+                if (obs.isDockChain) {
+                    obs.getWorldPosition(tempPos);
+                    if (playerBoat.position.distanceTo(tempPos) < 15) {
+                        nearDockChain = true;
+                        break;
+                    }
+                }
+            }
+
+            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 10 || nearDockChain) {
                 if (scoreOnBoat > 0) {
                     baseHarborScore += scoreOnBoat;
                     scoreOnBoat = 0;

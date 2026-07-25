@@ -2589,14 +2589,14 @@
             for (let obs of obstacles) {
                 if (obs.isDockChain) {
                     obs.getWorldPosition(tempPos);
-                    if (playerBoat.position.distanceTo(tempPos) < 15) {
+                    if (playerBoat.position.distanceTo(tempPos) < 6.0) {
                         nearDockChain = true;
                         break;
                     }
                 }
             }
 
-            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 10 || nearDockChain) {
+            if (playerBoat.position.distanceTo(baseHarbor.position) < baseHarbor.boundingRadius + 1.0 || nearDockChain) {
                 if (scoreOnBoat > 0) {
                     baseHarborScore += scoreOnBoat;
                     scoreOnBoat = 0;

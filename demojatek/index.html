@@ -2011,7 +2011,7 @@
             scrollZone.position.set(x, 0, z);
 
             const pointLight = new THREE.PointLight(0xffd700, 2, 25);
-            pointLight.position.set(0, -2.0, 0);
+            pointLight.position.set(0, 0.8, 0);
             scrollZone.add(pointLight);
 
             // Hártya drasztikus kicsinyítése (tizedére)
@@ -2029,7 +2029,7 @@
             const glowMat = new THREE.MeshBasicMaterial({
                 color: 0xffd700, // Arany/sárga
                 transparent: true,
-                opacity: 0.5, // 50% áttetszőség, hogy a víz alatti fény átvilágítsa
+                opacity: 0.7, // Áttetsző, hogy egybeolvadjon a vízzel
                 blending: THREE.AdditiveBlending, // Gyönyörű belső fényhatás a "LED" alá
                 depthWrite: false
             });

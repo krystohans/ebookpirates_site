@@ -1745,8 +1745,8 @@
             // a) Dock Stairs lépcső elem (helycsere után itt lépcső, 180 fokos fordulat)
             placeDeco('../assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-33, 0.3, 33), dockScale, dockRot + Math.PI);
             
-            // b) Dock Bridge elem (híd) (y = 3.6, megemelve a saját magassága duplájával ismét)
-            placeDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-39, 3.6, 39), dockScale, dockRot);
+            // b) Dock Bridge elem (híd) (y = 3.6, megemelve a saját magassága duplájával ismét, saját hosszával előre tolva)
+            placeDeco('../assets/models/SM_Bld_Dock_Bridge_01.glb', new THREE.Vector3(-39, 3.6, 45), dockScale, dockRot);
             
             // c) Dock Platform a bázison (helycsere után itt platform, 180 fokos fordulat)
             placeDeco('../assets/models/SM_Bld_Dock_03.glb', new THREE.Vector3(-45, -0.5, 45), dockScale, dockRot + Math.PI);

@@ -2010,7 +2010,7 @@
             const scrollZone = new THREE.Object3D();
             scrollZone.position.set(x, 0, z);
 
-            const pointLight = new THREE.PointLight(0xffd700, 2, 25);
+            const pointLight = new THREE.PointLight(0xffaa33, 1.2, 15);
             pointLight.position.set(0, 0.8, 0);
             scrollZone.add(pointLight);
 
@@ -2027,7 +2027,7 @@
 
             // Visszatérés a BasicMaterialhoz: fix festés, nem hatnak rá az árnyékok
             const glowMat = new THREE.MeshBasicMaterial({
-                color: 0xffd700, // Arany/sárga
+                color: 0xffaa33, // Aranysárga meleg gyertyafény
                 transparent: true,
                 opacity: 0.7, // Áttetsző, hogy egybeolvadjon a vízzel
                 blending: THREE.AdditiveBlending, // Gyönyörű belső fényhatás a "LED" alá
@@ -2876,6 +2876,12 @@
                 // Szabálytalan "légzés" (pulzálás)
                 let s = 0.8 + Math.sin(t * 2 + d.position.z) * 0.2;
                 d.scale.set(s, s, s);
+
+                // Finom meleg gyertyafény pislákolás (flickering effect)
+                let light = d.children.find(c => c.isPointLight);
+                if (light) {
+                    light.intensity = 0.8 + Math.sin(t * 6.0 + d.position.x) * 0.35 + Math.random() * 0.1;
+                }
             }
 
             // Filmes léghajó-ereszkedés (Előre kiszámolt fix célmagasságig, így nem futnak Box3 számítások a render loopban)

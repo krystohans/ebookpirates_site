@@ -1707,7 +1707,12 @@
                                     }
                                 }
                                 
-                                node.material.roughness = 0.6;
+                                if (isBeach) {
+                                    node.material.roughness = 0.95; // Teljesen matt homok felület
+                                    node.material.metalness = 0.0;  // Megszüntet minden csillogást/fémes hatást
+                                } else {
+                                    node.material.roughness = 0.6;
+                                }
                                 node.material.needsUpdate = true;
                             }
                         }

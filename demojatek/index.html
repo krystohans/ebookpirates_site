@@ -1694,15 +1694,17 @@
                                 // A vertex beégetett színek engedélyezése (a csúcspontok hordozzák a színeket)
                                 node.material.vertexColors = true;
                                 
-                                // Fényesítő alapszín szorzó (2.5x-es értékek a korábbi 1.5x helyett, hogy sokkal világosabb legyen a Linear színtérben)
-                                if (node.material.color) {
-                                    node.material.color.setRGB(2.5, 2.5, 2.5);
-                                }
-                                
-                                // Adjunk hozzá egy meeleeg környezeti önvilágítást (emissive), hogy az árnyékos részek se legyenek sötétek
-                                if (node.material.emissive) {
-                                    node.material.emissive.setHex(0x332211); // Finom meleg sárgás-barna fény
-                                    node.material.emissiveIntensity = 1.0;
+                                if (!isBeach) {
+                                    // Fényesítő alapszín szorzó (2.5x-es értékek a korábbi 1.5x helyett, hogy sokkal világosabb legyen a Linear színtérben)
+                                    if (node.material.color) {
+                                        node.material.color.setRGB(2.5, 2.5, 2.5);
+                                    }
+                                    
+                                    // Adjunk hozzá egy meeleeg környezeti önvilágítást (emissive), hogy az árnyékos részek se legyenek sötétek
+                                    if (node.material.emissive) {
+                                        node.material.emissive.setHex(0x332211); // Finom meleg sárgás-barna fény
+                                        node.material.emissiveIntensity = 1.0;
+                                    }
                                 }
                                 
                                 node.material.roughness = 0.6;

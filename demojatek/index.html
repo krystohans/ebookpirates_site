@@ -1200,6 +1200,7 @@
         const foamMaterials = []; // Hab textúrák az animációhoz
         const obstacles = [];
         const diamonds = [];
+        let cloudModelSource = null;
 
         const MAP_RADIUS = 300;
         // Bázis a jobb felső sarokban (X+, Z-). Eredetileg (150, 0, -150) volt, kivezetve 100 egységgel az origótól!
@@ -1356,6 +1357,15 @@
                 'https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Rock_Large_010.fbx.glb'   // 6: Szürke helyett
             ];
 
+            const cloudPromise = new Promise((resolve) => {
+                loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Cloud_03.glb', gltf => {
+                    resolve(gltf.scene);
+                }, undefined, err => {
+                    console.error("Hiba a felhőmodell betöltésekor:", err);
+                    resolve(null);
+                });
+            });
+
             const rockPromises = rockModelPaths.map(path => new Promise((resolve, reject) => {
                 loader.load(path, gltf => {
                     let model = gltf.scene;
@@ -1386,9 +1396,11 @@
                 });
             }));
 
-            // Itt a kód MEGVÁRJA, amíg az összes szikla letöltődik!
-            globalLoadedRockModels = await Promise.all(rockPromises);
-            console.log("Minden sziklamodell betöltve, pálya generálása indul!");
+            // Itt a kód MEGVÁRJA, amíg az összes szikla és a felhőmodell letöltődik!
+            const [rocks, cloud] = await Promise.all([Promise.all(rockPromises), cloudPromise]);
+            globalLoadedRockModels = rocks;
+            cloudModelSource = cloud;
+            console.log("Minden sziklamodell és hártya felhőmodell betöltve, pálya generálása indul!");
 
             // Ezután azonnal legeneráljuk a pályát, DE már eleve a letöltött modellt rakjuk le!
             const totalRocks = 350;
@@ -2010,39 +2022,61 @@
             const scrollZone = new THREE.Object3D();
             scrollZone.position.set(x, 0, z);
 
+            // A PointLight a felhő belsejébe kerül (Y = -1.0), erős meleg gyertya fénnyel
             const pointLight = new THREE.PointLight(0xffaa33, 3.5, 25);
-            pointLight.position.set(0, 1.0, 0);
+            pointLight.position.set(0, -1.0, 0);
             scrollZone.add(pointLight);
 
-            // Hártya drasztikus kicsinyítése (tizedére)
-            const glowGeo = new THREE.CircleGeometry(1.5, 16); // Egy kicsit nagyobb, de szabálytalan
-            const pos = glowGeo.attributes.position;
-            for (let i = 1; i < pos.count; i++) {
-                // Véletlenszerűen "gyűrött" forma a szélén
-                let rOffset = 0.5 + Math.random() * 0.5;
-                pos.setX(i, pos.getX(i) * rOffset);
-                pos.setY(i, pos.getY(i) * rOffset);
+            let hártyaMesh = null;
+            if (cloudModelSource) {
+                hártyaMesh = cloudModelSource.clone();
+                
+                // Vertikálisan 180 fokkal fejtetőre fordítva
+                hártyaMesh.rotation.x = Math.PI;
+                
+                // Skálázás (3.0, hogy szép felhőszerű hártya legyen)
+                hártyaMesh.scale.set(3.0, 3.0, 3.0);
+                
+                // 0.6-os áttetszőség beállítása az összes mesh anyagára
+                hártyaMesh.traverse(node => {
+                    if (node.isMesh) {
+                        node.material = node.material.clone(); // Klónozzuk az egyedi anyaghoz
+                        node.material.transparent = true;
+                        node.material.opacity = 0.6;
+                        node.material.depthWrite = false;
+                        node.material.color.setHex(0xffaa33); // Meleg aranysárga bevilágítás
+                        node.material.emissive.setHex(0xffaa33);
+                        node.material.emissiveIntensity = 0.5;
+                        node.material.blending = THREE.AdditiveBlending;
+                    }
+                });
+                
+                // Úgy beszintezve, hogy a lapos felszíne éppen a vízfelszínre (Y = 0) kerüljön
+                hártyaMesh.updateMatrixWorld(true);
+                const box = new THREE.Box3().setFromObject(hártyaMesh);
+                const maxY = box.max.y;
+                hártyaMesh.position.set(0, -maxY, 0);
+            } else {
+                // Biztonsági fallback ha a felhőmodell nem töltődne be
+                const glowGeo = new THREE.CircleGeometry(1.5, 16);
+                const glowMat = new THREE.MeshStandardMaterial({
+                    color: 0xffaa33,
+                    roughness: 0.05,
+                    metalness: 1.0,
+                    transparent: true,
+                    opacity: 0.8,
+                    emissive: 0xffaa33,
+                    emissiveIntensity: 0.4,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                hártyaMesh = new THREE.Mesh(glowGeo, glowMat);
+                hártyaMesh.rotation.x = -Math.PI / 2;
             }
-            glowGeo.computeVertexNormals();
 
-            // Visszatérés a BasicMaterialhoz: fix festés, nem hatnak rá az árnyékok
-            const glowMat = new THREE.MeshStandardMaterial({
-                color: 0xffaa33, // Aranysárga meleg gyertyafény
-                roughness: 0.05, // Rendkívül sima felület a tükörsima csillogáshoz
-                metalness: 1.0,  // Teljesen fémes, tükröződő anyag
-                transparent: true,
-                opacity: 0.8,    // Kicsit magasabb alap opacity a csillogás kiemeléséhez
-                emissive: 0xffaa33, // Meleg aranysárga önvilágítás
-                emissiveIntensity: 0.4,
-                blending: THREE.AdditiveBlending, // Átengedő fényhatás
-                depthWrite: false
-            });
-            const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-            glowMesh.rotation.x = -Math.PI / 2;
-
-            // Kezdeti véletlenszerű elforgatás, hogy mind más legyen
-            glowMesh.rotation.z = Math.random() * Math.PI * 2;
-            scrollZone.add(glowMesh);
+            // Kezdeti véletlenszerű elforgatás (Y-tengely körül, mert fejre van állítva)
+            hártyaMesh.rotation.y = Math.random() * Math.PI * 2;
+            scrollZone.add(hártyaMesh);
 
             scrollZone.boundingRadius = 0.5;
             scene.add(scrollZone);

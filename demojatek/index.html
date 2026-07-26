@@ -2478,6 +2478,13 @@
                             hitRock = r;
                             break;
                         }
+                    } else if (r.isBeach) {
+                        // Homokpadok: 2D vízszintes távolságvizsgálat az áthatolhatatlansághoz
+                        if (dist2D < 12.0) {
+                            hasCollision = true;
+                            hitRock = r;
+                            break;
+                        }
                     } else if (r === battleship) {
                         // Csatahajó 3 pontos kapszula ütközése
                         let pMid = battleship.position;

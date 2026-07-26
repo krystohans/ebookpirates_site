@@ -902,11 +902,22 @@
             const betArea = document.getElementById('betting-area');
 
             if (betArea) betArea.style.display = 'none';
+            const timerContainer = document.getElementById('timer-bar-container');
+            if (timerContainer) timerContainer.style.display = 'none';
+            if (btnsEl) {
+                btnsEl.style.display = isAndroid ? 'flex' : 'grid';
+                btnsEl.innerHTML = '';
+            }
             // Rövidebb szöveg a kifutás megelőzésére
             qEl.innerText = qData.question;
-            btnsEl.innerHTML = '';
 
-            let answers = [qData.correctAnswer].concat(qData.incorrectAnswers || []);
+            let incorrectList = Array.isArray(qData.incorrectAnswers) ? qData.incorrectAnswers : (typeof qData.incorrectAnswers === 'string' ? qData.incorrectAnswers.split(',') : []);
+            incorrectList = incorrectList.filter(ans => ans && String(ans).trim() !== "");
+            if (incorrectList.length === 0) {
+                incorrectList = ["Másik válasz", "Harmadik opció", "Negyedik lehetőség"];
+            }
+
+            let answers = [qData.correctAnswer].concat(incorrectList);
             answers.sort(() => Math.random() - 0.5);
 
             answers.forEach(ans => {
@@ -2714,7 +2725,13 @@
             usedQuestionIndexes.push(q.rowIndex);
             correctAnswer = q.correctAnswer;
             currentActiveQuestion = q; // Elmentjük, hogy a tétválasztás után fel tudjuk fedni a kérdést
-            currentAnswers = [q.correctAnswer, ...q.incorrectAnswers].sort(() => Math.random() - 0.5);
+            
+            let incorrectList = Array.isArray(q.incorrectAnswers) ? q.incorrectAnswers : (typeof q.incorrectAnswers === 'string' ? q.incorrectAnswers.split(',') : []);
+            incorrectList = incorrectList.filter(ans => ans && String(ans).trim() !== "");
+            if (incorrectList.length === 0) {
+                incorrectList = ["Másik válasz", "Harmadik opció", "Negyedik lehetőség"];
+            }
+            currentAnswers = [q.correctAnswer].concat(incorrectList).sort(() => Math.random() - 0.5);
 
             if (!isAndroid && q.isStaked && scoreOnBoat > 0) {
                 // TÉTES KÉRDÉSNÉL NEM mutatjuk meg előre a kérdést, csak a tétválasztót! (Csak PC-n)
@@ -2728,6 +2745,8 @@
             }
 
             document.getElementById('quiz-overlay').style.display = 'flex';
+            const timerContainer = document.getElementById('timer-bar-container');
+            if (timerContainer) timerContainer.style.display = 'block';
 
             timeLeft = 20;
             document.getElementById('timer-bar').style.width = '100%';

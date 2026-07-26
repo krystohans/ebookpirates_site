@@ -323,6 +323,7 @@
             font-family: 'Georgia', serif;
             text-shadow: none;
             align-items: center;
+            flex-direction: column;
             justify-content: center;
             pointer-events: auto;
             cursor: pointer;
@@ -764,7 +765,7 @@
 
             const msgEl = document.getElementById('game-message');
             if (msgEl) {
-                msgEl.innerHTML = "<div style='font-size:26px; color:#8b0000; font-weight:bold; margin-bottom:15px;'>" + reasonText + "</div><div style='font-size:20px; color:#4a2c0f;'>Kattints ide egy új játék indításához!</div>";
+                msgEl.innerHTML = "<div style='font-size:24px; color:#8b0000; font-weight:bold; margin-bottom:20px; line-height:1.4;'>" + reasonText + "</div><div style='font-size:16px; color:#6a4c2f; text-decoration:underline; cursor:pointer;'>Kattints ide egy új játék indításához!</div>";
                 msgEl.style.display = 'flex';
                 msgEl.onclick = function() {
                     window.location.reload();

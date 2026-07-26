@@ -2551,10 +2551,15 @@
                         playerBoat.position.add(normal.clone().multiplyScalar(penetration));
                     }
 
-                    // Csúszó mozgás (Sliding): Csak a normális felé mutató mozgáskomponenst vonjuk le, a párhuzamos szabadon marad
+                    // Csúszó mozgás (Sliding) vagy teljes megállás homokpadnál
                     let dot = moveVec.dot(normal);
                     if (dot < 0) {
-                        moveVec.sub(normal.clone().multiplyScalar(dot));
+                        if (hitRock.isBeach) {
+                            moveVec.set(0, 0, 0); // Homokpad közeledésnél teljesen nullázzuk a mozgásvektort
+                            boatSpeed = 0;
+                        } else {
+                            moveVec.sub(normal.clone().multiplyScalar(dot)); // Kikötőnél és rámpánál csúszó mozgás
+                        }
                     }
 
                     // A baseHarbor és isDockChain esetén a boatSpeed-et SOHASE nullázzuk le! Ha a játékos elfordul és gázt ad,

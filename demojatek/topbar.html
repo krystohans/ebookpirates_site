@@ -1,0 +1,358 @@
+<style>
+  @font-face {
+    font-family: 'BriskB';
+    src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  #topbar {
+    position: absolute; top: 15px; left: 0; right: 0; height: 95px; width: 95%;
+    margin: 0 auto; max-width: 1450px; z-index: 600; display: flex !important;
+    align-items: center; justify-content: space-between; font-family: 'BriskB', 'Courier New', Courier, monospace;
+    color: #1a1a1a; font-weight: bold; font-size: 1.4em; padding: 0 35px; box-sizing: border-box; pointer-events: auto;
+  }
+  #topbar::before {
+    content: ""; position: absolute; top: -8px; bottom: -8px; left: -15px; right: -15px; z-index: -1;
+    border-style: solid; border-width: 44px 58px 46px 58px;
+    border-image: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") 105 150 115 150 fill stretch;
+  }
+  #topbar-left { flex: 1; display: flex; align-items: center; padding-left: 15px; white-space: nowrap; }
+  #topbar-center { flex: 1.2; display: flex; justify-content: center; gap: 35px; align-items: center; font-size: 1.4em; }
+  #topbar-right { flex: 2; display: flex; justify-content: flex-end; gap: 12px; padding-right: 15px; align-items: center; }
+  #topbar-settings-wrapper { display: flex; align-items: center; height: 52px; }
+  .counter-box { display: flex; align-items: center; gap: 12px; }
+  .counter-icon { width: 52px; height: 52px; object-fit: contain; }
+  .topbar-btn { width: 52px; height: 52px; cursor: pointer; transition: transform 0.1s; object-fit: contain; display: block; }
+  .topbar-btn:hover { transform: scale(1.08); }
+
+  /* ─── LEGÖRDÜLŐ MENÜ STÍLUSÚ TOOLTIP ─── */
+  #topbar-custom-tooltip {
+    position: fixed;
+    display: none;
+    z-index: 99999;
+    pointer-events: none;
+    background: transparent;
+    border: 2px solid #8b5a2b;
+    border-radius: 10px;
+    padding: 6px 14px;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.7));
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  #topbar-custom-tooltip-text {
+    font-family: 'BriskB', 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffea00;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+    text-align: center;
+    line-height: 1;
+    white-space: nowrap;
+  }
+</style>
+
+<div id="topbar-custom-tooltip">
+  <span id="topbar-custom-tooltip-text"></span>
+</div>
+
+<div id="topbar">
+  <div id="topbar-left">
+    <span id="tb-player-name" style="letter-spacing: 2px;">Anonymus</span>
+  </div>
+  <div id="topbar-center">
+    <div class="counter-box">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hajo_r.PNG" class="counter-icon" title="Szállított hártyák">
+      <span id="tb-carried-count">0</span>
+    </div>
+    <div class="counter-box">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada-r.png" class="counter-icon" title="Bázison tárolt hártyák">
+      <span id="tb-stored-count">0</span>
+    </div>
+  </div>
+  <div id="topbar-right">
+    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/info-r 1.png" id="btn-tb-info" class="topbar-btn" title="Info">
+    
+    <!-- Beállítások Legördülő Menü -->
+    <div id="topbar-settings-wrapper" style="position: relative; display: inline-block;">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/settings_icon.png" id="btn-tb-settings" class="topbar-btn" title="Beállítások">
+      <div id="settings-dropdown" style="display: none; position: absolute; top: 60px; right: -25px; background: transparent; border: 2px solid #8b5a2b; border-radius: 10px; padding: 10px 8px; flex-direction: column; gap: 8px; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.6); z-index: 1000; max-height: 480px; overflow-y: auto; box-sizing: border-box;">
+        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound-r.png" id="btn-tb-sound" class="topbar-btn" title="Hangok">
+        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music-r.png" id="btn-tb-music" class="topbar-btn" title="Zene">
+        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png" id="btn-tb-fullscreen" class="topbar-btn" title="Teljes képernyő">
+        
+        <div style="width: 100%; border-top: 1px solid #8b5a2b; margin: 4px 0;"></div>
+
+        <!-- Nyelvválasztó Lista (Átlátszó Hátterű Réz Ablakos Ikonsor) -->
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="hu" title="Magyar" style="width: 52px; height: 60px; object-fit: contain;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="en" title="English" style="width: 52px; height: 60px; object-fit: contain;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="de" title="Deutsch" style="width: 52px; height: 60px; object-fit: contain;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="es" title="Español" style="width: 52px; height: 60px; object-fit: contain;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="ru" title="Русский" style="width: 52px; height: 60px; object-fit: contain;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="pl" title="Polski" style="width: 52px; height: 60px; object-fit: contain;">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" class="lang-item-btn topbar-btn" data-lang="fr" title="Français" style="width: 52px; height: 60px; object-fit: contain;">
+        </div>
+      </div>
+    </div>
+
+    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/menu-r.png" id="btn-tb-menu" class="topbar-btn" title="Menü">
+    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r 1.png" id="btn-tb-exit" class="topbar-btn" title="Kilépés">
+  </div>
+</div>
+
+<!-- 🌍 NYELVVÁLASZTÓ PERGAMENTÉRKÉP POPUP -->
+<div id="language-map-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center;">
+  <div style="position: relative; width: 900px; max-width: 95vw; height: 800px; max-height: 90vh; background: transparent url('language_choose.jpg') no-repeat center / contain; filter: drop-shadow(0 15px 40px rgba(0,0,0,0.9));">
+    
+    <!-- Bezáró gomb (Jobb felső sarok) -->
+    <div id="btn-close-language-map" style="position: absolute; top: 25px; right: 35px; width: 45px; height: 45px; cursor: pointer; background: rgba(0,0,0,0.4); border: 2px solid #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffea00; font-weight: bold; font-size: 22px; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1.0)'" title="Bezárás">✕</div>
+
+    <!-- Kattintható réz ablak / zászló területek -->
+    <!-- 1. MAGYAR (Felső sor 1.) -->
+    <div class="lang-option-btn" data-lang="hu" style="position: absolute; top: 7%; left: 3.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" title="Magyar"></div>
+    
+    <!-- 2. ENGLISH (Felső sor 2.) -->
+    <div class="lang-option-btn" data-lang="en" style="position: absolute; top: 7%; left: 27.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" title="English"></div>
+    
+    <!-- 3. DEUTSCH (Felső sor 3.) -->
+    <div class="lang-option-btn" data-lang="de" style="position: absolute; top: 7%; left: 51.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" title="Deutsch"></div>
+    
+    <!-- 4. ESPAÑOL (Felső sor 4.) -->
+    <div class="lang-option-btn" data-lang="es" style="position: absolute; top: 7%; left: 75.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" title="Español"></div>
+
+    <!-- 5. РУССКИЙ (Alsó sor 1.) -->
+    <div class="lang-option-btn" data-lang="ru" style="position: absolute; top: 51%; left: 10.5%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" title="Русский"></div>
+
+    <!-- 6. POLSKI (Alsó sor 2.) -->
+    <div class="lang-option-btn" data-lang="pl" style="position: absolute; top: 51%; left: 38%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" title="Polski"></div>
+
+    <!-- 7. FRANÇAIS (Alsó sor 3.) -->
+    <div class="lang-option-btn" data-lang="fr" style="position: absolute; top: 51%; left: 66%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" title="Français"></div>
+
+  </div>
+</div>
+
+<style>
+  #info-scroll-content::-webkit-scrollbar {
+    width: 32px;
+  }
+  #info-scroll-content::-webkit-scrollbar-track {
+    background: rgba(80, 50, 20, 0.12);
+    border-radius: 16px;
+  }
+  #info-scroll-content::-webkit-scrollbar-thumb {
+    background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png") no-repeat center / contain;
+    border-radius: 50%;
+    min-height: 40px;
+    cursor: grab;
+  }
+  #info-scroll-content::-webkit-scrollbar-thumb:active {
+    cursor: grabbing;
+  }
+
+  /* Beállítások legördülő menü fa stílusú görgetősávja */
+  #settings-dropdown::-webkit-scrollbar {
+    width: 12px;
+  }
+  #settings-dropdown::-webkit-scrollbar-track {
+    background: rgba(40, 25, 12, 0.6);
+    border-radius: 6px;
+    border: 1px solid #5a3818;
+  }
+  #settings-dropdown::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8b5a2b, #b8860b, #6b4018);
+    border-radius: 6px;
+    border: 1px solid #3d230d;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+  }
+  #settings-dropdown::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #a66f38, #d4af37, #8b5a2b);
+  }
+</style>
+
+<div id="info-scroll-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 99999; align-items: center; justify-content: center;">
+  <div id="info-scroll-box" style="position: relative; width: 920px; max-width: 95vw; height: 86vh; max-height: 720px; background: transparent url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/info_scroll_open.png") no-repeat center / 100% 100%; padding: 175px 185px 195px 260px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; filter: drop-shadow(0 15px 45px rgba(0,0,0,0.9)); transition: all 0.05s ease-out;">
+    <div id="info-scroll-content" style="overflow-y: auto; padding-right: 0px; color: #2c1608; font-family: 'Briskb', 'Courier New', monospace; font-size: 16px; font-weight: 900; line-height: 1.55; text-shadow: 0.8px 0.8px 0px rgba(0,0,0,0.4), 0.5px 0.5px 0px rgba(255,235,180,0.5); white-space: pre-wrap; word-wrap: break-word;">
+Te patkány! Hát nem olvasni jöttél?! Vagy csak rám figyelni luxus?! 
+A hozzád hasonlók miatt tartom ezt a szart magamnál. 
+Nesze, itt van minden leírva, amit tudnod kell.
+
+A játék célja:
+- 30 darab, vizen lebegő, világító Hártyát kell összeszedéned és eljuttatnod a kikötőbe. Oda az utat a viharlámpa mutatja. 
+- A hajón levő hártyák elvesznek, ha zátonnyal ütközöl, vagy utolér a léghajó. Ilyenkor a játék a kikötőből indul újra.  
+- A gyűjtögetés során időről időre kvízkédések ugranak fel a játék szabályaival kapcsolatban. Helyes válasz esetén felszeded a hártyát, hibás válasz esetén nem.
+
+Az irányításról:
+- Te irányítod a vitorlás csónakot w, a, s, d és az iránynyíl billentyűkkel. 
+- Az egérrel a kamerát lehet forgatni.
+- A főmenüt a Menü ikonnal tudod elérni (felső menüsor, a halálfej melletti ikon). 
+- A szövegbuborékokat kattintással tudod léptetni. 
+- Az info scrollt a halálfejre kattintva (jobb alsó sarok) tudod összezárni.
+- A Beállítások menüben a hangokat, zenét, teljes képernyőt és játék nyelvét beállítani.
+- VIGYÁZZ! Ha zátonynak ütközöl, elveszted a Hártyáidat.
+- A harmadik hártya felvétele után felszáll léghajó, ami addig az öböl bejáratában fog horgonyozni. Ezt követően a tutorial során végig követ. Ha utolér, akkor feltesz egy kérdést. Ha jó válaszolsz, tovéábbmehetsz, ha rosszul, a hajón levő hártyákat elveszíted (a kikötőben leadott hártyák megmaradnak). Ha nem volt hártyád a hajón, akkor a tutorial újraindul a kikötőből.
+
+A világról:
+A Kalózkikötőt Heboknak hívják. Itt találod a Piacot, a Könyvszentélyt és a Tavernát, ott vállalhatsz küldetéseket .
+Ott bérelhetsz vagy vehetsz hajót, de akár más hajók legénységéhez is  csatlakozhatsz. Vagy a kalózokhoz. 
+Minél több Könyved van, annál nagyobb lesz a rangod. 
+
+Pénzek: 
+A játékban Kalózkreditet és Tálentumot használunk.
+- Kalózkreditet kalandokkal tudsz szerezni, plusz a rendszer automatikusan jóváír neked minden nap a belépéskor egyet. Eladhatod a tárgyaidat is Kalózkreditért, kivéve a Könyveket.
+- Tálentumhoz úgy juthatsz, ha támogatod a munkánkat PayPal-en vagy Patreonon keresztül, vagy ha olyan mázlis vagy, hogy találsz egy letkristályt és eladod a Szentélyben. 
+- A Bankban tudsz váltani Tálentumot Kalózkreditre, de visszafelé nem.
+
+Hártya
+- A Tekercsek alapanyaga, önmagában nem olvasható.
+
+Tekercs
+- Tekercset Hártyából lehet készíttetni. A Tekercseidet, a Másolatot és a Könyveidet a Könyvtárban tudod elolvasni.
+- A Tekercsmester 30 db Hártyából 11 Kalózkreditért készít neked egy Tekercset. 
+- Tekercset eladni és venni a Tekercsmesternél vagy a Piacon lehet.
+
+Másolat
+- Másolat készítéséhez a Könyv összes Tekercsére szükséged van, de kaphatsz Másolatot más játékosoktól is, vagy megvásárolhatod őket a Piacon. Ha szerencséd van.
+
+Könyv
+Felszentelés
+- A Könyvszentélyben a Másolatot Tálentum befizetésével Könyvvé szentelik.
+A Szentelés után a Könyv ebook formában letölthetővé válik, és az a játékos, akinek a nevére íródik a Könyv, kap 10 db Másolatot, amivel szabadon rendelkezhet. 
+- Ha a letöltött ebookot bármelyik játékos illegálisan megosztja, akkor hiába szenteltette fel a Könyvet, az elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül, a bűnös neve pedig felkerül a Szégyenfalra.
+    </div>
+
+    <!-- Kilépés (Halálfej) ikon feljebb (+10px -> 110px) -->
+    <div id="info-scroll-close-wrap" style="position: absolute; bottom: 110px; left: 70%; transform: translateX(-50%); z-index: 100;">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r 1.png" id="btn-close-info-scroll" style="width: 52px; height: 52px; cursor: pointer; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8)); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1.0)'" title="Bezárás">
+    </div>
+  </div>
+</div>
+
+<!-- 📐 ÉLŐ INFO SCROLL & SZÖVEG & COIN & HALÁLFEJ SZERKESZTŐ PANEL -->
+<div id="info-scroll-live-editor" style="position: fixed; top: 10px; left: 10px; z-index: 999999; background: rgba(15, 10, 5, 0.96); border: 2px solid #d4af37; border-radius: 8px; padding: 12px; color: #ffeedd; font-family: monospace; font-size: 11px; width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); display: none;">
+  <div style="font-weight:bold; color:#ffea00; margin-bottom:8px; text-align:center; font-size:12px;">
+    📜 INFO SCROLL TELJES ÉLŐ SZERKESZTŐ
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:6px;">
+    <label style="color:#00ffcc;">Scroll Szélesség (px): <input id="is-w" type="number" value="920" style="width:100%"></label>
+    <label style="color:#00ffcc;">Scroll Magasság (px): <input id="is-h" type="number" value="720" style="width:100%"></label>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:6px;">
+    <label style="color:#ffea00;">Szöveg Betűméret (px): <input id="is-fs" type="number" value="16" style="width:100%"></label>
+    <label style="color:#ffea00;">Sorköz (line-height): <input id="is-lh" type="number" step="0.05" value="1.55" style="width:100%"></label>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:6px;">
+    <label>Padding Felső: <input id="is-pt" type="number" value="175" style="width:100%"></label>
+    <label>Padding Jobb: <input id="is-pr" type="number" value="185" style="width:100%"></label>
+    <label>Padding Alsó: <input id="is-pb" type="number" value="195" style="width:100%"></label>
+    <label>Padding Bal: <input id="is-pl" type="number" value="260" style="width:100%"></label>
+  </div>
+
+  <hr style="border:0.5px solid #6b4c2a; margin:6px 0;">
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:8px;">
+    <label style="color:#ffaa00;">Coin Görgő Szélesség: <input id="is-sb-w" type="number" value="32" style="width:100%"></label>
+    <label style="color:#ffaa00;">Coin Szöveg Margó: <input id="is-sb-pr" type="number" value="0" style="width:100%"></label>
+    <label style="color:#ffaa00;">Halálfej Alsó poz.: <input id="is-close-b" type="number" value="110" style="width:100%"></label>
+    <label style="color:#ffaa00;">Halálfej Bal poz. (%): <input id="is-close-l" type="number" value="70" style="width:100%"></label>
+  </div>
+
+  <button id="is-btn-copy" style="width:100%; padding:6px; background:#d4af37; color:#111; border:none; font-weight:bold; cursor:pointer; border-radius:4px;">
+    📋 ÉRTÉKEK MÁSOLÁSA VÁGÓLAPRA
+  </button>
+</div>
+
+<script>
+  (function() {
+    const btnInfo = document.getElementById('btn-tb-info');
+    const overlay = document.getElementById('info-scroll-overlay');
+    const editor = document.getElementById('info-scroll-live-editor');
+
+    if (btnInfo) {
+      btnInfo.addEventListener('click', function() {
+        if (editor) editor.style.display = 'block';
+      });
+    }
+
+    const btnClose = document.getElementById('btn-close-info-scroll');
+    if (btnClose) {
+      btnClose.addEventListener('click', function() {
+        if (editor) editor.style.display = 'none';
+      });
+    }
+
+    function updateInfoScrollUI() {
+      const w = document.getElementById('is-w').value + 'px';
+      const h = document.getElementById('is-h').value + 'px';
+      const fs = document.getElementById('is-fs').value + 'px';
+      const lh = document.getElementById('is-lh').value;
+      const pt = document.getElementById('is-pt').value + 'px';
+      const pr = document.getElementById('is-pr').value + 'px';
+      const pb = document.getElementById('is-pb').value + 'px';
+      const pl = document.getElementById('is-pl').value + 'px';
+      const sbW = document.getElementById('is-sb-w').value + 'px';
+      const sbPr = document.getElementById('is-sb-pr').value + 'px';
+      const closeB = document.getElementById('is-close-b').value + 'px';
+      const closeL = document.getElementById('is-close-l').value + '%';
+
+      const box = document.getElementById('info-scroll-box');
+      const content = document.getElementById('info-scroll-content');
+      const closeWrap = document.getElementById('info-scroll-close-wrap');
+
+      if (box) {
+        box.style.width = w;
+        box.style.height = '86vh';
+        box.style.maxHeight = h;
+        box.style.padding = `${pt} ${pr} ${pb} ${pl}`;
+      }
+      if (content) {
+        content.style.fontSize = fs;
+        content.style.lineHeight = lh;
+        content.style.paddingRight = sbPr;
+      }
+      if (closeWrap) {
+        closeWrap.style.bottom = closeB;
+        closeWrap.style.left = closeL;
+      }
+
+      // Dinamikus CSS injektálás a coin görgő szélességéhez
+      let styleElem = document.getElementById('dynamic-coin-scrollbar-style');
+      if (!styleElem) {
+        styleElem = document.createElement('style');
+        styleElem.id = 'dynamic-coin-scrollbar-style';
+        document.head.appendChild(styleElem);
+      }
+      styleElem.innerHTML = `#info-scroll-content::-webkit-scrollbar { width: ${sbW}; }`;
+    }
+
+    document.querySelectorAll('#info-scroll-live-editor input').forEach(function(inp) {
+      inp.addEventListener('input', updateInfoScrollUI);
+    });
+
+    document.getElementById('is-btn-copy').addEventListener('click', function() {
+      const data = {
+        scrollWidth: document.getElementById('is-w').value,
+        scrollHeight: document.getElementById('is-h').value,
+        fontSize: document.getElementById('is-fs').value,
+        lineHeight: document.getElementById('is-lh').value,
+        padTop: document.getElementById('is-pt').value,
+        padRight: document.getElementById('is-pr').value,
+        padBot: document.getElementById('is-pb').value,
+        padLeft: document.getElementById('is-pl').value,
+        coinScrollWidth: document.getElementById('is-sb-w').value,
+        coinPaddingRight: document.getElementById('is-sb-pr').value,
+        skullBottom: document.getElementById('is-close-b').value,
+        skullLeftPercent: document.getElementById('is-close-l').value
+      };
+      const str = JSON.stringify(data, null, 2);
+      navigator.clipboard.writeText(str).then(function() {
+        alert("Info Scroll Értékek kimásolva!\n\n" + str);
+      });
+    });
+  })();
+</script>

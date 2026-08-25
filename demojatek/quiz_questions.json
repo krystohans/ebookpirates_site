@@ -1,0 +1,770 @@
+[
+  {
+    "id": 1,
+    "category": "TUTOR_GameInfo",
+    "question": "Milyen pénzek vannak a játékban?",
+    "answers": [
+      "Kalózkredit és Tálentum",
+      "Arany és Ezüst",
+      "Garas és Krajcár",
+      "Fabatka és tallér"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 2,
+    "category": "TUTOR_GameInfo",
+    "question": "Mi kell a<br>könyvszenteléshez a Könyvszentélyban a Másolaton kívül?",
+    "answers": [
+      "Tálentum",
+      "Ima",
+      "200 kalózkredit",
+      "Áldozat"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 3,
+    "category": "TUTOR_GameInfo",
+    "question": "Hogyan tudod<br>támogatni az eBookPirates játékot?",
+    "answers": [
+      "Patreon, PayPal",
+      "Dícsérettel",
+      "Reklámok megnézésével",
+      "Véráldozattal"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 4,
+    "category": "TUTOR_GameInfo",
+    "question": "Hány hártya kell egy tekercshez?",
+    "answers": [
+      "Harminc",
+      "Ötven",
+      "Bekezdésenként egy",
+      "Tizenkettő"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 5,
+    "category": "TUTOR_GameInfo",
+    "question": "Hány tekercs kell egy másolathoz?",
+    "answers": [
+      "A könyv összes tekercse",
+      "Harminc",
+      "Tizenkettő",
+      "Ötven"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 6,
+    "category": "TUTOR_GameInfo",
+    "question": "Hol juthatsz küldetésekhez?",
+    "answers": [
+      "A Tavernában",
+      "A Kikötőmesternél",
+      "A Könyvszentélyben",
+      "A Könyvtárban"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 7,
+    "category": "TUTOR_GameInfo",
+    "question": "Hol tudod olvasni a tekercseidet?",
+    "answers": [
+      "A Könyvtárban",
+      "A Tavernában",
+      "A Kikötőmesternél",
+      "A Könyvszentélyben"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 8,
+    "category": "TUTOR_GameInfo",
+    "question": "Mit eredményez a felszentelés?",
+    "answers": [
+      "Letölthető .ePub + 10 másolat",
+      "Utána el lehet adni a könyvet",
+      "A játékos szintet lép",
+      "1000 kalózkreditet"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 9,
+    "category": "TUTOR_GameInfo",
+    "question": "Mi a könyvtolvajok büntetése?",
+    "answers": [
+      "Könyvbörtön, szégyenfal",
+      "Áthúzás a hajógerinc alatt",
+      "Azonnali letiltás",
+      "Pénzbüntetés"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 10,
+    "category": "TUTOR_GameInfo",
+    "question": "Mi a Kalózkikötő<br>neve a Letter-tengeren?",
+    "answers": [
+      "Hebok",
+      "Kalózsziget",
+      "Fekete Szikla",
+      "Koponya Sziget"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 11,
+    "category": "TUTOR_GameInfo",
+    "question": "Hogyan tarthatod<br>biztonságban a megszerzett hártyáidat portya közben?",
+    "answers": [
+      "Visszatérsz a kikötői Bázisra",
+      "Elrejted a léghajó elől",
+      "Kidobod a tengerbe",
+      "Elzárod a csónak aljában"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 12,
+    "category": "TUTOR_GameInfo",
+    "question": "Melyik irányító<br>gombokkal navigálhatod a csónakodat?",
+    "answers": [
+      "W, A, S, D billentyűkkel",
+      "Csak az egér kattintásával",
+      "Szóköz és Enter gombbal",
+      "F1 és F2 billentyűkkel"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 13,
+    "category": "TUTOR_GameInfo",
+    "question": "Mit kell tenned,<br>ha a Léghajó elkap, hogy megmenekülj?",
+    "answers": [
+      "Helyesen kell válaszolnod a feltett Kvízkérdésre",
+      "Gyorsabban kell evezned",
+      "Le kell lőnöd a léghajót",
+      "Be kell ugranod a vízbe"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 14,
+    "category": "TUTOR_GameInfo",
+    "question": "Hogyan olvashatom<br>a tutorial játék szabályait?",
+    "answers": [
+      "Az infópanel megnyitásával",
+      "A főoldalt megnyitva",
+      "A Patreon oldalra ellátogatva",
+      "A Facebook oldalon"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 15,
+    "category": "TUTORZEP",
+    "question": "Kinek az idézetével<br>kezdődik A hercegnő nyakéke című könyv?",
+    "answers": [
+      "Hamvas Béla",
+      "Alexandre Dumas",
+      "Weöres Sándor",
+      "Lao-ce"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 16,
+    "category": "TUTORZEP",
+    "question": "Hány karja van<br>a boldogságnak Shelby Van Pelt szerint?",
+    "answers": [
+      "Nyolc",
+      "Négy",
+      "Három és fél",
+      "Kettő"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 17,
+    "category": "TUTORZEP",
+    "question": "Hol írta meg Agatha<br>Christie a híres krimijei egy jelentős részét?",
+    "answers": [
+      "A fürdőkádjában ülve",
+      "A kiadója irodájában",
+      "Egy londoni kávéházban",
+      "A dolgozószobájában"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 18,
+    "category": "TUTORZEP",
+    "question": "Miért írta J.K. Rowling<br>az első Harry Potter könyvet egy kávéházban?",
+    "answers": [
+      "Mert otthon fázott",
+      "Imádta a háttérzajt",
+      "A vendégekről mintázta a szereplőket",
+      "Ingyen kapott kávét és süteményt"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 19,
+    "category": "TUTORZEP",
+    "question": "Melyik könyvének<br>megírására nem emlékszik Stephen King a drog miatt?",
+    "answers": [
+      "Cujo",
+      "Ragyogás (The Shining)",
+      "Az (It)",
+      "Kedvencek temetője (Pet Sematary)"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 20,
+    "category": "TUTORZEP",
+    "question": "Melyik rockzenész<br>akarta eljétszani Gollam szerepét a megfilmesített Gyűrűk Urában?",
+    "answers": [
+      "John Lennon",
+      "Bon Jovi",
+      "Axl Rose",
+      "Ozzy Osbourne"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 21,
+    "category": "TUTORZEP",
+    "question": "Mi ihlette Frank Herbertet a Dűne megírására?",
+    "answers": [
+      "Egy kormányzati projekt",
+      "Egy NASA-jelentés a Mars felszínéről",
+      "Egy oregoni sivatagi nyaralás",
+      "Egy rémálom"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 22,
+    "category": "TUTORZEP",
+    "question": "Mit védetett le Edgar Rice Burroughs?",
+    "answers": [
+      "Tarzan üvöltését",
+      "A gorillanyelvet",
+      "A Tarzan nevet",
+      "A \"Dzsungel Ura\" titulust"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 23,
+    "category": "TUTORZEP",
+    "question": "Mit csinál az<br>eredeti könyvben Pinokkió a tücsökkel?",
+    "answers": [
+      "Egy kalapáccsal szétlapítja",
+      "Bezárja egy sötét gyufásdobozba",
+      "Eladja egy vándorcirkusznak",
+      "Kidobja az ablakon"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 24,
+    "category": "TUTORZEP",
+    "question": "Melyik könyv ihlette a Batmant?",
+    "answers": [
+      "Drakula gróf",
+      "Frankenstein",
+      "A láthatatlan ember",
+      "Dr. Jekyll és Mr. Hyde"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 25,
+    "category": "TUTORZEP",
+    "question": "Honnan származik<br>a Matrix ikonikus, zöld, digitális kódja?",
+    "answers": [
+      "A tervező feleségének japán szakácskönyvéből",
+      "Egy orosz fizika tankönyvből",
+      "Egy régi svéd bútorgyári katalógusból",
+      "Egy ókori egyiptomi papiruszról"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 26,
+    "category": "TUTORZEP",
+    "question": "Milyen valóságos<br>esemény ihlette a Trónok harca \"Vörös Nász\"-át?",
+    "answers": [
+      "Egy középkori skót mészárlás, a Fekete Vacsora",
+      "A kijev-i Olga hercegnő bosszú-esküvője",
+      "A francia Szent Bertalan-éji mészárlás",
+      "II. Eduárd angol király botrányos esküvői vacsorája"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 27,
+    "category": "TUTORZEP",
+    "question": "A Da Vinci-kódban<br>szereplő melyik kamu tényt cáfolta hivatalosan a Louvre?",
+    "answers": [
+      "Hogy az üvegpiramis 666 üveglapból áll",
+      "Hogy a Mona Lisa mögött egy földönkívüli látható",
+      "Hogy a múzeum alatt van Jézus valódi sírja",
+      "Hogy a múzeum igazgatója egy középkori lovagrend nagymestere volt"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 28,
+    "category": "TUTORZEP",
+    "question": "Mi vagy ki adta<br>William Steig-nek az ötletet Shrek nevéhez?",
+    "answers": [
+      "A jiddish \"Schreck\" szó",
+      "A Skriech nevű skót mocsár",
+      "Egy Shreck nevű középkori, német zsoldos",
+      "A szomszédja, akit Shrecknek hívtak"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 29,
+    "category": "TUTORZEP",
+    "question": "Kiről mintázta<br>Ian Fleming a James Bond törénetek Q-ját?",
+    "answers": [
+      "Egy II. világháborús bombaszakértőről",
+      "Egy londoni órásmesterről",
+      "Albert Einstein asszisztenséről",
+      "Saját magáról"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 30,
+    "category": "TUTORZEP",
+    "question": "Ki volt Drakula gróf a valóságban?",
+    "answers": [
+      "Vlad Țepeș fejedelem",
+      "Egy őrült bajor király",
+      "Egy spanyol inkvizítor",
+      "Egy londoni sorozatgyilkos"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 31,
+    "category": "TUTORZEP",
+    "question": "Milyen fóbiája<br>ihlette Stan Leet a Pókember megírására?",
+    "answers": [
+      "Utálta a legyeket, de a Légyember rosszul hangzott",
+      "Tériszonya volt",
+      "Pókiszonya volt",
+      "Utálta a maszkokat"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 32,
+    "category": "TUTORZEP",
+    "question": "Mi adta Michael<br>Crichton-nak az ötletet a Jurassic Perk megírásához?",
+    "answers": [
+      "Érdekelte a génklónozás",
+      "Ki akarta találni a legdrágább húst",
+      "Egy dinós rémálom",
+      "A kislánya iskolai projektje"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 33,
+    "category": "TUTORZEP",
+    "question": "Melyik híres irodalmi<br>karaktert ihlette egy valóságos, dundi kisfiú?",
+    "answers": [
+      "Róbert Gidát a Micimackóból",
+      "Neville Longbottomot A Harry Potterből",
+      "Augustus Gloopot a Charlie és a csokigyárból",
+      "Gombóc Artúrt a Pom Pom meséiből"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 34,
+    "category": "TUTORZEP",
+    "question": "Ki a Kincses sziget<br>című regény félelmetes kalózvezére?",
+    "answers": [
+      "Long John Silver",
+      "Grand kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 35,
+    "category": "TUTORZEP",
+    "question": "Hogy hívják<br>Robinson Crusoe bennszülött társát?",
+    "answers": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 36,
+    "category": "TUTORZEP",
+    "question": "Mely tengeri<br>lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 37,
+    "category": "TUTORZEP",
+    "question": "Milyen lények<br>lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 38,
+    "category": "TUTORZEP",
+    "question": "Ki az a fiatal<br>nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 39,
+    "category": "TUTORZEP",
+    "question": "Milyen hétköznapi<br>építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 40,
+    "category": "TUTORZEP",
+    "question": "Melyik regény főhőse Skandar Graun?",
+    "answers": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 41,
+    "category": "TUTORZEP",
+    "question": "Melyik hőst játszotta Arnold Swarzenegger?",
+    "answers": [
+      "Conan a barbár",
+      "Legendás Druss",
+      "Sötét Mersant",
+      "Bombadil Toma"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 42,
+    "category": "TUTORZEP",
+    "question": "Melyik világ hőse Leon Silver?",
+    "answers": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerúnia"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 43,
+    "category": "SAVE",
+    "question": "Ki írta:<br>\"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 44,
+    "category": "SAVE",
+    "question": "Mi a címe<br>Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 45,
+    "category": "SAVE",
+    "question": "Kinek az írói álneve Raymond Darieni?",
+    "answers": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 46,
+    "category": "SAVE",
+    "question": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 47,
+    "category": "SAVE",
+    "question": "Melyik írói álnév Szélesi Sándoré?",
+    "answers": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 48,
+    "category": "SAVE",
+    "question": "Melyik sorozat<br>része az \"Éjféli horizont\"?",
+    "answers": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 49,
+    "category": "SAVE",
+    "question": "Melyik NEM Sheila Martens műve?",
+    "answers": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 50,
+    "category": "SAVE",
+    "question": "Mikor tartják<br>a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 51,
+    "category": "SAVE",
+    "question": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 52,
+    "category": "SAVE",
+    "question": "Milyen címen<br>jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 53,
+    "category": "SAVE",
+    "question": "Mi a neve Hunyadi<br>hajójának a Steampunk Hunyadi című könyvben?",
+    "answers": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 54,
+    "category": "SAVE",
+    "question": "Ki a Farkastestvérek<br>című fantasy regény főszereplője?",
+    "answers": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 55,
+    "category": "SAVE",
+    "question": "Az \"Álomba ébredve\"<br>című könyv melyik zsánerhez tartozik?",
+    "answers": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 56,
+    "category": "SAVE",
+    "question": "Ki vezeti a<br>Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 57,
+    "category": "SAVE",
+    "question": "Jules Verne<br>melyik regénye szól egy csapat iskolásfiúról?",
+    "answers": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 58,
+    "category": "SAVE",
+    "question": "Ki Peter Pan esküdt ellensége?",
+    "answers": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 59,
+    "category": "SAVE",
+    "question": "Ki R. A. Salvatore főhőse?",
+    "answers": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 60,
+    "category": "SAVE",
+    "question": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 61,
+    "category": "SAVE",
+    "question": "Ki nem varázsolt a Földön?",
+    "answers": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 62,
+    "category": "SAVE",
+    "question": "Hány nap alatt<br>utazta körbe a Földet Willy Fogg?",
+    "answers": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 63,
+    "category": "SAVE",
+    "question": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 64,
+    "category": "SAVE",
+    "question": "Hanyadik házról írt Leigh Bardugo?",
+    "answers": [
+      "Kilencedik",
+      "Tizedik",
+      "Hetedik",
+      "Első"
+    ],
+    "correctIndex": 0
+  }
+]

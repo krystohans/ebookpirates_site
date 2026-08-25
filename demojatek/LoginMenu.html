@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Menu</title>
+  <!-- Behúzzuk az eredeti stíluslapot a betűtípus (Briskb) és egyebek miatt -->
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Teljes képernyős, középre igazító konténer */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      overflow: hidden;
+      font-family: 'Briskb', 'Courier New', monospace;
+    }
+
+    #main-menu-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      /* Opcionális: Halvány sötétítés a háttéren, hogy a menü jobban kiemelkedjen */
+      /* background-color: rgba(0, 0, 0, 0.3); */
+    }
+
+    /* A logó mögötti négyzetes fa panel */
+    .menu-logo-container {
+      width: 275px;
+      height: 275px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+      margin-bottom: -30px;
+      /* Kicsit bentebb húzzuk a belső tartalmat, hogy a keretre ne lógjon rá (megnövelve) */
+      padding: 55px;
+      box-sizing: border-box;
+    }
+
+    .menu-logo-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* A menüpontok fa paneljei */
+    .menu-button {
+      width: 380px;
+      height: 70px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1px 0; /* Csökkentett sortávolság */
+      cursor: pointer;
+      transition: transform 0.1s ease-in-out;
+      
+      /* Szöveg stílusa */
+      color: #000000;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-size: 26px;
+      font-weight: bold;
+      text-transform: none; /* Maradjon az a nagybetű/kisbetű, amit beírtunk */
+    }
+
+    /* Hover effektus: egy picit megugrik, mikor ráviszed az egeret */
+    .menu-button:hover {
+      transform: scale(1.05);
+      color: #333333;
+    }
+
+    /* Belépés panel stílusai */
+    .login-form-container {
+      width: 1000px;
+      min-height: 480px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 80px;
+      box-sizing: border-box;
+      margin-top: -10px;
+    }
+
+    .login-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 25px;
+    }
+
+    .login-label {
+      color: #000000;
+      font-family: 'BriskB', 'Courier New', monospace;
+      font-size: 26px;
+      font-weight: bold;
+      width: 250px;
+      text-align: right;
+      padding-right: 20px;
+      margin: 0;
+    }
+
+    .login-input {
+      width: 320px;
+      background: rgba(0,0,0,0.08);
+      backdrop-filter: blur(2px);
+      border: 1px solid rgba(0,0,0,0.3);
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-family: 'BriskB', 'Courier New', Courier, monospace;
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a1a1a;
+      box-sizing: border-box;
+      outline: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .login-input:focus {
+      background: rgba(0,0,0,0.15);
+      border-color: rgba(0,0,0,0.6);
+    }
+
+    .show-password-icon {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      cursor: pointer;
+      opacity: 0.85;
+      margin-left: 15px;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    
+    .show-password-icon:hover {
+      opacity: 1.0;
+      transform: scale(1.1);
+    }
+
+    .icon-placeholder {
+      width: 40px;
+      margin-left: 15px;
+    }
+
+    .login-buttons-container {
+      display: flex;
+      justify-content: space-around;
+      width: 600px;
+      margin-top: 25px;
+    }
+
+    .login-btn {
+      padding: 8px 18px;
+      font-family: 'BriskB', 'Courier New', Courier, monospace;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      background: rgba(0,0,0,0.08);
+      backdrop-filter: blur(2px);
+      color: #1a1a1a;
+      border: 1px solid rgba(0,0,0,0.3);
+      border-radius: 6px;
+      transition: transform 0.15s, background 0.15s;
+    }
+    
+    .login-btn:hover {
+      background: rgba(0,0,0,0.18);
+      transform: scale(1.05);
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Lekérjük a beállított nyelvet, alapértelmezett a magyar
+      let savedLang = localStorage.getItem('ebook_pirates_language') || 'hu';
+      // URL paraméterből is felülírható, ha a weboldal adta át
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('lang')) {
+        savedLang = urlParams.get('lang');
+        localStorage.setItem('ebook_pirates_language', savedLang);
+      }
+      
+      const flagImg = document.getElementById('current-language-flag');
+      if (flagImg) {
+        // Használjuk az assets/images/flags mappában lévő megfelelő képet
+        flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${savedLang}-removebg-preview.png`;
+      }
+    });
+
+    function startNewGame() {
+      // Új játék indításakor töröljük a mentett állásokat!
+      localStorage.removeItem('ebook_pirates_game_state');
+      localStorage.removeItem('saved_boat_transform');
+      window.location.href = 'tutorial_fixed.html';
+    }
+
+    function continueGame() {
+      // Játék folytatása: ellenőrizzük, van-e mentett cookie/állás
+      if (localStorage.getItem('ebook_pirates_game_state')) {
+        window.location.href = 'tutorial_fixed.html?load=1';
+      } else {
+        alert("Nincs elérhető mentett játékállás!");
+      }
+    }
+
+    // Zene és hang betöltése
+    const storedMusic = localStorage.getItem('ebook_pirates_music_vol');
+      const storedSound = localStorage.getItem('ebook_pirates_sound_vol');
+      const musicVol = storedMusic !== null ? (parseInt(storedMusic) / 100.0) * 0.5 : 0.5;
+      const soundVol = storedSound !== null ? (parseInt(storedSound) / 100.0) * 0.6 : 0.6;
+
+      const menuMusic = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3');
+      menuMusic.loop = true;
+      menuMusic.volume = musicVol;
+
+      const menuAmbience = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/waves-and-seagulls.wav');
+      menuAmbience.loop = true;
+      menuAmbience.volume = soundVol;
+
+      let audioStarted = false;
+      document.addEventListener('click', () => {
+        if (!audioStarted) {
+          if (musicVol > 0) menuMusic.play().catch(e => {});
+          if (soundVol > 0) menuAmbience.play().catch(e => {});
+          audioStarted = true;
+        }
+      });
+
+    // Check for autofill after a small delay
+    setTimeout(() => { updateCoins(); }, 100);
+    setTimeout(() => { updateCoins(); }, 500);
+
+    function updateCoins() {
+      const pwInput = document.getElementById('login-password');
+      const overlay = document.getElementById('coin-overlay');
+      
+      overlay.innerHTML = ''; // Töröljük az eddigi coinokat
+      
+      if (pwInput.type === 'password') {
+        if (pwInput.value.length > 0) {
+          pwInput.style.color = 'transparent'; // Elrejtjük a fekete pöttyöket
+          
+          for (let i = 0; i < pwInput.value.length; i++) {
+            const coin = document.createElement('img');
+            coin.src = 'assets/images/eBookPirates_coin_r.png';
+            coin.style.height = '18px';
+            coin.style.width = '18px';
+            coin.style.objectFit = 'contain';
+            overlay.appendChild(coin);
+          }
+        } else {
+          // Ha üres, hagyjuk meg a színt, hogy a placeholder látszódjon
+          pwInput.style.color = '#1a1a1a';
+        }
+      }
+    }
+
+    function togglePassword() {
+      const pwInput = document.getElementById('login-password');
+      const overlay = document.getElementById('coin-overlay');
+      
+      if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+        pwInput.style.color = '#1a1a1a'; // Szöveg látható lesz
+        overlay.style.display = 'none'; // Coinok elrejtése
+      } else {
+        pwInput.type = 'password';
+        overlay.style.display = 'flex'; // Coinok mutatása
+        updateCoins(); // Frissítjük a coinokat
+      }
+    }
+
+    function doLogin() {
+      // Később itt kötjük be a weblapot
+      alert("A bejelentkezés sikerült!");
+      // Beállítjuk a belépett státuszt
+      sessionStorage.setItem('ebook_is_logged_in', 'true');
+      
+      // Ha az EoG Auth Promptból érkezett -> visszairányítjuk a tutorialba!
+      const returnToEoG = sessionStorage.getItem('eogReturnToAuthPrompt') || document.cookie.includes('eogReturnToAuthPrompt=true');
+      if (returnToEoG) {
+        window.location.href = 'tutorial_fixed.html';
+      } else {
+        window.location.href = 'MainMenuTutorial.html';
+      }
+    }
+
+    function doRegister() {
+      alert("A regisztrációs felület hamarosan elérhető!");
+    }
+
+    function cancelLogin() {
+      // Mégse esetén is visszalépteti a tutorialba, ha onnan jött!
+      const returnToEoG = sessionStorage.getItem('eogReturnToAuthPrompt') || document.cookie.includes('eogReturnToAuthPrompt=true');
+      if (returnToEoG) {
+        window.location.href = 'tutorial_fixed.html';
+      } else {
+        window.location.href = 'MainMenuTutorial.html';
+      }
+    }
+  </script>
+</head>
+<body>
+  <video id="bg-video" autoplay loop muted playsinline oncanplay="this.playbackRate = 0.5" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1000; pointer-events: none;">
+    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/eBookPirates – Kalózsziget 3D Tutorial_2.mp4" type="video/mp4">
+  </video>
+  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: -999; pointer-events: none;"></div>
+
+  <div id="main-menu-overlay">
+    
+    <!-- Felső Logó Panel -->
+    <div class="menu-logo-container">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Color_logó.png" alt="eBookPirates Logo">
+    </div>
+
+    <!-- Belépés Form -->
+    <div class="login-form-container">
+      
+      <div class="login-row">
+        <div class="login-label">Kalóznév:</div>
+        <input type="text" class="login-input" id="login-username" placeholder="Írd be a kalázneved...">
+        <div class="icon-placeholder"></div>
+      </div>
+      
+      <div class="login-row">
+        <div class="login-label">Kedvenc ételed:</div>
+        <div style="position: relative; display: inline-block;">
+          <input type="password" class="login-input" id="login-password" placeholder="Titkos jelszó..." oninput="updateCoins()" style="caret-color: #1a1a1a;">
+          <div id="coin-overlay" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; display: flex; align-items: center; padding-left: 18px; gap: 2px; overflow: hidden;"></div>
+        </div>
+        <img src="show_password-r.png" class="show-password-icon" onclick="togglePassword()" title="Jelszó mutatása/elrejtése">
+      </div>
+
+      <div class="login-buttons-container" style="gap: 15px; justify-content: center;">
+        <button class="login-btn" onclick="doLogin()">Beszállás</button>
+        <button class="login-btn" onclick="doRegister()">Regisztrálok</button>
+        <button class="login-btn" onclick="cancelLogin()">Mégse</button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Menu</title>
+  <!-- Behúzzuk az eredeti stíluslapot a betűtípus (Briskb) és egyebek miatt -->
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Teljes képernyős, középre igazító konténer */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      overflow: hidden;
+      font-family: 'Briskb', 'Courier New', monospace;
+    }
+
+    #main-menu-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      /* Opcionális: Halvány sötétítés a háttéren, hogy a menü jobban kiemelkedjen */
+      /* background-color: rgba(0, 0, 0, 0.3); */
+    }
+
+    /* A logó mögötti négyzetes fa panel */
+    .menu-logo-container {
+        width: 330px;
+        height: 330px;
+        background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+        background-size: 100% 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -20px;
+        margin-bottom: -60px; /* Erősen negatív margó, hogy a zászló és a gombok becsússzanak a logó üres fafelülete fölé! */
+      /* Kicsit bentebb húzzuk a belső tartalmat, hogy a keretre ne lógjon rá (megnövelve) */
+      padding: 75px;
+      box-sizing: border-box;
+    }
+
+    .menu-logo-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* A menüpontok fa paneljei */
+    .menu-button {
+      width: 450px;
+      height: 70px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1px 0; /* Csökkentett sortávolság */
+      cursor: pointer;
+      transition: transform 0.1s ease-in-out;
+      
+      /* Szöveg stílusa */
+      color: #000000;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-size: 26px;
+      font-weight: bold;
+      text-transform: none; /* Maradjon az a nagybetű/kisbetű, amit beírtunk */
+    }
+
+    /* Hover effektus: egy picit megugrik, mikor ráviszed az egeret */
+    .menu-button:hover:not(.disabled) {
+      transform: scale(1.05);
+      color: #333333;
+    }
+
+    /* Inaktív / Szürke gomb stílus */
+    .menu-button.disabled {
+      opacity: 0.45;
+      filter: grayscale(100%);
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Lekérjük a beállított nyelvet, alapértelmezett a magyar
+      let savedLang = localStorage.getItem('ebook_pirates_language') || 'hu';
+      // URL paraméterből is felülírható, ha a weboldal adta át
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('lang')) {
+        savedLang = urlParams.get('lang');
+        localStorage.setItem('ebook_pirates_language', savedLang);
+      }
+      
+      const flagImg = document.getElementById('current-language-flag');
+      if (flagImg) {
+        // Használjuk az assets/images/flags mappában lévő megfelelő képet
+        flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${savedLang}-removebg-preview.png`;
+      }
+
+      // --- 1. JÁTÉK FOLYTATÁSA ELLENŐRZÉSE (Mentés / Cookie alapján) ---
+      const hasSaveState = localStorage.getItem('ebook_pirates_game_state') || 
+                           localStorage.getItem('saved_boat_transform') ||
+                           document.cookie.includes('ebook_pirates_game_state=true');
+      
+      const btnContinue = document.getElementById('btn-continue-game');
+      if (btnContinue && !hasSaveState) {
+        btnContinue.classList.add('disabled');
+      }
+
+      // --- 2. VISSZA A KIKÖTŐBE / HEBOK ELLENŐRZÉSE (Honlap navigáció) ---
+      const referrer = document.referrer;
+      const isFromWebsite = referrer && (referrer.includes('ebookpirates') || referrer.includes('kikoto'));
+      
+      const btnHarbor = document.getElementById('btn-back-to-harbor');
+      if (btnHarbor) {
+        if (!isFromWebsite) {
+          btnHarbor.innerText = 'Hebok';
+        } else {
+          btnHarbor.innerText = 'Vissza a Kikötőbe';
+        }
+      }
+    });
+
+    function startNewGame() {
+      // Új játék indításakor töröljük a korábbi mentett állásokat!
+      localStorage.removeItem('ebook_pirates_game_state');
+      localStorage.removeItem('saved_boat_transform');
+      localStorage.removeItem('ebp_tutorial_save');
+      document.cookie = "ebook_pirates_game_state=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = 'tutorial_fixed.html';
+    }
+
+    function continueGame() {
+      // Játék folytatása: ellenőrizzük, van-e mentett cookie/állás
+      const hasSaveState = localStorage.getItem('ebook_pirates_game_state') || 
+                           localStorage.getItem('saved_boat_transform') ||
+                           document.cookie.includes('ebook_pirates_game_state=true');
+      if (hasSaveState) {
+        window.location.href = 'tutorial_fixed.html?load=1';
+      }
+    }
+  </script>
+</head>
+<body>
+  <video id="bg-video" autoplay loop muted playsinline preload="auto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1000; pointer-events: none;">
+    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/eBookPirates – Kalózsziget 3D Tutorial_2.mp4" type="video/mp4">
+  </video>
+  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: -999; pointer-events: none;"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menü zene és hangok betöltése
+      const storedMusic = localStorage.getItem('ebook_pirates_music_vol');
+      const storedSound = localStorage.getItem('ebook_pirates_sound_vol');
+      const musicVol = storedMusic !== null ? (parseInt(storedMusic) / 100.0) * 0.5 : 0.5;
+      const soundVol = storedSound !== null ? (parseInt(storedSound) / 100.0) * 0.6 : 0.6;
+
+      const menuMusic = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3');
+      menuMusic.loop = true;
+      menuMusic.volume = musicVol;
+
+      const menuAmbience = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/waves-and-seagulls.wav');
+      menuAmbience.loop = true;
+      menuAmbience.volume = soundVol;
+
+      // Ha korábban a felhasználó teljes képernyőre váltott, azonnal próbáljuk meg fenntartani
+      if (localStorage.getItem('ebook_pirates_fullscreen') === 'true' && !document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(e => {});
+      }
+
+      // Autoplay policy & Fullscreen megőrzése miatt az első kattintásra is elindítjuk
+      let audioStarted = false;
+      const tryFullscreenAndAudio = () => {
+        if (!audioStarted) {
+          if (musicVol > 0) menuMusic.play().catch(e => {});
+          if (soundVol > 0) menuAmbience.play().catch(e => {});
+          audioStarted = true;
+        }
+        if (localStorage.getItem('ebook_pirates_fullscreen') === 'true' && !document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(e => {});
+        }
+      };
+
+      document.addEventListener('click', tryFullscreenAndAudio);
+      document.addEventListener('keydown', tryFullscreenAndAudio);
+    });
+  </script>
+
+  <div id="main-menu-overlay">
+    
+    <!-- Felső Logó Panel -->
+    <div class="menu-logo-container">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Color_logó.png" alt="eBookPirates Logo">
+    </div>
+
+    <!-- Nyelvi Ikon -->
+    <!-- Középre igazítjuk a hatalmas logó és a gombok között -->
+    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="window.location.href='SettingsMenu.html?langSelector=true'" title="Nyelv / Language">
+      <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+    </div>
+
+    <!-- Menüpontok -->
+    <div class="menu-button" onclick="startNewGame()">Új Játék</div>
+    <div id="btn-continue-game" class="menu-button" onclick="continueGame()">Játék Folytatása</div>
+    <div class="menu-button" onclick="window.location.href='SettingsMenu.html';">Beállítások</div>
+    <div class="menu-button" onclick="window.location.href='LoginMenu.html';">Belépés / Regisztráció</div>
+    <div id="btn-back-to-harbor" class="menu-button">Vissza a Kikötőbe</div>
+
+  </div>
+
+</body>
+</html>

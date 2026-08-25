@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eBookPirates – Kalózsziget 3D Tutorial</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
+  <style>
+    #eog-boat-name-input {
+      background: rgba(0,0,0,0.08) !important;
+      -webkit-box-shadow: 0 0 0px 1000px rgba(210, 190, 160, 0.85) inset !important;
+      box-shadow: 0 0 0px 1000px rgba(210, 190, 160, 0.85) inset !important;
+      backdrop-filter: blur(2px) !important;
+      border: 1px solid rgba(0,0,0,0.3) !important;
+      border-radius: 6px !important;
+      font-family: 'Briskb', 'Courier New', Courier, monospace !important;
+      font-weight: bold !important;
+      color: #1a1a1a !important;
+      -webkit-text-fill-color: #1a1a1a !important;
+      box-sizing: border-box !important;
+      outline: none !important;
+      transition: background 0.15s, border-color 0.15s !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+    #eog-boat-name-input:focus,
+    #eog-boat-name-input:active {
+      background: rgba(0,0,0,0.12) !important;
+      -webkit-box-shadow: 0 0 0px 1000px rgba(200, 180, 150, 0.9) inset !important;
+      box-shadow: 0 0 0px 1000px rgba(200, 180, 150, 0.9) inset !important;
+      border-color: rgba(0,0,0,0.6) !important;
+      color: #1a1a1a !important;
+      -webkit-text-fill-color: #1a1a1a !important;
+    }
+  </style>
+
+  <script type="importmap">
+  { "imports": { 
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+  } }
+  </script>
+</head>
+
+<body class="welcome-mode step-0">
+  <div id="game-wrapper">
+    <canvas id="c"></canvas>
+
+    <!-- TopBar Dinamikus Konténer -->
+    <div id="topbar-container"></div>
+
+    <div id="crash-overlay"><span>💥 Zátonyra futottál!</span></div>
+
+    <!-- ZOZÓ WELCOME OVERLAY -->
+    <div id="zozo-welcome-overlay">
+      <div id="zozo-character-container">
+        <img id="zozo-char-img" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02.png" alt="Zozó" />
+      </div>
+
+      <div id="zozo-dialogue-box">
+        <div id="zozo-nameplate">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" id="zozo-nameplate-img" />
+        </div>
+        <div id="welcome-back-btn" class="monolog-nav-btn monolog-back-btn" onclick="window.previousZozoWelcome(event)" style="display: none;">&#9664;</div>
+        <div id="zozo-dialogue-text">
+          Na, te vagy az új jövevény? Egy Szárazföldi Patkány?
+        </div>
+        <div id="welcome-space-hint" style="position: absolute; bottom: 42px; right: 140px; font-family: 'Briskb', 'Courier New', monospace; font-size: 13px; color: rgba(30, 15, 5, 0.55); font-weight: bold; pointer-events: none;">space</div>
+      </div>
+    </div>
+
+    <!-- IN-GAME ZOZÓ MONOLÓG DOBOZ (Az in-game monológokhoz) -->
+    <div id="zozo-ingame-monolog-container" class="zozo-monolog-box-std" style="display: none;">
+      <div class="zozo-nameplate-std">
+        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
+      </div>
+      <div id="monolog-back-btn" class="monolog-nav-btn monolog-back-btn" onclick="window.previousInGameMonolog(event)" style="display: none;">&#9664;</div>
+      <div id="ingame-dialogue-text" class="zozo-dialogue-text-std"></div>
+    </div>
+
+    <!-- KILÉPÉS MEGERŐSÍTŐ ABLAK -->
+    <div id="exit-confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="zozo-monolog-box-std" style="position: relative; left: auto; top: auto; width: 950px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px; box-sizing: border-box; transform: scale(1.1); text-align: center;">
+        <div style="font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 25px; font-weight: bold; color: #1a1a1a; margin-bottom: 35px; line-height: 1.4;">
+          Ha most kilépsz, elvesznek a hártyáid.<br>Biztosan kilépsz?
+        </div>
+        <div style="display: flex; gap: 40px; width: 100%; justify-content: center;">
+          <button id="btn-exit-yes" style="padding: 8px 18px; font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; cursor: pointer; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); color: #1a1a1a; border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; transition: transform 0.15s, background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.18)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(0,0,0,0.08)'; this.style.transform='scale(1.0)'">
+            Vesszenek a hártyák!
+          </button>
+          <button id="btn-exit-no" style="padding: 8px 18px; font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; cursor: pointer; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); color: #1a1a1a; border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; transition: transform 0.15s, background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.18)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(0,0,0,0.08)'; this.style.transform='scale(1.0)'">
+            Folytatom a halászatot
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-GAME POPUP TOAST (A PopUp és irányítási üzenetekhez) -->
+    <div id="ingame-popup-toast" class="zozo-monolog-box-std" style="display: none;">
+      <div class="zozo-nameplate-std">
+        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
+      </div>
+      <div id="popup-toast-text" class="zozo-dialogue-text-std"></div>
+    </div>
+
+  <!-- EoG MONOLÓG DIALOG -->
+  <div id="eog-compact-dialog" class="zozo-monolog-box-std" style="display: none;">
+    <div class="zozo-nameplate-std">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
+    </div>
+    <div id="eog-dialog-text" class="zozo-dialogue-text-std" style="transform: translateY(8px);"></div>
+  </div>
+
+  <div id="eog-fade-overlay" style="display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 1.2s ease-in-out;"></div>
+
+  <div id="eog-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1001; align-items: center; justify-content: center;">
+    <video id="eog-video" muted playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_EoG_video.mp4"></video>
+  </div>
+
+  <!-- ─── END RUTIN OVERLAYS ─── -->
+
+  <!-- 1. Csónak Névadó Panel -->
+  <div id="eog-boat-naming-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 380px; padding: 65px 120px 50px 120px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 65px; line-height: 1.3; width: 100%;">
+        Mi legyen a csónakod neve?
+      </div>
+      <input type="text" id="eog-boat-name-input" placeholder="Írd ide a csónak nevét..." style="width: calc(100% - 100px); text-align: center; font-size: 20px; font-weight: bold; font-family: 'Briskb', 'Courier New', Courier, monospace; margin: 10px 0; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; padding: 10px 18px; color: #1a1a1a; outline: none;" />
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 50px;">
+        <button id="eog-btn-naming-submit" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Mehet!</button>
+        <button id="eog-btn-naming-cancel" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Megerősítő Panel 1 (Mehet! után) -->
+  <div id="eog-confirm-overlay-1" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 120px 50px 120px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 40px; line-height: 1.3; width: 100%;">
+        Biztos vagy benne?
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-confirm-yes" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Teljesen</button>
+        <button id="eog-btn-confirm-no" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Van jobb ötletem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Megerősítő Panel 2 (Kilépés után) -->
+  <div id="eog-confirm-overlay-2" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 120px 50px 120px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 40px; line-height: 1.3; width: 100%;">
+        Nem adsz nevet a hajónak?
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-noidea" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Nincs ötletem</button>
+        <button id="eog-btn-yesidea" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">De igen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Összegző Info Panel -->
+  <div id="eog-summary-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; height: 535px; padding: 155px 180px 140px 190px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: left; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;">
+      <div id="eog-summary-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 25px; font-weight: bold; color: #1a1a1a; line-height: 1.7; white-space: pre-line; width: 100%; min-height: 220px;"></div>
+      <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 5px; padding-right: 20px;">
+        <button id="eog-btn-summary-next" class="eog-std-btn" style="min-width: 175px; font-family: 'Briskb', monospace; font-weight: bold; visibility: hidden;">Minden világos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4/B. Feltételes Auth Prompt Panel (ha nincs belépve) -->
+  <div id="eog-auth-prompt-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 415px; padding: 65px 95px 70px 95px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-auth-prompt-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #1a1a1a; margin-top: 45px; line-height: 1.3; width: 100%; white-space: pre-line;">
+        Csak akkor tarthatod meg a kincseket,&#10;ha belépsz.
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 60px;">
+        <button id="eog-btn-auth-login" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Belépek</button>
+        <button id="eog-btn-auth-register" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Regisztrálok</button>
+        <button id="eog-btn-auth-exit" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépek</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4/C. Auth Kilépés Megerősítő Panel (AreYouSure a kincsek elvesztéséről) -->
+  <div id="eog-auth-exit-confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 9999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 120px 50px 120px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; margin-top: 30px; line-height: 1.3; width: 100%;">
+        Ha most kilépsz, elvesznek a kincseid.<br>Biztosan kilépsz?
+      </div>
+      <div style="display: flex; gap: 30px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-auth-exit-yes" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Igen</button>
+        <button id="eog-btn-auth-exit-no" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Nem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Utolsó Átlépő Panel -->
+  <div id="eog-final-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 120px 50px 120px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; line-height: 1.4; text-align: center; width: 100%;">
+        Most már beléphetsz a Kikötőbe
+      </div>
+    </div>
+  </div>
+
+  <!-- 5/B. Veterán Kalóz Panel (Már elvégzett tutorial és meglévő csónak esetén) -->
+  <div id="eog-veteran-user-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 9999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 320px; padding: 65px 120px 50px 120px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-veteran-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; margin-top: 25px; line-height: 1.3; width: 100%;">
+        Te már nem is vagy kezdő szárazföldi patkány!
+      </div>
+      <div style="display: flex; gap: 30px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-veteran-continue" class="eog-std-btn" style="min-width: 190px; font-family: 'Briskb', monospace; font-weight: bold;">Játék folytatása</button>
+        <button id="eog-btn-veteran-exit" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEJLESZTŐI TOOLBOX (Igény szerinti behívás: ?toolbox=1, ?dev=1 vagy Ctrl+Shift+T) -->
+  <script>
+    function initDevToolbox() {
+      if (window.toolboxInitialized) return;
+      window.toolboxInitialized = true;
+      const s = document.createElement('script');
+      s.src = 'Toolbox/toolbox_loader.js?t=' + Date.now();
+      document.body.appendChild(s);
+    }
+    if (window.location.search.includes('toolbox=1') || window.location.search.includes('dev=1')) {
+      window.addEventListener('DOMContentLoaded', initDevToolbox);
+    }
+    window.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.shiftKey && e.code === 'KeyT') {
+        initDevToolbox();
+      }
+    });
+  </script>
+  <script src="quiz_manager.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+
+</html>

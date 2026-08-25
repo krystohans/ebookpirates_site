@@ -1096,13 +1096,8 @@ function runTutorialScript() {
             return;
         }
 
-        var unityUrl = (flow && flow.unityUrl) ? flow.unityUrl : '';
-        if (!unityUrl) {
-            setUnityStatus(t('tutorial_unity_status_missing_url'), '#c0392b');
-            showQuizMode();
-            return;
-        }
-
+        var unityUrl = (flow && flow.unityUrl && flow.unityUrl.indexOf('http') === 0 && flow.unityUrl.indexOf('github.io') === -1) ? flow.unityUrl : 'demojatek/tutorial_runner.html';
+        
         var support = checkUnityWebGLSupport();
         if (!support.ok) {
             setUnityStatus(support.reason, '#c0392b');
@@ -1121,7 +1116,8 @@ function runTutorialScript() {
         }
 
         var mode = flow && flow.tutorialCompleted ? 'continue' : 'tutorial';
-        unityTargetUrl = buildUnityLaunchUrl(unityUrl, mode, flow ? flow.gameStateToken : '');
+        var isLoadParam = flow && flow.isLoad ? '&load=1' : '';
+        unityTargetUrl = (unityUrl.indexOf('?') === -1 ? unityUrl + '?' : unityUrl + '&') + 'mode=' + mode + isLoadParam;
 
         if (startBtn) {
             startBtn.style.display = 'inline-block';
@@ -1133,7 +1129,7 @@ function runTutorialScript() {
         if (autoStart) {
             mountUnityIframe(host);
         } else {
-            setUnityStatus(t('tutorial_unity_status_waiting_click'), '#333');
+            setUnityStatus(t('tutorial_unity_status_waiting_click') || 'Kattints a Tutorial indításához!', '#333');
         }
 
         if (fallbackBtn) {
@@ -1150,6 +1146,41 @@ function runTutorialScript() {
                 }
             };
         }
+
+        // PostMessage figyelő a 3D Tutorial Iframe eseményeihez
+        if (!window._ebpTutorialMessageBound) {
+            window._ebpTutorialMessageBound = true;
+            window.addEventListener('message', function (event) {
+                if (!event.data || event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
+                
+                console.log('🎮 Tutorial Iframe esemény érkezett:', event.data);
+                
+                if (event.data.action === 'saveTutorialState') {
+                    if (event.data.data) {
+                        try {
+                            localStorage.setItem('ebp_tutorial_save', JSON.stringify(event.data.data));
+                        } catch (e) {}
+                        callBackend('saveTutorialState', [JSON.stringify(event.data.data)], function(res) {
+                            console.log('Tutorial állapot felhőbe mentve:', res);
+                        });
+                    }
+                } else if (event.data.action === 'tutorial_completed') {
+                    callBackend('markTutorialCompleted', ['3d_tutorial'], function(res) {
+                        console.log('Tutorial sikeresen teljesítve!', res);
+                        if (panel) panel.style.display = 'none';
+                        if (quiz) quiz.style.display = 'none';
+                        if (nav) nav.style.display = 'block';
+                        var jumpBtn = document.getElementById('jump-to-save-btn');
+                        if (jumpBtn) jumpBtn.style.display = 'inline-block';
+                    });
+                } else if (event.data.action === 'exit_tutorial') {
+                    if (panel) panel.style.display = 'none';
+                    if (nav) nav.style.display = 'block';
+                    var continueBtn = document.getElementById('tutorial-continue-btn');
+                    if (continueBtn) continueBtn.style.display = 'inline-block';
+                }
+            });
+        }
     }
 
     function bindContinueButton(flow) {
@@ -1158,19 +1189,14 @@ function runTutorialScript() {
             return;
         }
 
-        if (flow && flow.gameStateToken) {
-            btn.style.display = 'inline-block';
-            btn.onclick = function () {
-                tryLaunchUnity({
-                    tutorialCompleted: true,
-                    gameStateToken: flow.gameStateToken,
-                    unityUrl: flow.unityUrl
-                }, true);
-            };
-        } else {
-            btn.style.display = 'none';
-            btn.onclick = null;
-        }
+        btn.style.display = 'inline-block';
+        btn.onclick = function () {
+            tryLaunchUnity({
+                tutorialCompleted: false,
+                isLoad: true,
+                unityUrl: 'demojatek/tutorial_runner.html'
+            }, true);
+        };
     }
 
     function initializeTutorialPage(flow) {

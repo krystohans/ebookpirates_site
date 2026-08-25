@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eBookPirates – Kalózsziget 3D Tutorial</title>
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      const errDiv = document.createElement('div');
+      errDiv.style.position = 'absolute';
+      errDiv.style.top = '10px';
+      errDiv.style.left = '10px';
+      errDiv.style.zIndex = '999999';
+      errDiv.style.background = 'red';
+      errDiv.style.color = 'white';
+      errDiv.style.padding = '20px';
+      errDiv.style.fontSize = '20px';
+      errDiv.innerHTML = `<h1>JS ERROR</h1><p>${message}</p><p>Line: ${lineno}:${colno}</p><p>${error ? error.stack : ''}</p>`;
+      document.body.appendChild(errDiv);
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      const errDiv = document.createElement('div');
+      errDiv.style.position = 'absolute';
+      errDiv.style.top = '250px';
+      errDiv.style.left = '10px';
+      errDiv.style.zIndex = '999999';
+      errDiv.style.background = 'orange';
+      errDiv.style.color = 'black';
+      errDiv.style.padding = '20px';
+      errDiv.style.fontSize = '20px';
+      errDiv.innerHTML = `<h1>PROMISE ERROR</h1><p>${event.reason}</p>`;
+      document.body.appendChild(errDiv);
+    });
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #050a12;
+      display: flex;
+      justify-content: center;
+      align-items: center
+    }
+
+    #game-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 56.25vw;
+      max-height: 100vh;
+      max-width: 177.78vh;
+      overflow: hidden;
+      background: #1a2a3a
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%
+    }
+
+    #topbar {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      right: 0;
+      height: 95px;
+      width: 95%;
+      margin: 0 auto;
+      max-width: 1450px;
+      z-index: 400;
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Courier New', Courier, monospace;
+      color: #1a1a1a;
+      font-weight: bold;
+      font-size: 1.4em;
+      padding: 0 35px;
+      box-sizing: border-box;
+      pointer-events: auto;
+    }
+
+    #topbar::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      bottom: -8px;
+      left: -15px;
+      right: -15px;
+      z-index: -1;
+      border-style: solid;
+      border-width: 44px 58px 46px 58px;
+      border-image: url('assets/images/Zozo_monolog_window_2.png') 105 150 115 150 fill stretch;
+    }
+
+    #topbar-left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding-left: 15px;
+      white-space: nowrap;
+    }
+
+    #topbar-center {
+      flex: 1.2;
+      display: flex;
+      justify-content: center;
+      gap: 35px;
+      align-items: center;
+      font-size: 1.4em;
+    }
+
+    #topbar-right {
+      flex: 2;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-right: 15px;
+    }
+
+    .counter-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .counter-icon {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+    }
+
+    .topbar-btn {
+      width: 52px;
+      height: 52px;
+      cursor: pointer;
+      transition: transform 0.1s;
+      object-fit: contain;
+    }
+
+    .topbar-btn:hover {
+      transform: scale(1.08);
+    }
+
+    #crash-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      display: none;
+      background: rgba(200, 20, 0, 0.25);
+      pointer-events: none;
+      justify-content: center;
+      align-items: center
+    }
+
+    #crash-overlay span {
+      font-family: 'Georgia', serif;
+      font-size: 2.2em;
+      color: #ff4040;
+      text-shadow: 0 0 20px rgba(255, 0, 0, 0.6)
+    }
+
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype');
+      font-weight: bold;
+    }
+
+    /* ─── ZOZÓ WELCOME OVERLAY & PÁRBESZÉD UI ─── */
+    #zozo-welcome-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 500;
+      pointer-events: auto;
+      display: none;
+      /* Először a 3D világ tölt be, utána mutatjuk Zozót! */
+      background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.55) 100%);
+    }
+
+    #zozo-character-container {
+      position: absolute;
+      left: 387px;
+      bottom: 88px;
+      height: 62%;
+      z-index: 510;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8));
+    }
+
+    #zozo-character-container img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    #zozo-dialogue-box {
+      position: absolute;
+      right: -92px;
+      bottom: 185px;
+      width: 781px;
+      min-height: 220px;
+      z-index: 520;
+      pointer-events: auto;
+      padding: 45px 55px 35px 55px;
+      color: #000000;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      background: url('assets/images/Zozo_monolog_window_2.png') no-repeat center / 100% 100%;
+      filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #zozo-nameplate {
+      position: absolute;
+      top: 0px;
+      left: 327px;
+      z-index: 530;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      cursor: move;
+      user-select: none;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+      transform: scale(1.36, 0.81) rotate(0deg);
+      transform-origin: left top;
+    }
+
+    #zozo-nameplate-img {
+      height: 62px;
+      width: auto;
+      display: block;
+    }
+
+    #zozo-dialogue-text {
+      font-size: 23px;
+      line-height: 1.3;
+      color: #000000;
+      text-shadow: none;
+      text-align: center;
+      margin-top: 0px;
+      min-height: 80px;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      white-space: pre-wrap;
+    }
+
+    /* Szerkesztő panelek elrejtve a játék nézetben */
+    #zozo-ui-editor-panel, #zozo-nameplate-editor-panel, #zozo-text-editor-panel, #pos-cam-editor-panel { display: none !important; }
+  
+/* Végleges Beállított Zozó UI CSS (Közös alapbeállítások) */
+.welcome-mode #zozo-character-container {
+  left: auto !important;
+  height: 57vh;
+  transform: none;
+}
+.welcome-mode #zozo-nameplate {
+  top: -5px;
+  transform: scale(0.64, 0.77) rotate(0deg);
+  transform-origin: left top;
+}
+.welcome-mode #zozo-nameplate-img { 
+  width: 174px; 
+}
+.welcome-mode #zozo-dialogue-box {
+  min-height: 155px;
+}
+
+/* Végleges Beállított Zozó UI CSS (Lépésenkénti egyedi pozíciók) */
+.welcome-mode.step-0 #zozo-dialogue-box {
+  right: auto !important; bottom: auto !important;
+  left: 10%; top: 77.5%; width: 1000px; min-height: 175px;
+  padding: 28px 112px 45px 112px;
+}
+/* Zozo Character Container CSS (Step 0) */
+.welcome-mode.step-0 #zozo-character-container {
+  left: auto !important; right: 57.5%; bottom: 27%; height: 57vh;
+  transform: none;
+}
+/* Zozo Nameplate CSS (Step 0) */
+.welcome-mode.step-0 #zozo-nameplate {
+  left: 432px; top: -10px;
+  transform: scale(0.71, 0.87) rotate(0deg);
+  transform-origin: left top;
+}
+.welcome-mode.step-0 #zozo-nameplate-img { width: 164px; }
+
+/* Zozo Dialogue Text CSS (Step 0) */
+.welcome-mode.step-0 #zozo-dialogue-text {
+  font-size: 28px; line-height: 1.15; text-align: center;
+  transform: translate(0px, 0px);
+}
+
+.welcome-mode.step-1 #zozo-dialogue-box {
+  left: 12.5%; top: 76.5%; width: 1015px;
+  padding: 82px 112px 45px 112px;
+}
+.welcome-mode.step-1 #zozo-character-container { right: 58.5%; bottom: 28.5%; }
+.welcome-mode.step-1 #zozo-nameplate { left: 424px; }
+.welcome-mode.step-1 #zozo-dialogue-text {
+  font-size: 22px; line-height: 1.4; text-align: center;
+  transform: translate(-11px, -32px);
+}
+
+.welcome-mode.step-2 #zozo-dialogue-box {
+  left: 12.5%; top: 76.5%; width: 1000px; min-height: 160px;
+  padding: 52px 112px 45px 112px;
+}
+.welcome-mode.step-2 #zozo-character-container { right: 58.5%; bottom: 28.5%; }
+.welcome-mode.step-2 #zozo-nameplate { left: 424px; }
+.welcome-mode.step-2 #zozo-dialogue-text {
+  font-size: 19px; line-height: 1.4; text-align: center;
+  transform: translate(0px, -6px);
+}
+
+.welcome-mode.step-3 #zozo-dialogue-box {
+  left: 10%; top: 77.5%; width: 1000px; min-height: 165px;
+  padding: 4px 103px 45px 103px;
+}
+.welcome-mode.step-3 #zozo-character-container { right: 58.5%; bottom: 28.5%; }
+.welcome-mode.step-3 #zozo-nameplate { left: 424px; }
+.welcome-mode.step-3 #zozo-dialogue-text {
+  font-size: 25px; line-height: 1.65; text-align: center;
+  transform: translate(7px, 62px);
+}
+
+</style>
+</head>
+
+<body>
+  <div id="game-wrapper">
+    <canvas id="c"></canvas>
+    <!-- ─── EREDETI PARANCSNOKI HÍD / FEJLÉC (TOPBAR) ─── -->
+    <div id="topbar">
+      <div id="topbar-left">
+        <span id="tb-player-name" style="letter-spacing: 2px;">Did not Load</span>
+      </div>
+      <div id="topbar-center">
+        <div class="counter-box">
+          <img src="assets/images/hajo_r.PNG" class="counter-icon" title="Szállított hártyák">
+          <span id="tb-carried-count">0</span>
+        </div>
+        <div class="counter-box">
+          <img src="assets/images/lada-r.png" class="counter-icon" title="Bázison tárolt hártyák">
+          <span id="tb-stored-count">0</span>
+        </div>
+      </div>
+      <div id="topbar-right">
+        <img src="assets/images/music-r.png" class="topbar-btn" title="Zene">
+        <img src="assets/images/sound-r.png" class="topbar-btn" title="Hangok">
+        <img src="assets/images/info-r 1.png" class="topbar-btn" title="Info">
+        <img src="assets/images/full_screen-r.png" class="topbar-btn" title="Teljes képernyő">
+        <img src="assets/images/menu-r.png" class="topbar-btn" title="Menü">
+        <img src="assets/images/settings_icon.png" class="topbar-btn" title="Beállítások">
+        <img src="assets/images/exit-r 1.png" class="topbar-btn" title="Kilépés">
+      </div>
+    </div>
+    <div id="crash-overlay"><span>💥 Zátonyra futottál!</span></div>
+
+    <!-- ─── ZOZÓ WELCOME OVERLAY ─── -->
+    <div id="zozo-welcome-overlay" onclick="window.advanceZozoWelcome()">
+      <!-- Zozó Full Body Karakter -->
+      <div id="zozo-character-container">
+        <img id="zozo-char-img" src="assets/images/Zozo_SteamPunk_Front_Dirty_02.png" alt="Zozó" />
+      </div>
+
+      <!-- Zozó Párbeszéd Szövegdoboz -->
+      <div id="zozo-dialogue-box">
+        <div id="zozo-nameplate">
+          <img src="assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" id="zozo-nameplate-img" />
+        </div>
+        <div id="zozo-dialogue-text">
+          Na, te vagy az új jövevény? Egy Szárazföldi Patkány?
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── IN-GAME Zozó Monológ Doboz (Teljes alak nélkül) ─── -->
+    <div id="zozo-ingame-monolog-container" style="
+      display: none;
+      position: fixed;
+      z-index: 525;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: pointer;
+    " onclick="window.advanceInGameMonolog()">
+      <div style="
+        position: relative;
+        width: 781px;
+        min-height: 220px;
+        padding: 45px 55px 35px 55px;
+        color: #000000;
+        font-family: 'Briskb', 'Courier New', monospace;
+        font-weight: bold;
+        user-select: none;
+        background: url('assets/images/Zozo_monolog_window_2.png') no-repeat center / 100% 100%;
+        filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85));
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      ">
+        <div style="
+          position: absolute;
+          top: 0px;
+          left: 327px;
+          z-index: 530;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+          filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+          transform: scale(1.36, 0.81) rotate(0deg);
+          transform-origin: left top;
+        ">
+          <img src="assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" style="height: 62px; width: auto; display: block;" />
+        </div>
+        <div id="ingame-dialogue-text" style="font-size: 23px; line-height: 1.3; color: #000000; text-align: center;">
+          <!-- Ide jön a játék közbeni monológ -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Játék közbeni rövidebb PopUp üzenetek (pl. ütközés) ─── -->
+    <div id="ingame-popup-toast" style="
+      display: none;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      z-index: 1000;
+      text-align: center;
+      pointer-events: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    "></div>
+  </div>
+
+  <script type="importmap">
+{ "imports": { 
+  "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+} }
+</script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { Water } from 'three/addons/objects/Water.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // ─── Wrapper & renderer ───
+    const wrap = document.getElementById('game-wrapper');
+    const canvas = document.getElementById('c');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.localClippingEnabled = false; // KIKAPCSOLVA A GYOMLÁLÁSHOZ (Clipping Planes)
+    renderer.setPixelRatio(1); // FIX: Fixáljuk 1-re, különben nagy felbontású kijelzőn (pl. 4K) drasztikus FPS esést okoz a sok víz-reflexió!
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    function resize() {
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      renderer.setSize(w, h);
+      cam.aspect = w / h; cam.updateProjectionMatrix();
+    }
+    addEventListener('resize', resize);
+
+    // ─── Scene ───
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x7ec8e8); // FIX: A háttérnek PONTOSAN egyeznie kell a köd színével!
+    scene.fog = new THREE.FogExp2(0x7ec8e8, 0.0015); // Erősebb köd a távoli elemek elrejtésére
+
+    // ─── Camera (will orbit the boat — CameraMove.cs port) ───
+    const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 1000); // 1000-re állítva, hogy a Skydome még beférjen!
+    let orbH = 222.75, orbV = 31.60, orbDist = 26.00; // Magasabb, lefelé néző szög a tető elkerülése végett
+    const ORB_MIN_V = 2, ORB_MAX_V = 65, ORB_MIN_D = 5, ORB_MAX_D = 200;
+
+    // IDEIGLENES ORBIT KAMERA
+    window.tempOrbit = new OrbitControls(cam, renderer.domElement);
+    window.tempOrbit.target.set(0, 0, 0);
+
+    // Expose camera variables for the UI editor
+    window.getOrbH = () => orbH;
+    window.getOrbV = () => orbV;
+    window.getOrbDist = () => orbDist;
+    window.setOrb = (h, v, d) => { orbH = h; orbV = v; orbDist = d; };
+    const ORB_SENS_H = 0.25, ORB_SENS_V = 0.2;
+    const LOOK_OFFSET_Y = 2.5;
+
+    // ─── Lights ───
+    scene.add(new THREE.AmbientLight(0x8ab4d0, 0.55));
+    const sun = new THREE.DirectionalLight(0xfff4d6, 1.3);
+    sun.position.set(2200, 150, 1350); // A felhasználó által kért új nap-pozíció
+    sun.castShadow = false; // GPU árnyékszámítás kikapcsolva a villámgyors 60 FPS-ért!
+    scene.add(sun);
+
+    // Másodlagos fényforrás a hegy tetejéről (a felhasználó kérése alapján)
+    const mountainLight = new THREE.DirectionalLight(0xffeedd, 0.6); // Kicsit erősebbre véve
+    mountainLight.position.set(-900, 1500, 600); // Még magasabbra emelve (500-ról 1500-ra)
+    scene.add(mountainLight);
+    scene.add(new THREE.HemisphereLight(0x87ceeb, 0x305030, 0.35));
+
+    // ─── Sky dome (gradient) ───
+    let skyDome;
+    {
+      const g = new THREE.SphereGeometry(950, 32, 16);
+      const cols = [];
+      const p = g.getAttribute('position');
+      for (let i = 0; i < p.count; i++) {
+        const t = (p.getY(i) / 950 + 1) * 0.5;
+        cols.push(
+          THREE.MathUtils.lerp(0.92, 0.35, t),
+          THREE.MathUtils.lerp(0.78, 0.58, t),
+          THREE.MathUtils.lerp(0.55, 0.88, t));
+      }
+      g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+      skyDome = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true }));
+      scene.add(skyDome);
+    }
+
+    // ─── Water plane (Realistic) ───
+    const waterGeo = new THREE.PlaneGeometry(2400, 2400);
+    const water = new Water(
+      waterGeo,
+      {
+        textureWidth: 256,
+        textureHeight: 256,
+        waterNormals: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/waternormals.jpg', function (texture) {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        }),
+        sunDirection: sun.position.clone().normalize(),
+        sunColor: 0xffffff,
+        waterColor: 0x1476a6,
+        distortionScale: 3.7,
+        fog: scene.fog !== undefined
+      }
+    );
+    water.rotation.x = -Math.PI / 2;
+    scene.add(water);
+
+    // ─── Sea floor ───
+    {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), new THREE.MeshLambertMaterial({ color: 0x0e2a1e }));
+      m.rotation.x = -Math.PI / 2; m.position.y = -18; scene.add(m);
+    }
+
+    // ─── Helper: rocky shape ───
+    function rockMesh(radius, height, color, flatten = 1) {
+      const g = new THREE.DodecahedronGeometry(radius, 1);
+      const p = g.getAttribute('position');
+      for (let i = 0; i < p.count; i++) {
+        p.setX(i, p.getX(i) + (Math.random() - 0.5) * radius * 0.35);
+        p.setY(i, p.getY(i) * flatten);
+        p.setZ(i, p.getZ(i) + (Math.random() - 0.5) * radius * 0.35);
+      }
+      g.computeVertexNormals();
+      const m = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color }));
+      m.castShadow = true; m.receiveShadow = true;
+      return m;
+    }
+
+    // ─── Unity Level Data Loader ───
+    const obstacles = [];
+
+    fetch('unity_level_data.json')
+      .then(res => res.json())
+      .then(unityData => {
+        for (const obj of unityData) {
+          if (obj.name.includes("Boat") || obj.name.includes("Sails") || obj.name.includes("Mast")) continue;
+
+          let r = 5;
+          const lower = obj.name.toLowerCase();
+
+          // Csak az ütközési sugarakat (r) számoljuk ki a JSON alapján
+          if (lower.includes("island")) {
+            r = 60 * obj.scale[0];
+          } else if (lower.includes("rock") || lower.includes("zatony")) {
+            let isReef = lower.includes("zatony");
+            r = isReef ? 8 : 20;
+          } else if (lower.includes("shipwreck")) {
+            r = 10;
+          } else continue;
+
+          // Pozíció konverzió (Unity LHS -> Three.js RHS)
+          const posX = obj.position[0];
+          const posZ = -obj.position[2];
+
+          // Ütközés (Collision) hozzáadása a láthatatlan fizikai térképhez
+          obstacles.push({ pos: new THREE.Vector2(posX, posZ), r: r * 0.85 });
+        }
+      })
+      .catch(err => console.error("Hiba a pálya betöltésekor:", err));
+
+    // ─── Unity FullTrack.glb Loader (Visuals) ───
+    // Ha a pálya a víz alatt van, ezzel az értékkel emelhetjük meg az egész világot (Y tengelyen)
+    const TRACK_OFFSET_Y = 1.5;
+    let fullTrack = null; // Globálissá tesszük, hogy a játékciklus is lássa!
+    const borderMeshes = []; // KIZÁRÓLAG az általad készített láthatatlan falak!
+
+    function optimizeWithInstancing(sceneGroup, mainScene) {
+      console.log("[Auto-Instancing] Optimalizálás megkezdése a FullTrack.glb-n...");
+      const groups = {};
+      
+      sceneGroup.traverse((child) => {
+          if (child.isMesh && !child.userData.excludeFromInstancing) {
+              const geomId = child.geometry.uuid;
+              const matId = child.material ? (Array.isArray(child.material) ? child.material[0].uuid : child.material.uuid) : 'nomat';
+              const key = geomId + "_" + matId;
+              
+              if (!groups[key]) {
+                  groups[key] = {
+                      meshes: [],
+                      originalGeometry: child.geometry,
+                      // Ha a material tömb (multi-material), csak az elsőt használjuk, mert az InstancedMesh csak 1 materialt támogat alapból.
+                      originalMaterial: Array.isArray(child.material) ? child.material[0] : child.material,
+                      sampleName: child.name
+                  };
+              }
+              groups[key].meshes.push(child);
+          }
+      });
+
+      let totalSaved = 0;
+      
+      for (let key in groups) {
+          const group = groups[key];
+          if (group.meshes.length > 5) { // 5-nél több példány esetén optimalizálunk
+              const count = group.meshes.length;
+              const instancedMesh = new THREE.InstancedMesh(group.originalGeometry, group.originalMaterial, count);
+              instancedMesh.castShadow = false; // Kikapcsoljuk az árnyékot a maximális sebességért
+              instancedMesh.receiveShadow = false;
+              
+              for (let i = 0; i < count; i++) {
+                  const mesh = group.meshes[i];
+                  // A mesh már megkapta a sceneGroup skáláját a korábbi updateMatrixWorld miatt
+                  instancedMesh.setMatrixAt(i, mesh.matrixWorld);
+                  
+                  // Eredeti mesh eltávolítása a memóriából a WebGL Context Lost megelőzése érdekében!
+                  mesh.geometry.dispose(); 
+                  mesh.visible = false; 
+                  // Ütközésekhez még használható marad, ha a raycaster false mesh-eket is vizsgál
+              }
+              
+              mainScene.add(instancedMesh);
+              console.log(`[Auto-Instancing] Optimalizálva: ${group.sampleName} (${count} példány).`);
+              totalSaved += count;
+          }
+      }
+      console.log(`[Auto-Instancing] Kész! Összesen ${totalSaved} db háló lett összevonva, ami megmenti a videókártyát az összeomlástól!`);
+    }
+
+    new GLTFLoader().load('models/FullTrack_Small.glb', function (gltf) {
+      fullTrack = gltf.scene;
+      window.fullTrack = fullTrack; // Hozzáférhetővé tesszük a spawn funkciók számára!
+
+      // Átkonvertáljuk a Unity LHS (Left Handed) koordinátarendszert Three.js RHS-be
+      // A Unity Z-je inverz, ezért meg kell tükröznünk a tengelyt:
+      fullTrack.scale.set(1, 1, -1);
+
+      // A teljes pálya magasságának beállítása a vízszinthez (TRACK_OFFSET_Y)
+      fullTrack.position.y = TRACK_OFFSET_Y;
+
+      // ====================================================================
+
+      scene.add(fullTrack);
+      fullTrack.updateMatrixWorld(true);
+
+
+      let homePos = null;
+      let foundZeppelin = null;
+
+      window.collidableMeshes = [];
+
+      fullTrack.traverse(function (child) {
+        if (child.isMesh) {
+          child.castShadow = false;
+          child.receiveShadow = false;
+          child.frustumCulled = true; // Háttérben lévő elemek kihagyása a GPU rajzolásból!
+          child.matrixAutoUpdate = false; // CPU tehermentesítés (nem mozognak)
+          child.visible = true;
+          if (child.material) {
+            child.material.transparent = false;
+            child.material.alphaTest = 0.5;
+            child.material.side = THREE.FrontSide; // 50%-os GPU háromszög-terhelés csökkentés!
+
+            // Léghajó (Airship) vagy egyéb fekete hibás elemek eltüntetése/javítása
+            const isBlack = child.material.color && child.material.color.r < 0.1 && child.material.color.g < 0.1 && child.material.color.b < 0.1;
+            if (isBlack || (child.name && child.name.toLowerCase().includes("airship"))) {
+              child.material.color.setHex(0xd4af37); // Meleg arany szín
+              // Vagy teljesen el is rejthetjük, ha a levegőben lógnak:
+              if (isBlack) child.visible = false;
+            }
+          }
+        }
+
+        const name = child.name ? child.name.toLowerCase() : "";
+        const dockCenter = new THREE.Vector3(255, -3, -225);
+
+        // Keresünk név alapján különleges objektumokat (Móló, Faház, Épületek)
+        const wPos = new THREE.Vector3();
+        child.getWorldPosition(wPos);
+        
+        // --- FELHASZNÁLÓI KÉRÉSEK (Fix koordinátás módosítások) ---
+        // 1. Töröld a (-3, 0, -94) koordinátán lévő fát
+        if (Math.abs(wPos.x - (-3)) < 15 && Math.abs(wPos.z - (-94)) < 15) {
+             // Csak azokat a dolgokat rejtjük el, amik TÉNYLEG fák/növények. 
+             // (Az 'sm_' és 'mesh' kulcsszavak miatt véletlenül a mólót is törölte!)
+             if (name.includes('tree') || name.includes('palm') || name.includes('plant') || name.includes('foliage') || name.includes('bush')) {
+                 child.visible = false;
+             }
+        }
+        
+        // 2. Tedd le a (-728, ?, 1207) homokpadot a -1 pozícióra
+        if (Math.abs(wPos.x - (-728)) < 25 && Math.abs(wPos.z - 1207) < 25) {
+             // A delta kiszámítása: mennyit kell mozgatni az Y tengelyen, hogy a világban pont -1 legyen?
+             const deltaY = -1.0 - wPos.y;
+             // Minden ezen a koordinátán lévő elemet (homokpad, és a rajta lévő füvek/kövek) lejjebb tolunk ennyivel, hogy ne lebegjenek!
+             child.position.y += deltaY;
+             child.updateMatrix();
+        }
+        // ----------------------------------------------------------
+        if (name.startsWith("sm_bld_") || name.includes("dock") || name.includes("house") || name.includes("shanty") || name.includes("pier") || name.includes("molo") || name.includes("preset")) {
+          if ((name.includes("home") || name.includes("dock") || name.includes("pier")) && !homePos) {
+            const pos = new THREE.Vector3();
+            child.getWorldPosition(pos);
+            homePos = pos;
+            window.homePos = homePos;
+          }
+
+          child.scale.multiplyScalar(1.8);
+
+          if (child.position.x > 200 && child.position.z < -100) {
+            child.position.sub(dockCenter).multiplyScalar(1.8).add(dockCenter);
+          }
+
+          // Bármilyen programozott módosítás történt (scale, pozíció), frissíteni kell a mátrixot,
+          // mivel a matrixAutoUpdate-et kikapcsoltuk a CPU kímélése érdekében!
+          child.updateMatrix();
+
+          // FIXÁLÁS (Cövekként állnak): Hozzáadjuk őket az ütközési felületekhez (borderMeshes), így a csónak falnak ütközik rajtuk!
+          if (child.isMesh) {
+            borderMeshes.push(child);
+          }
+        }
+
+        // ZEPPELIN / AIRSHIP KIKERESÉSE
+        if (!foundZeppelin && name.includes("airship")) {
+          foundZeppelin = child;
+        }
+
+        // Láthatatlan falak (Borders) keresése és elmentése
+        let isBorder = false;
+        let curr = child;
+        while (curr) {
+          if (curr.name && curr.name.toLowerCase().includes("border")) {
+            isBorder = true;
+            break;
+          }
+          curr = curr.parent;
+        }
+
+        if (isBorder && child.isMesh) {
+          child.visible = false;
+          borderMeshes.push(child);
+        }
+
+        if (name.includes("lantern") || name.includes("light") || name.includes("lamp")) {
+          const pos = new THREE.Vector3();
+          child.getWorldPosition(pos);
+          const bulb = new THREE.Mesh(
+            new THREE.SphereGeometry(0.8),
+            new THREE.MeshBasicMaterial({ color: 0xffcc00 })
+          );
+          bulb.position.copy(pos);
+          bulb.position.y += 1.5;
+          scene.add(bulb);
+          const pointLight = new THREE.PointLight(0xffa500, 50, 1000);
+          pointLight.position.copy(pos);
+          pointLight.position.y += 1.5;
+          scene.add(pointLight);
+        }
+      });
+
+      // ✈️ ZEPPELIN / AIRSHIP EREDETI KOORDINÁTÁI ÉS ELHELYEZÉSE (Öböl bejárata)
+      if (foundZeppelin && homePos) {
+        console.log("✈️ Airship (Léghajó) áthelyezése az eredeti koordinátákra:", foundZeppelin.name);
+        scene.add(foundZeppelin);
+
+
+        // A felhasználó pontosan megadta az öböl bejáratának koordinátáit!
+        // A felhasználó pontosan megadta az öböl bejáratának koordinátáit!
+        foundZeppelin.position.set(-461, -3, 1350);
+        foundZeppelin.lookAt(homePos.x, -3, homePos.z);
+
+        // Visszaállítjuk a skálát normálra, hátha a 100-as túl óriási volt
+        foundZeppelin.scale.set(1, 1, 1);
+        foundZeppelin.visible = true;
+
+        // ÁTSZÍNEZÉS ÚJ ANYAGOKKAL: A Unity anyagokat teljesen eldobjuk, 
+        // mert valószínűleg átlátszók vagy hibásak a Three.js-ben.
+
+        let meshNames = [];
+
+        foundZeppelin.traverse(c => {
+          c.visible = true;
+          if (c.isMesh) {
+            meshNames.push(c.name);
+
+            const searchName = (c.name).toLowerCase();
+            let newColor = 0x7a4325; // Világosabb, melegebb barna fa (hajótest)
+            let newMetal = 0.05;
+            let newRough = 0.85;
+
+            if (searchName.includes('balloon') || searchName.includes('envelope') || searchName.includes('sphere') || searchName.includes('ballon') || searchName.includes('rez') || searchName.includes('réz')) {
+              newColor = 0xffe0b2; // Nagyon világos, sárgás-fémes réz/arany
+              newMetal = 0.5;      // Csökkentett fémesség, hogy a Three.js-ben az alap szín jobban érvényesüljön
+              newRough = 0.4;      // Kicsit mattabb, hogy ne csak a fekete eget tükrözze vissza
+            } else if (searchName.includes('hood')) {
+              newColor = 0xc89d6e; // Kikészített bőr (Tanned leather)
+              newMetal = 0.1;
+              newRough = 0.9;
+            } else if (searchName.includes('rope') || searchName.includes('string') || searchName.includes('line') || searchName.includes('kötél') || searchName.includes('kotel') || searchName.includes('cable')) {
+              newColor = 0xeaeaea; // Nagyon világos (szinte fehér) kötélzet, mint a csónaknál
+              newMetal = 0.0;
+              newRough = 0.9;
+            } else if (searchName.includes('captain') || searchName.includes('mast')) {
+              newColor = 0x5c2e16; // Sötétebb fa (mahagóni/cseresznye) a kapitányi kabinnak és az árbócnak
+              newMetal = 0.05;
+              newRough = 0.85;
+            } else if (searchName.includes('canvas') || searchName.includes('sail') || searchName.includes('cloth') || searchName.includes('fabric') || searchName.includes('ponyva') || searchName.includes('vászon') || searchName.includes('wing')) {
+              newColor = 0xe8d5a7; // Világos bézs színű vitorlák/szárnyak
+              newMetal = 0.0;
+              newRough = 0.9;
+            }
+
+            c.material = new THREE.MeshStandardMaterial({
+              color: newColor,
+              metalness: newMetal,
+              roughness: newRough,
+              side: THREE.DoubleSide
+            });
+          }
+        });
+
+        // A debug panelt eltüntettük a felhasználó kérésére
+        /*
+        if (!document.getElementById("mesh-names-debug")) {
+            const debugDiv = document.createElement("div");
+            debugDiv.id = "mesh-names-debug";
+            debugDiv.style.position = "absolute";
+            debugDiv.style.top = "50px";
+            debugDiv.style.right = "10px";
+            debugDiv.style.color = "lime";
+            debugDiv.style.background = "rgba(0,0,0,0.8)";
+            debugDiv.style.padding = "10px";
+            debugDiv.style.zIndex = 10000;
+            debugDiv.style.fontFamily = "monospace";
+            debugDiv.style.fontSize = "12px";
+            debugDiv.innerHTML = "<strong>Mesh Names:</strong><br>" + meshNames.join("<br>");
+            document.body.appendChild(debugDiv);
+        }
+        */
+
+        // Globálissá tesszük a HUD számára!
+        window.foundZeppelin = foundZeppelin;
+      }
+
+      // IDEIGLENES PIROS FAL (A két megadott pont között kifeszítve)
+      const p1 = new THREE.Vector3(-131, 15, 1429);
+      const p2 = new THREE.Vector3(-673, 15, 1325);
+      const distance = p1.distanceTo(p2);
+
+      const wallGeo = new THREE.BoxGeometry(distance, 30, 2);
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+      const wallMesh = new THREE.Mesh(wallGeo, wallMat);
+
+      // A fal közepe a két pont felezőpontján legyen
+      wallMesh.position.copy(p1).lerp(p2, 0.5);
+
+      // A fal iránya P2 felé mutasson (a Z tengely néz oda)
+      wallMesh.lookAt(p2);
+      // Mivel a Box hossza az X tengely mentén van (distance), forgatunk rajta 90 fokot (PI/2)
+      wallMesh.rotateY(Math.PI / 2);
+
+      // Láthatatlanná tesszük (pl. ütközésvizsgálathoz láthatatlan fal)
+      wallMesh.visible = false;
+
+      scene.add(wallMesh);
+
+      // Ha megtaláltuk a mólót, oda tesszük a csónakot!
+      if (homePos) {
+        const savedDataRaw = localStorage.getItem('saved_boat_transform');
+        if (savedDataRaw) {
+          try {
+            const sd = JSON.parse(savedDataRaw);
+            boat.position.set(sd.x, sd.y, sd.z);
+            boat.rotation.y = sd.rotY;
+            if (sd.orbH !== undefined) orbH = sd.orbH;
+            if (sd.orbV !== undefined) orbV = sd.orbV;
+            if (sd.orbDist !== undefined) orbDist = sd.orbDist;
+          } catch (e) {
+            applyDefaultBoatPos(homePos);
+          }
+        } else {
+          applyDefaultBoatPos(homePos);
+        }
+      }
+
+      // 🌟 BETÖLTÉSI SORREND: ELŐSZÖR A 3D VILÁG ÉS MÓLÓ RENDERELŐDIK, UTÁNA JELENIK MEG ZOZÓ!
+      setTimeout(() => {
+        renderer.render(scene, cam);
+        const overlay = document.getElementById('zozo-welcome-overlay');
+        if (overlay) overlay.style.display = 'flex';
+      }, 400);
+
+      function applyDefaultBoatPos(hPos) {
+        // A felhasználó kérésére fix indulási pont
+        boat.position.set(5, 0, -94);
+        boat.rotation.y = Math.PI + (Math.PI / 4) - (3 * Math.PI / 180);
+        console.log("Kezdőpont fixálva a kért pozícióra:", 5, 0, -94);
+      }
+      // Szikla áthelyezése a kért koordinátákra
+      const targetRockPos = new THREE.Vector3(12, 0, -76);
+      const newRockPos = new THREE.Vector3(5, 0, -66);
+      let closestRock = null;
+      let minDistance = 9999;
+
+      fullTrack.traverse(function (child) {
+        if (child.isMesh) {
+          const wp = new THREE.Vector3();
+          child.getWorldPosition(wp);
+          const dist = wp.distanceTo(targetRockPos);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestRock = child;
+          }
+        }
+      });
+
+      if (closestRock && minDistance < 10) {
+        // Az új világkoordinátát átalakítjuk a szülő helyi koordinátarendszerébe
+        const localTarget = closestRock.parent.worldToLocal(newRockPos.clone());
+        closestRock.position.copy(localTarget);
+        closestRock.updateMatrixWorld(true);
+        console.log("Szikla áthelyezve: " + closestRock.name + " (Eredeti távolság a megadott ponttól: " + minDistance.toFixed(2) + "m)");
+      }
+
+      // Latern / Lámpás megkeresése és áthelyezése
+      let foundLantern = null;
+      fullTrack.traverse(function (child) {
+        if (child.isMesh && (child.name.toLowerCase().includes('latern') || child.name.toLowerCase().includes('lantern'))) {
+          child.userData.excludeFromInstancing = true; // KIVÉDJÜK AZ ELTŰNÉST!
+          foundLantern = child;
+        }
+      });
+
+      if (foundLantern) {
+        const newLanternWorldPos = new THREE.Vector3(4, 5, -60); // Új kért pozíció (5 méter magas)
+        const localLanternTarget = foundLantern.parent.worldToLocal(newLanternWorldPos.clone());
+        foundLantern.position.copy(localLanternTarget);
+        foundLantern.updateMatrixWorld(true);
+
+        // Kétszeresére növelt, brutális erejű fény (70.0 helyett 140.0 intenzitás)
+        const lanternLight = new THREE.PointLight(0xffaa33, 140.0, 100);
+        // Picit feljebb toljuk a fény középpontját a lámpás testéhez képest
+        lanternLight.position.set(0, 0.5, 0);
+        foundLantern.add(lanternLight);
+
+        console.log("Lámpás (Latern) áthelyezve és belső fénnyel ellátva!");
+      }
+
+      // ─── LAGGOLÁS ÉS ÖSSZEOMLÁS MEGSZÜNTETÉSE AUTO-INSTANCING-GEL ───
+      // optimizeWithInstancing(fullTrack, scene); // KIKAPCSOLVA, mert eltünteti a pályát!
+
+      console.log("FullTrack.glb loaded successfully!");
+    }, undefined, function (err) {
+      console.error("Hiba a FullTrack betöltésekor:", err);
+    });
+
+    // ─── Player boat ───
+    const boat = new THREE.Group();
+    boat.position.set(0, 0.5, 0);
+    scene.add(boat);
+    window.boat = boat; // Toolbox és debug panel hozzáférés
+
+    // 🌟 Lézerek (Whisker Rays) vizuális megjelenítése a hajó alján
+    const laserGroup = new THREE.Group();
+    laserGroup.position.set(0, 0.1, 1.5); // Vízszint felett, és eltolva előre az árbóc alá!
+    boat.add(laserGroup);
+
+    const whiskers = [
+      { angle: 0, dist: 5.5 },           // Előre (orr)
+      { angle: Math.PI / 4, dist: 3.5 },   // Bal-előre
+      { angle: -Math.PI / 4, dist: 3.5 },  // Jobb-előre
+      { angle: Math.PI / 2, dist: 2.2 },   // Bal oldal
+      { angle: -Math.PI / 2, dist: 2.2 },  // Jobb oldal
+      { angle: 3 * Math.PI / 4, dist: 3.8 }, // Bal-hátra
+      { angle: -3 * Math.PI / 4, dist: 3.8 },// Jobb-hátra
+      { angle: Math.PI, dist: 4.8 }      // Hátra (far)
+    ];
+
+    const laserLines = [];
+    const _laserUpAxis = new THREE.Vector3(0, 1, 0);
+
+    whiskers.forEach((w, idx) => {
+      const dir = new THREE.Vector3(0, 0, -1).applyAxisAngle(_laserUpAxis, w.angle);
+      const endP = dir.clone().multiplyScalar(w.dist);
+      const lineGeo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        endP
+      ]);
+      const lineMat = new THREE.LineBasicMaterial({
+        color: 0x00ffcc,
+        linewidth: 3,
+        transparent: true,
+        opacity: 0.85
+      });
+      const lineMesh = new THREE.Line(lineGeo, lineMat);
+      laserGroup.add(lineMesh);
+      laserLines.push({ mesh: lineMesh, mat: lineMat, w: w });
+    });
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load('./models/pirates_assets/SM_Prop_Lantern_01.glb', (gltf) => {
+      const smallLantern1 = gltf.scene.clone();
+      smallLantern1.position.set(14.5, 1.8, -97.4);
+      smallLantern1.rotation.y = -16 * (Math.PI / 180);
+      smallLantern1.scale.set(200, 200, 200);
+      scene.add(smallLantern1);
+      window.smallLantern1 = smallLantern1;
+      const smallLantern1Light = new THREE.PointLight(0xffaa33, 0, 100);
+      smallLantern1Light.position.copy(smallLantern1.position);
+      smallLantern1Light.position.y += 0.5;
+      scene.add(smallLantern1Light);
+      window.smallLantern1Light = smallLantern1Light;
+      const smallLantern2 = gltf.scene.clone();
+      smallLantern2.position.set(8.4, 1.7, -103.9);
+      smallLantern2.rotation.y = 0 * (Math.PI / 180);
+      smallLantern2.scale.set(200, 200, 200);
+      scene.add(smallLantern2);
+      window.smallLantern2 = smallLantern2;
+      const smallLantern2Light = new THREE.PointLight(0xffaa33, 0, 100);
+      smallLantern2Light.position.copy(smallLantern2.position);
+      smallLantern2Light.position.y += 0.5;
+      scene.add(smallLantern2Light);
+      window.smallLantern2Light = smallLantern2Light;
+
+      // A sziklára kért 400x-os méretű lámpás (SM_Prop_Lantern_01)
+      const mainRockLantern = gltf.scene.clone();
+      mainRockLantern.position.set(11, 8.3, -77.2);
+      mainRockLantern.scale.set(400, 400, 400);
+      scene.add(mainRockLantern);
+      
+      // 140.0-s sárga fény a lámpásba
+      const mainRockLanternLight = new THREE.PointLight(0xffaa33, 140.0, 100);
+      mainRockLanternLight.position.copy(mainRockLantern.position);
+      mainRockLanternLight.position.y += 2.0;
+      scene.add(mainRockLanternLight);
+    });
+    gltfLoader.load('./models/pirates_assets/SM_Prop_Lantern_Attachment_01.glb', (gltf) => {
+      const lantern1 = gltf.scene.clone();
+      lantern1.position.set(-15.7, 8.3, -119.2);
+      lantern1.rotation.y = 53 * (Math.PI / 180);
+      lantern1.scale.set(100, 100, 100);
+      scene.add(lantern1); window.lantern1 = lantern1;
+      const lantern1Light = new THREE.PointLight(0xffaa33, 0, 100);
+      lantern1Light.position.copy(lantern1.position);
+      lantern1Light.position.y += 0.5;
+      scene.add(lantern1Light);
+      window.lantern1Light = lantern1Light;
+      const lantern2 = gltf.scene.clone();
+      lantern2.position.set(14, 8.5, -125.5);
+      lantern2.rotation.y = -Math.PI / 4;
+      lantern2.scale.set(100, 100, 100);
+      scene.add(lantern2); window.lantern2 = lantern2;
+      const lantern2Light = new THREE.PointLight(0xffaa33, 0, 100);
+      lantern2Light.position.copy(lantern2.position);
+      lantern2Light.position.y += 0.5;
+      scene.add(lantern2Light);
+      window.lantern2Light = lantern2Light;
+    });
+    gltfLoader.load('./models/boat.glb', (gltf) => {
+      const model = gltf.scene;
+
+      model.scale.set(30, 30, 30);
+      model.rotation.y = Math.PI; // KÖTELEZŐ: A forgatást a Box3 eltolás számítása ELŐTT végezzük el!
+      model.updateMatrixWorld(true);
+
+      // 🎯 HAJSZÁLPONTOS CENTEREZÉS: A végső elforgatott geometriára számoljuk ki a hajó mértani közepét!
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+
+      model.position.x = -center.x;
+      model.position.z = -center.z;
+      model.position.y = -box.min.y - (size.y * 0.02);
+
+      model.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = false;
+          child.receiveShadow = false;
+        }
+      });
+
+      boat.add(model);
+
+      setTimeout(() => {
+        const savedDataRaw = localStorage.getItem('saved_boat_transform');
+        if (savedDataRaw) {
+          try {
+            const sd = JSON.parse(savedDataRaw);
+            boat.position.set(sd.x, sd.y, sd.z);
+            boat.rotation.y = sd.rotY;
+            if (sd.orbH !== undefined) orbH = sd.orbH;
+            if (sd.orbV !== undefined) orbV = sd.orbV;
+            if (sd.orbDist !== undefined) orbDist = sd.orbDist;
+          } catch (e) { }
+        }
+      }, 300);
+    }, undefined, (error) => {
+      console.error('Hiba történt a hajó betöltésekor:', error);
+    });
+
+    // ─── Keyboard state ───
+    const keys = {};
+    addEventListener('keydown', e => { keys[e.code] = true; });
+    addEventListener('keyup', e => { keys[e.code] = false; });
+
+    // ─── Mouse orbit ───
+    let mDown = false, mx = 0, my = 0;
+    canvas.addEventListener('mousedown', e => { mDown = true; mx = e.clientX; my = e.clientY; canvas.style.cursor = 'grabbing'; });
+    addEventListener('mouseup', () => { mDown = false; canvas.style.cursor = 'grab'; });
+    addEventListener('mousemove', e => {
+      if (!mDown) return;
+      orbH += (e.clientX - mx) * ORB_SENS_H;
+      orbV = THREE.MathUtils.clamp(orbV + (e.clientY - my) * ORB_SENS_V, ORB_MIN_V, ORB_MAX_V);
+      mx = e.clientX; my = e.clientY;
+    });
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      orbDist = THREE.MathUtils.clamp(orbDist + e.deltaY * 0.015, ORB_MIN_D, ORB_MAX_D);
+    }, { passive: false });
+    canvas.style.cursor = 'grab';
+
+    // ─── Crash handling & Zozó Warning eltávolítva ───
+    // A felhasználó kérésére az ütközés mostantól csak fizikai megállást okoz,
+    // nem pattitja vissza a hajót és nincsenek felugró ablakok.
+
+
+    // ─── Game loop ───
+    const clock = new THREE.Clock();
+    resize();
+
+
+
+    // ─── HÁRTYA (MEMBRANE) MEGJELENÍTÉS ÉS GAUSS SPAWN LOGIKA ───
+    window.activeMembranes = [];
+    window.carriedMembranes = 0;
+    window.storedMembranes = 0;
+    window.totalSpawnedCount = 0;
+    window.totalPickedUp = 0;
+
+    window.isCutscenePlaying = false;
+    window.airshipAscentStarted = false;
+    window.airshipAscentDone = false;
+
+    // ─── 🏆 EoG (END-OF-GAME) ÁLLAPOTGÉP ───
+    // Állapotok sorrendben: NONE → EMPTIED → POINT_A_SHOWN → POINT_B_SHOWN → CHEST_VISIBLE → CHEST_FOUND → CINEMATIC → VIDEO → DONE
+    window.eogState = 'NONE';
+    window.eogTriggerA = false;   // Pont A (öböl bejárat) monológ elindult-e
+    window.eogTriggerB = false;   // Pont B (öböl szája)   monológ elindult-e
+    window.chestModel = null;     // A 3D kincsesláda Three.js objektuma
+    window.chestLidModel = null;  // A 3D kincsesláda fedele (animálható)
+    window.eogPierArrived = false; // Csónak visszaért-e a mólóra a cinematicban
+    window.eogChestAtPier = null; // Mólón megjelenő láda referenciája
+    window.eogLidAngle = 0;       // Fedélnyílás animáció szöge (0 → ~1.4 rad)
+
+    // 📍 EoG TRIGGER PONTOK (PLACEHOLDER koordináták – majd együtt állítjuk be!)
+    // Az a, b, c pontokat a debug panel segítségével kell meghatározni.
+    // Használd a böngésző debug koordináta kijelzőjét, hajózz oda, és másold be az értékeket!
+    const EoG_POINT_A = { x: -100, z: 550 };  // (a) Öböl bejárat: itt ugrik fel Zozó 1. monológja ("Gyanúsan üres a víz...")
+    const EoG_POINT_B = { x: -427, z: 1191 }; // (b) Öböl szája: itt ugrik fel Zozó 2. monológja ("Mi az ott a parton?")
+    const EoG_POINT_C = { x: -384, z: 1233 }; // (c) Kincsesláda fix koordinátája a parton ✅
+    const EoG_CHEST_TRIGGER_DIST = 10;         // Ekkora távolságban találja meg a játékos a ládát (méter)
+
+    // 🌟 Betöltjük a Unity-ből kiexportált valódi 3D Hártya modellt (models/hartya.glb)
+    let hartyaTemplate = null;
+    new GLTFLoader().load('models/hartya.glb', function (gltf) {
+      hartyaTemplate = gltf.scene;
+      // Drasztikus méretnövelés (az eddigi 0.3 helyett 1.5-re, azaz 10x nagyobb, mint az eredeti 0.15 volt!)
+      hartyaTemplate.scale.set(1.5, 1.5, 1.5);
+      hartyaTemplate.traverse(c => {
+        if (c.isMesh) {
+          c.material = new THREE.MeshBasicMaterial({
+            color: 0xffcc22,
+            transparent: true,
+            opacity: 0.40, // 40%-os opacity (erősen átlátszó)
+            depthWrite: false, // KÖTELEZŐ az átlátszósághoz, különben a víz felett tömörnek tűnhet!
+            side: THREE.DoubleSide
+          });
+        }
+      });
+      console.log("🌟 hartya.glb 3D Prefab sikeresen betöltve!");
+      if (typeof window.spawnZeroPointMembrane === 'function') {
+        window.spawnZeroPointMembrane();
+      }
+    });
+
+    function createMembraneMesh(x, y, z) {
+      const group = new THREE.Group();
+      group.position.set(x, y, z);
+
+      // 1. Az eredeti 3D Unity Hártya modell elhelyezése a vízfelszín FELETT (Y = 0.5m)
+      if (hartyaTemplate) {
+        const hartyaModel = hartyaTemplate.clone(true);
+        hartyaModel.position.set(0, 0.5, 0);
+        group.add(hartyaModel);
+      } else {
+        // Átmeneti arany gömb amíg a GLTF modell be nem tölt
+        const coreGeo = new THREE.SphereGeometry(0.7, 16, 16);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffc800, transparent: true, opacity: 0.65 });
+        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+        coreMesh.position.y = 0.5;
+        group.add(coreMesh);
+      }
+
+      // 2. Belsejében meleg, gyertya-szerű fény (Candle Light)
+      const candleLight = new THREE.PointLight(0xffaa33, 3.5, 20);
+      candleLight.position.set(0, 0.8, 0);
+      group.add(candleLight);
+
+      group.userData = {
+        isMembrane: true,
+        collected: false,
+        baseY: y,
+        light: candleLight
+      };
+
+      return group;
+    }
+
+    // Gauss Box-Muller transzformáció a szórásos hártyageneráláshoz
+    function nextGaussian() {
+      let u = 0, v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    // 🌟 Megjelenítjük az 1. kezdő hártyát közvetlenül a mólónál lévő csónak előtt!
+    window.spawnZeroPointMembrane = function () {
+      if (window.activeMembranes) {
+        window.activeMembranes.forEach(m => scene.remove(m));
+      }
+      window.activeMembranes = [];
+
+      // A felhasználó kérésére fixálva: az első hártya MINDIG itt fog megjelenni!
+      const sx = -55;
+      const sy = 0;
+      const sz = -15;
+
+      const firstMembrane = createMembraneMesh(sx, sy, sz);
+      scene.add(firstMembrane);
+      window.activeMembranes.push(firstMembrane);
+      window.totalSpawnedCount = 1;
+      console.log(`🌟 1. Kezdő hártya megjelenítve a fix (${sx}, ${sy}, ${sz}) koordinátán!`);
+    };
+
+    // 🌟 Hullámok szerinti hártyalerakás (pier: móló körüli, gauss: térképes szórás)
+
+      // Lámpás szerkesztő logika
+      function setupLanternEditor() {
+          if(!window.lantern1 || !window.lantern2) return;
+          
+          const update = () => {
+              const l1x = parseFloat(document.getElementById('l1-x').value);
+              const l1y = parseFloat(document.getElementById('l1-y').value);
+              const l1z = parseFloat(document.getElementById('l1-z').value);
+              const l1rot = parseFloat(document.getElementById('l1-rot').value);
+              
+              const l2x = parseFloat(document.getElementById('l2-x').value);
+              const l2y = parseFloat(document.getElementById('l2-y').value);
+              const l2z = parseFloat(document.getElementById('l2-z').value);
+              const l2rot = parseFloat(document.getElementById('l2-rot').value);
+              
+              document.getElementById('l1-x-val').innerText = l1x;
+              document.getElementById('l1-y-val').innerText = l1y;
+              document.getElementById('l1-z-val').innerText = l1z;
+              document.getElementById('l1-rot-val').innerText = l1rot + "°";
+              
+              document.getElementById('l2-x-val').innerText = l2x;
+              document.getElementById('l2-y-val').innerText = l2y;
+              document.getElementById('l2-z-val').innerText = l2z;
+              document.getElementById('l2-rot-val').innerText = l2rot + "°";
+              
+              window.lantern1.position.set(l1x, l1y, l1z);
+              window.lantern1.rotation.y = l1rot * (Math.PI / 180);
+              
+              window.lantern2.position.set(l2x, l2y, l2z);
+              window.lantern2.rotation.y = l2rot * (Math.PI / 180);
+          };
+          
+          ['l1-x', 'l1-y', 'l1-z', 'l1-rot', 'l2-x', 'l2-y', 'l2-z', 'l2-rot'].forEach(id => {
+              document.getElementById(id).addEventListener('input', update);
+          });
+          
+          window.copyLanternCoords = () => {
+              const l1x = document.getElementById('l1-x').value;
+              const l1y = document.getElementById('l1-y').value;
+              const l1z = document.getElementById('l1-z').value;
+              const l1rot = document.getElementById('l1-rot').value;
+              
+              const l2x = document.getElementById('l2-x').value;
+              const l2y = document.getElementById('l2-y').value;
+              const l2z = document.getElementById('l2-z').value;
+              const l2rot = document.getElementById('l2-rot').value;
+              
+              const code = `lantern1.position.set(${l1x}, ${l1y}, ${l1z});\nlantern1.rotation.y = ${l1rot} * (Math.PI / 180);\n\nlantern2.position.set(${l2x}, ${l2y}, ${l2z});\nlantern2.rotation.y = ${l2rot} * (Math.PI / 180);`;
+              
+              navigator.clipboard.writeText(code).then(() => {
+                  const msg = document.getElementById('copy-msg');
+                  msg.style.display = 'block';
+                  setTimeout(() => msg.style.display = 'none', 2000);
+              });
+          };
+      }
+    window.spawnHartyaWave = function (count, mode) {
+      const hPos = window.homePos || { x: 200, y: 0, z: -200 };
+      let actualSpawned = 0;
+
+      for (let i = 0; i < count; i++) {
+        let hx = 0, hz = 0;
+        let valid = false;
+        let attempts = 0;
+        
+        while (!valid && attempts < 500) {
+            attempts++;
+            
+            if (mode === 'pier') {
+              // PIER mód: a homePos körül 30-80m sugarú gyűrűben, a vízben
+              const angle = Math.random() * Math.PI * 2;
+              const radius = 30 + Math.random() * 50; // 30-80m
+              hx = hPos.x + Math.cos(angle) * radius;
+              hz = hPos.z + Math.sin(angle) * radius;
+            } else {
+              // GAUSS mód: a két korong bounding box-ában
+              hx = -680 + Math.random() * (628 - (-680));
+              hz = -125 + Math.random() * (1286 - (-125));
+
+              // Zóna teszt: benne van valamelyik korongban?
+              const dist1 = Math.hypot(hx - (-124), hz - 732);
+              const dist2 = Math.hypot(hx - 164, hz - 342);
+              if (dist1 > 553.5 && dist2 > 464) continue; // Nincs korongban → újrapróba
+            }
+
+            // MAGASSÁG TESZT (Raycaster Y=100-ból lefelé)
+            if (typeof window.fullTrack !== 'undefined' && window.fullTrack) {
+                const raycaster = new THREE.Raycaster(new THREE.Vector3(hx, 100, hz), new THREE.Vector3(0, -1, 0));
+                const hits = raycaster.intersectObject(window.fullTrack, true);
+                
+                if (hits.length > 0) {
+                    const hit = hits[0];
+                    // Csak ha a legfelső pont a vízszint alatt van (nincs szikla/fa/épület)
+                    if (hit.point.y <= 2.0) {
+                        valid = true;
+                    }
+                } else {
+                    // Nincs hit → nyílt víz (semmi alatta), valid
+                    valid = true;
+                }
+            } else {
+                valid = true; // Biztonsági tartalék, ha nincs track
+            }
+        }
+
+        if (valid) {
+          const mMesh = createMembraneMesh(hx, 0.1, hz);
+          scene.add(mMesh);
+          window.activeMembranes.push(mMesh);
+          window.totalSpawnedCount++;
+          actualSpawned++;
+        } else {
+          console.warn(`⚠️ Hártya #${i+1} nem tudott vízre spawn-olni 500 próba után! Kihagyva.`);
+        }
+      }
+      console.log(`🌟 Hullám (${mode}) lehelyezett ${actualSpawned}/${count} új hártyát! Összesen lehelyezve: ${window.totalSpawnedCount}`);
+    };
+
+    setTimeout(() => {
+      if (typeof window.spawnZeroPointMembrane === 'function') {
+        window.spawnZeroPointMembrane();
+      }
+    }, 500);
+
+    // 🌊 Procedurális V-Alakú Háromszög Farvíz Textúra (A hajó fara felé mutató vízfodrok)
+    function createFoamTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      ctx.clearRect(0, 0, 128, 128);
+
+      // V-alakú háromszög színátmenet a csúcstól az alapig
+      const grad = ctx.createLinearGradient(64, 10, 64, 118);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
+      grad.addColorStop(0.35, 'rgba(215, 242, 255, 0.45)');
+      grad.addColorStop(0.75, 'rgba(175, 225, 255, 0.15)');
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+      // Háromszög kirajzolása (a csúcsa a hajó fara felé mutat)
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(64, 10);   // Csúcs felül (a hajó fara felé)
+      ctx.lineTo(118, 118); // Jobb alsó sarok
+      ctx.lineTo(10, 118);  // Bal alsó sarok
+      ctx.closePath();
+      ctx.fill();
+
+      // Belső V-alakú fodrozódó vonalak
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.50)';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(64, 30);
+      ctx.lineTo(102, 105);
+      ctx.moveTo(64, 30);
+      ctx.lineTo(26, 105);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.30)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(64, 55);
+      ctx.lineTo(88, 105);
+      ctx.moveTo(64, 55);
+      ctx.lineTo(40, 105);
+      ctx.stroke();
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.needsUpdate = true;
+      return texture;
+    }
+
+    // Farvíz (Wake / Ripple) változók
+    const boatWakes = [];
+    const foamTex = createFoamTexture();
+    const wakeGeo = new THREE.PlaneGeometry(2.1, 2.1);
+    const wakeMatBase = new THREE.MeshBasicMaterial({
+      map: foamTex,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.72,
+      depthWrite: false,
+      blending: THREE.NormalBlending
+    });
+
+    // ─── OPTIMALIZÁCIÓS VÁLTOZÓK (Garbage Collector & GPU tehermentesítés) ───
+    const _prevPos = new THREE.Vector3();
+    const _fwd = new THREE.Vector3();
+    const _step = new THREE.Vector3();
+    const _center = new THREE.Vector3();
+    const _forwardOffset = new THREE.Vector3();
+    const _rayDir = new THREE.Vector3();
+    const _upAxis = new THREE.Vector3(0, 1, 0);
+    const _sharedRaycaster = new THREE.Raycaster();
+
+    // Material Pool a farvízhez: Nem hozunk létre új anyagot minden képkockában!
+    const WAKE_POOL_SIZE = 400;
+    const wakeMaterialPool = [];
+    for (let i = 0; i < WAKE_POOL_SIZE; i++) {
+      wakeMaterialPool.push(wakeMatBase.clone());
+    }
+    let wakeMatIndex = 0;
+    function getPooledWakeMaterial() {
+      const mat = wakeMaterialPool[wakeMatIndex];
+      wakeMatIndex = (wakeMatIndex + 1) % WAKE_POOL_SIZE;
+      mat.opacity = 0.72;
+      return mat;
+    }
+
+
+
+    function frame() {
+      requestAnimationFrame(frame);
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const t = clock.getElapsedTime();
+
+      // ─── PARANCSNOKI HÍD FEJLÉC (TOPBAR) ÉLŐ FRISSÍTÉSE ───
+      const tbCarried = document.getElementById('tb-carried-count');
+      if (tbCarried) tbCarried.innerText = window.carriedMembranes || 0;
+      const tbStored = document.getElementById('tb-stored-count');
+      if (tbStored) tbStored.innerText = window.storedMembranes || 0;
+
+      // ─── HÁRTYÁK ANIMÁLÁSA ÉS BEGYŰJTÉSE ───
+      if (window.activeMembranes && window.activeMembranes.length > 0) {
+        const bx = boat.position.x;
+        const bz = boat.position.z;
+
+        // Trigger: 1. Hártya megközelítése (35m-re) -> Monológ 2.
+        if (window.totalPickedUp === 0 && window.activeMembranes.length > 0) {
+          const firstM = window.activeMembranes[0];
+          const dx1 = firstM.position.x - bx;
+          const dz1 = firstM.position.z - bz;
+          const dist2 = dx1 * dx1 + dz1 * dz1;
+          if (dist2 < 1225.0) { // 35m sugarú kör
+            console.log('🔍 [M2] 35m-en belül! dist²=' + dist2.toFixed(0) + ' hasSeen[2]=' + (window.monologState ? window.monologState.hasSeen[2] : 'NO_STATE'));
+            if (window.monologState && !window.monologState.hasSeen[2]) {
+              window.showInGameMonolog(2, 2);
+            }
+          }
+        }
+
+        for (let i = window.activeMembranes.length - 1; i >= 0; i--) {
+          try {
+            const m = window.activeMembranes[i];
+            if (!m || m.userData.collected) continue;
+
+            // Gyertyafény pislákolás & lágy vízfelszíni hullámzás
+            m.position.y = m.userData.baseY + Math.sin(t * 2.2 + i) * 0.12;
+            if (m.userData.light) {
+              m.userData.light.intensity = 3.0 + Math.sin(t * 4.5 + i * 1.5) * 0.8;
+            }
+
+            // Begyűjtés ellenőrzése (ha a csónak közelebb ér mint 4.0 méter)
+            const dx = m.position.x - bx;
+            const dz = m.position.z - bz;
+            if (dx * dx + dz * dz < 16.0) { // 4m sugarú kör
+              m.userData.collected = true;
+              if (m.parent) {
+                m.parent.remove(m);
+              } else {
+                scene.remove(m);
+              }
+              window.activeMembranes.splice(i, 1);
+              window.carriedMembranes++;
+              window.totalPickedUp++;
+              console.log("🌟 Hártya felvéve a csónakba! Szállított: " + window.carriedMembranes + " | Összesen felvéve: " + window.totalPickedUp);
+
+              // 🗨️ Monológ 3+4: 1. hártya felvétele után
+              if (window.totalPickedUp === 1) {
+                console.log('🔍 [M3] 1. hártya felvéve! totalPickedUp=' + window.totalPickedUp + ' hasSeen[3]=' + (window.monologState ? window.monologState.hasSeen[3] : 'NO_STATE'));
+                window.showInGameMonolog(3, 3, function() {
+                  window.showInGameMonolog(4, 4);
+                });
+              }
+
+              // Azonnali pótlás (ha már megvolt az 5. leadás)
+              if (window.storedMembranes >= 5) {
+                 if (typeof window.spawnHartyaWave === 'function') {
+                    window.spawnHartyaWave(1, 'gauss');
+                 }
+              }
+
+              // 🌟 3. HÁRTYA FELVÉTELEKOR: LÉGHAJÓ FELSZÁLLÁSI ÁTVEZETŐ (CUTSCENE)!
+              if (window.totalPickedUp === 3 && !window.airshipAscentStarted) {
+                window.airshipAscentStarted = true;
+                window.isCutscenePlaying = true;
+                window.airshipTimer = 0; // Belső időzítő a 3 fázishoz
+                window.airshipSpeed = 0; // Gyorsulási sebesség
+                console.log("✈️ 3. Hártya felvéve! Léghajó felemelkedése elindul (8 másodperces fázisok)...");
+                // 🗨️ Popup 5: Légi Kalózok!
+                window.showPopUp("A fene... a Légi Kalózok. MIT BÁMULSZ? MENEKÜLJÜNK! Vissza a kikötőbe!");
+
+                setTimeout(() => {
+                  window.isCutscenePlaying = false;
+                  window.airshipAscentDone = true;
+                  if (typeof window.spawnHartyaWave === 'function') {
+                    window.spawnHartyaWave(10, 'gauss');
+                  console.log("✈️ Léghajó felszállás befejeződött, kamera visszatért, 10 Gauss hártya lerakva!");
+                  }
+                  console.log("✈️ Léghajó felszállás befejeződött, kamera visszatért, ");
+                }, 12000); // 12 mp
+              }
+            }
+          } catch (err) {
+            console.error("Hártya feldolgozási hiba:", err);
+          }
+        }
+      }
+
+      // ─── HOME POINT LEADÁS (carried -> stored) ───
+      if (window.homePos && window.carriedMembranes > 0) {
+        const dxH = boat.position.x - window.homePos.x;
+        const dzH = boat.position.z - window.homePos.z;
+        if (dxH * dxH + dzH * dzH < 1225.0) { // 35m sugarú bázis zóna
+          let previousStored = window.storedMembranes;
+          window.storedMembranes += window.carriedMembranes;
+          console.log(`⚓ Hártya leadva a Bázison! Szállított: 0 | Tárolt a bázison: ${window.storedMembranes}`);
+          window.carriedMembranes = 0;
+
+          // 🗨️ MONOLÓG TRIGGEREK LEADÁSKOR (batch logikával)
+          console.log('🔍 [DROPOFF] previousStored=' + previousStored + ' newStored=' + window.storedMembranes + ' totalSpawnedCount=' + window.totalSpawnedCount);
+          window.triggerDropoffMonologs(previousStored, window.storedMembranes);
+
+          // 🏆 EoG TRIGGER: Ha elértük a 30 tárolt hártyát, az EoG szekvencia indul!
+          if (window.storedMembranes >= 30 && window.eogState === 'NONE') {
+            window.eogState = 'EMPTIED';
+            console.log('🏆 30 hártya tárolva! A víz kiürül, EoG szekvencia indul...');
+            // Eltávolítjuk az esetlegesen még fennmaradó hártyákat a vízről
+            if (window.activeMembranes) {
+              window.activeMembranes.forEach(m => { if (m.parent) m.parent.remove(m); else scene.remove(m); });
+              window.activeMembranes = [];
+            }
+          }
+
+          if (window.eogState === 'NONE') {
+             // Ha most értük el az 5 leadott hártyát, feltöltjük a vízfelszínt max 30 hártyára
+             if (previousStored < 5 && window.storedMembranes >= 5) {
+                console.log("🌟 Elértük az 5 tárolt hártyát! Feltöltjük a pályát a maradék hártyákkal (összesen 60-ig)...");
+                if (typeof window.spawnHartyaWave === 'function') {
+                   let hianyozo = 60 - window.totalSpawnedCount;
+                   if (hianyozo > 0) {
+                       window.spawnHartyaWave(hianyozo, 'gauss');
+                   }
+                }
+             } 
+             // Első leadás (amikor még csak 1 van) -> lerakunk még 5-öt, ahogy eredetileg is volt!
+             else if (window.storedMembranes < 5 && window.totalSpawnedCount === 1) {
+                if (typeof window.spawnHartyaWave === 'function') {
+                   window.spawnHartyaWave(5, 'pier');
+                }
+             }
+          }
+        }
+      }
+
+      // 🗨️ Popup 4: Mólóelhagyás detektálása az 1. leadás után
+      if (window._waitingForPierLeave && window.homePos) {
+        const dxP = boat.position.x - window.homePos.x;
+        const dzP = boat.position.z - window.homePos.z;
+        if (dxP * dxP + dzP * dzP > 2500.0) { // 50m-nél távolabb → elhagyta a mólót
+          window._waitingForPierLeave = false;
+          window.showPopUp("Figyelj a szélirányra, úgy forgasd a vitorlát!");
+        }
+      }
+
+      // ─── LÉGHAJÓ FELEMELKEDÉS ÉS ANIMÁCIÓ (3 FÁZIS) ───
+      if (window.airshipAscentStarted && window.foundZeppelin) {
+        if (typeof window.airshipTimer !== 'undefined') {
+          window.airshipTimer += dt;
+          
+
+          
+          // FOLYAMATOS ANIMÁCIÓ (Nincsenek megakadások)
+          // 1. Mindig emelkedik egy kicsit (max 80m-ig)
+          if (window.foundZeppelin.position.y < 50.0) {
+            window.foundZeppelin.position.y += dt * 15.0; 
+          }
+          
+          // 2. 1 másodperc után elkezd finoman ráfordulni a fix Célpontra
+          if (window.airshipTimer > 1.0) {
+            if (typeof window.airshipTargetRotY === 'undefined') {
+               // A kamera irányába egy konzisztens 180 fokos (PI) fordulatot tesz.
+               // Mivel a modell fordítva van exportálva, ez pont beállítja a vizuális orrát a cél felé.
+               // Mínusz PI irányba fordítva a kamera felőli oldalon fog megpördülni!
+               window.airshipTargetRotY = window.foundZeppelin.rotation.y - Math.PI;
+            }
+            // Fix matematikai célpont (nincs ugrálás!)
+            window.foundZeppelin.rotation.y += (window.airshipTargetRotY - window.foundZeppelin.rotation.y) * dt * 1.5;
+          }
+          
+          // 3. 2.5 másodperc után brutálisan kilő a fix Célpont felé
+          if (window.airshipTimer > 2.5) {
+            window.airshipSpeed += dt * 35.0; 
+            
+            // Lokális translateZ helyett világkoordináta alapú, TÉVEDHETETLEN mozgás:
+            const flyTarget = new THREE.Vector3(20, 50, -100);
+            const dir = new THREE.Vector3().subVectors(flyTarget, window.foundZeppelin.position).normalize();
+            window.foundZeppelin.position.add(dir.multiplyScalar(dt * window.airshipSpeed));
+          }
+        }
+      }
+
+
+      // ─── 🏆 EoG: PONT A TRIGGER (Öböl bejárat – "Gyanúsan üres a víz...") ───
+      if (window.eogState === 'EMPTIED' && !window.eogTriggerA) {
+        const dxA = boat.position.x - EoG_POINT_A.x;
+        const dzA = boat.position.z - EoG_POINT_A.z;
+        if (dxA * dxA + dzA * dzA < 10000) { // 100m sugarú trigger zóna
+          window.eogTriggerA = true;
+          window.eogState = 'POINT_A_SHOWN';
+          if (!window.chestModel) spawnEogTreasureChest(scene, EoG_POINT_C);
+          window.isCutscenePlaying = true; // Megállítjuk a csónakot amíg Zozó beszél
+          showZozoEogMonolog(
+            'Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet\naz öböl szájánál!',
+            function() {
+              window.isCutscenePlaying = false; // Visszaadjuk az irányítást
+              window.eogState = 'POINT_A_SHOWN'; // Marad, amíg el nem érjük B-t
+            }
+          );
+          console.log('🏆 EoG Pont A elérve! Zozó 1. EoG monológ...');
+        }
+      }
+
+      // ─── 🏆 EoG: PONT B TRIGGER (Öböl szája – "Mi az ott a parton?") ───
+      // Ha POINT_A_SHOWN már megvolt, VAGY ha EMPTIED (játékos megkerülte A-t) – mindkét esetben tüzel!
+      if ((window.eogState === 'POINT_A_SHOWN' || window.eogState === 'EMPTIED' || window.eogState === 'CHEST_VISIBLE') && !window.eogTriggerB) {
+        const dxB = boat.position.x - EoG_POINT_B.x;
+        const dzB = boat.position.z - EoG_POINT_B.z;
+        if (dxB * dxB + dzB * dzB < 3600) { // 60m sugarú trigger zóna
+          window.eogTriggerB = true;
+          window.isCutscenePlaying = true;
+          function showBMonolog() {
+            showZozoEogMonolog(
+              'Mi az ott a parton?\nAz nem hártya, hanem...\nCsak nem...? Az ott egy LÁDA!\nEGY LÁDA! Gyorsan, fel kell szednünk!',
+              function() {
+                window.isCutscenePlaying = false;
+                window.eogState = 'POINT_B_SHOWN';
+              }
+            );
+          }
+          // Ha A monológ nem volt meg (játékos megkerülte), előbb azt mutatjuk
+          if (!window.eogTriggerA) {
+            window.eogTriggerA = true;
+            window.eogState = 'POINT_A_SHOWN';
+            if (!window.chestModel) spawnEogTreasureChest(scene, EoG_POINT_C);
+            showZozoEogMonolog(
+              'Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet\naz öböl szájánál!',
+              function() { showBMonolog(); }
+            );
+          } else {
+            showBMonolog();
+          }
+          console.log('🏆 EoG Pont B elérve! Zozó EoG monológ sorozat...');
+        }
+      }
+
+      // ─── 🏆 EoG: KINCSESLÁDA MEGKÖZELÍTÉS TRIGGER ───
+      if (!window.eogTriggerChest && window.chestModel) {
+        const distToChest = Math.hypot(boat.position.x - window.chestModel.position.x, boat.position.z - window.chestModel.position.z);
+        if (distToChest < EoG_CHEST_TRIGGER_DIST) {
+          console.log("🔥 LÁDA FELVÉTEL TRIGGER FOT! Távolság:", distToChest);
+          window.eogTriggerChest = true;
+          window.eogState = 'CHEST_FOUND';
+          window.chestModel.visible = false; // Láda eltűnik
+          if (window.chestGlowDisc) window.chestGlowDisc.visible = false; // Fény eltűnik
+          try { playEogFanfare(); } catch(e) { console.error("Fanfár hiba:", e); }
+          window.isCutscenePlaying = true; // Csónak megáll
+          showZozoEogMonolog(
+            'Most én viszem vissza a csónakot\na mólóra.\nNem hagyom, hogy ezt elszúrd nekem!',
+            function() {
+              // A csónak irányítása MARAD letiltva – a cinematic vezérli vissza!
+              startEogCinematic(scene, boat);
+            }
+          );
+        }
+      }
+
+      // ─── 🏆 EoG: CINEMATIC AUTO-NAVIGÁCIÓ (Csónak visszahajózik a mólóra) ───
+      // ─── EoG: CINEMATIC AUTO-NAVIGACIO (12mp-es visszauti animacio, orbit kamerával) ───
+      if (window.eogState === 'CINEMATIC' && window.eogCinematicPath) {
+        const elapsed = (performance.now() - window.eogCinematicStartTime) / 1000;
+        const DURATION = 22.0; // Picit hosszabb ido (18mp) a kanyargos ut miatt
+        const t = Math.min(elapsed / DURATION, 1.0);
+        
+        // Hajo pozicio es irany a gorben
+        const pos = window.eogCinematicPath.getPoint(t);
+        boat.position.copy(pos);
+        boat.position.y = 0;
+        
+        // Hajo nezen a haladasi iranyba (tangens)
+        if (t < 0.90) {
+          const tangent = window.eogCinematicPath.getTangent(t);
+          const targetAngle = Math.atan2(-tangent.x, -tangent.z) ;
+          boat.rotation.y = targetAngle;
+          // Kamera fixalasa a hajo mogott
+          window.setOrb((targetAngle * 180 / Math.PI) , 31.60, 26.00);
+        }
+        
+        // Megerkezett!
+        if (t >= 1.0 && !window.eogPierArrived) {
+          window.eogPierArrived = true;
+          console.log('Megerkeztunk a 34, 0, -68 ponthoz');
+          if (typeof showChestAtPier === 'function') showChestAtPier(scene);
+          // Egyelore itt varunk, ahogy kerted (kesobb johet a beparkolas)
+        }
+      }
+
+      const debugUI = document.getElementById('debug-coords');
+      if (debugUI && typeof boat !== 'undefined') {
+        let zeppPos = 'Not Found';
+        let dist = 'N/A';
+        if (typeof window.foundZeppelin !== 'undefined' && window.foundZeppelin) {
+          zeppPos = "(" + window.foundZeppelin.position.x.toFixed(0) + ", " + window.foundZeppelin.position.y.toFixed(0) + ", " + window.foundZeppelin.position.z.toFixed(0) + ")";
+          dist = boat.position.distanceTo(window.foundZeppelin.position).toFixed(0);
+        }
+        // EoG állapot kijelzése a debug panelen
+        const eogInfo = window.eogState !== 'NONE' ? '<br><span style="color:#ffd700">EoG: ' + window.eogState + '</span>' : '';
+        debugUI.innerHTML = "Boat: (" + boat.position.x.toFixed(0) + ", " + boat.position.y.toFixed(0) + ", " + boat.position.z.toFixed(0) + ")<br>Airship: " + zeppPos + "<br>Distance: " + dist + " m" + eogInfo;
+      }
+
+      // Water animation
+      // Water animation
+
+      if (water && water.material.uniforms['time']) {
+        water.material.uniforms['time'].value += dt;
+      }
+
+      // ─── PlayerController.cs FixedUpdate ───
+      const SPEED = 120, TURN = 75;
+      let mv = 0, tr = 0;
+      if (!window.isCutscenePlaying) { // Csak akkor irányítható a csónak, ha nem fut az átvezető!
+        if (keys.KeyW || keys.ArrowUp) mv = 1;
+        if (keys.KeyS || keys.ArrowDown) mv = -1;
+        if (keys.KeyA || keys.ArrowLeft) tr = -1;
+        if (keys.KeyD || keys.ArrowRight) tr = 1;
+      }
+
+      _prevPos.copy(boat.position);
+      const prevRot = boat.rotation.y;
+
+      if (Math.abs(mv) > 0.01) {
+        const dir = mv < 0 ? -1 : 1;
+        boat.rotation.y -= tr * dir * (TURN * Math.PI / 180) * dt;
+        let spd = SPEED;
+        if (mv < 0) spd *= 0.5;
+        _fwd.set(0, 0, -1).applyQuaternion(boat.quaternion);
+        _step.copy(_fwd).multiplyScalar(mv * spd * dt);
+        boat.position.add(_step);
+      } else if (Math.abs(tr) > 0.01) {
+        boat.rotation.y -= tr * (TURN * Math.PI / 180) * dt;
+      }
+
+      let collisionDetected = false;
+      let hitHeight = 0;
+
+      const collisionTargets = borderMeshes;
+
+      _center.copy(boat.position);
+      _center.y += 0.5;
+
+      if (collisionTargets.length > 0) {
+        laserLines.forEach((lItem, idx) => {
+          _rayDir.set(0, 0, -1);
+          _rayDir.applyAxisAngle(_upAxis, lItem.w.angle);
+          _rayDir.applyQuaternion(boat.quaternion).normalize();
+
+          _sharedRaycaster.set(_center, _rayDir);
+          const intersects = _sharedRaycaster.intersectObjects(collisionTargets, false);
+
+          if (intersects.length > 0 && intersects[0].distance < lItem.w.dist) {
+            collisionDetected = true;
+            lItem.mat.color.setHex(0xff2200); // Piros lézer ütközéskor!
+            const hitObj = intersects[0].object;
+            if (hitObj.geometry) {
+              if (!hitObj.geometry.boundingBox) hitObj.geometry.computeBoundingBox();
+              hitHeight = hitObj.geometry.boundingBox ? hitObj.geometry.boundingBox.max.y : 0;
+            }
+          } else {
+            lItem.mat.color.setHex(0x00ffcc); // Ciánkék lézer ha tiszta az út!
+          }
+        });
+      }
+
+      if (collisionDetected) {
+        boat.position.copy(_prevPos);
+        boat.rotation.y = prevRot;
+
+        if (hitHeight < 3.0) {
+          // 🗨️ Popup 2: Ütközés
+          window.showPopUp("Óvatosabban! Összetörted a csónakot!");
+        }
+      }
+
+      // Hajó lágy ringása a vízen - KIKAPCSOLVA A FELHASZNÁLÓ KÉRÉSÉRE
+      // boat.position.y = -0.5 + Math.sin(t*1.4)*0.22;
+      // boat.rotation.z = Math.sin(t*0.75)*0.035;
+      // boat.rotation.x = Math.sin(t*1.1)*0.02;
+
+      // 🌊 FAHAJÓ / EVEZŐS SŰRŰ V-ALAKÚ FARVÍZ (DENSE V-WAKE)
+      if (Math.abs(mv) > 0.01) {
+        // Középső gerinc fodor (central keel triangle)
+        const wakeMatC = getPooledWakeMaterial();
+        const wakeC = new THREE.Mesh(wakeGeo, wakeMatC);
+        wakeC.rotation.x = -Math.PI / 2;
+        wakeC.rotation.z = boat.rotation.y;
+        const offsetC = new THREE.Vector3(0, 0, 3.0).applyQuaternion(boat.quaternion);
+        wakeC.position.copy(boat.position).add(offsetC);
+        wakeC.position.y = 0.15;
+        wakeC.userData.vel = new THREE.Vector3(0, 0, 0.35).applyQuaternion(boat.quaternion);
+        scene.add(wakeC);
+        boatWakes.push(wakeC);
+
+        // Bal & Jobb sűrű V-ágak
+        const wakeMatL = getPooledWakeMaterial();
+        const wakeL = new THREE.Mesh(wakeGeo, wakeMatL);
+        wakeL.rotation.x = -Math.PI / 2;
+        wakeL.rotation.z = boat.rotation.y;
+        const offsetL = new THREE.Vector3(-0.35, 0, 3.2).applyQuaternion(boat.quaternion);
+        wakeL.position.copy(boat.position).add(offsetL);
+        wakeL.position.y = 0.15;
+        wakeL.userData.vel = new THREE.Vector3(-0.18, 0, 0.38).applyQuaternion(boat.quaternion);
+        scene.add(wakeL);
+        boatWakes.push(wakeL);
+
+        const wakeMatR = getPooledWakeMaterial();
+        const wakeR = new THREE.Mesh(wakeGeo, wakeMatR);
+        wakeR.rotation.x = -Math.PI / 2;
+        wakeR.rotation.z = boat.rotation.y;
+        const offsetR = new THREE.Vector3(0.35, 0, 3.2).applyQuaternion(boat.quaternion);
+        wakeR.position.copy(boat.position).add(offsetR);
+        wakeR.position.y = 0.15;
+        wakeR.userData.vel = new THREE.Vector3(0.18, 0, 0.38).applyQuaternion(boat.quaternion);
+        scene.add(wakeR);
+        boatWakes.push(wakeR);
+      }
+
+      // Vízfodrok animálása (sűrű, finom tágulás)
+      const timeScale = dt * 60;
+      for (let i = boatWakes.length - 1; i >= 0; i--) {
+        let w = boatWakes[i];
+        if (w.userData.vel) {
+          w.position.addScaledVector(w.userData.vel, dt);
+        }
+        w.scale.x += 0.009 * timeScale;
+        w.scale.y += 0.009 * timeScale;
+        
+        // Eredeti logika, csak egy picit gyorsabban oszlik el az egész csík (0.0032 helyett 0.008)
+        w.material.opacity -= 0.008 * timeScale;
+        
+        if (w.material.opacity <= 0) {
+          scene.remove(w);
+          boatWakes.splice(i, 1);
+        }
+      }
+
+      // ─── CameraMove.cs LateUpdate & CUTSCENE KAMERA ───
+      if (window.tempOrbitEnabled && window.tempOrbit) {
+        window.tempOrbit.update();
+      } else {
+        if (window.eogState === 'CINEMATIC' && window.homePos) {
+          // EoG Cinematic: orbit kamera kovetik a hazatero csónakot (indulasi nezopont)
+          const hR = orbH * Math.PI / 180, vR = orbV * Math.PI / 180;
+          cam.position.set(
+            boat.position.x + orbDist * Math.sin(hR) * Math.cos(vR),
+            boat.position.y + orbDist * Math.sin(vR) + LOOK_OFFSET_Y,
+            boat.position.z + orbDist * Math.cos(hR) * Math.cos(vR)
+          );
+          cam.lookAt(boat.position.x, boat.position.y + LOOK_OFFSET_Y, boat.position.z);
+        } else if (window.isCutscenePlaying && window.airshipAscentStarted && !window.airshipAscentDone && window.foundZeppelin && window.homePos) {
+          // Airship cutscene: statikus filmes sziklarol nezi a leghajot
+          cam.position.set(-374, 15, 1347);
+          cam.lookAt(window.foundZeppelin.position);
+        } else {
+          const hR = orbH * Math.PI / 180, vR = orbV * Math.PI / 180;
+          cam.position.set(
+            boat.position.x + orbDist * Math.sin(hR) * Math.cos(vR),
+            boat.position.y + orbDist * Math.sin(vR) + LOOK_OFFSET_Y,
+            boat.position.z + orbDist * Math.cos(hR) * Math.cos(vR)
+          );
+          cam.lookAt(boat.position.x, boat.position.y + LOOK_OFFSET_Y, boat.position.z);
+        }
+      }
+
+      water.position.x = cam.position.x;
+      water.position.z = cam.position.z;
+      if (skyDome) {
+        skyDome.position.x = cam.position.x;
+        skyDome.position.z = cam.position.z;
+      }
+
+      renderer.render(scene, cam);
+    }
+    frame();
+
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🏆 EoG (END OF GAME) FÜGGVÉNYEK
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // ─── Zozó EoG Monológ – KOMPAKT INLINE DIALOG (nem változtatja a hátteret!) ───
+    window.showZozoEogMonolog = function(text, onCloseCallback) {
+      const dialog = document.getElementById('eog-compact-dialog');
+      const textEl  = document.getElementById('eog-dialog-text');
+      if (!dialog || !textEl) return;
+
+      textEl.innerText = text;
+      dialog.style.display = 'block';
+
+      function closeEogDialog() {
+        dialog.style.display = 'none';
+        document.removeEventListener('keydown', onKey);
+        dialog.removeEventListener('click', onClick);
+        if (typeof onCloseCallback === 'function') onCloseCallback();
+      }
+
+      function onKey(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+        closeEogDialog();
+      }
+
+      function onClick() { closeEogDialog(); }
+
+      // 350ms késleledés: megakadályozza, hogy az aktiváló kattintás azonnal lezárja!
+      setTimeout(function() {
+        document.addEventListener('keydown', onKey, { once: true });
+        dialog.addEventListener('click', onClick, { once: true });
+      }, 350);
+    };
+    // ─── Kincsesláda spawn a C ponton ───
+    function spawnEogTreasureChest(sceneRef, point) {
+      const loader = new GLTFLoader();
+
+      // Láda test betöltése
+      loader.load('./models/pirates_assets/SM_Prop_Chest_Treasure_01.glb', function(gltf) {
+        window.chestModel = gltf.scene;
+        window.chestModel.position.set(-382, 2.0, 1238);
+        window.chestModel.scale.set(250, 250, 250);
+        sceneRef.add(window.chestModel);
+        // Világosabb textúra és csillogás
+        window.chestModel.traverse(function(child) {
+          if (child.isMesh && child.material) {
+            child.material.emissive = new THREE.Color(0x332200);
+            child.material.roughness = 0.3;
+            child.material.metalness = 0.8;
+            child.material.needsUpdate = true;
+          }
+        });
+        
+        // Brutális arany fény a láda körül (scene-be téve, nem a skálázott ládába)
+        const discGeom = new THREE.CylinderGeometry(1, 1, 0.5, 32);
+        const discMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.7 });
+        const glowDisc = new THREE.Mesh(discGeom, discMat);
+        glowDisc.position.set(-382, 1.0, 1238);
+        sceneRef.add(glowDisc);
+        
+        const chestLight = new THREE.PointLight(0xffaa00, 150.0, 800);
+        chestLight.position.set(0, 0.5, 0); // Fény a korongon belül / közvetlen felette
+        glowDisc.add(chestLight);
+        window.chestGlowLight = chestLight;
+        window.chestGlowDisc = glowDisc;
+        window.eogState = 'CHEST_VISIBLE';
+        console.log('🏆 Kincsesláda megjelent a C ponton:', point.x, point.z);
+      }, undefined, function(err) {
+        console.warn('Kincsesláda betöltési hiba:', err);
+        // Fallback: arany gömb, ha a GLB nem tölt be
+        const fallback = new THREE.Mesh(
+          new THREE.BoxGeometry(2, 1.5, 1.2),
+          new THREE.MeshStandardMaterial({ color: 0xc8a040, roughness: 0.4, metalness: 0.7 })
+        );
+        fallback.position.set(point.x, 0.75, point.z);
+        sceneRef.add(fallback);
+        window.chestModel = fallback;
+        window.eogState = 'CHEST_VISIBLE';
+      });
+    }
+
+    // ─── EoG Cinematic indítása (Csónak visszahajózik, láda megjelenik a mólón) ───
+    function startEogCinematic(sceneRef, boatRef) {
+      window.eogState = 'CINEMATIC';
+      if (window.lantern1Light) window.lantern1Light.intensity = 140.0;
+      if (window.lantern2Light) window.lantern2Light.intensity = 140.0;
+      if (window.smallLantern1Light) window.smallLantern1Light.intensity = 140.0;
+      if (window.smallLantern2Light) window.smallLantern2Light.intensity = 140.0;
+      window.eogPierArrived = false;
+      window.eogLidAngle = 0;
+      window.eogCinematicStartTime = performance.now();
+      
+      // Kanyargos utvonal (CatmullRomCurve3) definialasa a sziklak kikerulesere
+      const startPos = boatRef.position.clone();
+      const targetPos = new THREE.Vector3(34, 0, -68);
+      
+      window.eogCinematicPath = new THREE.CatmullRomCurve3([
+        startPos, // Indulas (kincseslada / obol belseje)
+        new THREE.Vector3(-427, 0, 1191), // B pont
+        new THREE.Vector3(-100, 0, 550),  // A pont
+        new THREE.Vector3(28, 0, 1),      // Uj C pont a kikeruleshez
+        new THREE.Vector3(38, 0, -56), // homePos (kb. a molo mellett)
+        new THREE.Vector3(5, 0, -94)
+      ]);
+      
+      console.log('EoG Cinematic elindul - Ivevelt visszauti animacio...');
+    }
+
+    // ─── Mólón megjelenő kincsesláda (a cinematic csúcspontja) ───
+    function showChestAtPier(sceneRef) {
+      if (!window.homePos) return;
+      const loader = new GLTFLoader();
+      loader.load('./models/pirates_assets/SM_Prop_Chest_Treasure_01.glb', function(gltf) {
+        const pierChest = gltf.scene;
+        pierChest.position.set(8, 1.5, -99);
+        pierChest.scale.set(250, 250, 250);
+        sceneRef.add(pierChest);
+        window.eogChestAtPier = pierChest;
+        console.log('🏆 Kincsesláda megjelent a mólón (fény nélkül)!');
+      });
+      loader.load('./models/pirates_assets/SM_Prop_Chest_Lid_01.glb', function(gltf) {
+        const lid = gltf.scene;
+        lid.position.set(8, 1.5, -99);
+        lid.scale.set(250, 250, 250);
+        sceneRef.add(lid);
+        window.chestLidModel = lid;
+        console.log('🏆 Kincsesláda fedele betöltve (animáció nélkül).');
+      });
+      setTimeout(function() {
+        if (typeof startEogFadeAndVideo === 'function') startEogFadeAndVideo();
+      }, 2000);
+    }
+
+    // ─── 🎵 Web Audio API Fanfár (szintetikus, fájl nélkül) ───
+    function playEogFanfare() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        // Kalóz-fanfár hangsor: C-E-G-C arpeggio + záró akkord
+        const melody = [
+          { freq: 392.00, start: 0.00, dur: 0.18 }, // G4
+          { freq: 523.25, start: 0.18, dur: 0.18 }, // C5
+          { freq: 659.25, start: 0.36, dur: 0.18 }, // E5
+          { freq: 783.99, start: 0.54, dur: 0.28 }, // G5
+          { freq: 1046.5, start: 0.82, dur: 0.55 }, // C6 (záró magas)
+          { freq: 523.25, start: 0.82, dur: 0.55 }, // C5 (záró mély)
+          { freq: 659.25, start: 0.82, dur: 0.55 }, // E5 (záró közepes)
+        ];
+        melody.forEach(function(note) {
+          const osc  = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = note.freq;
+          osc.type = 'triangle';
+          const t0 = ctx.currentTime + note.start;
+          gain.gain.setValueAtTime(0, t0);
+          gain.gain.linearRampToValueAtTime(0.28, t0 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, t0 + note.dur);
+          osc.start(t0);
+          osc.stop(t0 + note.dur + 0.05);
+        });
+        console.log('🎵 EoG Fanfár lejátszva!');
+      } catch(e) {
+        console.warn('Web Audio fanfár hiba:', e);
+      }
+    }
+
+    // ─── Fade-to-black overlay + EoG videó indítása ───
+    function startEogFadeAndVideo() {
+      const fadeEl = document.getElementById('eog-fade-overlay');
+      if (fadeEl) {
+        fadeEl.style.opacity = '1'; // CSS transition kezeli a smooth fade-t
+        setTimeout(function() {
+          startEogVideo();
+        }, 1200); // 1.2 másodperc alatt elsötétül, utána indul a videó
+      } else {
+        startEogVideo();
+      }
+    }
+
+    function startEogVideo() {
+      window.eogState = 'VIDEO';
+      const overlay = document.getElementById('eog-video-overlay');
+      const video   = document.getElementById('eog-video');
+      if (overlay && video) {
+        overlay.style.display = 'flex';
+        video.play().catch(function(e) {
+          console.warn('Videó autoplay blokkolt, kattintásra vár:', e);
+          // Ha az autoplay blokkolt, a felhasználónak kattintani kell
+          overlay.style.cursor = 'pointer';
+          overlay.addEventListener('click', function onceClick() {
+            video.play();
+            overlay.removeEventListener('click', onceClick);
+          }, { once: true });
+        });
+        video.addEventListener('ended', function() {
+          window.eogState = 'DONE';
+          console.log('🏆 EoG videó véget ért! Gratulálunk a játékosnak!');
+          // Opcionális: Gratulálunk overlay megjelenítése
+          const doneEl = document.getElementById('eog-done-overlay');
+          if (doneEl) doneEl.style.display = 'flex';
+        });
+      }
+    }
+
+
+    // ─── Vizuális Pozíció & Kamera Mentő Funkciók ───
+    window.saveCurrentTransform = function () {
+      const data = {
+        x: boat.position.x,
+        y: boat.position.y,
+        z: boat.position.z,
+        rotY: boat.rotation.y,
+        orbH: orbH,
+        orbV: orbV,
+        orbDist: orbDist
+      };
+      localStorage.setItem('saved_boat_transform', JSON.stringify(data));
+      showToast("✅ Pozíció & Kamera beállítás elmentve!");
+    };
+
+    window.copyTransformCode = function () {
+      const code = `// Csónak és Kamera Mentett Pozíciója:
+boat.position.set(${boat.position.x.toFixed(2)}, ${boat.position.y.toFixed(2)}, ${boat.position.z.toFixed(2)});
+boat.rotation.y = ${boat.rotation.y.toFixed(3)};
+orbH = ${orbH.toFixed(1)}; orbV = ${orbV.toFixed(1)}; orbDist = ${orbDist.toFixed(1)};`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast("📋 Koordináták a vágólapra másolva!");
+        }).catch(() => {
+          console.log(code);
+          showToast("📋 Koordináták a konzolra kiírva!");
+        });
+      } else {
+        console.log(code);
+        showToast("📋 Koordináták a konzolra kiírva!");
+      }
+    };
+
+    window.resetTransform = function () {
+      localStorage.removeItem('saved_boat_transform');
+      showToast("🔄 Alaphelyzet visszaállítva!");
+      setTimeout(() => location.reload(), 600);
+    };
+
+    function showToast(msg) {
+      const t = document.getElementById('editor-toast');
+      if (t) {
+        t.innerText = msg;
+        setTimeout(() => { if (t.innerText === msg) t.innerText = ""; }, 3000);
+      }
+    }
+
+    // ─── DEDIKÁLT ZOZÓ SZÖVEG & FORMÁZÁS VIZUÁLIS SZERKESZTŐ LOGIKA ───
+    
+    
+    
+    
+    window.zozoWelcomeTexts = [
+      "\nNa, te vagy az új jövevény? \nEgy Szárazföldi Patkány?",
+"\n\nIrányítsd a hajót! És ne menj neki a szikláknak!"
+    ];
+
+    // ─── IN-GAME MONOLÓG RENDSZER ADATOK ÉS ÁLLAPOTOK ───
+    window.gameMonologues = [
+      "", // 0: index eltolás, hogy az 1. monológ a [1] indexen legyen
+      "Úgy láttam egy hártya egész közel sodródott ide. Szedjük össze azt először!", // 1
+      "Látod? Ezek a Hártyák. A Letter-tenger sodorta őket ebbe az öbölbe. Ez a mi kincsünk. És neked csak le kell halásznod őket.", // 2
+      "VIGYÁZZ! Ha zátonynak ütközöl, elveszted a Hártyáidat.", // 3
+      "Szép volt! De ne feledd, csak akkor van a Hártyád biztonságban, ha elviszed a kikötőbe! Nyomás vissza!", // 4
+      "Harminc ilyen csillogó csodát kell kikanalaznod, hogy a Tekercsmester egyáltalán szóba álljon veled.", // 5
+      "Tizenegy Kalózkreditért, persze. Itt semmi sincs ingyen.", // 6
+      "Ezek csak az alap Hártyák. Az öblön túl, a zátonyoknál már színeseket is találsz. Kék, vörös, zöld... mind más zsáner.", // 7
+      "De oda csak olyan vén tengeri medvék jutnak ki, mint én. A távoli szigeteken meg... na mindegy. Az nem a te szinted, Patkány.", // 8
+      "Mielőtt a kalózok visszajönnek, elmagyarázom, hogy működik itt az élet, ha már ennyire hülye vagy hozzá.", // 9
+      "Két dolog számít: a Kalózkredit és a Tálentum. Kreditet kapsz minden nap, amikor belépsz. Egyet. De ez csak alamizsna.", // 10
+      "A Tekercsmester is ad egyet harminc Hártyáért. De az aprópénz.", // 11
+      "Az igazi meló a Tavernában van. Ott kaphatsz küldetéseket is, ha már megérdemled.", // 12
+      "A Tekercseidet azt a Könyvtárban tudod elolvasni. De eladhatod 10 kreditért, vagy a Piacon.", // 13
+      "De, ha elég okos vagy, akkor inkább gyűjtöd a Tekercseket, amíg meglesz a könyv összes tekercse. Azokból készíttetheted a Másolatot.", // 14
+      "Ha van Másolatod, azt beviheted a Szentélybe és felszentelheted. Így juthatsz hozzá igazi Könyvhöz.", // 15
+      "De a Könyvszenteléshez Tálentum kell. Azt pedig nem halászod ki a vízből.", // 16
+      "Azt csak a Nagy Mecénások adják, a Patreonon vagy PayPalen keresztül.", // 17
+      "Vagy ha olyan kincset találsz, amiért egy másik játékos Tálentummal fizet neked a Piacon.", // 18
+      "Van ugyan Bank is, de az csak lefelé vált. Tálentumot adhatsz el Kreditért, de visszafelé... felejtsd el!", // 19
+      "Na, kezdesz belejönni. Ha ilyen jól dolgozol, egyszer talán elviszlek a Kalózkikötőbe, Hebokba.", // 20
+      "Ott bérelhetsz vagy vehetsz hajót, de akár más hajók legénységéhez is csatlakozhatsz. Vagy a kalózokhoz.", // 21
+      "És ott van a Szentély is, ahol a Másolatot felszentelik.", // 22
+      "A felszentelés után a könyvet letöltheted, és még tíz Másolatot is kapsz hozzá, amit elajándékozhatsz.", // 23
+      "És, ha olyan embernek adod, aki felszenteli a tőled kapott Másolatot, akkor még pénz is ütheti a markodat", // 24
+      "Vagy akár Könyvvadászatot is indíthatsz rá. Na, az az igazán jó móka!", // 25
+      "Aztán, minél több könyved lesz, annál nagyobb emberré válsz itt. Még akár kapitány is lehet belőled!", // 26
+      "Viszont, ha ellopod valamelyik könyvet, vagy hagyod, hogy játékon kívüliek is olvassák, akkor súlyos lesz a büntetésed!", // 27
+      "Nem húznak ugyan át a hajógerinc alatt, de kikerül a neved a szégyenfalra, hogy mindenki lássa, mit tettél.", // 28
+      "És hiába szenteltetted fel a könyvet, az elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül.", // 29
+      "Most pedig eredj. Én megéheztem, de te ne lazsálj! Hozz nekem még több Hártyát. És vigyázz a hajómra!", // 30
+      "Te, Patkány! Gyanúsan üres a víz... Nézzük meg, hogy mi a helyzet az öböl szájánál!", // 31
+      "Mi az ott a parton? Az nem hártya, hanem... Csak nem...? Az ott egy láda! EGY LÁDA! Gyorsan, fel kell szednünk!", // 32
+      "Na most ezt most visszavisszük a mólóra. Én kormányzok, ezt nem hagyom, hogy elbaltázd nekem!" // 33
+    ];
+
+    window.monologState = {
+      currentBlockQueue: [], // A monológ blokk, ami épp lejátszás alatt van (pl. [1, 2, 3])
+      currentBlockIndex: 0,
+      hasSeen: {}, // Miket játszottunk már le
+      airshipCaughtPlayer: false
+    };
+
+    window.showInGameMonolog = function(startIndex, endIndex, onComplete) {
+      // Ha már láttuk, ne mutassuk újra
+      if (window.monologState.hasSeen[startIndex]) {
+        // Ha már láttuk, de van callback, hívjuk meg azonnal (láncoláshoz)
+        if (onComplete) onComplete();
+        return;
+      }
+      window.monologState.hasSeen[startIndex] = true;
+      window.monologState.onComplete = onComplete || null;
+      
+      window.monologState.currentBlockQueue = [];
+      for (let i = startIndex; i <= endIndex; i++) {
+        window.monologState.currentBlockQueue.push(i);
+      }
+      window.monologState.currentBlockIndex = 0;
+      
+      window.renderCurrentMonolog();
+    };
+
+    window.renderCurrentMonolog = function() {
+      const container = document.getElementById('zozo-ingame-monolog-container');
+      if (!container) return;
+      
+      if (window.monologState.currentBlockIndex < window.monologState.currentBlockQueue.length) {
+        const monologIdx = window.monologState.currentBlockQueue[window.monologState.currentBlockIndex];
+        document.getElementById('ingame-dialogue-text').innerText = window.gameMonologues[monologIdx];
+        container.style.display = 'block';
+      } else {
+        // Vége a blokknak
+        container.style.display = 'none';
+        // Callback hívása a láncoláshoz
+        if (window.monologState.onComplete) {
+          const cb = window.monologState.onComplete;
+          window.monologState.onComplete = null;
+          cb();
+        }
+      }
+    };
+
+    window.advanceInGameMonolog = function() {
+      window.monologState.currentBlockIndex++;
+      window.renderCurrentMonolog();
+    };
+
+    // ─── LEADÁSKORI MONOLÓG TRIGGER RENDSZER (batch logikával) ───
+    window.triggerDropoffMonologs = function(prevStored, newStored) {
+      const blocks = [];
+
+      // 1. hártya leadás: Popup 3 + Monológ 5-6
+      if (prevStored < 1 && newStored >= 1) {
+        blocks.push({ type: 'popup', msg: 'Nem rossz egy patkánytól!' });
+        blocks.push({ start: 5, end: 6 });
+      }
+      // 2. hártya leadás: Monológ 7-8
+      if (prevStored < 2 && newStored >= 2) {
+        blocks.push({ start: 7, end: 8 });
+      }
+      // 3. hártya leadás: Monológ 9-12 (ha airship nem kapta el → hasSeen ellenőrzi)
+      if (prevStored < 3 && newStored >= 3) {
+        blocks.push({ start: 9, end: 12 });
+      }
+      // 4. hártya leadás: Monológ 13-19
+      if (prevStored < 4 && newStored >= 4) {
+        blocks.push({ start: 13, end: 19 });
+      }
+      // 5. hártya leadás: Monológ 20-30
+      if (prevStored < 5 && newStored >= 5) {
+        blocks.push({ start: 20, end: 30 });
+      }
+
+      // Láncolás: minden blokk végén elindul a következő
+      function runNext(idx) {
+        if (idx >= blocks.length) {
+          // 🗨️ Popup 4: 1. leadás utáni kihajózáskor
+          if (prevStored < 1 && newStored >= 1) {
+            window._waitingForPierLeave = true;
+          }
+          return;
+        }
+        const block = blocks[idx];
+        if (block.type === 'popup') {
+          window.showPopUp(block.msg);
+          setTimeout(function() { runNext(idx + 1); }, 600);
+        } else {
+          window.showInGameMonolog(block.start, block.end, function() {
+            runNext(idx + 1);
+          });
+        }
+      }
+
+      if (blocks.length > 0) {
+        runNext(0);
+      }
+    };
+
+    window.selectZozoTextStep = function (stepVal) {
+      const idx = parseInt(stepVal, 10);
+      window.zozoTextStep = idx;
+      const dialogText = document.getElementById('zozo-dialogue-text');
+      if (dialogText) dialogText.innerText = window.zozoWelcomeTexts[idx];
+      
+      // Update body step class
+      for(let i=0; i<100; i++) document.body.classList.remove('step-' + i);
+      document.body.classList.add('step-' + idx);
+    }
+
+    window.advanceZozoWelcome = function () {
+      const overlay = document.getElementById('zozo-welcome-overlay');
+      if (!overlay || overlay.style.display === 'none') return;
+
+      window.zozoTextStep++;
+      if (window.zozoTextStep < window.zozoWelcomeTexts.length) {
+        window.selectZozoTextStep(window.zozoTextStep);
+      } else {
+        window.closeZozoWelcome();
+      }
+    }
+
+    window.closeZozoWelcome = function() {
+      const overlay = document.getElementById('zozo-welcome-overlay');
+      if (overlay) overlay.style.display = 'none';
+      
+      // Először a popup (WASD irányítás), aztán a monológ 1 a popup eltűnése után
+      window.showPopUp("A WASD vagy az iránynyíl gombokkal a hajót, az egérrel a kamerát tudod irányítani.");
+      setTimeout(function() {
+        window.showInGameMonolog(1, 1);
+      }, 4500);
+    };
+
+    window.showPopUp = function(msg) {
+      const p = document.getElementById('ingame-popup-toast');
+      if (p) {
+        p.innerText = msg;
+        p.style.display = 'block';
+        setTimeout(() => { if (p.innerText === msg) p.style.display = 'none'; }, 4000);
+      }
+    };
+
+</script>
+
+  
+
+  <!-- 🏆 KOMPAKT EoG MONOLÓG DIALOG (3D jelenet látható marad!) -->
+  <div id="eog-compact-dialog" style="
+    display: none;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 850;
+    pointer-events: auto;
+    cursor: pointer;
+    user-select: none;
+  ">
+    <!-- Zozó portré bal oldalon -->
+    <img src="assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png"
+      style="position: absolute; left: -110px; bottom: 0; height: 230px;
+             filter: drop-shadow(0 8px 20px rgba(0,0,0,0.85));"
+      alt="Zozó">
+    <!-- Névtábla -->
+    <img src="assets/images/Zozo_nevtabla_2-r.png"
+      style="position: absolute; top: -26px; left: 50%; transform: translateX(-50%);
+             height: 52px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.7));">
+    <!-- Dialog doboz -->
+    <div style="
+      width: 620px;
+      min-height: 190px;
+      padding: 30px 55px 25px 55px; /* Kisebb padding, hogy több szöveg férjen el */
+      background: url('assets/images/Zozo_monolog_window_2.png') no-repeat center / 100% 100%;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.45));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Ne középre rendezze, hanem fentről lefelé, így nem csúszik ki alul */
+      gap: 12px;
+    ">
+      <div id="eog-dialog-text" style="
+        color: #1a0a00;
+        font-family: 'Briskb', 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 15.5px;
+        text-align: center;
+        line-height: 1.55;
+        white-space: pre-line;
+      "></div>
+      <div style="
+        font-size: 11px;
+        color: #6b4c2a;
+        font-family: 'Courier New', monospace;
+        opacity: 0.75;
+        margin-top: 4px;
+      ">[ kattints vagy nyomj gombot a folytatáshoz ]</div>
+    </div>
+  </div>
+
+  <!-- 🧪 EoG DEBUG PANEL (koordináta-vadászathoz) -->
+  <!-- 🧪 EoG DEBUG PANEL (koordináta-vadászathoz) -->
+   <!-- Zárjuk be a debug panelt -->
+
+  <!-- 🏆 EoG FADE TO BLACK OVERLAY -->
+  <div id="eog-fade-overlay" style="
+    display: block;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: black;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  "></div>
+
+  <!-- 🏆 EoG VIDEO PLAYER OVERLAY -->
+  <div id="eog-video-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: black;
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+  ">
+    <video id="eog-video" style="width: 100%; height: 100%; object-fit: contain;" src="assets/videos/Tutorial_EoG_video.mp4"></video>
+  </div>
+
+
+
+
+<script src="Toolbox/toolbox_loader.js?v=2"></script>
+<script src="Toolbox/toolbox_scripts.js?v=3"></script>
+
+</body>
+</html>

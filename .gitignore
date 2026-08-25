@@ -4,9 +4,11 @@ appsscript.json
 .clasp*
 credentials*
 .env
+
 # Node / build
 node_modules/
 .DS_Store
+
 # Ignore compiled or temporary files
 *.log
 
@@ -18,7 +20,24 @@ Archy_Master.code-workspace
 *.code-workspace
 *.py
 
+# 3D models and media assets (Cloud GCS bucket used instead)
 *.blend
 *.blend1
 *.glb
+*.gltf
+*.mp4
+*.webm
+*.mp3
+*.wav
+*.otf
+*.ttf
 assets/
+models/
+demojatek/assets/
+demojatek/models/
+
+# Local Dev & Tuning Tools (Never push to GitHub)
+Toolbox/
+*toolbox*
+*debug_panel*
+Protected_Backups/

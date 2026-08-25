@@ -1,0 +1,62 @@
+{
+  "welcomeTexts": [
+    "Na, te vagy az új jövevény? \nEgy Szárazföldi Patkány?",
+    "Olvasnivalót akarsz a Könyvtárba? Hát, barátom, \nitt nem a kész könyvek lebegnek ám a vízben!",
+    "Ide figyelj, Patkány! Ha betűt akarsz látni, \nazért meg kell dolgozni.",
+    "Megmutatom, miből élünk mi, parti népek. Szállj be! \nMire vársz még? Nincs rád egy egész napom!"
+  ],
+  "gameMonologues": {
+    "1": "Úgy láttam egy hártya egész közel sodródott. \nSzedjük össze azt először!",
+    "2": "Ezek a Hártyák. A Letter-tenger sodorta őket az öbölbe.\nEz a mi kincsünk. És neked csak le kell halásznod őket.",
+    "3": "Szép volt! De ne feledd, csak akkor van a Hártyád\nbiztonságban, ha elviszed a kikötőbe! Nyomás vissza!",
+    "4": "VIGYÁZZ! Ha zátonynak ütközöl, elveszted a Hártyáidat.",
+    "5": "Harminc ilyen csillogó csodát kell kikanalaznod, hogy a\nTekercsmester egyáltalán szóba álljon veled.",
+    "6": "Tizenegy Kalózkreditért, persze. Itt semmi sincs ingyen.",
+    "7": "Ezek csak az alap Hártyák. Az öblön túl, a zátonyoknál\nmár színeseket is találsz. Kék, vörös, zöld... mind más zsáner.",
+    "8": "De oda csak olyan vén tengeri medvék jutnak ki, mint én. A\ntávoli szigeteken meg... na mindegy. Az még nem a te szinted.",
+    "9": "A fene... a Légi Kalózok. MIT BÁMULSZ? MENEKÜLJÜNK! \nVissza a kikötőbe!",
+    "11": "Most pedig elmagyarázom,\nhogy működik itt az élet, ha már ennyire hülye vagy hozzá.",
+    "12": "Két dolog számít: a Kalózkredit és a Tálentum. Kreditet kapsz\nminden nap, amikor belépsz. Egyet. De ez csak alamizsna.",
+    "13": "A Tekercsmester is ad egyet harminc Hártyáért. \nDe az aprópénz.",
+    "14": "Az igazi meló a Tavernában van. Ott kaphatsz\nküldetéseket is, ha már megérdemled.",
+    "15": "A Tekercseidet azt a Könyvtárban tudod elolvasni.\nDe eladhatod 10 kreditért, vagy a Piacon.",
+    "16": "De, gyűjtheted a Tekercseket, amíg meglesz a könyv\nösszes tekercse. Azokból készíttetheted a Másolatot.",
+    "17": "Ha van Másolatod, azt beviheted a Szentélybe és\nfelszentelheted. Így juthatsz hozzá igazi Könyvhöz.",
+    "18": "A Könyvszenteléshez Tálentum kell.\nAzt pedig nem halászod ki a vízből.",
+    "19": "Azt csak a Nagy Mecénások adják, a \nPatreonon vagy PayPalen keresztül.",
+    "20": "Vagy ha olyan kincset találsz, amiért\negy másik játékos Tálentummal fizet neked a Piacon.",
+    "21": "Van ugyan Bank is, de az csak lefelé vált.\nTálentumot adhatsz el Kreditért, de visszafelé... felejtsd el!",
+    "22": "Na, kezdesz belejönni. Ha ilyen jól dolgozol,\negyszer talán elviszlek a Kalózkikötőbe, Hebokba.",
+    "23": "Ott bérelhetsz vagy vehetsz hajót, de akár\nmás hajók legénységéhez csatlakozhatsz. Vagy a kalózokhoz.",
+    "24": "Hebokban van a Szentély is, \nahol a Másolatot felszentelik.",
+    "25": "A felszentelés után a könyvet letöltheted,\nés még tíz Másolatot is kapsz hozzá, amit elajándékozhatsz.",
+    "26": "És, ha olyan embernek adod, aki felszenteli\na tőled kapott Másolatot, akkor még pénz is ütheti a markodat",
+    "27": "Vagy akár Könyvvadászatot is indíthatsz rá.\nNa, az az igazán jó móka!",
+    "28": "Minél több könyved van, annál\nnagyobb emberré válsz itt. Még akár kapitány is lehet belőled!",
+    "29": "Viszont, ha ellopod valamelyik könyvet, vagy hagyod, hogy\njátékon kívüliek is olvassák, akkor súlyos lesz a büntetésed!",
+    "30": "Nem húznak ugyan át a hajógerinc alatt, de kikerül\n a neved a szégyenfalra, hogy mindenki lássa, mit tettél.",
+    "31": "És hiába szenteltetted felszentelted a könyvet, az\nelveszti az értékét a játékban, vagyis Könyvbörtönbe kerül.",
+    "32": "Én megéheztem, úgyhogy innentől egyedül folytatod.\nHozz nekem még több Hártyát. És vigyázz a hajómra!",
+    "33": "És, ha te is írtál valamit, amit behoznál a játékba,\nakkor a monkokhoz kell elmenned.",
+    "34": "Fent élnek a Felhőkolostorban, a Szentély felett.\nŐk felügyelik a betűt.",
+    "controls": "A W,A,S,D vagy az iránynyíl gombokkal tudod irányítan a hajót. A kamerát akkor tudod forgatni, ha lenyomva tartod akár a jobb, akár a bal gombot az egéren. Az információs ablakokat a space lenyomásával tudod léptetni / bezárni.",
+    "wind": "Figyelj a szélirányra, úgy forgasd a vitorlát!"
+  },
+  "popups": {
+    "new_membrane": "Újabb hártyát gyűjtöttél be! \nNyomás vissza a kikötőbe!",
+    "airship_good": "Szép volt. Folytasd a melót!",
+    "airship_bad": "Ezek most kiraboltak. \nMost mehetünk ki tovább halászni.",
+    "membrane_good": "Ezt felszedtük",
+    "membrane_bad": "Ez a hártya elúszott...",
+    "beach": "A parta nem kéne felfutni",
+    "out_of_range": "Ezzel a ronccsal nem mehetünk ki a nyílt tengerre.",
+    "homepoint": "Kipakoltam, mehetünk.",
+    "empty_boat": "Üres csónakkal tértél vissza",
+    "airship_catch": "UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, \nde ha hibázol, elveszik a hártyáinkat."
+  },
+  "eogMonologues": {
+    "pointA": "Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet az öböl szájánál!",
+    "pointB": "Mi az ott a parton? Az nem hártya, hanem...Csak nem...? \nAz ott egy LÁDA! EGY LÁDA! Gyorsan, fel kell szednünk!",
+    "chestFound": "Most én viszem vissza a csónakot a mólóra.\nNem hagyom, hogy ezt elszúrd nekem!"
+  }
+}

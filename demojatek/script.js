@@ -8,6 +8,7 @@ window.onerror = function (message, source, lineno, colno, error) {
 };
 
 import * as THREE from 'three';
+window.THREE = THREE;
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -431,10 +432,12 @@ function resize() {
 addEventListener('resize', resize);
 
 const scene = new THREE.Scene();
+window.scene = scene;
 scene.background = new THREE.Color(0x7ec8e8);
 scene.fog = new THREE.FogExp2(0x7ec8e8, 0.0025);
 
 const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 400);
+window.cam = cam;
 let orbH = 0.0, orbV = 15.0, orbDist = 26.00;
 const ORB_MIN_V = 5.0, ORB_MAX_V = 90.0, ORB_MIN_D = 26.00, ORB_MAX_D = 26.00;
 

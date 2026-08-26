@@ -239,23 +239,39 @@
     </div>
   </div>
 
-  <!-- FEJLESZTŐI TOOLBOX (Igény szerinti behívás: ?toolbox=1, ?dev=1 vagy Ctrl+Shift+T) -->
+  <!-- FEJLESZTŐI TOOLBOX (KIZÁRÓLAG LOKÁLIS KÖRNYEZETBEN: localhost / 127.0.0.1) -->
   <script>
-    function initDevToolbox() {
-      if (window.toolboxInitialized) return;
-      window.toolboxInitialized = true;
-      const s = document.createElement('script');
-      s.src = 'Toolbox/toolbox_loader.js?t=' + Date.now();
-      document.body.appendChild(s);
-    }
-    if (window.location.search.includes('toolbox=1') || window.location.search.includes('dev=1')) {
-      window.addEventListener('DOMContentLoaded', initDevToolbox);
-    }
-    window.addEventListener('keydown', function(e) {
-      if (e.ctrlKey && e.shiftKey && e.code === 'KeyT') {
-        initDevToolbox();
+    (function() {
+      const isLocal = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1' || 
+                      window.location.hostname.startsWith('192.168.') || 
+                      window.location.protocol === 'file:';
+      
+      // Ha éles GitHub Pages-en fut, a Toolbox KIZÁRÓLAG 0 terheléssel teljesen inaktív!
+      if (!isLocal) return;
+
+      function initDevToolbox() {
+        if (window.toolboxInitialized) return;
+        window.toolboxInitialized = true;
+        const s = document.createElement('script');
+        s.src = 'Toolbox/toolbox_loader.js?t=' + Date.now();
+        document.body.appendChild(s);
       }
-    });
+
+      if (window.location.search.includes('toolbox=1') || window.location.search.includes('dev=1')) {
+        if (document.readyState === 'loading') {
+          window.addEventListener('DOMContentLoaded', initDevToolbox);
+        } else {
+          initDevToolbox();
+        }
+      }
+
+      window.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyT') {
+          initDevToolbox();
+        }
+      });
+    })();
   </script>
   <script src="quiz_manager.js"></script>
   <script type="module" src="script.js"></script>

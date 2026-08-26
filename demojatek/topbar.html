@@ -134,7 +134,76 @@
   </div>
 </div>
 
-<style>
+  /* Info Scroll Tekercs és Görgetősáv Stílusok */
+  #info-scroll-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+  }
+
+  .info-scroll-box-std {
+    position: relative;
+    width: 920px;
+    max-width: 95vw;
+    height: 86vh;
+    max-height: 720px;
+    background: transparent url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/info_scroll_open.png') no-repeat center center / 100% 100%;
+    padding: 175px 185px 195px 260px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    filter: drop-shadow(0 15px 45px rgba(0, 0, 0, 0.9));
+    pointer-events: auto;
+    user-select: none;
+  }
+
+  #info-scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 380px;
+    padding-right: 15px;
+    color: #2c1608;
+    font-family: 'Briskb', 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.55;
+    text-shadow: 0.8px 0.8px 0px rgba(0,0,0,0.4), 0.5px 0.5px 0px rgba(255,235,180,0.5);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    scrollbar-width: thin;
+    scrollbar-color: #d4af37 rgba(80, 50, 20, 0.12);
+  }
+
+  #info-scroll-close-wrap {
+    position: absolute;
+    bottom: 110px;
+    left: 70%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: auto;
+  }
+
+  #btn-close-info-scroll {
+    width: 52px;
+    height: 52px;
+    cursor: pointer;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+    transition: transform 0.15s ease;
+  }
+
+  #btn-close-info-scroll:hover {
+    transform: scale(1.15);
+  }
+
   #info-scroll-content::-webkit-scrollbar {
     width: 32px;
   }
@@ -172,9 +241,9 @@
   }
 </style>
 
-<div id="info-scroll-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 99999; align-items: center; justify-content: center;">
-  <div id="info-scroll-box" style="position: relative; width: 920px; max-width: 95vw; height: 86vh; max-height: 720px; background: transparent url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/info_scroll_open.png") no-repeat center / 100% 100%; padding: 175px 185px 195px 260px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; filter: drop-shadow(0 15px 45px rgba(0,0,0,0.9)); transition: all 0.05s ease-out;">
-    <div id="info-scroll-content" style="overflow-y: auto; padding-right: 0px; color: #2c1608; font-family: 'Briskb', 'Courier New', monospace; font-size: 16px; font-weight: 900; line-height: 1.55; text-shadow: 0.8px 0.8px 0px rgba(0,0,0,0.4), 0.5px 0.5px 0px rgba(255,235,180,0.5); white-space: pre-wrap; word-wrap: break-word;">
+<div id="info-scroll-overlay">
+  <div id="info-scroll-box" class="info-scroll-box-std">
+    <div id="info-scroll-content">
 Te patkány! Hát nem olvasni jöttél?! Vagy csak rám figyelni luxus?! 
 A hozzád hasonlók miatt tartom ezt a szart magamnál. 
 Nesze, itt van minden leírva, amit tudnod kell.
@@ -223,9 +292,9 @@ A Szentelés után a Könyv ebook formában letölthetővé válik, és az a já
 - Ha a letöltött ebookot bármelyik játékos illegálisan megosztja, akkor hiába szenteltette fel a Könyvet, az elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül, a bűnös neve pedig felkerül a Szégyenfalra.
     </div>
 
-    <!-- Kilépés (Halálfej) ikon feljebb (+10px -> 110px) -->
-    <div id="info-scroll-close-wrap" style="position: absolute; bottom: 110px; left: 70%; transform: translateX(-50%); z-index: 100;">
-      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r 1.png" id="btn-close-info-scroll" style="width: 52px; height: 52px; cursor: pointer; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8)); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1.0)'" title="Bezárás">
+    <!-- Kilépés (Halálfej) ikon -->
+    <div id="info-scroll-close-wrap">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r 1.png" id="btn-close-info-scroll" onclick="document.getElementById('info-scroll-overlay').style.display='none';" alt="Bezárás" title="Bezárás">
     </div>
   </div>
 </div>

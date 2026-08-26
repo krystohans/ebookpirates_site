@@ -1561,10 +1561,13 @@ window.renderCurrentMonolog = function () {
 
     window.monologState.hasSeen[monologIdx] = true;
 
-    if (monologIdx === 'controls') {
+    const nameplate = container.querySelector('.zozo-nameplate-std');
+    if (monologIdx === 'controls' || monologIdx === 'wind') {
       container.classList.add('controls-popup-mode');
+      if (nameplate) nameplate.style.display = 'none';
     } else {
       container.classList.remove('controls-popup-mode');
+      if (nameplate) nameplate.style.display = 'block';
     }
 
     const textEl = document.getElementById('ingame-dialogue-text');

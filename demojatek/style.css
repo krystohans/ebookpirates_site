@@ -370,6 +370,12 @@ canvas {
   font-size: var(--ctrl-p-font-size) !important;
 }
 
+#ingame-popup-toast .zozo-nameplate-std,
+#ingame-popup-toast.controls-popup-mode .zozo-nameplate-std,
+#zozo-ingame-monolog-container.controls-popup-mode .zozo-nameplate-std {
+  display: none !important;
+}
+
 /* ─── ZÁRÓ PANELEK KERET OSZTÁLY (FA PANELEK) ─── */
 .zozo-monolog-box-std {
   background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;

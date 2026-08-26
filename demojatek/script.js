@@ -722,20 +722,29 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
     if (child.isMesh) {
       child.userData = child.userData || {};
-      if (isRock) {
-        // Sziklák és zátonyok: MINDIG rock (zátonyra futás, crash) bárhol is vannak a térképen!
+      const ownName = (child.name || "").toLowerCase();
+      const ownIsBeach = ownName.includes("beach") || ownName.includes("part") || ownName.includes("sand") || ownName.includes("shore") || ownName.includes("coast") || ownName.includes("island") || ownName.includes("terrain") || ownName.includes("ground") || ownName.includes("land") || ownName.includes("hill") || ownName.includes("dune") || ownName.includes("grass") || ownName.includes("dirt") || ownName.includes("mud") || ownName.includes("path");
+      const ownIsRock = ownName.includes("rock") || ownName.includes("stone") || ownName.includes("cliff") || ownName.includes("reef");
+
+      if (ownIsBeach) {
+        // Ha a mesh saját neve part, homok, partvonal: MINDIG beach (partrafutás), a szülő csoport neve nem teheti sziklává!
+        child.userData.obstacleType = 'beach';
+        borderMeshes.push(child);
+      } else if (ownIsRock) {
+        // Ha a mesh saját neve szikla, kő, zátony: MINDIG rock (zátonyra futás, crash)
         child.userData.obstacleType = 'rock';
         borderMeshes.push(child);
       } else if (isBeach) {
-        // Lapos partszakaszok, homokdombok, szigeti talaj: MINDIG beach (partrafutás) bárhol is vannak!
         child.userData.obstacleType = 'beach';
+        borderMeshes.push(child);
+      } else if (isRock) {
+        child.userData.obstacleType = 'rock';
         borderMeshes.push(child);
       } else if (isWall) {
         child.visible = false;
         child.userData.obstacleType = 'out_of_range';
         borderMeshes.push(child);
       } else {
-        // Alapértelmezett szigeti talaj -> Part (beach)
         child.userData.obstacleType = 'beach';
         borderMeshes.push(child);
       }
@@ -744,7 +753,9 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
   // Véglegesített és felhasználói egyedi part/szikla felülbírálások automatikus érvényesítése
   const PERMANENT_TERRAIN_OVERRIDES = {
-    "SM_Env_Beach_107_(3)_2": "beach"
+    "SM_Env_Beach_107_(3)_2": "beach",
+    "Beach_107": "beach",
+    "SM_Env_Beach_107": "beach"
   };
 
   try {
@@ -752,10 +763,15 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     const allOverrides = Object.assign({}, PERMANENT_TERRAIN_OVERRIDES, localOverrides);
     if (Object.keys(allOverrides).length > 0) {
       fullTrack.traverse((child) => {
-        if (child.isMesh && allOverrides[child.name]) {
-          child.userData = child.userData || {};
-          child.userData.obstacleType = allOverrides[child.name];
-          if (!borderMeshes.includes(child)) borderMeshes.push(child);
+        if (child.isMesh) {
+          for (const key in allOverrides) {
+            if (child.name === key || (key.length > 5 && child.name.includes(key))) {
+              child.userData = child.userData || {};
+              child.userData.obstacleType = allOverrides[key];
+              if (!borderMeshes.includes(child)) borderMeshes.push(child);
+              break;
+            }
+          }
         }
       });
     }
@@ -2659,7 +2675,7 @@ function frame() {
 
   let collisionDetected = false;
   let hitHeight = 0;
-  let hitType = 'rock';
+  let hitType = null;
 
   // 1. Raycast whiskers - TÉRBELI GYORSÍTÁSSAL (Lag megszüntetése)
   const isMoving = Math.abs(mv) > 0.01 || Math.abs(tr) > 0.01;
@@ -2693,14 +2709,19 @@ function frame() {
         collisionDetected = true;
         lItem.mat.color.setHex(0xff2200);
         const hitObj = intersects[0].object;
-        if (hitObj.userData && hitObj.userData.obstacleType) {
-          hitType = hitObj.userData.obstacleType;
+        let detected = (hitObj.userData && hitObj.userData.obstacleType) || 'beach';
+        const hitName = (hitObj.name || '').toLowerCase();
+        if (hitName.includes('beach') || hitName.includes('sand') || hitName.includes('shore') || hitName.includes('part') || hitName.includes('terrain')) {
+          detected = 'beach';
         }
+        hitType = detected;
       } else {
         lItem.mat.color.setHex(0x00ffcc);
       }
     });
   }
+
+  if (!hitType) hitType = 'beach';
 
   window._lastHitType = window._lastHitType || null;
 

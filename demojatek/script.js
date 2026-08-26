@@ -41,25 +41,6 @@ async function loadDialogues() {
 }
 loadDialogues();
 
-let coordDiv = document.getElementById('tb-coords');
-if (!coordDiv) {
-  coordDiv = document.createElement('div');
-  coordDiv.id = 'tb-coords';
-  coordDiv.style.position = 'absolute';
-  coordDiv.style.top = '12px';
-  coordDiv.style.left = '15px';
-  coordDiv.style.zIndex = '99999';
-  coordDiv.style.background = 'rgba(0,0,0,0.65)';
-  coordDiv.style.color = '#00ffcc';
-  coordDiv.style.padding = '6px 12px';
-  coordDiv.style.fontSize = '14px';
-  coordDiv.style.fontFamily = 'monospace';
-  coordDiv.style.borderRadius = '4px';
-  coordDiv.style.border = '1px solid #00ffcc';
-  coordDiv.innerText = 'X: 0.0, Z: 0.0';
-  document.body.appendChild(coordDiv);
-}
-
 async function loadTopBarModule() {
   try {
     const res = await fetch('topbar.html?t=' + Date.now());

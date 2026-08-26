@@ -711,7 +711,7 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
       if (cName.includes("rock") || cName.includes("stone") || cName.includes("cliff") || cName.includes("reef")) {
         isRock = true;
       }
-      if (cName.includes("beach") || cName.includes("part") || cName.includes("sand") || cName.includes("shore") || cName.includes("coast")) {
+      if (cName.includes("beach") || cName.includes("part") || cName.includes("sand") || cName.includes("shore") || cName.includes("coast") || cName.includes("island") || cName.includes("terrain") || cName.includes("ground") || cName.includes("land") || cName.includes("hill") || cName.includes("dune") || cName.includes("grass") || cName.includes("dirt") || cName.includes("mud") || cName.includes("path")) {
         isBeach = true;
       }
       curr = curr.parent;
@@ -719,19 +719,41 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
     if (child.isMesh) {
       child.userData = child.userData || {};
-      if (isBeach && !isRock) {
-        child.userData.obstacleType = 'beach';
-        borderMeshes.push(child);
-      } else if (isRock) {
+      if (isRock) {
+        // Sziklák és zátonyok: MINDIG rock (zátonyra futás, crash) bárhol is vannak a térképen!
         child.userData.obstacleType = 'rock';
+        borderMeshes.push(child);
+      } else if (isBeach) {
+        // Lapos partszakaszok, homokdombok, szigeti talaj: MINDIG beach (partrafutás) bárhol is vannak!
+        child.userData.obstacleType = 'beach';
         borderMeshes.push(child);
       } else if (isWall) {
         child.visible = false;
         child.userData.obstacleType = 'out_of_range';
         borderMeshes.push(child);
+      } else {
+        // Alapértelmezett szigeti talaj -> Part (beach)
+        child.userData.obstacleType = 'beach';
+        borderMeshes.push(child);
       }
     }
   });
+
+  // Felhasználói egyedi part/szikla felülbírálások automatikus érvényesítése
+  try {
+    const customOverrides = JSON.parse(localStorage.getItem('ebp_custom_terrain_overrides') || '{}');
+    if (Object.keys(customOverrides).length > 0) {
+      fullTrack.traverse((child) => {
+        if (child.isMesh && customOverrides[child.name]) {
+          child.userData = child.userData || {};
+          child.userData.obstacleType = customOverrides[child.name];
+          if (!borderMeshes.includes(child)) borderMeshes.push(child);
+        }
+      });
+    }
+  } catch (e) {
+    console.warn("Egyedi felülbírálások betöltési figyelmeztetés:", e);
+  }
 
   // Keresünk két sziklát a lámpás környékén (18.5, 9.7, -60.0)
   let targetRock = null;
@@ -2665,14 +2687,6 @@ function frame() {
         const hitObj = intersects[0].object;
         if (hitObj.userData && hitObj.userData.obstacleType) {
           hitType = hitObj.userData.obstacleType;
-        }
-
-        // Móló 120 méteres körzetében lévő lapos/homokos partszakaszok Partnak minősülnek, nem okoznak zátonyra futást:
-        if (hitType === 'rock' && window.homePos) {
-          const distToHome = Math.hypot(intersects[0].point.x - window.homePos.x, intersects[0].point.z - window.homePos.z);
-          if (distToHome < 120.0) {
-            hitType = 'beach';
-          }
         }
       } else {
         lItem.mat.color.setHex(0x00ffcc);

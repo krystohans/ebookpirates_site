@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Briskb';
-  src: url('assets/fonts/Briskb.otf') format('opentype');
+  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
 }
 
 * {
@@ -71,7 +71,7 @@ canvas {
 
 @font-face {
   font-family: 'Briskb';
-  src: url('assets/fonts/Briskb.otf') format('opentype');
+  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
   font-weight: bold;
 }
 
@@ -119,7 +119,7 @@ canvas {
   font-weight: bold;
   cursor: pointer;
   user-select: none;
-  background: url('assets/images/Zozo_monolog_window_2.png') no-repeat center / 100% 100%;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100%;
   filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85));
   display: flex;
   flex-direction: column;
@@ -291,7 +291,7 @@ canvas {
   font-weight: bold;
   cursor: pointer;
   user-select: none;
-  background: url('assets/images/Zozo_monolog_window_2.png') no-repeat center / 100% 100%;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100%;
   filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85));
   display: flex;
   flex-direction: column;
@@ -372,7 +372,7 @@ canvas {
 
 /* ─── ZÁRÓ PANELEK KERET OSZTÁLY (FA PANELEK) ─── */
 .zozo-monolog-box-std {
-  background: url('assets/images/Zozo_monolog_window_2.png') no-repeat center / 100% 100% !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
   filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85));
   color: #000000;
   font-family: 'Briskb', 'Courier New', monospace;

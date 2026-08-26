@@ -164,51 +164,29 @@ canvas {
 
 /* Lépésenkénti Pozíciók */
 .welcome-mode #zozo-character-container { left: auto !important; height: 57vh; transform: translateX(-35px); }
-.welcome-mode #zozo-dialogue-box { 
-  left: 50% !important;
-  top: 77.5% !important;
-  right: auto !important;
-  bottom: auto !important;
-  transform: translateX(-50%) !important;
-  width: 1000px;
-  min-height: 175px;
-  padding: 52px 112px 32px 112px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+.welcome-mode #zozo-dialogue-box { min-height: 155px; }
 
 /* ─── 1. WELCOME BOX (STEP-0) ─── */
 .welcome-mode.step-0 #zozo-dialogue-box {
-  left: 10% !important;
-  top: 77.5% !important;
   right: auto !important;
   bottom: auto !important;
-  transform: none !important;
-  width: 665px !important;
-  min-height: 150px !important;
-  padding: 49px 112px 45px 112px !important;
+  left: 10%;
+  top: 77.5%;
+  width: 1000px;
+  min-height: 175px;
+  padding: 40px 112px 30px 112px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.welcome-mode.step-0 #zozo-nameplate {
-  left: 260px !important;
-  top: -5px !important;
-  transform: scale(1.36, 0.81) rotate(0deg) !important;
-  transform-origin: left top !important;
-}
-.welcome-mode.step-0 #zozo-nameplate-img { width: 92px !important; }
 .welcome-mode.step-0 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-0 #zozo-dialogue-text {
-  font-size: 25px !important;
-  line-height: 1.15 !important;
-  text-align: center !important;
+  font-size: 28px;
+  line-height: 1.25;
+  text-align: center;
   width: 100%;
   min-height: 0;
-  transform: translate(0px, 0px) !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -216,34 +194,26 @@ canvas {
 
 /* ─── 2. WELCOME BOX (STEP-1) ─── */
 .welcome-mode.step-1 #zozo-dialogue-box {
-  left: 10% !important;
-  top: 77.5% !important;
   right: auto !important;
   bottom: auto !important;
-  transform: none !important;
-  width: 765px !important;
-  min-height: 150px !important;
-  padding: 49px 112px 45px 112px !important;
+  left: 10%;
+  top: 77.5%;
+  width: 1000px;
+  min-height: 175px;
+  padding: 40px 112px 30px 112px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.welcome-mode.step-1 #zozo-nameplate {
-  left: 300px !important;
-  top: -5px !important;
-  transform: scale(1.36, 0.81) rotate(0deg) !important;
-  transform-origin: left top !important;
-}
-.welcome-mode.step-1 #zozo-nameplate-img { width: 102px !important; }
 .welcome-mode.step-1 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-1 #zozo-dialogue-text {
-  font-size: 25px !important;
-  line-height: 1.15 !important;
-  text-align: center !important;
+  font-size: 24px;
+  line-height: 1.25;
+  text-align: center;
   width: 100%;
   min-height: 0;
-  transform: translate(0px, 0px) !important;
+  transform: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -251,34 +221,26 @@ canvas {
 
 /* ─── 3. WELCOME BOX (STEP-2) ─── */
 .welcome-mode.step-2 #zozo-dialogue-box {
-  left: 10% !important;
-  top: 71% !important;
   right: auto !important;
   bottom: auto !important;
-  transform: none !important;
-  width: 860px !important;
-  min-height: 320px !important;
-  padding: 49px 112px 45px 112px !important;
+  left: 10%;
+  top: 77.5%;
+  width: 1000px;
+  min-height: 175px;
+  padding: 35px 112px 30px 112px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.welcome-mode.step-2 #zozo-nameplate {
-  left: 350px !important;
-  top: 16px !important;
-  transform: scale(1.36, 0.81) rotate(0deg) !important;
-  transform-origin: left top !important;
-}
-.welcome-mode.step-2 #zozo-nameplate-img { width: 96px !important; }
 .welcome-mode.step-2 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-2 #zozo-dialogue-text {
-  font-size: 25px !important;
-  line-height: 1.15 !important;
-  text-align: center !important;
+  font-size: 24px;
+  line-height: 1.25;
+  text-align: center;
   width: 100%;
   min-height: 0;
-  transform: translate(0px, 0px) !important;
+  transform: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -286,34 +248,26 @@ canvas {
 
 /* ─── 4. WELCOME BOX (STEP-3) ─── */
 .welcome-mode.step-3 #zozo-dialogue-box {
-  left: 10% !important;
-  top: 77.5% !important;
   right: auto !important;
   bottom: auto !important;
-  transform: none !important;
-  width: 860px !important;
-  min-height: 155px !important;
-  padding: 28px 112px 45px 112px !important;
+  left: 10%;
+  top: 77.5%;
+  width: 1000px;
+  min-height: 175px;
+  padding: 35px 112px 30px 112px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.welcome-mode.step-3 #zozo-nameplate {
-  left: 350px !important;
-  top: -11px !important;
-  transform: scale(1.36, 0.81) rotate(0deg) !important;
-  transform-origin: left top !important;
-}
-.welcome-mode.step-3 #zozo-nameplate-img { width: 96px !important; }
 .welcome-mode.step-3 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-3 #zozo-dialogue-text {
-  font-size: 25px !important;
-  line-height: 1.15 !important;
-  text-align: center !important;
+  font-size: 24px;
+  line-height: 1.25;
+  text-align: center;
   width: 100%;
   min-height: 0;
-  transform: translate(0px, 0px) !important;
+  transform: none;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -27,7 +27,7 @@ window.eogMonologues = {};
 
 async function loadDialogues() {
   try {
-    const res = await fetch('dialogues.json');
+    const res = await fetch('dialogues.json?t=' + Date.now());
     if (res.ok) {
       const data = await res.json();
       window.zozoWelcomeTexts = data.welcomeTexts || [];

@@ -104,7 +104,7 @@ window.checkStartupAuth = function() {
       const btnExit = document.getElementById('btn-guest-exit');
       if (btnExit) {
         btnExit.onclick = function() {
-          window.location.href = 'MainMenuTutorial.html';
+          window.location.href = 'https://krystohans.github.io/ebookpirates_site/';
         };
       }
     }

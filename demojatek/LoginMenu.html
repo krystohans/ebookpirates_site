@@ -287,33 +287,76 @@
       }
     }
 
-    function doLogin() {
-      // Később itt kötjük be a weblapot
-      alert("A bejelentkezés sikerült!");
-      // Beállítjuk a belépett státuszt
-      sessionStorage.setItem('ebook_is_logged_in', 'true');
-      
-      // Ha az EoG Auth Promptból érkezett -> visszairányítjuk a tutorialba!
-      const returnToEoG = sessionStorage.getItem('eogReturnToAuthPrompt') || document.cookie.includes('eogReturnToAuthPrompt=true');
-      if (returnToEoG) {
-        window.location.href = 'tutorial_fixed.html';
-      } else {
-        window.location.href = 'MainMenuTutorial.html';
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
+
+    async function doLogin() {
+      const usernameInput = document.getElementById('login-username');
+      const passwordInput = document.getElementById('login-password');
+      const name = usernameInput ? usernameInput.value.trim() : '';
+      const jelszo = passwordInput ? passwordInput.value : '';
+
+      if (!name || !jelszo) {
+        alert("Kérlek add meg a Kalózneved és a jelszavad!");
+        return;
+      }
+
+      const loginButtons = document.querySelectorAll('.login-btn');
+      loginButtons.forEach(btn => btn.disabled = true);
+      const submitBtn = loginButtons[0];
+      if (submitBtn) submitBtn.innerText = 'Beszállás...';
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: 'performLogin',
+            data: [{ name: name, jelszo: jelszo }],
+            token: null
+          })
+        });
+
+        const text = await response.text();
+        let data = null;
+        try {
+          data = JSON.parse(text);
+        } catch(e) {
+          const match = text.match(/\{[\s\S]*\}/);
+          if (match) data = JSON.parse(match[0]);
+        }
+
+        if (data && data.success && data.token) {
+          // Sikeres hitelesítés!
+          localStorage.setItem('ebookPiratesToken', data.token);
+          const kalozNev = (data.user && data.user.name) ? data.user.name : name;
+          localStorage.setItem('ebook_pirates_username', kalozNev);
+          if (data.user && data.user.email) {
+            localStorage.setItem('ebook_pirates_user_email', data.user.email);
+          }
+          sessionStorage.setItem('ebook_is_logged_in', 'true');
+          sessionStorage.setItem('ebookPiratesLoginName', kalozNev);
+
+          alert("Sikeres beszállás, " + kalozNev + " kapitány!");
+          window.location.href = 'tutorial_fixed.html';
+        } else {
+          const errMsg = (data && (data.message || data.error)) ? (data.message || data.error) : "Hibás Kalóznév vagy jelszó!";
+          alert(errMsg);
+        }
+      } catch(err) {
+        console.error("Login hiba:", err);
+        alert("Hálózati hiba a bejelentkezés során: " + err.message);
+      } finally {
+        loginButtons.forEach(btn => btn.disabled = false);
+        if (submitBtn) submitBtn.innerText = 'Beszállás';
       }
     }
 
     function doRegister() {
-      alert("A regisztrációs felület hamarosan elérhető!");
+      window.open('https://krystohans.github.io/ebookpirates_site/GitHubSite/regisztracio/', '_blank');
     }
 
     function cancelLogin() {
-      // Mégse esetén is visszalépteti a tutorialba, ha onnan jött!
-      const returnToEoG = sessionStorage.getItem('eogReturnToAuthPrompt') || document.cookie.includes('eogReturnToAuthPrompt=true');
-      if (returnToEoG) {
-        window.location.href = 'tutorial_fixed.html';
-      } else {
-        window.location.href = 'MainMenuTutorial.html';
-      }
+      window.location.href = 'https://krystohans.github.io/ebookpirates_site/';
     }
   </script>
 </head>

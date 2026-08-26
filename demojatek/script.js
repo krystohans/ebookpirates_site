@@ -42,12 +42,25 @@ async function loadDialogues() {
 loadDialogues();
 
 window.getLoggedInUserData = function() {
-  let token = localStorage.getItem('ebookPiratesToken');
+  const token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken');
+  
+  // Ha NINCS aktív token -> szigorúan NEM belépett!
+  if (!token || token.trim() === '') {
+    try {
+      localStorage.removeItem('ebook_pirates_username');
+      localStorage.removeItem('ebook_pirates_user_email');
+      sessionStorage.removeItem('ebookPiratesLoginName');
+      sessionStorage.removeItem('ebook_is_logged_in');
+    } catch(e) {}
+    return { isLoggedIn: false, name: '', email: '' };
+  }
+
+  // Ha VAN érvényes token:
   let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName');
   let userEmail = localStorage.getItem('ebook_pirates_user_email') || '';
 
-  // Ha iframe-ben fut, a szülő ablak változóiból is kiolvassuk
-  if ((!userName || !token) && window.parent && window.parent !== window) {
+  // Ha iframe-ben fut, a szülő ablakból is megerősíthetjük
+  if (!userName && window.parent && window.parent !== window) {
     try {
       if (window.parent.currentUserEmail) userEmail = window.parent.currentUserEmail;
       const pTitle = window.parent.document.querySelector('.header-title');
@@ -57,19 +70,15 @@ window.getLoggedInUserData = function() {
     } catch(e) {}
   }
 
-  // Ha van token vagy név vagy email -> Belépettnek minősül
-  if (token || (userName && userName.length > 0) || (userEmail && userEmail.length > 0)) {
-    if (!userName && userEmail) {
-      userName = userEmail.split('@')[0];
-    }
-    return {
-      isLoggedIn: true,
-      name: userName || 'Kalóz',
-      email: userEmail || ''
-    };
+  if (!userName && userEmail) {
+    userName = userEmail.split('@')[0];
   }
 
-  return { isLoggedIn: false, name: '', email: '' };
+  return {
+    isLoggedIn: true,
+    name: userName || 'Kalóz',
+    email: userEmail || ''
+  };
 };
 
 window.checkStartupAuth = function() {

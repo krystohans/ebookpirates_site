@@ -475,6 +475,12 @@ function checkSession() {
 function logout() {
     sessionStorage.removeItem('ebookPiratesToken');
     localStorage.removeItem('ebookPiratesToken');
+    localStorage.removeItem('ebook_pirates_username');
+    localStorage.removeItem('ebook_pirates_user_email');
+    sessionStorage.removeItem('ebookPiratesLoginName');
+    sessionStorage.removeItem('ebookPiratesLoginPass');
+    sessionStorage.removeItem('ebook_is_logged_in');
+
     document.getElementById('app-view').style.display = 'none';
     document.getElementById('login-view').style.display = 'block';
 

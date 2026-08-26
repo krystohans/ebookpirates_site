@@ -62,7 +62,7 @@ if (!coordDiv) {
 
 async function loadTopBarModule() {
   try {
-    const res = await fetch('topbar.html');
+    const res = await fetch('topbar.html?t=' + Date.now());
     if (res.ok) {
       const html = await res.text();
       const container = document.getElementById('topbar-container');

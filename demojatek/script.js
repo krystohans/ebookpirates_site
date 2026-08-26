@@ -2082,8 +2082,6 @@ function frame() {
               if (typeof window.changeWindForNextMembrane === 'function') window.changeWindForNextMembrane();
               // Garantáljuk, hogy mindenképp elindul a cutscene, ne ragadjon be "pending" állapotba!
               window.pendingAirshipAscent = false;
-              window.airshipAscentStarted = true;, hogy mindenképp elindul a cutscene, ne ragadjon be "pending" állapotba!
-              window.pendingAirshipAscent = false;
               window.airshipAscentStarted = true;
               if (typeof window.playSoundEffect === 'function') window.playSoundEffect(window.airshipAscentAudio);
               window.airshipAscentDone = false;

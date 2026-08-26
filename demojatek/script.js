@@ -742,14 +742,19 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     }
   });
 
-  // Felhasználói egyedi part/szikla felülbírálások automatikus érvényesítése
+  // Véglegesített és felhasználói egyedi part/szikla felülbírálások automatikus érvényesítése
+  const PERMANENT_TERRAIN_OVERRIDES = {
+    "SM_Env_Beach_107_(3)_2": "beach"
+  };
+
   try {
-    const customOverrides = JSON.parse(localStorage.getItem('ebp_custom_terrain_overrides') || '{}');
-    if (Object.keys(customOverrides).length > 0) {
+    const localOverrides = JSON.parse(localStorage.getItem('ebp_custom_terrain_overrides') || '{}');
+    const allOverrides = Object.assign({}, PERMANENT_TERRAIN_OVERRIDES, localOverrides);
+    if (Object.keys(allOverrides).length > 0) {
       fullTrack.traverse((child) => {
-        if (child.isMesh && customOverrides[child.name]) {
+        if (child.isMesh && allOverrides[child.name]) {
           child.userData = child.userData || {};
-          child.userData.obstacleType = customOverrides[child.name];
+          child.userData.obstacleType = allOverrides[child.name];
           if (!borderMeshes.includes(child)) borderMeshes.push(child);
         }
       });

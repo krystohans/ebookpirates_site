@@ -403,6 +403,12 @@ function login() {
 function initializeApp(user) {
     window.inGame = user.inGame === true;
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
+    try {
+        localStorage.setItem('ebook_pirates_username', user.name || '');
+        localStorage.setItem('ebook_pirates_user_email', user.email || '');
+        sessionStorage.setItem('ebook_is_logged_in', 'true');
+        sessionStorage.setItem('ebookPiratesLoginName', user.name || '');
+    } catch(e) {}
     document.querySelector('.header-title').innerText = user.name;
     ensureCreditDisplayIsPresent();
 

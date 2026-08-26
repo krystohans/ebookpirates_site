@@ -41,6 +41,68 @@ async function loadDialogues() {
 }
 loadDialogues();
 
+window.getLoggedInUserData = function() {
+  let token = localStorage.getItem('ebookPiratesToken');
+  let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName');
+  let userEmail = localStorage.getItem('ebook_pirates_user_email') || '';
+
+  // Ha iframe-ben fut, a szülő ablak változóiból is kiolvassuk
+  if ((!userName || !token) && window.parent && window.parent !== window) {
+    try {
+      if (window.parent.currentUserEmail) userEmail = window.parent.currentUserEmail;
+      const pTitle = window.parent.document.querySelector('.header-title');
+      if (pTitle && pTitle.innerText && pTitle.innerText !== 'Anonymous' && pTitle.innerText !== 'Anonymus') {
+        userName = pTitle.innerText.trim();
+      }
+    } catch(e) {}
+  }
+
+  // Ha van token vagy név vagy email -> Belépettnek minősül
+  if (token || (userName && userName.length > 0) || (userEmail && userEmail.length > 0)) {
+    if (!userName && userEmail) {
+      userName = userEmail.split('@')[0];
+    }
+    return {
+      isLoggedIn: true,
+      name: userName || 'Kalóz',
+      email: userEmail || ''
+    };
+  }
+
+  return { isLoggedIn: false, name: '', email: '' };
+};
+
+window.checkStartupAuth = function() {
+  const user = window.getLoggedInUserData();
+  if (!user.isLoggedIn) {
+    console.warn("🔒 Nem regisztrált látogató: Tutorial indítás letiltva.");
+    const guestOverlay = document.getElementById('guest-auth-required-overlay');
+    if (guestOverlay) {
+      guestOverlay.style.display = 'flex';
+
+      const btnLogin = document.getElementById('btn-guest-login');
+      if (btnLogin) {
+        btnLogin.onclick = function() {
+          window.location.href = 'LoginMenu.html';
+        };
+      }
+      const btnReg = document.getElementById('btn-guest-register');
+      if (btnReg) {
+        btnReg.onclick = function() {
+          window.open('https://krystohans.github.io/ebookpirates_site/GitHubSite/regisztracio/', '_blank');
+        };
+      }
+      const btnExit = document.getElementById('btn-guest-exit');
+      if (btnExit) {
+        btnExit.onclick = function() {
+          window.location.href = 'MainMenuTutorial.html';
+        };
+      }
+    }
+    window.isCutscenePlaying = true; // Játékvezérlés zárolása
+  }
+};
+
 async function loadTopBarModule() {
   try {
     const res = await fetch('topbar.html?t=' + Date.now());
@@ -50,11 +112,25 @@ async function loadTopBarModule() {
       if (container) {
         container.innerHTML = html;
         setupTopBarEvents();
+
+        // Kalóznév azonnali kiírása a belépési tokenből!
+        const user = window.getLoggedInUserData();
+        const tbPlayerName = document.getElementById('tb-player-name');
+        if (tbPlayerName) {
+          tbPlayerName.innerText = user.isLoggedIn ? user.name : 'Anonymus';
+        }
       }
     }
   } catch (e) {
     console.error('Hiba a TopBar betöltésekor:', e);
   }
+}
+
+// Induláskori jogosultság ellenőrzés
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', window.checkStartupAuth);
+} else {
+  window.checkStartupAuth();
 }
 
 function setupTopBarEvents() {
@@ -3035,20 +3111,11 @@ window.showEogConfirm2 = function() {
 
   document.getElementById('eog-btn-noidea').onclick = function() {
     c2.style.display = 'none';
-    let baseUser = 'Anon';
-    if (window.currentUser && window.currentUser.email) {
-      baseUser = window.currentUser.email.split('@')[0];
-    }
+    const user = window.getLoggedInUserData();
+    let baseUser = user.name || 'Kaloz';
     const generatedName = baseUser.substring(0, 4) + '_boat01';
     window.eogBoatName = generatedName;
-    
-    // --- FELTÉTELES ELLENŐRZÉS NÉVADÁSKOR ("Nincs ötletem") ---
-    if (window.isLoggedIn) {
-      window.showEogSummaryPanel();
-    } else {
-      // Csónak-specifikus Auth Prompt felugró ablak
-      window.showEogAuthPrompt('Csak akkor tarthatod meg a csónakot,\nha belépsz vagy regisztrálsz.');
-    }
+    window.showEogSummaryPanel();
   };
 
   document.getElementById('eog-btn-yesidea').onclick = function() {
@@ -3058,24 +3125,7 @@ window.showEogConfirm2 = function() {
 };
 
 window.proceedEogAuthCheck = function() {
-  // Ellenőrizzük, hogy a játékos be van-e lépve
-  if (window.currentUser || (window.gameUserEmail && window.gameUserEmail.length > 0)) {
-    window.showEogSummaryPanel();
-  } else {
-    // Ha nincs belépve, felugrik a Belépés / Regisztráció
-    if (typeof window.showLoginOverlay === 'function') {
-      window.showLoginOverlay(function onLoginSuccess() {
-        if (window.eogBoatName && window.eogBoatName.length > 0) {
-          window.showEogSummaryPanel();
-        } else {
-          window.startEogBoatNamingRoutine();
-        }
-      });
-    } else {
-      // Fallback ha nincs login rendszer
-      window.showEogSummaryPanel();
-    }
-  }
+  window.showEogSummaryPanel();
 };
 
 // Írógép effektus BriskB betűtípussal

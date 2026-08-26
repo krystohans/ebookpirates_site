@@ -1850,8 +1850,7 @@ function frame() {
 
   const dt = window.isCutscenePlaying ? 0 : Math.min(rawDt, 0.05);
   const cutsceneDt = Math.min(rawDt, 0.05);
-  const t = clock.getElapsedTime();
-
+  const coordDiv = document.getElementById('tb-coords') || document.getElementById('debug-coords');
   if (coordDiv && boat && boat.position && typeof boat.position.x === 'number') {
     coordDiv.innerText = `X: ${boat.position.x.toFixed(1)}, Z: ${boat.position.z.toFixed(1)}`;
   }

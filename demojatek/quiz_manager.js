@@ -44,7 +44,7 @@ class QuizManager {
 
   async loadUI() {
     try {
-      const res = await fetch('quiz_panel.html');
+      const res = await fetch('quiz_panel.html?t=' + Date.now());
       if (res.ok) {
         const html = await res.text();
         const div = document.createElement('div');
@@ -156,7 +156,7 @@ class QuizManager {
 
     if (this.currentMode === 'TUTORZEP') {
       if (title) title.style.display = 'none';
-      panel.style.background = "url('airship_quiz_panel_clean.png') no-repeat center / 100% 100%";
+      panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center / 100% 100%";
 
       const cfg = window.QuizConfig.TUTORZEP;
       panel.style.width = cfg.panelWidth + "px";
@@ -178,7 +178,7 @@ class QuizManager {
       qText.style.webkitTextStroke = "0px";
     } else {
       if (title) title.style.display = 'none';
-      panel.style.background = "url('Quiz_window_new_2-r.png') no-repeat center / 100% 100%";
+      panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Quiz_window_new_2-r.png') no-repeat center / 100% 100%";
       const cfg = window.QuizConfig.DEFAULT;
       panel.style.width = cfg.panelWidth + "px";
       panel.style.height = cfg.panelHeight ? (cfg.panelHeight + "px") : "auto";

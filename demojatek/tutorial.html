@@ -1674,25 +1674,14 @@
             window.foundZeppelin.position.y += dt * 15.0; 
           }
           
-          // 2. 1 másodperc után elkezd finoman ráfordulni a fix Célpontra
-          if (window.airshipTimer > 1.0) {
-            if (typeof window.airshipTargetRotY === 'undefined') {
-               // A kamera irányába egy konzisztens 180 fokos (PI) fordulatot tesz.
-               // Mivel a modell fordítva van exportálva, ez pont beállítja a vizuális orrát a cél felé.
-               // Mínusz PI irányba fordítva a kamera felőli oldalon fog megpördülni!
-               window.airshipTargetRotY = window.foundZeppelin.rotation.y - Math.PI;
-            }
-            // Fix matematikai célpont (nincs ugrálás!)
-            window.foundZeppelin.rotation.y += (window.airshipTargetRotY - window.foundZeppelin.rotation.y) * dt * 1.5;
-          }
-          
-          // 3. 2.5 másodperc után brutálisan kilő a fix Célpont felé
+          // 2. és 3. Finom ráfordulás és repülés a célpont felé a modell tengelyéhez igazítva (+45 fokos korrekcióval)
+          const flyTarget = new THREE.Vector3(20, 50, -100);
+          const dir = new THREE.Vector3().subVectors(flyTarget, window.foundZeppelin.position).normalize();
+          const targetRotY = Math.atan2(dir.x, dir.z) - Math.PI;
+          window.foundZeppelin.rotation.y += (targetRotY - window.foundZeppelin.rotation.y) * dt * 1.5;
+
           if (window.airshipTimer > 2.5) {
             window.airshipSpeed += dt * 35.0; 
-            
-            // Lokális translateZ helyett világkoordináta alapú, TÉVEDHETETLEN mozgás:
-            const flyTarget = new THREE.Vector3(20, 50, -100);
-            const dir = new THREE.Vector3().subVectors(flyTarget, window.foundZeppelin.position).normalize();
             window.foundZeppelin.position.add(dir.multiplyScalar(dt * window.airshipSpeed));
           }
         }

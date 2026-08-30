@@ -1177,14 +1177,32 @@ function runTutorialScript() {
                         });
                     }
                 } else if (event.data.action === 'tutorial_completed') {
-                    callBackend('markTutorialCompleted', ['3d_tutorial'], function(res) {
-                        console.log('Tutorial sikeresen teljesítve!', res);
+                    callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
+                        console.log('Tutorial befejezve válasz:', res);
                         if (panel) panel.style.display = 'none';
                         if (quiz) quiz.style.display = 'none';
                         if (nav) nav.style.display = 'block';
-                        var jumpBtn = document.getElementById('jump-to-save-btn');
-                        if (jumpBtn) jumpBtn.style.display = 'inline-block';
+
+                        if (res && res.alreadyCompleted) {
+                            var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
+                            if (typeof window.showPopUp === 'function') {
+                                window.showPopUp(veteranMsg, function() {
+                                    if (typeof loadPage === 'function') loadPage('kikoto_oldal');
+                                });
+                            } else {
+                                alert(veteranMsg);
+                                if (typeof loadPage === 'function') loadPage('kikoto_oldal');
+                            }
+                        } else {
+                            if (typeof loadPage === 'function') {
+                                loadPage('kikoto_oldal');
+                            }
+                        }
                     });
+                } else if (event.data.action === 'navigate_to_page') {
+                    if (typeof loadPage === 'function') {
+                        loadPage(event.data.page || 'kikoto_oldal');
+                    }
                 } else if (event.data.action === 'exit_tutorial') {
                     if (panel) panel.style.display = 'none';
                     if (nav) nav.style.display = 'block';

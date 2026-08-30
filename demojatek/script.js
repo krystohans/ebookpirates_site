@@ -307,7 +307,7 @@ window.ambSoundAudio.volume = 0.6 * window.soundVolMult;
 window.ambSoundAudio.muted = window.isSoundMuted;
 
 window.pickupSoundAudio = new Audio(window.getAssetUrl('assets/sounds/membrane_pickup.mp3'));
-window.pickupSoundAudio.volume = 0.8 * window.soundVolMult;
+window.pickupSoundAudio.volume = 0.6 * window.soundVolMult;
 
 window.windStartAudio = new Audio(window.getAssetUrl('assets/sounds/wind_start.mp3'));
 window.windStartAudio.volume = window.soundVolMult;
@@ -332,65 +332,10 @@ window.playSoundEffect = function (audioObj) {
   audioObj.play().catch(e => console.log('Audio play blocked:', e));
 };
 
-window.audioCtx = null;
-window.pickupFilterNode = null;
-window.pickupGainNode = null;
-window.pickupMediaSourceNode = null;
-
 window.playPickupSound = function () {
-  if (window.isSoundMuted) return;
-  if (window.pickupSoundAudio) {
-    if (!window.audioCtx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) {
-        window.audioCtx = new AudioCtx();
-        window.pickupMediaSourceNode = window.audioCtx.createMediaElementSource(window.pickupSoundAudio);
-
-        window.pickupFilterNode = window.audioCtx.createBiquadFilter();
-        window.pickupFilterNode.type = 'lowpass';
-        window.pickupFilterNode.frequency.setValueAtTime(1600, window.audioCtx.currentTime);
-        window.pickupFilterNode.Q.setValueAtTime(1.0, window.audioCtx.currentTime);
-
-        window.pickupGainNode = window.audioCtx.createGain();
-        window.pickupGainNode.gain.setValueAtTime(2.5, window.audioCtx.currentTime);
-
-        window.pickupMediaSourceNode.connect(window.pickupFilterNode);
-        window.pickupFilterNode.connect(window.pickupGainNode);
-        window.pickupGainNode.connect(window.audioCtx.destination);
-      }
-    }
-
-    if (window.audioCtx && window.audioCtx.state === 'suspended') {
-      window.audioCtx.resume();
-    }
-
-    if (window.bgMusicAudio) window.bgMusicAudio.volume = 0.05 * window.musicVolMult;
-    if (window.ambSoundAudio) window.ambSoundAudio.volume = 0.08 * window.soundVolMult;
-
-    window.pickupSoundAudio.currentTime = 0;
-    window.pickupSoundAudio.play().catch(e => console.log('Audio autoplay blocked:', e));
-
-    const restoreVolumes = () => {
-      if (window.bgMusicAudio) window.bgMusicAudio.volume = 0.5 * window.musicVolMult;
-      if (window.ambSoundAudio) window.ambSoundAudio.volume = 0.6 * window.soundVolMult;
-    };
-
-    const onTimeUpdate = () => {
-      if (window.pickupSoundAudio.currentTime >= 2.0) {
-        window.pickupSoundAudio.pause();
-        window.pickupSoundAudio.removeEventListener('timeupdate', onTimeUpdate);
-        restoreVolumes();
-      }
-    };
-
-    window.pickupSoundAudio.removeEventListener('timeupdate', onTimeUpdate);
-    window.pickupSoundAudio.addEventListener('timeupdate', onTimeUpdate);
-
-    window.pickupSoundAudio.onended = function () {
-      window.pickupSoundAudio.removeEventListener('timeupdate', onTimeUpdate);
-      restoreVolumes();
-    };
-  }
+  if (window.isSoundMuted || !window.pickupSoundAudio) return;
+  window.pickupSoundAudio.currentTime = 0;
+  window.pickupSoundAudio.play().catch(e => console.log('Audio play blocked:', e));
 };
 
 function tryStartAllAudio() {
@@ -593,17 +538,18 @@ window.homeRotY = boat.rotation.y;
 
 const laserGroup = new THREE.Group();
 laserGroup.position.set(0, 0.1, 1.5);
+laserGroup.visible = window.location.search.includes('debug=1');
 boat.add(laserGroup);
 
 const whiskers = [
-  { id: 'FORWARD', angle: 0, dist: 2.5 },
-  { id: 'FRONT_LEFT', angle: Math.PI / 4, dist: 1.8 },
-  { id: 'FRONT_RIGHT', angle: -Math.PI / 4, dist: 1.8 },
-  { id: 'SIDE_LEFT', angle: Math.PI / 2, dist: 1.2 },
-  { id: 'SIDE_RIGHT', angle: -Math.PI / 2, dist: 1.2 },
-  { id: 'BACK_LEFT', angle: 3 * Math.PI / 4, dist: 1.8 },
-  { id: 'BACK_RIGHT', angle: -3 * Math.PI / 4, dist: 1.8 },
-  { id: 'BACKWARD', angle: Math.PI, dist: 2.0 }
+  { id: 'FORWARD', angle: 0, dist: 5.5 },
+  { id: 'FRONT_LEFT', angle: Math.PI / 4, dist: 4.2 },
+  { id: 'FRONT_RIGHT', angle: -Math.PI / 4, dist: 4.2 },
+  { id: 'SIDE_LEFT', angle: Math.PI / 2, dist: 1.0 },
+  { id: 'SIDE_RIGHT', angle: -Math.PI / 2, dist: 1.0 },
+  { id: 'BACK_LEFT', angle: 3 * Math.PI / 4, dist: 2.2 },
+  { id: 'BACK_RIGHT', angle: -3 * Math.PI / 4, dist: 2.2 },
+  { id: 'BACKWARD', angle: Math.PI, dist: 2.5 }
 ];
 
 const laserLines = [];
@@ -647,7 +593,7 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
       if (child.material) {
         child.material.transparent = false;
         child.material.alphaTest = 0.5;
-        child.material.side = THREE.FrontSide;
+        child.material.side = THREE.DoubleSide;
 
         const isBlack = child.material.color && child.material.color.r < 0.1 && child.material.color.g < 0.1 && child.material.color.b < 0.1;
         if (isBlack || (child.name && child.name.toLowerCase().includes("airship"))) {
@@ -723,11 +669,16 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     if (child.isMesh) {
       child.userData = child.userData || {};
       const ownName = (child.name || "").toLowerCase();
+      const ownIsDock = ownName.includes("dock") || ownName.includes("pier") || ownName.includes("molo") || ownName.includes("móló") || ownName.includes("homepoint") || ownName.includes("shanty") || ownName.startsWith("sm_bld_");
       const ownIsBeach = ownName.includes("beach") || ownName.includes("part") || ownName.includes("sand") || ownName.includes("shore") || ownName.includes("coast") || ownName.includes("island") || ownName.includes("terrain") || ownName.includes("ground") || ownName.includes("land") || ownName.includes("hill") || ownName.includes("dune") || ownName.includes("grass") || ownName.includes("dirt") || ownName.includes("mud") || ownName.includes("path");
       const ownIsRock = ownName.includes("rock") || ownName.includes("stone") || ownName.includes("cliff") || ownName.includes("reef");
 
-      if (ownIsBeach) {
-        // Ha a mesh saját neve part, homok, partvonal: MINDIG beach (partrafutás), a szülő csoport neve nem teheti sziklává!
+      if (ownIsDock) {
+        // Móló / Dokk / Kikötő épületek: MINDIG homepoint (Bázis), nem part és nem szikla!
+        child.userData.obstacleType = 'homepoint';
+        borderMeshes.push(child);
+      } else if (ownIsBeach) {
+        // Ha a mesh saját neve part, homok, partvonal: MINDIG beach (partrafutás)
         child.userData.obstacleType = 'beach';
         borderMeshes.push(child);
       } else if (ownIsRock) {
@@ -877,7 +828,8 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
   if (foundZeppelin && homePos) {
     scene.add(foundZeppelin);
     foundZeppelin.position.set(-461, -3, 1350);
-    foundZeppelin.lookAt(homePos.x, -3, homePos.z);
+    const initDir = new THREE.Vector3().subVectors(homePos, foundZeppelin.position).normalize();
+    foundZeppelin.rotation.set(0, Math.atan2(initDir.x, initDir.z) - Math.PI, 0);
     foundZeppelin.scale.set(1, 1, 1);
     foundZeppelin.visible = true;
 
@@ -1268,24 +1220,8 @@ const EoG_POINT_C = { x: -384, z: 1233 };
 const EoG_CHEST_TRIGGER_DIST = 10;
 
 let hartyaTemplate = null;
-new GLTFLoader().load(window.getAssetUrl('models/hartya.glb'), function (gltf) {
-  hartyaTemplate = gltf.scene;
-  hartyaTemplate.scale.set(1.5, 1.5, 1.5);
-  hartyaTemplate.traverse(c => {
-    if (c.isMesh) {
-      c.material = new THREE.MeshBasicMaterial({
-        color: 0xffcc22,
-        transparent: true,
-        opacity: 0.40,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      });
-    }
-  });
-  if (typeof window.spawnZeroPointMembrane === 'function') {
-    window.spawnZeroPointMembrane();
-  }
-});
+window.membranePool = [];
+const MEMBRANE_POOL_SIZE = 25;
 
 function createMembraneMesh(x, y, z) {
   const group = new THREE.Group();
@@ -1309,7 +1245,8 @@ function createMembraneMesh(x, y, z) {
 
   group.userData = {
     isMembrane: true,
-    collected: false,
+    collected: true,
+    inUse: false,
     baseY: y,
     light: candleLight
   };
@@ -1317,34 +1254,63 @@ function createMembraneMesh(x, y, z) {
   return group;
 }
 
+window.initMembranePool = function () {
+  if (window.membranePool && window.membranePool.length >= MEMBRANE_POOL_SIZE) return;
+  window.membranePool = window.membranePool || [];
+
+  while (window.membranePool.length < MEMBRANE_POOL_SIZE) {
+    const m = createMembraneMesh(0, -999, 0);
+    m.visible = false;
+    if (m.userData.light) m.userData.light.intensity = 0;
+    scene.add(m);
+    window.membranePool.push(m);
+  }
+};
+
+function getPooledMembrane() {
+  window.initMembranePool();
+  for (let i = 0; i < window.membranePool.length; i++) {
+    const m = window.membranePool[i];
+    if (!m.userData.inUse) {
+      return m;
+    }
+  }
+  const newM = createMembraneMesh(0, -999, 0);
+  newM.visible = false;
+  scene.add(newM);
+  window.membranePool.push(newM);
+  return newM;
+}
+
+new GLTFLoader().load(window.getAssetUrl('models/hartya.glb'), function (gltf) {
+  hartyaTemplate = gltf.scene;
+  hartyaTemplate.scale.set(1.5, 1.5, 1.5);
+  hartyaTemplate.traverse(c => {
+    if (c.isMesh) {
+      c.material = new THREE.MeshBasicMaterial({
+        color: 0xffcc22,
+        transparent: true,
+        opacity: 0.40,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+    }
+  });
+
+  window.initMembranePool();
+
+  if (typeof window.spawnZeroPointMembrane === 'function') {
+    window.spawnZeroPointMembrane();
+  }
+});
+
 // --- HÁRTYA SANITIZER ÉS BERAGADÁS-MEGSZÜNTETŐ RUTIN ---
 window.sanitizeAndAutoRecoverMembranes = function() {
   if (typeof scene === 'undefined' || !scene) return;
 
   window.activeMembranes = window.activeMembranes || [];
-  const validActiveSet = new Set(window.activeMembranes);
 
-  // 1. Árva, szellem vagy beragadt hártyák felkutatása és törlése a Three.js jelenetfából
-  const objectsToRemove = [];
-  scene.traverse(function(obj) {
-    if (obj && obj.userData && obj.userData.isMembrane) {
-      if (!validActiveSet.has(obj) || obj.userData.collected === true) {
-        objectsToRemove.push(obj);
-      }
-    }
-  });
-
-  objectsToRemove.forEach(function(obj) {
-    if (obj.userData && obj.userData.light) {
-      obj.userData.light.intensity = 0;
-      if (obj.userData.light.parent) obj.userData.light.parent.remove(obj.userData.light);
-    }
-    if (obj.parent) obj.parent.remove(obj);
-    else scene.remove(obj);
-  });
-
-  // 2. Érintéses beragadási ellenőrző (Touch Watchdog):
-  // Ha a csónak közvetlenül egy hártyán áll (érinti), de nem indult el a felvétel:
+  // 1. Érintéses beragadási ellenőrző (Touch Watchdog):
   if (typeof boat !== 'undefined' && boat && boat.position && window.activeMembranes.length > 0) {
     const bx = boat.position.x;
     const bz = boat.position.z;
@@ -1356,19 +1322,17 @@ window.sanitizeAndAutoRecoverMembranes = function() {
       m.getWorldPosition(_wPos);
       const distSq = (_wPos.x - bx) * (_wPos.x - bx) + (_wPos.z - bz) * (_wPos.z - bz);
 
-      // Ha a csónak 4 méteren belül érinti a hártyát, de az a vízen maradt:
       if (distSq < 16.0) {
         m.userData.touchStuckTime = (m.userData.touchStuckTime || 0) + 1;
-        // Ha több mint 1 másodpercig érintve marad és nem tűnt el a felvételi rutin által:
         if (m.userData.touchStuckTime > 2) {
-          console.warn("Beragadt/felvehetetlen hártya észlelve -> Megszüntetés és újragenerálás!");
+          console.warn("Beragadt/felvehetetlen hártya észlelve -> Vissza a poolba és újragenerálás!");
           m.userData.collected = true;
+          m.userData.inUse = false;
           m.visible = false;
           if (m.userData.light) m.userData.light.intensity = 0;
-          if (m.parent) m.parent.remove(m); else scene.remove(m);
+          m.position.set(0, -999, 0);
           window.activeMembranes.splice(i, 1);
 
-          // Új, tiszta hártya generálása a hajó közelében:
           if (typeof window.spawnHartyaWave === 'function' && window.storedMembranes < 30) {
             window.spawnHartyaWave(1, 'boat');
           }
@@ -1381,124 +1345,77 @@ window.sanitizeAndAutoRecoverMembranes = function() {
 };
 
 window.spawnZeroPointMembrane = function () {
+  window.initMembranePool();
+
   if (window.activeMembranes) {
-    window.activeMembranes.forEach(m => scene.remove(m));
+    window.activeMembranes.forEach(m => {
+      m.visible = false;
+      if (m.userData.light) m.userData.light.intensity = 0;
+      m.userData.inUse = false;
+      m.userData.collected = true;
+      m.position.set(0, -999, 0);
+    });
   }
   window.activeMembranes = [];
 
-  const sx = 0, sy = 0, sz = 0;
-  const firstMembrane = createMembraneMesh(sx, sy, sz);
-  scene.add(firstMembrane);
+  const firstMembrane = getPooledMembrane();
+  firstMembrane.position.set(0, 0.1, 0);
+  firstMembrane.userData.baseY = 0.1;
+  firstMembrane.userData.collected = false;
+  firstMembrane.userData.inUse = true;
+  firstMembrane.visible = true;
+  if (firstMembrane.userData.light) firstMembrane.userData.light.intensity = 3.5;
+
   window.activeMembranes.push(firstMembrane);
   window.totalSpawnedCount = 1;
 };
 
-// --- HÁRTYA SPAWN LOGIKA (DINAMIKUS) ---
+const WATER_BAY_POINTS = [
+  { x: -15, z: 25 }, { x: 35, z: 45 }, { x: -45, z: 85 }, { x: 20, z: 110 },
+  { x: -75, z: 140 }, { x: 10, z: 180 }, { x: -60, z: 220 }, { x: -110, z: 260 },
+  { x: -30, z: 300 }, { x: -140, z: 340 }, { x: -80, z: 380 }, { x: -160, z: 420 },
+  { x: -100, z: 460 }, { x: -190, z: 500 }, { x: -120, z: 540 }, { x: -220, z: 580 },
+  { x: -150, z: 620 }, { x: -250, z: 660 }, { x: -170, z: 700 }, { x: -280, z: 740 },
+  { x: -200, z: 780 }, { x: -310, z: 820 }, { x: -230, z: 860 }, { x: -330, z: 900 },
+  { x: -260, z: 940 }, { x: -360, z: 980 }, { x: -280, z: 1020 }, { x: -380, z: 1060 },
+  { x: -310, z: 1100 }, { x: -350, z: 1140 }, { x: 45, z: 70 }, { x: -25, z: 160 },
+  { x: 5, z: 240 }, { x: -90, z: 190 }, { x: -50, z: 350 }, { x: -130, z: 290 },
+  { x: -170, z: 480 }, { x: -210, z: 410 }, { x: -240, z: 610 }, { x: -180, z: 670 }
+];
+
+// --- HÁRTYA SPAWN LOGIKA (FOLYAMATOS, ZÉRÓ-KÉSLELTETÉSŰ POOL KEZELÉS) ---
 window.spawnHartyaWave = function (count, originType) {
-  let actualSpawned = 0;
+  window.initMembranePool();
 
-  const isInsideAnyCollider = (px, pz) => {
-    if (!window.mangroveColliders || window.mangroveColliders.length === 0) return false;
-    const SAFETY_MARGIN = 2.5;
+  let spawned = 0;
+  const availableIndices = [];
+  for (let i = 0; i < WATER_BAY_POINTS.length; i++) availableIndices.push(i);
 
-    for (let i = 0; i < window.mangroveColliders.length; i++) {
-      const boxMesh = window.mangroveColliders[i];
-      const cfg = boxMesh.userData.config;
-
-      const halfX = ((boxMesh.scale.x * cfg.sizeX) / 2) + SAFETY_MARGIN;
-      const halfZ = ((boxMesh.scale.z * cfg.sizeZ) / 2) + SAFETY_MARGIN;
-
-      const dx = px - boxMesh.position.x;
-      const dz = pz - boxMesh.position.z;
-      const angle = -boxMesh.rotation.y;
-
-      const localX = Math.cos(angle) * dx - Math.sin(angle) * dz;
-      const localZ = Math.sin(angle) * dx + Math.cos(angle) * dz;
-
-      if (Math.abs(localX) < halfX && Math.abs(localZ) < halfZ) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  let spawnedSoFar = 0;
-  let totalAttempts = 0;
-
-  const rayCasterPos = new THREE.Vector3();
-  const rayCasterDir = new THREE.Vector3(0, -1, 0);
-  const sharedRaycaster = new THREE.Raycaster();
-
-  function spawnChunk() {
-    const startTime = performance.now();
-    let yielded = false;
-    let chunksThisFrame = 0;
-
-    while (spawnedSoFar < count) {
-      chunksThisFrame++;
-      if (performance.now() - startTime > 5 || chunksThisFrame > 2) {
-        requestAnimationFrame(spawnChunk);
-        yielded = true;
-        break;
-      }
-
-      let hx = 0, hz = 0;
-      let valid = false;
-      let attempts = 0;
-
-      while (!valid && attempts < 10) {
-        attempts++;
-        totalAttempts++;
-
-        if (totalAttempts > count * 30) {
-          console.warn("Hártya generálás feladva: túl nehéz valid helyet találni!");
-          return;
-        }
-
-        // Dinamikus spawn: Mindig a hajó vagy móló környezetében 40-100m között
-        let basePos = { x: 5, y: 0, z: -94 }; // Pier fallback
-        if (originType === 'boat' && typeof boat !== 'undefined') {
-          basePos = boat.position;
-        }
-
-        const angle = Math.random() * Math.PI * 2;
-        const radius = 40 + Math.random() * 60;
-        hx = basePos.x + Math.cos(angle) * radius;
-        hz = basePos.z + Math.sin(angle) * radius;
-
-        if (isInsideAnyCollider(hx, hz)) continue;
-
-        if (typeof window.fullTrack !== 'undefined' && window.fullTrack) {
-          rayCasterPos.set(hx, 100, hz);
-          sharedRaycaster.set(rayCasterPos, rayCasterDir);
-          const hits = sharedRaycaster.intersectObject(window.fullTrack, true);
-
-          if (hits.length > 0) {
-            if (hits[0].point.y <= 2.0) valid = true;
-          } else {
-            valid = true;
-          }
-        } else {
-          valid = true;
-        }
-      }
-
-      if (valid) {
-        const mMesh = createMembraneMesh(hx, 0.1, hz);
-        scene.add(mMesh);
-        window.activeMembranes.push(mMesh);
-        window.totalSpawnedCount++;
-        actualSpawned++;
-        spawnedSoFar++;
-      }
-    }
-
-    if (!yielded && spawnedSoFar < count) {
-      requestAnimationFrame(spawnChunk);
-    }
+  // Véletlenszerű keverés a változatos pontokért
+  for (let i = availableIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
   }
 
-  spawnChunk();
+  for (let i = 0; i < availableIndices.length && spawned < count; i++) {
+    const pt = WATER_BAY_POINTS[availableIndices[i]];
+    const jitterX = (Math.random() - 0.5) * 10.0;
+    const jitterZ = (Math.random() - 0.5) * 10.0;
+    const hx = pt.x + jitterX;
+    const hz = pt.z + jitterZ;
+
+    const mMesh = getPooledMembrane();
+    mMesh.position.set(hx, 0.1, hz);
+    mMesh.userData.baseY = 0.1;
+    mMesh.userData.collected = false;
+    mMesh.userData.inUse = true;
+    mMesh.visible = true;
+    if (mMesh.userData.light) mMesh.userData.light.intensity = 3.5;
+
+    window.activeMembranes.push(mMesh);
+    window.totalSpawnedCount++;
+    spawned++;
+  }
 };
 
 function createFoamTexture() {
@@ -1706,41 +1623,29 @@ window.triggerDropoffMonologs = function (prevStored, newStored) {
   if (window._dockDropoffLocked) return;
   window._dockDropoffLocked = true;
 
-  const blocks = [];
-
-  if (newStored >= 1 && !window.monologState.hasSeen[5]) {
-    blocks.push({ type: 'popup', msg: (window.gamePopups && window.gamePopups.dropoff_good) || 'Szép volt!' });
-    blocks.push({ start: 5, end: 6 });
-  }
-
-  if (newStored >= 3 && !window.monologState.hasSeen[11]) {
-    blocks.push({ start: 11, end: 14 });
-  }
-
-  function runNext(idx) {
-    if (idx >= blocks.length) {
+  if (newStored >= 30) {
+    const eogText = (window.gamePopups && window.gamePopups.eog_empty_water) || "Gyanúsan üres a víz, gyere, nézzünk szét az öböl bejáratánál!";
+    window.showPopUp(eogText, function () {
       window._dockDropoffLocked = false;
-      if (newStored >= 1) {
-        window._waitingForPierLeave = true;
-      }
-      return;
-    }
-    const block = blocks[idx];
-    if (block.type === 'popup') {
-      window.showClickControlledPopUp(block.msg, function () {
-        runNext(idx + 1);
-      });
-    } else {
-      window.showInGameMonolog(block.start, block.end, function () {
-        runNext(idx + 1);
-      });
-    }
-  }
-
-  if (blocks.length > 0) {
-    runNext(0);
+      window._waitingForPierLeave = true;
+    });
+  } else if (newStored >= 1 && !window.monologState.hasSeen[5]) {
+    // 1. Első leadás: közvetlenül a Zozó 5-6 nagymonológ ablak nyílik meg azonnal és tisztán
+    window.showInGameMonolog(5, 6, function () {
+      window._dockDropoffLocked = false;
+      window._waitingForPierLeave = true;
+    });
+  } else if (newStored >= 3 && !window.monologState.hasSeen[11]) {
+    window.showInGameMonolog(11, 14, function () {
+      window._dockDropoffLocked = false;
+      window._waitingForPierLeave = true;
+    });
   } else {
-    window._dockDropoffLocked = false;
+    // Nincs új narratív monológ: egyetlen tiszta, nem-blokkoló toast jelenik meg
+    window.showPopUp((window.gamePopups && window.gamePopups.homepoint) || "Kipakoltam, mehetünk!", function () {
+      window._dockDropoffLocked = false;
+      if (newStored >= 1) window._waitingForPierLeave = true;
+    });
   }
 };
 
@@ -2098,18 +2003,21 @@ function frame() {
 
         // A csónak fizikai kiterjedéséhez illeszkedő pontos felvételi hatósugár (r = 3.0m, distSq < 9.0)
         if (distSq < 9.0 && !window.isCutscenePlaying) {
-          // 1. LEGELŐSZÖR A HÁRTYA AZONNAL TŰNJÖN EL!
+          // 1. LEGELŐSZÖR A HÁRTYA AZONNAL VISSZAÁLL A POOLBA!
           m.userData.collected = true;
+          m.userData.inUse = false;
           m.visible = false;
           if (m.userData.light) m.userData.light.intensity = 0;
-          if (m.parent) m.parent.remove(m); else scene.remove(m);
+          m.position.set(0, -999, 0);
           const mIdx = window.activeMembranes.indexOf(m);
           if (mIdx > -1) window.activeMembranes.splice(mIdx, 1);
+
+          // 2. AZONNALI HANGEFFEKT A FELVÉTELI ÉRINTÉS PILLANATÁBAN
+          if (typeof window.playPickupSound === 'function') window.playPickupSound();
 
           const executeMembranePickup = (showDefaultPopup = true) => {
             window.carriedMembranes++;
             window.totalPickedUp++;
-            if (typeof window.playPickupSound === 'function') window.playPickupSound();
 
             if (window.totalPickedUp === 1) {
               if (!window.monologState.hasSeen[3]) {
@@ -2190,33 +2098,27 @@ function frame() {
 
           const executeMembraneMiss = () => {
             m.userData.collected = true;
-            if (m.parent) m.parent.remove(m); else scene.remove(m);
+            m.userData.inUse = false;
+            m.visible = false;
+            if (m.userData.light) m.userData.light.intensity = 0;
+            m.position.set(0, -999, 0);
             const mIdx = window.activeMembranes.indexOf(m);
             if (mIdx > -1) window.activeMembranes.splice(mIdx, 1);
-            window.carriedMembranes = 0;
             m.userData.isBeingPickedUp = false;
+
+            window.showPopUp((window.gamePopups && window.gamePopups.membrane_bad) || "Ez a hártya most elúszott!");
           };
 
           if (window.totalPickedUp >= 8 && window.quizManager) {
             window.quizManager.openQuiz('TUTOR_GameInfo', (isCorrect) => {
               if (isCorrect) {
-                window.showClickControlledPopUp((window.gamePopups && window.gamePopups.membrane_good) || "Ezt felszedtük", () => {
-                  executeMembranePickup(false);
-                });
+                executeMembranePickup(false);
               } else {
-                window.showClickControlledPopUp((window.gamePopups && window.gamePopups.membrane_bad) || "Ez a hártya elúszott...", () => {
-                  executeMembraneMiss();
-                });
+                executeMembraneMiss();
               }
             });
           } else {
-            if (window.totalPickedUp === 0) {
-              executeMembranePickup(false);
-            } else {
-              window.showPopUp((window.gamePopups && window.gamePopups.new_membrane) || "Újabb hártyát gyűjtöttél be! \nNyomás vissza a kikötőbe!", () => {
-                executeMembranePickup(false);
-              });
-            }
+            executeMembranePickup(false);
           }
         }
       } catch (err) {
@@ -2242,7 +2144,7 @@ function frame() {
 
     const bayTarget = new THREE.Vector3(-300, 40, 600);
     const dir = new THREE.Vector3().subVectors(bayTarget, zep.position).normalize();
-    const targetRotY = Math.atan2(dir.x, dir.z) + Math.PI / 4;
+    const targetRotY = Math.atan2(dir.x, dir.z) - Math.PI;
     zep.rotation.y += (targetRotY - zep.rotation.y) * cutsceneDt * 2.0;
     zep.position.add(dir.multiplyScalar(cutsceneDt * 80.0));
 
@@ -2294,15 +2196,20 @@ function frame() {
       window.firstMembraneDelivered = true;
       if (typeof window.playSoundEffect === 'function') window.playSoundEffect(window.homepointTouchAudio);
 
-      // Mindig "Kipakoltam, mehetünk!" felirat jelenik meg sikeres hártyaletöltéskor
-      window.showPopUp((window.gamePopups && window.gamePopups.homepoint) || "Kipakoltam, mehetünk!");
+      // Tiszta állapotgép: a triggerDropoffMonologs indítja el a szükséges monológ ablakot vagy toastot
       window.triggerDropoffMonologs(previousStored, window.storedMembranes);
 
       // --- 30. HÁRTYA: EoG (END OF GAME) KINCSESLÁDA ÉS VÉGJÁTÉK AKTIVÁLÁSA ---
       if (window.storedMembranes >= 30 && window.eogState === 'NONE') {
         window.eogState = 'EMPTIED';
         if (window.activeMembranes) {
-          window.activeMembranes.forEach(m => { if (m.parent) m.parent.remove(m); else scene.remove(m); });
+          window.activeMembranes.forEach(m => {
+            m.visible = false;
+            if (m.userData.light) m.userData.light.intensity = 0;
+            m.userData.inUse = false;
+            m.userData.collected = true;
+            m.position.set(0, -999, 0);
+          });
           window.activeMembranes = [];
         }
         if (!window.chestModel && typeof spawnEogTreasureChest === 'function') {
@@ -2333,25 +2240,39 @@ function frame() {
 
     const isInProtectedZone = distBoatToHome < 100.0 || distZepToHome < 100.0;
 
+    // Öböl bejárati 15-20 másodperces járőrútvonal (hogy a védett zóna határán soha ne laggoljon a levegőben)
+    const AIRSHIP_BAY_WAYPOINTS = [
+      new THREE.Vector3(-300, 40, 600), // 1. Nyugati öböl bejárat
+      new THREE.Vector3(-100, 42, 850), // 2. Nyílt tengeri kanyar
+      new THREE.Vector3(250, 40, 650),  // 3. Keleti öböl bejárat
+      new THREE.Vector3(50, 38, 400)    // 4. Belső öbölátjáró
+    ];
+
     if (isInProtectedZone) {
-      // Ha a léghajó a móló 100m-es védett körzetébe ér, indítson újabb útvonalbejárást kifelé a tengerre, ne laggoljon a levegőben!
-      window.airshipChaseState = 'RETREAT';
-      window.airshipChaseCooldown = 25.0; // 25 mp-es járőrözés kint a tengeren
-      const retreatTarget = new THREE.Vector3(-300, 40, 600);
-      const retreatDir = new THREE.Vector3().subVectors(retreatTarget, zep.position).normalize();
+      if (window.airshipChaseState !== 'RETREAT') {
+        window.airshipChaseState = 'RETREAT';
+        window.airshipChaseCooldown = 18.0; // 18 mp-es folyamatos útvonal-bejárás
+        window.airshipPatrolIdx = 0;
+      }
+    }
 
-      const targetRetreatRotY = Math.atan2(retreatDir.x, retreatDir.z) + Math.PI / 4;
+    if (window.airshipChaseState === 'RETREAT') {
+      window.airshipPatrolIdx = window.airshipPatrolIdx || 0;
+      let targetPt = AIRSHIP_BAY_WAYPOINTS[window.airshipPatrolIdx];
+      const distToPt = zep.position.distanceTo(targetPt);
+
+      // Ha megközelítette az aktuális pontot (35m-re), átvált a következő útvonalpontra
+      if (distToPt < 35.0) {
+        window.airshipPatrolIdx = (window.airshipPatrolIdx + 1) % AIRSHIP_BAY_WAYPOINTS.length;
+        targetPt = AIRSHIP_BAY_WAYPOINTS[window.airshipPatrolIdx];
+      }
+
+      const retreatDir = new THREE.Vector3().subVectors(targetPt, zep.position).normalize();
+      const targetRetreatRotY = Math.atan2(retreatDir.x, retreatDir.z) - Math.PI;
       zep.rotation.y += (targetRetreatRotY - zep.rotation.y) * cutsceneDt * 2.0;
       zep.position.add(retreatDir.multiplyScalar(cutsceneDt * 75.0));
-    } else if (window.airshipChaseState === 'RETREAT') {
-      const retreatTarget = new THREE.Vector3(-300, 40, 600);
-      const retreatDir = new THREE.Vector3().subVectors(retreatTarget, zep.position).normalize();
 
-      const targetRetreatRotY = Math.atan2(retreatDir.x, retreatDir.z) + Math.PI / 4;
-      zep.rotation.y += (targetRetreatRotY - zep.rotation.y) * cutsceneDt * 2.0;
-      zep.position.add(retreatDir.multiplyScalar(cutsceneDt * 75.0));
-
-      if (window.airshipChaseCooldown <= 0) {
+      if (!isInProtectedZone && window.airshipChaseCooldown <= 0) {
         window.airshipChaseState = 'CHASE';
       }
     } else {
@@ -2363,7 +2284,7 @@ function frame() {
         const distToBoat = dir.length();
         dir.normalize();
 
-        const targetRotY = Math.atan2(dir.x, dir.z) + Math.PI / 4;
+        const targetRotY = Math.atan2(dir.x, dir.z) - Math.PI;
         zep.rotation.y += (targetRotY - zep.rotation.y) * cutsceneDt * 2.0;
 
         if (distToBoat > 15) {
@@ -2588,8 +2509,10 @@ function frame() {
     }
 
     let effectiveWindForce = 0.5;
-    if (pierDist <= 100.0) {
-      effectiveWindForce = (0.05 + Math.random() * 0.10) * 0.5; // Szél ereje megfelezve a mólónál
+    if (pierDist <= 60.0) {
+      effectiveWindForce = 0; // A móló közvetlen 60 méteres körzetében nincs szélsodrás!
+    } else if (pierDist <= 120.0) {
+      effectiveWindForce = (0.05 + Math.random() * 0.10) * 0.3; // Szél ereje jelentősen csillapítva a móló körül
     } else if (pierDist <= 500.0) {
       effectiveWindForce = 0.1 + Math.random() * 0.9;
     } else if (pierDist <= 700.0) {
@@ -2601,8 +2524,11 @@ function frame() {
     let wX = Math.sin(window.currentWindAngle);
     let wZ = Math.cos(window.currentWindAngle);
 
-    // Móló 100m-es körzetében a móló felé irányuló szélvektor legyen nulla:
-    if (pierDist <= 100.0 && window.homePos) {
+    // Móló 120m-es körzetében a móló felé irányuló szélvektor teljesen nulla:
+    if (pierDist <= 60.0) {
+      wX = 0;
+      wZ = 0;
+    } else if (pierDist <= 120.0 && window.homePos) {
       const toPierX = window.homePos.x - boat.position.x;
       const toPierZ = window.homePos.z - boat.position.z;
       const toPierLen = Math.hypot(toPierX, toPierZ);
@@ -2677,30 +2603,37 @@ function frame() {
   let hitHeight = 0;
   let hitType = null;
 
-  // 1. Raycast whiskers - TÉRBELI GYORSÍTÁSSAL (Lag megszüntetése)
+  // 1. Raycast whiskers - Tiszta 360 fokos ütközésvizsgálat
   const isMoving = Math.abs(mv) > 0.01 || Math.abs(tr) > 0.01;
   const isDrifting = window.isWindActive && !window.isCutscenePlaying && (Math.abs(windForceX) > 0.01 || Math.abs(windForceZ) > 0.01);
 
   if ((isMoving || isDrifting) && borderMeshes.length > 0 && window.eogState !== 'CINEMATIC') {
-    _center.copy(boat.position);
-    _center.y += 0.5;
+    _center.set(boat.position.x, 0.3, boat.position.z);
 
     laserLines.forEach((lItem) => {
-      // Csak a mozgás irányába mutató whiskers sugarak vizsgálata
-      const cosAngle = Math.cos(lItem.w.angle);
-      if (mv > 0.01 && cosAngle < -0.2) return; // Előremenetben a hátul lévő móló nem akadályozza az indulást
-      if (mv < -0.01 && cosAngle > 0.2) return; // Hátramenetben csak a háti sugarak számítanak
+      const id = lItem.w.id;
+      let shouldCheck = false;
+
+      if (mv > 0.01) {
+        if (id === 'FORWARD' || id === 'FRONT_LEFT' || id === 'FRONT_RIGHT') shouldCheck = true;
+      } else if (mv < -0.01) {
+        if (id === 'BACKWARD' || id === 'BACK_LEFT' || id === 'BACK_RIGHT') shouldCheck = true;
+      } else if (Math.abs(tr) > 0.01) {
+        if (id === 'SIDE_LEFT' || id === 'SIDE_RIGHT' || id === 'FRONT_LEFT' || id === 'FRONT_RIGHT') shouldCheck = true;
+      } else if (isDrifting) {
+        shouldCheck = true;
+      }
+
+      if (!shouldCheck) {
+        lItem.mat.color.setHex(0x00ffcc);
+        return;
+      }
 
       _rayDir.set(0, 0, -1);
       _rayDir.applyAxisAngle(_upAxis, lItem.w.angle);
       _rayDir.applyQuaternion(boat.quaternion).normalize();
 
-      if (mv < -0.01) {
-        _rayDir.negate();
-      }
-
-      // Pontos, sebességhez igazított pásztázási távolság
-      const maxDetectDist = lItem.w.dist + Math.abs(mv) * 2.0;
+      const maxDetectDist = lItem.w.dist + (mv > 0.01 ? mv * 1.5 : 0);
 
       _sharedRaycaster.set(_center, _rayDir);
       const intersects = _sharedRaycaster.intersectObjects(borderMeshes, false);
@@ -2711,9 +2644,21 @@ function frame() {
         const hitObj = intersects[0].object;
         let detected = (hitObj.userData && hitObj.userData.obstacleType) || 'beach';
         const hitName = (hitObj.name || '').toLowerCase();
-        if (hitName.includes('beach') || hitName.includes('sand') || hitName.includes('shore') || hitName.includes('part') || hitName.includes('terrain')) {
+        if (hitName.includes('dock') || hitName.includes('pier') || hitName.includes('molo') || hitName.includes('móló') || hitName.includes('homepoint') || hitName.includes('shanty') || hitName.startsWith('sm_bld_')) {
+          detected = 'homepoint';
+        } else if (hitName.includes('rock') || hitName.includes('stone') || hitName.includes('cliff') || hitName.includes('reef')) {
+          detected = 'rock';
+        } else if (hitName.includes('beach') || hitName.includes('sand') || hitName.includes('shore') || hitName.includes('part') || hitName.includes('terrain')) {
           detected = 'beach';
         }
+
+        // Ha a móló közvetlen 22 méteres körzetében vagyunk és nem sziklát találtunk, az mindig a Bázis/Móló (homepoint)
+        if (window.homePos && Math.hypot(boat.position.x - window.homePos.x, boat.position.z - window.homePos.z) < 22.0) {
+          if (detected !== 'rock') {
+            detected = 'homepoint';
+          }
+        }
+
         hitType = detected;
       } else {
         lItem.mat.color.setHex(0x00ffcc);
@@ -2744,11 +2689,10 @@ function frame() {
     if (hitType === 'beach') {
       if (!window._beachPopupCooldown) {
         window._beachPopupCooldown = true;
+        window.showPopUp((window.gamePopups && window.gamePopups.beach) || "A partra nem kéne felfutni");
         setTimeout(() => {
-          window.showPopUp(window.gamePopups.beach || "A partra nem kéne felfutni", () => {
-            window._beachPopupCooldown = false;
-          });
-        }, 400);
+          window._beachPopupCooldown = false;
+        }, 2000);
       }
     }
     else if (hitType === 'out_of_range') {
@@ -2762,60 +2706,21 @@ function frame() {
       }
     }
     else if (hitType === 'homepoint') {
-      if (window._homeEmptyEntered === undefined) {
+      if (!window._homeEmptyEntered) {
         window._homeEmptyEntered = true;
-      }
-
-      if (window.carriedMembranes > 0) {
-        const doDropoffLogic = () => {
-          let previousStored = window.storedMembranes;
-          window.storedMembranes += window.carriedMembranes;
-          window.carriedMembranes = 0;
-          window.firstMembraneDelivered = true;
-
-          window.triggerDropoffMonologs(previousStored, window.storedMembranes);
-
-          if (window.storedMembranes >= 30 && window.eogState === 'NONE') {
-            window.eogState = 'EMPTIED';
-            if (window.activeMembranes) {
-              window.activeMembranes.forEach(m => { if (m.parent) m.parent.remove(m); else scene.remove(m); });
-              window.activeMembranes = [];
-            }
-          }
-
-          if (window.eogState === 'NONE') {
-            if (previousStored < 5 && window.storedMembranes >= 5) {
-              if (typeof window.spawnHartyaWave === 'function') {
-                let hianyozo = 60 - window.totalSpawnedCount;
-                if (hianyozo > 0) {
-                  // Törölve: régi gauss generálás
-                  // Dinamikus spawn logika kezeli a hajó mozgása közben
-                }
+        if (!window._justDelivered) {
+          if (window.storedMembranes >= 30) {
+            const eogText = (window.gamePopups && window.gamePopups.eog_empty_water) || "Gyanúsan üres a víz, gyere, nézzünk szét az öböl bejáratánál!";
+            setTimeout(() => {
+              window.showPopUp(eogText, () => { });
+            }, 400);
+          } else if (window.carriedMembranes === 0) {
+            setTimeout(() => {
+              if (!window._justDelivered && window.carriedMembranes === 0) {
+                window.showPopUp((window.gamePopups && window.gamePopups.empty_boat) || "Üres csónakkal tértél vissza", () => { });
               }
-            } else if (window.storedMembranes < 5 && window.totalSpawnedCount === 1) {
-              if (typeof window.spawnHartyaWave === 'function') {
-                window.spawnHartyaWave(10, 'pier');
-              }
-            }
+            }, 400);
           }
-          window._homeEmptyEntered = true;
-        };
-
-        if (window.monologState.hasSeen[5]) {
-          window.showPopUp((window.gamePopups && window.gamePopups.homepoint) || "Kipakoltam, mehetünk.", doDropoffLogic);
-        } else {
-          doDropoffLogic();
-        }
-      }
-      else {
-        // Csak akkor írja ki, hogy "Üres csónakkal tértél vissza", ha NEM volt most hártyaletöltés!
-        if (!window._homeEmptyEntered && !window._justDelivered && window.storedMembranes < 30) {
-          window._homeEmptyEntered = true;
-          setTimeout(() => {
-            if (!window._justDelivered && window.carriedMembranes === 0) {
-              window.showPopUp((window.gamePopups && window.gamePopups.empty_boat) || "Üres csónakkal tértél vissza", () => { });
-            }
-          }, 300);
         }
       }
     }
@@ -2866,7 +2771,7 @@ function frame() {
     if (window._homeEmptyEntered === true && boat && boat.position && window.homePos) {
       const dxH = boat.position.x - window.homePos.x;
       const dzH = boat.position.z - window.homePos.z;
-      if (dxH * dxH + dzH * dzH > 350.0) {
+      if (dxH * dxH + dzH * dzH > 900.0) { // 30 méternél messzebb távolodva old fel a móló elhagyásakor
         window._homeEmptyEntered = false;
       }
     }
@@ -3294,19 +3199,36 @@ window.proceedEogAuthCheck = function () {
   window.showEogSummaryPanel();
 };
 
-// Írógép effektus BriskB betűtípussal
+// Írógép effektus BriskB betűtípussal - Gyorsított, dinamikus megjelenítés (max 2-2.5s)
 // FIX: buffer string + textContent, mert innerText visszaolvasás elnyeli a szóközöket!
 function typewriterEffect(element, text, speed, onComplete) {
   element.textContent = '';
   let i = 0;
   let buffer = '';
+  let isDone = false;
+  const animSpeed = typeof speed === 'number' ? speed : Math.min(14, Math.max(8, Math.floor(1800 / Math.max(text.length, 1))));
+
+  function finishInstantly() {
+    if (isDone) return;
+    isDone = true;
+    element.textContent = text;
+    if (onComplete) onComplete();
+  }
+
+  // Kattintással azonnal befejezhető és átugorható az animáció
+  if (element.parentElement) {
+    element.parentElement.addEventListener('click', finishInstantly, { once: true });
+  }
+
   function typeChar() {
+    if (isDone) return;
     if (i < text.length) {
       buffer += text.charAt(i);
       element.textContent = buffer;
       i++;
-      setTimeout(typeChar, speed);
+      setTimeout(typeChar, animSpeed);
     } else {
+      isDone = true;
       if (onComplete) onComplete();
     }
   }
@@ -3330,124 +3252,28 @@ window.showEogSummaryPanel = function () {
   summaryOverlay.style.display = 'flex';
 
   const bName = window.eogBoatName || 'Névtelen csónak';
+  const mCount = window.storedMembranes || 30;
 
   const fullSummary =
     `Megszerzett kincsek:\n` +
+    `${mCount} db hártya\n` +
     `1 db Hebok térkép\n` +
     `10 kalózkredit\n` +
     `1 db tekercs\n` +
     `1 db csónak, név: ${bName}`;
 
-  typewriterEffect(summaryTextEl, fullSummary, 35, function () {
+  typewriterEffect(summaryTextEl, fullSummary, 12, function () {
     if (btnNext) {
       btnNext.style.visibility = 'visible';
       btnNext.onclick = function (e) {
         e.stopPropagation();
         summaryOverlay.style.display = 'none';
 
-        // --- BELÉPÉS ELLENŐRZÉSE (Feltételes elágazás) ---
-        if (window.isLoggedIn) {
-          // Ha be van lépve -> egyből a záró panelre lép
-          window.showEogFinalPanel();
-        } else {
-          // Ha nincs belépve -> felugrik az Auth Prompt panel
-          window.showEogAuthPrompt();
-        }
+        // --- AZONNALI ZÁRÓ FELDOLGOZÁS ÉS FELÍRÁS ---
+        window.showEogFinalPanel();
       };
     }
   });
-};
-
-// --- AUTH PROMPT PANEL (Ha nincs belépve) ---
-window.showEogAuthPrompt = function (customText) {
-  const authOverlay = document.getElementById('eog-auth-prompt-overlay');
-  const promptTextEl = document.getElementById('eog-auth-prompt-text');
-  if (!authOverlay) return;
-
-  const defaultText = 'Csak akkor tarthatod meg a kincseket,\nha belépsz.';
-  if (promptTextEl) {
-    promptTextEl.innerText = customText || defaultText;
-  }
-
-  authOverlay.style.display = 'flex';
-
-  // 1. Belépek gomb -> Süti/Session beállítás + elindul a login rutin (LoginMenu.html)
-  const btnLogin = document.getElementById('eog-btn-auth-login');
-  if (btnLogin) {
-    btnLogin.onclick = function (e) {
-      e.stopPropagation();
-      sessionStorage.setItem('eogReturnToAuthPrompt', 'true');
-      document.cookie = "eogReturnToAuthPrompt=true; path=/; max-age=3600";
-      authOverlay.style.display = 'none';
-      window.location.href = 'LoginMenu.html';
-    };
-  }
-
-  // 2. Regisztrálok gomb -> Süti/Session beállítás (későbbi bekötéshez)
-  const btnReg = document.getElementById('eog-btn-auth-register');
-  if (btnReg) {
-    btnReg.onclick = function (e) {
-      e.stopPropagation();
-      sessionStorage.setItem('eogReturnToAuthPrompt', 'true');
-      document.cookie = "eogReturnToAuthPrompt=true; path=/; max-age=3600";
-      alert('A regisztrációs felület hamarosan elérhető!');
-    };
-  }
-
-  // 3. Kilépek gomb -> AreYouSure megerősítő panel
-  const btnExit = document.getElementById('eog-btn-auth-exit');
-  if (btnExit) {
-    btnExit.onclick = function (e) {
-      e.stopPropagation();
-      authOverlay.style.display = 'none';
-      window.showEogAuthExitConfirm();
-    };
-  }
-};
-
-// Automatikus ellenőrzés betöltéskor (ha a Login panelről / visszalépésből érkezett)
-window.addEventListener('DOMContentLoaded', function () {
-  const needsReturn = sessionStorage.getItem('eogReturnToAuthPrompt') || (document.cookie.includes('eogReturnToAuthPrompt=true'));
-  if (needsReturn) {
-    sessionStorage.removeItem('eogReturnToAuthPrompt');
-    document.cookie = "eogReturnToAuthPrompt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-
-    // Ha belépett -> utolsó panel, ha mégse / nem lépett be -> vissza az Auth Prompt panelre
-    setTimeout(function () {
-      if (window.isLoggedIn) {
-        window.showEogFinalPanel();
-      } else {
-        window.showEogAuthPrompt();
-      }
-    }, 500);
-  }
-});
-
-// --- AUTH KILÉPÉS MEGERŐSÍTŐ PANEL (AreYouSure a kincsek elvesztéséről) ---
-window.showEogAuthExitConfirm = function () {
-  const confirmOverlay = document.getElementById('eog-auth-exit-confirm-overlay');
-  if (!confirmOverlay) return;
-  confirmOverlay.style.display = 'flex';
-
-  // Igen gomb -> Visszadobja a MainMenu-be
-  const btnYes = document.getElementById('eog-btn-auth-exit-yes');
-  if (btnYes) {
-    btnYes.onclick = function (e) {
-      e.stopPropagation();
-      confirmOverlay.style.display = 'none';
-      window.location.href = 'MainMenuTutorial.html';
-    };
-  }
-
-  // Nem gomb -> Továbblép a "Most már beléphetsz a Kikötőbe" panelre
-  const btnNo = document.getElementById('eog-btn-auth-exit-no');
-  if (btnNo) {
-    btnNo.onclick = function (e) {
-      e.stopPropagation();
-      confirmOverlay.style.display = 'none';
-      window.showEogFinalPanel();
-    };
-  }
 };
 
 // --- VETERÁN KALÓZ ELLENŐRZÉS ÉS VISSZAJELZÉS ---
@@ -3463,7 +3289,7 @@ window.checkIfUserIsVeteran = function () {
   if (userProfRaw) {
     try {
       const u = JSON.parse(userProfRaw);
-      if (u && (u.Tutorial_oldal === 1 || u.csonak_nev || u.boatName)) return true;
+      if (u && (u.Tutorial_oldal === 1 || u.Tutorial_oldal === 'ok' || u.csonak_nev || u.boatName)) return true;
     } catch (e) { }
   }
   return false;
@@ -3471,28 +3297,51 @@ window.checkIfUserIsVeteran = function () {
 
 window.showEogVeteranPanel = function () {
   const veteranOverlay = document.getElementById('eog-veteran-user-overlay');
-  if (!veteranOverlay) return;
+  const veteranTextEl = document.getElementById('eog-veteran-text');
+  const veteranMsg = "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
 
-  veteranOverlay.style.display = 'flex';
-  window.isCutscenePlaying = true;
-
-  const btnContinue = document.getElementById('eog-btn-veteran-continue');
-  if (btnContinue) {
-    btnContinue.onclick = function (e) {
-      e.stopPropagation();
-      veteranOverlay.style.display = 'none';
-      window.isCutscenePlaying = false;
-      window.showPopUp("Jó szelet a nyílt vízen!");
-    };
+  if (veteranTextEl) {
+    veteranTextEl.innerText = veteranMsg;
   }
 
-  const btnExit = document.getElementById('eog-btn-veteran-exit');
-  if (btnExit) {
-    btnExit.onclick = function (e) {
-      e.stopPropagation();
-      veteranOverlay.style.display = 'none';
+  if (veteranOverlay) {
+    veteranOverlay.style.display = 'flex';
+    window.isCutscenePlaying = true;
+
+    const btnContinue = document.getElementById('eog-btn-veteran-continue');
+    if (btnContinue) {
+      btnContinue.innerText = "OK (Vissza Hebokba)";
+      btnContinue.onclick = function (e) {
+        e.stopPropagation();
+        veteranOverlay.style.display = 'none';
+        window.isCutscenePlaying = false;
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'EBOOK_PIRATES_TUTORIAL',
+            action: 'navigate_to_page',
+            page: 'kikoto_oldal'
+          }, '*');
+        } else {
+          window.location.href = 'MainMenuTutorial.html';
+        }
+      };
+    }
+
+    const btnExit = document.getElementById('eog-btn-veteran-exit');
+    if (btnExit) {
+      btnExit.style.display = 'none';
+    }
+  } else {
+    alert(veteranMsg);
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'EBOOK_PIRATES_TUTORIAL',
+        action: 'navigate_to_page',
+        page: 'kikoto_oldal'
+      }, '*');
+    } else {
       window.location.href = 'MainMenuTutorial.html';
-    };
+    }
   }
 };
 
@@ -3512,11 +3361,13 @@ window.showEogFinalPanel = function () {
 
     // 1. Végleges mentés LocalStorage-ba
     const bName = window.eogBoatName || 'Gyöngyhalász';
+    const finalHartya = (typeof window.storedMembranes === 'number' && window.storedMembranes > 0) ? window.storedMembranes : ((typeof window.totalPickedUp === 'number' && window.totalPickedUp > 0) ? window.totalPickedUp : 30);
+
     const finalSaveState = {
       completed: true,
       boatName: bName,
-      storedMembranes: 30,
-      totalPickedUp: 30,
+      storedMembranes: finalHartya,
+      totalPickedUp: finalHartya,
       timestamp: Date.now()
     };
     localStorage.setItem('ebp_tutorial_save', JSON.stringify(finalSaveState));
@@ -3527,15 +3378,26 @@ window.showEogFinalPanel = function () {
       window.parent.postMessage({
         type: 'EBOOK_PIRATES_TUTORIAL',
         action: 'tutorial_completed',
-        score: 30,
+        score: finalHartya,
+        storedMembranes: finalHartya,
+        totalPickedUp: finalHartya,
         passed: true,
         boatName: bName
       }, '*');
+    } else {
+      // Átlépés a MainMenu-be ha önállóan fut
+      window.location.href = 'MainMenuTutorial.html';
     }
-
-    // Átlépés a MainMenu-be
-    window.location.href = 'MainMenuTutorial.html';
   };
+};
+
+// --- KINCSEK SIKERES FELÍRÁSA VISSZAJELZŐ ÉS VÁLASZTÓ PANEL ---
+window.showEogSuccessChoicePanel = function () {
+  const choiceOverlay = document.getElementById('eog-success-choice-overlay');
+  if (!choiceOverlay) return;
+
+  choiceOverlay.style.display = 'flex';
+  window.isCutscenePlaying = true;
 };
 
 // --- EoG Path Editor ---

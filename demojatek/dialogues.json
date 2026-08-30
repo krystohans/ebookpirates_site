@@ -47,11 +47,12 @@
     "airship_good": "Szép volt. Folytasd a melót!",
     "airship_bad": "Ezek most kiraboltak. \nMost mehetünk ki tovább halászni.",
     "membrane_good": "Ezt felszedtük",
-    "membrane_bad": "Ez a hártya elúszott...",
-    "beach": "A parta nem kéne felfutni",
+    "membrane_bad": "Ez a hártya most elúszott!",
+    "beach": "A partra nem kéne felfutni",
     "out_of_range": "Ezzel a ronccsal nem mehetünk ki a nyílt tengerre.",
     "homepoint": "Kipakoltam, mehetünk.",
     "empty_boat": "Üres csónakkal tértél vissza",
+    "eog_empty_water": "Gyanúsan üres a víz, gyere, nézzünk szét az öböl bejáratánál!",
     "airship_catch": "UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, \nde ha hibázol, elveszik a hártyáinkat."
   },
   "eogMonologues": {

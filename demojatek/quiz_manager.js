@@ -1,16 +1,18 @@
 window.QuizConfig = {
   TUTORZEP: {
-    panelWidth: 826, panelHeight: 768,
-    padTop: 187, padRight: 139, padBottom: 180, padLeft: 152,
-    qMarginBottom: 34, qMinHeight: 63,
+    panelWidth: 831, panelHeight: 768,
+    padTop: 210, padRight: 120, padBottom: 180, padLeft: 120,
+    qMarginBottom: 25, qMinHeight: 75,
+    qWidth: "100%",
     ansGap: 0,
-    btnMt0: -29, btnMt1: 7, btnMt2: 24, btnMt3: 24,
-    btnHeight: 55
+    btnMt0: -12, btnMt1: 32, btnMt2: 24, btnMt3: 24,
+    btnHeight: 45
   },
   DEFAULT: {
-    panelWidth: 695, panelHeight: 0,
-    padTop: 118, padRight: 105, padBottom: 158, padLeft: 105,
+    panelWidth: 780, panelHeight: 0,
+    padTop: 85, padRight: 105, padBottom: 65, padLeft: 105,
     qMarginBottom: 20, qMinHeight: 60,
+    qWidth: "100%",
     ansGap: 10,
     btnMt0: 0, btnMt1: 0, btnMt2: 0, btnMt3: 0,
     btnHeight: 0
@@ -167,6 +169,9 @@ class QuizManager {
       qText.style.fontFamily = "'Briskb', 'Courier New', monospace";
       qText.style.fontSize = "21px";
       qText.style.fontWeight = "bold";
+      qText.style.width = cfg.qWidth || "100%";
+      qText.style.maxWidth = "100%";
+      qText.style.boxSizing = "border-box";
       qText.style.height = "auto";
       qText.style.minHeight = cfg.qMinHeight + "px";
       qText.style.marginTop = "0px";
@@ -188,6 +193,8 @@ class QuizManager {
       qText.style.border = "2px solid #6b4c2a";
       qText.style.borderRadius = "6px";
       qText.style.padding = "15px 20px";
+      qText.style.width = cfg.qWidth || "100%";
+      qText.style.maxWidth = "100%";
       qText.style.boxSizing = "border-box";
       qText.style.fontFamily = "'Briskb', 'Courier New', monospace";
       qText.style.fontSize = "20px";

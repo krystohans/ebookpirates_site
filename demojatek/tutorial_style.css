@@ -438,7 +438,8 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 450px;
+  width: 100%;
+  box-sizing: border-box;
   white-space: pre-wrap;
 }
 
@@ -447,7 +448,6 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: -15px;
 }
 
 .quiz-ans-btn {

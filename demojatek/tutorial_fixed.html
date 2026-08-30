@@ -225,6 +225,20 @@
     </div>
   </div>
 
+  <!-- 5/C. Kincsek Sikeres Felírása Visszajelző és Választó Panel -->
+  <div id="eog-success-choice-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 840px; max-width: 95vw; min-height: 340px; padding: 65px 100px 50px 100px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-success-choice-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #1a1a1a; margin-top: 30px; line-height: 1.35; width: 100%;">
+        Kincseid felírásra kerültek a karakterlapodra.<br>Ezek után mihez kezdesz?
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+        <button id="eog-btn-choice-fish" class="eog-std-btn" style="min-width: 180px; font-family: 'Briskb', monospace; font-weight: bold;">Tovább halászok</button>
+        <button id="eog-btn-choice-hebok" class="eog-std-btn" style="min-width: 180px; font-family: 'Briskb', monospace; font-weight: bold;">Irány Hebok!</button>
+        <button id="eog-btn-choice-exit" class="eog-std-btn eog-btn-sec" style="min-width: 150px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépek</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 6. KÖTELEZŐ REGISZTRÁCIÓ / BELÉPÉS PANEL (NEM BELÉPETT USEREKNEK) -->
   <div id="guest-auth-required-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999999; align-items: center; justify-content: center; pointer-events: auto;">
     <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 880px; max-width: 95vw; min-height: 380px; padding: 80px 145px 70px 145px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">

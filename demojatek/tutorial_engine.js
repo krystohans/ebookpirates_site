@@ -702,7 +702,7 @@ function updateAirship(dt) {
     }
   } else if (airshipState === 'PATROL') {
     enemyZeppelin.position.x += 8.0 * dt;
-    enemyZeppelin.lookAt(bPos.x, 40.0, bPos.z);
+    enemyZeppelin.rotation.y = Math.atan2(1, 0) - Math.PI;
     if (carriedMembranes > 0 && playerBoat.position.distanceTo(HOME_POS) > 40) {
       airshipState = 'CHASE';
     }
@@ -712,7 +712,8 @@ function updateAirship(dt) {
     dir.normalize();
 
     enemyZeppelin.position.add(dir.multiplyScalar(16.0 * dt));
-    enemyZeppelin.lookAt(bPos.x, enemyZeppelin.position.y, bPos.z);
+    const targetRotY = Math.atan2(dir.x, dir.z) - Math.PI;
+    enemyZeppelin.rotation.y += (targetRotY - enemyZeppelin.rotation.y) * dt * 2.0;
 
     if (dist < 18.0) {
       airshipState = 'DESCEND';
@@ -730,6 +731,8 @@ function updateAirship(dt) {
     const retreatDir = new THREE.Vector3(enemyZeppelin.position.x - bPos.x, 0, enemyZeppelin.position.z - bPos.z).normalize();
     enemyZeppelin.position.add(retreatDir.multiplyScalar(25.0 * dt));
     enemyZeppelin.position.y = Math.min(45.0, enemyZeppelin.position.y + 5.0 * dt);
+    const retreatRotY = Math.atan2(retreatDir.x, retreatDir.z) - Math.PI;
+    enemyZeppelin.rotation.y += (retreatRotY - enemyZeppelin.rotation.y) * dt * 2.0;
 
     if (enemyZeppelin.position.distanceTo(bPos) > 250) {
       airshipState = 'PATROL';

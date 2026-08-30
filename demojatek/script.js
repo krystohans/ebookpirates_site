@@ -2473,47 +2473,6 @@ function frame() {
     }
   }
 
-  if (window.eogState === 'DEPARTURE_CINEMATIC' && window.departurePath && cutsceneDt > 0) {
-    const elapsed = (performance.now() - window.departureStartTime) / 1000;
-    const DURATION = 12.0; // 12 másodperces filmes kifutás a nyílt tengerre
-    const t = Math.min(elapsed / DURATION, 1.0);
-
-    const pos = window.departurePath.getPoint(t);
-    boat.position.copy(pos);
-    boat.position.y = 0;
-
-    const tangent = window.departurePath.getTangent(t);
-    const targetAngle = Math.atan2(-tangent.x, -tangent.z);
-    boat.rotation.y = targetAngle;
-
-    // Emelt filmes kamera követés az éjszakai vízen
-    cam.position.set(
-      pos.x - 32 * Math.sin(targetAngle + 0.35),
-      pos.y + 12 + 6 * t,
-      pos.z - 32 * Math.cos(targetAngle + 0.35)
-    );
-    cam.lookAt(new THREE.Vector3(pos.x, pos.y + 2, pos.z));
-
-    if (t >= 0.85) {
-      const fadeEl = document.getElementById('eog-fade-overlay');
-      if (fadeEl) fadeEl.style.opacity = String((t - 0.85) / 0.15);
-    }
-
-    if (t >= 1.0 && !window.departureFinished) {
-      window.departureFinished = true;
-      window.eogState = 'DONE';
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({
-          type: 'EBOOK_PIRATES_TUTORIAL',
-          action: 'navigate_to_page',
-          page: 'kikoto_oldal'
-        }, '*');
-      } else {
-        window.location.href = 'MainMenuTutorial.html';
-      }
-    }
-  }
-
   if (water && water.material.uniforms['time']) {
     water.material.uniforms['time'].value += cutsceneDt;
   }
@@ -3457,13 +3416,21 @@ window.showEogSuccessChoicePanel = function () {
     };
   }
 
-  // 2. Gomb: Irány Hebok! -> MP4 Departure videó lejátszása
+  // 2. Gomb: Irány Hebok! -> Közvetlen átlépés Hebok kikötőbe
   const btnHebok = document.getElementById('eog-btn-choice-hebok');
   if (btnHebok) {
     btnHebok.onclick = function (e) {
       e.stopPropagation();
       choiceOverlay.style.display = 'none';
-      window.playHebokDepartureVideo();
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'navigate_to_page',
+          page: 'kikoto_oldal'
+        }, '*');
+      } else {
+        window.location.href = '../index.html';
+      }
     };
   }
 
@@ -3493,81 +3460,6 @@ window.showEogSuccessChoicePanel = function () {
         window.location.href = '../index.html';
       }
     };
-  }
-};
-
-// --- HEBOK INDULÁSI FIX MP4 VIDEÓ ÉS KINEMATIKA LEJÁTSZÓ ---
-window.startHebokDepartureCinematic = function () {
-  window.eogState = 'DEPARTURE_CINEMATIC';
-  window.isCutscenePlaying = true;
-  window.departureFinished = false;
-  window.departureStartTime = performance.now();
-
-  window.gameTimeProgress = 0.90;
-  if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
-
-  const startPos = (boat && boat.position) ? boat.position.clone() : new THREE.Vector3(5, 0, -94);
-  const waypoints = [
-    startPos,
-    new THREE.Vector3(14.4, 0, -79.4),
-    new THREE.Vector3(-20.1, 0, 48.4),
-    new THREE.Vector3(-37.5, 0, 120.4),
-    new THREE.Vector3(-62.6, 0, 271.3),
-    new THREE.Vector3(-106.7, 0, 391.3),
-    new THREE.Vector3(-189.4, 0, 553.2),
-    new THREE.Vector3(-373.7, 0, 618.8),
-    new THREE.Vector3(-440.6, 0, 750.6),
-    new THREE.Vector3(-479.3, 0, 969.0),
-    new THREE.Vector3(-433.0, 0, 1207.3)
-  ];
-
-  window.departurePath = new THREE.CatmullRomCurve3(waypoints);
-};
-
-window.playHebokDepartureVideo = function () {
-  const videoOverlay = document.getElementById('hebok-departure-video-overlay');
-  const video = document.getElementById('hebok-departure-video');
-
-  function proceedToHebok() {
-    if (videoOverlay) videoOverlay.style.display = 'none';
-    window.eogState = 'DONE';
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'EBOOK_PIRATES_TUTORIAL',
-        action: 'navigate_to_page',
-        page: 'kikoto_oldal'
-      }, '*');
-    } else {
-      window.location.href = 'MainMenuTutorial.html';
-    }
-  }
-
-  if (videoOverlay && video) {
-    window.eogState = 'VIDEO';
-    video.currentTime = 0;
-    video.muted = false;
-    videoOverlay.style.display = 'flex';
-
-    var p = video.play();
-    if (p !== undefined) {
-      p.then(function () {
-        // MP4 videó sikeresen lejátszódik
-      }).catch(function (err) {
-        // Ha az MP4 videó fájl még nem tölthető be a felhőből -> azonnali 3D élőkamerás indulási kinematika
-        videoOverlay.style.display = 'none';
-        window.startHebokDepartureCinematic();
-      });
-    }
-
-    video.onended = function () {
-      proceedToHebok();
-    };
-
-    videoOverlay.onclick = function () {
-      proceedToHebok();
-    };
-  } else {
-    window.startHebokDepartureCinematic();
   }
 };
 
@@ -3741,3 +3633,38 @@ btn.onclick = () => {
   }
 };
 document.body.appendChild(btn);
+
+// --- DEV / TEST SHORTCUTS ÉS KONZOL PARANCSOK ---
+window.showChoicePanel = window.testChoice = function () {
+  console.log('⚡ [DEV] 3-Gombos Választópanel közvetlen megnyitása');
+  window.showEogSuccessChoicePanel();
+};
+
+window.testSummary = function () {
+  console.log('⚡ [DEV] Kincsek összegző tábla megnyitása');
+  if (typeof window.showEogSummaryPanel === 'function') {
+    window.showEogSummaryPanel(30, 'Gyöngyhalász');
+  }
+};
+
+// URL Query Paraméter automatikus indítók (pl. ?choice=1 vagy ?summary=1)
+setTimeout(function () {
+  try {
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('choice') || urlParams.get('step') === 'choice') {
+      window.showChoicePanel();
+    } else if (urlParams.has('summary')) {
+      window.testSummary();
+    }
+  } catch (e) { }
+}, 1200);
+
+// Gyorsbillentyűk (Hotkeys):
+// Ctrl + Shift + C -> Választópanel (3 gombos döntés)
+window.addEventListener('keydown', function (e) {
+  if (e.ctrlKey && e.shiftKey) {
+    if (e.code === 'KeyC') {
+      window.showChoicePanel();
+    }
+  }
+});

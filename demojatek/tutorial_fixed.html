@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eBookPirates – Kalózsziget 3D Tutorial</title>
-  <link rel="stylesheet" href="style.css?v=20260830_05">
+  <link rel="stylesheet" href="style.css?v=20260830_06">
 
   <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
   <style>
@@ -168,10 +168,10 @@
 
   <!-- 4. Összegző Info Panel -->
   <div id="eog-summary-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
-    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; height: 535px; padding: 155px 180px 140px 190px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: left; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;">
-      <div id="eog-summary-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 25px; font-weight: bold; color: #1a1a1a; line-height: 1.7; white-space: pre-line; width: 100%; min-height: 220px;"></div>
-      <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 5px; padding-right: 20px;">
-        <button id="eog-btn-summary-next" class="eog-std-btn" style="min-width: 175px; font-family: 'Briskb', monospace; font-weight: bold; visibility: hidden;">Minden világos</button>
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 860px; max-width: 95vw; min-height: 570px; padding: 105px 145px 75px 155px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: left; display: flex; flex-direction: column; align-items: stretch; justify-content: space-between;">
+      <div id="eog-summary-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 23px; font-weight: bold; color: #1a1a1a; line-height: 1.5; white-space: pre-line; width: 100%; min-height: 250px;"></div>
+      <div style="width: 100%; display: flex; justify-content: center; margin-top: 15px; margin-bottom: 5px;">
+        <button id="eog-btn-summary-next" class="eog-std-btn" style="min-width: 200px; font-size: 19px; padding: 10px 24px; font-family: 'Briskb', monospace; font-weight: bold; visibility: hidden;">Minden világos</button>
       </div>
     </div>
   </div>
@@ -239,6 +239,11 @@
     </div>
   </div>
 
+  <!-- 5/D. Hebok Kikötő Indulási Videó Overlay -->
+  <div id="hebok-departure-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000000; align-items: center; justify-content: center;">
+    <video id="hebok-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Hebok_indulas.mp4"></video>
+  </div>
+
   <!-- 6. KÖTELEZŐ REGISZTRÁCIÓ / BELÉPÉS PANEL (NEM BELÉPETT USEREKNEK) -->
   <div id="guest-auth-required-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999999; align-items: center; justify-content: center; pointer-events: auto;">
     <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 880px; max-width: 95vw; min-height: 380px; padding: 80px 145px 70px 145px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
@@ -287,8 +292,8 @@
       });
     })();
   </script>
-  <script src="quiz_manager.js?v=20260830_05"></script>
-  <script type="module" src="script.js?v=20260830_05"></script>
+  <script src="quiz_manager.js?v=20260830_06"></script>
+  <script type="module" src="script.js?v=20260830_06"></script>
 </body>
 
 </html>

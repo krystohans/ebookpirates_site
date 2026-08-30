@@ -1628,7 +1628,7 @@ window.triggerDropoffMonologs = function (prevStored, newStored) {
     window.showPopUp(eogText, function () {
       window._dockDropoffLocked = false;
       window._waitingForPierLeave = true;
-    });
+    }, 3500);
   } else if (newStored >= 1 && !window.monologState.hasSeen[5]) {
     // 1. Első leadás: közvetlenül a Zozó 5-6 nagymonológ ablak nyílik meg azonnal és tisztán
     window.showInGameMonolog(5, 6, function () {
@@ -1708,7 +1708,7 @@ window.advanceZozoWelcome = function (event) {
 
 window.isTimedPopupActive = false;
 
-window.showPopUp = function (msg, onCompleteCb) {
+window.showPopUp = function (msg, onCompleteCb, customDuration) {
   const mc = document.getElementById('zozo-ingame-monolog-container');
   if (mc && mc.style.display !== 'none') {
     if (onCompleteCb) onCompleteCb();
@@ -1727,7 +1727,10 @@ window.showPopUp = function (msg, onCompleteCb) {
     window.isTimedPopupActive = true;
     window.timedPopupCallback = onCompleteCb || null;
 
-    setTimeout(() => {
+    const duration = typeof customDuration === 'number' ? customDuration : (msg && msg.length > 30 ? 3200 : 2500);
+
+    if (window._popupTimeout) clearTimeout(window._popupTimeout);
+    window._popupTimeout = setTimeout(() => {
       if (!window.isTimedPopupActive) return;
       p.style.display = 'none';
       window.isTimedPopupActive = false;
@@ -1735,7 +1738,7 @@ window.showPopUp = function (msg, onCompleteCb) {
       const cb = window.timedPopupCallback;
       window.timedPopupCallback = null;
       if (cb) cb();
-    }, 1200);
+    }, duration);
   } else if (onCompleteCb) {
     onCompleteCb();
   }
@@ -2470,6 +2473,47 @@ function frame() {
     }
   }
 
+  if (window.eogState === 'DEPARTURE_CINEMATIC' && window.departurePath && cutsceneDt > 0) {
+    const elapsed = (performance.now() - window.departureStartTime) / 1000;
+    const DURATION = 12.0; // 12 másodperces filmes kifutás a nyílt tengerre
+    const t = Math.min(elapsed / DURATION, 1.0);
+
+    const pos = window.departurePath.getPoint(t);
+    boat.position.copy(pos);
+    boat.position.y = 0;
+
+    const tangent = window.departurePath.getTangent(t);
+    const targetAngle = Math.atan2(-tangent.x, -tangent.z);
+    boat.rotation.y = targetAngle;
+
+    // Emelt filmes kamera követés az éjszakai vízen
+    cam.position.set(
+      pos.x - 32 * Math.sin(targetAngle + 0.35),
+      pos.y + 12 + 6 * t,
+      pos.z - 32 * Math.cos(targetAngle + 0.35)
+    );
+    cam.lookAt(new THREE.Vector3(pos.x, pos.y + 2, pos.z));
+
+    if (t >= 0.85) {
+      const fadeEl = document.getElementById('eog-fade-overlay');
+      if (fadeEl) fadeEl.style.opacity = String((t - 0.85) / 0.15);
+    }
+
+    if (t >= 1.0 && !window.departureFinished) {
+      window.departureFinished = true;
+      window.eogState = 'DONE';
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'navigate_to_page',
+          page: 'kikoto_oldal'
+        }, '*');
+      } else {
+        window.location.href = 'MainMenuTutorial.html';
+      }
+    }
+  }
+
   if (water && water.material.uniforms['time']) {
     water.material.uniforms['time'].value += cutsceneDt;
   }
@@ -2719,7 +2763,7 @@ function frame() {
           if (window.storedMembranes >= 30) {
             const eogText = (window.gamePopups && window.gamePopups.eog_empty_water) || "Gyanúsan üres a víz, gyere, nézzünk szét az öböl bejáratánál!";
             setTimeout(() => {
-              window.showPopUp(eogText, () => { });
+              window.showPopUp(eogText, () => { }, 3500);
             }, 400);
           } else if (window.carriedMembranes === 0) {
             setTimeout(() => {
@@ -3401,6 +3445,130 @@ window.showEogSuccessChoicePanel = function () {
 
   choiceOverlay.style.display = 'flex';
   window.isCutscenePlaying = true;
+
+  // 1. Gomb: Tovább halászok
+  const btnFish = document.getElementById('eog-btn-choice-fish');
+  if (btnFish) {
+    btnFish.onclick = function (e) {
+      e.stopPropagation();
+      choiceOverlay.style.display = 'none';
+      window.isCutscenePlaying = false;
+      window.showPopUp("Jó szelet! Bármikor visszatérhetsz a mólóhoz.");
+    };
+  }
+
+  // 2. Gomb: Irány Hebok! -> MP4 Departure videó lejátszása
+  const btnHebok = document.getElementById('eog-btn-choice-hebok');
+  if (btnHebok) {
+    btnHebok.onclick = function (e) {
+      e.stopPropagation();
+      choiceOverlay.style.display = 'none';
+      window.playHebokDepartureVideo();
+    };
+  }
+
+  // 3. Gomb: Kilépek -> Főoldal kijelentkezési rutin, token törlés, index oldal beléptető panel
+  const btnExit = document.getElementById('eog-btn-choice-exit');
+  if (btnExit) {
+    btnExit.onclick = function (e) {
+      e.stopPropagation();
+      choiceOverlay.style.display = 'none';
+
+      // 1. Helyi tokenek és munkamenet adatok teljes törlése
+      sessionStorage.removeItem('ebookPiratesToken');
+      localStorage.removeItem('ebookPiratesToken');
+      localStorage.removeItem('ebook_pirates_username');
+      localStorage.removeItem('ebook_pirates_user_email');
+      sessionStorage.removeItem('ebookPiratesLoginName');
+      sessionStorage.removeItem('ebookPiratesLoginPass');
+      sessionStorage.removeItem('ebook_is_logged_in');
+
+      // 2. Főoldal (app.js) logout rutinjának futtatása -> index.html beléptető panel
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'logout'
+        }, '*');
+      } else {
+        window.location.href = '../index.html';
+      }
+    };
+  }
+};
+
+// --- HEBOK INDULÁSI FIX MP4 VIDEÓ ÉS KINEMATIKA LEJÁTSZÓ ---
+window.startHebokDepartureCinematic = function () {
+  window.eogState = 'DEPARTURE_CINEMATIC';
+  window.isCutscenePlaying = true;
+  window.departureFinished = false;
+  window.departureStartTime = performance.now();
+
+  window.gameTimeProgress = 0.90;
+  if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
+
+  const startPos = (boat && boat.position) ? boat.position.clone() : new THREE.Vector3(5, 0, -94);
+  const waypoints = [
+    startPos,
+    new THREE.Vector3(14.4, 0, -79.4),
+    new THREE.Vector3(-20.1, 0, 48.4),
+    new THREE.Vector3(-37.5, 0, 120.4),
+    new THREE.Vector3(-62.6, 0, 271.3),
+    new THREE.Vector3(-106.7, 0, 391.3),
+    new THREE.Vector3(-189.4, 0, 553.2),
+    new THREE.Vector3(-373.7, 0, 618.8),
+    new THREE.Vector3(-440.6, 0, 750.6),
+    new THREE.Vector3(-479.3, 0, 969.0),
+    new THREE.Vector3(-433.0, 0, 1207.3)
+  ];
+
+  window.departurePath = new THREE.CatmullRomCurve3(waypoints);
+};
+
+window.playHebokDepartureVideo = function () {
+  const videoOverlay = document.getElementById('hebok-departure-video-overlay');
+  const video = document.getElementById('hebok-departure-video');
+
+  function proceedToHebok() {
+    if (videoOverlay) videoOverlay.style.display = 'none';
+    window.eogState = 'DONE';
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'EBOOK_PIRATES_TUTORIAL',
+        action: 'navigate_to_page',
+        page: 'kikoto_oldal'
+      }, '*');
+    } else {
+      window.location.href = 'MainMenuTutorial.html';
+    }
+  }
+
+  if (videoOverlay && video) {
+    window.eogState = 'VIDEO';
+    video.currentTime = 0;
+    video.muted = false;
+    videoOverlay.style.display = 'flex';
+
+    var p = video.play();
+    if (p !== undefined) {
+      p.then(function () {
+        // MP4 videó sikeresen lejátszódik
+      }).catch(function (err) {
+        // Ha az MP4 videó fájl még nem tölthető be a felhőből -> azonnali 3D élőkamerás indulási kinematika
+        videoOverlay.style.display = 'none';
+        window.startHebokDepartureCinematic();
+      });
+    }
+
+    video.onended = function () {
+      proceedToHebok();
+    };
+
+    videoOverlay.onclick = function () {
+      proceedToHebok();
+    };
+  } else {
+    window.startHebokDepartureCinematic();
+  }
 };
 
 // --- EoG Path Editor ---

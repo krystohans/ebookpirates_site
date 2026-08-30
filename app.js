@@ -1192,6 +1192,10 @@ function runTutorialScript() {
                             }
                         }
                     });
+                } else if (event.data.action === 'logout') {
+                    if (typeof logout === 'function') {
+                        logout();
+                    }
                 } else if (event.data.action === 'navigate_to_page') {
                     if (typeof loadPage === 'function') {
                         loadPage(event.data.page || 'kikoto_oldal');

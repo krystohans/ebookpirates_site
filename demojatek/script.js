@@ -1866,50 +1866,27 @@ addEventListener('click', (e) => {
 
   if (e.target.closest('#btn-exit-yes')) {
     // ----------------------------------------------------
-    // JÁTÉKMENTÉS (COOKIE/LOCALSTORAGE/BACKEND) A KILÉPÉSKOR
+    // TELJES KIJELENTKEZÉS (VESSZENEK A HÁRTYÁK GOMB)
     // ----------------------------------------------------
-    const newTotal = Math.max(0, (window.totalPickedUp || 0) - (window.carriedMembranes || 0));
-    const saveState = {
-      totalPickedUp: newTotal,
-      storedMembranes: window.storedMembranes || 0,
-      carriedMembranes: 0,
-      hasSeen: window.monologState ? window.monologState.hasSeen : {},
-      boatPos: window.boat ? { x: window.boat.position.x, y: window.boat.position.y, z: window.boat.position.z } : { x: 5, y: 0, z: -94 },
-      boatRotY: window.boat ? window.boat.rotation.y : 3.874,
-      orbH: typeof window.getOrbH === 'function' ? window.getOrbH() : (window.orbH || 0),
-      orbV: typeof window.getOrbV === 'function' ? window.getOrbV() : (window.orbV || 15),
-      orbDist: typeof window.getOrbDist === 'function' ? window.getOrbDist() : (window.orbDist || 26),
-      airshipState: window.airshipState || 'SLEEP',
-      timestamp: Date.now()
-    };
+    const exitOverlay = document.getElementById('exit-confirm-overlay');
+    if (exitOverlay) exitOverlay.style.display = 'none';
 
-    localStorage.setItem('ebp_tutorial_save', JSON.stringify(saveState));
-    localStorage.setItem('ebook_pirates_game_state', JSON.stringify(saveState));
-    document.cookie = "ebook_pirates_game_state=true; path=/; max-age=86400";
+    sessionStorage.removeItem('ebookPiratesToken');
+    localStorage.removeItem('ebookPiratesToken');
+    localStorage.removeItem('ebook_pirates_username');
+    localStorage.removeItem('ebook_pirates_user_email');
+    sessionStorage.removeItem('ebookPiratesLoginName');
+    sessionStorage.removeItem('ebookPiratesLoginPass');
+    sessionStorage.removeItem('ebook_is_logged_in');
 
-    if (window.boat) {
-      const transform = {
-        x: window.boat.position.x,
-        y: window.boat.position.y,
-        z: window.boat.position.z,
-        rotY: window.boat.rotation.y,
-        orbH: typeof window.getOrbH === 'function' ? window.getOrbH() : 0,
-        orbV: typeof window.getOrbV === 'function' ? window.getOrbV() : 0,
-        orbDist: typeof window.getOrbDist === 'function' ? window.getOrbDist() : 0
-      };
-      localStorage.setItem('saved_boat_transform', JSON.stringify(transform));
-    }
-
-    // PostMessage küldése a szülő weblap (app.js -> backend parancsnoki_hid.js) felé!
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         type: 'EBOOK_PIRATES_TUTORIAL',
-        action: 'saveTutorialState',
-        data: saveState
+        action: 'logout'
       }, '*');
+    } else {
+      window.location.href = '../index.html';
     }
-
-    window.location.href = 'MainMenuTutorial.html';
     return;
   }
 
@@ -3405,32 +3382,61 @@ window.showEogSuccessChoicePanel = function () {
   choiceOverlay.style.display = 'flex';
   window.isCutscenePlaying = true;
 
-  // 1. Gomb: Tovább halászok
+  // 1. Gomb: Tovább halászok -> Csónak visszaállítása a mólóhoz, 0 hártya, tiszta restart mint sziklaütközéskor
   const btnFish = document.getElementById('eog-btn-choice-fish');
   if (btnFish) {
     btnFish.onclick = function (e) {
       e.stopPropagation();
       choiceOverlay.style.display = 'none';
+
+      // Hártyák lenullázása hajón és bázison
+      window.carriedMembranes = 0;
+      window.storedMembranes = 0;
+      window.totalPickedUp = 0;
+      window.totalSpawnedCount = 0;
+      if (typeof window.updateHartyaHUD === 'function') window.updateHartyaHUD();
+
+      // Csónak visszahelyezése a mólóhoz
+      if (window.boat) {
+        window.boat.position.set(5, 0, -94);
+        window.boat.rotation.y = Math.PI + (Math.PI / 4) - (3 * Math.PI / 180);
+      }
+      if (typeof window.setOrb === 'function') {
+        window.setOrb(0, 15.0, 26.0);
+      }
+
+      // Környezeti világítás visszaállítása nappalira
+      window.gameTimeProgress = 0;
+      if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
+
+      // Kezdő hártya lehelyezése
+      if (typeof window.spawnZeroPointMembrane === 'function') {
+        window.spawnZeroPointMembrane();
+      }
+
       window.isCutscenePlaying = false;
-      window.showPopUp("Jó szelet! Bármikor visszatérhetsz a mólóhoz.");
+      window.eogState = 'NONE';
+      window.showPopUp("Új halászat indul a mólóról! Jó szelet!");
     };
   }
 
-  // 2. Gomb: Irány Hebok! -> Közvetlen átlépés Hebok kikötőbe
+  // 2. Gomb: Irány Hebok! -> terkeputazas01.mp4 videó lejátszása + háttérben kikötő előbetöltése
   const btnHebok = document.getElementById('eog-btn-choice-hebok');
   if (btnHebok) {
     btnHebok.onclick = function (e) {
       e.stopPropagation();
       choiceOverlay.style.display = 'none';
+
+      // Háttérben előtöltjük a kikötőt
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
           type: 'EBOOK_PIRATES_TUTORIAL',
-          action: 'navigate_to_page',
+          action: 'preload_page',
           page: 'kikoto_oldal'
         }, '*');
-      } else {
-        window.location.href = '../index.html';
       }
+
+      window.playHebokDepartureVideo();
     };
   }
 
@@ -3460,6 +3466,53 @@ window.showEogSuccessChoicePanel = function () {
         window.location.href = '../index.html';
       }
     };
+  }
+};
+
+// --- HEBOK TÉRKÉP UTAZÁS MP4 VIDEÓ LEJÁTSZÓ ---
+window.playHebokDepartureVideo = function () {
+  const videoOverlay = document.getElementById('hebok-departure-video-overlay');
+  const video = document.getElementById('hebok-departure-video');
+
+  function proceedToHebok() {
+    if (videoOverlay) videoOverlay.style.display = 'none';
+    window.eogState = 'DONE';
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'EBOOK_PIRATES_TUTORIAL',
+        action: 'navigate_to_page',
+        page: 'kikoto_oldal'
+      }, '*');
+    } else {
+      window.location.href = '../index.html';
+    }
+  }
+
+  if (videoOverlay && video) {
+    window.eogState = 'VIDEO'; // 3D render loop szüneteltetése a videó alatt
+    video.currentTime = 0;
+    video.muted = false;
+    videoOverlay.style.display = 'flex';
+
+    var p = video.play();
+    if (p !== undefined) {
+      p.catch(function () {
+        video.muted = true;
+        video.play().catch(function () {
+          proceedToHebok();
+        });
+      });
+    }
+
+    video.onended = function () {
+      proceedToHebok();
+    };
+
+    videoOverlay.onclick = function () {
+      proceedToHebok();
+    };
+  } else {
+    proceedToHebok();
   }
 };
 

@@ -1178,10 +1178,7 @@ function runTutorialScript() {
                     }
                 } else if (event.data.action === 'tutorial_completed') {
                     callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
-                        console.log('Tutorial befejezve válasz:', res);
-                        if (panel) panel.style.display = 'none';
-                        if (quiz) quiz.style.display = 'none';
-                        if (nav) nav.style.display = 'block';
+                        console.log('Tutorial befejezve és felírva válasz:', res);
 
                         if (res && res.alreadyCompleted) {
                             var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
@@ -1192,10 +1189,6 @@ function runTutorialScript() {
                             } else {
                                 alert(veteranMsg);
                                 if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                            }
-                        } else {
-                            if (typeof loadPage === 'function') {
-                                loadPage('kikoto_oldal');
                             }
                         }
                     });

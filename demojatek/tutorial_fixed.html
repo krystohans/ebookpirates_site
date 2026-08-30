@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eBookPirates – Kalózsziget 3D Tutorial</title>
-  <link rel="stylesheet" href="style.css?v=2.1">
+  <link rel="stylesheet" href="style.css?v=20260830_05">
 
   <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
   <style>
@@ -121,7 +121,7 @@
   <div id="eog-fade-overlay" style="display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 1.2s ease-in-out;"></div>
 
   <div id="eog-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1001; align-items: center; justify-content: center;">
-    <video id="eog-video" muted playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_EoG_video.mp4"></video>
+    <video id="eog-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_EoG_video.mp4"></video>
   </div>
 
   <!-- ─── END RUTIN OVERLAYS ─── -->
@@ -287,8 +287,8 @@
       });
     })();
   </script>
-  <script src="quiz_manager.js"></script>
-  <script type="module" src="script.js"></script>
+  <script src="quiz_manager.js?v=20260830_05"></script>
+  <script type="module" src="script.js?v=20260830_05"></script>
 </body>
 
 </html>

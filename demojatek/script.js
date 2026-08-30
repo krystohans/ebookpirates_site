@@ -1948,6 +1948,13 @@ resize();
 
 function frame() {
   requestAnimationFrame(frame);
+
+  // A videó lejátszása alatt leállítjuk a teljes 3D renderelést és fizikai számításokat,
+  // így a GPU és CPU 100%-ban a hardveres videó dekódolásra tud koncentrálni, megszüntetve a laggot!
+  if (window.eogState === 'VIDEO') {
+    return;
+  }
+
   const rawDt = clock.getDelta();
 
   const dt = window.isCutscenePlaying ? 0 : Math.min(rawDt, 0.05);
@@ -3099,16 +3106,20 @@ function startEogVideo() {
   const video = document.getElementById('eog-video');
   if (overlay && video) {
     video.muted = true;
+    video.currentTime = 0;
     video.playbackRate = 1.0;
     overlay.style.display = 'flex';
-    video.play().catch(function (e) {
-      overlay.style.cursor = 'pointer';
-      overlay.addEventListener('click', function onceClick() {
-        video.play();
-        overlay.removeEventListener('click', onceClick);
-      }, { once: true });
-    });
-    video.addEventListener('ended', function () {
+    var playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function (e) {
+        overlay.style.cursor = 'pointer';
+        overlay.addEventListener('click', function onceClick() {
+          video.play();
+          overlay.removeEventListener('click', onceClick);
+        }, { once: true });
+      });
+    }
+    video.onended = function () {
       window.eogState = 'DONE';
       overlay.style.display = 'none';
       const fadeEl = document.getElementById('eog-fade-overlay');
@@ -3122,7 +3133,7 @@ function startEogVideo() {
       setTimeout(function () {
         window.startEogBoatNamingRoutine();
       }, 2000);
-    });
+    };
   }
 }
 
@@ -3352,43 +3363,35 @@ window.showEogFinalPanel = function () {
     return;
   }
 
-  const finalOverlay = document.getElementById('eog-final-overlay');
-  if (!finalOverlay) return;
+  // 1. Végleges mentés LocalStorage-ba
+  const bName = window.eogBoatName || 'Gyöngyhalász';
+  const finalHartya = (typeof window.storedMembranes === 'number' && window.storedMembranes > 0) ? window.storedMembranes : ((typeof window.totalPickedUp === 'number' && window.totalPickedUp > 0) ? window.totalPickedUp : 30);
 
-  finalOverlay.style.display = 'flex';
-  finalOverlay.onclick = function () {
-    finalOverlay.style.display = 'none';
+  const finalSaveState = {
+    completed: true,
+    boatName: bName,
+    storedMembranes: finalHartya,
+    totalPickedUp: finalHartya,
+    timestamp: Date.now()
+  };
+  localStorage.setItem('ebp_tutorial_save', JSON.stringify(finalSaveState));
+  localStorage.setItem('ebook_pirates_game_state', JSON.stringify(finalSaveState));
 
-    // 1. Végleges mentés LocalStorage-ba
-    const bName = window.eogBoatName || 'Gyöngyhalász';
-    const finalHartya = (typeof window.storedMembranes === 'number' && window.storedMembranes > 0) ? window.storedMembranes : ((typeof window.totalPickedUp === 'number' && window.totalPickedUp > 0) ? window.totalPickedUp : 30);
-
-    const finalSaveState = {
-      completed: true,
-      boatName: bName,
+  // 2. PostMessage küldése a szülő keret (app.js -> backend parancsnoki_hid.js) felé a táblázatos jóváíráshoz!
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({
+      type: 'EBOOK_PIRATES_TUTORIAL',
+      action: 'tutorial_completed',
+      score: finalHartya,
       storedMembranes: finalHartya,
       totalPickedUp: finalHartya,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('ebp_tutorial_save', JSON.stringify(finalSaveState));
-    localStorage.setItem('ebook_pirates_game_state', JSON.stringify(finalSaveState));
+      passed: true,
+      boatName: bName
+    }, '*');
+  }
 
-    // 2. PostMessage küldése a szülő keret (app.js -> backend parancsnoki_hid.js) felé!
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'EBOOK_PIRATES_TUTORIAL',
-        action: 'tutorial_completed',
-        score: finalHartya,
-        storedMembranes: finalHartya,
-        totalPickedUp: finalHartya,
-        passed: true,
-        boatName: bName
-      }, '*');
-    } else {
-      // Átlépés a MainMenu-be ha önállóan fut
-      window.location.href = 'MainMenuTutorial.html';
-    }
-  };
+  // 3. Azonnal megjelenítjük a 3-gombos visszajelző panelt ("Kincseid felírásra kerültek...")!
+  window.showEogSuccessChoicePanel();
 };
 
 // --- KINCSEK SIKERES FELÍRÁSA VISSZAJELZŐ ÉS VÁLASZTÓ PANEL ---

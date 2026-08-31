@@ -7,6 +7,11 @@
   <!-- Behúzzuk az eredeti stíluslapot a betűtípus (Briskb) és egyebek miatt -->
   <link rel="stylesheet" href="style.css">
   
+  <!-- 👁️ Hivatalos Akadálymentes Betűtípus: Atkinson Hyperlegible (Braille Institute of America) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  
   <style>
     /* Teljes képernyős, középre igazító konténer */
     body, html {
@@ -90,6 +95,245 @@
       cursor: not-allowed !important;
       pointer-events: none !important;
     }
+
+    /* ─── AKADÁLYMENTES TUTORIAL OVERLAY & INFOPANEL (ATKINSON HYPERLEGIBLE TYPOGRAPHY) ─── */
+    #acc-tutorial-overlay,
+    #acc-tutorial-overlay * {
+      font-family: 'Atkinson Hyperlegible', Arial, sans-serif !important;
+      letter-spacing: 0.25px;
+    }
+
+    #acc-tutorial-overlay {
+      display: none !important;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.94);
+      z-index: 99999;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 15px;
+    }
+
+    .acc-modal-box {
+      position: relative;
+      width: 960px;
+      max-width: 96vw;
+      height: 90vh;
+      max-height: 820px;
+      background: #141210;
+      border: 3px solid #d4af37;
+      border-radius: 12px;
+      box-sizing: border-box;
+      padding: 35px 45px 30px 45px;
+      display: flex;
+      flex-direction: column;
+      filter: drop-shadow(0 15px 45px rgba(0, 0, 0, 0.95));
+      color: #f0f0f0;
+      user-select: none;
+    }
+
+    .acc-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      background: #251e18;
+      border: 2px solid #d4af37;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+      font-weight: bold;
+      font-size: 18px;
+      transition: transform 0.15s;
+      z-index: 10;
+    }
+    .acc-close-btn:hover {
+      transform: scale(1.15);
+      background: #3d3024;
+    }
+
+    .acc-scrollable-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 12px;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: #d4af37 #251e18;
+    }
+
+    .acc-scrollable-content::-webkit-scrollbar {
+      width: 10px;
+    }
+    .acc-scrollable-content::-webkit-scrollbar-track {
+      background: #251e18;
+      border-radius: 5px;
+    }
+    .acc-scrollable-content::-webkit-scrollbar-thumb {
+      background: #d4af37;
+      border-radius: 5px;
+    }
+
+    .acc-accordion-item {
+      margin-bottom: 8px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .acc-accordion-header {
+      width: 100%;
+      background: #221c16;
+      border: 1.5px solid #8b5a2b;
+      border-radius: 6px;
+      color: #ffd700;
+      font-size: 19px;
+      font-weight: bold;
+      padding: 12px 18px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s;
+      box-sizing: border-box;
+    }
+    .acc-accordion-header:hover {
+      background: #352a20;
+      border-color: #d4af37;
+      color: #ffffff;
+    }
+
+    .acc-accordion-body {
+      display: none;
+      background: #191410;
+      border: 1.5px solid #8b5a2b;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      padding: 16px 22px;
+      color: #f5f5f5;
+      font-size: 16px;
+      line-height: 1.65;
+      text-align: justify;
+    }
+
+    .acc-primary-btn {
+      background: linear-gradient(180deg, #d4af37 0%, #aa801e 100%);
+      border: 2px solid #ffd700;
+      border-radius: 8px;
+      color: #111111;
+      padding: 12px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+      transition: transform 0.1s, background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .acc-primary-btn:hover {
+      transform: scale(1.04);
+      background: linear-gradient(180deg, #ffea00 0%, #d4af37 100%);
+    }
+
+    /* Kvíz Stílusok */
+    .acc-quiz-option-btn {
+      width: 100%;
+      min-height: 52px;
+      background: #251e18;
+      border: 2px solid #8b5a2b;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: bold;
+      padding: 11px 20px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.12s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .acc-quiz-option-btn:hover:not(.disabled) {
+      background: #3d3024;
+      border-color: #ffd700;
+      transform: translateX(4px);
+    }
+    .acc-quiz-option-btn.correct {
+      background: #145a23 !important;
+      border-color: #2ed573 !important;
+      color: #ffffff !important;
+    }
+    .acc-quiz-option-btn.wrong {
+      background: #7a1515 !important;
+      border-color: #ff4757 !important;
+      color: #ffffff !important;
+    }
+
+    /* Beviteli mező a csónak névadáshoz */
+    .acc-text-input {
+      width: 320px;
+      max-width: 90%;
+      height: 48px;
+      background: #191410;
+      border: 2px solid #d4af37;
+      border-radius: 6px;
+      color: #ffea00;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .acc-text-input:focus {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+    }
+
+    /* 🔊 Web Speech API Felolvasó Gomb */
+    .acc-speaker-btn {
+      background: rgba(212, 175, 55, 0.15);
+      border: 1.5px solid #d4af37;
+      border-radius: 6px;
+      color: #ffd700;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      user-select: none;
+      vertical-align: middle;
+    }
+    .acc-speaker-btn:hover {
+      background: rgba(212, 175, 55, 0.35);
+      border-color: #ffffff;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+    .acc-speaker-btn.speaking {
+      background: #7a1515 !important;
+      border-color: #ff4757 !important;
+      color: #ffffff !important;
+      animation: accPulse 1.2s infinite;
+    }
+    @keyframes accPulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.75; transform: scale(1.03); }
+      100% { opacity: 1; }
+    }
   </style>
 
   <script>
@@ -119,17 +363,13 @@
         btnContinue.classList.add('disabled');
       }
 
-      // --- 2. VISSZA A KIKÖTŐBE / HEBOK ELLENŐRZÉSE (Honlap navigáció) ---
-      const referrer = document.referrer;
-      const isFromWebsite = referrer && (referrer.includes('ebookpirates') || referrer.includes('kikoto'));
-      
+      // --- 2. VISSZA A KIKÖTŐBE GOMB KEZELÉSE ---
       const btnHarbor = document.getElementById('btn-back-to-harbor');
       if (btnHarbor) {
-        if (!isFromWebsite) {
-          btnHarbor.innerText = 'Hebok';
-        } else {
-          btnHarbor.innerText = 'Vissza a Kikötőbe';
-        }
+        btnHarbor.innerText = 'Vissza a Kikötőbe';
+        btnHarbor.onclick = function () {
+          window.location.href = 'https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';
+        };
       }
     });
 
@@ -149,6 +389,415 @@
                            document.cookie.includes('ebook_pirates_game_state=true');
       if (hasSaveState) {
         window.location.href = 'tutorial_fixed.html?load=1';
+      }
+    }
+
+    // ─── AKADÁLYMENTES TUTORIAL & KVÍZ MOTOR (RANDOMIZÁLT VÁLASZOK + ÚJRA-SORBAÁLLÍTÁS) ───
+    let accQuizAllQuestions = [];
+    let accActiveQuizQueue = [];
+    let accTargetCount = 10;
+    let accCompletedCount = 0;
+    let accIsAnswering = false;
+    let accBoatName = 'Gyöngyhalász';
+
+    // ─── WEB SPEECH API HANGOS FELOLVASÓ MOTOR ───
+    let accActiveSpeechBtn = null;
+
+    function stopAccSpeech() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (accActiveSpeechBtn) {
+        accActiveSpeechBtn.classList.remove('speaking');
+        const iconSpan = accActiveSpeechBtn.querySelector('.speaker-icon');
+        if (iconSpan) iconSpan.innerText = '🔊';
+        accActiveSpeechBtn = null;
+      }
+    }
+
+    function toggleAccSpeech(text, btnElement) {
+      if (!('speechSynthesis' in window)) {
+        alert('A böngésződ sajnos nem támogatja a közvetlen hangos felolvasást.');
+        return;
+      }
+
+      // Ha már ez a gomb beszél -> megállítjuk
+      if (accActiveSpeechBtn === btnElement) {
+        stopAccSpeech();
+        return;
+      }
+
+      // Előző leállítása
+      stopAccSpeech();
+
+      if (!text || text.trim() === '') return;
+
+      // HTML tag-ek eltávolítása a tiszta szöveghez
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = text;
+      const cleanText = tempDiv.textContent || tempDiv.innerText || '';
+
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'hu-HU';
+      utterance.rate = 0.95; // Tiszta, jól érthető tempó
+      utterance.pitch = 1.0;
+
+      // Magyar nyelvű hangmotor kiválasztása, ha van
+      const voices = window.speechSynthesis.getVoices();
+      const huVoice = voices.find(v => v.lang && (v.lang.startsWith('hu') || v.lang.includes('HU')));
+      if (huVoice) utterance.voice = huVoice;
+
+      utterance.onstart = () => {
+        accActiveSpeechBtn = btnElement;
+        btnElement.classList.add('speaking');
+        const iconSpan = btnElement.querySelector('.speaker-icon');
+        if (iconSpan) iconSpan.innerText = '⏹️';
+      };
+
+      utterance.onend = () => {
+        stopAccSpeech();
+      };
+
+      utterance.onerror = () => {
+        stopAccSpeech();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function speakAccIntro(btn) {
+      const title = "Akadálymentes Tutorial és Kalózvizsga.";
+      const desc = "A Tutorial célja: Ebben a módban a 3D ügyességi csónakázás helyett közvetlenül a játék elméleti alapjainak elsajátításával és a kalózvizsga sikeres letételével szerezheted meg a hivatalos kalóz jogosultságot és a kezdő felszerelésedet: harminc darab hártya, plusz tíz kalózkredit, egy fejezettekercs, egy térkép és a saját hajód. Olvasd át figyelmesen az alábbi fejezeteket, majd kattints a Vizsga indítása gombra!";
+      toggleAccSpeech(title + " " + desc, btn);
+    }
+
+    function speakAccAccordion(index, btn) {
+      const headerText = document.getElementById(`acc-header-text-${index}`).innerText;
+      const bodyText = document.getElementById(`acc-body-${index}`).innerText;
+      toggleAccSpeech(headerText + ". " + bodyText, btn);
+    }
+
+    function speakCurrentQuizQuestion(btn) {
+      if (accActiveQuizQueue.length === 0) return;
+      const q = accActiveQuizQueue[0];
+      const qText = q.question || q.Kerdes || '';
+      
+      const buttons = document.querySelectorAll('.acc-quiz-option-btn');
+      let answersText = '';
+      buttons.forEach((b) => {
+        answersText += b.innerText + ". ";
+      });
+
+      toggleAccSpeech("Kérdés: " + qText + ". Válaszlehetőségek: " + answersText, btn);
+    }
+
+    // 🔊 Gomb fölé navigáláskor hangos visszajelzés ("Felolvasás")
+    let accHoverSpeechTimeout = null;
+
+    function announceAccSpeechHover(btn) {
+      if (!('speechSynthesis' in window)) return;
+
+      // Ha éppen bármilyen felolvasás fut, szigorúan TILOS megszakítani az egér mozgására!
+      if (accActiveSpeechBtn !== null || window.speechSynthesis.speaking) {
+        return;
+      }
+
+      if (accHoverSpeechTimeout) clearTimeout(accHoverSpeechTimeout);
+      accHoverSpeechTimeout = setTimeout(() => {
+        // Késleltetés után újra ellenőrizzük, hogy nem beszél-e éppen a felolvasó
+        if (accActiveSpeechBtn !== null || window.speechSynthesis.speaking) {
+          return;
+        }
+
+        const u = new SpeechSynthesisUtterance("Felolvasás");
+        u.lang = 'hu-HU';
+        u.rate = 1.2; // Gyors, diszkrét bemondás
+        u.pitch = 1.05;
+
+        const voices = window.speechSynthesis.getVoices();
+        const huVoice = voices.find(v => v.lang && (v.lang.startsWith('hu') || v.lang.includes('HU')));
+        if (huVoice) u.voice = huVoice;
+
+        window.speechSynthesis.speak(u);
+      }, 60);
+    }
+
+    function openAccessibilityTutorial() {
+      const overlay = document.getElementById('acc-tutorial-overlay');
+      const infoView = document.getElementById('acc-info-view');
+      const quizView = document.getElementById('acc-quiz-view');
+      const namingView = document.getElementById('acc-quiz-naming-view');
+      const summaryView = document.getElementById('acc-quiz-summary-view');
+
+      if (overlay) {
+        overlay.style.setProperty('display', 'flex', 'important');
+        if (infoView) infoView.style.display = 'flex';
+        if (quizView) quizView.style.display = 'none';
+        if (namingView) namingView.style.display = 'none';
+        if (summaryView) summaryView.style.display = 'none';
+      }
+    }
+
+    function closeAccessibilityTutorial() {
+      stopAccSpeech();
+      const overlay = document.getElementById('acc-tutorial-overlay');
+      if (overlay) overlay.style.setProperty('display', 'none', 'important');
+    }
+
+    function toggleAccAccordion(index) {
+      const body = document.getElementById(`acc-body-${index}`);
+      const icon = document.getElementById(`acc-icon-${index}`);
+      if (!body) return;
+      
+      const isOpen = body.style.display === 'block';
+      
+      // Zárjuk be az összes többit és csak a lenyitó nyilakat (acc-icon-*) állítsuk vissza!
+      document.querySelectorAll('.acc-accordion-body').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('[id^="acc-icon-"]').forEach(el => el.innerText = '▶');
+      
+      if (!isOpen) {
+        body.style.display = 'block';
+        if (icon) icon.innerText = '▼';
+      }
+    }
+
+    async function startAccessibilityQuiz() {
+      stopAccSpeech();
+      const infoView = document.getElementById('acc-info-view');
+      const quizView = document.getElementById('acc-quiz-view');
+      const namingView = document.getElementById('acc-quiz-naming-view');
+      const summaryView = document.getElementById('acc-quiz-summary-view');
+      const questionArea = document.getElementById('acc-quiz-question-area');
+
+      if (infoView) infoView.style.display = 'none';
+      if (quizView) quizView.style.display = 'flex';
+      if (namingView) namingView.style.display = 'none';
+      if (summaryView) summaryView.style.display = 'none';
+      if (questionArea) questionArea.style.display = 'block';
+
+      accCompletedCount = 0;
+
+      if (accQuizAllQuestions.length === 0) {
+        try {
+          const res = await fetch('quiz_questions.json');
+          if (res.ok) {
+            const data = await res.json();
+            accQuizAllQuestions = data.filter(q => q.category === 'TUTOR_GameInfo' || !q.category);
+          }
+        } catch (e) {
+          console.warn("Kvízkérdések betöltése:", e);
+        }
+      }
+
+      // Keverjük össze a kérdéseket és készítsük el az aktív kérdéssort
+      const pool = [...accQuizAllQuestions].sort(() => 0.5 - Math.random());
+      accTargetCount = Math.min(10, pool.length);
+      accActiveQuizQueue = pool.slice(0, accTargetCount);
+
+      renderAccQuizQuestion();
+    }
+
+    function renderAccQuizQuestion() {
+      accIsAnswering = false;
+      const qTextEl = document.getElementById('acc-quiz-question-text');
+      const counterEl = document.getElementById('acc-quiz-counter');
+      const optionsContainer = document.getElementById('acc-quiz-options');
+      const feedbackEl = document.getElementById('acc-quiz-feedback');
+
+      if (feedbackEl) feedbackEl.innerText = '';
+
+      // Ha elfogytak a kérdések a sorból (mindent sikeresen megválaszolt!)
+      if (accActiveQuizQueue.length === 0 || accCompletedCount >= accTargetCount) {
+        startAccBoatNamingRoutine();
+        return;
+      }
+
+      const q = accActiveQuizQueue[0];
+      const remaining = accActiveQuizQueue.length;
+      if (counterEl) {
+        counterEl.innerText = `Sikeres válaszok: ${accCompletedCount} / ${accTargetCount} (Sorban hátralévő: ${remaining})`;
+      }
+      if (qTextEl) qTextEl.innerHTML = q.question || q.Kerdes || '';
+
+      if (optionsContainer) {
+        optionsContainer.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+
+        // Eredeti válaszok és a helyes válasz szövegének kinyerése
+        let rawAnswers = q.answers ? [...q.answers] : [q.A, q.B, q.C, q.D];
+        rawAnswers = rawAnswers.filter(a => a !== undefined && a !== null && a !== '');
+        const origCorrectIdx = q.correctIndex !== undefined ? q.correctIndex : 0;
+        const correctText = rawAnswers[origCorrectIdx] || rawAnswers[0];
+
+        // Válaszok véletlenszerű megkeverése (Fisher-Yates shuffle)
+        for (let i = rawAnswers.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [rawAnswers[i], rawAnswers[j]] = [rawAnswers[j], rawAnswers[i]];
+        }
+
+        // Megkeressük az új helyes indexet a megkevert tömbben
+        const newCorrectIdx = rawAnswers.indexOf(correctText);
+
+        rawAnswers.forEach((ans, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'acc-quiz-option-btn';
+          btn.innerHTML = `<span style="color:#ffd700; min-width:24px;">[${letters[idx]}]</span> <span>${ans}</span>`;
+          btn.onclick = () => handleAccQuizAnswer(idx, newCorrectIdx, btn, q);
+          optionsContainer.appendChild(btn);
+        });
+      }
+    }
+
+    function handleAccQuizAnswer(selectedIdx, correctIdx, btnElement, currentQuestion) {
+      if (accIsAnswering) return;
+      accIsAnswering = true;
+
+      const buttons = document.querySelectorAll('.acc-quiz-option-btn');
+      buttons.forEach(b => b.classList.add('disabled'));
+
+      const feedbackEl = document.getElementById('acc-quiz-feedback');
+
+      if (selectedIdx === correctIdx) {
+        btnElement.classList.add('correct');
+        accCompletedCount++;
+        // Levesszük a sikeresen megválaszolt kérdést a sor elejéről
+        accActiveQuizQueue.shift();
+        if (feedbackEl) {
+          feedbackEl.style.color = '#2ed573';
+          feedbackEl.innerText = '✓ Helyes válasz!';
+        }
+      } else {
+        btnElement.classList.add('wrong');
+        if (buttons[correctIdx]) buttons[correctIdx].classList.add('correct');
+        // Helytelen válasz: a kérdést áttesszük a kérdéssor VÉGÉRE, hogy újra feljöjjön!
+        const wrongQ = accActiveQuizQueue.shift();
+        accActiveQuizQueue.push(wrongQ);
+        if (feedbackEl) {
+          feedbackEl.style.color = '#ff4757';
+          feedbackEl.innerText = '✗ Helytelen válasz! Ez a kérdés újra fel fog bukkanni a vizsgán.';
+        }
+      }
+
+      setTimeout(() => {
+        renderAccQuizQuestion();
+      }, 1200);
+    }
+
+    // ─── AKADÁLYMENTES CSÓNAK NÉVADÁS ÉS KINCSFELÍRÁS ───
+    function startAccBoatNamingRoutine() {
+      const questionArea = document.getElementById('acc-quiz-question-area');
+      const namingView = document.getElementById('acc-quiz-naming-view');
+      const nameInput = document.getElementById('acc-boat-name-input');
+      
+      if (questionArea) questionArea.style.display = 'none';
+      if (namingView) namingView.style.display = 'flex';
+      if (nameInput) {
+        nameInput.value = '';
+        setTimeout(() => nameInput.focus(), 100);
+      }
+    }
+
+    function submitAccBoatName() {
+      const nameInput = document.getElementById('acc-boat-name-input');
+      const val = nameInput ? nameInput.value.trim() : '';
+      if (!val) {
+        alert('Kérlek, adj meg egy nevet a csónakodnak!');
+        return;
+      }
+      accBoatName = val;
+      showAccSummaryPanel();
+    }
+
+    function skipAccBoatName() {
+      let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName') || 'Kaloz';
+      const cleanName = userName.replace(/[^a-zA-Z0-9]/g, '');
+      const basePrefix = cleanName.length >= 4 ? cleanName.substring(0, 4) : (cleanName || 'Kalo');
+      accBoatName = basePrefix + '_boat01';
+      showAccSummaryPanel();
+    }
+
+    function showAccSummaryPanel() {
+      const namingView = document.getElementById('acc-quiz-naming-view');
+      const summaryView = document.getElementById('acc-quiz-summary-view');
+      const summaryTextEl = document.getElementById('acc-quiz-summary-text');
+
+      if (namingView) namingView.style.display = 'none';
+      if (summaryView) summaryView.style.display = 'flex';
+
+      if (summaryTextEl) {
+        summaryTextEl.innerHTML = 
+          `<b style="color: #ffd700; font-size: 24px;">Megszerzett Kincseid:</b><br><br>` +
+          `• <b>30 db</b> hártya<br>` +
+          `• <b>1 db</b> Hebok térkép<br>` +
+          `• <b>10</b> kalózkredit<br>` +
+          `• <b>1 db</b> tekercs<br>` +
+          `• <b>1 db</b> csónak (10 HP), név: <b style="color: #ffea00;">${accBoatName}</b>`;
+      }
+    }
+
+    function finalizeAccTutorialAndDepart() {
+      const videoOverlay = document.getElementById('acc-video-overlay');
+      const video = document.getElementById('acc-departure-video');
+
+      // 1. Mentés LocalStorage-ba (fix 30 hártya)
+      const finalSaveState = {
+        completed: true,
+        boatName: accBoatName,
+        storedMembranes: 30,
+        totalPickedUp: 30,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('ebp_tutorial_save', JSON.stringify(finalSaveState));
+      localStorage.setItem('ebook_pirates_game_state', JSON.stringify(finalSaveState));
+
+      // 2. Tranzakció küldése a Backend felé
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'tutorial_completed',
+          score: 30,
+          storedMembranes: 30,
+          totalPickedUp: 30,
+          passed: true,
+          boatName: accBoatName
+        }, '*');
+      }
+
+      function proceedToHarbor() {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'EBOOK_PIRATES_TUTORIAL',
+            action: 'navigate_to_page',
+            page: 'kikoto_oldal'
+          }, '*');
+        }
+        window.location.href = 'https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';
+      }
+
+      // 3. Videó elindítása és közvetlen átirányítás Hebok kikötőbe
+      if (videoOverlay && video) {
+        videoOverlay.style.display = 'flex';
+        video.currentTime = 0;
+        video.muted = false;
+
+        var p = video.play();
+        if (p !== undefined) {
+          p.catch(function () {
+            video.muted = true;
+            video.play().catch(function () {
+              proceedToHarbor();
+            });
+          });
+        }
+
+        video.onended = function () {
+          proceedToHarbor();
+        };
+        videoOverlay.onclick = function () {
+          proceedToHarbor();
+        };
+      } else {
+        proceedToHarbor();
       }
     }
   </script>
@@ -206,7 +855,6 @@
     </div>
 
     <!-- Nyelvi Ikon -->
-    <!-- Középre igazítjuk a hatalmas logó és a gombok között -->
     <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="window.location.href='SettingsMenu.html?langSelector=true'" title="Nyelv / Language">
       <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
     </div>
@@ -215,9 +863,229 @@
     <div class="menu-button" onclick="startNewGame()">Új Játék</div>
     <div id="btn-continue-game" class="menu-button" onclick="continueGame()">Játék Folytatása</div>
     <div class="menu-button" onclick="window.location.href='SettingsMenu.html';">Beállítások</div>
-    <div class="menu-button" onclick="window.location.href='LoginMenu.html';">Belépés / Regisztráció</div>
-    <div id="btn-back-to-harbor" class="menu-button">Vissza a Kikötőbe</div>
+    <div class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
+    <div id="btn-back-to-harbor" class="menu-button" onclick="window.location.href='https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';">Vissza a Kikötőbe</div>
 
+  </div>
+
+  <!-- 📜 AKADÁLYMENTES TUTORIAL & KVÍZ OVERLAY ABLAK -->
+  <div id="acc-tutorial-overlay" style="display: none !important;">
+    <div class="acc-modal-box">
+      <!-- Bezáró gomb (Jobb felső sarok) -->
+      <div class="acc-close-btn" onclick="closeAccessibilityTutorial()" title="Bezárás">✕</div>
+
+      <!-- 1. NÉZET: A LEGFONTOSABB TUDNIVALÓK & BEVEZETŐ (ACCORDION) -->
+      <div id="acc-info-view" style="display: flex; flex-direction: column; height: 100%; width: 100%;">
+        <!-- Akadálymentes Bevezető Kártya -->
+        <div style="background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 16px 22px; margin-bottom: 14px; color: #f5f5f5; text-align: justify; font-size: 15.5px; line-height: 1.55;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h2 style="font-size: 24px; color: #ffd700; margin: 0;">Akadálymentes Tutorial & Kalózvizsga</h2>
+            <button class="acc-speaker-btn" onclick="speakAccIntro(this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Bevezető felolvasása"><span class="speaker-icon">🔊</span> Felolvasás</button>
+          </div>
+          <p style="margin: 0 0 8px 0;"><b>A Tutorial célja:</b> Ebben a módban a 3D ügyességi csónakázás helyett közvetlenül a játék elméleti alapjainak elsajátításával és a kalózvizsga sikeres letételével szerezheted meg a hivatalos kalóz jogosultságot és a kezdő felszerelésedet (<b>30 db hártya, +10 kalózkredit, 1 fejezettekercs, 1 térkép és a saját hajód</b>).</p>
+          <p style="margin: 0; color: #ffd700;">Olvasd át figyelmesen az alábbi fejezeteket, majd kattints a <b>Vizsga indítása</b> gombra!</p>
+        </div>
+
+        <div class="acc-scrollable-content">
+          <!-- 1. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(1)">
+              <span id="acc-header-text-1">Egy Új Irodalmi Ökoszisztéma</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(1, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-1">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-1" class="acc-accordion-body">
+              Abrigó nem csupán egy díszlet; ez egy magas szintű irodalmi igényességgel megalkotott fantasy és sci-fi univerzum, ahol a társadalom groteszk valósága éppoly élesen metsz, mint a filmszerűen feszült, pörgősebb akciójelenetek. Ebben a világban a klasszikus filozófiák és a taoizmus csendes bölcsessége feszül egymásnak a Lovecrafti sejtelmességgel és a King-i hangulatkeltéssel. Itt a karakterek nem kartonfigurák: hús-vér emberek, saját háttérrel és egyedi, szocializációjukhoz hű beszédstílussal. Abrigó krónikái nem szégyenlősek: az élet minden mozzanatát explicit módon tárják elénk – szereplőink esznek, alszanak, ürítenek, nemi életet élnek, hibáznak, megbetegszenek és meghalnak. A történetvezetés dramaturgiai precizitással követi a tágabb képtől a konkrétumokig tartó leírásokat, miközben a nézőpont-váltásokkal és a nem lineáris idővonallal az olvasóra vár a feladat, hogy a mozaikdarabkákból összeállítsa a nagy egészet.<br><br>
+              Abrigó világa sosem állandó: a háttérben futó program minden expedíciót egyéni ötletek alapján épít fel. A játék önmagát fejleszti az interakciók és visszajelzések során, karakterei pedig folyamatosan érnek, egyre magasabb szintű segítséget és kifinomultabb kommunikációt kínálva a játékosoknak. Itt nem csupán olvasol – részese vagy egy öntanuló, lüktető irodalmi evolúciónak.
+            </div>
+          </div>
+
+          <!-- 2. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(2)">
+              <span id="acc-header-text-2">Ahol a Valóság és a Képzelet Új Szövetséget Köt</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(2, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-2">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-2" class="acc-accordion-body">
+              Ebben a környezetben kel új életre a magyar e-könyv. Abrigó egy exkluzív platform, ahol minden írás egyedi, rejtett kódolással ellátott, így az illegális terjesztés visszakövethető a forrásig. A rendszer azonban megszabadult a könyvkiadás merev béklyóitól: a szerző vagy a kiadó bármikor frissítheti, bővítheti művét, ami azonnal elérhetővé válik minden tulajdonos számára. Ez egy közösségi játék is egyben: a játékosok olvasóköröket alkotnak, expedíciókat indítanak különlegességekért, és az aktív terjesztésért, közösségi munkáért Tálentumokban mérhető jutalékot kapnak. Legyen szó egyéni akciókról vagy csapatmunkáról, az ingyenes olvasás és a fejlődés lehetősége mindenki előtt nyitva áll.
+            </div>
+          </div>
+
+          <!-- 3. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(3)">
+              <span id="acc-header-text-3">Ahol a Történet Életre Kel</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(3, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-3">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-3" class="acc-accordion-body">
+              Az írói babérokra törők számára a rendszer a lehetőségek tárháza: a Taverna füstös mélyén szakértő bétázók segítik az első szárnypróbálgatásokat, míg a Felhőkolostor csendjében bölcs monkok, grafikusok és fordítók csiszolják véglegesre a leendő kiadványokat. A kiadók számára ez a terep a kockázatmentes jövő: itt mérhető fel valódi igény, itt születnek az új nevek, és itt indíthatók el azok a játékkampányok, melyek a nyomdai siker előszobái. Ebben a folyamatosan öntanuló és fejlődő univerzumban nincs két egyforma kaland; a karakterek a tapasztalatok mentén érnek, a párbeszédek pedig tükrözik a származást és a sorsot. Lépjen be ön is: ahol a történet véget ér, ott kezdődik az igazi utazás.
+            </div>
+          </div>
+
+          <!-- 4. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(4)">
+              <span id="acc-header-text-4">A világról</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(4, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-4">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-4" class="acc-accordion-body">
+              Abrigó világán a titkos kalózkikötőt Heboknak hívják. Itt találod a Piacot, a Könyvszentélyt és a Tavernát is sok másik épülettel egyetemben. Ezek részletesebb leírásait az ottani infópaneleken olvashatod. A Kikötőben bérelhetsz hajót, de a Hajóműhelyben készíttethetsz sajátot is, akár egyedi tervek alapján. A Tavernában vehetsz fel legénységet, de te is csatlakozhatsz egy másik küldetéshez csapattagként. A lényeg, hogy minél több könyved legyen, mert itt az adja a rangot és a vagyont.
+            </div>
+          </div>
+
+          <!-- 5. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(5)">
+              <span id="acc-header-text-5">Pénzek</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(5, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-5">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-5" class="acc-accordion-body">
+              A játékban Kalózkreditet és Tálentumot használunk.<br><br>
+              • <b>Kalózkreditet</b> kalandokkal tudsz szerezni, vagy bétaolvasással, amikre a Tavernában kaphatsz megbízást. Kölcsönt is vehetsz fel, ha a Bank ad. A Piacon pedig a felszentelt könyveiden kívül bármit pénzzé tehetsz, ha akarsz.<br><br>
+              • <b>Tálentumhoz</b> úgy juthatsz, ha támogatónkká válsz a Patreonon, vagy baráti adományt küldesz PayPal-en. Ezt mi Tálentummal köszönjük meg. Ha olyan mázlista vagy, hogy találsz egy letkristályt, azért Tálentummal fizetnek a Könyvszentélyben, de igazából bármilyen komolyabb értékedet felajánlhatod Tálentumért a Piacon.<br><br>
+              • A Bankban tudsz váltani Tálentumot Kalózkreditre, de visszafelé nincs váltás.
+            </div>
+          </div>
+
+          <!-- 6. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(6)">
+              <span id="acc-header-text-6">Hártya feldolgozása</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(6, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-6">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-6" class="acc-accordion-body">
+              • A hártya önmagában még nem olvasható alapanyag, amit a vizekről halászhatnak le a hártyahalászok. A Tekercsmester 30 darabjával kötegelve kezeli: vagy 1 Kalózkreditet fizet 30 hártyáért, vagy te fizetsz neki 11 Kalózkreditet és egy olvasható tekercset présel a 30 hártyádbból.<br><br>
+              • A tekercseket eladhatod, cserélgetheted másokkal, leadhatod 10 Kalózkreditért a Tekercsmesternél, vagy kigyűjtheted egy könyv összes részletét és összefűzheted azokat egyetlen másolattá.<br><br>
+              • A másolat már egy teljes történetet tartalmazó tekercs, amit a Könyvszentélyben könyvvé szentelhetsz. A másolatokkal külön expedíciók is indíthatók, és saját másolatot is bevihetsz játékba.
+            </div>
+          </div>
+
+          <!-- 7. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(7)">
+              <span id="acc-header-text-7">Könyv</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(7, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-7">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-7" class="acc-accordion-body">
+              Abrigó világának alapszentsége a könyv. Ha van egy másolatod, azt a Könyvszentélyben Tálentumért könyvvé szentelik neked. Itt van lehetőséged másvalakinek szentelni a könyvet, de ez hatalmas ajándék: a szenteléssel együtt tíz újabb másolatot is kapsz. Szentelés után a könyv eBook formában letölthetővé válik, és elválaszthatatlanul a tulajdonos nevére íródik.<br><br>
+              Ebből adódóan a könyv később már nem eladható, nem osztogatható, és ha illegális helyre kerül, a tulajdonos viseli a következményeket: a könyv elveszíti az értékét, a másolatok után nem jár több jutalék, és maga a könyv a Könyvbörtönbe kerül.
+            </div>
+          </div>
+
+          <!-- 8. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(8)">
+              <span id="acc-header-text-8">Rang</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(8, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-8">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-8" class="acc-accordion-body">
+              Abrigó világán a rangot az adja, mekkora könyvtárad van. Például 130 könyv alatt ne is várd, hogy bárhol elfogadnak kapitánynak, legyen akár egy egész flottányi hajód. Viszont ha két letkristály tulajdonosává válsz, még a királyok is hellyel kínálnak az asztaluknál. Nem véletlen, hogy a letkristály-expedíciókba bekerülni is élet-halál harc.
+            </div>
+          </div>
+
+          <!-- 9. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(9)">
+              <span id="acc-header-text-9">A könyvtár</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(9, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-9">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-9" class="acc-accordion-body">
+              A megszerzett tekercseidet, másolataidat, térképeidet és hajónaplóidat a könyvtáradban tudod olvasgatni. Itt tudod letölteni a meglévő könyveidet is, amiket aztán elmenthetsz bármilyen másik eszközödre. Ha valamelyik térképedről másolatot szeretnél készíteni, akkor azzal át kell sétálnod a Másolóműhelybe, ha pedig a hajónaplódat szeretnéd bővíteni, annak szigorúan csakis a hajón szabad megtörténnie. Ez amolyan szokás.
+            </div>
+          </div>
+
+          <!-- 10. Accordion Elem -->
+          <div class="acc-accordion-item">
+            <div class="acc-accordion-header" onclick="toggleAccAccordion(10)">
+              <span id="acc-header-text-10">Térképek és hajónaplók</span>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(10, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <span id="acc-icon-10">▶</span>
+              </div>
+            </div>
+            <div id="acc-body-10" class="acc-accordion-body">
+              Bár nem ugyanaz a kategória, mint a könyv, egy részletes térkép vagy egy telejegyzetelt hajónapló is hatalmas érték lehet. Mivel a játékban nincsenek konkrét modulok, a legtöbb kincset ilyen jegyzetek és térképek alapján lehet megtalálni. A legtöbb expedíció is olyan előkerült hajónaplók miatt indul, amelyekben szó esik másolatokról, kristálykönyvekről vagy épp letkristály-lelőhelyről.
+            </div>
+          </div>
+        </div>
+
+        <!-- Alsó gombsor -->
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; align-items: center;">
+          <button class="acc-primary-btn" onclick="startAccessibilityQuiz()">Vizsga indítása</button>
+        </div>
+      </div>
+
+      <!-- 2. NÉZET: KVÍZKÉRDÉSES TUTORIAL VIZSGA -->
+      <div id="acc-quiz-view" style="display: none; flex-direction: column; height: 100%; width: 100%;">
+        <div style="text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 15px;">
+          <h2 style="font-size: 26px; color: #ffd700; margin: 0;">Kalóz Kvíz Vizsga</h2>
+          <button class="acc-speaker-btn" onclick="speakCurrentQuizQuestion(this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Kérdés és válaszok felolvasása"><span class="speaker-icon">🔊</span> Felolvasás</button>
+        </div>
+        <div style="text-align: center; margin-bottom: 8px;">
+          <span id="acc-quiz-counter" style="font-size: 16px; color: #f5f5f5; font-weight: bold;">Kérdés 1 / 10</span>
+        </div>
+
+        <div id="acc-quiz-question-area" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 18px 24px; color: #ffd700; font-size: 20px; font-weight: bold; line-height: 1.45; text-align: center; margin-bottom: 15px;">
+            <span id="acc-quiz-question-text">Kérdés betöltése...</span>
+          </div>
+
+          <div id="acc-quiz-options" style="display: flex; flex-direction: column; width: 100%;"></div>
+
+          <div id="acc-quiz-feedback" style="min-height: 24px; text-align: center; font-size: 18px; font-weight: bold;"></div>
+        </div>
+
+        <!-- 3. NÉZET: CSÓNAK NÉVADÁS -->
+        <div id="acc-quiz-naming-view" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 20px;">
+          <h2 style="font-size: 28px; color: #ffd700; margin-bottom: 15px;">Gratulálok! Sikeres Kalózvizsga!</h2>
+          <p style="font-size: 18px; color: #f0f0f0; max-width: 600px; line-height: 1.55; margin-bottom: 25px;">
+            A kincseid és az új vitorlásod átadása következik.<br>Hogy fogják hívni a csónakodat?
+          </p>
+          <input id="acc-boat-name-input" type="text" class="acc-text-input" placeholder="Pl. Gyöngyhalász" maxlength="24">
+          <div style="display: flex; gap: 15px; margin-top: 25px;">
+            <button class="acc-primary-btn" onclick="submitAccBoatName()">Név Elfogadása</button>
+            <button class="acc-primary-btn" style="background: #443322; color: #ccc;" onclick="skipAccBoatName()">Nincs Ötletem</button>
+          </div>
+        </div>
+
+        <!-- 4. NÉZET: KINCSEK ÖSSZEGZÉSE (FIX 30 HÁRTYA) -->
+        <div id="acc-quiz-summary-view" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 20px;">
+          <div id="acc-quiz-summary-text" style="font-size: 20px; color: #f0f0f0; line-height: 1.65; margin-bottom: 30px; background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 25px 35px; width: 100%; max-width: 500px; box-sizing: border-box;"></div>
+          <button class="acc-primary-btn" style="font-size: 22px; padding: 14px 40px;" onclick="finalizeAccTutorialAndDepart()">Irány Hebok Kikötő!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🎥 KIHAJÓZÁS VIDEÓ OVERLAY -->
+  <div id="acc-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000000; align-items: center; justify-content: center; cursor: pointer;">
+    <video id="acc-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/terkeputazas01.mp4"></video>
   </div>
 
 </body>

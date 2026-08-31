@@ -881,20 +881,27 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
   const isLoadMode = window.location.search.includes('load=1');
 
   if (homePos) {
-    const savedDataRaw = localStorage.getItem('saved_boat_transform');
-    if (isLoadMode && savedDataRaw) {
-      try {
-        const sd = JSON.parse(savedDataRaw);
-        const bx = (typeof sd.x === 'number') ? sd.x : ((typeof sd.posX === 'number') ? sd.posX : homePos.x);
-        const by = (typeof sd.y === 'number') ? sd.y : ((typeof sd.posY === 'number') ? sd.posY : homePos.y);
-        const bz = (typeof sd.z === 'number') ? sd.z : ((typeof sd.posZ === 'number') ? sd.posZ : homePos.z);
-        boat.position.set(bx, by, bz);
-        if (typeof sd.rotY === 'number') boat.rotation.y = sd.rotY;
-        if (sd.orbH !== undefined && !isNaN(sd.orbH)) orbH = THREE.MathUtils.clamp(sd.orbH, -45.0, 45.0);
-        if (sd.orbV !== undefined && !isNaN(sd.orbV)) orbV = sd.orbV;
-        if (sd.orbDist !== undefined && !isNaN(sd.orbDist)) orbDist = sd.orbDist;
-      } catch (e) {
-        applyDefaultBoatPos(homePos);
+    if (isLoadMode) {
+      const loaded = typeof window.loadFullGameState === 'function' && window.loadFullGameState();
+      if (!loaded) {
+        const savedDataRaw = localStorage.getItem('saved_boat_transform');
+        if (savedDataRaw) {
+          try {
+            const sd = JSON.parse(savedDataRaw);
+            const bx = (typeof sd.x === 'number') ? sd.x : ((typeof sd.posX === 'number') ? sd.posX : homePos.x);
+            const by = (typeof sd.y === 'number') ? sd.y : ((typeof sd.posY === 'number') ? sd.posY : homePos.y);
+            const bz = (typeof sd.z === 'number') ? sd.z : ((typeof sd.posZ === 'number') ? sd.posZ : homePos.z);
+            boat.position.set(bx, by, bz);
+            if (typeof sd.rotY === 'number') boat.rotation.y = sd.rotY;
+            if (sd.orbH !== undefined && !isNaN(sd.orbH)) orbH = THREE.MathUtils.clamp(sd.orbH, -45.0, 45.0);
+            if (sd.orbV !== undefined && !isNaN(sd.orbV)) orbV = sd.orbV;
+            if (sd.orbDist !== undefined && !isNaN(sd.orbDist)) orbDist = sd.orbDist;
+          } catch (e) {
+            applyDefaultBoatPos(homePos);
+          }
+        } else {
+          applyDefaultBoatPos(homePos);
+        }
       }
     } else {
       // Új Játék esetén mindig pontosan a móló melletti kezdőpozícióból indul
@@ -1299,8 +1306,15 @@ new GLTFLoader().load(window.getAssetUrl('models/hartya.glb'), function (gltf) {
 
   window.initMembranePool();
 
-  if (typeof window.spawnZeroPointMembrane === 'function') {
-    window.spawnZeroPointMembrane();
+  const isLoadMode = window.location.search.includes('load=1');
+  if (isLoadMode) {
+    if (typeof window.loadFullGameState === 'function') {
+      window.loadFullGameState();
+    }
+  } else {
+    if (typeof window.spawnZeroPointMembrane === 'function') {
+      window.spawnZeroPointMembrane();
+    }
   }
 });
 
@@ -1371,19 +1385,76 @@ window.spawnZeroPointMembrane = function () {
 };
 
 const WATER_BAY_POINTS = [
-  { x: -15, z: 25 }, { x: 35, z: 45 }, { x: -45, z: 85 }, { x: 20, z: 110 },
-  { x: -75, z: 140 }, { x: 10, z: 180 }, { x: -60, z: 220 }, { x: -110, z: 260 },
-  { x: -30, z: 300 }, { x: -140, z: 340 }, { x: -80, z: 380 }, { x: -160, z: 420 },
-  { x: -100, z: 460 }, { x: -190, z: 500 }, { x: -120, z: 540 }, { x: -220, z: 580 },
-  { x: -150, z: 620 }, { x: -250, z: 660 }, { x: -170, z: 700 }, { x: -280, z: 740 },
-  { x: -200, z: 780 }, { x: -310, z: 820 }, { x: -230, z: 860 }, { x: -330, z: 900 },
-  { x: -260, z: 940 }, { x: -360, z: 980 }, { x: -280, z: 1020 }, { x: -380, z: 1060 },
-  { x: -310, z: 1100 }, { x: -350, z: 1140 }, { x: 45, z: 70 }, { x: -25, z: 160 },
-  { x: 5, z: 240 }, { x: -90, z: 190 }, { x: -50, z: 350 }, { x: -130, z: 290 },
-  { x: -170, z: 480 }, { x: -210, z: 410 }, { x: -240, z: 610 }, { x: -180, z: 670 }
+  { x: -5, z: 30 }, { x: 20, z: 50 }, { x: -20, z: 80 }, { x: 10, z: 120 }, { x: -10, z: 160 },
+  { x: -40, z: 200 }, { x: -20, z: 240 }, { x: -60, z: 280 }, { x: -35, z: 320 }, { x: -80, z: 360 },
+  { x: -50, z: 400 }, { x: -110, z: 440 }, { x: -75, z: 480 }, { x: -140, z: 520 }, { x: -95, z: 560 },
+  { x: -165, z: 600 }, { x: -125, z: 640 }, { x: -195, z: 680 }, { x: -150, z: 720 }, { x: -230, z: 760 },
+  { x: -180, z: 800 }, { x: -265, z: 840 }, { x: -210, z: 880 }, { x: -300, z: 920 }, { x: -250, z: 960 },
+  { x: -340, z: 1000 }, { x: -280, z: 1040 }, { x: -380, z: 1080 }, { x: -330, z: 1120 }, { x: -420, z: 1160 }
 ];
 
-// --- HÁRTYA SPAWN LOGIKA (FOLYAMATOS, ZÉRÓ-KÉSLELTETÉSŰ POOL KEZELÉS) ---
+const _downRaycaster = new THREE.Raycaster();
+const _downOrigin = new THREE.Vector3();
+const _downDir = new THREE.Vector3(0, -1, 0);
+const _horizRay = new THREE.Raycaster();
+const _horizOrigin = new THREE.Vector3();
+const _checkAngles = [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4, Math.PI, 5 * Math.PI / 4, 3 * Math.PI / 2, 7 * Math.PI / 4];
+
+window.isSafeWaterSpawnPoint = function (x, z) {
+  // 1. Túl közel van a mólóhoz / bázishoz? (Legalább 20 méter távolság)
+  if (window.homePos) {
+    const dxH = x - window.homePos.x;
+    const dzH = z - window.homePos.z;
+    if (dxH * dxH + dzH * dzH < 400.0) return false;
+  }
+
+  // 2. Túl közel van egy másik aktív hártyához? (Legalább 12 méter távolság)
+  if (window.activeMembranes && window.activeMembranes.length > 0) {
+    for (let i = 0; i < window.activeMembranes.length; i++) {
+      const am = window.activeMembranes[i];
+      if (am && am.visible && am.userData && am.userData.inUse) {
+        const dxM = x - am.position.x;
+        const dzM = z - am.position.z;
+        if (dxM * dxM + dzM * dzM < 144.0) return false;
+      }
+    }
+  }
+
+  // 3. Fentről lefelé Raycast vizsgálat a sziklák / partok felett:
+  if (typeof borderMeshes !== 'undefined' && borderMeshes.length > 0) {
+    _downOrigin.set(x, 80, z);
+    _downRaycaster.set(_downOrigin, _downDir);
+    _downRaycaster.far = 100;
+    const hits = _downRaycaster.intersectObjects(borderMeshes, true);
+    if (hits.length > 0) {
+      for (let h = 0; h < hits.length; h++) {
+        if (hits[h].point.y > 0.05) {
+          return false; // Szikla vagy part felszínre / alá esne!
+        }
+      }
+    }
+
+    // 4. Vízszintes 360 fokos környezetvizsgálat (a hártya szélessége: minimum ~2.2 méter a sziklától/parttól):
+    _horizOrigin.set(x, 0.3, z);
+    for (let a = 0; a < _checkAngles.length; a++) {
+      const hDir = new THREE.Vector3(Math.sin(_checkAngles[a]), 0, Math.cos(_checkAngles[a]));
+      _horizRay.set(_horizOrigin, hDir);
+      _horizRay.far = 2.2;
+      const horizHits = _horizRay.intersectObjects(borderMeshes, true);
+      if (horizHits.length > 0 && horizHits[0].distance < 2.0) {
+        const hObj = horizHits[0].object;
+        const oType = (hObj.userData && hObj.userData.obstacleType) || '';
+        if (oType === 'rock' || oType === 'beach') {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+};
+
+// --- HÁRTYA SPAWN LOGIKA (GARANTÁLTAN BIZTONSÁGOS NYÍLT VÍZ) ---
 window.spawnHartyaWave = function (count, originType) {
   window.initMembranePool();
 
@@ -1399,13 +1470,28 @@ window.spawnHartyaWave = function (count, originType) {
 
   for (let i = 0; i < availableIndices.length && spawned < count; i++) {
     const pt = WATER_BAY_POINTS[availableIndices[i]];
-    const jitterX = (Math.random() - 0.5) * 10.0;
-    const jitterZ = (Math.random() - 0.5) * 10.0;
-    const hx = pt.x + jitterX;
-    const hz = pt.z + jitterZ;
+    let finalX = pt.x;
+    let finalZ = pt.z;
+    let valid = false;
+
+    // Próbáljuk a pontot finom jitterrel
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const jitterX = (Math.random() - 0.5) * (attempt === 0 ? 0 : 8.0);
+      const jitterZ = (Math.random() - 0.5) * (attempt === 0 ? 0 : 8.0);
+      const candX = pt.x + jitterX;
+      const candZ = pt.z + jitterZ;
+      if (window.isSafeWaterSpawnPoint(candX, candZ)) {
+        finalX = candX;
+        finalZ = candZ;
+        valid = true;
+        break;
+      }
+    }
+
+    if (!valid) continue;
 
     const mMesh = getPooledMembrane();
-    mMesh.position.set(hx, 0.1, hz);
+    mMesh.position.set(finalX, 0.1, finalZ);
     mMesh.userData.baseY = 0.1;
     mMesh.userData.collected = false;
     mMesh.userData.inUse = true;
@@ -1820,28 +1906,9 @@ addEventListener('keydown', (e) => {
 addEventListener('click', (e) => {
   // A KILÉPÉS GOMB & A KILÉPÉSI ABLAK GOMBJAI BÁRMIKOR (még a Welcome boxok alatt is) MŰKÖDNEK!
   if (e.target.closest('#btn-tb-menu')) {
-    const newTotal = Math.max(0, (window.totalPickedUp || 0) - (window.carriedMembranes || 0));
-    const saveState = {
-      totalPickedUp: newTotal,
-      storedMembranes: window.storedMembranes || 0,
-      hasSeen: window.monologState ? window.monologState.hasSeen : {}
-    };
-    localStorage.setItem('ebook_pirates_game_state', JSON.stringify(saveState));
-    document.cookie = "ebook_pirates_game_state=true; path=/; max-age=86400";
-
-    if (window.boat) {
-      const transform = {
-        x: window.boat.position.x,
-        y: window.boat.position.y,
-        z: window.boat.position.z,
-        rotY: window.boat.rotation.y,
-        orbH: typeof window.getOrbH === 'function' ? window.getOrbH() : 0,
-        orbV: typeof window.getOrbV === 'function' ? window.getOrbV() : 0,
-        orbDist: typeof window.getOrbDist === 'function' ? window.getOrbDist() : 0
-      };
-      localStorage.setItem('saved_boat_transform', JSON.stringify(transform));
+    if (typeof window.saveFullGameState === 'function') {
+      window.saveFullGameState();
     }
-
     window.location.href = 'MainMenuTutorial.html';
     return;
   }
@@ -3265,6 +3332,159 @@ window.showEogSummaryPanel = function () {
       };
     }
   });
+};
+
+// --- TELJES JÁTÉKÁLLAPOT MENTÉSE (BÖNGÉSZŐBE ÉS LOCALSTORAGE-BA) ---
+window.saveFullGameState = function () {
+  const activePositions = [];
+  if (window.activeMembranes && window.activeMembranes.length > 0) {
+    window.activeMembranes.forEach(m => {
+      if (m && m.visible && m.userData && m.userData.inUse) {
+        activePositions.push({ x: m.position.x, z: m.position.z });
+      }
+    });
+  }
+
+  const saveState = {
+    boat: window.boat ? {
+      x: window.boat.position.x,
+      y: window.boat.position.y,
+      z: window.boat.position.z,
+      rotY: window.boat.rotation.y
+    } : { x: 5, y: 0, z: -94, rotY: 3.874 },
+    camera: {
+      orbH: typeof window.getOrbH === 'function' ? window.getOrbH() : (window.orbH || 0),
+      orbV: typeof window.getOrbV === 'function' ? window.getOrbV() : (window.orbV || 15),
+      orbDist: typeof window.getOrbDist === 'function' ? window.getOrbDist() : (window.orbDist || 26)
+    },
+    membranes: {
+      storedMembranes: window.storedMembranes || 0,
+      carriedMembranes: window.carriedMembranes || 0,
+      totalPickedUp: window.totalPickedUp || 0,
+      firstMembraneDelivered: !!window.firstMembraneDelivered,
+      activePositions: activePositions
+    },
+    environment: {
+      gameTimeProgress: window.gameTimeProgress || 0
+    },
+    monologState: {
+      hasSeen: window.monologState ? window.monologState.hasSeen : {},
+      welcomeDone: true
+    },
+    timestamp: Date.now()
+  };
+
+  localStorage.setItem('ebook_pirates_game_state', JSON.stringify(saveState));
+  localStorage.setItem('ebp_tutorial_save', JSON.stringify(saveState));
+  document.cookie = "ebook_pirates_game_state=true; path=/; max-age=86400";
+
+  // Régi formátum kompatibilitás
+  localStorage.setItem('saved_boat_transform', JSON.stringify({
+    x: saveState.boat.x,
+    y: saveState.boat.y,
+    z: saveState.boat.z,
+    rotY: saveState.boat.rotY,
+    orbH: saveState.camera.orbH,
+    orbV: saveState.camera.orbV,
+    orbDist: saveState.camera.orbDist
+  }));
+
+  console.log("💾 [SAVE] Játékállapot sikeresen elmentve a böngészőbe:", saveState);
+  return saveState;
+};
+
+// --- TELJES JÁTÉKÁLLAPOT VISSZATÖLTÉSE ---
+window.loadFullGameState = function () {
+  const saveRaw = localStorage.getItem('ebook_pirates_game_state') || localStorage.getItem('ebp_tutorial_save');
+  if (!saveRaw) return false;
+
+  try {
+    const s = JSON.parse(saveRaw);
+    if (!s) return false;
+
+    // 1. Csónak & Kamera pozíció
+    if (s.boat && window.boat) {
+      window.boat.position.set(s.boat.x, s.boat.y, s.boat.z);
+      if (typeof s.boat.rotY === 'number') window.boat.rotation.y = s.boat.rotY;
+    }
+    if (s.camera) {
+      if (s.camera.orbH !== undefined && !isNaN(s.camera.orbH)) orbH = THREE.MathUtils.clamp(s.camera.orbH, -45.0, 45.0);
+      if (s.camera.orbV !== undefined && !isNaN(s.camera.orbV)) orbV = s.camera.orbV;
+      if (s.camera.orbDist !== undefined && !isNaN(s.camera.orbDist)) orbDist = s.camera.orbDist;
+    }
+
+    // 2. Hártyák és készletek
+    if (s.membranes) {
+      window.storedMembranes = s.membranes.storedMembranes || 0;
+      window.carriedMembranes = s.membranes.carriedMembranes || 0;
+      window.totalPickedUp = s.membranes.totalPickedUp || (window.storedMembranes + window.carriedMembranes);
+      window.firstMembraneDelivered = !!s.membranes.firstMembraneDelivered;
+    } else {
+      window.storedMembranes = s.storedMembranes || 0;
+      window.carriedMembranes = s.carriedMembranes || 0;
+      window.totalPickedUp = s.totalPickedUp || (window.storedMembranes + window.carriedMembranes);
+    }
+    if (typeof window.updateHartyaHUD === 'function') window.updateHartyaHUD();
+
+    // 3. Monológok / Tutorial szövegek
+    if (s.monologState && s.monologState.hasSeen) {
+      window.monologState.hasSeen = s.monologState.hasSeen;
+    } else if (s.hasSeen) {
+      window.monologState.hasSeen = s.hasSeen;
+    }
+
+    // 4. Környezet / Napszak
+    if (s.environment && typeof s.environment.gameTimeProgress === 'number') {
+      window.gameTimeProgress = s.environment.gameTimeProgress;
+    } else {
+      window.gameTimeProgress = Math.min((window.totalPickedUp || 0) / 30.0, 0.90);
+    }
+    if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
+
+    // 5. Aktív hártyák felhelyezése a vízre
+    window.initMembranePool();
+    if (window.activeMembranes) {
+      window.activeMembranes.forEach(m => {
+        m.visible = false;
+        if (m.userData.light) m.userData.light.intensity = 0;
+        m.userData.inUse = false;
+        m.userData.collected = true;
+        m.position.set(0, -999, 0);
+      });
+    }
+    window.activeMembranes = [];
+
+    if (s.membranes && Array.isArray(s.membranes.activePositions) && s.membranes.activePositions.length > 0) {
+      s.membranes.activePositions.forEach(pos => {
+        const mMesh = getPooledMembrane();
+        mMesh.position.set(pos.x, 0.1, pos.z);
+        mMesh.userData.baseY = 0.1;
+        mMesh.userData.collected = false;
+        mMesh.userData.inUse = true;
+        mMesh.visible = true;
+        if (mMesh.userData.light) mMesh.userData.light.intensity = 3.5;
+        window.activeMembranes.push(mMesh);
+      });
+    } else {
+      // Ha nem volt mentett pozíciólista, de már folytatjuk a játékot
+      if (window.firstMembraneDelivered || window.totalPickedUp > 0) {
+        window.spawnHartyaWave(Math.max(1, 10 - (window.carriedMembranes || 0)), 'boat');
+      } else {
+        window.spawnZeroPointMembrane();
+      }
+    }
+
+    // 6. Tutorial kezdő overlay elrejtése és játékvezérlés engedélyezése
+    const overlay = document.getElementById('zozo-welcome-overlay');
+    if (overlay) overlay.style.display = 'none';
+    window.isCutscenePlaying = false;
+
+    console.log("💾 [LOAD] Játékállapot sikeresen visszatöltve a böngészőből:", s);
+    return true;
+  } catch (e) {
+    console.error("Hiba a mentett játékállapot betöltésekor:", e);
+    return false;
+  }
 };
 
 // --- VETERÁN KALÓZ ELLENŐRZÉS ÉS VISSZAJELZÉS ---

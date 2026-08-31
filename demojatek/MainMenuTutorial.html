@@ -398,7 +398,7 @@
     let accTargetCount = 10;
     let accCompletedCount = 0;
     let accIsAnswering = false;
-    let accBoatName = 'Gyöngyhalász';
+    let accBoatName = '';
 
     // ─── WEB SPEECH API HANGOS FELOLVASÓ MOTOR ───
     let accActiveSpeechBtn = null;
@@ -701,7 +701,8 @@
       const nameInput = document.getElementById('acc-boat-name-input');
       const val = nameInput ? nameInput.value.trim() : '';
       if (!val) {
-        alert('Kérlek, adj meg egy nevet a csónakodnak!');
+        alert('Kérlek, adj meg egy nevet a csónakodnak, vagy kattints a "Nincs Ötletem" gombra!');
+        if (nameInput) nameInput.focus();
         return;
       }
       accBoatName = val;
@@ -709,10 +710,12 @@
     }
 
     function skipAccBoatName() {
-      let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName') || 'Kaloz';
+      let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName') || localStorage.getItem('ebp_user_name') || 'Kaloz';
       const cleanName = userName.replace(/[^a-zA-Z0-9]/g, '');
       const basePrefix = cleanName.length >= 4 ? cleanName.substring(0, 4) : (cleanName || 'Kalo');
       accBoatName = basePrefix + '_boat01';
+      const nameInput = document.getElementById('acc-boat-name-input');
+      if (nameInput) nameInput.value = accBoatName;
       showAccSummaryPanel();
     }
 
@@ -724,6 +727,8 @@
       if (namingView) namingView.style.display = 'none';
       if (summaryView) summaryView.style.display = 'flex';
 
+      const displayName = accBoatName || 'Gyöngyhalász';
+
       if (summaryTextEl) {
         summaryTextEl.innerHTML = 
           `<b style="color: #ffd700; font-size: 24px;">Megszerzett Kincseid:</b><br><br>` +
@@ -731,47 +736,96 @@
           `• <b>1 db</b> Hebok térkép<br>` +
           `• <b>10</b> kalózkredit<br>` +
           `• <b>1 db</b> tekercs<br>` +
-          `• <b>1 db</b> csónak (10 HP), név: <b style="color: #ffea00;">${accBoatName}</b>`;
+          `• <b>1 db</b> csónak (10 HP), név: <b style="color: #ffea00;">${displayName}</b>`;
       }
     }
 
     function finalizeAccTutorialAndDepart() {
       const videoOverlay = document.getElementById('acc-video-overlay');
       const video = document.getElementById('acc-departure-video');
+      const nameInput = document.getElementById('acc-boat-name-input');
+
+      // Ha a játékos beírt egy nevet, de nem kattintott külön a gombra, akkor is azt használjuk
+      if (nameInput && nameInput.value.trim()) {
+        accBoatName = nameInput.value.trim();
+      }
+
+      // Ha még mindig üres maradt, automatikus felhasználónév-alapú név generálása
+      if (!accBoatName) {
+        let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName') || localStorage.getItem('ebp_user_name') || 'Kaloz';
+        const cleanName = userName.replace(/[^a-zA-Z0-9]/g, '');
+        const basePrefix = cleanName.length >= 4 ? cleanName.substring(0, 4) : (cleanName || 'Kalo');
+        accBoatName = basePrefix + '_boat01';
+      }
 
       // 1. Mentés LocalStorage-ba (fix 30 hártya)
       const finalSaveState = {
         completed: true,
         boatName: accBoatName,
+        csonak_nev: accBoatName,
         storedMembranes: 30,
         totalPickedUp: 30,
         timestamp: Date.now()
       };
       localStorage.setItem('ebp_tutorial_save', JSON.stringify(finalSaveState));
       localStorage.setItem('ebook_pirates_game_state', JSON.stringify(finalSaveState));
+      localStorage.setItem('ebp_boat_name', accBoatName);
 
       // 2. Tranzakció küldése a Backend felé
+      const tutorialPayload = {
+        type: 'EBOOK_PIRATES_TUTORIAL',
+        action: 'tutorial_completed',
+        score: 30,
+        storedMembranes: 30,
+        totalPickedUp: 30,
+        passed: true,
+        boatName: accBoatName,
+        csonak_nev: accBoatName,
+        boat_name: accBoatName
+      };
+
+      // A) PostMessage a beágyazó szülő ablaknak (app.js -> callBackend)
       if (window.parent && window.parent !== window) {
-        window.parent.postMessage({
-          type: 'EBOOK_PIRATES_TUTORIAL',
-          action: 'tutorial_completed',
-          score: 30,
-          storedMembranes: 30,
-          totalPickedUp: 30,
-          passed: true,
-          boatName: accBoatName
-        }, '*');
+        window.parent.postMessage(tutorialPayload, '*');
+      }
+
+      // B) Közvetlen Backend hívás tartalékként és önálló (standalone) futtatás esetén
+      const token = localStorage.getItem('ebookPiratesToken');
+      if (token) {
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
+        try {
+          fetch(WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'markTutorialCompleted',
+              data: ['3d_tutorial', tutorialPayload],
+              token: token
+            })
+          }).then(function(res) {
+            return res.text();
+          }).then(function(txt) {
+            console.log('🎯 Tutorial elfogadás és kincsek felírása sikeres:', txt);
+          }).catch(function(err) {
+            console.warn('⚠️ Közvetlen felírási hiba:', err);
+          });
+        } catch(e) {
+          console.warn('⚠️ Fetch hiba:', e);
+        }
       }
 
       function proceedToHarbor() {
+        if (videoOverlay) videoOverlay.style.display = 'none';
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({
             type: 'EBOOK_PIRATES_TUTORIAL',
             action: 'navigate_to_page',
             page: 'kikoto_oldal'
           }, '*');
+        } else {
+          // Ha önállóan nyitották meg a MainMenuTutorial-t, visszairányítás a főoldalra
+          window.location.href = '../index.html';
         }
-        window.location.href = 'https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';
       }
 
       // 3. Videó elindítása és közvetlen átirányítás Hebok kikötőbe
@@ -798,6 +852,18 @@
         };
       } else {
         proceedToHarbor();
+      }
+    }
+
+    function goToHarborFromMenu() {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'navigate_to_page',
+          page: 'kikoto_oldal'
+        }, '*');
+      } else {
+        window.location.href = '../index.html';
       }
     }
   </script>
@@ -864,7 +930,7 @@
     <div id="btn-continue-game" class="menu-button" onclick="continueGame()">Játék Folytatása</div>
     <div class="menu-button" onclick="window.location.href='SettingsMenu.html';">Beállítások</div>
     <div class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
-    <div id="btn-back-to-harbor" class="menu-button" onclick="window.location.href='https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';">Vissza a Kikötőbe</div>
+    <div id="btn-back-to-harbor" class="menu-button" onclick="goToHarborFromMenu()">Vissza a Kikötőbe</div>
 
   </div>
 
@@ -1067,7 +1133,7 @@
           <p style="font-size: 18px; color: #f0f0f0; max-width: 600px; line-height: 1.55; margin-bottom: 25px;">
             A kincseid és az új vitorlásod átadása következik.<br>Hogy fogják hívni a csónakodat?
           </p>
-          <input id="acc-boat-name-input" type="text" class="acc-text-input" placeholder="Pl. Gyöngyhalász" maxlength="24">
+          <input id="acc-boat-name-input" type="text" class="acc-text-input" placeholder="Pl. Gyöngyhalász" maxlength="24" onkeydown="if(event.key==='Enter') submitAccBoatName()">
           <div style="display: flex; gap: 15px; margin-top: 25px;">
             <button class="acc-primary-btn" onclick="submitAccBoatName()">Név Elfogadása</button>
             <button class="acc-primary-btn" style="background: #443322; color: #ccc;" onclick="skipAccBoatName()">Nincs Ötletem</button>

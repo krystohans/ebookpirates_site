@@ -26,6 +26,18 @@ function getPageHtmlUrl(pageName) {
     return cleanName;
 }
 
+// Globális Unity / Tutorial befejező rutin (mindig elérhető a szülő ablakban!)
+window.onTutorialSuccess = function (boatData) {
+    var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
+    callBackend('markTutorialCompleted', ['unity', extraData], function (res) {
+        console.log('Tutorial OK mentve:', res);
+        if (typeof loadPage === 'function') loadPage('kikoto_oldal');
+    }, function (err) {
+        console.warn('Tutorial OK mentési hiba:', err);
+        if (typeof loadPage === 'function') loadPage('kikoto_oldal');
+    });
+};
+
 // Globális PostMessage figyelő a Tutorial Iframe eseményeihez (mindig aktív!)
 if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
     window._ebpGlobalTutorialMessageBound = true;

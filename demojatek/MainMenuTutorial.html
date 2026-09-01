@@ -759,7 +759,17 @@
       // Helyi mentések
       localStorage.setItem('ebp_boat_name', accBoatName);
 
-      // Eredeti, bevált felíró rutin meghívása a szülő ablakon keresztül (app.js -> callBackend('markTutorialCompleted'))
+      // 1. Eredeti Unity onTutorialSuccess rutin közvetlen meghívása (ha elérhető a szülőben vagy lokálisan)
+      if (window.parent && typeof window.parent.onTutorialSuccess === 'function') {
+        window.parent.onTutorialSuccess({ boatName: accBoatName, passed: true, score: 10 });
+        return;
+      }
+      if (typeof window.onTutorialSuccess === 'function') {
+        window.onTutorialSuccess({ boatName: accBoatName, passed: true, score: 10 });
+        return;
+      }
+
+      // 2. PostMessage fallback a beágyazó ablaknak
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
           type: 'EBOOK_PIRATES_TUTORIAL',

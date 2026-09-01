@@ -839,6 +839,34 @@
 
       document.addEventListener('click', tryFullscreenAndAudio);
       document.addEventListener('keydown', tryFullscreenAndAudio);
+
+      // URL Paraméterek ellenőrzése (Veterán vs Új Játékos)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
+
+        if (isCompletedMode) {
+          // Veterán mód: Azonnal megjelenítjük az Akadálymentes Ismerettárat, a Vizsga gomb inaktív
+          setTimeout(function() {
+            openAccessibilityTutorial();
+            const startQuizBtn = document.getElementById('acc-start-quiz-btn');
+            if (startQuizBtn) {
+              startQuizBtn.disabled = true;
+              startQuizBtn.innerText = 'A Vizsgát Már Sikeresen Letetted ✅';
+              startQuizBtn.style.background = '#2c251d';
+              startQuizBtn.style.color = '#aa9977';
+              startQuizBtn.style.cursor = 'not-allowed';
+              startQuizBtn.style.border = '2px solid #554433';
+              startQuizBtn.onclick = function(e) {
+                if (e) e.preventDefault();
+                alert('A kalózvizsgát korábban már sikeresen letetted, a kezdő felszerelésedet jóváírtuk a számládon!');
+              };
+            }
+          }, 300);
+        }
+      } catch (err) {
+        console.warn('Hiba az URL mód feldolgozásakor:', err);
+      }
     });
   </script>
 
@@ -1032,7 +1060,7 @@
 
         <!-- Alsó gombsor -->
         <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; align-items: center;">
-          <button class="acc-primary-btn" onclick="startAccessibilityQuiz()">Vizsga indítása</button>
+          <button id="acc-start-quiz-btn" class="acc-primary-btn" onclick="startAccessibilityQuiz()">Vizsga indítása</button>
         </div>
       </div>
 

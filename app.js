@@ -1120,8 +1120,7 @@ function runTutorialScript() {
 
     function mountUnityIframe(host) {
         if (!host || !unityTargetUrl) {
-            setUnityStatus(t('tutorial_unity_status_missing_url'), '#c0392b');
-            showQuizMode();
+            setUnityStatus('Hiányzó játékmotor útvonal.', '#c0392b');
             return;
         }
 
@@ -1129,199 +1128,67 @@ function runTutorialScript() {
         var iframe = document.createElement('iframe');
         iframe.src = unityTargetUrl;
         iframe.style.width = '100%';
-        iframe.style.height = '560px';
+        iframe.style.height = '100%';
         iframe.style.border = '0';
         iframe.setAttribute('allowfullscreen', 'true');
         iframe.setAttribute('allow', 'autoplay; fullscreen');
-        iframe.setAttribute('title', t('tutorial_unity_iframe_title'));
+        iframe.setAttribute('title', 'eBookPirates Tutorial');
 
         iframe.onload = function () {
             stopUnityTimeout();
-            setUnityStatus(t('tutorial_unity_status_loaded'), '#1f7a1f');
+            setUnityStatus('Tutorial betöltve.', '#00ffcc');
         };
 
         iframe.onerror = function () {
-            setUnityStatus(t('tutorial_unity_status_unavailable'), '#c0392b');
-            showQuizMode();
+            setUnityStatus('Hiba a tutorial betöltésekor.', '#c0392b');
         };
 
         host.appendChild(iframe);
-        setUnityStatus(t('tutorial_unity_status_launching'), '#333');
+        setUnityStatus('Tutorial indítása...', '#d4af37');
 
         stopUnityTimeout();
         unityLaunchTimeoutId = setTimeout(function () {
-            setUnityStatus(t('tutorial_unity_status_timeout'), '#c0392b');
-            showQuizMode();
-        }, 12000);
+            setUnityStatus('Tutorial aktív.', '#00ffcc');
+        }, 8000);
     }
 
     function tryLaunchUnity(flow, autoStart) {
         ensureUnityUiElements();
 
-        var panel = document.getElementById('tutorial-unity-panel');
+        var gamePanel = document.getElementById('tutorial-game-panel');
         var host = document.getElementById('tutorial-unity-host');
-        var fallbackBtn = document.getElementById('tutorial-fallback-btn');
-        var openBtn = document.getElementById('tutorial-open-unity-btn');
-        var startBtn = document.getElementById('tutorial-unity-start-btn');
 
-        if (!panel || !host) {
-            showQuizMode();
+        if (!gamePanel || !host) {
             return;
         }
 
-        var unityUrl = (flow && flow.unityUrl && flow.unityUrl.indexOf('http') === 0 && flow.unityUrl.indexOf('github.io') === -1) ? flow.unityUrl : 'demojatek/tutorial_runner.html';
-        
-        var support = checkUnityWebGLSupport();
-        if (!support.ok) {
-            setUnityStatus(support.reason, '#c0392b');
-            showQuizMode();
-            return;
-        }
+        var unityUrl = 'demojatek/MainMenuTutorial.html';
+        var mode = (flow && flow.tutorialCompleted) ? 'completed' : 'tutorial';
+        var isLoadParam = (flow && flow.isLoad) ? '&load=1' : '';
+        unityTargetUrl = unityUrl + '?mode=' + mode + '&new=1' + isLoadParam;
 
-        panel.style.display = 'block';
-        var quiz = document.getElementById('quiz-container');
-        var nav = document.getElementById('quiz-navigation');
-        if (quiz) {
-            quiz.style.display = 'none';
-        }
-        if (nav) {
-            nav.style.display = 'none';
-        }
-
-        var mode = flow && flow.tutorialCompleted ? 'continue' : 'tutorial';
-        var isLoadParam = flow && flow.isLoad ? '&load=1' : '';
-        unityTargetUrl = (unityUrl.indexOf('?') === -1 ? unityUrl + '?' : unityUrl + '&') + 'mode=' + mode + isLoadParam;
-
-        if (startBtn) {
-            startBtn.style.display = 'inline-block';
-            startBtn.onclick = function () {
-                mountUnityIframe(host);
-            };
-        }
-
-        if (autoStart) {
-            mountUnityIframe(host);
-        } else {
-            setUnityStatus(t('tutorial_unity_status_waiting_click') || 'Kattints a Tutorial indításához!', '#333');
-        }
-
-        if (fallbackBtn) {
-            fallbackBtn.onclick = function () {
-                setUnityStatus(t('tutorial_unity_status_manual_fallback'), '#c0392b');
-                showQuizMode();
-            };
-        }
-
-        if (openBtn) {
-            openBtn.onclick = function () {
-                if (unityTargetUrl) {
-                    window.open(unityTargetUrl, '_blank');
-                }
-            };
-        }
-
-        // PostMessage figyelő a 3D Tutorial Iframe eseményeihez
-        if (!window._ebpTutorialMessageBound) {
-            window._ebpTutorialMessageBound = true;
-            window.addEventListener('message', function (event) {
-                if (!event.data || event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
-                
-                console.log('🎮 Tutorial Iframe esemény érkezett:', event.data);
-                
-                if (event.data.action === 'saveTutorialState') {
-                    if (event.data.data) {
-                        try {
-                            localStorage.setItem('ebp_tutorial_save', JSON.stringify(event.data.data));
-                        } catch (e) {}
-                        callBackend('saveTutorialState', [JSON.stringify(event.data.data)], function(res) {
-                            console.log('Tutorial állapot felhőbe mentve:', res);
-                        });
-                    }
-                } else if (event.data.action === 'tutorial_completed') {
-                    callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
-                        console.log('Tutorial befejezve és felírva válasz:', res);
-
-                        if (res && res.alreadyCompleted) {
-                            var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
-                            if (typeof window.showPopUp === 'function') {
-                                window.showPopUp(veteranMsg, function() {
-                                    if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                                });
-                            } else {
-                                alert(veteranMsg);
-                                if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                            }
-                        }
-                    });
-                } else if (event.data.action === 'logout') {
-                    if (typeof logout === 'function') {
-                        logout();
-                    }
-                } else if (event.data.action === 'navigate_to_page') {
-                    if (typeof loadPage === 'function') {
-                        loadPage(event.data.page || 'kikoto_oldal');
-                    }
-                } else if (event.data.action === 'exit_tutorial') {
-                    if (panel) panel.style.display = 'none';
-                    if (nav) nav.style.display = 'block';
-                    var continueBtn = document.getElementById('tutorial-continue-btn');
-                    if (continueBtn) continueBtn.style.display = 'inline-block';
-                }
-            });
-        }
-    }
-
-    function bindContinueButton(flow) {
-        var btn = document.getElementById('tutorial-continue-btn');
-        if (!btn) {
-            return;
-        }
-
-        btn.style.display = 'inline-block';
-        btn.onclick = function () {
-            tryLaunchUnity({
-                tutorialCompleted: false,
-                isLoad: true,
-                unityUrl: 'demojatek/tutorial_runner.html'
-            }, true);
-        };
+        gamePanel.style.display = 'block';
+        mountUnityIframe(host);
     }
 
     function initializeTutorialPage(flow) {
         currentFlowState = flow || {};
-
-        if (typeof setupAccordionListeners === 'function') {
-            setupAccordionListeners();
-        }
         ensureUnityUiElements();
 
-        var newUserContent = document.getElementById('new-user-content');
-        if (newUserContent) {
-            newUserContent.style.display = 'block';
-        }
-
         var status = (flow && flow.status) ? String(flow.status).toLowerCase() : '';
-        var quiz = document.getElementById('quiz-container');
-        var nav = document.getElementById('quiz-navigation');
-        var panel = document.getElementById('tutorial-unity-panel');
+        var isCompleted = (status === 'ok' || !!(flow && flow.tutorialCompleted));
 
-        if (status === 'ok') {
-            if (quiz) {
-                quiz.style.display = 'none';
-            }
-            if (nav) {
-                nav.style.display = 'block';
-            }
-            if (panel) {
-                panel.style.display = 'none';
-            }
-            bindContinueButton(flow);
+        var gamePanel = document.getElementById('tutorial-game-panel');
+        var veteranPanel = document.getElementById('tutorial-veteran-panel');
+        var host = document.getElementById('tutorial-unity-host');
+
+        if (isCompleted) {
+            if (gamePanel) gamePanel.style.display = 'none';
+            if (veteranPanel) veteranPanel.style.display = 'block';
         } else {
-            if (nav) {
-                nav.style.display = 'none';
-            }
-            bindContinueButton(null);
-            tryLaunchUnity(flow || {}, false);
+            if (veteranPanel) veteranPanel.style.display = 'none';
+            if (gamePanel) gamePanel.style.display = 'block';
+            tryLaunchUnity(flow || {}, true);
         }
     }
 
@@ -1455,9 +1322,11 @@ function runTutorialScript() {
         });
     };
 
-    window.onTutorialSuccess = function (email) {
-        callBackend('markTutorialCompleted', ['unity'], function (res) {
-                loadPage('kikoto_oldal');
+    window.onTutorialSuccess = function (boatData) {
+        var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
+        callBackend('markTutorialCompleted', ['unity', extraData], function (res) {
+            console.log('Tutorial OK mentve:', res);
+            loadPage('kikoto_oldal');
         }, function (err) {
             console.warn('Tutorial OK mentési hiba:', err);
             loadPage('kikoto_oldal');

@@ -1,115 +1,29 @@
-<div class="page-container tutorial-container">
-    <div id="new-user-content" style="display: none;">
-        <div class="page-section">
-            <h2 style="color: var(--color-accent); text-align: center;" data-lang="tutorial_title_main">A Legfontosabb Tudnivalók</h2>
-            <p style="text-align: center;" data-lang="tutorial_intro">A sikeres kalózvizsgához olvasd el figyelmesen az alábbiakat!</p>
-
-            <div id="info-accordion" style="margin-top: 20px; border: 1px solid #ccc; border-radius: 5px; overflow: hidden;">
-                <button class="accordion-button" data-lang="tutorial_acc_credit_title">Egy Új Irodalmi Ökoszisztéma</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_credit_body">Abrigó nem csupán egy díszlet; ez egy magas szintű irodalmi igényességgel megalkotott fantasy és sci-fi univerzum, ahol a társadalom groteszk valósága éppoly élesen metsz, mint a filmszerűen feszült, pörgősebb akciójelenetek. Ebben a világban a klasszikus filozófiák és a taoizmus csendes bölcsessége feszül egymásnak a Lovecrafti sejtelmességgel és a King-i hangulatkeltéssel. Itt a karakterek nem kartonfigurák: hús-vér emberek, saját háttérrel és egyedi, szocializációjukhoz hű beszédstílussal. Abrigó krónikái nem szégyenlősek: az élet minden mozzanatát explicit módon tárják elénk – szereplőink esznek, alszanak, ürítenek, nemi életet élnek, hibáznak, megbetegszenek és meghalnak. A történetvezetés dramaturgiai precizitással követi a tágabb képtől a konkrétumokig tartó leírásokat, miközben a nézőpont-váltásokkal és a nem lineáris idővonallal az olvasóra vár a feladat, hogy a mozaikdarabkákból összeállítsa a nagy egészet.<br/>
-                        Abrigó világa sosem állandó: a háttérben futó program minden expedíciót egyéni ötletek alapján épít fel. A játék önmagát fejleszti az interakciók és visszajelzések során, karakterei pedig folyamatosan érnek, egyre magasabb szintű segítséget és kifinomultabb kommunikációt kínálva a játékosoknak. Itt nem csupán olvasol – részese vagy egy öntanuló, lüktető irodalmi evolúciónak.</p>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_scroll_title">Ahol a Valóság és a Képzelet Új Szövetséget Köt</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_scroll_body">Ebben a környezetben kel új életre a magyar e-könyv. Abrigó egy exkluzív platform, ahol minden írás egyedi, rejtett kódolással ellátott, így az illegális terjesztés visszakövethető a forrásig. A rendszer azonban megszabadult a könyvkiadás merev béklyóitól: a szerző vagy a kiadó bármikor frissítheti, bővítheti művét, ami azonnal elérhetővé válik minden tulajdonos számára. Ez egy közösségi játék is egyben: a játékosok olvasóköröket alkotnak, expedíciókat indítanak különlegességekért, és az aktív terjesztésért, közösségi munkáért Tálentumokban mérhető jutalékot kapnak. Legyen szó egyéni akciókról vagy csapatmunkáról, az ingyenes olvasás és a fejlődés lehetősége mindenki előtt nyitva áll.</p>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_market_title">Ahol a Történet Életre Kel</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_market_body">Az írói babérokra törők számára a rendszer a lehetőségek tárháza: a Taverna füstös mélyén szakértő bétázók segítik az első szárnypróbálgatásokat, míg a Felhőkolostor csendjében bölcs monkok, grafikusok és fordítók csiszolják véglegesre a leendő kiadványokat. A kiadók számára ez a terep a kockázatmentes jövő: itt mérhető fel valódi igény, itt születnek az új nevek, és itt indíthatók el azok a játékkampányok, melyek a nyomdai siker előszobái. Ebben a folyamatosan öntanuló és fejlődő univerzumban nincs két egyforma kaland; a karakterek a tapasztalatok mentén érnek, a párbeszédek pedig tükrözik a származást és a sorsot. Lépjen be ön is: ahol a történet véget ér, ott kezdődik az igazi utazás.</p>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_world_title">A világról</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_world_body">Abrigó világán a titkos kalózkikötőt Heboknak hívják. Itt találod a Piacot, a Könyvszentélyt és a Tavernát is sok másik épülettel egyetemben. Ezek részletesebb leírásait az ottani infópaneleken olvashatod. A Kikötőben bérelhetsz hajót, de a Hajóműhelyben készíttethetsz sajátot is, akár egyedi tervek alapján. A Tavernában vehetsz fel legénységet, de te is csatlakozhatsz egy másik küldetéshez csapattagként. A lényeg, hogy minél több könyved legyen, mert itt az adja a rangot és a vagyont.</p>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_money_title">Pénzek</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <div data-lang-html="tutorial_acc_money_body">A játékban Kalózkreditet és Tálentumot használunk.<ul><li>Kalózkreditet kalandokkal tudsz szerezni, vagy bétaolvasással, amikre a Tavernában kaphatsz megbízást. Kölcsönt is vehetsz fel, ha a Bank ad. A Piacon pedig a felszentelt könyveiden kívül bármit pénzzé tehetsz, ha akarsz.</li><li>Tálentumhoz úgy juthatsz, ha támogatónkká válsz a Patreonon, vagy baráti adományt küldesz PayPal-en. Ezt mi Tálentummal köszönjük meg. Ha olyan mázlista vagy, hogy találsz egy letkristályt, azért Tálentummal fizetnek a Könyvszentélyben, de igazából bármilyen komolyabb értékedet felajánlhatod Tálentumért a Piacon.</li><li>A Bankban tudsz váltani Tálentumot Kalózkreditre, de visszafelé nincs váltás.</li></ul></div>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_hartya_title">Hártya feldolgozása</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <div data-lang-html="tutorial_acc_hartya_body"><ul><li>A hártya önmagában még nem olvasható alapanyag, amit a vizekről halászhatnak le a hártyahalászok. A Tekercsmester 30 darabjával kötegelve kezeli: vagy 1 Kalózkreditet fizet 30 hártyáért, vagy te fizetsz neki 11 Kalózkreditet és egy olvasható tekercset présel a 30 hártyádból.</li><li>A tekercseket eladhatod, cserélgetheted másokkal, leadhatod 10 Kalózkreditért a Tekercsmesternél, vagy kigyűjtheted egy könyv összes részletét és összefűzheted azokat egyetlen másolattá.</li><li>A másolat már egy teljes történetet tartalmazó tekercs, amit a Könyvszentélyben könyvvé szentelhetsz. A másolatokkal külön expedíciók is indíthatók, és saját másolatot is bevihetsz játékba.</li></ul></div>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_book_title">Könyv</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <div data-lang-html="tutorial_acc_book_body">Abrigó világának alapszentsége a könyv. Ha van egy másolatod, azt a Könyvszentélyben Tálentumért könyvvé szentelik neked. Itt van lehetőséged másvalakinek szentelni a könyvet, de ez hatalmas ajándék: a szenteléssel együtt tíz újabb másolatot is kapsz. Szentelés után a könyv eBook formában letölthetővé válik, és elválaszthatatlanul a tulajdonos nevére íródik.<br><br>Ebből adódóan a könyv később már nem eladható, nem osztogatható, és ha illegális helyre kerül, a tulajdonos viseli a következményeket: a könyv elveszíti az értékét, a másolatok után nem jár több jutalék, és maga a könyv a Könyvbörtönbe kerül.</div>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_rank_title">Rang</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_rank_body">Abrigó világán a rangot az adja, mekkora könyvtárad van. Például 130 könyv alatt ne is várd, hogy bárhol elfogadnak kapitánynak, legyen akár egy egész flottányi hajód. Viszont ha két letkristály tulajdonosává válsz, még a királyok is hellyel kínálnak az asztaluknál. Nem véletlen, hogy a letkristály-expedíciókba bekerülni is élet-halál harc.</p>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_library_title">A könyvtár</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_library_body">A megszerzett tekercseidet, másolataidat, térképeidet és hajónaplóidat a könyvtáradban tudod olvasgatni. Itt tudod letölteni a meglévő könyveidet is, amiket aztán elmenthetsz bármilyen másik eszközödre. Ha valamelyik térképedről másolatot szeretnél készíteni, akkor azzal át kell sétálnod a Másolóműhelybe, ha pedig a hajónaplódat szeretnéd bővíteni, annak szigorúan csakis a hajón szabad megtörténnie. Ez amolyan szokás.</p>
-                    </div>
-                </div>
-
-                <button class="accordion-button" data-lang="tutorial_acc_mapslogs_title">Térképek és hajónaplók</button>
-                <div class="accordion-content">
-                    <div class="accordion-panel-content">
-                        <p data-lang-html="tutorial_acc_mapslogs_body">Bár nem ugyanaz a kategória, mint a könyv, egy részletes térkép vagy egy telejegyzetelt hajónapló is hatalmas érték lehet. Mivel a játékban nincsenek konkrét modulok, a legtöbb kincset ilyen jegyzetek és térképek alapján lehet megtalálni. A legtöbb expedíció is olyan előkerült hajónaplók miatt indul, amelyekben szó esik másolatokról, kristálykönyvekről vagy épp letkristály-lelőhelyről.</p>
-                    </div>
-                </div>
-            </div>
+<div class="page-container tutorial-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <!-- 1. JÁTÉK HOST KONTÉNER (Új játékosnak azonnal indul beágyazva) -->
+    <div id="tutorial-game-panel" class="page-section" style="display: none; background: #0c121e; border: 1px solid #d4af37; border-radius: 8px; padding: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px; margin-bottom: 12px;">
+            <h2 style="color: #d4af37; margin: 0; font-size: 1.4rem;">🏴‍☠️ eBookPirates – Kalózsziget Tutorial</h2>
+            <span id="tutorial-unity-status" style="font-size: 0.95rem; color: #00ffcc; font-weight: bold;">Betöltés...</span>
         </div>
-
-        <div id="tutorial-unity-panel" class="page-section" style="display: none; margin-top: 20px; background-color: #fff;">
-            <h2 style="border-bottom: 2px solid var(--color-primary); padding-bottom: 10px;" data-lang="tutorial_unity_title">Unity Tutorial</h2>
-            <p id="tutorial-unity-status" style="font-weight: bold;" data-lang="tutorial_unity_status_starting">Tutorial játék indítása...</p>
-            <div id="tutorial-unity-host" style="width: 100%; min-height: 560px; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; background: #111;"></div>
-            <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button id="tutorial-unity-start-btn" class="btn" type="button" data-lang="tutorial_unity_start_button">Tutorial játék indítása</button>
-                <button id="tutorial-open-unity-btn" class="btn" type="button" data-lang="tutorial_unity_open_external">Tutorial játék külön lapon</button>
-                <button id="tutorial-fallback-btn" class="btn" type="button" style="background: #8b0000;" data-lang="tutorial_unity_fallback_quiz">Kvíz indítása helyette</button>
-            </div>
-        </div>
-
-        <div id="quiz-container" class="page-section" style="margin-top: 20px; background-color: #fff;">
-            <h2 style="border-bottom: 2px solid var(--color-primary); padding-bottom: 10px;" data-lang="tutorial_quiz_title">Vizsga</h2>
-
-            <div id="question-area">
-                <p id="question-text" style="font-weight: bold; font-size: 1.1em;" data-lang="tutorial_question_loading">Kérdés betöltése...</p>
-                <div id="options-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
-            </div>
-
-            <button id="submit-btn" class="btn" style="width: 100%; margin-top: 20px; font-size: 1.2em;" data-lang="tutorial_submit_button">Ezt választom!</button>
-            <p id="feedback-text" style="text-align: center; font-weight: bold; min-height: 20px; margin-top: 10px;"></p>
-        </div>
+        <div id="tutorial-unity-host" style="width: 100%; height: 680px; min-height: 520px; border-radius: 6px; overflow: hidden; background: #050a12; position: relative;"></div>
     </div>
 
-    <div id="quiz-navigation" class="page-section" style="display: none; text-align: center;">
-        <h3 style="color: var(--color-primary);" data-lang="tutorial_nav_title">Gratulálok! Ezzel a tudással már lehetsz kalóz!</h3>
-        <p data-lang="tutorial_nav_prompt">Most merre tovább?</p>
-        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-            <button id="tutorial-continue-btn" class="btn" type="button" style="display: none; background-color: #1d6a96;" data-lang="tutorial_unity_continue_button">Tutorial játék folytatása</button>
-            <button id="jump-to-save-btn" class="btn" type="button" onclick="jumpToSavedState()" style="background-color: #28a745;" data-lang="tutorial_nav_jump_to_save_button">Ugrás a mentett álláshoz</button>
-            <button class="btn" onclick="tryGoToDeck()" data-lang="tutorial_nav_deck_button">A fedélzetre</button>
-            <button class="btn btn-danger" onclick="logout()" data-lang="tutorial_nav_logout_button">Kijelentkezés</button>
+    <!-- 2. VETERÁN NÉZET (Ha a C oszlopban már 'ok' van: Akadálymentes Tutorial + inaktív vizsga) -->
+    <div id="tutorial-veteran-panel" class="page-section" style="display: none; background: #141210; border: 2px solid #d4af37; border-radius: 8px; padding: 25px; color: #f4e8c1; box-shadow: 0 8px 32px rgba(0,0,0,0.7);">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: #ffd700; font-size: 1.8rem; margin-bottom: 8px;">👑 Tapasztalt Tengeri Zsivány Vagy!</h2>
+            <p style="font-size: 1.1rem; color: #00ffcc; margin-bottom: 15px;">A kalózvizsgát már sikeresen letetted, a kezdő felszerelésedet (hártyák, kredit, Dingi csónak, tekercsek) jóváírtuk a számládra.</p>
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <button class="btn" onclick="loadPage('kikoto_oldal')" style="background: linear-gradient(135deg, #d4af37, #aa820a); color: #000; font-weight: bold; font-size: 1.1rem; padding: 12px 28px; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(212,175,55,0.4);">⚓ Irány Hebok Kikötő!</button>
+                <button class="btn" onclick="loadPage('fedelzet_oldal')" style="background: #2a3b4c; color: #fff; font-size: 1rem; padding: 12px 20px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);">🚢 Fedélzet Megtekintése</button>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid rgba(212,175,55,0.4); padding-top: 20px;">
+            <h3 style="color: #d4af37; text-align: center; margin-bottom: 15px;">📖 Akadálymentes Ismerettár (Tudás Felfrissítése)</h3>
+            <div id="veteran-knowledge-host" style="width: 100%; height: 600px; border: 1px solid rgba(212,175,55,0.3); border-radius: 6px; overflow: hidden; background: #050a12;">
+                <iframe id="veteran-tutorial-iframe" src="demojatek/MainMenuTutorial.html?mode=completed" style="width: 100%; height: 100%; border: 0;" allow="autoplay" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 </div>

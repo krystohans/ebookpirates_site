@@ -26,55 +26,6 @@ function getPageHtmlUrl(pageName) {
     return cleanName;
 }
 
-// Globális PostMessage figyelő a Tutorial Iframe eseményeihez (mindig aktív!)
-if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
-    window._ebpGlobalTutorialMessageBound = true;
-    window.addEventListener('message', function (event) {
-        if (!event.data || event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
-        console.log('🎮 [Global] Tutorial Iframe esemény érkezett:', event.data);
-
-        if (event.data.action === 'saveTutorialState') {
-            if (event.data.data) {
-                try {
-                    localStorage.setItem('ebp_tutorial_save', JSON.stringify(event.data.data));
-                } catch (e) {}
-                callBackend('saveTutorialState', [JSON.stringify(event.data.data)], function(res) {
-                    console.log('Tutorial állapot felhőbe mentve:', res);
-                });
-            }
-        } else if (event.data.action === 'tutorial_completed') {
-            callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
-                console.log('Tutorial befejezve és felírva válasz:', res);
-
-                if (res && res.alreadyCompleted) {
-                    var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
-                    if (typeof window.showPopUp === 'function') {
-                        window.showPopUp(veteranMsg, function() {
-                            if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                        });
-                    } else {
-                        alert(veteranMsg);
-                        if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                    }
-                } else {
-                    if (typeof loadPage === 'function') {
-                        loadPage('kikoto_oldal');
-                    }
-                }
-            }, function(err) {
-                console.warn('Tutorial mentési hiba:', err);
-                if (typeof loadPage === 'function') {
-                    loadPage('kikoto_oldal');
-                }
-            });
-        } else if (event.data.action === 'navigate_to_page') {
-            if (typeof loadPage === 'function') {
-                loadPage(event.data.page || 'kikoto_oldal');
-            }
-        }
-    });
-}
-
 /**
  * Ez a függvény végzi a kommunikációt a Google Apps Script Backenddel.
  * KIZÁRÓLAG a GitHub/Külső környezetben használd!
@@ -452,12 +403,6 @@ function login() {
 function initializeApp(user) {
     window.inGame = user.inGame === true;
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
-    try {
-        localStorage.setItem('ebook_pirates_username', user.name || '');
-        localStorage.setItem('ebook_pirates_user_email', user.email || '');
-        sessionStorage.setItem('ebook_is_logged_in', 'true');
-        sessionStorage.setItem('ebookPiratesLoginName', user.name || '');
-    } catch(e) {}
     document.querySelector('.header-title').innerText = user.name;
     ensureCreditDisplayIsPresent();
 
@@ -524,12 +469,6 @@ function checkSession() {
 function logout() {
     sessionStorage.removeItem('ebookPiratesToken');
     localStorage.removeItem('ebookPiratesToken');
-    localStorage.removeItem('ebook_pirates_username');
-    localStorage.removeItem('ebook_pirates_user_email');
-    sessionStorage.removeItem('ebookPiratesLoginName');
-    sessionStorage.removeItem('ebookPiratesLoginPass');
-    sessionStorage.removeItem('ebook_is_logged_in');
-
     document.getElementById('app-view').style.display = 'none';
     document.getElementById('login-view').style.display = 'block';
 
@@ -1157,8 +1096,13 @@ function runTutorialScript() {
             return;
         }
 
-        var unityUrl = (flow && flow.unityUrl && flow.unityUrl.indexOf('http') === 0 && flow.unityUrl.indexOf('github.io') === -1) ? flow.unityUrl : 'demojatek/tutorial_runner.html';
-        
+        var unityUrl = (flow && flow.unityUrl) ? flow.unityUrl : '';
+        if (!unityUrl) {
+            setUnityStatus(t('tutorial_unity_status_missing_url'), '#c0392b');
+            showQuizMode();
+            return;
+        }
+
         var support = checkUnityWebGLSupport();
         if (!support.ok) {
             setUnityStatus(support.reason, '#c0392b');
@@ -1177,8 +1121,7 @@ function runTutorialScript() {
         }
 
         var mode = flow && flow.tutorialCompleted ? 'continue' : 'tutorial';
-        var isLoadParam = flow && flow.isLoad ? '&load=1' : '';
-        unityTargetUrl = (unityUrl.indexOf('?') === -1 ? unityUrl + '?' : unityUrl + '&') + 'mode=' + mode + isLoadParam;
+        unityTargetUrl = buildUnityLaunchUrl(unityUrl, mode, flow ? flow.gameStateToken : '');
 
         if (startBtn) {
             startBtn.style.display = 'inline-block';
@@ -1190,7 +1133,7 @@ function runTutorialScript() {
         if (autoStart) {
             mountUnityIframe(host);
         } else {
-            setUnityStatus(t('tutorial_unity_status_waiting_click') || 'Kattints a Tutorial indításához!', '#333');
+            setUnityStatus(t('tutorial_unity_status_waiting_click'), '#333');
         }
 
         if (fallbackBtn) {
@@ -1207,56 +1150,6 @@ function runTutorialScript() {
                 }
             };
         }
-
-        // PostMessage figyelő a 3D Tutorial Iframe eseményeihez
-        if (!window._ebpTutorialMessageBound) {
-            window._ebpTutorialMessageBound = true;
-            window.addEventListener('message', function (event) {
-                if (!event.data || event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
-                
-                console.log('🎮 Tutorial Iframe esemény érkezett:', event.data);
-                
-                if (event.data.action === 'saveTutorialState') {
-                    if (event.data.data) {
-                        try {
-                            localStorage.setItem('ebp_tutorial_save', JSON.stringify(event.data.data));
-                        } catch (e) {}
-                        callBackend('saveTutorialState', [JSON.stringify(event.data.data)], function(res) {
-                            console.log('Tutorial állapot felhőbe mentve:', res);
-                        });
-                    }
-                } else if (event.data.action === 'tutorial_completed') {
-                    callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
-                        console.log('Tutorial befejezve és felírva válasz:', res);
-
-                        if (res && res.alreadyCompleted) {
-                            var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
-                            if (typeof window.showPopUp === 'function') {
-                                window.showPopUp(veteranMsg, function() {
-                                    if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                                });
-                            } else {
-                                alert(veteranMsg);
-                                if (typeof loadPage === 'function') loadPage('kikoto_oldal');
-                            }
-                        }
-                    });
-                } else if (event.data.action === 'logout') {
-                    if (typeof logout === 'function') {
-                        logout();
-                    }
-                } else if (event.data.action === 'navigate_to_page') {
-                    if (typeof loadPage === 'function') {
-                        loadPage(event.data.page || 'kikoto_oldal');
-                    }
-                } else if (event.data.action === 'exit_tutorial') {
-                    if (panel) panel.style.display = 'none';
-                    if (nav) nav.style.display = 'block';
-                    var continueBtn = document.getElementById('tutorial-continue-btn');
-                    if (continueBtn) continueBtn.style.display = 'inline-block';
-                }
-            });
-        }
     }
 
     function bindContinueButton(flow) {
@@ -1265,14 +1158,19 @@ function runTutorialScript() {
             return;
         }
 
-        btn.style.display = 'inline-block';
-        btn.onclick = function () {
-            tryLaunchUnity({
-                tutorialCompleted: false,
-                isLoad: true,
-                unityUrl: 'demojatek/tutorial_runner.html'
-            }, true);
-        };
+        if (flow && flow.gameStateToken) {
+            btn.style.display = 'inline-block';
+            btn.onclick = function () {
+                tryLaunchUnity({
+                    tutorialCompleted: true,
+                    gameStateToken: flow.gameStateToken,
+                    unityUrl: flow.unityUrl
+                }, true);
+            };
+        } else {
+            btn.style.display = 'none';
+            btn.onclick = null;
+        }
     }
 
     function initializeTutorialPage(flow) {
@@ -4229,41 +4127,6 @@ function refreshMonasteryWork(silent) {
         container.innerHTML = '<p><i>' + t('monk_work_loading') + '</i></p>';
     }
 
-    // Várakozó kvízkérdések lekérése a jóváhagyó panelhez
-    callBackend('getPendingQuizQuestions', [], function (quizRes) {
-        var quizPanel = document.getElementById('monk-quiz-approval-panel');
-        var quizList = document.getElementById('monk-quiz-approval-list');
-        if (!quizPanel || !quizList) return;
-
-        if (quizRes && quizRes.success && quizRes.questions && quizRes.questions.length > 0) {
-            quizPanel.style.display = 'block';
-            var qHtml = '<div style="display: flex; flex-direction: column; gap: 15px;">';
-            quizRes.questions.forEach(function (q) {
-                qHtml += '<div style="background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #ffe066; display: flex; flex-direction: column; gap: 6px; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.02); color: #333;">' +
-                    '<div><b>' + t('monk_quiz_question_prefix') + '</b> <span style="font-style: italic;">' + escapeHtml(q.question) + '</span></div>' +
-                    '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">' +
-                        '<div><span style="color: green; font-weight: bold;">' + t('monk_quiz_correct_prefix') + '</span> ' + escapeHtml(q.correctAnswer) + '</div>' +
-                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt1_prefix') + '</span> ' + escapeHtml(q.alt1) + '</div>' +
-                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt2_prefix') + '</span> ' + escapeHtml(q.alt2) + '</div>' +
-                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt3_prefix') + '</span> ' + escapeHtml(q.alt3) + '</div>' +
-                    '</div>' +
-                    '<div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; border-top: 1px dashed #eee; padding-top: 8px;">' +
-                        '<button class="btn btn-sm" style="background-color: #2f855a; color: white;" onclick="handleQuizDecision(' + q.rowIndex + ', \'OK\')"><i class="fas fa-check"></i> ' + t('monk_approve_button') + '</button>' +
-                        '<button class="btn btn-sm btn-danger" style="margin-top: 0;" onclick="handleQuizDecision(' + q.rowIndex + ', \'ELUTASÍTVA\')"><i class="fas fa-times"></i> ' + t('monk_reject_button') + '</button>' +
-                    '</div>' +
-                '</div>';
-            });
-            qHtml += '</div>';
-            quizList.innerHTML = qHtml;
-        } else {
-            quizPanel.style.display = 'none';
-            quizList.innerHTML = '';
-        }
-    }, function (err) {
-        var quizPanel = document.getElementById('monk-quiz-approval-panel');
-        if (quizPanel) quizPanel.style.display = 'none';
-    });
-
     callBackend('getMonasteryWorks', [],
         function (res) {
             if (!res.success) { if (!silent) container.innerHTML = '<p style="color:red;">' + t('error_prefix') + res.error + '</p>'; return; }
@@ -4429,219 +4292,6 @@ function refreshMonasteryWork(silent) {
             container.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>';
         }
     );
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    return text.toString()
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-function handleQuizDecision(rowIndex, decision) {
-    var confirmMsg = decision === 'OK' ? 
-        t('monk_quiz_approve_confirm') : 
-        t('monk_quiz_reject_confirm');
-        
-    uiConfirm(confirmMsg, t('modal_confirm_title'), function () {
-        document.getElementById('loading-overlay').style.display = 'flex';
-        callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
-            document.getElementById('loading-overlay').style.display = 'none';
-            if (res && res.success) {
-                uiAlert(res.message || t('monk_quiz_evaluation_success'), t('modal_notice_title'));
-                refreshMonasteryWork();
-            } else {
-                uiAlert(t('error_prefix') + (res ? res.message || res.error : 'Szerver hiba'), t('modal_notice_title'));
-            }
-        }, function (err) {
-            document.getElementById('loading-overlay').style.display = 'none';
-            uiAlert(t('error_prefix') + err.message, t('modal_notice_title'));
-        });
-    });
-}
-
-// --- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK ---
-
-function openQuizBookModal() {
-    try {
-        console.log("openQuizBookModal() elindult");
-        var loading = document.getElementById('loading-overlay');
-        if (loading) loading.style.display = 'flex';
-
-        callBackend('checkIfUserIsMonk', [], function(res) {
-            try {
-                if (loading) loading.style.display = 'none';
-                console.log("checkIfUserIsMonk válasz:", res);
-                if (res && res.success && res.isMonk) {
-                    openQuizBookModalDirect();
-                } else {
-                    console.log("Nem szerzetes kalóz, Anonymus testvér NPC megnyitása...");
-                    openUniversalNPC('anonymus', {
-                        name: 'Anonymus Testvér',
-                        role: 'Rendi Írnok',
-                        icon: '<i class=\'fas fa-scroll\'></i>',
-                        headerColor: '#37474f',
-                        portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
-                        msgIcon: '<i class=\'fas fa-scroll\' style=\'color:#d4af37; margin-right:5px;\'></i>',
-                        loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
-                        styles: {
-                            modal: {
-                                justifyContent: 'flex-end', 
-                                alignItems: 'stretch',
-                                background: '',
-                                padding: '0'
-                            },
-                            content: {
-                                width: '350px',              
-                                height: '100vh',            
-                                maxWidth: '85vw',           
-                                margin: '0',                
-                                borderRadius: '2',          
-                                border: 'none',
-                                borderLeft: '5px solid #d4af37', 
-                                backgroundColor: '#1f0901',
-                                color: '#241512',
-                                backgroundImage: 'url(https://www.transparenttextures.com/patterns/wood-pattern.png)',
-                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-                            }
-                        },
-                        skipInit: false
-                    });
-                }
-            } catch (innerErr) {
-                console.error("Hiba a checkIfUserIsMonk sikeres ágában:", innerErr);
-                alert("Hiba a válasz feldolgozásakor: " + innerErr.message);
-                openQuizBookModalDirect();
-            }
-        }, function(err) {
-            try {
-                if (loading) loading.style.display = 'none';
-                console.warn("checkIfUserIsMonk sikertelen (hibás ág):", err);
-                alert("Szerver hiba történt a Monk ellenőrzéskor. Fallback mód: Kvízkönyv megnyitása.");
-                openQuizBookModalDirect();
-            } catch (fallbackErr) {
-                console.error("Hiba a checkIfUserIsMonk hibakezelő ágában:", fallbackErr);
-                openQuizBookModalDirect();
-            }
-        });
-    } catch (globalErr) {
-        console.error("Kritikus hiba az openQuizBookModal-ban:", globalErr);
-        alert("Kritikus kliens hiba: " + globalErr.message);
-    }
-}
-
-function openQuizBookModalDirect() {
-    var npcModal = document.getElementById('universal-npc-modal');
-    if (npcModal) npcModal.style.display = 'none';
-
-    var modal = document.getElementById('quiz-book-modal');
-    if (!modal) return;
-
-    // Bejelentkezett kalóz nevének beállítása
-    var nameField = document.getElementById('modal-submitter-name');
-    if (nameField && typeof currentUserEmail !== 'undefined') {
-        nameField.value = currentUserEmail;
-    }
-
-    // Feedback és form tisztítása nyitáskor
-    var feedback = document.getElementById('modal-question-feedback');
-    if (feedback) {
-        feedback.textContent = '';
-        feedback.style.color = '';
-    }
-
-    // Submit gomb engedélyezése
-    var submitBtn = document.getElementById('modal-submit-question-btn');
-    if (submitBtn) submitBtn.disabled = false;
-
-    modal.style.display = 'flex';
-}
-
-function closeUniversalNPCChat() {
-    var modal = document.getElementById('universal-npc-modal');
-    if (modal) modal.style.display = 'none';
-}
-
-function closeQuizBookModal() {
-    var modal = document.getElementById('quiz-book-modal');
-    if (!modal) return;
-
-    // Minden beviteli mező törlése
-    var fields = ['modal-question-text', 'modal-correct-answer', 'modal-alt-1', 'modal-alt-2', 'modal-alt-3'];
-    for (var i = 0; i < fields.length; i++) {
-        var el = document.getElementById(fields[i]);
-        if (el) el.value = '';
-    }
-
-    // Feedback törlése
-    var feedback = document.getElementById('modal-question-feedback');
-    if (feedback) {
-        feedback.textContent = '';
-        feedback.style.color = '';
-    }
-
-    // Honeypot törlése
-    var hp = document.getElementById('modal-website-url-hp');
-    if (hp) hp.value = '';
-
-    modal.style.display = 'none';
-}
-
-function submitQuizFromModal() {
-    // Honeypot ellenőrzés (bot védelem)
-    var honeypot = document.getElementById('modal-website-url-hp');
-    if (honeypot && honeypot.value !== '') {
-        console.warn('Spam bot detektálva!');
-        return;
-    }
-
-    var formData = {
-        question: document.getElementById('modal-question-text').value,
-        correctAnswer: document.getElementById('modal-correct-answer').value,
-        alt1: document.getElementById('modal-alt-1').value,
-        alt2: document.getElementById('modal-alt-2').value,
-        alt3: document.getElementById('modal-alt-3').value
-    };
-
-    if (!formData.question || !formData.correctAnswer) {
-        var fb = document.getElementById('modal-question-feedback');
-        fb.textContent = t('kerdesbekuldo_validation_error') !== 'kerdesbekuldo_validation_error' ? t('kerdesbekuldo_validation_error') : 'Kérlek, töltsd ki a kérdés és a helyes válasz mezőket!';
-        fb.style.color = 'red';
-        return;
-    }
-
-    var feedbackDiv = document.getElementById('modal-question-feedback');
-    var submitBtn = document.getElementById('modal-submit-question-btn');
-
-    feedbackDiv.textContent = t('kerdesbekuldo_sending') !== 'kerdesbekuldo_sending' ? t('kerdesbekuldo_sending') : 'Beküldés folyamatban...';
-    feedbackDiv.style.color = '#b38600';
-    submitBtn.disabled = true;
-
-    callBackend('submitNewQuestion', [formData], function (res) {
-        if (res && res.success) {
-            feedbackDiv.textContent = res.message || 'Sikeres beküldés!';
-            feedbackDiv.style.color = 'green';
-
-            // 2 másodperc múlva automatikus bezárás és aloldal frissítés
-            setTimeout(function () {
-                closeQuizBookModal();
-                if (typeof currentPageName !== 'undefined' && currentPageName === 'felhokolostor_oldal') {
-                    loadPage('felhokolostor_oldal');
-                }
-            }, 2000);
-        } else {
-            feedbackDiv.textContent = (res && res.message) || 'Hiba a beküldés során!';
-            feedbackDiv.style.color = 'red';
-            submitBtn.disabled = false;
-        }
-    }, function (err) {
-        feedbackDiv.textContent = 'Hálózati hiba: ' + err.message;
-        feedbackDiv.style.color = 'red';
-        submitBtn.disabled = false;
-    });
 }
 
 function purgeWork(workId, title) {
@@ -9157,28 +8807,6 @@ function handleUniversalResponse(response) {
         console.error("Hiba: A szerver üres választ küldött!");
         addBubbleToUniversal("System", "Hiba: A szerver nem küldött adatot. (Null Response)", "system");
         return;
-    }
-
-    // --- RENDSZERMODAL KEZELÉS ---
-    if (response.systemModal) {
-        var sm = response.systemModal;
-        if (typeof showSystemModal === 'function') {
-            showSystemModal(
-                sm.title || "Rendszerüzenet",
-                sm.body || sm.message || "",
-                sm.icon || "fas fa-info-circle",
-                [{ text: "Rendben", color: "#2e8b57", textColor: "white", callback: function() {
-                    if (typeof updateCreditDisplay === 'function') {
-                        updateCreditDisplay();
-                    }
-                }}]
-            );
-        } else {
-            alert((sm.title || "Rendszerüzenet") + "\n\n" + (sm.body || sm.message || ""));
-            if (typeof updateCreditDisplay === 'function') {
-                updateCreditDisplay();
-            }
-        }
     }
 
     if (response.text) {

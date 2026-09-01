@@ -741,16 +741,14 @@
     }
 
     function finalizeAccTutorialAndDepart() {
-      const videoOverlay = document.getElementById('acc-video-overlay');
-      const video = document.getElementById('acc-departure-video');
       const nameInput = document.getElementById('acc-boat-name-input');
 
-      // Ha a játékos beírt egy nevet, de nem kattintott külön a gombra, akkor is azt használjuk
+      // Csónaknév kiolvasása a beviteli mezőből
       if (nameInput && nameInput.value.trim()) {
         accBoatName = nameInput.value.trim();
       }
 
-      // Ha még mindig üres maradt, automatikus felhasználónév-alapú név generálása
+      // Automatikus név, ha nem adott meg semmit
       if (!accBoatName) {
         let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName') || localStorage.getItem('ebp_user_name') || 'Kaloz';
         const cleanName = userName.replace(/[^a-zA-Z0-9]/g, '');
@@ -758,100 +756,21 @@
         accBoatName = basePrefix + '_boat01';
       }
 
-      // 1. Mentés LocalStorage-ba (fix 30 hártya)
-      const finalSaveState = {
-        completed: true,
-        boatName: accBoatName,
-        csonak_nev: accBoatName,
-        storedMembranes: 30,
-        totalPickedUp: 30,
-        timestamp: Date.now()
-      };
-      localStorage.setItem('ebp_tutorial_save', JSON.stringify(finalSaveState));
-      localStorage.setItem('ebook_pirates_game_state', JSON.stringify(finalSaveState));
+      // Helyi mentések
       localStorage.setItem('ebp_boat_name', accBoatName);
 
-      // 2. Tranzakció küldése a Backend felé
-      const tutorialPayload = {
-        type: 'EBOOK_PIRATES_TUTORIAL',
-        action: 'tutorial_completed',
-        score: 30,
-        storedMembranes: 30,
-        totalPickedUp: 30,
-        passed: true,
-        boatName: accBoatName,
-        csonak_nev: accBoatName,
-        boat_name: accBoatName
-      };
-
-      // A) PostMessage a beágyazó szülő ablaknak (app.js -> callBackend)
+      // Eredeti, bevált felíró rutin meghívása a szülő ablakon keresztül (app.js -> callBackend('markTutorialCompleted'))
       if (window.parent && window.parent !== window) {
-        window.parent.postMessage(tutorialPayload, '*');
-      }
-
-      // B) Közvetlen Backend hívás tartalékként és önálló (standalone) futtatás esetén
-      const token = localStorage.getItem('ebookPiratesToken');
-      if (token) {
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
-        try {
-          fetch(WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-              action: 'markTutorialCompleted',
-              data: ['3d_tutorial', tutorialPayload],
-              token: token
-            })
-          }).then(function(res) {
-            return res.text();
-          }).then(function(txt) {
-            console.log('🎯 Tutorial elfogadás és kincsek felírása sikeres:', txt);
-          }).catch(function(err) {
-            console.warn('⚠️ Közvetlen felírási hiba:', err);
-          });
-        } catch(e) {
-          console.warn('⚠️ Fetch hiba:', e);
-        }
-      }
-
-      function proceedToHarbor() {
-        if (videoOverlay) videoOverlay.style.display = 'none';
-        if (window.parent && window.parent !== window) {
-          window.parent.postMessage({
-            type: 'EBOOK_PIRATES_TUTORIAL',
-            action: 'navigate_to_page',
-            page: 'kikoto_oldal'
-          }, '*');
-        } else {
-          // Ha önállóan nyitották meg a MainMenuTutorial-t, visszairányítás a főoldalra
-          window.location.href = '../index.html';
-        }
-      }
-
-      // 3. Videó elindítása és közvetlen átirányítás Hebok kikötőbe
-      if (videoOverlay && video) {
-        videoOverlay.style.display = 'flex';
-        video.currentTime = 0;
-        video.muted = false;
-
-        var p = video.play();
-        if (p !== undefined) {
-          p.catch(function () {
-            video.muted = true;
-            video.play().catch(function () {
-              proceedToHarbor();
-            });
-          });
-        }
-
-        video.onended = function () {
-          proceedToHarbor();
-        };
-        videoOverlay.onclick = function () {
-          proceedToHarbor();
-        };
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'tutorial_completed',
+          score: 10,
+          passed: true,
+          boatName: accBoatName
+        }, '*');
       } else {
-        proceedToHarbor();
+        // Standalone futás esetén visszatérés a főoldalra
+        window.location.href = '../index.html';
       }
     }
 

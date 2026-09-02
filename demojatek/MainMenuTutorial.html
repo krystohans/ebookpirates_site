@@ -548,19 +548,29 @@
 
     function closeAccessibilityTutorial() {
       stopAccSpeech();
-      const overlay = document.getElementById('acc-tutorial-overlay');
-      if (overlay) overlay.style.setProperty('display', 'none', 'important');
+      if (typeof window.exitFullscreenIfActive === 'function') {
+        window.exitFullscreenIfActive();
+      }
 
       if (isCompletedMode) {
-        // VETERÁN FELHASZNÁLÓ: A kártya bezárásakor automatikusan visszalépünk a Kikötőbe!
-        returnToHarbor();
-      } else {
-        // ÚJ JÁTÉKOS: Visszakapcsoljuk a főmenüt
-        const mainMenu = document.getElementById('main-menu-overlay');
-        if (mainMenu) mainMenu.style.display = 'flex';
-        const bgVid = document.getElementById('bg-video');
-        if (bgVid) bgVid.style.display = 'block';
+        // VETERÁN FELHASZNÁLÓ: Pontosan ugyanazt a loadPage('kikoto_oldal') hívást futtatja le, mint a fejléc X gombja!
+        if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
+          window.parent.loadPage('kikoto_oldal');
+        } else if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ action: 'navigate_to_page', page: 'kikoto_oldal' }, '*');
+        } else {
+          window.location.href = '../index.html';
+        }
+        return;
       }
+
+      // ÚJ JÁTÉKOS: visszakapcsoljuk a menüt
+      const overlay = document.getElementById('acc-tutorial-overlay');
+      if (overlay) overlay.style.setProperty('display', 'none', 'important');
+      const mainMenu = document.getElementById('main-menu-overlay');
+      if (mainMenu) mainMenu.style.display = 'flex';
+      const bgVid = document.getElementById('bg-video');
+      if (bgVid) bgVid.style.display = 'block';
     }
 
     function toggleAccAccordion(index) {
@@ -859,26 +869,18 @@
       menuAmbience.loop = true;
       menuAmbience.volume = isCompletedMode ? 0 : soundVol;
 
-      // Ha korábban a felhasználó teljes képernyőre váltott, azonnal próbáljuk meg fenntartani
-      if (localStorage.getItem('ebook_pirates_fullscreen') === 'true' && !document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(e => {});
-      }
-
-      // Autoplay policy & Fullscreen megőrzése miatt az első kattintásra is elindítjuk
+      // Autoplay policy miatt az első felhasználói interakcióra indítjuk el a háttérzenét
       let audioStarted = false;
-      const tryFullscreenAndAudio = () => {
+      const tryAudio = () => {
         if (!audioStarted) {
           if (musicVol > 0) menuMusic.play().catch(e => {});
           if (!isCompletedMode && soundVol > 0) menuAmbience.play().catch(e => {});
           audioStarted = true;
         }
-        if (localStorage.getItem('ebook_pirates_fullscreen') === 'true' && !document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(e => {});
-        }
       };
 
-      document.addEventListener('click', tryFullscreenAndAudio);
-      document.addEventListener('keydown', tryFullscreenAndAudio);
+      document.addEventListener('click', tryAudio);
+      document.addEventListener('keydown', tryAudio);
 
       // URL Paraméterek ellenőrzése (Veterán vs Új Játékos)
       try {

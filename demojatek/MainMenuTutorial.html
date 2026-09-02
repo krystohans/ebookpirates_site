@@ -552,6 +552,10 @@
       stopAccSpeech();
       const overlay = document.getElementById('acc-tutorial-overlay');
       if (overlay) overlay.style.setProperty('display', 'none', 'important');
+      if (isCompletedMode) {
+        // Veterán felhasználóknak az Ismerettár bezárása közvetlen visszalépést jelent a Kikötőbe
+        goToHarborFromMenu();
+      }
     }
 
     function toggleAccAccordion(index) {
@@ -808,6 +812,24 @@
         window.location.href = '../index.html';
       }
     }
+
+    function startNewGame() {
+      if (isCompletedMode) {
+        alert('A kalózvizsgát már sikeresen letetted, a kezdő felszerelésedet megkaptad! A tutorial játékba nem léphetsz be újra. Irány Hebok kikötő!');
+        goToHarborFromMenu();
+        return;
+      }
+      window.location.href = 'tutorial.html?mode=tutorial&new=1';
+    }
+
+    function continueGame() {
+      if (isCompletedMode) {
+        alert('A kalózvizsgát már sikeresen letetted, a kezdő felszerelésedet megkaptad! A tutorial játékba nem léphetsz be újra. Irány Hebok kikötő!');
+        goToHarborFromMenu();
+        return;
+      }
+      window.location.href = 'tutorial.html?mode=continue&load=1';
+    }
   </script>
 </head>
 <body>
@@ -833,7 +855,6 @@
       };
 
       // URL Paraméterek ellenőrzése (Veterán vs Új Játékos)
-      let isCompletedMode = false;
       try {
         const urlParams = new URLSearchParams(window.location.search);
         isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
@@ -875,10 +896,24 @@
         // Veterán mód: Teljes csend a háttérben, kizárólag a felolvasó hang működhet!
         window._ebpMenuMusic = null;
         window._ebpMenuAmbience = null;
-      }
 
-      if (isCompletedMode) {
-        // Veterán mód: Azonnal megjelenítjük az Akadálymentes Ismerettárat, a Vizsga gomb inaktív
+        // A háttérben lévő főmenü gombjait is zároljuk és felülírjuk
+        const menuOverlay = document.getElementById('main-menu-overlay');
+        if (menuOverlay) {
+          menuOverlay.innerHTML = `
+            <div class="menu-logo-container">
+              <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Color_logó.png" alt="eBookPirates Logo">
+            </div>
+            <div style="background: #141210; border: 2px solid #d4af37; border-radius: 8px; padding: 22px; color: #ffd700; text-align: center; max-width: 460px; margin: 25px auto; box-shadow: 0 6px 25px rgba(0,0,0,0.8);">
+              <h3 style="margin-top:0; font-size: 22px;">👑 Kalózvizsga Teljesítve</h3>
+              <p style="color: #00ffcc; font-size: 15.5px; line-height: 1.5; margin: 12px 0 20px 0;">A kezdő tutorialt már sikeresen elvégezted. A 3D tutorial játékba nem léphetsz be újra.</p>
+              <button class="menu-button" onclick="goToHarborFromMenu()" style="margin: 0 auto 12px auto; background: linear-gradient(135deg, #d4af37, #aa820a); color: #000; font-weight: bold; width: 100%;">⚓ Vissza a Kikötőbe</button>
+              <button class="menu-button" onclick="openAccessibilityTutorial()" style="margin: 0 auto; width: 100%;">📖 Ismerettár Megnyitása</button>
+            </div>
+          `;
+        }
+
+        // Azonnal megjelenítjük az Akadálymentes Ismerettárat, a Vizsga gomb inaktív
         setTimeout(function() {
           openAccessibilityTutorial();
           const startQuizBtn = document.getElementById('acc-start-quiz-btn');
@@ -1127,9 +1162,9 @@
         </div>
 
         <!-- 4. NÉZET: KINCSEK ÖSSZEGZÉSE (FIX 30 HÁRTYA) -->
-        <div id="acc-quiz-summary-view" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 20px;">
-          <div id="acc-quiz-summary-text" style="font-size: 20px; color: #f0f0f0; line-height: 1.65; margin-bottom: 30px; background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 25px 35px; width: 100%; max-width: 500px; box-sizing: border-box;"></div>
-          <button class="acc-primary-btn" style="font-size: 22px; padding: 14px 40px;" onclick="finalizeAccTutorialAndDepart()">Irány Hebok Kikötő!</button>
+        <div id="acc-quiz-summary-view" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 45px 30px;">
+          <div id="acc-quiz-summary-text" style="font-size: 20px; color: #f0f0f0; line-height: 1.65; margin-top: 20px; margin-bottom: 35px; background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 25px 35px; width: 100%; max-width: 500px; box-sizing: border-box;"></div>
+          <button class="acc-primary-btn" style="font-size: 22px; padding: 14px 40px; margin-bottom: 30px;" onclick="finalizeAccTutorialAndDepart()">Irány Hebok Kikötő!</button>
         </div>
       </div>
     </div>

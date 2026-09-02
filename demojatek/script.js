@@ -3628,16 +3628,48 @@ window.showEogFinalPanel = function () {
 // --- KINCSEK SIKERES FELÍRÁSA VISSZAJELZŐ ÉS VÁLASZTÓ PANEL ---
 window.showEogSuccessChoicePanel = function () {
   const choiceOverlay = document.getElementById('eog-success-choice-overlay');
+  const choiceTextEl = document.getElementById('eog-success-choice-text');
   if (!choiceOverlay) return;
+
+  // Korábbi időzítők törlése
+  if (window._eogChoiceTimer) clearInterval(window._eogChoiceTimer);
 
   choiceOverlay.style.display = 'flex';
   window.isCutscenePlaying = true;
+
+  let secondsLeft = 15;
+  if (choiceTextEl) {
+    choiceTextEl.innerHTML = 
+      `Kincseid felírásra kerültek a karakterlapodra.<br>Ezek után mihez kezdesz?<br>` +
+      `<span id="eog-choice-countdown" style="font-size: 15px; color: #554433; font-weight: normal; display: block; margin-top: 6px;">(Automatikus kihajózás Hebokba: <b style="color: #885500;">${secondsLeft}</b> mp)</span>`;
+  }
+
+  const updateCountdown = () => {
+    secondsLeft--;
+    const countEl = document.getElementById('eog-choice-countdown');
+    if (countEl) {
+      countEl.innerHTML = `(Automatikus kihajózás Hebokba: <b style="color: #885500;">${Math.max(0, secondsLeft)}</b> mp)`;
+    }
+    if (secondsLeft <= 0) {
+      clearInterval(window._eogChoiceTimer);
+      choiceOverlay.style.display = 'none';
+      console.log('⏰ Idő lejárt, automatikus kihajózás Hebokba...');
+      window.playHebokDepartureVideo();
+    }
+  };
+
+  window._eogChoiceTimer = setInterval(updateCountdown, 1000);
+
+  function clearChoiceTimer() {
+    if (window._eogChoiceTimer) clearInterval(window._eogChoiceTimer);
+  }
 
   // 1. Gomb: Tovább halászok -> Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)
   const btnFish = document.getElementById('eog-btn-choice-fish');
   if (btnFish) {
     btnFish.onclick = function (e) {
       e.stopPropagation();
+      clearChoiceTimer();
       choiceOverlay.style.display = 'none';
       if (typeof window.exitFullscreenIfActive === 'function') {
         window.exitFullscreenIfActive();
@@ -3662,6 +3694,7 @@ window.showEogSuccessChoicePanel = function () {
   if (btnHebok) {
     btnHebok.onclick = function (e) {
       e.stopPropagation();
+      clearChoiceTimer();
       choiceOverlay.style.display = 'none';
 
       // Háttérben előtöltjük a kikötőt
@@ -3682,6 +3715,7 @@ window.showEogSuccessChoicePanel = function () {
   if (btnExit) {
     btnExit.onclick = function (e) {
       e.stopPropagation();
+      clearChoiceTimer();
       choiceOverlay.style.display = 'none';
 
       // 1. Helyi tokenek és munkamenet adatok teljes törlése

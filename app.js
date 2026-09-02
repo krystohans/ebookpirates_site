@@ -69,15 +69,10 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                         if (typeof loadPage === 'function') loadPage('kikoto_oldal');
                     }
                 } else {
-                    if (typeof loadPage === 'function') {
-                        loadPage('kikoto_oldal');
-                    }
+                    console.log('✅ Kincsek sikeresen felírva a felhőbe. A játékos a választó panelen dönthet a következő lépésről.');
                 }
             }, function(err) {
                 console.warn('Tutorial mentési hiba:', err);
-                if (typeof loadPage === 'function') {
-                    loadPage('kikoto_oldal');
-                }
             });
         } else if (event.data.action === 'navigate_to_page') {
             if (typeof loadPage === 'function') {

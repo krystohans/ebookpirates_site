@@ -685,6 +685,10 @@
 
     // ─── AKADÁLYMENTES CSÓNAK NÉVADÁS ÉS KINCSFELÍRÁS ───
     function startAccBoatNamingRoutine() {
+      // BIZTONSÁGI LÉPÉS: A csónaknév beírása előtt a teljes képernyőből kilépünk, hogy meglegyen a normál fókusz és ablakméret!
+      if (typeof window.exitFullscreenIfActive === 'function') {
+        window.exitFullscreenIfActive();
+      }
       const questionArea = document.getElementById('acc-quiz-question-area');
       const namingView = document.getElementById('acc-quiz-naming-view');
       const nameInput = document.getElementById('acc-boat-name-input');
@@ -693,7 +697,7 @@
       if (namingView) namingView.style.display = 'flex';
       if (nameInput) {
         nameInput.value = '';
-        setTimeout(() => nameInput.focus(), 100);
+        setTimeout(() => nameInput.focus(), 200);
       }
     }
 

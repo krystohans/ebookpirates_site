@@ -3199,9 +3199,30 @@ function startEogVideo() {
 
 // ─── END RUTIN LOGIKA (NÉVADÁS, MEGERŐSÍTÉSEK, İRÓGÉP, MAINMENU) ───
 
+window.exitFullscreenIfActive = function () {
+  try {
+    if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen().catch(function(e) {});
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+      else if (document.msExitFullscreen) document.msExitFullscreen();
+    }
+    if (window.parent && window.parent !== window && window.parent.document && (window.parent.document.fullscreenElement || window.parent.document.webkitFullscreenElement)) {
+      if (window.parent.document.exitFullscreen) window.parent.document.exitFullscreen().catch(function(e) {});
+      else if (window.parent.document.webkitExitFullscreen) window.parent.document.webkitExitFullscreen();
+    }
+  } catch (err) {
+    console.warn("Fullscreen kilépési hiba:", err);
+  }
+};
+
 window.eogBoatName = '';
 
 window.startEogBoatNamingRoutine = function () {
+  // BIZTONSÁGI LÉPÉS: A csónaknév beírása előtt a teljes képernyőből kilépünk, hogy meglegyen a normál fókusz és ablakméret!
+  if (typeof window.exitFullscreenIfActive === 'function') {
+    window.exitFullscreenIfActive();
+  }
   window.isWindActive = false; // Szél leállítása a névadó és az azt követő paneleknél
   const namingOverlay = document.getElementById('eog-boat-naming-overlay');
   const nameInput = document.getElementById('eog-boat-name-input');
@@ -3209,6 +3230,9 @@ window.startEogBoatNamingRoutine = function () {
 
   nameInput.value = '';
   namingOverlay.style.display = 'flex';
+  setTimeout(function() {
+    if (nameInput) nameInput.focus();
+  }, 200);
 
   const btnSubmit = document.getElementById('eog-btn-naming-submit');
   const btnCancel = document.getElementById('eog-btn-naming-cancel');

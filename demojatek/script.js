@@ -375,11 +375,18 @@ window.changeWindForNextMembrane = function () {
 
 loadTopBarModule();
 
+const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.location.search.indexOf('mobile=1') > -1 || (('ontouchstart' in window) && window.innerWidth <= 1024);
+window.isAndroid = isAndroid;
+
+if (isAndroid) {
+  document.body.classList.add('mobile-hud');
+}
+
 const wrap = document.getElementById('game-wrapper');
 const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isAndroid });
 renderer.localClippingEnabled = false;
-renderer.setPixelRatio(1);
+renderer.setPixelRatio(isAndroid ? 0.75 : Math.min(window.devicePixelRatio || 1, 2));
 renderer.shadowMap.enabled = false;
 
 function resize() {
@@ -518,24 +525,38 @@ let skyDome;
   scene.add(skyDome);
 }
 
-const waterGeo = new THREE.PlaneGeometry(2400, 2400);
-const water = new Water(
-  waterGeo,
-  {
-    textureWidth: 256,
-    textureHeight: 256,
-    waterNormals: new THREE.TextureLoader().load(window.getAssetUrl('models/waternormals.jpg'), function (texture) {
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    }),
-    sunDirection: sun.position.clone().normalize(),
-    sunColor: 0xffffff,
-    waterColor: 0x1476a6,
-    distortionScale: 3.7,
-    fog: scene.fog !== undefined
-  }
-);
-water.rotation.x = -Math.PI / 2;
-scene.add(water);
+const waterGeo = isAndroid ? new THREE.PlaneGeometry(2400, 2400, 1, 1) : new THREE.PlaneGeometry(2400, 2400);
+let water;
+if (isAndroid) {
+  const waterMat = new THREE.MeshStandardMaterial({
+    color: 0x1476a6,
+    roughness: 0.15,
+    metalness: 0.1,
+    transparent: true,
+    opacity: 0.95
+  });
+  water = new THREE.Mesh(waterGeo, waterMat);
+  water.rotation.x = -Math.PI / 2;
+  scene.add(water);
+} else {
+  water = new Water(
+    waterGeo,
+    {
+      textureWidth: 256,
+      textureHeight: 256,
+      waterNormals: new THREE.TextureLoader().load(window.getAssetUrl('models/waternormals.jpg'), function (texture) {
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      }),
+      sunDirection: sun.position.clone().normalize(),
+      sunColor: 0xffffff,
+      waterColor: 0x1476a6,
+      distortionScale: 3.7,
+      fog: scene.fog !== undefined
+    }
+  );
+  water.rotation.x = -Math.PI / 2;
+  scene.add(water);
+}
 
 {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), new THREE.MeshLambertMaterial({ color: 0x0e2a1e }));
@@ -1212,6 +1233,147 @@ canvas.addEventListener('wheel', e => {
   orbDist = THREE.MathUtils.clamp(orbDist + zoomDelta, 10.0, 75.0);
 }, { passive: false });
 canvas.style.cursor = 'grab';
+
+// ---- MOBIL / ANDROID ÉRINTÉSVEZÉRLÉS (X-FELOSZTÁS) ----
+let mobileMode = 'boat';
+let activeTouchId = null;
+let touchQuadrant = null;
+
+function setupMobileControls() {
+  const modeBtn = document.getElementById('mobile-mode-btn');
+  if (modeBtn) {
+    modeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (mobileMode === 'boat') {
+        mobileMode = 'camera';
+        modeBtn.innerHTML = '☸️';
+        modeBtn.style.backgroundColor = '#2e7d32';
+        modeBtn.title = 'Váltás Hajóvezérlésre';
+      } else {
+        mobileMode = 'boat';
+        modeBtn.innerHTML = '📷';
+        modeBtn.style.backgroundColor = '#8b5a2b';
+        modeBtn.title = 'Váltás Kamerára';
+      }
+      clearMobileKeys();
+    });
+
+    modeBtn.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+  }
+
+  function getTouchQuadrant(touchX, touchY) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const L1 = touchY * width - touchX * height;
+    const L2 = touchY * width - (width - touchX) * height;
+
+    if (L1 < 0 && L2 < 0) return 'top';
+    if (L1 > 0 && L2 > 0) return 'bottom';
+    if (L1 > 0 && L2 < 0) return 'left';
+    return 'right';
+  }
+
+  function clearMobileKeys() {
+    keys.KeyW = false;
+    keys.KeyS = false;
+    keys.KeyA = false;
+    keys.KeyD = false;
+    keys.ArrowUp = false;
+    keys.ArrowDown = false;
+    keys.ArrowLeft = false;
+    keys.ArrowRight = false;
+  }
+
+  function updateMobileControls() {
+    clearMobileKeys();
+    if (!touchQuadrant) return;
+
+    if (mobileMode === 'boat') {
+      if (touchQuadrant === 'top') keys.KeyW = true;
+      if (touchQuadrant === 'bottom') keys.KeyS = true;
+      if (touchQuadrant === 'left') keys.KeyA = true;
+      if (touchQuadrant === 'right') keys.KeyD = true;
+    } else {
+      if (touchQuadrant === 'top') orbDist = THREE.MathUtils.clamp(orbDist - 0.6, 10.0, 75.0);
+      if (touchQuadrant === 'bottom') orbDist = THREE.MathUtils.clamp(orbDist + 0.6, 10.0, 75.0);
+      if (touchQuadrant === 'left') orbH = THREE.MathUtils.clamp(orbH - 1.2, -45.0, 45.0);
+      if (touchQuadrant === 'right') orbH = THREE.MathUtils.clamp(orbH + 1.2, -45.0, 45.0);
+    }
+  }
+
+  window.addEventListener('touchstart', (e) => {
+    // UI elemeken ne tiltsuk le a kattintásokat
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || 
+        e.target.closest('button') || e.target.closest('input') || e.target.closest('#topbar') ||
+        e.target.closest('#mobile-mode-btn') || e.target.closest('.modal-panel') ||
+        e.target.closest('#exit-confirm-overlay') || e.target.closest('#info-scroll-overlay')) {
+      return;
+    }
+
+    // Zozó welcome léptetés egyetlen érintésre
+    const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+    if (welcomeOverlay && welcomeOverlay.style.display !== 'none' && !window.welcomeFinished) {
+      if (typeof window.advanceZozoWelcome === 'function') {
+        window.advanceZozoWelcome(e);
+        return;
+      }
+    }
+
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      activeTouchId = touch.identifier;
+      touchQuadrant = getTouchQuadrant(touch.clientX, touch.clientY);
+      updateMobileControls();
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if (activeTouchId !== null) {
+      e.preventDefault();
+      for (let touch of e.touches) {
+        if (touch.identifier === activeTouchId) {
+          touchQuadrant = getTouchQuadrant(touch.clientX, touch.clientY);
+          updateMobileControls();
+          break;
+        }
+      }
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', (e) => {
+    if (activeTouchId !== null) {
+      let activeStillPresent = false;
+      for (let touch of e.touches) {
+        if (touch.identifier === activeTouchId) {
+          activeStillPresent = true;
+          break;
+        }
+      }
+      if (!activeStillPresent) {
+        activeTouchId = null;
+        touchQuadrant = null;
+        clearMobileKeys();
+      }
+    }
+  });
+
+  window.addEventListener('touchcancel', () => {
+    activeTouchId = null;
+    touchQuadrant = null;
+    clearMobileKeys();
+  });
+}
+
+if (isAndroid) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMobileControls);
+  } else {
+    setupMobileControls();
+  }
+}
 
 window.activeMembranes = [];
 window.carriedMembranes = 0;

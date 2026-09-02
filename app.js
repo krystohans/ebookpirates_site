@@ -38,11 +38,26 @@ window.onTutorialSuccess = function (boatData) {
     });
 };
 
-// Globális PostMessage figyelő a Tutorial Iframe eseményeihez (mindig aktív!)
+// Globális PostMessage figyelő a Tutorial és Minigame Iframe eseményeihez (mindig aktív!)
 if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
     window._ebpGlobalTutorialMessageBound = true;
     window.addEventListener('message', function (event) {
-        if (!event.data || event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
+        if (!event.data) return;
+
+        // 1. Three.js Minijáték események (Hártyavadász)
+        if (event.data.source === 'threejs-minigame') {
+            console.log('🎮 [Global] Three.js Minijáték esemény érkezett:', event.data);
+            if (event.data.status === 'COMPLETED') {
+                var target = event.data.targetPage || 'fedelzet_oldal';
+                if (typeof loadPage === 'function') {
+                    loadPage(target);
+                }
+            }
+            return;
+        }
+
+        // 2. Tutorial Iframe események
+        if (event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
         console.log('🎮 [Global] Tutorial Iframe esemény érkezett:', event.data);
 
         if (event.data.action === 'saveTutorialState') {
@@ -733,7 +748,7 @@ function loadPage(pageName) {
     const contentDiv = document.getElementById('content');
     const loadingOverlay = document.getElementById('loading-overlay');
 
-    if (pageName === 'tutorial_oldal') {
+    if (pageName === 'tutorial_oldal' || pageName === 'game_oldal') {
         contentDiv.style.padding = '0';
         contentDiv.style.overflow = 'hidden';
     } else {
@@ -10571,7 +10586,7 @@ function loadGamePage(sessionData) {
             minigameContainer.style.zIndex = '100';
             minigameContainer.style.display = 'block';
             
-            var token = sessionStorage.getItem('ebookPiratesToken') || '';
+            var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
             var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
             minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
         });

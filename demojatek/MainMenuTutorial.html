@@ -337,11 +337,22 @@
   </style>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
+
+    function returnToHarbor() {
+      stopAccSpeech();
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ action: 'navigate_to_page', page: 'kikoto_oldal' }, '*');
+      } else {
+        window.location.href = 'https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       // Lekérjük a beállított nyelvet, alapértelmezett a magyar
       let savedLang = localStorage.getItem('ebook_pirates_language') || 'hu';
       // URL paraméterből is felülírható, ha a weboldal adta át
-      const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('lang')) {
         savedLang = urlParams.get('lang');
         localStorage.setItem('ebook_pirates_language', savedLang);
@@ -361,15 +372,6 @@
       const btnContinue = document.getElementById('btn-continue-game');
       if (btnContinue && !hasSaveState) {
         btnContinue.classList.add('disabled');
-      }
-
-      // --- 2. VISSZA A KIKÖTŐBE GOMB KEZELÉSE ---
-      const btnHarbor = document.getElementById('btn-back-to-harbor');
-      if (btnHarbor) {
-        btnHarbor.innerText = 'Vissza a Kikötőbe';
-        btnHarbor.onclick = function () {
-          window.location.href = 'https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';
-        };
       }
     });
 
@@ -529,6 +531,12 @@
       const namingView = document.getElementById('acc-quiz-naming-view');
       const summaryView = document.getElementById('acc-quiz-summary-view');
 
+      // A háttérben futó menüt és videót teljesen kikapcsoljuk a kártya mögül
+      const mainMenu = document.getElementById('main-menu-overlay');
+      if (mainMenu) mainMenu.style.display = 'none';
+      const bgVid = document.getElementById('bg-video');
+      if (bgVid) bgVid.style.display = 'none';
+
       if (overlay) {
         overlay.style.setProperty('display', 'flex', 'important');
         if (infoView) infoView.style.display = 'flex';
@@ -542,6 +550,17 @@
       stopAccSpeech();
       const overlay = document.getElementById('acc-tutorial-overlay');
       if (overlay) overlay.style.setProperty('display', 'none', 'important');
+
+      if (isCompletedMode) {
+        // VETERÁN FELHASZNÁLÓ: A kártya bezárásakor automatikusan visszalépünk a Kikötőbe!
+        returnToHarbor();
+      } else {
+        // ÚJ JÁTÉKOS: Visszakapcsoljuk a főmenüt
+        const mainMenu = document.getElementById('main-menu-overlay');
+        if (mainMenu) mainMenu.style.display = 'flex';
+        const bgVid = document.getElementById('bg-video');
+        if (bgVid) bgVid.style.display = 'block';
+      }
     }
 
     function toggleAccAccordion(index) {
@@ -864,23 +883,26 @@
       // URL Paraméterek ellenőrzése (Veterán vs Új Játékos)
       try {
         if (isCompletedMode) {
-          // Veterán mód: Azonnal megjelenítjük az Akadálymentes Ismerettárat, a Vizsga gomb inaktív
-          setTimeout(function() {
-            openAccessibilityTutorial();
-            const startQuizBtn = document.getElementById('acc-start-quiz-btn');
-            if (startQuizBtn) {
-              startQuizBtn.disabled = true;
-              startQuizBtn.innerText = 'A Vizsgát Már Sikeresen Letetted ✅';
-              startQuizBtn.style.background = '#2c251d';
-              startQuizBtn.style.color = '#aa9977';
-              startQuizBtn.style.cursor = 'not-allowed';
-              startQuizBtn.style.border = '2px solid #554433';
-              startQuizBtn.onclick = function(e) {
-                if (e) e.preventDefault();
-                alert('A kalózvizsgát korábban már sikeresen letetted, a kezdő felszerelésedet jóváírtuk a számládon!');
-              };
-            }
-          }, 300);
+          // Veterán mód: A háttérben futó menüt teljesen elrejtjük, és azonnal megnyitjuk az Ismerettárat
+          const mainMenu = document.getElementById('main-menu-overlay');
+          if (mainMenu) mainMenu.style.display = 'none';
+          const bgVid = document.getElementById('bg-video');
+          if (bgVid) bgVid.style.display = 'none';
+
+          openAccessibilityTutorial();
+          const startQuizBtn = document.getElementById('acc-start-quiz-btn');
+          if (startQuizBtn) {
+            startQuizBtn.disabled = true;
+            startQuizBtn.innerText = 'A Vizsgát Már Sikeresen Letetted ✅';
+            startQuizBtn.style.background = '#2c251d';
+            startQuizBtn.style.color = '#aa9977';
+            startQuizBtn.style.cursor = 'not-allowed';
+            startQuizBtn.style.border = '2px solid #554433';
+            startQuizBtn.onclick = function(e) {
+              if (e) e.preventDefault();
+              alert('A kalózvizsgát korábban már sikeresen letetted, a kezdő felszerelésedet jóváírtuk a számládon!');
+            };
+          }
         }
       } catch (err) {
         console.warn('Hiba az URL mód feldolgozásakor:', err);
@@ -905,7 +927,6 @@
     <div id="btn-continue-game" class="menu-button" onclick="continueGame()">Játék Folytatása</div>
     <div class="menu-button" onclick="window.location.href='SettingsMenu.html';">Beállítások</div>
     <div class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
-    <div id="btn-back-to-harbor" class="menu-button" onclick="goToHarborFromMenu()">Vissza a Kikötőbe</div>
 
   </div>
 

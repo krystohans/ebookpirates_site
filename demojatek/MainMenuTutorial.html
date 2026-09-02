@@ -523,6 +523,16 @@
     }
 
     function openAccessibilityTutorial() {
+      if (typeof window.exitFullscreenIfActive === 'function') {
+        window.exitFullscreenIfActive();
+      }
+      // Háttérzene és effektek azonnali némítása a tiszta felolvasásért
+      if (window._ebpMenuMusic) {
+        try { window._ebpMenuMusic.pause(); } catch(e) {}
+      }
+      if (window._ebpMenuAmbience) {
+        try { window._ebpMenuAmbience.pause(); } catch(e) {}
+      }
       const overlay = document.getElementById('acc-tutorial-overlay');
       const infoView = document.getElementById('acc-info-view');
       const quizView = document.getElementById('acc-quiz-view');
@@ -741,6 +751,9 @@
     }
 
     function finalizeAccTutorialAndDepart() {
+      if (typeof window.exitFullscreenIfActive === 'function') {
+        window.exitFullscreenIfActive();
+      }
       const nameInput = document.getElementById('acc-boat-name-input');
 
       // Csónaknév kiolvasása a beviteli mezőből
@@ -805,67 +818,83 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Menü zene és hangok betöltése
-      const storedMusic = localStorage.getItem('ebook_pirates_music_vol');
-      const storedSound = localStorage.getItem('ebook_pirates_sound_vol');
-      const musicVol = storedMusic !== null ? (parseInt(storedMusic) / 100.0) * 0.5 : 0.5;
-      const soundVol = storedSound !== null ? (parseInt(storedSound) / 100.0) * 0.6 : 0.6;
-
-      const menuMusic = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3');
-      menuMusic.loop = true;
-      menuMusic.volume = musicVol;
-
-      const menuAmbience = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/waves-and-seagulls.wav');
-      menuAmbience.loop = true;
-      menuAmbience.volume = soundVol;
-
-      // Ha korábban a felhasználó teljes képernyőre váltott, azonnal próbáljuk meg fenntartani
-      if (localStorage.getItem('ebook_pirates_fullscreen') === 'true' && !document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(e => {});
-      }
-
-      // Autoplay policy & Fullscreen megőrzése miatt az első kattintásra is elindítjuk
-      let audioStarted = false;
-      const tryFullscreenAndAudio = () => {
-        if (!audioStarted) {
-          if (musicVol > 0) menuMusic.play().catch(e => {});
-          if (soundVol > 0) menuAmbience.play().catch(e => {});
-          audioStarted = true;
-        }
-        if (localStorage.getItem('ebook_pirates_fullscreen') === 'true' && !document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(e => {});
+      window.exitFullscreenIfActive = function () {
+        try {
+          if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+            if (document.exitFullscreen) document.exitFullscreen().catch(function(e) {});
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          }
+          if (window.parent && window.parent !== window && window.parent.document && (window.parent.document.fullscreenElement || window.parent.document.webkitFullscreenElement)) {
+            if (window.parent.document.exitFullscreen) window.parent.document.exitFullscreen().catch(function(e) {});
+          }
+        } catch (err) {
+          console.warn('Fullscreen kilépési hiba:', err);
         }
       };
 
-      document.addEventListener('click', tryFullscreenAndAudio);
-      document.addEventListener('keydown', tryFullscreenAndAudio);
-
       // URL Paraméterek ellenőrzése (Veterán vs Új Játékos)
+      let isCompletedMode = false;
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
-
-        if (isCompletedMode) {
-          // Veterán mód: Azonnal megjelenítjük az Akadálymentes Ismerettárat, a Vizsga gomb inaktív
-          setTimeout(function() {
-            openAccessibilityTutorial();
-            const startQuizBtn = document.getElementById('acc-start-quiz-btn');
-            if (startQuizBtn) {
-              startQuizBtn.disabled = true;
-              startQuizBtn.innerText = 'A Vizsgát Már Sikeresen Letetted ✅';
-              startQuizBtn.style.background = '#2c251d';
-              startQuizBtn.style.color = '#aa9977';
-              startQuizBtn.style.cursor = 'not-allowed';
-              startQuizBtn.style.border = '2px solid #554433';
-              startQuizBtn.onclick = function(e) {
-                if (e) e.preventDefault();
-                alert('A kalózvizsgát korábban már sikeresen letetted, a kezdő felszerelésedet jóváírtuk a számládon!');
-              };
-            }
-          }, 300);
-        }
+        isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
       } catch (err) {
         console.warn('Hiba az URL mód feldolgozásakor:', err);
+      }
+
+      // Mindig biztosítjuk a normál beágyazott keretet a menüben és az ismerettárban
+      window.exitFullscreenIfActive();
+
+      if (!isCompletedMode) {
+        // Csak új játékos aktív tutorial menüjében indítunk zenét
+        const storedMusic = localStorage.getItem('ebook_pirates_music_vol');
+        const storedSound = localStorage.getItem('ebook_pirates_sound_vol');
+        const musicVol = storedMusic !== null ? (parseInt(storedMusic) / 100.0) * 0.5 : 0.5;
+        const soundVol = storedSound !== null ? (parseInt(storedSound) / 100.0) * 0.6 : 0.6;
+
+        window._ebpMenuMusic = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3');
+        window._ebpMenuMusic.loop = true;
+        window._ebpMenuMusic.volume = musicVol;
+
+        window._ebpMenuAmbience = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/waves-and-seagulls.wav');
+        window._ebpMenuAmbience.loop = true;
+        window._ebpMenuAmbience.volume = soundVol;
+
+        // Autoplay policy feloldás az első kattintásra
+        let audioStarted = false;
+        const unlockAudioOnly = () => {
+          if (!audioStarted) {
+            if (musicVol > 0 && window._ebpMenuMusic) window._ebpMenuMusic.play().catch(e => {});
+            if (soundVol > 0 && window._ebpMenuAmbience) window._ebpMenuAmbience.play().catch(e => {});
+            audioStarted = true;
+          }
+        };
+
+        document.addEventListener('click', unlockAudioOnly);
+        document.addEventListener('keydown', unlockAudioOnly);
+      } else {
+        // Veterán mód: Teljes csend a háttérben, kizárólag a felolvasó hang működhet!
+        window._ebpMenuMusic = null;
+        window._ebpMenuAmbience = null;
+      }
+
+      if (isCompletedMode) {
+        // Veterán mód: Azonnal megjelenítjük az Akadálymentes Ismerettárat, a Vizsga gomb inaktív
+        setTimeout(function() {
+          openAccessibilityTutorial();
+          const startQuizBtn = document.getElementById('acc-start-quiz-btn');
+          if (startQuizBtn) {
+            startQuizBtn.disabled = true;
+            startQuizBtn.innerText = 'A Vizsgát Már Sikeresen Letetted ✅';
+            startQuizBtn.style.background = '#2c251d';
+            startQuizBtn.style.color = '#aa9977';
+            startQuizBtn.style.cursor = 'not-allowed';
+            startQuizBtn.style.border = '2px solid #554433';
+            startQuizBtn.onclick = function(e) {
+              if (e) e.preventDefault();
+              alert('A kalózvizsgát korábban már sikeresen letetted, a kezdő felszerelésedet jóváírtuk a számládon!');
+            };
+          }
+        }, 300);
       }
     });
   </script>

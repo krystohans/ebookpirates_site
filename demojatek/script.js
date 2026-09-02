@@ -3184,11 +3184,37 @@ function startEogVideo() {
   }
 }
 
-// ─── END RUTIN LOGIKA (NÉVADÁS, MEGERŐSÍTÉSEK, İRÓGÉP, MAINMENU) ───
+window.exitFullscreenIfActive = function () {
+  try {
+    if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen().catch(function(e) {});
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+      else if (document.msExitFullscreen) document.msExitFullscreen();
+    }
+    if (window.parent && window.parent !== window && window.parent.document && (window.parent.document.fullscreenElement || window.parent.document.webkitFullscreenElement)) {
+      if (window.parent.document.exitFullscreen) window.parent.document.exitFullscreen().catch(function(e) {});
+    }
+  } catch (err) {
+    console.warn('Fullscreen kilépési hiba:', err);
+  }
+};
 
 window.eogBoatName = '';
 
 window.startEogBoatNamingRoutine = function () {
+  // 1. Teljes képernyő elhagyása, visszatérés a beágyazott keretbe fókuszvesztés nélkül
+  window.exitFullscreenIfActive();
+
+  // 2. Játékállás mentése a felírás előtt
+  if (typeof window.saveFullGameState === 'function') {
+    try {
+      window.saveFullGameState();
+    } catch (e) {
+      console.warn('Játékállás mentési hiba:', e);
+    }
+  }
+
   window.isWindActive = false; // Szél leállítása a névadó és az azt követő paneleknél
   const namingOverlay = document.getElementById('eog-boat-naming-overlay');
   const nameInput = document.getElementById('eog-boat-name-input');
@@ -3196,6 +3222,11 @@ window.startEogBoatNamingRoutine = function () {
 
   nameInput.value = '';
   namingOverlay.style.display = 'flex';
+
+  // Fókusz visszaadása az input mezőnek
+  setTimeout(function () {
+    if (nameInput) nameInput.focus();
+  }, 300);
 
   const btnSubmit = document.getElementById('eog-btn-naming-submit');
   const btnCancel = document.getElementById('eog-btn-naming-cancel');
@@ -3602,41 +3633,27 @@ window.showEogSuccessChoicePanel = function () {
   choiceOverlay.style.display = 'flex';
   window.isCutscenePlaying = true;
 
-  // 1. Gomb: Tovább halászok -> Csónak visszaállítása a mólóhoz, 0 hártya, tiszta restart mint sziklaütközéskor
+  // 1. Gomb: Tovább halászok -> Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)
   const btnFish = document.getElementById('eog-btn-choice-fish');
   if (btnFish) {
     btnFish.onclick = function (e) {
       e.stopPropagation();
       choiceOverlay.style.display = 'none';
-
-      // Hártyák lenullázása hajón és bázison
-      window.carriedMembranes = 0;
-      window.storedMembranes = 0;
-      window.totalPickedUp = 0;
-      window.totalSpawnedCount = 0;
-      if (typeof window.updateHartyaHUD === 'function') window.updateHartyaHUD();
-
-      // Csónak visszahelyezése a mólóhoz
-      if (window.boat) {
-        window.boat.position.set(5, 0, -94);
-        window.boat.rotation.y = Math.PI + (Math.PI / 4) - (3 * Math.PI / 180);
-      }
-      if (typeof window.setOrb === 'function') {
-        window.setOrb(0, 15.0, 26.0);
+      if (typeof window.exitFullscreenIfActive === 'function') {
+        window.exitFullscreenIfActive();
       }
 
-      // Környezeti világítás visszaállítása nappalira
-      window.gameTimeProgress = 0;
-      if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
-
-      // Kezdő hártya lehelyezése
-      if (typeof window.spawnZeroPointMembrane === 'function') {
-        window.spawnZeroPointMembrane();
+      // Szülő ablak értesítése a Hártyahalászat minijáték indításáról
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'EBOOK_PIRATES_TUTORIAL',
+          action: 'start_hartyahalaszat'
+        }, '*');
+      } else {
+        // Standalone futás esetén közvetlen átlépés
+        var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
+        window.location.href = '../minigame_fishing.html?token=' + encodeURIComponent(token);
       }
-
-      window.isCutscenePlaying = false;
-      window.eogState = 'NONE';
-      window.showPopUp("Új halászat indul a mólóról! Jó szelet!");
     };
   }
 

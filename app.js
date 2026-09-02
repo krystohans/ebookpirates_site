@@ -83,6 +83,25 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
             if (typeof loadPage === 'function') {
                 loadPage(event.data.page || 'kikoto_oldal');
             }
+        } else if (event.data.action === 'start_hartyahalaszat') {
+            console.log('🎣 Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)...');
+            var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
+            var host = document.getElementById('tutorial-unity-host');
+            if (host) {
+                host.innerHTML = '';
+                var iframe = document.createElement('iframe');
+                iframe.src = 'minigame_fishing.html?token=' + encodeURIComponent(token);
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = '0';
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.setAttribute('allow', 'autoplay; fullscreen');
+                host.appendChild(iframe);
+            } else {
+                if (typeof loadPage === 'function') {
+                    loadPage('fedelzet_oldal');
+                }
+            }
         }
     });
 }

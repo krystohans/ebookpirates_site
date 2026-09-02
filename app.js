@@ -57,6 +57,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
         } else if (event.data.action === 'tutorial_completed') {
             callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
                 console.log('Tutorial befejezve és felírva válasz:', res);
+                window.userTutorialCompleted = true;
 
                 if (res && res.alreadyCompleted) {
                     var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
@@ -477,6 +478,8 @@ function login() {
 
 function initializeApp(user) {
     window.inGame = user.inGame === true;
+    window.userTutorialCompleted = (user.tutorialCompleted === true || (user.startPage && user.startPage !== 'tutorial_oldal'));
+    console.log("⚓ Felhasználó inicializálva:", user.name, "| Tutorial teljesítve:", window.userTutorialCompleted);
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
     try {
         localStorage.setItem('ebook_pirates_username', user.name || '');
@@ -688,12 +691,34 @@ function ensureCreditDisplayIsPresent() {
 function loadPage(pageName) {
     var closeIcon = document.querySelector('.header-close-icon');
 
+    // === 0. TUTORIAL JOGOSULTSÁG SZIGORÚ KAPUŐRZŐ (GATEKEEPER) ===
+    if (window.userTutorialCompleted === false) {
+        if (pageName !== 'tutorial_oldal') {
+            console.warn("⚠️ Jogosulatlan oldalhozzáférés blokkolva:", pageName, "(A tutorial még nincs teljesítve!)");
+            if (typeof uiAlert === 'function') {
+                uiAlert("Előbb el kell végezned a bevezető matrózképzést a Kalózszigeten, csak utána hajózhatsz ki a Kikötőbe!", "Kikötőmester: Belépés Megtagadva");
+            } else {
+                alert("Előbb el kell végezned a bevezető matrózképzést a Kalózszigeten!");
+            }
+            if (closeIcon) closeIcon.style.display = 'none';
+            if (currentPageName !== 'tutorial_oldal') {
+                loadPage('tutorial_oldal');
+            }
+            return;
+        }
+    }
+
     if (pageName === 'game_oldal') {
         window.inGame = true;
         if (closeIcon) closeIcon.style.display = 'none';
     } else if (pageName === 'fedelzet_oldal' || pageName === 'hajomuhely_oldal') {
         window.inGame = false;
         if (closeIcon) closeIcon.style.display = 'block';
+    } else if (pageName === 'tutorial_oldal') {
+        // Ha a tutorial még nincs kész, nem mutathatja a kikötőbe visszalépő 'X'-et
+        if (window.userTutorialCompleted === false && closeIcon) {
+            closeIcon.style.display = 'none';
+        }
     }
 
     // === JÁTÉK STÁTUSZ BLOKKOLÁS ===
@@ -705,7 +730,9 @@ function loadPage(pageName) {
             return;
         }
     } else {
-        if (closeIcon) closeIcon.style.display = 'block';
+        if (closeIcon && (window.userTutorialCompleted !== false || pageName !== 'tutorial_oldal')) {
+            closeIcon.style.display = 'block';
+        }
     }
     currentPageName = pageName;
     document.getElementById('content').style.display = 'block';
@@ -787,13 +814,25 @@ function loadPage(pageName) {
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
                 },
                 function (error) {
-                    contentDiv.innerHTML = '<p>' + t('page_load_error_prefix') + error.message + '</p>';
+                    console.warn("getPageDataAndContent sikertelen (" + pageName + "), fallback inicializálás:", error);
+                    if (pageName === 'tutorial_oldal') {
+                        runTutorialScript();
+                    } else {
+                        if (typeof initializePage === 'function') initializePage(pageName);
+                    }
+                    setupAccordionListeners();
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
                 }
             );
         })
         .catch(function (error) {
-            contentDiv.innerHTML = '<p>' + t('page_load_error_prefix') + error.message + '</p>';
+            console.error("Oldalsablon betöltési hiba (" + pageName + "):", error);
+            contentDiv.innerHTML = 
+                '<div style="text-align:center; padding: 40px; color: #d4af37;">' +
+                '<h3>' + t('page_load_error_prefix') + (error.message || 'Hálózati hiba') + '</h3>' +
+                '<p style="color:#aaa;">Kérjük, ellenőrizd a kapcsolatot vagy próbáld újra!</p>' +
+                '<button class="btn btn-primary" style="margin-top:15px; padding:10px 25px;" onclick="loadPage(\'' + pageName + '\')">Újrapróbálkozás</button>' +
+                '</div>';
             if (loadingOverlay) loadingOverlay.style.display = 'none';
         });
 }
@@ -1355,10 +1394,14 @@ function runTutorialScript() {
     callBackend('getTutorialFlowState', [],
         initializeTutorialPage,
         function (error) {
-            var tc = document.querySelector('.tutorial-container');
-            if (tc) {
-                tc.innerHTML = '<h2>' + t('error_prefix') + error.message + '</h2>';
-            }
+            console.warn('getTutorialFlowState nem válaszolt, alapértelmezett tutorial indítása:', error);
+            initializeTutorialPage({
+                tutorialCompleted: false,
+                isVeteran: false,
+                dinghyPresent: false,
+                boatName: '',
+                score: 0
+            });
         }
     );
 }

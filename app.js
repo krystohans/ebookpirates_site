@@ -70,7 +70,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                         if (typeof loadPage === 'function') loadPage('kikoto_oldal');
                     }
                 } else {
-                    console.log('✅ Kincsek sikeresen felírva a felhőbe. A játékos a választó panelen dönthet a következő lépésről.');
+                    console.log('✅ Kincsek sikeresen felírva a felhőbe.');
                 }
             }, function(err) {
                 console.warn('Tutorial mentési hiba:', err);
@@ -92,11 +92,8 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 iframe.style.border = '0';
                 iframe.setAttribute('allowfullscreen', 'true');
                 iframe.setAttribute('allow', 'autoplay; fullscreen');
+                iframe.setAttribute('title', 'eBookPirates Hártyahalászat');
                 host.appendChild(iframe);
-            } else {
-                if (typeof loadPage === 'function') {
-                    loadPage('fedelzet_oldal');
-                }
             }
         }
     });
@@ -478,9 +475,8 @@ function login() {
 
 function initializeApp(user) {
     window.inGame = user.inGame === true;
-    window.userTutorialCompleted = (user.tutorialCompleted === true || (user.startPage && user.startPage !== 'tutorial_oldal'));
-    console.log("⚓ Felhasználó inicializálva:", user.name, "| Tutorial teljesítve:", window.userTutorialCompleted);
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
+    window.userTutorialCompleted = (user.tutorialCompleted === true || (user.startPage && user.startPage !== 'tutorial_oldal'));
     try {
         localStorage.setItem('ebook_pirates_username', user.name || '');
         localStorage.setItem('ebook_pirates_user_email', user.email || '');
@@ -691,7 +687,7 @@ function ensureCreditDisplayIsPresent() {
 function loadPage(pageName) {
     var closeIcon = document.querySelector('.header-close-icon');
 
-    // === 0. TUTORIAL JOGOSULTSÁG SZIGORÚ KAPUŐRZŐ (GATEKEEPER) ===
+    // === 0. TUTORIAL JOGOSULTSÁG KAPUŐRZŐ ===
     if (window.userTutorialCompleted === false) {
         if (pageName !== 'tutorial_oldal') {
             console.warn("⚠️ Jogosulatlan oldalhozzáférés blokkolva:", pageName, "(A tutorial még nincs teljesítve!)");
@@ -714,11 +710,8 @@ function loadPage(pageName) {
     } else if (pageName === 'fedelzet_oldal' || pageName === 'hajomuhely_oldal') {
         window.inGame = false;
         if (closeIcon) closeIcon.style.display = 'block';
-    } else if (pageName === 'tutorial_oldal') {
-        // Ha a tutorial még nincs kész, nem mutathatja a kikötőbe visszalépő 'X'-et
-        if (window.userTutorialCompleted === false && closeIcon) {
-            closeIcon.style.display = 'none';
-        }
+    } else if (pageName === 'tutorial_oldal' && window.userTutorialCompleted === false) {
+        if (closeIcon) closeIcon.style.display = 'none';
     }
 
     // === JÁTÉK STÁTUSZ BLOKKOLÁS ===
@@ -730,9 +723,7 @@ function loadPage(pageName) {
             return;
         }
     } else {
-        if (closeIcon && (window.userTutorialCompleted !== false || pageName !== 'tutorial_oldal')) {
-            closeIcon.style.display = 'block';
-        }
+        if (closeIcon) closeIcon.style.display = 'block';
     }
     currentPageName = pageName;
     document.getElementById('content').style.display = 'block';
@@ -741,6 +732,14 @@ function loadPage(pageName) {
 
     const contentDiv = document.getElementById('content');
     const loadingOverlay = document.getElementById('loading-overlay');
+
+    if (pageName === 'tutorial_oldal') {
+        contentDiv.style.padding = '0';
+        contentDiv.style.overflow = 'hidden';
+    } else {
+        contentDiv.style.padding = '20px';
+        contentDiv.style.overflowY = 'auto';
+    }
 
     contentDiv.innerHTML = '';
     if (loadingOverlay) loadingOverlay.style.display = 'flex';
@@ -814,25 +813,18 @@ function loadPage(pageName) {
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
                 },
                 function (error) {
-                    console.warn("getPageDataAndContent sikertelen (" + pageName + "), fallback inicializálás:", error);
+                    console.warn("Oldal adatok betöltési hiba (fallback inicializálás):", error);
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
                     if (pageName === 'tutorial_oldal') {
                         runTutorialScript();
                     } else {
-                        if (typeof initializePage === 'function') initializePage(pageName);
+                        initializePage(pageName);
                     }
-                    setupAccordionListeners();
-                    if (loadingOverlay) loadingOverlay.style.display = 'none';
                 }
             );
         })
         .catch(function (error) {
-            console.error("Oldalsablon betöltési hiba (" + pageName + "):", error);
-            contentDiv.innerHTML = 
-                '<div style="text-align:center; padding: 40px; color: #d4af37;">' +
-                '<h3>' + t('page_load_error_prefix') + (error.message || 'Hálózati hiba') + '</h3>' +
-                '<p style="color:#aaa;">Kérjük, ellenőrizd a kapcsolatot vagy próbáld újra!</p>' +
-                '<button class="btn btn-primary" style="margin-top:15px; padding:10px 25px;" onclick="loadPage(\'' + pageName + '\')">Újrapróbálkozás</button>' +
-                '</div>';
+            contentDiv.innerHTML = '<p>' + t('page_load_error_prefix') + error.message + '</p>';
             if (loadingOverlay) loadingOverlay.style.display = 'none';
         });
 }
@@ -1226,23 +1218,9 @@ function runTutorialScript() {
 
     function initializeTutorialPage(flow) {
         currentFlowState = flow || {};
-        ensureUnityUiElements();
-
-        var status = (flow && flow.status) ? String(flow.status).toLowerCase() : '';
-        var isCompleted = (status === 'ok' || !!(flow && flow.tutorialCompleted));
-
         var gamePanel = document.getElementById('tutorial-game-panel');
-        var veteranPanel = document.getElementById('tutorial-veteran-panel');
-        var host = document.getElementById('tutorial-unity-host');
-
-        if (isCompleted) {
-            if (gamePanel) gamePanel.style.display = 'none';
-            if (veteranPanel) veteranPanel.style.display = 'block';
-        } else {
-            if (veteranPanel) veteranPanel.style.display = 'none';
-            if (gamePanel) gamePanel.style.display = 'block';
-            tryLaunchUnity(flow || {}, true);
-        }
+        if (gamePanel) gamePanel.style.display = 'block';
+        tryLaunchUnity(flow || {}, true);
     }
 
     function startQuiz() {
@@ -1394,14 +1372,10 @@ function runTutorialScript() {
     callBackend('getTutorialFlowState', [],
         initializeTutorialPage,
         function (error) {
-            console.warn('getTutorialFlowState nem válaszolt, alapértelmezett tutorial indítása:', error);
-            initializeTutorialPage({
-                tutorialCompleted: false,
-                isVeteran: false,
-                dinghyPresent: false,
-                boatName: '',
-                score: 0
-            });
+            var tc = document.querySelector('.tutorial-container');
+            if (tc) {
+                tc.innerHTML = '<h2>' + t('error_prefix') + error.message + '</h2>';
+            }
         }
     );
 }

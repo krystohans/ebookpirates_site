@@ -43,20 +43,13 @@ async function loadDialogues() {
 loadDialogues();
 
 window.getLoggedInUserData = function () {
+  const isLocal = window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1' || 
+                  window.location.hostname.startsWith('192.168.') || 
+                  window.location.protocol === 'file:';
+
   const token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken');
 
-  // Ha NINCS aktív token -> szigorúan NEM belépett!
-  if (!token || token.trim() === '') {
-    try {
-      localStorage.removeItem('ebook_pirates_username');
-      localStorage.removeItem('ebook_pirates_user_email');
-      sessionStorage.removeItem('ebookPiratesLoginName');
-      sessionStorage.removeItem('ebook_is_logged_in');
-    } catch (e) { }
-    return { isLoggedIn: false, name: '', email: '' };
-  }
-
-  // Ha VAN érvényes token:
   let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName');
   let userEmail = localStorage.getItem('ebook_pirates_user_email') || '';
 
@@ -75,14 +68,29 @@ window.getLoggedInUserData = function () {
     userName = userEmail.split('@')[0];
   }
 
+  // Lokális Live Server tesztelésnél fallback név
+  if (isLocal && !userName) {
+    userName = 'Teszt Kalóz';
+  }
+
+  const isLoggedIn = !!(token || userName || userEmail || isLocal);
+
   return {
-    isLoggedIn: true,
-    name: userName || 'Kalóz',
-    email: userEmail || ''
+    isLoggedIn: isLoggedIn,
+    name: userName || (isLoggedIn ? 'Kalóz' : 'Anonymus'),
+    email: userEmail || (isLocal ? 'teszt@ebookpirates.hu' : '')
   };
 };
 
 window.checkStartupAuth = function () {
+  const isLocal = window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1' || 
+                  window.location.hostname.startsWith('192.168.') || 
+                  window.location.protocol === 'file:';
+  if (isLocal) {
+    return; // Lokális fejlesztői környezetben soha ne zároljuk a tesztelést!
+  }
+
   const user = window.getLoggedInUserData();
   if (!user.isLoggedIn) {
     console.warn("🔒 Nem regisztrált látogató: Tutorial indítás letiltva.");
@@ -113,26 +121,31 @@ window.checkStartupAuth = function () {
   }
 };
 
+window.updateTopBarPlayerName = function () {
+  const user = window.getLoggedInUserData();
+  const tbPlayerName = document.getElementById('tb-player-name');
+  if (tbPlayerName) {
+    tbPlayerName.innerText = user.isLoggedIn ? user.name : 'Anonymus';
+  }
+};
+
 async function loadTopBarModule() {
   try {
-    const res = await fetch('topbar.html?t=' + Date.now());
-    if (res.ok) {
-      const html = await res.text();
-      const container = document.getElementById('topbar-container');
-      if (container) {
+    const container = document.getElementById('topbar-container');
+    if (container) {
+      const res = await fetch('topbar.html?t=' + Date.now());
+      if (res.ok) {
+        const html = await res.text();
         container.innerHTML = html;
         setupTopBarEvents();
-
-        // Kalóznév azonnali kiírása a belépési tokenből!
-        const user = window.getLoggedInUserData();
-        const tbPlayerName = document.getElementById('tb-player-name');
-        if (tbPlayerName) {
-          tbPlayerName.innerText = user.isLoggedIn ? user.name : 'Anonymus';
-        }
       }
+    } else {
+      setupTopBarEvents();
     }
   } catch (e) {
     console.error('Hiba a TopBar betöltésekor:', e);
+  } finally {
+    window.updateTopBarPlayerName();
   }
 }
 
@@ -3184,37 +3197,11 @@ function startEogVideo() {
   }
 }
 
-window.exitFullscreenIfActive = function () {
-  try {
-    if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-      if (document.exitFullscreen) document.exitFullscreen().catch(function(e) {});
-      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-      else if (document.msExitFullscreen) document.msExitFullscreen();
-    }
-    if (window.parent && window.parent !== window && window.parent.document && (window.parent.document.fullscreenElement || window.parent.document.webkitFullscreenElement)) {
-      if (window.parent.document.exitFullscreen) window.parent.document.exitFullscreen().catch(function(e) {});
-    }
-  } catch (err) {
-    console.warn('Fullscreen kilépési hiba:', err);
-  }
-};
+// ─── END RUTIN LOGIKA (NÉVADÁS, MEGERŐSÍTÉSEK, İRÓGÉP, MAINMENU) ───
 
 window.eogBoatName = '';
 
 window.startEogBoatNamingRoutine = function () {
-  // 1. Teljes képernyő elhagyása, visszatérés a beágyazott keretbe fókuszvesztés nélkül
-  window.exitFullscreenIfActive();
-
-  // 2. Játékállás mentése a felírás előtt
-  if (typeof window.saveFullGameState === 'function') {
-    try {
-      window.saveFullGameState();
-    } catch (e) {
-      console.warn('Játékállás mentési hiba:', e);
-    }
-  }
-
   window.isWindActive = false; // Szél leállítása a névadó és az azt követő paneleknél
   const namingOverlay = document.getElementById('eog-boat-naming-overlay');
   const nameInput = document.getElementById('eog-boat-name-input');
@@ -3222,11 +3209,6 @@ window.startEogBoatNamingRoutine = function () {
 
   nameInput.value = '';
   namingOverlay.style.display = 'flex';
-
-  // Fókusz visszaadása az input mezőnek
-  setTimeout(function () {
-    if (nameInput) nameInput.focus();
-  }, 300);
 
   const btnSubmit = document.getElementById('eog-btn-naming-submit');
   const btnCancel = document.getElementById('eog-btn-naming-cancel');
@@ -3674,17 +3656,13 @@ window.showEogSuccessChoicePanel = function () {
       if (typeof window.exitFullscreenIfActive === 'function') {
         window.exitFullscreenIfActive();
       }
-
-      // Szülő ablak értesítése a Hártyahalászat minijáték indításáról
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
           type: 'EBOOK_PIRATES_TUTORIAL',
           action: 'start_hartyahalaszat'
         }, '*');
       } else {
-        // Standalone futás esetén közvetlen átlépés
-        var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
-        window.location.href = '../minigame_fishing.html?token=' + encodeURIComponent(token);
+        window.location.href = '../minigame_fishing.html';
       }
     };
   }

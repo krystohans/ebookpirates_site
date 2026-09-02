@@ -356,7 +356,7 @@
     <!-- ─── EREDETI PARANCSNOKI HÍD / FEJLÉC (TOPBAR) ─── -->
     <div id="topbar">
       <div id="topbar-left">
-        <span id="tb-player-name" style="letter-spacing: 2px;">Did not Load</span>
+        <span id="tb-player-name" style="letter-spacing: 2px;">Kalóz</span>
       </div>
       <div id="topbar-center">
         <div class="counter-box">
@@ -2147,25 +2147,8 @@
       }
     }
 
-    window.exitFullscreenIfActive = function () {
-      try {
-        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-          if (document.exitFullscreen) document.exitFullscreen().catch(function(e) {});
-          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        }
-        if (window.parent && window.parent !== window && window.parent.document && (window.parent.document.fullscreenElement || window.parent.document.webkitFullscreenElement)) {
-          if (window.parent.document.exitFullscreen) window.parent.document.exitFullscreen().catch(function(e) {});
-        }
-      } catch (err) {
-        console.warn('Fullscreen kilépési hiba:', err);
-      }
-    };
-
     // ─── Fade-to-black overlay + EoG videó indítása ───
     function startEogFadeAndVideo() {
-      if (typeof window.exitFullscreenIfActive === 'function') {
-        window.exitFullscreenIfActive();
-      }
       const fadeEl = document.getElementById('eog-fade-overlay');
       if (fadeEl) {
         fadeEl.style.opacity = '1'; // CSS transition kezeli a smooth fade-t

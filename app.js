@@ -101,7 +101,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
             if (host) {
                 host.innerHTML = '';
                 var iframe = document.createElement('iframe');
-                iframe.src = 'minigame_fishing.html?token=' + encodeURIComponent(token);
+                iframe.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&v=' + Date.now();
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = '0';
@@ -10588,7 +10588,7 @@ function loadGamePage(sessionData) {
             
             var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
             var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
-            minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId);
+            minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
         });
         return;
     }

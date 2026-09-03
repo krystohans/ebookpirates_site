@@ -2265,47 +2265,34 @@ function frame() {
     warship.position.set(nextX, 0, nextZ);
     warship.rotation.y = targetAngle;
 
-    // Csak akkor lő és sebez, ha a játékos az ÖBÖL SZÁJÁN TÚLRA (z >= 1250) hajózik és a csatahajó körzetébe ér (< 90m)!
+    // ═══════════════════════════════════════════════════════════════════
+    // 🌊 CSATAHAJÓ MOZGÁSI TERÜLETE = AKTÍV ZÓNA:
+    // Ha a csónak rámegy a csatahajó mozgási területére (z >= 1250), elindítja 
+    // a 'Halászat Befejezése és Mentés' akciót: Hebok kikötőbe utazó videó (terkeputazas01.mp4)
+    // és a fedelzet_oldal aloldal betöltése!
+    // ═══════════════════════════════════════════════════════════════════
     if (typeof boat !== 'undefined' && boat && boat.position && boat.position.z >= 1250) {
-      const distToWarship = Math.hypot(boat.position.x - nextX, boat.position.z - nextZ);
+      if (!window._isExitingFishing) {
+        window._isExitingFishing = true;
 
-      if (distToWarship < 90) {
-        window._warshipShootCooldown = window._warshipShootCooldown || 0;
-        if (t - window._warshipShootCooldown > 3.5) { // 3.5 másodpercenként lő
-          window._warshipShootCooldown = t;
-
-          // 1. Ágyúlövés hanghatás
-          if (typeof window.playSoundEffect === 'function') {
-            window.playSoundEffect(window.airshipAttackAudio || window.crashRockAudio);
-          }
-
-          // 2. Képernyőrázkódás és piros felvillanás
-          const wrap = document.getElementById('game-wrapper');
-          if (wrap) {
-            wrap.style.transform = 'translate(' + ((Math.random() - 0.5) * 30) + 'px, ' + ((Math.random() - 0.5) * 30) + 'px)';
-            setTimeout(() => { wrap.style.transform = 'translate(0px, 0px)'; }, 100);
-          }
-          const crashOverlay = document.getElementById('crash-overlay');
-          if (crashOverlay) {
-            const crashSpan = crashOverlay.querySelector('span');
-            if (crashSpan) crashSpan.innerText = '💣 Csatahajó ágyútűz! (-2 HP)';
-            crashOverlay.style.display = 'flex';
-            setTimeout(() => {
-              crashOverlay.style.display = 'none';
-              if (crashSpan) crashSpan.innerText = '💥 Zátonyra futottál!';
-            }, 1200);
-          }
-
-          // 3. 2 HP SEBESÜLÉS OKOZÁSA
-          window.boatDurability = Math.max(0, (window.boatDurability !== undefined ? window.boatDurability : 10) - 2);
-          const tbDur = document.getElementById('tb-durability-count');
-          if (tbDur) tbDur.innerText = window.boatDurability + " HP";
-
-          // Ha az élettartam 2 alá csökken (0 vagy 1 HP), a csónak a hajóácshoz (hajóműhelybe) kerül!
-          if (window.boatDurability < 2) {
-            window.exitFishingGame && window.exitFishingGame('DESTROYED');
-          }
+        // Csónakon lévő hártyák azonnali raktárba helyezése és mentése
+        if (window.carriedMembranes > 0) {
+          window.storedMembranes = (window.storedMembranes || 0) + window.carriedMembranes;
+          window.carriedMembranes = 0;
+          if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
         }
+
+        // Felugró tájékoztató felirat
+        const crashOverlay = document.getElementById('crash-overlay');
+        if (crashOverlay) {
+          const crashSpan = crashOverlay.querySelector('span');
+          if (crashSpan) crashSpan.innerText = '⚓ Nyílt tenger: Utazás Hebok kikötőbe...';
+          crashOverlay.style.display = 'flex';
+          setTimeout(() => { crashOverlay.style.display = 'none'; }, 1200);
+        }
+
+        // Halászat Befejezése és Hebok kikötőbe utazás
+        window.exitFishingGame && window.exitFishingGame('NORMAL');
       }
     }
   }
@@ -4452,10 +4439,7 @@ window.triggerFishingQuiz = function () {
 
 window.exitFishingGame = function (type) {
   const exitType = type || 'NORMAL';
-  let targetPage = 'fedelzet_oldal';
-  if (exitType === 'DESTROYED') {
-    targetPage = 'hajomuhely_oldal';
-  }
+  let targetPage = (exitType === 'DESTROYED') ? 'hajomuhely_oldal' : 'fedelzet_oldal';
 
   // Backend mentés
   if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
@@ -4467,8 +4451,7 @@ window.exitFishingGame = function (type) {
     window.parent.callBackend('saveBoatDurability', [window.boatDurability || 10, sId]);
   }
 
-  // SPA képernyőváltás postMessage-el vagy közvetlen Live Server átirányítás
-  setTimeout(function () {
+  function doExitNavigation() {
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         source: 'threejs-minigame',
@@ -4482,5 +4465,28 @@ window.exitFishingGame = function (type) {
     } else {
       window.location.href = '../' + targetPage + '.html';
     }
-  }, 1000);
+  }
+
+  // Normál kilépésnél (gomb vagy nyílt tengeri aktív zóna) lejátsszuk a terkeputazas01.mp4 videót
+  if (exitType === 'NORMAL') {
+    const vidOverlay = document.getElementById('hebok-departure-video-overlay');
+    const vid = document.getElementById('hebok-departure-video');
+    if (vidOverlay && vid) {
+      vidOverlay.style.display = 'flex';
+      vid.currentTime = 0;
+      vid.play().catch(() => {});
+      let exited = false;
+      const finishVid = function () {
+        if (exited) return;
+        exited = true;
+        vidOverlay.style.display = 'none';
+        doExitNavigation();
+      };
+      vid.onended = finishVid;
+      setTimeout(finishVid, 6500); // Biztonsági fallback időzítő
+      return;
+    }
+  }
+
+  setTimeout(doExitNavigation, 500);
 };

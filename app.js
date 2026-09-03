@@ -11102,15 +11102,20 @@ window.addEventListener('message', function(event) {
             // Hártyahalászat lezárása
             console.log("Hártyahalászat vége. Típus: " + event.data.exitType);
             
-            // Céloldal betöltése
-            if (event.data.targetPage) {
-                loadPage(event.data.targetPage);
+            var targetPage = event.data.targetPage || (event.data.exitType === 'DESTROYED' ? 'hajomuhely_oldal' : 'fedelzet_oldal');
+            
+            if (event.data.exitType === 'DESTROYED') {
+                loadPage('hajomuhely_oldal');
+                return;
             }
             
-            // Itt majd később bekötjük a Kellektárból letöltött konkrét videó URL-t a playMediaSequence segítségével.
-            // Egyelőre csak a teszt kedvéért meghívunk egy dummy lejátszást
-            playMediaSequence([{ video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/webhatter02.mp4', fallback_image: 'placeholder_fish.jpg' }], function() {
-                console.log("Hártyahalászat videó lejátszva.");
+            // Hebok kikötőbe utazó videó (terkeputazas01.mp4) lejátszása és fedelzet_oldal betöltése
+            playMediaSequence([{ 
+                video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/terkeputazas01.mp4', 
+                fallback_image: '' 
+            }], function() {
+                console.log("Hebok kikötőbe utazás videó sikeresen lejátszva.");
+                loadPage(targetPage);
             });
             return;
         }

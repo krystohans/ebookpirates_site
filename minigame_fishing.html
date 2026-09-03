@@ -608,6 +608,28 @@ Irányítás:
     scene.background = new THREE.Color(0x7ec8e8);
     scene.fog = new THREE.FogExp2(0x7ec8e8, 0.0025);
 
+    let skyDome;
+    {
+      const g = new THREE.SphereGeometry(950, 32, 16);
+      const cols = [];
+      const p = g.getAttribute('position');
+      for (let i = 0; i < p.count; i++) {
+        const t = (p.getY(i) / 950 + 1) * 0.5;
+        cols.push(
+          THREE.MathUtils.lerp(0.92, 0.35, t),
+          THREE.MathUtils.lerp(0.78, 0.58, t),
+          THREE.MathUtils.lerp(0.55, 0.88, t));
+      }
+      g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+      skyDome = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true }));
+      scene.add(skyDome);
+    }
+
+    {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), new THREE.MeshLambertMaterial({ color: 0x0e2a1e }));
+      m.rotation.x = -Math.PI / 2; m.position.y = -18; scene.add(m);
+    }
+
     const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 400);
     let orbH = 0.0, orbV = 15.0, orbDist = 26.0;
 
@@ -979,14 +1001,20 @@ Irányítás:
 
       boat.position.addScaledVector(fwd, moveSpeed);
 
-      // Kamera követés (Orbit)
-      const phi = THREE.MathUtils.degToRad(orbV);
-      const theta = THREE.MathUtils.degToRad(orbH);
-      const cx = boat.position.x + orbDist * Math.sin(phi) * Math.sin(theta);
-      const cy = boat.position.y + orbDist * Math.cos(phi);
-      const cz = boat.position.z + orbDist * Math.sin(phi) * Math.cos(theta);
-      cam.position.set(cx, cy, cz);
-      cam.lookAt(boat.position.x, boat.position.y + 2.5, boat.position.z);
+      // Kamera követés (Orbit a csónak mögött)
+      const bX = (boat && boat.position) ? boat.position.x : 5.0;
+      const bY = (boat && boat.position) ? boat.position.y : 0.0;
+      const bZ = (boat && boat.position) ? boat.position.z : -94.0;
+      const bRotY = (boat && boat.rotation) ? boat.rotation.y : 0.0;
+
+      const totalH = bRotY + (orbH * Math.PI / 180);
+      const vR = orbV * Math.PI / 180;
+      cam.position.set(
+        bX + orbDist * Math.sin(totalH) * Math.cos(vR),
+        bY + orbDist * Math.sin(vR) + 2.5,
+        bZ + orbDist * Math.cos(totalH) * Math.cos(vR)
+      );
+      cam.lookAt(new THREE.Vector3(bX, bY + 2.5, bZ));
 
       // Móló Dokkolás (5, 0, -94)
       const distToDock = Math.hypot(boat.position.x - 5, boat.position.z - (-94));

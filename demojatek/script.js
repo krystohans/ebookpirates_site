@@ -375,6 +375,10 @@ window.changeWindForNextMembrane = function () {
 
 loadTopBarModule();
 
+const urlParams = new URLSearchParams(window.location.search);
+const isFishingMode = urlParams.get('mode') === 'fishing' || urlParams.get('game') === 'fishing';
+window.isFishingMode = isFishingMode;
+
 const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.location.search.indexOf('mobile=1') > -1 || (('ontouchstart' in window) && window.innerWidth <= 1024);
 window.isAndroid = isAndroid;
 
@@ -436,7 +440,15 @@ const dockLanternLights = [];
 const shantyLights = [];
 
 window.updateEnvironmentLighting = function () {
-  const p = Math.min(Math.max(window.gameTimeProgress, 0.0), 1.0);
+  let p = Math.min(Math.max(window.gameTimeProgress, 0.0), 1.0);
+  if (window.isFishingMode) {
+    const now = new Date();
+    const hrs = now.getHours() + now.getMinutes() / 60;
+    if (hrs >= 5 && hrs < 11) p = 0.1 + (hrs - 5) / 6 * 0.25;
+    else if (hrs >= 11 && hrs < 17) p = 0.35 + (hrs - 11) / 6 * 0.25;
+    else if (hrs >= 17 && hrs < 21) p = 0.60 + (hrs - 17) / 4 * 0.25;
+    else p = 0.95;
+  }
   const angle = p * Math.PI;
   const sunX = Math.cos(angle) * 1800;
   const sunY = Math.sin(angle) * 1200 - 100;
@@ -727,8 +739,10 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
         borderMeshes.push(child);
       } else if (isWall) {
         child.visible = false;
-        child.userData.obstacleType = 'out_of_range';
-        borderMeshes.push(child);
+        if (!window.isFishingMode) {
+          child.userData.obstacleType = 'out_of_range';
+          borderMeshes.push(child);
+        }
       } else {
         child.userData.obstacleType = 'beach';
         borderMeshes.push(child);
@@ -823,8 +837,10 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     borderMeshes.push(wallMesh);
   };
 
-  buildSegment(-180.6, 1356.4, -482.0, 1290.0);
-  buildSegment(-482.0, 1290.0, -707.8, 1199.1);
+  if (!window.isFishingMode) {
+    buildSegment(-180.6, 1356.4, -482.0, 1290.0);
+    buildSegment(-482.0, 1290.0, -707.8, 1199.1);
+  }
 
   // --- 7 DB MÓLÓ ÉS SHANTY COLLIDER BOX (LÁTHATATLAN HOMEPOINT) ---
   const collidersData = [
@@ -910,6 +926,10 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     });
 
     window.foundZeppelin = foundZeppelin;
+    if (window.isFishingMode && foundZeppelin) {
+      foundZeppelin.position.set(-80, 38, 250);
+      foundZeppelin.visible = true;
+    }
   }
 
   const isLoadMode = window.location.search.includes('load=1');
@@ -948,9 +968,12 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     const overlay = document.getElementById('zozo-welcome-overlay');
 
     if (overlay) {
-      if (isLoadMode) {
+      if (isLoadMode || window.isFishingMode) {
         overlay.style.display = 'none';
         window.isCutscenePlaying = false;
+        if (window.isFishingMode && typeof window.initFishingMode === 'function') {
+          window.initFishingMode();
+        }
       } else {
         overlay.style.display = 'flex';
         window.isCutscenePlaying = true;
@@ -1756,6 +1779,11 @@ window.closeZozoWelcome = function () {
 };
 
 window.showInGameMonolog = function (startIndex, endIndex, onComplete) {
+  if (window.isFishingMode) {
+    const cb = typeof endIndex === 'function' ? endIndex : onComplete;
+    if (typeof cb === 'function') cb();
+    return;
+  }
   if (typeof window.dismissActivePopup === 'function') window.dismissActivePopup();
 
   window.monologState.onComplete = (typeof endIndex === 'function' ? endIndex : onComplete) || null;
@@ -1970,6 +1998,10 @@ window.advanceZozoWelcome = function (event) {
 window.isTimedPopupActive = false;
 
 window.showPopUp = function (msg, onCompleteCb, customDuration) {
+  if (window.isFishingMode) {
+    if (onCompleteCb) onCompleteCb();
+    return;
+  }
   const mc = document.getElementById('zozo-ingame-monolog-container');
   if (mc && mc.style.display !== 'none') {
     if (onCompleteCb) onCompleteCb();
@@ -2006,6 +2038,10 @@ window.showPopUp = function (msg, onCompleteCb, customDuration) {
 };
 
 window.showClickControlledPopUp = function (msg, onCloseCb) {
+  if (window.isFishingMode) {
+    if (onCloseCb) onCloseCb();
+    return;
+  }
   const mc = document.getElementById('zozo-ingame-monolog-container');
   if (mc && mc.style.display !== 'none') {
     if (onCloseCb) onCloseCb();
@@ -2187,10 +2223,92 @@ function frame() {
     coordDiv.innerText = `X: ${boat.position.x.toFixed(1)}, Z: ${boat.position.z.toFixed(1)}`;
   }
 
+  const tbDurability = document.getElementById('tb-durability-count');
+  if (tbDurability) tbDurability.innerText = (window.boatDurability !== undefined ? window.boatDurability : 10) + " HP";
   const tbCarried = document.getElementById('tb-carried-count');
   if (tbCarried) tbCarried.innerText = window.carriedMembranes || 0;
   const tbStored = document.getElementById('tb-stored-count');
   if (tbStored) tbStored.innerText = window.storedMembranes || 0;
+
+  if (window.isFishingMode && typeof boat !== 'undefined' && boat && boat.position) {
+    const distToDock = Math.hypot(boat.position.x - 5, boat.position.z - (-94));
+    const exitBtn = document.getElementById('base-exit-btn');
+    if (distToDock < 22) {
+      if (window.carriedMembranes > 0) {
+        window.storedMembranes = (window.storedMembranes || 0) + window.carriedMembranes;
+        window.carriedMembranes = 0;
+        if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
+      }
+      if (exitBtn) exitBtn.style.display = 'block';
+    } else {
+      if (exitBtn) exitBtn.style.display = 'none';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 🚢 CSATAHAJÓ VADÁSZAT: AZ ÖBÖL SZÁJÁN TÚLI NYÍLT TENGEREN (z >= 1250)
+  // ═══════════════════════════════════════════════════════════════════
+  if (window.warshipMesh && window.isFishingMode) {
+    const warship = window.warshipMesh;
+    const tW = t * 0.15; // Járőrözési sebesség
+    const centerX = -450, centerZ = 1650; // Az öböl száján (z=1250..1350) messze túl a nyílt tengeren!
+    const radiusX = 280, radiusZ = 180;
+
+    // Nyolcas (Lissajous) pálya az öböl száján messze túl a nyílt tengeren
+    const nextX = centerX + Math.sin(tW) * radiusX;
+    const nextZ = centerZ + Math.sin(2 * tW) * radiusZ;
+
+    const dx = radiusX * Math.cos(tW) * 0.15;
+    const dz = radiusZ * 2 * Math.cos(2 * tW) * 0.15;
+    const targetAngle = Math.atan2(dx, dz); // Pontosan 180 fokkal megfordítva, hogy előrefelé hajózzon az orrával!
+
+    warship.position.set(nextX, 0, nextZ);
+    warship.rotation.y = targetAngle;
+
+    // Csak akkor lő és sebez, ha a játékos az ÖBÖL SZÁJÁN TÚLRA (z >= 1250) hajózik és a csatahajó körzetébe ér (< 90m)!
+    if (typeof boat !== 'undefined' && boat && boat.position && boat.position.z >= 1250) {
+      const distToWarship = Math.hypot(boat.position.x - nextX, boat.position.z - nextZ);
+
+      if (distToWarship < 90) {
+        window._warshipShootCooldown = window._warshipShootCooldown || 0;
+        if (t - window._warshipShootCooldown > 3.5) { // 3.5 másodpercenként lő
+          window._warshipShootCooldown = t;
+
+          // 1. Ágyúlövés hanghatás
+          if (typeof window.playSoundEffect === 'function') {
+            window.playSoundEffect(window.airshipAttackAudio || window.crashRockAudio);
+          }
+
+          // 2. Képernyőrázkódás és piros felvillanás
+          const wrap = document.getElementById('game-wrapper');
+          if (wrap) {
+            wrap.style.transform = 'translate(' + ((Math.random() - 0.5) * 30) + 'px, ' + ((Math.random() - 0.5) * 30) + 'px)';
+            setTimeout(() => { wrap.style.transform = 'translate(0px, 0px)'; }, 100);
+          }
+          const crashOverlay = document.getElementById('crash-overlay');
+          if (crashOverlay) {
+            const crashSpan = crashOverlay.querySelector('span');
+            if (crashSpan) crashSpan.innerText = '💣 Csatahajó ágyútűz! (-2 HP)';
+            crashOverlay.style.display = 'flex';
+            setTimeout(() => {
+              crashOverlay.style.display = 'none';
+              if (crashSpan) crashSpan.innerText = '💥 Zátonyra futottál!';
+            }, 1200);
+          }
+
+          // 3. 2 HP SEBESÜLÉS OKOZÁSA
+          window.boatDurability = Math.max(0, (window.boatDurability !== undefined ? window.boatDurability : 10) - 2);
+          const tbDur = document.getElementById('tb-durability-count');
+          if (tbDur) tbDur.innerText = window.boatDurability + " HP";
+
+          // Ha az élettartam 2 alá csökken (0 vagy 1 HP), a csónak a hajóácshoz (hajóműhelybe) kerül!
+          if (window.boatDurability < 2) {
+            window.exitFishingGame && window.exitFishingGame('DESTROYED');
+          }
+        }
+      }
+    }
+  }
 
   const welcomeOverlayActive = document.getElementById('zozo-welcome-overlay') &&
     document.getElementById('zozo-welcome-overlay').style.display !== 'none';
@@ -2243,6 +2361,13 @@ function frame() {
 
           // 2. AZONNALI HANGEFFEKT A FELVÉTELI ÉRINTÉS PILLANATÁBAN
           if (typeof window.playPickupSound === 'function') window.playPickupSound();
+
+          if (window.isFishingMode) {
+            if (typeof window.triggerFishingQuiz === 'function') {
+              window.triggerFishingQuiz();
+            }
+            continue;
+          }
 
           const executeMembranePickup = (showDefaultPopup = true) => {
             window.carriedMembranes++;
@@ -2456,7 +2581,7 @@ function frame() {
     }
   }
 
-  // --- LÉGHAJÓ ÜLDÖZÉSI LOGIKA (100 MÉTERES VÉDELMI ZÓNÁVAL) ---
+  // --- LÉGHAJÓ ÜLDÖZÉSI LOGIKA (100 MÉTERES VÉDELMI ZÓNÁVAL - EREDETI TUTORIAL MOTOR) ---
   if (window.airshipAscentDone && window.foundZeppelin && !window.eogTriggerChest && window.eogState !== 'CHEST_FOUND' && window.eogState !== 'CINEMATIC' && window.eogState !== 'CREDITS') {
     const zep = window.foundZeppelin;
 
@@ -2467,7 +2592,7 @@ function frame() {
       distZepToHome = Math.hypot(zep.position.x - window.homePos.x, zep.position.z - window.homePos.z);
     }
 
-    const isInProtectedZone = distBoatToHome < 100.0 || distZepToHome < 100.0;
+    const isInProtectedZone = distBoatToHome < 100.0 || distZepToHome < 100.0 || (boat.position.z >= 1250);
 
     // Öböl bejárati 15-20 másodperces járőrútvonal (hogy a védett zóna határán soha ne laggoljon a levegőben)
     const AIRSHIP_BAY_WAYPOINTS = [
@@ -2523,55 +2648,52 @@ function frame() {
         if (distToBoat < 45.0 && !window.monologState.airshipCaughtPlayer) {
           window.monologState.airshipCaughtPlayer = true;
 
-          const isFirstCatch = !window.monologState.hasSeen[10];
-          window.monologState.hasSeen[10] = true;
-
           window.playSoundEffect(window.airshipAttackAudio);
           window.isCutscenePlaying = true;
-          setTimeout(() => {
-            window.showPopUp((window.gamePopups && window.gamePopups.airship_catch) || "UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, \nde ha hibázol, elveszik a hártyáinkat.", () => {
-              if (isFirstCatch) {
-                window.airshipAbductionActive = true;
-                window.airshipAbductionProgress = 0;
-                window.airshipOriginalY = zep.position.y;
 
-                if (window.foundZeppelinLadder) {
-                  window.airshipLadderMesh = window.foundZeppelinLadder;
-                } else if (!window.airshipLadderMesh) {
-                  const ladderGroup = new THREE.Group();
-                  const ropeMat = new THREE.MeshStandardMaterial({ color: 0x3d2516, roughness: 0.9 });
-                  const stepMat = new THREE.MeshStandardMaterial({ color: 0x6b4c2a, roughness: 0.7 });
+          const startAbduction = () => {
+            window.airshipAbductionActive = true;
+            window.airshipAbductionProgress = 0;
+            window.airshipOriginalY = zep.position.y;
 
-                  const r1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 18, 6), ropeMat);
-                  r1.position.set(-0.8, -9, 0);
-                  const r2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 18, 6), ropeMat);
-                  r2.position.set(0.8, -9, 0);
-                  ladderGroup.add(r1); ladderGroup.add(r2);
+            if (window.foundZeppelinLadder) {
+              window.airshipLadderMesh = window.foundZeppelinLadder;
+            } else if (!window.airshipLadderMesh) {
+              const ladderGroup = new THREE.Group();
+              const ropeMat = new THREE.MeshStandardMaterial({ color: 0x3d2516, roughness: 0.9 });
+              const stepMat = new THREE.MeshStandardMaterial({ color: 0x6b4c2a, roughness: 0.7 });
 
-                  for (let s = 0; s < 12; s++) {
-                    const step = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.12, 0.2), stepMat);
-                    step.position.set(0, -1.5 * s - 0.5, 0);
-                    ladderGroup.add(step);
-                  }
-                  zep.add(ladderGroup);
-                  window.airshipLadderMesh = ladderGroup;
-                }
+              const r1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 18, 6), ropeMat);
+              r1.position.set(-0.8, -9, 0);
+              const r2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 18, 6), ropeMat);
+              r2.position.set(0.8, -9, 0);
+              ladderGroup.add(r1); ladderGroup.add(r2);
 
-                if (window.airshipLadderMesh) {
-                  window.airshipLadderMesh.visible = true;
-                  window.airshipLadderMesh.scale.set(1, 0.01, 1);
-                }
-              } else {
-                if (window.quizManager) {
-                  window.quizManager.openQuiz('TUTORZEP', function (isCorrect) {
-                    window.resetAirshipChase();
-                  });
-                } else {
-                  window.resetAirshipChase();
-                }
+              for (let s = 0; s < 12; s++) {
+                const step = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.12, 0.2), stepMat);
+                step.position.set(0, -1.5 * s - 0.5, 0);
+                ladderGroup.add(step);
               }
-            });
-          }, 1500);
+              zep.add(ladderGroup);
+              window.airshipLadderMesh = ladderGroup;
+            }
+
+            if (window.airshipLadderMesh) {
+              window.airshipLadderMesh.visible = true;
+              window.airshipLadderMesh.scale.set(1, 0.01, 1);
+            }
+          };
+
+          if (window.isFishingMode) {
+            // Hártyavadászatban közvetlenül elindul a kötéllétra elkapási animáció
+            startAbduction();
+          } else {
+            setTimeout(() => {
+              window.showPopUp((window.gamePopups && window.gamePopups.airship_catch) || "UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, \nde ha hibázol, elveszik a hártyáinkat.", () => {
+                startAbduction();
+              });
+            }, 1500);
+          }
         }
       }
     }
@@ -2599,9 +2721,22 @@ function frame() {
       window.airshipAbductionActive = false;
       if (window.quizManager) {
         window.quizManager.openQuiz('TUTORZEP', function (isCorrect) {
+          if (window.isFishingMode) {
+            if (isCorrect) {
+              window.carriedMembranes = (window.carriedMembranes > 0) ? (window.carriedMembranes * 2) : 2;
+            } else {
+              window.carriedMembranes = 0;
+            }
+            if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
+          }
           if (window.airshipLadderMesh) window.airshipLadderMesh.visible = false;
+          window.isCutscenePlaying = false;
           window.resetAirshipChase();
         });
+      } else {
+        if (window.airshipLadderMesh) window.airshipLadderMesh.visible = false;
+        window.isCutscenePlaying = false;
+        window.resetAirshipChase();
       }
     }
   }
@@ -2969,6 +3104,19 @@ function frame() {
         }
 
         // Hártyák levonása és csónak azonnali visszatérése a mólóhoz
+        if (window.isFishingMode) {
+          // Szikla/zátony ütközés: szigorúan csak 1 HP-t von le!
+          window.boatDurability = Math.max(0, (window.boatDurability !== undefined ? window.boatDurability : 10) - 1);
+          const tbDur = document.getElementById('tb-durability-count');
+          if (tbDur) tbDur.innerText = window.boatDurability + " HP";
+
+          // Ha az élettartam 2 alá csökken (0 vagy 1 HP), a csónak a hajóácshoz kerül!
+          if (window.boatDurability < 2) {
+            window.exitFishingGame && window.exitFishingGame('DESTROYED');
+            return;
+          }
+        }
+
         if (window.totalPickedUp !== undefined && window.carriedMembranes > 0) {
           window.totalPickedUp = Math.max(0, window.totalPickedUp - window.carriedMembranes);
         }
@@ -4156,3 +4304,183 @@ window.addEventListener('keydown', function (e) {
     }
   }
 });
+
+// ═══════════════════════════════════════════════════════════════════
+// 🎣 HÁRTYAVADÁSZAT (FISHING MODE) TELJES ARCADE JÁTÉKMOTOR
+// ═══════════════════════════════════════════════════════════════════
+
+window.initFishingMode = function () {
+  console.log("⚓ [FISHING MODE] Hártyavadászat arcade motor aktiválva!");
+  window.isFishingMode = true;
+  window.isCutscenePlaying = false;
+
+  // 1. Zozó monológok és tutorial overlay-ek elrejtése
+  const zozoBox = document.getElementById('zozo-welcome-overlay');
+  if (zozoBox) zozoBox.style.display = 'none';
+  const popupToast = document.getElementById('ingame-popup-toast');
+  if (popupToast) popupToast.style.display = 'none';
+  const monologBox = document.getElementById('zozo-ingame-monolog-container');
+  if (monologBox) monologBox.style.display = 'none';
+
+  // 2. Csónak kezdőpozíció a móló mellett
+  if (typeof boat !== 'undefined' && boat && boat.position) {
+    boat.position.set(5, 0, -94);
+    boat.rotation.y = Math.PI + (Math.PI / 4) - (3 * Math.PI / 180);
+  }
+
+  // 3. Backendből lekérjük a csónak életerejét (HP)
+  window.boatDurability = 10;
+  window.carriedMembranes = 0;
+  window.storedMembranes = 0;
+
+  if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
+    const uParams = new URLSearchParams(window.location.search);
+    const sId = uParams.get('shipId') || '';
+    window.parent.callBackend('getBoatDurability', [sId], function (res) {
+      if (res !== undefined && res !== null && res !== '') {
+        window.boatDurability = parseInt(res, 10);
+      }
+      const tbDur = document.getElementById('tb-durability-count');
+      if (tbDur) tbDur.innerText = window.boatDurability + " HP";
+    }, function (err) {
+      console.warn("Durability betöltési hiba:", err);
+    });
+  }
+
+  // 4. Léghajó aktiválása az eredeti Tutorial vadászati motorhoz
+  window.airshipAscentStarted = true;
+  window.airshipAscentDone = true;
+  window.airshipOriginalY = 40.0;
+  window.airshipChaseState = 'CHASE';
+  window.airshipChaseCooldown = 0;
+  window.monologState = window.monologState || { hasSeen: {} };
+  window.monologState.airshipCaughtPlayer = false;
+
+  if (window.foundZeppelin) {
+    window.foundZeppelin.position.set(-80, 40, 250);
+    window.foundZeppelin.visible = true;
+  }
+
+  // 5. Csatahajó betöltése a nyílt vízi járőrözéshez (öbölön kívül)
+  if (typeof window.loadWarshipForFishing === 'function') {
+    window.loadWarshipForFishing();
+  }
+
+  // 6. Nyílt vízi hártyák hullámának spawnolása
+  setTimeout(function () {
+    if (typeof window.spawnFishingMembranes === 'function') {
+      window.spawnFishingMembranes();
+    }
+  }, 1000);
+};
+
+window.loadWarshipForFishing = function () {
+  if (window.warshipMesh) {
+    window.warshipMesh.visible = true;
+    return;
+  }
+  const loader = new GLTFLoader();
+  loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Veh_Boat_Warship_01_Hull.glb', function (gltf) {
+    const warshipModel = gltf.scene;
+    warshipModel.scale.set(60.0, 60.0, 60.0);
+    warshipModel.updateMatrixWorld(true);
+
+    const box = new THREE.Box3().setFromObject(warshipModel);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+
+    warshipModel.position.x -= center.x;
+    warshipModel.position.z -= center.z;
+    warshipModel.position.y += size.y * 0.35;
+
+    warshipModel.traverse(function (node) {
+      if (node.isMesh) {
+        node.castShadow = false;
+        node.receiveShadow = false;
+        node.frustumCulled = true;
+      }
+    });
+
+    const warshipGroup = new THREE.Group();
+    warshipGroup.position.set(-450, 0, 1650);
+    warshipGroup.add(warshipModel);
+    scene.add(warshipGroup);
+    window.warshipMesh = warshipGroup;
+    console.log("⚓ Csatahajó (Warship) sikeresen betöltve a nyílt vizekre!");
+  }, undefined, function (err) {
+    console.warn("Csatahajó modell betöltési figyelmeztetés:", err);
+  });
+};
+
+window.spawnFishingMembranes = function () {
+  if (typeof getPooledMembrane !== 'function') return;
+  const count = (window.activeMembranes || []).filter(m => m && m.visible).length;
+  const needed = 8 - count;
+  for (let i = 0; i < needed; i++) {
+    const pt = WATER_BAY_POINTS[Math.floor(Math.random() * WATER_BAY_POINTS.length)];
+    if (pt && typeof window.isSafeWaterSpawnPoint === 'function' && window.isSafeWaterSpawnPoint(pt.x, pt.z)) {
+      const m = getPooledMembrane();
+      if (m) {
+        m.position.set(pt.x + (Math.random() - 0.5) * 20, 0.1, pt.z + (Math.random() - 0.5) * 20);
+        m.userData.baseY = 0.1;
+        m.userData.collected = false;
+        m.userData.inUse = true;
+        m.visible = true;
+        if (m.userData.light) m.userData.light.intensity = 3.5;
+        if (!window.activeMembranes.includes(m)) window.activeMembranes.push(m);
+      }
+    }
+  }
+};
+
+window.triggerFishingQuiz = function () {
+  if (window.quizManager) {
+    window.quizManager.openQuiz('FISHING_LITERATURE', function (isCorrect) {
+      if (isCorrect) {
+        window.carriedMembranes = (window.carriedMembranes || 0) + 1;
+      }
+      if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
+      setTimeout(function () {
+        if (typeof window.spawnFishingMembranes === 'function') window.spawnFishingMembranes();
+      }, 1500);
+    });
+  } else {
+    window.carriedMembranes = (window.carriedMembranes || 0) + 1;
+    if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
+  }
+};
+
+window.exitFishingGame = function (type) {
+  const exitType = type || 'NORMAL';
+  let targetPage = 'fedelzet_oldal';
+  if (exitType === 'DESTROYED') {
+    targetPage = 'hajomuhely_oldal';
+  }
+
+  // Backend mentés
+  if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
+    const uParams = new URLSearchParams(window.location.search);
+    const sId = uParams.get('shipId') || '';
+    if (window.storedMembranes > 0) {
+      window.parent.callBackend('saveHartyaScore', [window.storedMembranes]);
+    }
+    window.parent.callBackend('saveBoatDurability', [window.boatDurability || 10, sId]);
+  }
+
+  // SPA képernyőváltás postMessage-el vagy közvetlen Live Server átirányítás
+  setTimeout(function () {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        source: 'threejs-minigame',
+        status: 'COMPLETED',
+        gameType: 'FISHING',
+        exitType: exitType,
+        targetPage: targetPage,
+        score: window.storedMembranes || 0,
+        durability: window.boatDurability || 10
+      }, '*');
+    } else {
+      window.location.href = '../' + targetPage + '.html';
+    }
+  }, 1000);
+};

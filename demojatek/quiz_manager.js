@@ -28,6 +28,7 @@ class QuizManager {
     this.onCompleteCallback = null;
     this.isRendering = false;
     this.uiReady = false;
+    this.literatureQuestions = [];
 
     this.loadQuestions();
     this.loadUI();
@@ -41,6 +42,36 @@ class QuizManager {
       }
     } catch (e) {
       console.error("Hiba a kvízkérdések betöltésekor:", e);
+    }
+
+    // Irodalmi kérdések betöltése a Google Sheets backendből (vagy irodalmi alapbázisból)
+    if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
+      const self = this;
+      window.parent.callBackend('getQuizQuestions', [], function (backendQuestions) {
+        if (Array.isArray(backendQuestions) && backendQuestions.length > 0) {
+          self.literatureQuestions = backendQuestions;
+          console.log("📚 " + backendQuestions.length + " db irodalmi kvízkérdés sikeresen betöltve a backendből!");
+        }
+      }, function (err) {
+        console.warn("Backend kérdésbetöltési figyelmeztetés:", err);
+      });
+    }
+
+    if (!this.literatureQuestions || this.literatureQuestions.length === 0) {
+      this.literatureQuestions = [
+        { id: 'lit_1', question: "Ki írta A kőszívű ember fiai című történelmi regényt?", answers: ["Jókai Mór", "Mikszáth Kálmán", "Arany János", "Gárdonyi Géza"], correctIndex: 0 },
+        { id: 'lit_2', question: "Melyik híres kalózregényben szerepel Long John Silver?", answers: ["A kincses sziget", "Robinson Crusoe", "Pán Péter", "Monte Cristo grófja"], correctIndex: 0 },
+        { id: 'lit_3', question: "Ki a szerzője az Egri csillagok című regénynek?", answers: ["Gárdonyi Géza", "Móra Ferenc", "Jókai Mór", "Kölcsey Ferenc"], correctIndex: 0 },
+        { id: 'lit_4', question: "Milyen hajón szolgált Piszkos Fred Rejtő Jenő regényeiben?", answers: ["Radzeer gőzös", "Hispaniola", "Nautilus", "Bounty"], correctIndex: 0 },
+        { id: 'lit_5', question: "Ki írta a Robinson Crusoe című kalandregényt?", answers: ["Daniel Defoe", "Jonathan Swift", "Mark Twain", "Jack London"], correctIndex: 0 },
+        { id: 'lit_6', question: "Melyik tenger alatti hajó parancsnoka Nemo kapitány Verne regényében?", answers: ["Nautilus", "Cachalot", "Pequod", "Flying Dutchman"], correctIndex: 0 },
+        { id: 'lit_7', question: "Ki írta a Toldi trilógiát?", answers: ["Arany János", "Petőfi Sándor", "Vörösmarty Mihály", "Kisfaludy Károly"], correctIndex: 0 },
+        { id: 'lit_8', question: "Melyik Shakespeare műben szerepel a 'Lenni vagy nem lenni' monológ?", answers: ["Hamlet", "Rómeó és Júlia", "Macbeth", "Othello"], correctIndex: 0 },
+        { id: 'lit_9', question: "Melyik fehér bálna után kutat Ahab kapitány Melville regényében?", answers: ["Moby Dick", "Leviathan", "Kraken", "Cthulhu"], correctIndex: 0 },
+        { id: 'lit_10', question: "Ki írta a Pál utcai fiúk című ifjúsági regényt?", answers: ["Molnár Ferenc", "Karinthy Frigyes", "Kosztolányi Dezső", "Móricz Zsigmond"], correctIndex: 0 },
+        { id: 'lit_11', question: "Ki a főhőse Robert Louis Stevenson Kincses sziget című művének?", answers: ["Jim Hawkins", "Tom Sawyer", "Huckleberry Finn", "David Copperfield"], correctIndex: 0 },
+        { id: 'lit_12', question: "Melyik szigeten játszódik Homérosz művében Odüsszeusz hazatérése?", answers: ["Ithaka", "Kréta", "Rodosz", "Küprosz"], correctIndex: 0 }
+      ];
     }
   }
 
@@ -113,18 +144,26 @@ class QuizManager {
     let available = [];
 
     if (category === 'TUTORZEP') {
-      available = this.questions.filter(q => {
-        const qCat = q.category || q.Tetes_IN || q.Tipus;
+      const allQ = (this.questions || []).concat(this.literatureQuestions || []);
+      available = allQ.filter(q => {
+        const isStaked = (q.isStaked === true || q.isStaked === 'TRUE' || q.category === 'TUTORZEP' || q.Tetes_IN === true || q.Tetes === true || q.Tipus === 'TUTORZEP' || q.category === 'SAVE');
         const qId = this.getQuestionId(q);
-        return qCat === 'TUTORZEP' && !this.askedQuestionIds.has(qId);
+        return isStaked && !this.askedQuestionIds.has(qId);
       });
-
       if (available.length === 0) {
-        available = this.questions.filter(q => {
-          const qCat = q.category || q.Tetes_IN || q.Tipus;
-          const qId = this.getQuestionId(q);
-          return qCat === 'SAVE' && !this.askedQuestionIds.has(qId);
+        available = allQ.filter(q => {
+          return (q.isStaked === true || q.isStaked === 'TRUE' || q.category === 'TUTORZEP' || q.Tetes_IN === true || q.Tetes === true || q.Tipus === 'TUTORZEP' || q.category === 'SAVE');
         });
+      }
+    } else if (category === 'FISHING_LITERATURE') {
+      const source = (this.literatureQuestions && this.literatureQuestions.length > 0) ? this.literatureQuestions : this.questions;
+      available = source.filter(q => {
+        const qId = this.getQuestionId(q);
+        return !this.askedQuestionIds.has(qId);
+      });
+      if (available.length === 0) {
+        this.askedQuestionIds.clear();
+        available = source;
       }
     } else {
       available = this.questions.filter(q => {

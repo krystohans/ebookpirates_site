@@ -9,6 +9,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=20260528_2">
     <link rel="icon" href="data:,">
+    <!-- Automatikus 3D Kozmosz Terminál átirányítás, ha nincs aktív bejelentkezés -->
+    <script>
+        (function() {
+            var token = localStorage.getItem('ebookPiratesToken');
+            var loggedIn = sessionStorage.getItem('ebook_is_logged_in');
+            if (!token || loggedIn !== 'true') {
+                window.location.replace('auth_terminal_3d.html');
+            }
+        })();
+    </script>
 </head>
 <body>
 
@@ -33,6 +43,11 @@
             </div>
             <button type="button" onclick="login()" data-lang="login_button">Beszállás</button>
         </form>
+        <div style="margin-top: 14px; text-align: center;">
+            <a href="auth_terminal_3d.html" style="display: inline-block; padding: 10px 18px; background: linear-gradient(135deg, #0d2838 0%, #004d40 100%); border: 1px solid #00ffcc; border-radius: 8px; color: #00ffcc; text-decoration: none; font-size: 0.9em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,255,204,0.2);">
+                🌌 3D Kozmosz Készülék Belépő & Regisztráció
+            </a>
+        </div>
         <p id="login-status" style="color: red;"></p>
         <div id="registerButtonContainer"></div>
     </div>

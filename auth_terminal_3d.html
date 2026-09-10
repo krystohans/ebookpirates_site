@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>eBookPirates - 3D Kozmosz Terminál</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #020408;
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ffcc;
+            user-select: none;
+            touch-action: none;
+            -webkit-touch-callout: none;
+        }
+
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            touch-action: none;
+        }
+
+        /* Rejtett dinamikus vászon a Three.js CanvasTexture-höz */
+        #screen-canvas {
+            display: none;
+        }
+
+        /* Rejtett beviteli mező mobil és virtuális billentyűzethez (iOS / Android auto-zoom és görgetés mentes) */
+        #virtual-input-capturer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0.01;
+            pointer-events: auto;
+            font-size: 16px;
+            z-index: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: transparent;
+        }
+
+        /* Lebegő Egyetlen Infó Gomb (Diszkrét, világító cián) */
+        .info-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(5, 14, 24, 0.85);
+            border: 2px solid rgba(0, 255, 204, 0.5);
+            color: #00ffcc;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 204, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .info-toggle-btn:hover {
+            transform: scale(1.15) rotate(15deg);
+            border-color: #00ffcc;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.7);
+            background: rgba(0, 255, 204, 0.15);
+        }
+
+        /* Infó Modal / Segédlet & Akadálymentes Adatbeviteli Panel */
+        #info-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(2, 6, 12, 0.85);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .info-modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 540px;
+            background: rgba(5, 14, 24, 0.96);
+            border: 2px solid rgba(0, 255, 204, 0.5);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 204, 0.2);
+            color: #e0f8f2;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: #00ffcc;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+            transform: scale(1.1);
+        }
+
+        .modal-title {
+            font-family: 'Pirata One', cursive;
+            font-size: 30px;
+            color: #00ffcc;
+            text-shadow: 0 0 12px rgba(0, 255, 204, 0.5);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Nyelvválasztó a modalban */
+        .modal-lang-switch {
+            display: flex;
+            gap: 8px;
+            background: rgba(2, 8, 15, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 20px;
+            padding: 6px 12px;
+            margin-bottom: 18px;
+            justify-content: center;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.2);
+            border-color: #00ffcc;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+        }
+
+        .lang-btn.active {
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px #00ffcc;
+            transform: scale(1.15);
+        }
+
+        /* Útmutató szekció */
+        .guide-section {
+            background: rgba(0, 255, 204, 0.04);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .guide-section h4 {
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .guide-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .guide-list li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .guide-list i {
+            color: #00ffcc;
+            margin-top: 3px;
+        }
+
+        /* Modal Módváltó Fül gombok */
+        .modal-mode-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .modal-tab-btn {
+            background: rgba(0, 255, 204, 0.08);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            color: #88c0b0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 10px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .modal-tab-btn:hover {
+            background: rgba(0, 255, 204, 0.2);
+            color: #00ffcc;
+            border-color: #00ffcc;
+        }
+
+        .modal-tab-btn.active {
+            background: rgba(0, 255, 204, 0.3);
+            color: #ffffff;
+            border-color: #00ffcc;
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.4);
+        }
+
+        /* Akadálymentes beviteli űrlapok a modalban */
+        .accessible-form-container {
+            background: rgba(2, 10, 18, 0.85);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .modal-form-group {
+            margin-bottom: 12px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            font-size: 11px;
+            color: #00ffcc;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: rgba(4, 15, 26, 0.95);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 6px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .modal-input:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+        }
+
+        .modal-submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 11px;
+            color: #021210;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+        }
+
+        .modal-submit-btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Kamera Gombok */
+        .camera-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .cam-action-btn {
+            background: rgba(0, 255, 204, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            color: #88c0b0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .cam-action-btn:hover {
+            background: rgba(0, 255, 204, 0.15);
+            color: #00ffcc;
+            border-color: #00ffcc;
+        }
+
+        /* Betöltő képernyő */
+        #loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020408;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 255, 204, 0.1);
+            border-top: 3px solid #00ffcc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    
+        /* Jelszó konténer és Szem-ikon badge (Minden háttéren tökéletesen látható) */
+        .password-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-container #toggle-modal-password {
+            position: absolute;
+            right: 8px;
+            cursor: pointer;
+            color: #00ffcc !important;
+            background: #04101a !important;
+            border: 1px solid rgba(0, 255, 204, 0.6) !important;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            z-index: 20;
+        }
+
+        .password-container #toggle-modal-password:hover {
+            background: #00332a !important;
+            border-color: #00ffcc !important;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
+            transform: scale(1.08);
+        }
+
+    </style>
+
+    <!-- Three.js és Kiegészítők (Modern ES Modul & Importmap) -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- 3D WebGL Tároló -->
+    <div id="webgl-container"></div>
+
+    <!-- Rejtett Vászon a Képernyő Textúrához -->
+    <canvas id="screen-canvas" width="1024" height="512"></canvas>
+
+    <!-- Rejtett billentyűzet elfogó (mobil és automatikus gépeléshez) -->
+    <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+    <!-- Betöltő Képernyő -->
+    <div id="loading-screen">
+        <div class="loader-spinner"></div>
+        <p style="font-family: 'Orbitron', sans-serif; letter-spacing: 2px;" data-lang="auth_loading_text">KOZMOSZ TERMINÁL INICIALIZÁLÁSA...</p>
+    </div>
+
+    <!-- Egyetlen Lebegő Infó Gomb -->
+    <button id="info-toggle-btn" class="info-toggle-btn" onclick="toggleInfoModal()" title="Információ & Beállítások" data-lang-title="auth_info_btn_title">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <!-- Infó Modal & Segédlet & Akadálymentes Panel -->
+    <div id="info-modal" onclick="onModalBackdropClick(event)">
+        <div class="info-modal-content">
+            <button class="modal-close-btn" onclick="toggleInfoModal()">✕</button>
+            
+            <div class="modal-title" data-lang-html="auth_modal_title">
+                <i class="fas fa-compass"></i> eBookPirates // Kozmosz Készülék
+            </div>
+
+            <!-- Nyelvválasztó (Összekötve a web_fordito.js motorral) -->
+            <div class="modal-lang-switch" aria-label="Nyelvvalaszto">
+                <button type="button" class="lang-btn" data-lang="hu" title="Magyar" onclick="handleLangSwitch('hu')"><span class="fi fi-hu"></span></button>
+                <button type="button" class="lang-btn" data-lang="en" title="English" onclick="handleLangSwitch('en')"><span class="fi fi-gb"></span></button>
+                <button type="button" class="lang-btn" data-lang="de" title="Deutsch" onclick="handleLangSwitch('de')"><span class="fi fi-de"></span></button>
+                <button type="button" class="lang-btn" data-lang="fr" title="Francais" onclick="handleLangSwitch('fr')"><span class="fi fi-fr"></span></button>
+                <button type="button" class="lang-btn" data-lang="es" title="Espanol" onclick="handleLangSwitch('es')"><span class="fi fi-es"></span></button>
+                <button type="button" class="lang-btn" data-lang="pl" title="Polski" onclick="handleLangSwitch('pl')"><span class="fi fi-pl"></span></button>
+                <button type="button" class="lang-btn" data-lang="ru" title="Russkiy" onclick="handleLangSwitch('ru')"><span class="fi fi-ru"></span></button>
+            </div>
+
+            <!-- Használati Útmutató -->
+            <div class="guide-section">
+                <h4 data-lang-html="auth_guide_title"><i class="fas fa-book-reader"></i> Használati Útmutató</h4>
+                <ul class="guide-list">
+                    <li data-lang-html="auth_guide_typing"><i class="fas fa-keyboard"></i> <strong>3D Gépelés:</strong> Kattints a 3D monitorra vagy az alábbi mezőkre a gépeléshez!</li>
+                    <li data-lang-html="auth_guide_tab"><i class="fas fa-exchange-alt"></i> <strong>Mezőváltás:</strong> Nyomj <code>TAB</code> billentyűt a mezők közötti ugráshoz.</li>
+                    <li data-lang-html="auth_guide_submit"><i class="fas fa-paper-plane"></i> <strong>Beküldés:</strong> Nyomj <code>ENTER</code> billentyűt vagy kattints a Küldés gombra.</li>
+                    <li data-lang-html="auth_guide_camera"><i class="fas fa-globe"></i> <strong>Kamera:</strong> Bal egérgombbal körbeforgatható a kozmosz, görgővel közelíthetsz a monitorra.</li>
+                </ul>
+            </div>
+
+            <!-- Módváltó Gombok -->
+            <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;" data-lang="auth_modes_header">Üzemmód & Akadálymentes Adatbevitel</h4>
+            <div class="modal-mode-tabs">
+                <button class="modal-tab-btn active" id="modal-tab-login" onclick="switchMode('LOGIN')" data-lang="auth_tab_login">Belépés</button>
+                <button class="modal-tab-btn" id="modal-tab-register" onclick="switchMode('REGISTER')" data-lang="auth_tab_register">Regisztráció</button>
+                <button class="modal-tab-btn" id="modal-tab-deregister" onclick="switchMode('DEREGISTER')" data-lang="auth_tab_deregister">Leléptetés</button>
+            </div>
+
+            <!-- Akadálymentes Űrlap Konténer (Élő szinkronban a 3D Képernyővel) -->
+            <div class="accessible-form-container">
+                <!-- 1. BELÉPÉS FORM -->
+                <div id="modal-form-login" class="modal-form-view">
+                    <div class="modal-form-group">
+                        <label data-lang="auth_login_name_label">Kalóznév</label>
+                        <input type="text" id="m-login-username" class="modal-input" placeholder="Add meg a kalózneved..." data-lang-placeholder="auth_login_name_placeholder" autocomplete="username" />
+                    </div>
+                    <div class="modal-form-group">
+                        <label data-lang="auth_login_pass_label">Jelszó / Kedvenc étel</label>
+                        <div class="password-container" style="position: relative; display: flex; align-items: center;">
+                            <input type="password" id="m-login-password" class="modal-input" placeholder="Add meg a jelszavad..." data-lang-placeholder="auth_login_pass_placeholder" autocomplete="current-password" style="padding-right: 40px;" />
+                            <i class="fas fa-eye" id="toggle-modal-password" style="position: absolute; right: 12px; cursor: pointer; color: #00ffcc; font-size: 16px;" title="Jelszó megjelenítése / elrejtése"></i>
+                        </div>
+                    </div>
+                    <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()" data-lang="auth_login_submit_btn">Beszállás a Kikötőbe</button>
+                </div>
+
+                <!-- 2. REGISZTRÁCIÓ FORM -->
+                <div id="modal-form-register" class="modal-form-view" style="display: none;">
+                    <div class="modal-form-group">
+                        <label data-lang="auth_reg_email_label">Kalóz E-mail Cím</label>
+                        <input type="email" id="m-reg-email" class="modal-input" placeholder="pelda@kalozposta.hu" data-lang-placeholder="auth_reg_email_placeholder" autocomplete="email" />
+                    </div>
+                    <div class="modal-form-group">
+                        <label data-lang="auth_reg_name_label">Választott Kalóznév</label>
+                        <input type="text" id="m-reg-username" class="modal-input" placeholder="Pl. Feketeszakáll99" data-lang-placeholder="auth_reg_name_placeholder" />
+                    </div>
+                    <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()" data-lang="auth_reg_submit_btn">Jelentkezés a Bandába</button>
+                </div>
+
+                <!-- 3. LELÉPTETŐ FORM -->
+                <div id="modal-form-deregister" class="modal-form-view" style="display: none;">
+                    <div class="modal-form-group">
+                        <label data-lang="auth_del_name_label">Játékbeli Kalóznév</label>
+                        <input type="text" id="m-del-username" class="modal-input" placeholder="Törlendő kalóznév" data-lang-placeholder="auth_del_name_placeholder" />
+                    </div>
+                    <div class="modal-form-group">
+                        <label data-lang="auth_del_email_label">Regisztrált E-mail</label>
+                        <input type="email" id="m-del-email" class="modal-input" placeholder="Eredeti e-mail cím" data-lang-placeholder="auth_del_email_placeholder" />
+                    </div>
+                    <div class="modal-form-group">
+                        <label data-lang="auth_del_reason_label">Kilépés Oka</label>
+                        <input type="text" id="m-del-reason" class="modal-input" placeholder="Miért hagysz el minket?" data-lang-placeholder="auth_del_reason_placeholder" />
+                    </div>
+                    <button type="button" class="modal-submit-btn" style="background: linear-gradient(135deg, #882222 0%, #ff4444 100%); color: #fff;" onclick="executeCurrentMode()" data-lang="auth_del_submit_btn">Leléptetési Kérelem Küldése</button>
+                </div>
+            </div>
+
+            <!-- Kamera Beállítások -->
+            <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;" data-lang="auth_cam_header">Kamera Beállítások</h4>
+            <div class="camera-actions-grid">
+                <button class="cam-action-btn" onclick="focusOnScreen(); toggleInfoModal();" data-lang-html="auth_cam_focus"><i class="fas fa-crosshairs"></i> Képernyő Fókusz</button>
+                <button class="cam-action-btn" onclick="resetCamera(); toggleInfoModal();" data-lang-html="auth_cam_reset"><i class="fas fa-undo-alt"></i> Kamera Alaphelyzet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Szótár és Fordító -->
+    <script src="web_fordito.js"></script>
+
+    <!-- 3D MOTOR ÉS INTERAKTÍV LOGIKA -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        // --- GLOBÁLIS VÁLTOZÓK & BEÁLLÍTÁSOK ---
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
+        const SPHERE_RADIUS = 30;
+
+        let currentMode = 'LOGIN'; // 'LOGIN' | 'REGISTER' | 'DEREGISTER' | 'INFO'
+        let previousMode = 'LOGIN';
+        let activeFieldIndex = 0;
+
+        // Mezők aktuális szöveges értékei (Kétirányú szinkron a 3D monitor és a modal között)
+        const formValues = {
+            LOGIN: { username: '', password: '' },
+            REGISTER: { email: '', username: '' },
+            DEREGISTER: { username: '', email: '', reason: '' }
+        };
+
+        let cursorVisible = true;
+        let lastCursorBlink = 0;
+        let terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
+        let isStatusError = false;
+        let isPasswordVisible = false;
+
+        function togglePasswordVisibility() {
+            isPasswordVisible = !isPasswordVisible;
+            const modalPassInput = document.querySelector('#m-login-password');
+            const toggleModalPass = document.querySelector('#toggle-modal-password');
+            if (modalPassInput) {
+                modalPassInput.type = isPasswordVisible ? 'text' : 'password';
+            }
+            if (toggleModalPass) {
+                if (isPasswordVisible) {
+                    toggleModalPass.classList.remove('fa-eye');
+                    toggleModalPass.classList.add('fa-eye-slash');
+                    toggleModalPass.style.color = '#ffdd00';
+                } else {
+                    toggleModalPass.classList.remove('fa-eye-slash');
+                    toggleModalPass.classList.add('fa-eye');
+                    toggleModalPass.style.color = '#00ffcc';
+                }
+            }
+            terminalStatusText = isPasswordVisible ? "PASSWORD VISIBLE // JELSZÓ MEGJELENÍTVE" : "PASSWORD MASKED // JELSZÓ ELREJTVE";
+            isStatusError = false;
+            updateScreenDisplay();
+        }
+        window.togglePasswordVisibility = togglePasswordVisibility;
+
+        function setupPasswordToggle() {
+            const toggleModalPass = document.querySelector('#toggle-modal-password');
+            if (toggleModalPass) {
+                toggleModalPass.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    togglePasswordVisibility();
+                });
+            }
+        }
+
+        let scene, camera, renderer, controls;
+        let cosmosSphere, deviceModel, screenMaterial, screenTexture, infoMaterial, fokuszMaterial;
+        const langMaterials = {};
+        let meteorManager;
+
+        const screenCanvas = document.getElementById('screen-canvas');
+        const ctx = screenCanvas.getContext('2d');
+        const virtualInput = document.getElementById('virtual-input-capturer');
+
+        // Nyelvi szótár címkék a 3D monitorhoz
+        const localizedLabels = {
+            hu: {
+                title: 'eBookPirates // NEURÁLIS TERMINÁL v4.2',
+                loginTab: 'BELÉPÉS',
+                regTab: 'REGISZTRÁCIÓ',
+                delTab: 'LELÉPÉS',
+                infoTab: 'INFÓ ℹ️',
+                userLabel: '1. KALÓZNÉV (Kattints a gépeléshez):',
+                passLabel: '2. JELSZÓ (Kattints a gépeléshez):',
+                emailLabel: '1. KALÓZ E-MAIL CÍM:',
+                newNickLabel: '2. VÁLASZTOTT KALÓZNÉV:',
+                delNickLabel: '1. KALÓZNÉV:',
+                delEmailLabel: '2. REGISZTRÁLT E-MAIL:',
+                delReasonLabel: '3. KILÉPÉS OKA:',
+                loginBtn: '🚀 BESZÁLLÁS A KIKÖTŐBE [ENTER]',
+                regBtn: '⚓ JELENTKEZÉS A BANDÁBA [ENTER]',
+                delBtn: '☠️ LELÉPTETÉSI KÉRELEM KÜLDÉSE [ENTER]',
+                readyStatus: 'RENDSZER KÉSZ // KATTINTS A KIJELZŐRE',
+                guideTitle: 'eBookPirates // HASZNÁLATI ÚTMUTATÓ',
+                guideLine1: '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!',
+                guideLine2: '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.',
+                guideLine3: '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.',
+                guideLine4: '4. KAMERA: Bal egérgomb forgat, görgő nagyít.',
+                guideLine5: '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.',
+                guideCloseBtn: '✖ VISSZA A TERMINÁLHOZ [ENTER]'
+            },
+            en: {
+                title: 'eBookPirates // NEURAL TERMINAL v4.2',
+                loginTab: 'LOGIN',
+                regTab: 'REGISTER',
+                delTab: 'DISCHARGE',
+                infoTab: 'INFO ℹ️',
+                userLabel: '1. PIRATE CALLSIGN (Click to type):',
+                passLabel: '2. SECURITY KEY (Click to type):',
+                emailLabel: '1. PIRATE EMAIL ADDRESS:',
+                newNickLabel: '2. CHOSEN PIRATE CALLSIGN:',
+                delNickLabel: '1. PIRATE CALLSIGN:',
+                delEmailLabel: '2. REGISTERED EMAIL:',
+                delReasonLabel: '3. DISCHARGE REASON:',
+                loginBtn: '🚀 BOARD THE HARBOR [ENTER]',
+                regBtn: '⚓ JOIN THE CREW [ENTER]',
+                delBtn: '☠️ SUBMIT DISCHARGE REQUEST [ENTER]',
+                readyStatus: 'SYSTEM READY // CLICK SCREEN TO TYPE',
+                guideTitle: 'eBookPirates // USER MANUAL',
+                guideLine1: '1. 3D TYPING: Click on screen to type on keyboard!',
+                guideLine2: '2. SWITCH FIELD: Press [TAB] to navigate fields.',
+                guideLine3: '3. SUBMIT: Press [ENTER] or click the action button.',
+                guideLine4: '4. CAMERA: Left mouse orbits, scroll wheel zooms.',
+                guideLine5: '5. INFO BUTTON: Press the 3D button anytime to reopen.',
+                guideCloseBtn: '✖ RETURN TO TERMINAL [ENTER]'
+            },
+            de: {
+                title: 'eBookPirates // NEURALES TERMINAL v4.2',
+                loginTab: 'LOGIN',
+                regTab: 'REGISTRIEREN',
+                delTab: 'ABMELDEN',
+                infoTab: 'INFO ℹ️',
+                userLabel: '1. PIRATENNAME (Klicken zum Tippen):',
+                passLabel: '2. PASSWORT (Klicken zum Tippen):',
+                emailLabel: '1. PIRATEN E-MAIL:',
+                newNickLabel: '2. PIRATENNAME:',
+                delNickLabel: '1. PIRATENNAME:',
+                delEmailLabel: '2. E-MAIL-ADRESSE:',
+                delReasonLabel: '3. GRUND DES AUSTRITTS:',
+                loginBtn: '🚀 INS HAFENBECKEN EINSTEIGEN [ENTER]',
+                regBtn: '⚓ DER CREW BEITRETEN [ENTER]',
+                delBtn: '☠️ ABMELDUNG EINREICHEN [ENTER]',
+                readyStatus: 'SYSTEM BEREIT // AUF BILDSCHIRM TIPPEN',
+                guideTitle: 'eBookPirates // BEDIENUNGSANLEITUNG',
+                guideLine1: '1. 3D-TIPPEN: Klicke auf den Bildschirm zum Tippen!',
+                guideLine2: '2. FELDWECHSEL: Mit [TAB] zwischen Feldern springen.',
+                guideLine3: '3. ABSENDEN: [ENTER] drücken oder Button klicken.',
+                guideLine4: '4. KAMERA: Linksklick dreht, Mausrad zoomt heran.',
+                guideLine5: '5. INFO-TASTE: Jederzeit über 3D-Taste aufrufbar.',
+                guideCloseBtn: '✖ ZURÜCK ZUM TERMINAL [ENTER]'
+            },
+            fr: {
+                title: 'eBookPirates // TERMINAL NEURAL v4.2',
+                loginTab: 'CONNEXION',
+                regTab: 'INSCRIPTION',
+                delTab: 'DEPART',
+                infoTab: 'INFO ℹ️',
+                userLabel: '1. NOM DE PIRATE (Cliquez pour taper):',
+                passLabel: '2. MOT DE PASSE (Cliquez pour taper):',
+                emailLabel: '1. EMAIL DU PIRATE:',
+                newNickLabel: '2. NOM DE PIRATE CHOISI:',
+                delNickLabel: '1. NOM DE PIRATE:',
+                delEmailLabel: '2. EMAIL ENREGISTRE:',
+                delReasonLabel: '3. RAISON DU DEPART:',
+                loginBtn: '🚀 EMBARQUER DANS LE PORT [ENTER]',
+                regBtn: '⚓ REJOINDRE L\'EQUIPAGE [ENTER]',
+                delBtn: '☠️ ENVOYER LA DEMANDE DE SORTIE [ENTER]',
+                readyStatus: 'SYSTEME PRET // CLIQUEZ POUR SAISIR',
+                guideTitle: 'eBookPirates // GUIDE D\'UTILISATION',
+                guideLine1: '1. SAISIE 3D : Cliquez sur l\'écran pour taper !',
+                guideLine2: '2. CHANGER DE CHAMP : Utilisez [TAB] pour naviguer.',
+                guideLine3: '3. ENVOYER : Appuyez sur [ENTER] ou cliquez le bouton.',
+                guideLine4: '4. CAMÉRA : Clic gauche pivote, molette zoome.',
+                guideLine5: '5. BOUTON INFO : Disponible à tout moment sur le boîtier.',
+                guideCloseBtn: '✖ RETOUR AU TERMINAL [ENTER]'
+            },
+            es: {
+                title: 'eBookPirates // TERMINAL NEURONAL v4.2',
+                loginTab: 'ENTRAR',
+                regTab: 'REGISTRO',
+                delTab: 'BAJA',
+                infoTab: 'INFO ℹ️',
+                userLabel: '1. NOMBRE PIRATA (Clic para escribir):',
+                passLabel: '2. CLAVE SECRETA (Clic para escribir):',
+                emailLabel: '1. CORREO DEL PIRATA:',
+                newNickLabel: '2. NOMBRE PIRATA ELEGIDO:',
+                delNickLabel: '1. NOMBRE PIRATA:',
+                delEmailLabel: '2. CORREO REGISTRADO:',
+                delReasonLabel: '3. MOTIVO DE SALIDA:',
+                loginBtn: '🚀 SUBIR A BORDO [ENTER]',
+                regBtn: '⚓ UNIRSE A LA TRIPULACION [ENTER]',
+                delBtn: '☠️ ENVIAR SOLICITUD DE BAJA [ENTER]',
+                readyStatus: 'SISTEMA LISTO // CLIC EN PANTALLA',
+                guideTitle: 'eBookPirates // GUÍA DE USO',
+                guideLine1: '1. ESCRITURA 3D: ¡Haz clic en pantalla para escribir!',
+                guideLine2: '2. CAMBIAR CAMPO: Presiona [TAB] para alternar.',
+                guideLine3: '3. ENVIAR: Pulsa [ENTER] o haz clic en el botón.',
+                guideLine4: '4. CÁMARA: Clic izquierdo gira, rueda hace zoom.',
+                guideLine5: '5. BOTÓN INFO: Actívalo desde el botón del dispositivo.',
+                guideCloseBtn: '✖ VOLVER AL TERMINAL [ENTER]'
+            },
+            pl: {
+                title: 'eBookPirates // TERMINAL NEURONOWY v4.2',
+                loginTab: 'LOGOWANIE',
+                regTab: 'REJESTRACJA',
+                delTab: 'WYPISANIE',
+                infoTab: 'INFO ℹ️',
+                userLabel: '1. IMIE PIRATA (Kliknij aby pisac):',
+                passLabel: '2. HASLO (Kliknij aby pisac):',
+                emailLabel: '1. ADRES EMAIL PIRATA:',
+                newNickLabel: '2. WYBRANE IMIE PIRATA:',
+                delNickLabel: '1. IMIE PIRATA:',
+                delEmailLabel: '2. ZAREJESTROWANY EMAIL:',
+                delReasonLabel: '3. POWOD REZYGNACJI:',
+                loginBtn: '🚀 WEJDZ DO PORTU [ENTER]',
+                regBtn: '⚓ DOLACZ DO ZALOGI [ENTER]',
+                delBtn: '☠️ WYSLIJ PROSBE O WYPISANIE [ENTER]',
+                readyStatus: 'SYSTEM GOTOWY // KLIKNIJ EKRAN',
+                guideTitle: 'eBookPirates // INSTRUKCJA OBSŁUGI',
+                guideLine1: '1. PISANIE 3D: Kliknij ekran, aby pisać na klawiaturze!',
+                guideLine2: '2. ZMIANA POLA: Naciśnij [TAB], aby przełączać pola.',
+                guideLine3: '3. WYSYŁANIE: Naciśnij [ENTER] lub kliknij przycisk.',
+                guideLine4: '4. KAMERA: Lewy przycisk obraca, kółko przybliża.',
+                guideLine5: '5. PRZYCISK INFO: Dostępny w każdej chwili na obudowie.',
+                guideCloseBtn: '✖ POWRÓT DO TERMINALA [ENTER]'
+            },
+            ru: {
+                title: 'eBookPirates // НЕЙРОТЕРМИНАЛ v4.2',
+                loginTab: 'ВХОД',
+                regTab: 'РЕГИСТРАЦИЯ',
+                delTab: 'ВЫХОД',
+                infoTab: 'ИНФО ℹ️',
+                userLabel: '1. ИМЯ ПИРАТА (Клик для ввода):',
+                passLabel: '2. ПАРОЛЬ (Клик для ввода):',
+                emailLabel: '1. ЭЛ. ПОЧТА ПИРАТА:',
+                newNickLabel: '2. ВЫБРАННОЕ ИМЯ ПИРАТА:',
+                delNickLabel: '1. ИМЯ ПИРАТА:',
+                delEmailLabel: '2. ЗАРЕГИСТРИРОВАННАЯ ПОЧТА:',
+                delReasonLabel: '3. ПРИЧИНА ВЫХОДА:',
+                loginBtn: '🚀 ВОЙТИ В ПОРТ [ENTER]',
+                regBtn: '⚓ ВСТУПИТЬ В КОМАНДУ [ENTER]',
+                delBtn: '☠️ ПОДАТЬ ЗАЯВКУ НА ВЫХОД [ENTER]',
+                readyStatus: 'СИСТЕМА ГОТОВА // НАЖМИТЕ НА ЭКРАН',
+                guideTitle: 'eBookPirates // РУКОВОДСТВО ПОЛЬЗОВАТЕЛЯ',
+                guideLine1: '1. 3D-ВВОД: Нажмите на экран для ввода с клавиатуры!',
+                guideLine2: '2. СМЕНА ПОЛЯ: Нажмите [TAB] для перехода между полями.',
+                guideLine3: '3. ОТПРАВКА: Нажмите [ENTER] или кнопку действия.',
+                guideLine4: '4. КАМЕРА: ЛКМ вращает обзор, колесико приближает.',
+                guideLine5: '5. КНОПКА ИНФО: Доступна на корпусе устройства.',
+                guideCloseBtn: '✖ ВЕРНУТЬСЯ К ТЕРМИНАЛУ [ENTER]'
+            }
+        };
+
+        function getL() {
+            const lang = (window.currentLang && localizedLabels[window.currentLang]) 
+                ? window.currentLang 
+                : ((typeof currentLang !== 'undefined' && localizedLabels[currentLang]) 
+                    ? currentLang 
+                    : ((typeof localStorage !== 'undefined' && localStorage.getItem('siteLang') && localizedLabels[localStorage.getItem('siteLang')]) 
+                        ? localStorage.getItem('siteLang') 
+                        : 'hu'));
+            return localizedLabels[lang] || localizedLabels.hu;
+        }
+
+        // --- THREE.JS INICIALIZÁLÁS ---
+        function initThree() {
+            const container = document.getElementById('webgl-container');
+
+            // 1. Jelenet
+            scene = new THREE.Scene();
+
+            // 2. Kamera
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0.35, 2.6);
+
+            // 3. Renderelő
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.15;
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            container.appendChild(renderer.domElement);
+
+            // 4. Kamera Vezérlő
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.target.set(0, 0.15, 0);
+            controls.minDistance = 1.4;
+            controls.maxDistance = SPHERE_RADIUS - 1.5;
+            controls.maxPolarAngle = Math.PI * 0.95;
+            controls.minPolarAngle = Math.PI * 0.05;
+
+            // 5. Megvilágítás
+            const ambientLight = new THREE.AmbientLight(0xddeeff, 1.3);
+            scene.add(ambientLight);
+
+            const dirLight1 = new THREE.DirectionalLight(0xffeedd, 1.6);
+            dirLight1.position.set(6, 12, 8);
+            scene.add(dirLight1);
+
+            const dirLight2 = new THREE.DirectionalLight(0x4488ff, 0.8);
+            dirLight2.position.set(-6, -5, -6);
+            scene.add(dirLight2);
+
+            const screenGlowLight = new THREE.PointLight(0x00ffcc, 1.2, 6);
+            screenGlowLight.position.set(0, 0.3, 0.8);
+            scene.add(screenGlowLight);
+
+            // 6. Kozmosz Gömb
+            initCosmosSphere();
+
+            // 7. Dinamikus Képernyő Textúra
+            initScreenCanvasTexture();
+
+            // 8. Meteor / Üstökös Rendszer
+            meteorManager = new MeteorManager(scene, SPHERE_RADIUS);
+
+            // 9. GLB Modell Betöltése
+            loadDeviceModel();
+
+            // Eseményfigyelők (Billentyűzet, Raycast & Modal szinkron)
+            window.addEventListener('resize', onWindowResize);
+            setupDirectKeyboardAndRaycast();
+            setupModalInputSync();
+            setupPasswordToggle();
+
+            // Render loop indítása
+            animate(0);
+        }
+
+        // --- KOZMOSZ GÖMB ---
+        function initCosmosSphere() {
+            const textureLoader = new THREE.TextureLoader();
+            const spaceTexture = textureLoader.load(
+                'assets/images/galaxiskep_globusba.jpg',
+                () => { console.info('Kozmosz panorámakép sikeresen betöltve.'); },
+                undefined,
+                (err) => { console.warn('Kozmosz kép betöltési hiba, fallback aktív:', err); }
+            );
+
+            spaceTexture.wrapS = THREE.MirroredRepeatWrapping;
+            spaceTexture.wrapT = THREE.ClampToEdgeWrapping;
+            spaceTexture.repeat.set(2, 1);
+            spaceTexture.colorSpace = THREE.SRGBColorSpace;
+
+            const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 32);
+            const sphereMat = new THREE.MeshBasicMaterial({
+                map: spaceTexture,
+                side: THREE.BackSide,
+                depthWrite: false
+            });
+
+            cosmosSphere = new THREE.Mesh(sphereGeo, sphereMat);
+            cosmosSphere.rotation.y = -Math.PI / 2;
+            scene.add(cosmosSphere);
+        }
+
+        // --- METEOR / ÜSTÖKÖS KEZELŐ ---
+        class MeteorManager {
+            constructor(targetScene, radius) {
+                this.scene = targetScene;
+                this.radius = radius - 2;
+                this.activeMeteors = [];
+                this.scheduleNext();
+            }
+
+            scheduleNext() {
+                const delay = 3500 + Math.random() * 6000;
+                setTimeout(() => {
+                    this.spawn();
+                    this.scheduleNext();
+                }, delay);
+            }
+
+            spawn() {
+                const startPos = new THREE.Vector3(
+                    (Math.random() - 0.5) * this.radius * 1.6,
+                    (Math.random() * 0.6 + 0.2) * this.radius,
+                    (Math.random() - 0.5) * this.radius * 1.6
+                );
+
+                const dir = new THREE.Vector3(-1.2 - Math.random() * 0.6, -0.6 - Math.random() * 0.4, -0.8 - Math.random() * 0.8).normalize();
+                const length = 5 + Math.random() * 6;
+                const speed = 0.5 + Math.random() * 0.4;
+
+                const points = [startPos.clone(), startPos.clone().addScaledVector(dir, -length)];
+                const geo = new THREE.BufferGeometry().setFromPoints(points);
+                const mat = new THREE.LineBasicMaterial({
+                    color: 0x66ffff,
+                    transparent: true,
+                    opacity: 0.85,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const line = new THREE.Line(geo, mat);
+                this.scene.add(line);
+
+                this.activeMeteors.push({
+                    mesh: line,
+                    dir: dir,
+                    speed: speed,
+                    life: 1.0,
+                    decay: 0.012 + Math.random() * 0.01
+                });
+            }
+
+            update() {
+                for (let i = this.activeMeteors.length - 1; i >= 0; i--) {
+                    const m = this.activeMeteors[i];
+                    m.mesh.position.addScaledVector(m.dir, m.speed);
+                    m.life -= m.decay;
+                    m.mesh.material.opacity = Math.max(0, m.life);
+
+                    if (m.life <= 0) {
+                        this.scene.remove(m.mesh);
+                        m.mesh.geometry.dispose();
+                        m.mesh.material.dispose();
+                        this.activeMeteors.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        // --- DINAMIKUS KIJELZŐ TEXTÚRA (CANVAS) ---
+        function initScreenCanvasTexture() {
+            screenTexture = new THREE.CanvasTexture(screenCanvas);
+            screenTexture.colorSpace = THREE.SRGBColorSpace;
+            screenTexture.minFilter = THREE.LinearFilter;
+            screenTexture.magFilter = THREE.LinearFilter;
+
+            screenMaterial = new THREE.MeshBasicMaterial({
+                map: screenTexture,
+                toneMapped: false
+            });
+
+            updateScreenDisplay();
+        }
+
+        
+        // --- 3D Képernyő Szem-ikon rajzoló (Tökéletes szinkronban a fa-eye / fa-eye-slash logikával) ---
+        function drawEyeIconOnCanvas(context, cx, cy, isVisible) {
+            context.save();
+            // Gomb háttér és keret: Rejtett módban cián (nyitott szem), Látható módban arany (áthúzott szem)
+            context.fillStyle = isVisible ? 'rgba(255, 221, 0, 0.22)' : 'rgba(0, 255, 204, 0.12)';
+            context.fillRect(cx - 24, cy - 16, 48, 32);
+            context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
+            context.lineWidth = 1.5;
+            context.strokeRect(cx - 24, cy - 16, 48, 32);
+
+            // Szem külső íve
+            context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
+            context.fillStyle = isVisible ? '#ffdd00' : '#00ffcc';
+            context.lineWidth = 2;
+            context.beginPath();
+            context.moveTo(cx - 14, cy);
+            context.quadraticCurveTo(cx, cy - 9, cx + 14, cy);
+            context.quadraticCurveTo(cx, cy + 9, cx - 14, cy);
+            context.stroke();
+
+            // Pupilla
+            context.beginPath();
+            context.arc(cx, cy, 3.5, 0, Math.PI * 2);
+            context.fill();
+
+            // Ha a jelszó LÁTHATÓ (isVisible === true), akkor jelenik meg az áthúzó vonal (fa-eye-slash párjaként)
+            if (isVisible) {
+                context.strokeStyle = '#ffdd00';
+                context.lineWidth = 2.2;
+                context.beginPath();
+                context.moveTo(cx - 14, cy - 10);
+                context.lineTo(cx + 14, cy + 10);
+                context.stroke();
+            }
+            context.restore();
+        }
+
+        // Képernyő újra-rajzolása többnyelvű feliratokkal
+        function updateScreenDisplay() {
+            const w = screenCanvas.width;
+            const h = screenCanvas.height;
+            const L = getL();
+
+            // 1. Háttér
+            ctx.fillStyle = '#040b12';
+            ctx.fillRect(0, 0, w, h);
+
+            // Háttér rácsháló
+            ctx.strokeStyle = 'rgba(0, 255, 204, 0.04)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < w; x += 32) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = 0; y < h; y += 32) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+
+            // 2. Kijelző díszítő keret
+            ctx.strokeStyle = '#00ffcc';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(16, 16, w - 32, h - 32);
+
+            ctx.strokeStyle = 'rgba(0, 255, 204, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(26, 26, w - 52, h - 52);
+
+            // 3. Fejléc és Mód Tabok a 3D kijelzőn
+            ctx.fillStyle = '#00ffcc';
+            ctx.font = 'bold 24px "Share Tech Mono", monospace';
+            ctx.fillText(currentMode === 'INFO' ? (L.guideTitle || 'eBookPirates // HASZNÁLATI ÚTMUTATÓ') : L.title, 45, 65);
+
+            // Kattintható Módválasztó gombok
+            drawTerminalTab(ctx, 620, 36, 115, 34, L.loginTab, currentMode === 'LOGIN');
+            drawTerminalTab(ctx, 745, 36, 125, 34, L.regTab, currentMode === 'REGISTER');
+            drawTerminalTab(ctx, 880, 36, 95, 34, L.delTab, currentMode === 'DEREGISTER');
+
+            // Elválasztó vonal
+            ctx.strokeStyle = '#00ffcc';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(45, 82);
+            ctx.lineTo(w - 45, 82);
+            ctx.stroke();
+
+            // 4. Mezők és Tartalom kirajzolása mód szerint
+            const cursorChar = cursorVisible ? '█' : ' ';
+
+            if (currentMode === 'LOGIN') {
+                const u = formValues.LOGIN.username;
+                const p = isPasswordVisible ? formValues.LOGIN.password : '•'.repeat(formValues.LOGIN.password.length);
+
+                drawField(ctx, 45, 145, L.userLabel, u, activeFieldIndex === 0, cursorChar);
+                drawField(ctx, 45, 250, L.passLabel, p, activeFieldIndex === 1, cursorChar);
+                drawEyeIconOnCanvas(ctx, 940, 278, isPasswordVisible);
+
+                drawActionButton(ctx, 45, 360, w - 90, 52, L.loginBtn);
+
+            } else if (currentMode === 'REGISTER') {
+                const em = formValues.REGISTER.email;
+                const un = formValues.REGISTER.username;
+
+                drawField(ctx, 45, 145, L.emailLabel, em, activeFieldIndex === 0, cursorChar);
+                drawField(ctx, 45, 250, L.newNickLabel, un, activeFieldIndex === 1, cursorChar);
+
+                drawActionButton(ctx, 45, 360, w - 90, 52, L.regBtn);
+
+            } else if (currentMode === 'DEREGISTER') {
+                const un = formValues.DEREGISTER.username;
+                const em = formValues.DEREGISTER.email;
+                const rz = formValues.DEREGISTER.reason;
+
+                drawField(ctx, 45, 125, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 36);
+                drawField(ctx, 45, 205, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 36);
+                drawField(ctx, 45, 285, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 36);
+
+                drawActionButton(ctx, 45, 365, w - 90, 48, L.delBtn, true);
+
+            } else if (currentMode === 'INFO') {
+                ctx.fillStyle = 'rgba(0, 30, 45, 0.75)';
+                ctx.fillRect(45, 110, w - 90, 235);
+                ctx.strokeStyle = 'rgba(0, 255, 204, 0.35)';
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(45, 110, w - 90, 235);
+
+                ctx.fillStyle = '#00ffcc';
+                ctx.font = 'bold 16px "Share Tech Mono", monospace';
+                ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 148);
+                ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 190);
+                ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 232);
+                ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 274);
+                ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 316);
+
+                drawActionButton(ctx, 45, 360, w - 90, 52, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false);
+            }
+
+            // 5. Alsó Rendszer Státuszsor
+            ctx.fillStyle = isStatusError ? 'rgba(50, 10, 10, 0.95)' : 'rgba(0, 20, 30, 0.9)';
+            ctx.fillRect(45, h - 75, w - 90, 42);
+            ctx.strokeStyle = isStatusError ? '#ff4444' : 'rgba(0, 255, 204, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(45, h - 75, w - 90, 42);
+
+            ctx.fillStyle = isStatusError ? '#ff6666' : '#00ffcc';
+            ctx.font = 'bold 18px "Share Tech Mono", monospace';
+            ctx.fillText('> ' + terminalStatusText, 60, h - 48);
+
+            // Frissítés értesítése Three.js felé
+            screenTexture.needsUpdate = true;
+        }
+
+        function drawTerminalTab(context, x, y, w, h, text, isActive) {
+            context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.3)' : 'rgba(0, 255, 204, 0.05)';
+            context.fillRect(x, y, w, h);
+            context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.3)';
+            context.lineWidth = isActive ? 2 : 1;
+            context.strokeRect(x, y, w, h);
+
+            context.fillStyle = isActive ? '#ffffff' : '#88c0b0';
+            context.font = 'bold 12px "Share Tech Mono", monospace';
+            context.textAlign = 'center';
+            context.fillText(text, x + w / 2, y + 21);
+            context.textAlign = 'left';
+        }
+
+        function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 44) {
+            context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.6)';
+            context.font = '16px "Share Tech Mono", monospace';
+            context.fillText(label, x, y);
+
+            // Mező doboz
+            context.fillStyle = isActive ? 'rgba(0, 50, 60, 0.85)' : 'rgba(0, 30, 40, 0.5)';
+            context.fillRect(x, y + 6, 934, boxHeight);
+            context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.25)';
+            context.lineWidth = isActive ? 2.5 : 1;
+            context.strokeRect(x, y + 6, 934, boxHeight);
+
+            // Érték kiírása
+            context.fillStyle = '#ffffff';
+            context.font = 'bold 22px "Share Tech Mono", monospace';
+            const displayText = (value || '') + (isActive ? cursor : '');
+            context.fillText(displayText, x + 14, y + 6 + (boxHeight * 0.68));
+        }
+
+        function drawActionButton(context, x, y, w, h, text, isDanger = false) {
+            context.fillStyle = isDanger ? '#661111' : '#004d40';
+            context.fillRect(x, y, w, h);
+            context.strokeStyle = isDanger ? '#ff4444' : '#00ffcc';
+            context.lineWidth = 2;
+            context.strokeRect(x, y, w, h);
+
+            context.fillStyle = '#ffffff';
+            context.font = 'bold 20px "Share Tech Mono", monospace';
+            context.textAlign = 'center';
+            context.fillText(text, x + w / 2, y + h / 2 + 7);
+            context.textAlign = 'left';
+        }
+
+        // InfoMesh és ScreenMesh Anyag és UV kezelők
+        function applyInfoMeshMaterial(mesh) {
+            if (!mesh || !mesh.geometry) return;
+            try {
+                const posAttr = mesh.geometry.attributes.position;
+                if (!posAttr) return;
+
+                let uvAttr = mesh.geometry.attributes.uv;
+                if (!uvAttr || uvAttr.count !== posAttr.count) {
+                    uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                    mesh.geometry.setAttribute('uv', uvAttr);
+                }
+
+                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                for (let i = 0; i < posAttr.count; i++) {
+                    const px = posAttr.getX(i);
+                    const py = posAttr.getY(i);
+                    if (px < minX) minX = px;
+                    if (px > maxX) maxX = px;
+                    if (py < minY) minY = py;
+                    if (py > maxY) maxY = py;
+                }
+                const rangeX = maxX - minX;
+                const rangeY = maxY - minY;
+                const centerX = (minX + maxX) / 2;
+                const centerY = (minY + maxY) / 2;
+                const maxSpan = Math.max(rangeX, rangeY);
+
+                if (maxSpan > 0.001) {
+                    for (let i = 0; i < posAttr.count; i++) {
+                        const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
+                        const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
+                        uvAttr.setXY(i, u, v);
+                    }
+                    uvAttr.needsUpdate = true;
+                }
+
+                mesh.geometry.computeVertexNormals();
+
+                if (!infoMaterial) {
+                    const texLoader = new THREE.TextureLoader();
+                    const infoTex = texLoader.load(
+                        'assets/icons/info-r 1.png',
+                        () => { console.info('Info-gomb ikon sikeresen betöltve.'); },
+                        undefined,
+                        () => {
+                            console.warn('Helyi ikon nem található, GCS fallback...');
+                            infoTex.image.src = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
+                        }
+                    );
+                    infoTex.colorSpace = THREE.SRGBColorSpace;
+                    infoTex.wrapS = THREE.ClampToEdgeWrapping;
+                    infoTex.wrapT = THREE.ClampToEdgeWrapping;
+                    infoMaterial = new THREE.MeshStandardMaterial({
+                        map: infoTex,
+                        roughness: 0.35,
+                        metalness: 0.15,
+                        transparent: true,
+                        alphaTest: 0.05,
+                        side: THREE.DoubleSide
+                    });
+                }
+
+                mesh.material = infoMaterial;
+                mesh.material.needsUpdate = true;
+                console.info('InfoMesh Hártyahalász ikon hozzárendelve:', mesh.name);
+            } catch(e) {
+                console.warn('Hiba az InfoMesh anyag hozzárendelésekor:', e);
+            }
+        }
+
+        // Cián színben ragyogó célkereszt ikon generálása FokuszMesh gombra
+        function createCrosshairCanvas() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const c = canvas.getContext('2d');
+            const cx = 256, cy = 256;
+
+            // 1. Sötét sci-fi körkörös alap
+            const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 240);
+            bgGrad.addColorStop(0, '#04222a');
+            bgGrad.addColorStop(0.7, '#021218');
+            bgGrad.addColorStop(1, '#01090d');
+            c.fillStyle = bgGrad;
+            c.beginPath();
+            c.arc(cx, cy, 245, 0, Math.PI * 2);
+            c.fill();
+
+            // Külső perem
+            c.strokeStyle = '#005544';
+            c.lineWidth = 4;
+            c.beginPath();
+            c.arc(cx, cy, 242, 0, Math.PI * 2);
+            c.stroke();
+
+            // 2. Erős cián izzás (Glow effect)
+            c.shadowColor = '#00ffff';
+            c.shadowBlur = 22;
+
+            // Fő külső célkereszt gyűrű
+            c.strokeStyle = '#00ffcc';
+            c.lineWidth = 8;
+            c.beginPath();
+            c.arc(cx, cy, 180, 0, Math.PI * 2);
+            c.stroke();
+
+            // Belső koncentrikus kör
+            c.strokeStyle = '#33ffff';
+            c.lineWidth = 4;
+            c.beginPath();
+            c.arc(cx, cy, 90, 0, Math.PI * 2);
+            c.stroke();
+
+            // Középső kis célzó gyűrű
+            c.strokeStyle = '#ffffff';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.arc(cx, cy, 28, 0, Math.PI * 2);
+            c.stroke();
+
+            // Központi fényes pont
+            c.fillStyle = '#ffffff';
+            c.beginPath();
+            c.arc(cx, cy, 7, 0, Math.PI * 2);
+            c.fill();
+
+            // 3. Négy irányú célkereszt vonalak központi hézaggal (Crosshair arms)
+            c.strokeStyle = '#00ffcc';
+            c.lineWidth = 6;
+            c.lineCap = 'round';
+
+            // Felső ág
+            c.beginPath(); c.moveTo(cx, cy - 38); c.lineTo(cx, cy - 225); c.stroke();
+            // Alsó ág
+            c.beginPath(); c.moveTo(cx, cy + 38); c.lineTo(cx, cy + 225); c.stroke();
+            // Bal ág
+            c.beginPath(); c.moveTo(cx - 38, cy); c.lineTo(cx - 225, cy); c.stroke();
+            // Jobb ág
+            c.beginPath(); c.moveTo(cx + 38, cy); c.lineTo(cx + 225, cy); c.stroke();
+
+            // 4. Precíziós sci-fi beosztások / szálkereszt rovátkák
+            c.shadowBlur = 10;
+            c.lineWidth = 3;
+            const ticks = [135, 180];
+            ticks.forEach(r => {
+                c.beginPath(); c.moveTo(cx - r, cy - 12); c.lineTo(cx - r, cy + 12); c.stroke();
+                c.beginPath(); c.moveTo(cx + r, cy - 12); c.lineTo(cx + r, cy + 12); c.stroke();
+                c.beginPath(); c.moveTo(cx - 12, cy - r); c.lineTo(cx + 12, cy - r); c.stroke();
+                c.beginPath(); c.moveTo(cx - 12, cy + r); c.lineTo(cx + 12, cy + r); c.stroke();
+            });
+
+            // 4 sarokjelző célzópont
+            c.strokeStyle = 'rgba(0, 255, 204, 0.7)';
+            c.lineWidth = 3;
+            const dist = 125;
+            [[-1,-1], [1,-1], [-1,1], [1,1]].forEach(([sx, sy]) => {
+                c.beginPath();
+                c.arc(cx + sx * dist, cy + sy * dist, 6, 0, Math.PI * 2);
+                c.stroke();
+            });
+
+            return canvas;
+        }
+
+        // FokuszMesh Anyag és UV kezelő (Kamerafókusz célkereszt gomb)
+        function applyFokuszMeshMaterial(mesh) {
+            if (!mesh || !mesh.geometry) return;
+            try {
+                const posAttr = mesh.geometry.attributes.position;
+                if (!posAttr) return;
+
+                let uvAttr = mesh.geometry.attributes.uv;
+                if (!uvAttr || uvAttr.count !== posAttr.count) {
+                    uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                    mesh.geometry.setAttribute('uv', uvAttr);
+                }
+
+                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                for (let i = 0; i < posAttr.count; i++) {
+                    const px = posAttr.getX(i);
+                    const py = posAttr.getY(i);
+                    if (px < minX) minX = px;
+                    if (px > maxX) maxX = px;
+                    if (py < minY) minY = py;
+                    if (py > maxY) maxY = py;
+                }
+                const rangeX = maxX - minX;
+                const rangeY = maxY - minY;
+                const centerX = (minX + maxX) / 2;
+                const centerY = (minY + maxY) / 2;
+                const maxSpan = Math.max(rangeX, rangeY);
+
+                if (maxSpan > 0.001) {
+                    for (let i = 0; i < posAttr.count; i++) {
+                        const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
+                        const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
+                        uvAttr.setXY(i, u, v);
+                    }
+                    uvAttr.needsUpdate = true;
+                }
+
+                mesh.geometry.computeVertexNormals();
+
+                if (!fokuszMaterial) {
+                    const crosshairCanvas = createCrosshairCanvas();
+                    const crosshairTex = new THREE.CanvasTexture(crosshairCanvas);
+                    crosshairTex.colorSpace = THREE.SRGBColorSpace;
+                    crosshairTex.minFilter = THREE.LinearFilter;
+                    crosshairTex.magFilter = THREE.LinearFilter;
+
+                    fokuszMaterial = new THREE.MeshStandardMaterial({
+                        map: crosshairTex,
+                        roughness: 0.25,
+                        metalness: 0.3,
+                        emissive: 0x00443a,
+                        emissiveIntensity: 0.7,
+                        side: THREE.DoubleSide
+                    });
+                }
+
+                mesh.material = fokuszMaterial;
+                mesh.material.needsUpdate = true;
+                console.info('FokuszMesh cián célkereszt anyag hozzárendelve:', mesh.name);
+            } catch(e) {
+                console.warn('Hiba a FokuszMesh anyag hozzárendelésekor:', e);
+            }
+        }
+
+        // Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője (Hártyahalász stílusú pergamen/arany zászlók)
+        function applyLangMeshMaterial(mesh, lang) {
+            if (!mesh || !mesh.geometry) return;
+            try {
+                const posAttr = mesh.geometry.attributes.position;
+                if (!posAttr) return;
+
+                let uvAttr = mesh.geometry.attributes.uv;
+                if (!uvAttr || uvAttr.count !== posAttr.count) {
+                    uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                    mesh.geometry.setAttribute('uv', uvAttr);
+                }
+
+                // Pozíció-alapú síkbeli (Planar X, Y) UV leképezés a gombra
+                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                for (let i = 0; i < posAttr.count; i++) {
+                    const px = posAttr.getX(i);
+                    const py = posAttr.getY(i);
+                    if (px < minX) minX = px;
+                    if (px > maxX) maxX = px;
+                    if (py < minY) minY = py;
+                    if (py > maxY) maxY = py;
+                }
+                const rangeX = maxX - minX;
+                const rangeY = maxY - minY;
+                const centerX = (minX + maxX) / 2;
+                const centerY = (minY + maxY) / 2;
+                const maxSpan = Math.max(rangeX, rangeY);
+
+                if (maxSpan > 0.001) {
+                    for (let i = 0; i < posAttr.count; i++) {
+                        const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
+                        const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
+                        uvAttr.setXY(i, u, v);
+                    }
+                    uvAttr.needsUpdate = true;
+                }
+
+                mesh.geometry.computeVertexNormals();
+
+                if (!langMaterials[lang]) {
+                    const texLoader = new THREE.TextureLoader();
+                    const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                    const langTex = texLoader.load(
+                        localPath,
+                        () => { console.info('Nyelv zászló textúra betöltve (' + lang + ')'); },
+                        undefined,
+                        () => {
+                            console.warn('Helyi zászló nem található, GCS fallback (' + lang + ')');
+                            langTex.image.src = gcsUrl;
+                        }
+                    );
+                    langTex.colorSpace = THREE.SRGBColorSpace;
+                    langTex.wrapS = THREE.ClampToEdgeWrapping;
+                    langTex.wrapT = THREE.ClampToEdgeWrapping;
+                    langMaterials[lang] = new THREE.MeshStandardMaterial({
+                        map: langTex,
+                        roughness: 0.35,
+                        metalness: 0.2,
+                        transparent: true,
+                        alphaTest: 0.05,
+                        side: THREE.DoubleSide
+                    });
+                }
+
+                mesh.material = langMaterials[lang];
+                mesh.material.needsUpdate = true;
+                mesh.userData.lang = lang;
+                console.info('Nyelvválasztó gomb material hozzárendelve:', mesh.name, lang);
+            } catch(e) {
+                console.warn('Hiba a nyelvválasztó material hozzárendelésekor (' + lang + '):', e);
+            }
+        }
+
+        // --- GLB MODELL BETÖLTÉSE ---
+        function loadDeviceModel() {
+            const gltfLoader = new GLTFLoader();
+            const modelPaths = [
+                'assets/models/belepo_kozmosz_kutyu.glb',
+                'assets/models/belepooldal_kozmosz_kutyu.glb'
+            ];
+
+            function tryLoad(index) {
+                if (index >= modelPaths.length) {
+                    console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
+                    createFallbackDevice();
+                    document.getElementById('loading-screen').style.opacity = '0';
+                    setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 600);
+                    openInfoModalAuto();
+                    return;
+                }
+
+                gltfLoader.load(
+                    modelPaths[index],
+                    (gltf) => {
+                        console.info('GLB modell sikeresen betöltve:', modelPaths[index]);
+                        deviceModel = gltf.scene;
+
+                        let screenFound = false;
+
+                        deviceModel.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+
+                                const meshName = (child.name || '').toLowerCase();
+                                const parentName = (child.parent && child.parent.name) ? child.parent.name.toLowerCase() : '';
+                                const matName = (child.material && child.material.name) ? child.material.name.toLowerCase() : '';
+
+                                // 1. ScreenMesh (3D Virtuális monitor)
+                                if (meshName.includes('screen') || parentName.includes('screen') || 
+                                    meshName === 'mesh_0.001' || matName.includes('screen') || 
+                                    matName.includes('kijelzo') || matName.includes('monitor')) {
+                                    child.material = screenMaterial;
+                                    screenFound = true;
+                                    console.info('Dinamikus ScreenMaterial sikeresen hozzárendelve:', child.name);
+
+                                    // Automatikus UV normalizálás és tükrözés javítás (1.0 - normU)
+                                    if (child.geometry && child.geometry.attributes && child.geometry.attributes.uv) {
+                                        const uvAttr = child.geometry.attributes.uv;
+                                        let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
+                                        for (let i = 0; i < uvAttr.count; i++) {
+                                            const u = uvAttr.getX(i);
+                                            const v = uvAttr.getY(i);
+                                            if (u < minU) minU = u;
+                                            if (u > maxU) maxU = u;
+                                            if (v < minV) minV = v;
+                                            if (v > maxV) maxV = v;
+                                        }
+                                        const rangeU = maxU - minU;
+                                        const rangeV = maxV - minV;
+                                        if (rangeU > 0.01 && rangeV > 0.01) {
+                                            for (let i = 0; i < uvAttr.count; i++) {
+                                                const normU = 1.0 - ((uvAttr.getX(i) - minU) / rangeU);
+                                                const normV = (uvAttr.getY(i) - minV) / rangeV;
+                                                uvAttr.setXY(i, normU, normV);
+                                            }
+                                            uvAttr.needsUpdate = true;
+                                            console.info('ScreenMesh UV normalizálva és tükrözve:', { minU, maxU, minV, maxV, rangeU, rangeV });
+                                        }
+                                    }
+                                }
+                                // 2. InfoMesh (Készülék beépített Infó gombja)
+                                else if (meshName.includes('info') || parentName.includes('info') || meshName === 'mesh_0.009') {
+                                    applyInfoMeshMaterial(child);
+                                }
+                                // 3. FokuszMesh (Készülék beépített Kamerafókusz célkereszt gombja)
+                                else if (meshName.includes('fokusz') || parentName.includes('fokusz') || meshName === 'mesh_0.010') {
+                                    applyFokuszMeshMaterial(child);
+                                }
+                                // 4. Nyelvválasztó Gombok (Magyar, Angol, Német, Francia, Spanyol, Lengyel, Orosz)
+                                else if (meshName.includes('magyar') || parentName.includes('magyar') || meshName === 'mesh_0.002') {
+                                    applyLangMeshMaterial(child, 'hu');
+                                }
+                                else if (meshName.includes('angol') || parentName.includes('angol') || meshName === 'mesh_0.003') {
+                                    applyLangMeshMaterial(child, 'en');
+                                }
+                                else if (meshName.includes('nemet') || parentName.includes('nemet') || meshName === 'mesh_0.004') {
+                                    applyLangMeshMaterial(child, 'de');
+                                }
+                                else if (meshName.includes('francia') || parentName.includes('francia') || meshName === 'mesh_0.005') {
+                                    applyLangMeshMaterial(child, 'fr');
+                                }
+                                else if (meshName.includes('spanyol') || parentName.includes('spanyol') || meshName === 'mesh_0.006') {
+                                    applyLangMeshMaterial(child, 'es');
+                                }
+                                else if (meshName.includes('lengyel') || parentName.includes('lengyel') || meshName === 'mesh_0.007') {
+                                    applyLangMeshMaterial(child, 'pl');
+                                }
+                                else if (meshName.includes('orosz') || parentName.includes('orosz') || meshName === 'mesh_0.008') {
+                                    applyLangMeshMaterial(child, 'ru');
+                                }
+                            }
+                        });
+
+                        const box = new THREE.Box3().setFromObject(deviceModel);
+                        const center = box.getCenter(new THREE.Vector3());
+
+                        deviceModel.position.x += (deviceModel.position.x - center.x);
+                        deviceModel.position.y += (deviceModel.position.y - center.y);
+                        deviceModel.position.z += (deviceModel.position.z - center.z);
+
+                        scene.add(deviceModel);
+
+                        document.getElementById('loading-screen').style.opacity = '0';
+                        setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 600);
+                    },
+                    undefined,
+                    (err) => {
+                        console.warn('Hiba a modell betöltésekor (' + modelPaths[index] + '), következő próba...');
+                        tryLoad(index + 1);
+                    }
+                );
+            }
+
+            tryLoad(0);
+        }
+
+        function createFallbackDevice() {
+            const group = new THREE.Group();
+            const bodyGeo = new THREE.BoxGeometry(2.8, 1.8, 1.2);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x182028, metalness: 0.85, roughness: 0.25 });
+            const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+            group.add(bodyMesh);
+
+            const screenGeo = new THREE.PlaneGeometry(2.4, 1.2);
+            const screenMesh = new THREE.Mesh(screenGeo, screenMaterial);
+            screenMesh.position.set(0, 0, 0.61);
+            group.add(screenMesh);
+
+            group.position.set(0, 0, 0);
+            scene.add(group);
+            deviceModel = group;
+        }
+
+        // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
+        function setupDirectKeyboardAndRaycast() {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let pointerDownPos = { x: 0, y: 0, time: 0 };
+
+            // Érintés / Kattintás kezdete (Koordináta és idő rögzítése a húzás-szűréshez)
+            window.addEventListener('pointerdown', (event) => {
+                pointerDownPos.x = event.clientX;
+                pointerDownPos.y = event.clientY;
+                pointerDownPos.time = Date.now();
+            });
+
+            // 3D Koppintás / Kattintás feldolgozása (Csak ha nem kamera-forgatási gesztus volt)
+            window.addEventListener('pointerup', (event) => {
+                if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
+                    return;
+                }
+
+                // Elmozdulás és időtartam ellenőrzése: Csak tiszta koppintásra aktiválunk (mobilos húzás-szűrés)
+                const dist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
+                const elapsed = Date.now() - pointerDownPos.time;
+                if (dist > 12 || elapsed > 650) {
+                    return; // Kamera forgatás vagy hosszú lenyomás történt -> nem gombkattintás
+                }
+
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(scene.children, true);
+
+                for (let hit of intersects) {
+                    const objName = (hit.object.name || '').toLowerCase();
+                    const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
+
+                    // 1. InfoMesh gomb kattintása a modellen -> Útmutató be/kikapcsolása a monitoron
+                    if (objName.includes('info') || parentName.includes('info') || hit.object.material === infoMaterial) {
+                        toggle3DInfoMode();
+                        break;
+                    }
+
+                    // 2. Fókusz gomb kattintása a modellen -> Azonnali Focus Screen
+                    if (objName.includes('fokusz') || parentName.includes('fokusz') || hit.object.material === fokuszMaterial || objName === 'mesh_0.010') {
+                        focusOnScreen();
+                        terminalStatusText = "CAMERA FOCUSED // SCREEN RETICLE LOCKED";
+                        isStatusError = false;
+                        updateScreenDisplay();
+                        break;
+                    }
+
+                    // 3. 3D Nyelvválasztó gombok a testen -> Azonnali nyelvváltás
+                    if (hit.object.userData && hit.object.userData.lang) {
+                        handleLangSwitch(hit.object.userData.lang);
+                        break;
+                    }
+                    if (objName.includes('magyar') || parentName.includes('magyar') || objName === 'mesh_0.002') { handleLangSwitch('hu'); break; }
+                    if (objName.includes('angol') || parentName.includes('angol') || objName === 'mesh_0.003') { handleLangSwitch('en'); break; }
+                    if (objName.includes('nemet') || parentName.includes('nemet') || objName === 'mesh_0.004') { handleLangSwitch('de'); break; }
+                    if (objName.includes('francia') || parentName.includes('francia') || objName === 'mesh_0.005') { handleLangSwitch('fr'); break; }
+                    if (objName.includes('spanyol') || parentName.includes('spanyol') || objName === 'mesh_0.006') { handleLangSwitch('es'); break; }
+                    if (objName.includes('lengyel') || parentName.includes('lengyel') || objName === 'mesh_0.007') { handleLangSwitch('pl'); break; }
+                    if (objName.includes('orosz') || parentName.includes('orosz') || objName === 'mesh_0.008') { handleLangSwitch('ru'); break; }
+
+                    // 4. Képernyő (ScreenMesh) kattintása
+                    if (hit.object.material === screenMaterial || objName.includes('screen') || parentName.includes('screen') || objName.includes('mesh_0.001')) {
+                        if (hit.uv) {
+                            handleScreenUVClick(hit.uv);
+                        }
+                        break;
+                    }
+                }
+            });
+
+            // 3D Hover kurzor kijelzés
+            window.addEventListener('pointermove', (event) => {
+                if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
+                    return;
+                }
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(scene.children, true);
+                let isHovering = false;
+
+                for (let hit of intersects) {
+                    const objName = (hit.object.name || '').toLowerCase();
+                    const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
+                    if (objName.includes('info') || objName.includes('screen') || objName.includes('fokusz') ||
+                        objName === 'mesh_0.010' || objName === 'mesh_0.009' || objName === 'mesh_0.001' ||
+                        objName === 'mesh_0.002' || objName === 'mesh_0.003' || objName === 'mesh_0.004' ||
+                        objName === 'mesh_0.005' || objName === 'mesh_0.006' || objName === 'mesh_0.007' ||
+                        objName === 'mesh_0.008' ||
+                        objName.includes('magyar') || objName.includes('angol') || objName.includes('nemet') ||
+                        objName.includes('francia') || objName.includes('spanyol') || objName.includes('lengyel') ||
+                        objName.includes('orosz') || hit.object.material === screenMaterial || 
+                        hit.object.material === infoMaterial || hit.object.material === fokuszMaterial ||
+                        (hit.object.userData && hit.object.userData.lang)) {
+                        isHovering = true;
+                        break;
+                    }
+                }
+                document.body.style.cursor = isHovering ? 'pointer' : 'default';
+            });
+
+            window.addEventListener('keydown', (event) => {
+                if (document.getElementById('info-modal').style.display === 'flex') {
+                    return;
+                }
+                handleDirectKeyInput(event);
+            });
+
+            virtualInput.addEventListener('input', () => {
+                syncVirtualInput(virtualInput.value);
+            });
+        }
+
+        // Modal Mezők Élő Szinkronizálása a 3D Képernyővel
+        function setupModalInputSync() {
+            const bindInput = (id, mode, key) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('input', () => {
+                    formValues[mode][key] = el.value;
+                    updateScreenDisplay();
+                });
+            };
+
+            bindInput('m-login-username', 'LOGIN', 'username');
+            bindInput('m-login-password', 'LOGIN', 'password');
+            bindInput('m-reg-email', 'REGISTER', 'email');
+            bindInput('m-reg-username', 'REGISTER', 'username');
+            bindInput('m-del-username', 'DEREGISTER', 'username');
+            bindInput('m-del-email', 'DEREGISTER', 'email');
+            bindInput('m-del-reason', 'DEREGISTER', 'reason');
+        }
+
+        function syncModalInputsFrom3D() {
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val || '';
+            };
+
+            setVal('m-login-username', formValues.LOGIN.username);
+            setVal('m-login-password', formValues.LOGIN.password);
+            setVal('m-reg-email', formValues.REGISTER.email);
+            setVal('m-reg-username', formValues.REGISTER.username);
+            setVal('m-del-username', formValues.DEREGISTER.username);
+            setVal('m-del-email', formValues.DEREGISTER.email);
+            setVal('m-del-reason', formValues.DEREGISTER.reason);
+        }
+
+        function handleScreenUVClick(uv) {
+            const pxX = uv.x * 1024;
+            const pxY = (1 - uv.y) * 512;
+
+            // A) Felső tabok kattintása
+            if (pxY >= 20 && pxY <= 75) {
+                if (pxX >= 620 && pxX < 745) {
+                    switchMode('LOGIN');
+                    return;
+                } else if (pxX >= 745 && pxX < 875) {
+                    switchMode('REGISTER');
+                    return;
+                } else if (pxX >= 875) {
+                    switchMode('DEREGISTER');
+                    return;
+                }
+            }
+
+            // B) Info mód bezáró gomb
+            if (currentMode === 'INFO') {
+                if (pxY >= 355 && pxY <= 425 && pxX >= 45 && pxX <= 979) {
+                    switchMode(previousMode || 'LOGIN');
+                    return;
+                }
+            }
+
+            // C) Mezők és Szem-ikon kiválasztása
+            if (currentMode === 'LOGIN') {
+                // 1. 3D Szem-ikon kattintás a jelszómező jobb szélén (X: 880-985, Y: 245-325)
+                if (pxY >= 245 && pxY <= 325 && pxX >= 880 && pxX <= 985) {
+                    togglePasswordVisibility();
+                    return;
+                }
+
+                // 2. Kalóznév mező
+                if (pxY >= 140 && pxY <= 220) {
+                    activeFieldIndex = 0;
+                    terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
+                    isStatusError = false;
+                    focusVirtualInput();
+                } else if (pxY >= 245 && pxY <= 325) {
+                    activeFieldIndex = 1;
+                    terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
+                    isStatusError = false;
+                    focusVirtualInput();
+                } else if (pxY >= 355 && pxY <= 425) {
+                    executeCurrentMode();
+                }
+            } else if (currentMode === 'REGISTER') {
+                if (pxY >= 140 && pxY <= 220) {
+                    activeFieldIndex = 0;
+                    terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
+                    isStatusError = false;
+                    focusVirtualInput();
+                } else if (pxY >= 245 && pxY <= 325) {
+                    activeFieldIndex = 1;
+                    terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
+                    isStatusError = false;
+                    focusVirtualInput();
+                } else if (pxY >= 355 && pxY <= 425) {
+                    executeCurrentMode();
+                }
+            } else if (currentMode === 'DEREGISTER') {
+                if (pxY >= 120 && pxY <= 185) {
+                    activeFieldIndex = 0;
+                    focusVirtualInput();
+                } else if (pxY >= 200 && pxY <= 265) {
+                    activeFieldIndex = 1;
+                    focusVirtualInput();
+                } else if (pxY >= 280 && pxY <= 345) {
+                    activeFieldIndex = 2;
+                    focusVirtualInput();
+                } else if (pxY >= 360 && pxY <= 425) {
+                    executeCurrentMode();
+                }
+            }
+
+            updateScreenDisplay();
+        }
+
+        function focusVirtualInput() {
+            virtualInput.value = '';
+            virtualInput.focus();
+        }
+
+        function handleDirectKeyInput(event) {
+            if (!event || typeof event.key === 'undefined' || event.key === null) return;
+            const key = event.key;
+            if (typeof key !== 'string' || !key) return;
+
+            if (key === 'Tab') {
+                event.preventDefault();
+                const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
+                activeFieldIndex = (activeFieldIndex + 1) % maxFields;
+                terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
+                isStatusError = false;
+                updateScreenDisplay();
+                return;
+            }
+
+            if (currentMode === 'INFO') {
+                if (key === 'Enter' || key === 'Escape' || key === ' ') {
+                    event.preventDefault();
+                    switchMode(previousMode || 'LOGIN');
+                    return;
+                }
+            }
+
+            if (key === 'Enter') {
+                event.preventDefault();
+                executeCurrentMode();
+                return;
+            }
+
+            let targetFieldKey = getActiveFieldKey();
+            if (!targetFieldKey) return;
+
+            if (!formValues[currentMode]) {
+                formValues[currentMode] = {};
+            }
+            let currentVal = formValues[currentMode][targetFieldKey] || '';
+
+            if (key === 'Backspace') {
+                event.preventDefault();
+                formValues[currentMode][targetFieldKey] = currentVal.slice(0, -1);
+                syncModalInputsFrom3D();
+                updateScreenDisplay();
+                return;
+            }
+
+            if (key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
+                formValues[currentMode][targetFieldKey] = currentVal + key;
+                terminalStatusText = "EDITING // " + targetFieldKey.toUpperCase();
+                isStatusError = false;
+                syncModalInputsFrom3D();
+                updateScreenDisplay();
+            }
+        }
+
+        function syncVirtualInput(val) {
+            let targetFieldKey = getActiveFieldKey();
+            if (!targetFieldKey) return;
+            if (!formValues[currentMode]) formValues[currentMode] = {};
+            formValues[currentMode][targetFieldKey] = val || '';
+            syncModalInputsFrom3D();
+            updateScreenDisplay();
+        }
+
+        function getActiveFieldKey() {
+            if (currentMode === 'LOGIN') {
+                return (activeFieldIndex === 0) ? 'username' : 'password';
+            } else if (currentMode === 'REGISTER') {
+                return (activeFieldIndex === 0) ? 'email' : 'username';
+            } else if (currentMode === 'DEREGISTER') {
+                if (activeFieldIndex === 0) return 'username';
+                if (activeFieldIndex === 1) return 'email';
+                return 'reason';
+            }
+            return null;
+        }
+
+        // --- MÓDVÁLTÁS ---
+        function switchMode(mode) {
+            if (currentMode !== 'INFO' && mode !== 'INFO') {
+                previousMode = currentMode;
+            }
+            currentMode = mode;
+            activeFieldIndex = 0;
+            isStatusError = false;
+
+            document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.modal-form-view').forEach(f => f.style.display = 'none');
+
+            if (mode === 'LOGIN') {
+                const b = document.getElementById('modal-tab-login');
+                if (b) b.classList.add('active');
+                const f = document.getElementById('modal-form-login');
+                if (f) f.style.display = 'block';
+                terminalStatusText = "LOGIN MODE // READY FOR CREDENTIALS";
+            } else if (mode === 'REGISTER') {
+                const b = document.getElementById('modal-tab-register');
+                if (b) b.classList.add('active');
+                const f = document.getElementById('modal-form-register');
+                if (f) f.style.display = 'block';
+                terminalStatusText = "REGISTRATION // ENTER PIRATE DOSSIER";
+            } else if (mode === 'DEREGISTER') {
+                const b = document.getElementById('modal-tab-deregister');
+                if (b) b.classList.add('active');
+                const f = document.getElementById('modal-form-deregister');
+                if (f) f.style.display = 'block';
+                terminalStatusText = "DISCHARGE // CONFIRM REMOVAL";
+            } else if (mode === 'INFO') {
+                terminalStatusText = "INFO MODE // USER MANUAL DISPLAYED";
+            }
+
+            syncModalInputsFrom3D();
+            updateScreenDisplay();
+        }
+
+        function toggle3DInfoMode() {
+            if (currentMode === 'INFO') {
+                switchMode(previousMode || 'LOGIN');
+            } else {
+                previousMode = currentMode;
+                switchMode('INFO');
+            }
+        }
+
+        function executeCurrentMode() {
+            if (currentMode === 'LOGIN') executeLogin();
+            else if (currentMode === 'REGISTER') executeRegister();
+            else if (currentMode === 'DEREGISTER') executeDeregister();
+        }
+
+        // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
+        function handleLangSwitch(lang) {
+            window.currentLang = lang;
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('siteLang', lang);
+            }
+            if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(lang);
+            } else if (typeof switchLanguage === 'function') {
+                switchLanguage(lang);
+            }
+            if (typeof window.updateLanguageUI === 'function') {
+                window.updateLanguageUI();
+            }
+            updateActiveLangButtonsInModal();
+            updateScreenDisplay();
+        }
+
+        function updateActiveLangButtonsInModal() {
+            const lang = window.currentLang || localStorage.getItem('siteLang') || 'hu';
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const btnLang = btn.getAttribute('data-lang');
+                btn.classList.toggle('active', btnLang === lang);
+            });
+        }
+
+        // --- KAMERA GYORSPOZÍCIÓK ---
+        function focusOnScreen() {
+            if (!controls) return;
+            camera.position.set(0, 0.25, 2.2);
+            controls.target.set(0, 0.15, 0);
+            controls.update();
+        }
+
+        function resetCamera() {
+            if (!controls) return;
+            camera.position.set(0, 0.35, 2.6);
+            controls.target.set(0, 0.15, 0);
+            controls.update();
+        }
+
+        // --- INFÓ MODAL KEZELŐ ---
+        function toggleInfoModal() {
+            const modal = document.getElementById('info-modal');
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'flex';
+                syncModalInputsFrom3D();
+                updateActiveLangButtonsInModal();
+            }
+        }
+
+        function openInfoModalAuto() {
+            const modal = document.getElementById('info-modal');
+            modal.style.display = 'flex';
+            syncModalInputsFrom3D();
+            updateActiveLangButtonsInModal();
+        }
+
+        function onModalBackdropClick(e) {
+            if (e.target.id === 'info-modal') {
+                toggleInfoModal();
+            }
+        }
+
+        // --- BACKEND MŰVELETEK ---
+        function setTerminalStatus(text, isError = false) {
+            terminalStatusText = text;
+            isStatusError = isError;
+            updateScreenDisplay();
+        }
+
+        function executeLogin() {
+            const u = formValues.LOGIN.username.trim();
+            const p = formValues.LOGIN.password.trim();
+
+            if (!u || !p) {
+                setTerminalStatus("HIBA: Add meg a kalózneved és a jelszót!", true);
+                return;
+            }
+
+            setTerminalStatus("HITELESÍTÉS FOLYAMATBAN... KÉRJÜK VÁRJ...");
+
+            fetch(BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'performLogin', data: [{ name: u, jelszo: p }] })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    const user = data.user || {};
+                    const startPage = user.startPage || (user.tutorialCompleted ? 'kikoto_oldal' : 'tutorial_oldal');
+                    const isTutorial = (startPage.indexOf('tutorial') !== -1);
+                    const statusMsg = isTutorial 
+                        ? "SIKERES BELÉPÉS // JOGOSULTSÁG: ÚJONC // IRÁNY A TUTORIAL TRÉNING..." 
+                        : "SIKERES BELÉPÉS // JOGOSULTSÁG ÉRVÉNYESÍTVE // IRÁNY A KIKÖTŐ...";
+
+                    setTerminalStatus(statusMsg);
+
+                    try {
+                        localStorage.setItem('ebookPiratesToken', data.token);
+                        localStorage.setItem('ebook_pirates_username', user.name || u);
+                        if (user.email) localStorage.setItem('ebook_pirates_user_email', user.email);
+                        sessionStorage.setItem('ebook_is_logged_in', 'true');
+                        sessionStorage.setItem('ebookPiratesLoginName', user.name || u);
+                        sessionStorage.setItem('ebookPiratesLoginPass', p);
+                    } catch(e) {}
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1200);
+                } else {
+                    const msg = (data && data.message) ? data.message : "Érvénytelen kalóznév vagy jelszó!";
+                    setTerminalStatus("ELUTASÍTVA // " + msg.toUpperCase(), true);
+                }
+            })
+            .catch(err => {
+                setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
+            });
+        }
+
+        function executeRegister() {
+            const em = formValues.REGISTER.email.trim();
+            const un = formValues.REGISTER.username.trim();
+
+            if (!em || !un) {
+                setTerminalStatus("HIBA: E-mail és Kalóznév megadása kötelező!", true);
+                return;
+            }
+
+            setTerminalStatus("REGISZTRÁCIÓ KÜLDÉSE A KÖNYVTÁRNÓL...");
+
+            fetch(BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'submitRegistrationRequest', data: [{ email: em, name: un }] })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    setTerminalStatus("SIKERES REGISZTRÁCIÓ! ÜDV A BANDÁBAN!");
+                } else {
+                    setTerminalStatus("HIBA: " + (data.message || "Sikertelen regisztráció!"), true);
+                }
+            })
+            .catch(err => {
+                setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
+            });
+        }
+
+        function executeDeregister() {
+            const un = formValues.DEREGISTER.username.trim();
+            const em = formValues.DEREGISTER.email.trim();
+            const rz = formValues.DEREGISTER.reason.trim();
+
+            if (!un || !em || !rz) {
+                setTerminalStatus("HIBA: Minden mező kitöltése kötelező!", true);
+                return;
+            }
+
+            setTerminalStatus("LELÉPTETÉSI KÉRELEM FELDOLGOZÁSA...");
+
+            fetch(BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'submitDeletionRequest', data: [{ name: un, email: em, reason: rz }] })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    setTerminalStatus("KÉRELEM RÖGZÍTVE. VISSZAVÁRUNK, KALÓZ!");
+                } else {
+                    setTerminalStatus("HIBA: " + (data.message || "Sikertelen leléptetés!"), true);
+                }
+            })
+            .catch(err => {
+                setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
+            });
+        }
+
+        // --- RENDER & ANIMÁCIÓS CIKLUS ---
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate(timestamp) {
+            requestAnimationFrame(animate);
+
+            // 1. Kozmosz háttér lassú forgása
+            if (cosmosSphere) {
+                cosmosSphere.rotation.y += 0.0002;
+                cosmosSphere.rotation.x += 0.00004;
+            }
+
+            // 2. Meteorok frissítése
+            if (meteorManager) {
+                meteorManager.update();
+            }
+
+            // 3. Villogó retro kurzor a képernyőn (500 ms)
+            if (timestamp - lastCursorBlink > 500) {
+                cursorVisible = !cursorVisible;
+                lastCursorBlink = timestamp;
+                updateScreenDisplay();
+            }
+
+            // 4. Jelenet renderelés
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Globális UI funkciók exportálása
+        window.switchMode = switchMode;
+        window.executeCurrentMode = executeCurrentMode;
+        window.focusOnScreen = focusOnScreen;
+        window.resetCamera = resetCamera;
+        window.toggleInfoModal = toggleInfoModal;
+        window.toggle3DInfoMode = toggle3DInfoMode;
+        window.onModalBackdropClick = onModalBackdropClick;
+        window.handleLangSwitch = handleLangSwitch;
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initThree);
+        } else {
+            initThree();
+        }
+    </script>
+</body>
+</html>

@@ -673,6 +673,24 @@ function preloadLoadingGif() {
 // Indítás, amikor a HTML kész
 document.addEventListener('DOMContentLoaded', function () {
     preloadLoadingGif();
+
+    // Jelszó megjelenítése / elrejtése szem ikon kezelő
+    var togglePass = document.getElementById('togglePassword');
+    var passInput = document.getElementById('jelszo');
+    if (togglePass && passInput) {
+        togglePass.style.cursor = 'pointer';
+        togglePass.onclick = function () {
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                togglePass.classList.remove('fa-eye');
+                togglePass.classList.add('fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                togglePass.classList.remove('fa-eye-slash');
+                togglePass.classList.add('fa-eye');
+            }
+        };
+    }
 });
 
 function updateCreditDisplay() {

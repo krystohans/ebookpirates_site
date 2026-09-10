@@ -9,9 +9,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=20260528_2">
     <link rel="icon" href="data:,">
-    <!-- Automatikus 3D Kozmosz Terminál átirányítás, ha nincs aktív bejelentkezés -->
+    <!-- Automatikus 3D Kozmosz Terminál azonnali TOP indítás, ha nincs aktív bejelentkezés -->
     <script>
         (function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('fallback') === '2d') {
+                return;
+            }
             var token = localStorage.getItem('ebookPiratesToken');
             var loggedIn = sessionStorage.getItem('ebook_is_logged_in');
             if (!token || loggedIn !== 'true') {
@@ -24,7 +28,7 @@
 
     <div id="appContainer">
     
-    <div id="login-view">
+    <div id="login-view" style="display: none;">
         <div class="lang-switch" aria-label="Nyelvvalaszto">
             <button type="button" class="lang-btn" data-lang="hu" title="Magyar"><span class="fi fi-hu"></span></button>
             <button type="button" class="lang-btn" data-lang="en" title="English"><span class="fi fi-gb"></span></button>

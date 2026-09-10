@@ -2143,11 +2143,18 @@
                         sessionStorage.setItem('ebook_is_logged_in', 'true');
                         sessionStorage.setItem('ebookPiratesLoginName', user.name || u);
                         sessionStorage.setItem('ebookPiratesLoginPass', p);
+                        sessionStorage.setItem('cached_user_data', JSON.stringify(user));
+                    } catch(e) {}
+
+                    // Cél aloldal azonnali előtöltése a háttérben
+                    try {
+                        const targetHtml = (startPage.indexOf('.html') === -1) ? (startPage + '.html') : startPage;
+                        fetch(targetHtml).catch(() => {});
                     } catch(e) {}
 
                     setTimeout(() => {
                         window.location.href = 'index.html';
-                    }, 1200);
+                    }, 350);
                 } else {
                     const msg = (data && data.message) ? data.message : "Érvénytelen kalóznév vagy jelszó!";
                     setTerminalStatus("ELUTASÍTVA // " + msg.toUpperCase(), true);

@@ -887,11 +887,24 @@
         // --- KOZMOSZ GÖMB ---
         function initCosmosSphere() {
             const textureLoader = new THREE.TextureLoader();
+            const localPath = 'assets/images/galaxiskep_globusba.jpg';
+            const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/images/galaxiskep_globusba.jpg';
+
             const spaceTexture = textureLoader.load(
-                'assets/images/galaxiskep_globusba.jpg',
-                () => { console.info('Kozmosz panorámakép sikeresen betöltve.'); },
+                localPath,
+                () => { console.info('Kozmosz panorámakép sikeresen betöltve (helyi).'); },
                 undefined,
-                (err) => { console.warn('Kozmosz kép betöltési hiba, fallback aktív:', err); }
+                () => {
+                    console.warn('Helyi kozmosz kép nem található, GCS felhő fallback betöltése...');
+                    textureLoader.load(
+                        gcsUrl,
+                        (cloudTex) => {
+                            spaceTexture.image = cloudTex.image;
+                            spaceTexture.needsUpdate = true;
+                            console.info('Kozmosz panorámakép sikeresen betöltve (GCS felhő).');
+                        }
+                    );
+                }
             );
 
             spaceTexture.wrapS = THREE.MirroredRepeatWrapping;
@@ -1499,7 +1512,9 @@
             const gltfLoader = new GLTFLoader();
             const modelPaths = [
                 'assets/models/belepo_kozmosz_kutyu.glb',
-                'assets/models/belepooldal_kozmosz_kutyu.glb'
+                'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb',
+                'assets/models/belepooldal_kozmosz_kutyu.glb',
+                'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb'
             ];
 
             function tryLoad(index) {

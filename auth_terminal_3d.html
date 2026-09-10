@@ -1244,13 +1244,23 @@
 
                 if (!infoMaterial) {
                     const texLoader = new THREE.TextureLoader();
+                    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
+                    const localPath = 'assets/icons/info-r 1.png';
                     const infoTex = texLoader.load(
-                        'assets/icons/info-r 1.png',
-                        () => { console.info('Info-gomb ikon sikeresen betöltve.'); },
+                        gcsUrl,
+                        () => { 
+                            console.info('Info-gomb ikon sikeresen betöltve (GCS).'); 
+                            if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                        },
                         undefined,
                         () => {
-                            console.warn('Helyi ikon nem található, GCS fallback...');
-                            infoTex.image.src = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
+                            console.warn('GCS ikon nem található, helyi fallback...');
+                            texLoader.load(localPath, (localTex) => {
+                                if (infoMaterial) {
+                                    infoMaterial.map = localTex;
+                                    infoMaterial.needsUpdate = true;
+                                }
+                            });
                         }
                     );
                     infoTex.colorSpace = THREE.SRGBColorSpace;
@@ -1474,15 +1484,23 @@
 
                 if (!langMaterials[lang]) {
                     const texLoader = new THREE.TextureLoader();
-                    const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
                     const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                    const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
                     const langTex = texLoader.load(
-                        localPath,
-                        () => { console.info('Nyelv zászló textúra betöltve (' + lang + ')'); },
+                        gcsUrl,
+                        () => { 
+                            console.info('Nyelv zászló textúra sikeresen betöltve (Hártyahalász GCS):', lang); 
+                            if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                        },
                         undefined,
                         () => {
-                            console.warn('Helyi zászló nem található, GCS fallback (' + lang + ')');
-                            langTex.image.src = gcsUrl;
+                            console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
+                            texLoader.load(localPath, (localTex) => {
+                                if (langMaterials[lang]) {
+                                    langMaterials[lang].map = localTex;
+                                    langMaterials[lang].needsUpdate = true;
+                                }
+                            });
                         }
                     );
                     langTex.colorSpace = THREE.SRGBColorSpace;

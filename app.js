@@ -791,7 +791,17 @@ function loadPage(pageName) {
     currentPageName = pageName;
     document.getElementById('content').style.display = 'block';
     // document.getElementById('marketing-view').style.display = 'none'; // Ha van ilyen div
-    document.getElementById('header-stats').style.display = 'flex';
+
+    var isFullScreenGameplay = (pageName === 'tutorial_oldal' || pageName === 'game_oldal');
+
+    var headerElem = document.getElementById('header');
+    if (headerElem) {
+        headerElem.style.display = isFullScreenGameplay ? 'none' : 'flex';
+    }
+    var headerStats = document.getElementById('header-stats');
+    if (headerStats) {
+        headerStats.style.display = isFullScreenGameplay ? 'none' : 'flex';
+    }
 
     const contentDiv = document.getElementById('content');
     const loadingOverlay = document.getElementById('loading-overlay');

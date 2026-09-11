@@ -43,18 +43,19 @@
             display: none;
         }
 
-        /* Teljesen láthatatlan virtuális beviteli mező (szoftveres billentyűzet fókuszhoz, képernyőkitakarás nélkül) */
+        /* Láthatatlan virtuális beviteli mező (szoftveres billentyűzet stabil nyitva tartásához mobilon) */
         #virtual-input-capturer {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            opacity: 0;
-            pointer-events: none;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            opacity: 0.01;
+            pointer-events: auto;
             font-size: 16px;
-            line-height: 0;
-            z-index: -1;
+            line-height: 1;
+            z-index: 999;
             border: none !important;
             outline: none !important;
             background: transparent !important;
@@ -62,8 +63,8 @@
             caret-color: transparent !important;
             box-shadow: none !important;
             text-shadow: none !important;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-user-select: auto;
+            user-select: auto;
             -webkit-touch-callout: none;
             padding: 0 !important;
             margin: 0 !important;
@@ -298,11 +299,12 @@
 
         .modal-input {
             width: 100%;
-            background: rgba(4, 15, 26, 0.95);
-            border: 1px solid rgba(0, 255, 204, 0.3);
+            background: #1e222b !important;
+            background-color: #1e222b !important;
+            border: 1px solid rgba(0, 229, 255, 0.4);
             border-radius: 6px;
             padding: 9px 12px;
-            color: #ffffff;
+            color: #ffffff !important;
             font-family: 'Share Tech Mono', monospace;
             font-size: 14px;
             outline: none;
@@ -310,8 +312,24 @@
         }
 
         .modal-input:focus {
+            background: #282e3a !important;
+            background-color: #282e3a !important;
             border-color: #00ffcc;
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+            color: #ffffff !important;
+        }
+
+        .modal-input::placeholder {
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .modal-input:-webkit-autofill,
+        .modal-input:-webkit-autofill:hover, 
+        .modal-input:-webkit-autofill:focus, 
+        .modal-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #1e222b inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
         }
 
         .modal-submit-btn {
@@ -452,7 +470,7 @@
     <canvas id="screen-canvas" width="1024" height="512"></canvas>
 
     <!-- Rejtett billentyűzet elfogó (mobil és automatikus gépeléshez) -->
-    <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="-1" aria-hidden="true" />
+    <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="go" tabindex="-1" aria-hidden="true" />
 
     <!-- Betöltő Képernyő -->
     <div id="loading-screen">
@@ -1911,8 +1929,40 @@
         }
 
         function focusVirtualInput() {
-            virtualInput.value = '';
-            virtualInput.focus();
+            if (!virtualInput) return;
+            const targetFieldKey = (currentMode === 'LOGIN') ? ((activeFieldIndex === 0) ? 'username' : 'password') :
+                                   (currentMode === 'REGISTER') ? ((activeFieldIndex === 0) ? 'email' : 'username') :
+                                   ((activeFieldIndex === 0) ? 'username' : (activeFieldIndex === 1 ? 'email' : 'reason'));
+            if (targetFieldKey && formValues[currentMode]) {
+                const val = formValues[currentMode][targetFieldKey] || '';
+                if (virtualInput.value !== val) {
+                    virtualInput.value = val;
+                }
+            }
+
+            if (targetFieldKey === 'email') {
+                virtualInput.type = 'email';
+                virtualInput.inputMode = 'email';
+            } else {
+                virtualInput.type = 'text';
+                virtualInput.inputMode = 'text';
+            }
+
+            const doFocus = () => {
+                try {
+                    virtualInput.focus({ preventScroll: true });
+                    if (typeof virtualInput.setSelectionRange === 'function') {
+                        const len = (virtualInput.value || '').length;
+                        virtualInput.setSelectionRange(len, len);
+                    }
+                } catch(e) {
+                    try { virtualInput.focus(); } catch(err) {}
+                }
+            };
+
+            doFocus();
+            setTimeout(doFocus, 30);
+            setTimeout(doFocus, 100);
         }
 
         function handleDirectKeyInput(event) {

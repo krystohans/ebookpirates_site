@@ -1097,7 +1097,8 @@ function setupDirectKeyboardAndRaycast() {
 
         const dist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
         const elapsed = Date.now() - pointerDownPos.time;
-        if (dist > 12 || elapsed > 650) {
+        // Érintőképernyőkhöz optimalizált küszöbértékek (mikromozgás és koppintási idő rugalmas kezelése)
+        if (dist > 30 || elapsed > 1200) {
             return;
         }
 
@@ -1139,6 +1140,8 @@ function setupDirectKeyboardAndRaycast() {
             if (hit.object.material === screenMaterial || objName.includes('screen') || parentName.includes('screen') || objName.includes('mesh_0.001')) {
                 if (hit.uv) {
                     handleScreenUVClick(hit.uv);
+                } else {
+                    focusVirtualInput();
                 }
                 break;
             }
@@ -1194,6 +1197,10 @@ function setupDirectKeyboardAndRaycast() {
             syncVirtualInput(virtualInput.value);
         });
 
+        virtualInput.addEventListener('compositionend', () => {
+            syncVirtualInput(virtualInput.value);
+        });
+
         virtualInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1210,11 +1217,8 @@ function setupDirectKeyboardAndRaycast() {
         });
 
         virtualInput.addEventListener('focus', () => {
-            // A virtuális beviteli mező fókuszba kerül a natív billentyűzet megnyitásához, de a DOM-ban láthatatlan marad
-        });
-
-        virtualInput.addEventListener('blur', () => {
-            // Fókusz elhagyása
+            cursorVisible = true;
+            updateScreenDisplay();
         });
     }
 }
@@ -1292,50 +1296,56 @@ function handleScreenUVClick(uv) {
 
     // Mezők és Szem-ikon kiválasztása
     if (currentMode === 'LOGIN') {
-        if (pxY >= 245 && pxY <= 325 && pxX >= 880 && pxX <= 985) {
+        if (pxY >= 230 && pxY <= 330 && pxX >= 860 && pxX <= 990) {
             togglePasswordVisibility();
             return;
         }
 
-        if (pxY >= 140 && pxY <= 220) {
+        if (pxY >= 100 && pxY <= 230) {
             activeFieldIndex = 0;
             terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
             focusVirtualInput();
-        } else if (pxY >= 245 && pxY <= 325) {
+        } else if (pxY > 230 && pxY <= 340) {
             activeFieldIndex = 1;
             terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
             focusVirtualInput();
-        } else if (pxY >= 355 && pxY <= 425) {
+        } else if (pxY >= 355 && pxY <= 440) {
             executeCurrentMode();
+        } else {
+            focusVirtualInput();
         }
     } else if (currentMode === 'REGISTER') {
-        if (pxY >= 140 && pxY <= 220) {
+        if (pxY >= 100 && pxY <= 230) {
             activeFieldIndex = 0;
             terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
             focusVirtualInput();
-        } else if (pxY >= 245 && pxY <= 325) {
+        } else if (pxY > 230 && pxY <= 340) {
             activeFieldIndex = 1;
             terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
             focusVirtualInput();
-        } else if (pxY >= 355 && pxY <= 425) {
+        } else if (pxY >= 355 && pxY <= 440) {
             executeCurrentMode();
+        } else {
+            focusVirtualInput();
         }
     } else if (currentMode === 'DEREGISTER') {
-        if (pxY >= 120 && pxY <= 185) {
+        if (pxY >= 100 && pxY <= 190) {
             activeFieldIndex = 0;
             focusVirtualInput();
-        } else if (pxY >= 200 && pxY <= 265) {
+        } else if (pxY > 190 && pxY <= 270) {
             activeFieldIndex = 1;
             focusVirtualInput();
-        } else if (pxY >= 280 && pxY <= 345) {
+        } else if (pxY > 270 && pxY <= 350) {
             activeFieldIndex = 2;
             focusVirtualInput();
-        } else if (pxY >= 360 && pxY <= 425) {
+        } else if (pxY >= 355 && pxY <= 440) {
             executeCurrentMode();
+        } else {
+            focusVirtualInput();
         }
     }
 
@@ -1346,13 +1356,35 @@ function focusVirtualInput() {
     if (!virtualInput) return;
     const targetFieldKey = getActiveFieldKey();
     if (targetFieldKey && formValues[currentMode]) {
-        virtualInput.value = formValues[currentMode][targetFieldKey] || '';
+        const val = formValues[currentMode][targetFieldKey] || '';
+        if (virtualInput.value !== val) {
+            virtualInput.value = val;
+        }
     }
-    try {
-        virtualInput.focus({ preventScroll: true });
-    } catch(e) {
-        virtualInput.focus();
+
+    if (targetFieldKey === 'email') {
+        virtualInput.type = 'email';
+        virtualInput.inputMode = 'email';
+    } else {
+        virtualInput.type = 'text';
+        virtualInput.inputMode = 'text';
     }
+
+    const doFocus = () => {
+        try {
+            virtualInput.focus({ preventScroll: true });
+            if (typeof virtualInput.setSelectionRange === 'function') {
+                const len = (virtualInput.value || '').length;
+                virtualInput.setSelectionRange(len, len);
+            }
+        } catch(e) {
+            try { virtualInput.focus(); } catch(err) {}
+        }
+    };
+
+    doFocus();
+    setTimeout(doFocus, 30);
+    setTimeout(doFocus, 100);
 }
 
 function handleDirectKeyInput(event) {

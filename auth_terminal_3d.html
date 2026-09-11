@@ -2405,7 +2405,8 @@
         let flightStartTime = 0;
         let flightDuration = 3800; // 3.8 mp dinamikus űrhajó gyorsulás
         let flightPathCurve = null;
-        let flightTargetCurve = null;
+        let flightStartTarget = null;
+        let flightFinalTarget = null;
         let flightOnComplete = null;
         let initialCameraFov = 50;
 
@@ -2423,29 +2424,58 @@
 
             initialCameraFov = camera.fov || 50;
 
+            // 1. Aktuális kamera- és fókuszpozíció rögzítése a validálás pillanatában
             const currentPos = camera.position.clone();
             const currentTarget = (controls && controls.target) ? controls.target.clone() : new THREE.Vector3(0, 0.15, 0);
+            const centerObstacle = new THREE.Vector3(0, 0.15, 0);
 
-            // 1. Kamera útvonal: Konzol elől távolodás -> balról teljes megkerülés -> jobbra kanyarodva rágyorsítás a kozmosz bolygójára
-            flightPathCurve = new THREE.CatmullRomCurve3([
-                currentPos,
-                new THREE.Vector3(-1.2, 1.1, 4.0),   // 1. Eltávolodás és emelkedés a konzoltól
-                new THREE.Vector3(-4.2, 1.6, 0.5),   // 2. Konzol balról megkerülése
-                new THREE.Vector3(-2.5, 2.2, -4.5),  // 3. Konzol mögé érve jobbra kanyarodás
-                new THREE.Vector3(3.0, 2.5, -9.0),   // 4. Ív jobbra a bolygó irányába
-                new THREE.Vector3(15.5, 2.6, -3.5),  // 5. Nagy sebességű hipergyorsulás a bolygó felé
-                new THREE.Vector3(26.2, 2.1, 0.8)    // 6. Ráközelítés a gömbpalást bolygó képére (-15 fokkal korrigált szögben)
-            ]);
+            // 2. Pontos célpont kijelölése a köpeny forgásának pillanatnyi állása alapján (EGYSZER, a validálás után)
+            const planetLocalPos = new THREE.Vector3(1.0, 2.3, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
+            const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, 2.3, 1.0);
 
-            // 2. Kamera fókuszpont (lookAt) útvonal
-            flightTargetCurve = new THREE.CatmullRomCurve3([
-                currentTarget,
-                new THREE.Vector3(0, 0.2, 0),
-                new THREE.Vector3(-0.5, 0.5, -3.0),
-                new THREE.Vector3(2.5, 1.2, -9.0),
-                new THREE.Vector3(14.0, 2.0, -5.0),
-                new THREE.Vector3(29.8, 2.3, 1.0)   // Gömbpalást felfeszített bolygó textúrájának pontos közepe (-15 fok korrekció)
-            ]);
+            flightStartTarget = currentTarget.clone();
+            flightFinalTarget = targetWorldPos.clone();
+
+            // 3. Irányvektorok meghatározása a sima kikerülő ívhez
+            const dirToTarget = targetWorldPos.clone().sub(centerObstacle).normalize();
+            let dirFromCenter = currentPos.clone().sub(centerObstacle);
+            if (dirFromCenter.lengthSq() < 0.01) {
+                dirFromCenter.set(0, 0, 1);
+            }
+            dirFromCenter.normalize();
+
+            // Kitérési oldalirány a konzol bal széle mellé
+            const up = new THREE.Vector3(0, 1, 0);
+            let sideDir = new THREE.Vector3().crossVectors(up, dirFromCenter).normalize();
+            if (sideDir.lengthSq() < 0.001) {
+                sideDir.set(-1, 0, 0);
+            }
+
+            // 4. Egyetlen, szép, folytonos ívű kikerülő röppálya kiszámítása (Centripetal Catmull-Rom spline)
+            const p0 = currentPos.clone();
+            const p1 = currentPos.clone()
+                .add(dirFromCenter.clone().multiplyScalar(1.5))
+                .add(new THREE.Vector3(0, 0.8, 0))
+                .add(sideDir.clone().multiplyScalar(1.4));
+            
+            const flankDir = dirFromCenter.clone().multiplyScalar(0.25).add(sideDir.clone().multiplyScalar(0.95)).normalize();
+            const p2 = centerObstacle.clone()
+                .add(flankDir.clone().multiplyScalar(4.8))
+                .add(new THREE.Vector3(0, 1.6, 0));
+
+            const alignDir = flankDir.clone().multiplyScalar(0.35).add(dirToTarget.clone().multiplyScalar(0.65)).normalize();
+            const p3 = centerObstacle.clone()
+                .add(alignDir.clone().multiplyScalar(11.0))
+                .add(new THREE.Vector3(0, 2.2, 0));
+
+            const p4 = centerObstacle.clone()
+                .add(dirToTarget.clone().multiplyScalar(19.5))
+                .add(new THREE.Vector3(0, 2.2, 0));
+
+            const p5 = targetWorldPos.clone().multiplyScalar(26.2 / SPHERE_RADIUS);
+
+            // Centripetális spline: kizárja a szaggatást, hirtelen ugrásokat és túllendüléseket
+            flightPathCurve = new THREE.CatmullRomCurve3([p0, p1, p2, p3, p4, p5], false, 'centripetal');
 
             isCinematicFlight = true;
             flightStartTime = performance.now();
@@ -2484,8 +2514,8 @@
         function animate(timestamp) {
             requestAnimationFrame(animate);
 
-            // 1. Kozmosz háttér lassú forgása
-            if (cosmosSphere) {
+            // 1. Kozmosz háttér lassú forgása (csak a normál nézetben, a hiperugrás alatt rögzítve marad a kijelölt célhoz)
+            if (cosmosSphere && !isCinematicFlight) {
                 cosmosSphere.rotation.y += 0.0002;
                 cosmosSphere.rotation.x += 0.00004;
             }
@@ -2503,27 +2533,29 @@
             }
 
             // 🚀 Dinamikus Űrhajó Kamera Hiperhajtómű Animáció
-            if (isCinematicFlight && flightPathCurve && flightTargetCurve) {
+            if (isCinematicFlight && flightPathCurve && flightStartTarget && flightFinalTarget) {
                 const elapsed = timestamp - flightStartTime;
                 let progress = Math.min(1.0, elapsed / flightDuration);
 
-                // Kétfázisú exponenciális/kubikus űrhajó gyorsulási görbe
-                const easeProgress = progress < 0.35 
-                    ? 2.8 * Math.pow(progress, 2)
+                // Kétfázisú sima gyorsulási görbe (Cubic Ease In-Out)
+                const easeProgress = progress < 0.5
+                    ? 4 * Math.pow(progress, 3)
                     : 1 - Math.pow(-2 * progress + 2, 3) / 2;
                 const clampedT = Math.max(0, Math.min(1, easeProgress));
 
                 const newPos = flightPathCurve.getPoint(clampedT);
-                const newTarget = flightTargetCurve.getPoint(clampedT);
-
                 camera.position.copy(newPos);
-                camera.lookAt(newTarget);
-                if (controls) controls.target.copy(newTarget);
 
-                // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 76 -> 50)
+                // Sima, elegáns fókuszpont átmenet: a konzolról folyamatosan átfordul a fix kijelölt bolygóra
+                const smoothLookT = Math.min(1.0, Math.pow(clampedT, 1.25));
+                const currentLookTarget = new THREE.Vector3().lerpVectors(flightStartTarget, flightFinalTarget, smoothLookT);
+                camera.lookAt(currentLookTarget);
+                if (controls) controls.target.copy(currentLookTarget);
+
+                // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 74 -> 50)
                 if (progress > 0.2) {
                     const fovFactor = Math.sin((progress - 0.2) / 0.8 * Math.PI);
-                    camera.fov = initialCameraFov + fovFactor * 26;
+                    camera.fov = initialCameraFov + fovFactor * 24;
                     camera.updateProjectionMatrix();
                 }
 

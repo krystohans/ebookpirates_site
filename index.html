@@ -2684,12 +2684,17 @@ function executeLogin() {
             setTerminalStatus("SIKERES BELÉPÉS // 🚀 HIPERHAJTÓMŰ AKTIVÁLVA... IRÁNY A KIKÖTŐ!");
 
             try {
-                if (data.token) localStorage.setItem('ebookPiratesToken', data.token);
+                if (data.token) {
+                    localStorage.setItem('ebookPiratesToken', data.token);
+                    sessionStorage.setItem('ebookPiratesToken', data.token);
+                }
                 localStorage.setItem('ebook_pirates_username', user.name || u);
                 if (user.email) localStorage.setItem('ebook_pirates_user_email', user.email);
+                if (user.activeShipId) localStorage.setItem('ebook_pirates_active_ship_id', user.activeShipId);
                 sessionStorage.setItem('ebook_is_logged_in', 'true');
                 sessionStorage.setItem('ebookPiratesLoginName', user.name || u);
                 sessionStorage.setItem('ebookPiratesLoginPass', p);
+                sessionStorage.setItem('cached_user_data', JSON.stringify(user));
             } catch(e) {}
 
             // Háttérbeli előtöltés az animáció 3-4 másodperce alatt

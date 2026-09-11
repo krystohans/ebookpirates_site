@@ -490,13 +490,17 @@ function login() {
 
 function initializeApp(user) {
     window.inGame = user.inGame === true;
+    window.activeShipId = user.activeShipId || '';
+    window.currentUser = user;
     currentUserEmail = user.email; // Elmentjük, de a hívásokhoz nem kell küldeni!
     window.userTutorialCompleted = (user.tutorialCompleted === true || (user.startPage && user.startPage !== 'tutorial_oldal'));
     try {
         localStorage.setItem('ebook_pirates_username', user.name || '');
         localStorage.setItem('ebook_pirates_user_email', user.email || '');
+        if (user.activeShipId) localStorage.setItem('ebook_pirates_active_ship_id', user.activeShipId);
         sessionStorage.setItem('ebook_is_logged_in', 'true');
         sessionStorage.setItem('ebookPiratesLoginName', user.name || '');
+        sessionStorage.setItem('cached_user_data', JSON.stringify(user));
     } catch(e) {}
     document.querySelector('.header-title').innerText = user.name;
     ensureCreditDisplayIsPresent();
@@ -540,7 +544,7 @@ var isSessionChecked = false;
 
 function checkSession() {
     if (isSessionChecked) return;
-    const token = localStorage.getItem('ebookPiratesToken');
+    const token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken');
 
     function show3DAuthTerminal() {
         var appView = document.getElementById('app-view');
@@ -560,8 +564,15 @@ function checkSession() {
                 if (cachedUser && (cachedUser.email || cachedUser.name) && (cachedUser.isValid === true || cachedUser.startPage)) {
                     isSessionChecked = true;
                     console.log("⚡ Azonnali indulás gyorsítótárazott profilból:", cachedUser.name);
-                    sessionStorage.removeItem('cached_user_data');
                     initializeApp(cachedUser);
+                    // Háttérben frissítjük az aktuális profilt a backendről
+                    callBackend('getUserDataByToken', [token], function(freshUser) {
+                        if (freshUser && (freshUser.email || freshUser.name) && freshUser.isValid === true) {
+                            sessionStorage.setItem('cached_user_data', JSON.stringify(freshUser));
+                            window.currentUser = freshUser;
+                            if (freshUser.activeShipId) window.activeShipId = freshUser.activeShipId;
+                        }
+                    }, function() {});
                     return;
                 }
             } catch (e) {
@@ -579,6 +590,7 @@ function checkSession() {
                 } else {
                     console.warn("A token lejárt vagy érvénytelen, 3D terminál aktiválása.");
                     localStorage.removeItem('ebookPiratesToken');
+                    sessionStorage.removeItem('ebookPiratesToken');
                     sessionStorage.removeItem('ebook_is_logged_in');
                     sessionStorage.removeItem('cached_user_data');
                     show3DAuthTerminal();
@@ -586,9 +598,6 @@ function checkSession() {
             },
             function (err) {
                 console.warn("Session check hiba, 3D terminál aktiválása:", err);
-                localStorage.removeItem('ebookPiratesToken');
-                sessionStorage.removeItem('ebook_is_logged_in');
-                sessionStorage.removeItem('cached_user_data');
                 show3DAuthTerminal();
             }
         );

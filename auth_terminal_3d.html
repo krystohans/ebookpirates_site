@@ -43,21 +43,30 @@
             display: none;
         }
 
-        /* Rejtett beviteli mező mobil és virtuális billentyűzethez (iOS / Android auto-zoom és görgetés mentes) */
+        /* Teljesen láthatatlan virtuális beviteli mező (szoftveres billentyűzet fókuszhoz, képernyőkitakarás nélkül) */
         #virtual-input-capturer {
             position: fixed;
             top: 0;
             left: 0;
-            width: 1px;
-            height: 1px;
-            opacity: 0.01;
-            pointer-events: auto;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
             font-size: 16px;
-            z-index: 0;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: transparent;
+            line-height: 0;
+            z-index: -1;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            color: transparent !important;
+            caret-color: transparent !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            padding: 0 !important;
+            margin: 0 !important;
         }
 
         /* Lebegő Egyetlen Infó Gomb (Diszkrét, világító cián) */
@@ -443,7 +452,7 @@
     <canvas id="screen-canvas" width="1024" height="512"></canvas>
 
     <!-- Rejtett billentyűzet elfogó (mobil és automatikus gépeléshez) -->
-    <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+    <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="-1" aria-hidden="true" />
 
     <!-- Betöltő Képernyő -->
     <div id="loading-screen">

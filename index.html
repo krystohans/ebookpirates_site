@@ -42,20 +42,30 @@
             display: none;
         }
 
+        /* Teljesen láthatatlan virtuális beviteli mező (szoftveres billentyűzet fókuszhoz, képernyőkitakarás nélkül) */
         #virtual-input-capturer {
             position: fixed;
             top: 0;
             left: 0;
-            width: 1px;
-            height: 1px;
-            opacity: 0.01;
-            pointer-events: auto;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
             font-size: 16px;
-            z-index: 0;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: transparent;
+            line-height: 0;
+            z-index: -1;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            color: transparent !important;
+            caret-color: transparent !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            padding: 0 !important;
+            margin: 0 !important;
         }
 
         .info-toggle-btn {
@@ -379,94 +389,8 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* DEDIKÁLT ANDROID / MOBIL VIRTUÁLIS BILLENTYŰZET DOKK */
-        #mobile-input-dock {
-            position: fixed;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            max-width: 440px;
-            z-index: 1000;
-            background: rgba(3, 14, 22, 0.94);
-            border: 1.5px solid #00ffcc;
-            border-radius: 12px;
-            backdrop-filter: blur(12px);
-            padding: 10px 14px;
-            box-shadow: 0 4px 25px rgba(0, 255, 204, 0.35);
-            display: none;
-            touch-action: manipulation;
-        }
-
-        .mob-dock-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
-            padding-bottom: 4px;
-        }
-
-        .mob-dock-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            color: #00ffcc;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .mob-dock-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .mob-input-row {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .mob-input-field {
-            flex: 1;
-            background: rgba(2, 8, 14, 0.95);
-            border: 1px solid rgba(0, 255, 204, 0.4);
-            border-radius: 6px;
-            padding: 8px 10px;
-            color: #ffffff;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .mob-input-field:focus {
-            border-color: #00ffcc;
-            box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
-        }
-
-        .mob-eye-btn {
-            background: #04141e;
-            border: 1px solid rgba(0, 255, 204, 0.5);
-            border-radius: 6px;
-            color: #00ffcc;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .mob-submit-btn {
-            background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
-            border: none;
-            border-radius: 6px;
-            padding: 9px;
-            color: #021210;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 4px;
+        #mobile-keyboard-bar {
+            display: none !important;
         }
     </style>
 
@@ -486,7 +410,7 @@
     <div id="auth-3d-container">
         <div id="webgl-container"></div>
         <canvas id="screen-canvas" width="1024" height="512"></canvas>
-        <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="-1" aria-hidden="true" />
 
         <div id="loading-screen">
             <div class="loader-spinner"></div>
@@ -496,26 +420,6 @@
         <button id="info-toggle-btn" class="info-toggle-btn" onclick="toggleInfoModal()" title="Információ & Beállítások" data-lang-title="auth_info_btn_title">
             <i class="fas fa-info"></i>
         </button>
-
-        <!-- DEDIKÁLT ANDROID / MOBIL VIRTUÁLIS BILLENTYŰZET RÉTEG -->
-        <div id="mobile-input-dock">
-            <div class="mob-dock-header">
-                <span class="mob-dock-title"><i class="fas fa-terminal"></i> Kozmosz Beviteli Dokk</span>
-                <div class="modal-lang-switch" style="margin-bottom:0; padding:2px 6px; gap:4px;">
-                    <button type="button" class="lang-btn" data-lang="hu" onclick="handleLangSwitch('hu')"><span class="fi fi-hu"></span></button>
-                    <button type="button" class="lang-btn" data-lang="en" onclick="handleLangSwitch('en')"><span class="fi fi-gb"></span></button>
-                    <button type="button" class="lang-btn" data-lang="de" onclick="handleLangSwitch('de')"><span class="fi fi-de"></span></button>
-                </div>
-            </div>
-            <div class="mob-dock-inputs">
-                <input type="text" id="mob-login-username" class="mob-input-field" placeholder="Kalóznév..." autocomplete="username" />
-                <div class="mob-input-row">
-                    <input type="password" id="mob-login-password" class="mob-input-field" placeholder="Jelszó..." autocomplete="current-password" />
-                    <button type="button" id="toggle-mob-password" class="mob-eye-btn"><i class="fas fa-eye"></i></button>
-                </div>
-                <button type="button" class="mob-submit-btn" onclick="executeCurrentMode()" data-lang="auth_login_submit_btn">🚀 Beszállás a Kikötőbe</button>
-            </div>
-        </div>
 
         <!-- Akadálymentes & Infó Modal -->
         <div id="info-modal" onclick="onModalBackdropClick(event)">

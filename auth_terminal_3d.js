@@ -10,7 +10,7 @@ let currentMode = 'LOGIN'; // 'LOGIN' | 'REGISTER' | 'DEREGISTER' | 'INFO'
 let previousMode = 'LOGIN';
 let activeFieldIndex = 0;
 
-// Mezők aktuális szöveges értékei (Kétirányú szinkron a 3D monitor, a modal és a mobil dokk között)
+// Mezők aktuális szöveges értékei (Kétirányú szinkron a 3D monitor és a modal között)
 export const formValues = {
     LOGIN: { username: '', password: '' },
     REGISTER: { email: '', username: '' },
@@ -222,32 +222,25 @@ function getL() {
     return localizedLabels[lang] || localizedLabels.hu;
 }
 
-// --- JELSZÓ LÁTHATÓSÁG VÁLTÓ (3D + Modal + Mobil Dokk) ---
+// --- JELSZÓ LÁTHATÓSÁG VÁLTÓ ---
 export function togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;
     const modalPassInput = document.querySelector('#m-login-password');
-    const mobPassInput = document.querySelector('#mob-login-password');
     const toggleModalPass = document.querySelector('#toggle-modal-password');
-    const toggleMobPass = document.querySelector('#toggle-mob-password');
 
     if (modalPassInput) modalPassInput.type = isPasswordVisible ? 'text' : 'password';
-    if (mobPassInput) mobPassInput.type = isPasswordVisible ? 'text' : 'password';
 
-    const updateEyeStyle = (el) => {
-        if (!el) return;
+    if (toggleModalPass) {
         if (isPasswordVisible) {
-            el.classList.remove('fa-eye');
-            el.classList.add('fa-eye-slash');
-            el.style.color = '#ffdd00';
+            toggleModalPass.classList.remove('fa-eye');
+            toggleModalPass.classList.add('fa-eye-slash');
+            toggleModalPass.style.color = '#ffdd00';
         } else {
-            el.classList.remove('fa-eye-slash');
-            el.classList.add('fa-eye');
-            el.style.color = '#00ffcc';
+            toggleModalPass.classList.remove('fa-eye-slash');
+            toggleModalPass.classList.add('fa-eye');
+            toggleModalPass.style.color = '#00ffcc';
         }
-    };
-
-    updateEyeStyle(toggleModalPass);
-    updateEyeStyle(toggleMobPass);
+    }
 
     terminalStatusText = isPasswordVisible ? "PASSWORD VISIBLE // JELSZÓ MEGJELENÍTVE" : "PASSWORD MASKED // JELSZÓ ELREJTVE";
     isStatusError = false;
@@ -259,13 +252,6 @@ function setupPasswordToggle() {
     const toggleModalPass = document.querySelector('#toggle-modal-password');
     if (toggleModalPass) {
         toggleModalPass.addEventListener('click', function (e) {
-            e.preventDefault();
-            togglePasswordVisibility();
-        });
-    }
-    const toggleMobPass = document.querySelector('#toggle-mob-password');
-    if (toggleMobPass) {
-        toggleMobPass.addEventListener('click', function (e) {
             e.preventDefault();
             togglePasswordVisibility();
         });
@@ -332,15 +318,14 @@ export function initThree() {
     // 9. GLB Modell Betöltése
     loadDeviceModel();
 
-    // Eseményfigyelők (Billentyűzet, Raycast, Modal & Mobil Dokk szinkron)
+    // Eseményfigyelők (Billentyűzet, Raycast & Modal szinkron)
     window.addEventListener('resize', onWindowResize);
     if (window.visualViewport) {
         window.visualViewport.addEventListener('resize', onVisualViewportResize);
     }
     setupDirectKeyboardAndRaycast();
-    setupModalAndMobileInputSync();
+    setupModalInputSync();
     setupPasswordToggle();
-    checkMobileDevicePresence();
 
     // Render loop indítása
     animate(0);
@@ -1106,7 +1091,7 @@ function setupDirectKeyboardAndRaycast() {
     });
 
     window.addEventListener('pointerup', (event) => {
-        if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn') || event.target.closest('#mobile-input-dock')) {
+        if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
             return;
         }
 
@@ -1161,7 +1146,7 @@ function setupDirectKeyboardAndRaycast() {
     });
 
     window.addEventListener('pointermove', (event) => {
-        if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn') || event.target.closest('#mobile-input-dock')) {
+        if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
             return;
         }
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -1191,6 +1176,7 @@ function setupDirectKeyboardAndRaycast() {
         document.body.style.cursor = isHovering ? 'pointer' : 'default';
     });
 
+    // Globális billentyűzet figyelő (ha a capturer nincs fókuszban)
     window.addEventListener('keydown', (event) => {
         const infoModal = document.getElementById('info-modal');
         if (infoModal && infoModal.style.display === 'flex') {
@@ -1202,19 +1188,34 @@ function setupDirectKeyboardAndRaycast() {
         handleDirectKeyInput(event);
     });
 
+    // Virtuális input capturer eseménykezelők (Mobilos virtuális billentyűzet fókuszhoz)
     if (virtualInput) {
         virtualInput.addEventListener('input', () => {
             syncVirtualInput(virtualInput.value);
         });
-    }
-}
 
-// --- ANDROID & MOBIL VIRTUAL KEYBOARD KEZELŐ RÉTEG ---
-function checkMobileDevicePresence() {
-    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(max-width: 820px)').matches;
-    const mobDock = document.getElementById('mobile-input-dock');
-    if (mobDock) {
-        mobDock.style.display = isTouch ? 'block' : 'none';
+        virtualInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                executeCurrentMode();
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
+                activeFieldIndex = (activeFieldIndex + 1) % maxFields;
+                terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
+                isStatusError = false;
+                focusVirtualInput();
+                updateScreenDisplay();
+            }
+        });
+
+        virtualInput.addEventListener('focus', () => {
+            // A virtuális beviteli mező fókuszba kerül a natív billentyűzet megnyitásához, de a DOM-ban láthatatlan marad
+        });
+
+        virtualInput.addEventListener('blur', () => {
+            // Fókusz elhagyása
+        });
     }
 }
 
@@ -1228,18 +1229,17 @@ function onVisualViewportResize() {
     }
 }
 
-function setupModalAndMobileInputSync() {
+function setupModalInputSync() {
     const bindInput = (id, mode, key) => {
         const el = document.getElementById(id);
         if (!el) return;
         el.addEventListener('input', () => {
             formValues[mode][key] = el.value;
-            syncAllInputFields();
+            syncModalInputsFrom3D();
             updateScreenDisplay();
         });
     };
 
-    // Modal bemenetek
     bindInput('m-login-username', 'LOGIN', 'username');
     bindInput('m-login-password', 'LOGIN', 'password');
     bindInput('m-reg-email', 'REGISTER', 'email');
@@ -1247,19 +1247,14 @@ function setupModalAndMobileInputSync() {
     bindInput('m-del-username', 'DEREGISTER', 'username');
     bindInput('m-del-email', 'DEREGISTER', 'email');
     bindInput('m-del-reason', 'DEREGISTER', 'reason');
-
-    // Mobil dokk bemenetek
-    bindInput('mob-login-username', 'LOGIN', 'username');
-    bindInput('mob-login-password', 'LOGIN', 'password');
 }
 
-export function syncAllInputFields() {
+export function syncModalInputsFrom3D() {
     const setVal = (id, val) => {
         const el = document.getElementById(id);
         if (el && el.value !== val) el.value = val || '';
     };
 
-    // Modal
     setVal('m-login-username', formValues.LOGIN.username);
     setVal('m-login-password', formValues.LOGIN.password);
     setVal('m-reg-email', formValues.REGISTER.email);
@@ -1267,10 +1262,6 @@ export function syncAllInputFields() {
     setVal('m-del-username', formValues.DEREGISTER.username);
     setVal('m-del-email', formValues.DEREGISTER.email);
     setVal('m-del-reason', formValues.DEREGISTER.reason);
-
-    // Mobil Dokk
-    setVal('mob-login-username', formValues.LOGIN.username);
-    setVal('mob-login-password', formValues.LOGIN.password);
 }
 
 function handleScreenUVClick(uv) {
@@ -1310,12 +1301,12 @@ function handleScreenUVClick(uv) {
             activeFieldIndex = 0;
             terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 245 && pxY <= 325) {
             activeFieldIndex = 1;
             terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 355 && pxY <= 425) {
             executeCurrentMode();
         }
@@ -1324,25 +1315,25 @@ function handleScreenUVClick(uv) {
             activeFieldIndex = 0;
             terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 245 && pxY <= 325) {
             activeFieldIndex = 1;
             terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 355 && pxY <= 425) {
             executeCurrentMode();
         }
     } else if (currentMode === 'DEREGISTER') {
         if (pxY >= 120 && pxY <= 185) {
             activeFieldIndex = 0;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 200 && pxY <= 265) {
             activeFieldIndex = 1;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 280 && pxY <= 345) {
             activeFieldIndex = 2;
-            focusActiveInput();
+            focusVirtualInput();
         } else if (pxY >= 360 && pxY <= 425) {
             executeCurrentMode();
         }
@@ -1351,21 +1342,15 @@ function handleScreenUVClick(uv) {
     updateScreenDisplay();
 }
 
-function focusActiveInput() {
-    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(max-width: 820px)').matches;
-    if (isTouch) {
-        if (currentMode === 'LOGIN') {
-            const targetEl = (activeFieldIndex === 0) 
-                ? document.getElementById('mob-login-username') 
-                : document.getElementById('mob-login-password');
-            if (targetEl) {
-                targetEl.focus();
-                return;
-            }
-        }
+function focusVirtualInput() {
+    if (!virtualInput) return;
+    const targetFieldKey = getActiveFieldKey();
+    if (targetFieldKey && formValues[currentMode]) {
+        virtualInput.value = formValues[currentMode][targetFieldKey] || '';
     }
-    if (virtualInput) {
-        virtualInput.value = '';
+    try {
+        virtualInput.focus({ preventScroll: true });
+    } catch(e) {
         virtualInput.focus();
     }
 }
@@ -1381,6 +1366,7 @@ function handleDirectKeyInput(event) {
         activeFieldIndex = (activeFieldIndex + 1) % maxFields;
         terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
         isStatusError = false;
+        focusVirtualInput();
         updateScreenDisplay();
         return;
     }
@@ -1410,16 +1396,18 @@ function handleDirectKeyInput(event) {
     if (key === 'Backspace') {
         event.preventDefault();
         formValues[currentMode][targetFieldKey] = currentVal.slice(0, -1);
-        syncAllInputFields();
+        if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
+        syncModalInputsFrom3D();
         updateScreenDisplay();
         return;
     }
 
     if (key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
         formValues[currentMode][targetFieldKey] = currentVal + key;
+        if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
         terminalStatusText = "EDITING // " + targetFieldKey.toUpperCase();
         isStatusError = false;
-        syncAllInputFields();
+        syncModalInputsFrom3D();
         updateScreenDisplay();
     }
 }
@@ -1429,7 +1417,7 @@ function syncVirtualInput(val) {
     if (!targetFieldKey) return;
     if (!formValues[currentMode]) formValues[currentMode] = {};
     formValues[currentMode][targetFieldKey] = val || '';
-    syncAllInputFields();
+    syncModalInputsFrom3D();
     updateScreenDisplay();
 }
 
@@ -1480,7 +1468,7 @@ export function switchMode(mode) {
         terminalStatusText = "INFO MODE // USER MANUAL DISPLAYED";
     }
 
-    syncAllInputFields();
+    syncModalInputsFrom3D();
     updateScreenDisplay();
 }
 
@@ -1548,7 +1536,7 @@ export function toggleInfoModal() {
         modal.style.display = 'none';
     } else {
         modal.style.display = 'flex';
-        syncAllInputFields();
+        syncModalInputsFrom3D();
         updateActiveLangButtonsInModal();
     }
 }
@@ -1557,7 +1545,7 @@ function openInfoModalAuto() {
     const modal = document.getElementById('info-modal');
     if (modal) {
         modal.style.display = 'flex';
-        syncAllInputFields();
+        syncModalInputsFrom3D();
         updateActiveLangButtonsInModal();
     }
 }
@@ -1612,7 +1600,6 @@ export function executeLogin() {
                 sessionStorage.setItem('ebookPiratesLoginPass', p);
             } catch(e) {}
 
-            // Cél aloldal előtöltése
             try {
                 const targetHtml = (startPage.indexOf('.html') === -1) ? (startPage + '.html') : startPage;
                 fetch(targetHtml).catch(() => {});
@@ -1621,9 +1608,7 @@ export function executeLogin() {
             // ⚡ MEMÓRIABELI BELÉPTETÉS HARD RELOAD NÉLKÜL!
             setTimeout(() => {
                 const auth3d = document.getElementById('auth-3d-container');
-                const mobDock = document.getElementById('mobile-input-dock');
                 if (auth3d) auth3d.style.display = 'none';
-                if (mobDock) mobDock.style.display = 'none';
 
                 if (typeof window.initializeApp === 'function') {
                     window.initializeApp(user);
@@ -1706,7 +1691,6 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    checkMobileDevicePresence();
 }
 
 function animate(timestamp) {

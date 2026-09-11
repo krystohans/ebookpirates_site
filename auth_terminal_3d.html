@@ -590,7 +590,7 @@
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
         // --- GLOBÁLIS VÁLTOZÓK & BEÁLLÍTÁSOK ---
-        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
         const SPHERE_RADIUS = 30;
 
         let currentMode = 'LOGIN'; // 'LOGIN' | 'REGISTER' | 'DEREGISTER' | 'INFO'
@@ -2244,11 +2244,62 @@
             }
         }
 
-        // --- BACKEND MŰVELETEK ---
+        // --- BACKEND MŰVELETEK & ROBUSZTUS HÁLÓZATI RÉTEG ---
         function setTerminalStatus(text, isError = false) {
             terminalStatusText = text;
             isStatusError = isError;
             updateScreenDisplay();
+        }
+
+        // Robusztus JSON kinyerő (Google Apps Script HTML/szöveges hiba-válaszok tolerálására)
+        function parseJsonSafe(text) {
+            if (!text || typeof text !== 'string') return null;
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                // Ha a válaszba HTML vagy egyéb szöveg vegyült, megkeressük az első { és utolsó } közötti érvényes JSON blokkot
+                const firstBrace = text.indexOf('{');
+                const lastBrace = text.lastIndexOf('}');
+                if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                    try {
+                        const jsonSub = text.substring(firstBrace, lastBrace + 1);
+                        return JSON.parse(jsonSub);
+                    } catch (err) {}
+                }
+                return null;
+            }
+        }
+
+        function callBackendApi(action, dataObj, onSuccess, onFailure) {
+            fetch(BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: action, data: [dataObj] })
+            })
+            .then(res => res.text())
+            .then(text => {
+                const data = parseJsonSafe(text);
+                if (data) {
+                    if (data.success) {
+                        onSuccess(data);
+                    } else {
+                        onFailure(data.message || "Ismeretlen szerver hiba!");
+                    }
+                } else {
+                    // Ha nem sikerült JSON-t olvasni (pl. GAS hiba HTML oldal), megpróbáljuk kinyerni a címet
+                    let errSnippet = "Érvénytelen válasz a szervertől";
+                    if (text && text.indexOf('<title>') !== -1) {
+                        const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
+                        if (titleMatch && titleMatch[1]) errSnippet = titleMatch[1].trim();
+                    } else if (text && text.length > 0) {
+                        errSnippet = text.substring(0, 80).replace(/<[^>]+>/g, '').trim() || errSnippet;
+                    }
+                    onFailure(errSnippet);
+                }
+            })
+            .catch(err => {
+                onFailure(err && err.message ? err.message : "Hálózati csatlakozási hiba!");
+            });
         }
 
         function executeLogin() {
@@ -2262,14 +2313,10 @@
 
             setTerminalStatus("HITELESÍTÉS FOLYAMATBAN... KÉRJÜK VÁRJ...");
 
-            fetch(BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'performLogin', data: [{ name: u, jelszo: p }] })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.success) {
+            callBackendApi(
+                'performLogin',
+                { name: u, jelszo: p },
+                function(data) {
                     const user = data.user || {};
                     const startPage = user.startPage || (user.tutorialCompleted ? 'kikoto_oldal' : 'tutorial_oldal');
                     const isTutorial = (startPage.indexOf('tutorial') !== -1);
@@ -2298,14 +2345,11 @@
                     setTimeout(() => {
                         window.location.href = 'index.html';
                     }, 350);
-                } else {
-                    const msg = (data && data.message) ? data.message : "Érvénytelen kalóznév vagy jelszó!";
-                    setTerminalStatus("ELUTASÍTVA // " + msg.toUpperCase(), true);
+                },
+                function(errMsg) {
+                    setTerminalStatus("ELUTASÍTVA // " + errMsg.toUpperCase(), true);
                 }
-            })
-            .catch(err => {
-                setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
-            });
+            );
         }
 
         function executeRegister() {
@@ -2319,22 +2363,16 @@
 
             setTerminalStatus("REGISZTRÁCIÓ KÜLDÉSE A KÖNYVTÁRNÓL...");
 
-            fetch(BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'submitRegistrationRequest', data: [{ email: em, name: un }] })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.success) {
+            callBackendApi(
+                'submitRegistrationRequest',
+                { email: em, name: un },
+                function(data) {
                     setTerminalStatus("SIKERES REGISZTRÁCIÓ! ÜDV A BANDÁBAN!");
-                } else {
-                    setTerminalStatus("HIBA: " + (data.message || "Sikertelen regisztráció!"), true);
+                },
+                function(errMsg) {
+                    setTerminalStatus("HIBA: " + errMsg, true);
                 }
-            })
-            .catch(err => {
-                setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
-            });
+            );
         }
 
         function executeDeregister() {
@@ -2349,22 +2387,16 @@
 
             setTerminalStatus("LELÉPTETÉSI KÉRELEM FELDOLGOZÁSA...");
 
-            fetch(BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'submitDeletionRequest', data: [{ name: un, email: em, reason: rz }] })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.success) {
+            callBackendApi(
+                'submitDeletionRequest',
+                { name: un, email: em, reason: rz },
+                function(data) {
                     setTerminalStatus("KÉRELEM RÖGZÍTVE. VISSZAVÁRUNK, KALÓZ!");
-                } else {
-                    setTerminalStatus("HIBA: " + (data.message || "Sikertelen leléptetés!"), true);
+                },
+                function(errMsg) {
+                    setTerminalStatus("HIBA: " + errMsg, true);
                 }
-            })
-            .catch(err => {
-                setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
-            });
+            );
         }
 
         // --- RENDER & ANIMÁCIÓS CIKLUS ---

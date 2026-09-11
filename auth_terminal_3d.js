@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // --- GLOBÁLIS KONSTANSOK & ÁLLAPOTOK ---
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
 const SPHERE_RADIUS = 30;
 
 let currentMode = 'LOGIN'; // 'LOGIN' | 'REGISTER' | 'DEREGISTER' | 'INFO'
@@ -1642,6 +1642,79 @@ export function onModalBackdropClick(e) {
 }
 
 // --- BACKEND MŰVELETEK ---
+// --- ROBUSZTUS BACKEND KOMMUNIKÁCIÓ & JSON ÉRTELMEZŐ ---
+function parseJsonSafe(text) {
+    if (!text) return null;
+    try {
+        return JSON.parse(text);
+    } catch (e) {}
+
+    var start = -1;
+    var depth = 0;
+    var inString = false;
+    var escaped = false;
+
+    for (var i = 0; i < text.length; i++) {
+        var ch = text.charAt(i);
+        if (inString) {
+            if (escaped) { escaped = false; continue; }
+            if (ch === '\\') { escaped = true; continue; }
+            if (ch === '"') { inString = false; }
+            continue;
+        }
+        if (ch === '"') { inString = true; continue; }
+        if (ch === '{') {
+            if (depth === 0) start = i;
+            depth++;
+            continue;
+        }
+        if (ch === '}') {
+            if (depth > 0) {
+                depth--;
+                if (depth === 0 && start !== -1) {
+                    var candidate = text.substring(start, i + 1);
+                    try {
+                        return JSON.parse(candidate);
+                    } catch (err2) {
+                        start = -1;
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
+function callBackendApi(action, dataObj, onSuccess, onFailure) {
+    const payload = {
+        action: action,
+        data: Array.isArray(dataObj) ? dataObj : [dataObj],
+        token: localStorage.getItem('ebookPiratesToken') || ''
+    };
+
+    fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.text())
+    .then(rawText => {
+        const parsed = parseJsonSafe(rawText);
+        if (!parsed) {
+            if (rawText && rawText.includes('<title>')) {
+                const titleMatch = rawText.match(/<title>(.*?)<\/title>/i);
+                const titleText = titleMatch ? titleMatch[1] : "Szerverhiba";
+                throw new Error(titleText);
+            }
+            throw new Error("A szerver válasza nem értelmezhető adat.");
+        }
+        if (onSuccess) onSuccess(parsed);
+    })
+    .catch(err => {
+        if (onFailure) onFailure(err);
+    });
+}
+
 export function setTerminalStatus(text, isError = false) {
     terminalStatusText = text;
     isStatusError = isError;
@@ -1659,13 +1732,7 @@ export function executeLogin() {
 
     setTerminalStatus("HITELESÍTÉS FOLYAMATBAN... KÉRJÜK VÁRJ...");
 
-    fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'performLogin', data: [{ name: u, jelszo: p }] })
-    })
-    .then(res => res.json())
-    .then(data => {
+    callBackendApi('performLogin', { name: u, jelszo: p }, (data) => {
         if (data && data.success) {
             const user = data.user || {};
             const startPage = user.startPage || (user.tutorialCompleted ? 'kikoto_oldal' : 'tutorial_oldal');
@@ -1677,7 +1744,7 @@ export function executeLogin() {
             setTerminalStatus(statusMsg);
 
             try {
-                localStorage.setItem('ebookPiratesToken', data.token);
+                if (data.token) localStorage.setItem('ebookPiratesToken', data.token);
                 localStorage.setItem('ebook_pirates_username', user.name || u);
                 if (user.email) localStorage.setItem('ebook_pirates_user_email', user.email);
                 sessionStorage.setItem('ebook_is_logged_in', 'true');
@@ -1702,12 +1769,11 @@ export function executeLogin() {
                 }
             }, 300);
         } else {
-            const msg = (data && data.message) ? data.message : "Érvénytelen kalóznév vagy jelszó!";
+            const msg = (data && (data.message || data.error)) ? (data.message || data.error) : "Érvénytelen kalóznév vagy jelszó!";
             setTerminalStatus("ELUTASÍTVA // " + msg.toUpperCase(), true);
         }
-    })
-    .catch(err => {
-        setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
+    }, (err) => {
+        setTerminalStatus("HÁLÓZATI HIBA: " + (err.message || "A szerver nem elérhető"), true);
     });
 }
 
@@ -1722,21 +1788,14 @@ export function executeRegister() {
 
     setTerminalStatus("REGISZTRÁCIÓ KÜLDÉSE A KÖNYVTÁRNÓL...");
 
-    fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'submitRegistrationRequest', data: [{ email: em, name: un }] })
-    })
-    .then(res => res.json())
-    .then(data => {
+    callBackendApi('submitRegistrationRequest', { email: em, name: un }, (data) => {
         if (data && data.success) {
             setTerminalStatus("SIKERES REGISZTRÁCIÓ! ÜDV A BANDÁBAN!");
         } else {
-            setTerminalStatus("HIBA: " + (data.message || "Sikertelen regisztráció!"), true);
+            setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen regisztráció!"), true);
         }
-    })
-    .catch(err => {
-        setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
+    }, (err) => {
+        setTerminalStatus("HÁLÓZATI HIBA: " + (err.message || "A szerver nem elérhető"), true);
     });
 }
 
@@ -1752,21 +1811,14 @@ export function executeDeregister() {
 
     setTerminalStatus("LELÉPTETÉSI KÉRELEM FELDOLGOZÁSA...");
 
-    fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'submitDeletionRequest', data: [{ name: un, email: em, reason: rz }] })
-    })
-    .then(res => res.json())
-    .then(data => {
+    callBackendApi('submitDeletionRequest', { name: un, email: em, reason: rz }, (data) => {
         if (data && data.success) {
             setTerminalStatus("KÉRELEM RÖGZÍTVE. VISSZAVÁRUNK, KALÓZ!");
         } else {
-            setTerminalStatus("HIBA: " + (data.message || "Sikertelen leléptetés!"), true);
+            setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen leléptetés!"), true);
         }
-    })
-    .catch(err => {
-        setTerminalStatus("HÁLÓZATI HIBA: " + err.message, true);
+    }, (err) => {
+        setTerminalStatus("HÁLÓZATI HIBA: " + (err.message || "A szerver nem elérhető"), true);
     });
 }
 

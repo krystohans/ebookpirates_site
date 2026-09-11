@@ -10611,6 +10611,9 @@ function checkActiveSessionStatus() {
                 waitingRoomPanel.style.display = 'none';
             }
         }
+    }, function(err) {
+        // Csendes naplózás háttérbeli lekérdezésnél
+        console.warn("Session állapot lekérdezési figyelmeztetés:", err && err.message ? err.message : err);
     });
 }
 

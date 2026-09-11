@@ -2428,9 +2428,9 @@
                 new THREE.Vector3(-1.2, 1.1, 4.0),   // 1. Eltávolodás és emelkedés a konzoltól
                 new THREE.Vector3(-4.2, 1.6, 0.5),   // 2. Konzol balról megkerülése
                 new THREE.Vector3(-2.5, 2.2, -4.5),  // 3. Konzol mögé érve jobbra kanyarodás
-                new THREE.Vector3(4.5, 2.5, -6.0),   // 4. Teljes 90 fokos ív jobbra a bolygó irányába
-                new THREE.Vector3(16.0, 2.8, 1.5),   // 5. Nagy sebességű hipergyorsulás a bolygó felé
-                new THREE.Vector3(25.5, 2.2, 8.0)    // 6. Ráközelítés a gömbpalást bolygó képére (radius 30 előtt)
+                new THREE.Vector3(3.0, 2.5, -9.0),   // 4. Ív jobbra a bolygó irányába
+                new THREE.Vector3(15.5, 2.6, -3.5),  // 5. Nagy sebességű hipergyorsulás a bolygó felé
+                new THREE.Vector3(26.2, 2.1, 0.8)    // 6. Ráközelítés a gömbpalást bolygó képére (-15 fokkal korrigált szögben)
             ]);
 
             // 2. Kamera fókuszpont (lookAt) útvonal
@@ -2438,9 +2438,9 @@
                 currentTarget,
                 new THREE.Vector3(0, 0.2, 0),
                 new THREE.Vector3(-0.5, 0.5, -3.0),
-                new THREE.Vector3(3.0, 1.2, -8.0),
-                new THREE.Vector3(14.0, 2.0, -3.0),
-                new THREE.Vector3(28.5, 2.4, 9.5)   // Gömbpalást felfeszített bolygó textúrájának pontos közepe
+                new THREE.Vector3(2.5, 1.2, -9.0),
+                new THREE.Vector3(14.0, 2.0, -5.0),
+                new THREE.Vector3(29.8, 2.3, 1.0)   // Gömbpalást felfeszített bolygó textúrájának pontos közepe (-15 fok korrekció)
             ]);
 
             isCinematicFlight = true;

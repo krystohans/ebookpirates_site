@@ -6,57 +6,615 @@
     <title>eBookPirates</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=20260528_2">
     <link rel="icon" href="data:,">
-    <!-- Automatikus 3D Kozmosz Terminál azonnali TOP indítás, ha nincs aktív bejelentkezés -->
-    <script>
-        (function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('fallback') === '2d') {
-                return;
-            }
-            var token = localStorage.getItem('ebookPiratesToken');
-            var loggedIn = sessionStorage.getItem('ebook_is_logged_in');
-            if (!token || loggedIn !== 'true') {
-                window.location.replace('auth_terminal_3d.html');
-            }
-        })();
+
+    <style>
+        /* 3D Kozmosz Beléptető Stílusok */
+        #auth-3d-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999;
+            background-color: #020408;
+            overflow: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ffcc;
+        }
+
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            touch-action: none;
+        }
+
+        #screen-canvas {
+            display: none;
+        }
+
+        #virtual-input-capturer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0.01;
+            pointer-events: auto;
+            font-size: 16px;
+            z-index: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: transparent;
+        }
+
+        .info-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(5, 14, 24, 0.85);
+            border: 2px solid rgba(0, 255, 204, 0.5);
+            color: #00ffcc;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 204, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .info-toggle-btn:hover {
+            transform: scale(1.15) rotate(15deg);
+            border-color: #00ffcc;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.7);
+            background: rgba(0, 255, 204, 0.15);
+        }
+
+        #info-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(2, 6, 12, 0.85);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .info-modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 540px;
+            background: rgba(5, 14, 24, 0.96);
+            border: 2px solid rgba(0, 255, 204, 0.5);
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 204, 0.2);
+            color: #e0f8f2;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: #00ffcc;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+            transform: scale(1.1);
+        }
+
+        .modal-title {
+            font-family: 'Pirata One', cursive;
+            font-size: 30px;
+            color: #00ffcc;
+            text-shadow: 0 0 12px rgba(0, 255, 204, 0.5);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-lang-switch {
+            display: flex;
+            gap: 8px;
+            background: rgba(2, 8, 15, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 20px;
+            padding: 6px 12px;
+            margin-bottom: 18px;
+            justify-content: center;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.2);
+            border-color: #00ffcc;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+        }
+
+        .lang-btn.active {
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px #00ffcc;
+            transform: scale(1.15);
+        }
+
+        .guide-section {
+            background: rgba(0, 255, 204, 0.04);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .guide-section h4 {
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .guide-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .guide-list li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .guide-list i {
+            color: #00ffcc;
+            margin-top: 3px;
+        }
+
+        .modal-mode-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .modal-tab-btn {
+            background: rgba(0, 255, 204, 0.08);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            color: #88c0b0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 10px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .modal-tab-btn:hover {
+            background: rgba(0, 255, 204, 0.2);
+            color: #00ffcc;
+            border-color: #00ffcc;
+        }
+
+        .modal-tab-btn.active {
+            background: rgba(0, 255, 204, 0.3);
+            color: #ffffff;
+            border-color: #00ffcc;
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.4);
+        }
+
+        .accessible-form-container {
+            background: rgba(2, 10, 18, 0.85);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .modal-form-group {
+            margin-bottom: 12px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            font-size: 11px;
+            color: #00ffcc;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: rgba(4, 15, 26, 0.95);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 6px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .modal-input:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+        }
+
+        .modal-submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 11px;
+            color: #021210;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+        }
+
+        .modal-submit-btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 255, 204, 0.5);
+        }
+
+        .camera-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .cam-action-btn {
+            background: rgba(0, 255, 204, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            color: #88c0b0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .cam-action-btn:hover {
+            background: rgba(0, 255, 204, 0.15);
+            color: #00ffcc;
+            border-color: #00ffcc;
+        }
+
+        #loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020408;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 255, 204, 0.1);
+            border-top: 3px solid #00ffcc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* DEDIKÁLT ANDROID / MOBIL VIRTUÁLIS BILLENTYŰZET DOKK */
+        #mobile-input-dock {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 440px;
+            z-index: 1000;
+            background: rgba(3, 14, 22, 0.94);
+            border: 1.5px solid #00ffcc;
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            padding: 10px 14px;
+            box-shadow: 0 4px 25px rgba(0, 255, 204, 0.35);
+            display: none;
+            touch-action: manipulation;
+        }
+
+        .mob-dock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            padding-bottom: 4px;
+        }
+
+        .mob-dock-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            color: #00ffcc;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .mob-dock-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mob-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .mob-input-field {
+            flex: 1;
+            background: rgba(2, 8, 14, 0.95);
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .mob-input-field:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+        }
+
+        .mob-eye-btn {
+            background: #04141e;
+            border: 1px solid rgba(0, 255, 204, 0.5);
+            border-radius: 6px;
+            color: #00ffcc;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .mob-submit-btn {
+            background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
+            border: none;
+            border-radius: 6px;
+            padding: 9px;
+            color: #021210;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+    </style>
+
+    <!-- Three.js és Kiegészítők Importmap -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
     </script>
 </head>
 <body>
 
+    <!-- 1. INTEGRÁLT 3D KOZMOSZ TERMINÁL KONTÉNER (100vw × 100vh) -->
+    <div id="auth-3d-container">
+        <div id="webgl-container"></div>
+        <canvas id="screen-canvas" width="1024" height="512"></canvas>
+        <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+        <div id="loading-screen">
+            <div class="loader-spinner"></div>
+            <p style="font-family: 'Orbitron', sans-serif; letter-spacing: 2px;" data-lang="auth_loading_text">KOZMOSZ TERMINÁL INICIALIZÁLÁSA...</p>
+        </div>
+
+        <button id="info-toggle-btn" class="info-toggle-btn" onclick="toggleInfoModal()" title="Információ & Beállítások" data-lang-title="auth_info_btn_title">
+            <i class="fas fa-info"></i>
+        </button>
+
+        <!-- DEDIKÁLT ANDROID / MOBIL VIRTUÁLIS BILLENTYŰZET RÉTEG -->
+        <div id="mobile-input-dock">
+            <div class="mob-dock-header">
+                <span class="mob-dock-title"><i class="fas fa-terminal"></i> Kozmosz Beviteli Dokk</span>
+                <div class="modal-lang-switch" style="margin-bottom:0; padding:2px 6px; gap:4px;">
+                    <button type="button" class="lang-btn" data-lang="hu" onclick="handleLangSwitch('hu')"><span class="fi fi-hu"></span></button>
+                    <button type="button" class="lang-btn" data-lang="en" onclick="handleLangSwitch('en')"><span class="fi fi-gb"></span></button>
+                    <button type="button" class="lang-btn" data-lang="de" onclick="handleLangSwitch('de')"><span class="fi fi-de"></span></button>
+                </div>
+            </div>
+            <div class="mob-dock-inputs">
+                <input type="text" id="mob-login-username" class="mob-input-field" placeholder="Kalóznév..." autocomplete="username" />
+                <div class="mob-input-row">
+                    <input type="password" id="mob-login-password" class="mob-input-field" placeholder="Jelszó..." autocomplete="current-password" />
+                    <button type="button" id="toggle-mob-password" class="mob-eye-btn"><i class="fas fa-eye"></i></button>
+                </div>
+                <button type="button" class="mob-submit-btn" onclick="executeCurrentMode()" data-lang="auth_login_submit_btn">🚀 Beszállás a Kikötőbe</button>
+            </div>
+        </div>
+
+        <!-- Akadálymentes & Infó Modal -->
+        <div id="info-modal" onclick="onModalBackdropClick(event)">
+            <div class="info-modal-content">
+                <button class="modal-close-btn" onclick="toggleInfoModal()">✕</button>
+                
+                <div class="modal-title" data-lang-html="auth_modal_title">
+                    <i class="fas fa-compass"></i> eBookPirates // Kozmosz Készülék
+                </div>
+
+                <div class="modal-lang-switch" aria-label="Nyelvvalaszto">
+                    <button type="button" class="lang-btn" data-lang="hu" title="Magyar" onclick="handleLangSwitch('hu')"><span class="fi fi-hu"></span></button>
+                    <button type="button" class="lang-btn" data-lang="en" title="English" onclick="handleLangSwitch('en')"><span class="fi fi-gb"></span></button>
+                    <button type="button" class="lang-btn" data-lang="de" title="Deutsch" onclick="handleLangSwitch('de')"><span class="fi fi-de"></span></button>
+                    <button type="button" class="lang-btn" data-lang="fr" title="Francais" onclick="handleLangSwitch('fr')"><span class="fi fi-fr"></span></button>
+                    <button type="button" class="lang-btn" data-lang="es" title="Espanol" onclick="handleLangSwitch('es')"><span class="fi fi-es"></span></button>
+                    <button type="button" class="lang-btn" data-lang="pl" title="Polski" onclick="handleLangSwitch('pl')"><span class="fi fi-pl"></span></button>
+                    <button type="button" class="lang-btn" data-lang="ru" title="Russkiy" onclick="handleLangSwitch('ru')"><span class="fi fi-ru"></span></button>
+                </div>
+
+                <div class="guide-section">
+                    <h4 data-lang-html="auth_guide_title"><i class="fas fa-book-reader"></i> Használati Útmutató</h4>
+                    <ul class="guide-list">
+                        <li data-lang-html="auth_guide_typing"><i class="fas fa-keyboard"></i> <strong>3D Gépelés:</strong> Kattints a 3D monitorra vagy az alábbi mezőkre a gépeléshez!</li>
+                        <li data-lang-html="auth_guide_tab"><i class="fas fa-exchange-alt"></i> <strong>Mezőváltás:</strong> Nyomj <code>TAB</code> billentyűt a mezők közötti ugráshoz.</li>
+                        <li data-lang-html="auth_guide_submit"><i class="fas fa-paper-plane"></i> <strong>Beküldés:</strong> Nyomj <code>ENTER</code> billentyűt vagy kattints a Küldés gombra.</li>
+                        <li data-lang-html="auth_guide_camera"><i class="fas fa-globe"></i> <strong>Kamera:</strong> Bal egérgombbal körbeforgatható a kozmosz, görgővel közelíthetsz a monitorra.</li>
+                    </ul>
+                </div>
+
+                <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;" data-lang="auth_modes_header">Üzemmód & Akadálymentes Adatbevitel</h4>
+                <div class="modal-mode-tabs">
+                    <button class="modal-tab-btn active" id="modal-tab-login" onclick="switchMode('LOGIN')" data-lang="auth_tab_login">Belépés</button>
+                    <button class="modal-tab-btn" id="modal-tab-register" onclick="switchMode('REGISTER')" data-lang="auth_tab_register">Regisztráció</button>
+                    <button class="modal-tab-btn" id="modal-tab-deregister" onclick="switchMode('DEREGISTER')" data-lang="auth_tab_deregister">Leléptetés</button>
+                </div>
+
+                <div class="accessible-form-container">
+                    <div id="modal-form-login" class="modal-form-view">
+                        <div class="modal-form-group">
+                            <label data-lang="auth_login_name_label">Kalóznév</label>
+                            <input type="text" id="m-login-username" class="modal-input" placeholder="Add meg a kalózneved..." data-lang-placeholder="auth_login_name_placeholder" autocomplete="username" />
+                        </div>
+                        <div class="modal-form-group">
+                            <label data-lang="auth_login_pass_label">Jelszó / Kedvenc étel</label>
+                            <div class="password-container" style="position: relative; display: flex; align-items: center;">
+                                <input type="password" id="m-login-password" class="modal-input" placeholder="Add meg a jelszavad..." data-lang-placeholder="auth_login_pass_placeholder" autocomplete="current-password" style="padding-right: 40px;" />
+                                <i class="fas fa-eye" id="toggle-modal-password" style="position: absolute; right: 12px; cursor: pointer; color: #00ffcc; font-size: 16px;" title="Jelszó megjelenítése / elrejtése"></i>
+                            </div>
+                        </div>
+                        <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()" data-lang="auth_login_submit_btn">Beszállás a Kikötőbe</button>
+                    </div>
+
+                    <div id="modal-form-register" class="modal-form-view" style="display: none;">
+                        <div class="modal-form-group">
+                            <label data-lang="auth_reg_email_label">Kalóz E-mail Cím</label>
+                            <input type="email" id="m-reg-email" class="modal-input" placeholder="pelda@kalozposta.hu" data-lang-placeholder="auth_reg_email_placeholder" autocomplete="email" />
+                        </div>
+                        <div class="modal-form-group">
+                            <label data-lang="auth_reg_name_label">Választott Kalóznév</label>
+                            <input type="text" id="m-reg-username" class="modal-input" placeholder="Pl. Feketeszakáll99" data-lang-placeholder="auth_reg_name_placeholder" />
+                        </div>
+                        <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()" data-lang="auth_reg_submit_btn">Jelentkezés a Bandába</button>
+                    </div>
+
+                    <div id="modal-form-deregister" class="modal-form-view" style="display: none;">
+                        <div class="modal-form-group">
+                            <label data-lang="auth_del_name_label">Játékbeli Kalóznév</label>
+                            <input type="text" id="m-del-username" class="modal-input" placeholder="Törlendő kalóznév" data-lang-placeholder="auth_del_name_placeholder" />
+                        </div>
+                        <div class="modal-form-group">
+                            <label data-lang="auth_del_email_label">Regisztrált E-mail</label>
+                            <input type="email" id="m-del-email" class="modal-input" placeholder="Eredeti e-mail cím" data-lang-placeholder="auth_del_email_placeholder" />
+                        </div>
+                        <div class="modal-form-group">
+                            <label data-lang="auth_del_reason_label">Kilépés Oka</label>
+                            <input type="text" id="m-del-reason" class="modal-input" placeholder="Miért hagysz el minket?" data-lang-placeholder="auth_del_reason_placeholder" />
+                        </div>
+                        <button type="button" class="modal-submit-btn" style="background: linear-gradient(135deg, #882222 0%, #ff4444 100%); color: #fff;" onclick="executeCurrentMode()" data-lang="auth_del_submit_btn">Leléptetési Kérelem Küldése</button>
+                    </div>
+                </div>
+
+                <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;" data-lang="auth_cam_header">Kamera Beállítások</h4>
+                <div class="camera-actions-grid">
+                    <button class="cam-action-btn" onclick="focusOnScreen(); toggleInfoModal();" data-lang-html="auth_cam_focus"><i class="fas fa-crosshairs"></i> Képernyő Fókusz</button>
+                    <button class="cam-action-btn" onclick="resetCamera(); toggleInfoModal();" data-lang-html="auth_cam_reset"><i class="fas fa-undo-alt"></i> Kamera Alaphelyzet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FŐ ALKALMAZÁS NÉZET (Kizárólag sikeres belépés után jelenik meg) -->
     <div id="appContainer">
     
     <div id="login-view" style="display: none;">
-        <div class="lang-switch" aria-label="Nyelvvalaszto">
-            <button type="button" class="lang-btn" data-lang="hu" title="Magyar"><span class="fi fi-hu"></span></button>
-            <button type="button" class="lang-btn" data-lang="en" title="English"><span class="fi fi-gb"></span></button>
-            <button type="button" class="lang-btn" data-lang="de" title="Deutsch"><span class="fi fi-de"></span></button>
-            <button type="button" class="lang-btn" data-lang="fr" title="Francais"><span class="fi fi-fr"></span></button>
-            <button type="button" class="lang-btn" data-lang="es" title="Espanol"><span class="fi fi-es"></span></button>
-            <button type="button" class="lang-btn" data-lang="pl" title="Polski"><span class="fi fi-pl"></span></button>
-            <button type="button" class="lang-btn" data-lang="ru" title="Russkiy"><span class="fi fi-ru"></span></button>
-        </div>
-        <h2 data-lang="login_title">Belépés a Kikötőbe</h2>
-        <form id="loginForm" autocomplete="on">
-            <input type="text" id="name" name="username" placeholder="Mi a kalózneved?" data-lang-placeholder="login_name_placeholder" required autocomplete="username">
-            <div class="password-container">
-                <input type="password" id="jelszo" name="password" placeholder="Mi a kedvenc ételed?" data-lang-placeholder="login_pass_placeholder" required autocomplete="current-password">
-                <i class="fas fa-eye" id="togglePassword"></i>
-            </div>
-            <button type="button" onclick="login()" data-lang="login_button">Beszállás</button>
-        </form>
-        <div style="margin-top: 14px; text-align: center;">
-            <a href="auth_terminal_3d.html" style="display: inline-block; padding: 10px 18px; background: linear-gradient(135deg, #0d2838 0%, #004d40 100%); border: 1px solid #00ffcc; border-radius: 8px; color: #00ffcc; text-decoration: none; font-size: 0.9em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,255,204,0.2);">
-                🌌 3D Kozmosz Készülék Belépő & Regisztráció
-            </a>
-        </div>
-        <p id="login-status" style="color: red;"></p>
-        <div id="registerButtonContainer"></div>
+        <!-- Fallback 2D login nézet (ha szükséges) -->
     </div>
 
-    <div id="app-view">
+    <div id="app-view" style="display: none;">
         <div id="header">
             <span class="header-title">eBookPirates</span>
             
@@ -461,6 +1019,7 @@
 
     <script src="web_fordito.js"></script>
     <script src="app.js?v=20260831_01"></script>
+    <script type="module" src="auth_terminal_3d.js"></script>
 
 </body>
 </html>

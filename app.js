@@ -501,8 +501,17 @@ function initializeApp(user) {
     document.querySelector('.header-title').innerText = user.name;
     ensureCreditDisplayIsPresent();
 
-    document.getElementById('login-view').style.display = 'none';
-    document.getElementById('app-view').style.display = 'flex';
+    // 3D Terminál, Mobil Dokk és 2D Login elrejtése
+    var auth3d = document.getElementById('auth-3d-container');
+    if (auth3d) auth3d.style.display = 'none';
+    var mobDock = document.getElementById('mobile-input-dock');
+    if (mobDock) mobDock.style.display = 'none';
+    var loginView = document.getElementById('login-view');
+    if (loginView) loginView.style.display = 'none';
+
+    // Fő védett alkalmazás nézet (fejléc + tartalom) megjelenítése
+    var appView = document.getElementById('app-view');
+    if (appView) appView.style.display = 'flex';
 
     updateCreditDisplay();
     preloadLoadingGif();
@@ -522,7 +531,6 @@ function initializeApp(user) {
         if (user.startPage) {
             loadPage(user.startPage); // A backend mondja meg (tutorial vagy jogosult)
         } else {
-            // Fallback: ha a backend valamiért nem küld startPage-et
             loadPage('tutorial_oldal');
         }
     }
@@ -534,9 +542,17 @@ function checkSession() {
     if (isSessionChecked) return;
     const token = localStorage.getItem('ebookPiratesToken');
 
+    function show3DAuthTerminal() {
+        var appView = document.getElementById('app-view');
+        if (appView) appView.style.display = 'none';
+        var auth3d = document.getElementById('auth-3d-container');
+        if (auth3d) auth3d.style.display = 'block';
+        var mobDock = document.getElementById('mobile-input-dock');
+        var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(max-width: 820px)').matches;
+        if (mobDock) mobDock.style.display = isTouch ? 'block' : 'none';
+    }
+
     if (token) {
-        // ⚡ Turbo Startup: Ha a terminálos bejelentkezés már lehozta a felhasználó adatait,
-        // azonnal indítjuk a felületet és az aloldal letöltését 0ms várakozással!
         var cachedUserStr = sessionStorage.getItem('cached_user_data');
         if (cachedUserStr) {
             try {
@@ -561,29 +577,29 @@ function checkSession() {
                     console.log("Sikeres visszatérés:", user.name);
                     initializeApp(user);
                 } else {
-                    console.warn("A token lejárt vagy érvénytelen, átirányítás a 3D terminálra.");
+                    console.warn("A token lejárt vagy érvénytelen, 3D terminál aktiválása.");
                     localStorage.removeItem('ebookPiratesToken');
                     sessionStorage.removeItem('ebook_is_logged_in');
                     sessionStorage.removeItem('cached_user_data');
-                    window.location.replace('auth_terminal_3d.html');
+                    show3DAuthTerminal();
                 }
             },
             function (err) {
-                console.warn("Session check hiba, átirányítás a 3D terminálra:", err);
+                console.warn("Session check hiba, 3D terminál aktiválása:", err);
                 localStorage.removeItem('ebookPiratesToken');
                 sessionStorage.removeItem('ebook_is_logged_in');
                 sessionStorage.removeItem('cached_user_data');
-                window.location.replace('auth_terminal_3d.html');
+                show3DAuthTerminal();
             }
         );
     } else {
-        console.log("Nincs mentett token, átirányítás a 3D terminálra.");
-        window.location.replace('auth_terminal_3d.html');
+        console.log("Nincs mentett token, 3D terminál aktiválása.");
+        show3DAuthTerminal();
     }
 }
 
 // ==========================================
-// === LOGOUT (3D TERMINÁLRA IRÁNYÍTVA) ===
+// === LOGOUT (3D TERMINÁLRA VISSZAVÁLTVA) ===
 // ==========================================
 
 function logout() {
@@ -599,8 +615,18 @@ function logout() {
     // Globális változók nullázása
     if (typeof currentUserEmail !== 'undefined') currentUserEmail = '';
 
-    // Kijelentkezéskor AZONNAL a 3D Kozmosz Készülékre navigálunk!
-    window.location.replace('auth_terminal_3d.html');
+    // Védett nézet elrejtése, 3D Terminál és Mobil Dokk aktiválása
+    var appView = document.getElementById('app-view');
+    if (appView) appView.style.display = 'none';
+    var auth3d = document.getElementById('auth-3d-container');
+    if (auth3d) auth3d.style.display = 'block';
+    var mobDock = document.getElementById('mobile-input-dock');
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(max-width: 820px)').matches;
+    if (mobDock) mobDock.style.display = isTouch ? 'block' : 'none';
+
+    if (typeof window.setTerminalStatus === 'function') {
+        window.setTerminalStatus("KIJELENTKEZVE // KÉRJÜK LÉPJ BE ISMÉT");
+    }
 }
 
 /**
@@ -929,19 +955,26 @@ function toggleAccordionPanel() {
  * Ha nem -> Splash (Infó) képernyő megjelenítése.
  */
 function initializePage(pageName) {
-    // callBackend használata (emailt a router intézi)
+    const splash = document.getElementById(pageName + '-splash');
+    const content = document.getElementById(pageName + '-content');
+
+    // Helyi gyorsítótár ellenőrzése
+    var isLocallySeen = (localStorage.getItem('seen_' + pageName) === 'true');
+    if (isLocallySeen && splash && content) {
+        splash.style.display = 'none';
+        content.style.display = 'block';
+    }
+
     callBackend('getPageStatus', [pageName],
         function (status) {
-            const splash = document.getElementById(pageName + '-splash');
-            const content = document.getElementById(pageName + '-content');
-
             if (!splash || !content) {
-                console.warn(`Hiba: Nem találhatók a HTML elemek ehhez: ${pageName}`);
+                console.warn("Hiba: Nem találhatók a HTML elemek ehhez: " + pageName);
                 return;
             }
 
             var normalizedStatus = String(status || '').trim().toLowerCase();
             if (normalizedStatus === 'ok') {
+                localStorage.setItem('seen_' + pageName, 'true');
                 splash.style.display = 'none';
                 content.style.display = 'block';
             } else {
@@ -950,12 +983,16 @@ function initializePage(pageName) {
             }
         },
         function (err) {
-            console.error("Hiba a getPageStatus híváskor:", err);
-            const splash = document.getElementById(pageName + '-splash');
-            const content = document.getElementById(pageName + '-content');
+            console.warn("getPageStatus fallback (" + pageName + "):", err.message || err);
             if (splash && content) {
-                splash.style.display = 'block';
-                content.style.display = 'none';
+                // Ha már látta helyileg, vagy aktív a játékos, nem rekesztjük a splash-be
+                if (isLocallySeen || window.userTutorialCompleted) {
+                    splash.style.display = 'none';
+                    content.style.display = 'block';
+                } else {
+                    splash.style.display = 'block';
+                    content.style.display = 'none';
+                }
             }
         }
     );

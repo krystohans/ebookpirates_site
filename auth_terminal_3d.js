@@ -277,6 +277,8 @@ export function initThree() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.domElement.tabIndex = 0;
+    renderer.domElement.style.outline = 'none';
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
@@ -1113,11 +1115,13 @@ function setupDirectKeyboardAndRaycast() {
             const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
 
             if (objName.includes('info') || parentName.includes('info') || hit.object.material === infoMaterial) {
+                blurVirtualInput();
                 toggle3DInfoMode();
                 break;
             }
 
             if (objName.includes('fokusz') || parentName.includes('fokusz') || hit.object.material === fokuszMaterial || objName === 'mesh_0.010') {
+                blurVirtualInput();
                 focusOnScreen();
                 terminalStatusText = "CAMERA FOCUSED // SCREEN RETICLE LOCKED";
                 isStatusError = false;
@@ -1126,22 +1130,26 @@ function setupDirectKeyboardAndRaycast() {
             }
 
             if (hit.object.userData && hit.object.userData.lang) {
+                blurVirtualInput();
                 handleLangSwitch(hit.object.userData.lang);
                 break;
             }
-            if (objName.includes('magyar') || parentName.includes('magyar') || objName === 'mesh_0.002') { handleLangSwitch('hu'); break; }
-            if (objName.includes('angol') || parentName.includes('angol') || objName === 'mesh_0.003') { handleLangSwitch('en'); break; }
-            if (objName.includes('nemet') || parentName.includes('nemet') || objName === 'mesh_0.004') { handleLangSwitch('de'); break; }
-            if (objName.includes('francia') || parentName.includes('francia') || objName === 'mesh_0.005') { handleLangSwitch('fr'); break; }
-            if (objName.includes('spanyol') || parentName.includes('spanyol') || objName === 'mesh_0.006') { handleLangSwitch('es'); break; }
-            if (objName.includes('lengyel') || parentName.includes('lengyel') || objName === 'mesh_0.007') { handleLangSwitch('pl'); break; }
-            if (objName.includes('orosz') || parentName.includes('orosz') || objName === 'mesh_0.008') { handleLangSwitch('ru'); break; }
+            if (objName.includes('magyar') || parentName.includes('magyar') || objName === 'mesh_0.002') { blurVirtualInput(); handleLangSwitch('hu'); break; }
+            if (objName.includes('angol') || parentName.includes('angol') || objName === 'mesh_0.003') { blurVirtualInput(); handleLangSwitch('en'); break; }
+            if (objName.includes('nemet') || parentName.includes('nemet') || objName === 'mesh_0.004') { blurVirtualInput(); handleLangSwitch('de'); break; }
+            if (objName.includes('francia') || parentName.includes('francia') || objName === 'mesh_0.005') { blurVirtualInput(); handleLangSwitch('fr'); break; }
+            if (objName.includes('spanyol') || parentName.includes('spanyol') || objName === 'mesh_0.006') { blurVirtualInput(); handleLangSwitch('es'); break; }
+            if (objName.includes('lengyel') || parentName.includes('lengyel') || objName === 'mesh_0.007') { blurVirtualInput(); handleLangSwitch('pl'); break; }
+            if (objName.includes('orosz') || parentName.includes('orosz') || objName === 'mesh_0.008') { blurVirtualInput(); handleLangSwitch('ru'); break; }
 
             if (hit.object.material === screenMaterial || objName.includes('screen') || parentName.includes('screen') || objName.includes('mesh_0.001')) {
+                if (event.cancelable) {
+                    event.preventDefault();
+                }
                 if (hit.uv) {
-                    handleScreenUVClick(hit.uv);
+                    handleScreenUVClick(hit.uv, event.clientX, event.clientY);
                 } else {
-                    focusVirtualInput();
+                    focusVirtualInput(event.clientX, event.clientY);
                 }
                 break;
             }
@@ -1204,7 +1212,17 @@ function setupDirectKeyboardAndRaycast() {
         virtualInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                executeCurrentMode();
+                const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
+                if (activeFieldIndex < maxFields - 1) {
+                    activeFieldIndex++;
+                    terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
+                    isStatusError = false;
+                    focusVirtualInput();
+                    updateScreenDisplay();
+                } else {
+                    blurVirtualInput();
+                    executeCurrentMode();
+                }
             } else if (e.key === 'Tab') {
                 e.preventDefault();
                 const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
@@ -1213,12 +1231,23 @@ function setupDirectKeyboardAndRaycast() {
                 isStatusError = false;
                 focusVirtualInput();
                 updateScreenDisplay();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                blurVirtualInput();
             }
         });
 
         virtualInput.addEventListener('focus', () => {
             cursorVisible = true;
             updateScreenDisplay();
+        });
+
+        virtualInput.addEventListener('blur', () => {
+            cursorVisible = false;
+            updateScreenDisplay();
+            if (renderer && renderer.domElement) {
+                try { renderer.domElement.focus(); } catch(e) {}
+            }
         });
     }
 }
@@ -1268,12 +1297,13 @@ export function syncModalInputsFrom3D() {
     setVal('m-del-reason', formValues.DEREGISTER.reason);
 }
 
-function handleScreenUVClick(uv) {
+function handleScreenUVClick(uv, clickX, clickY) {
     const pxX = uv.x * 1024;
     const pxY = (1 - uv.y) * 512;
 
     // Felső tabok kattintása
     if (pxY >= 20 && pxY <= 75) {
+        blurVirtualInput();
         if (pxX >= 620 && pxX < 745) {
             switchMode('LOGIN');
             return;
@@ -1289,6 +1319,7 @@ function handleScreenUVClick(uv) {
     // Info mód bezáró gomb
     if (currentMode === 'INFO') {
         if (pxY >= 355 && pxY <= 425 && pxX >= 45 && pxX <= 979) {
+            blurVirtualInput();
             switchMode(previousMode || 'LOGIN');
             return;
         }
@@ -1305,54 +1336,71 @@ function handleScreenUVClick(uv) {
             activeFieldIndex = 0;
             terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY > 230 && pxY <= 340) {
             activeFieldIndex = 1;
             terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY >= 355 && pxY <= 440) {
+            blurVirtualInput();
             executeCurrentMode();
         } else {
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         }
     } else if (currentMode === 'REGISTER') {
         if (pxY >= 100 && pxY <= 230) {
             activeFieldIndex = 0;
             terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY > 230 && pxY <= 340) {
             activeFieldIndex = 1;
             terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
             isStatusError = false;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY >= 355 && pxY <= 440) {
+            blurVirtualInput();
             executeCurrentMode();
         } else {
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         }
     } else if (currentMode === 'DEREGISTER') {
         if (pxY >= 100 && pxY <= 190) {
             activeFieldIndex = 0;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY > 190 && pxY <= 270) {
             activeFieldIndex = 1;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY > 270 && pxY <= 350) {
             activeFieldIndex = 2;
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         } else if (pxY >= 355 && pxY <= 440) {
+            blurVirtualInput();
             executeCurrentMode();
         } else {
-            focusVirtualInput();
+            focusVirtualInput(clickX, clickY);
         }
     }
 
     updateScreenDisplay();
 }
 
-function focusVirtualInput() {
+export function blurVirtualInput() {
+    if (!virtualInput) return;
+    try {
+        virtualInput.blur();
+    } catch(e) {}
+    cursorVisible = false;
+    updateScreenDisplay();
+    if (renderer && renderer.domElement) {
+        try {
+            renderer.domElement.focus();
+        } catch(e) {}
+    }
+}
+
+function focusVirtualInput(touchX, touchY) {
     if (!virtualInput) return;
     const targetFieldKey = getActiveFieldKey();
     if (targetFieldKey && formValues[currentMode]) {
@@ -1360,6 +1408,11 @@ function focusVirtualInput() {
         if (virtualInput.value !== val) {
             virtualInput.value = val;
         }
+    }
+
+    if (typeof touchX === 'number' && typeof touchY === 'number') {
+        virtualInput.style.left = Math.max(0, Math.min(window.innerWidth - 30, touchX - 10)) + 'px';
+        virtualInput.style.top = Math.max(0, Math.min(window.innerHeight - 30, touchY - 10)) + 'px';
     }
 
     if (targetFieldKey === 'email') {
@@ -1758,6 +1811,8 @@ window.onModalBackdropClick = onModalBackdropClick;
 window.handleLangSwitch = handleLangSwitch;
 window.initThreeTerminal = initThree;
 window.setTerminalStatus = setTerminalStatus;
+window.blurVirtualInput = blurVirtualInput;
+window.focusVirtualInput = focusVirtualInput;
 
 if (document.readyState === 'loading') {
     window.addEventListener('DOMContentLoaded', initThree);

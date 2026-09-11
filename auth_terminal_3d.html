@@ -2403,40 +2403,7 @@
         let flightPathCurve = null;
         let flightTargetCurve = null;
         let flightOnComplete = null;
-        let warpLinesMesh = null;
         let initialCameraFov = 50;
-
-        function initWarpLines() {
-            if (warpLinesMesh || !scene) return;
-            const lineCount = 220;
-            const geometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(lineCount * 6);
-            
-            for (let i = 0; i < lineCount; i++) {
-                const x = (Math.random() - 0.5) * 22;
-                const y = (Math.random() - 0.5) * 18;
-                const z = -Math.random() * 36;
-                const len = 1.5 + Math.random() * 4.0;
-                
-                positions[i * 6] = x;
-                positions[i * 6 + 1] = y;
-                positions[i * 6 + 2] = z;
-                positions[i * 6 + 3] = x;
-                positions[i * 6 + 4] = y;
-                positions[i * 6 + 5] = z - len;
-            }
-            
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const material = new THREE.LineBasicMaterial({
-                color: 0x66ffff,
-                transparent: true,
-                opacity: 0.0,
-                blending: THREE.AdditiveBlending
-            });
-            
-            warpLinesMesh = new THREE.LineSegments(geometry, material);
-            scene.add(warpLinesMesh);
-        }
 
         function startHyperspaceCinematic(onComplete) {
             if (!camera || !scene) {
@@ -2455,32 +2422,52 @@
             const currentPos = camera.position.clone();
             const currentTarget = (controls && controls.target) ? controls.target.clone() : new THREE.Vector3(0, 0.15, 0);
 
-            // 1. Kamera útvonal: Konzol elől távolodás -> balról megkerülés -> jobbra fordulva rágyorsítás a kozmosz bolygójára
+            // 1. Kamera útvonal: Konzol elől távolodás -> balról teljes megkerülés -> jobbra kanyarodva rágyorsítás a kozmosz bolygójára
             flightPathCurve = new THREE.CatmullRomCurve3([
                 currentPos,
-                new THREE.Vector3(-0.9, 0.95, 3.6),   // 1. Eltávolodás és emelkedés a konzoltól
-                new THREE.Vector3(-3.2, 1.4, 0.3),    // 2. Konzol balról megkerülése
-                new THREE.Vector3(-1.8, 1.7, -4.5),   // 3. Elhagyja a konzolt, kanyarodás jobbra
-                new THREE.Vector3(0.5, 2.0, -14.0),   // 4. Jobbra fordulva hiperhajtómű gyorsulás
-                new THREE.Vector3(2.2, 1.6, -26.5)    // 5. Ráközelítés a gömbpalást bolygó képére (radius 30 köpeny előtt)
+                new THREE.Vector3(-1.2, 1.1, 4.0),   // 1. Eltávolodás és emelkedés a konzoltól
+                new THREE.Vector3(-4.2, 1.6, 0.5),   // 2. Konzol balról megkerülése
+                new THREE.Vector3(-2.5, 2.2, -4.5),  // 3. Konzol mögé érve jobbra kanyarodás
+                new THREE.Vector3(4.5, 2.5, -6.0),   // 4. Teljes 90 fokos ív jobbra a bolygó irányába
+                new THREE.Vector3(16.0, 2.8, 1.5),   // 5. Nagy sebességű hipergyorsulás a bolygó felé
+                new THREE.Vector3(25.5, 2.2, 8.0)    // 6. Ráközelítés a gömbpalást bolygó képére (radius 30 előtt)
             ]);
 
             // 2. Kamera fókuszpont (lookAt) útvonal
             flightTargetCurve = new THREE.CatmullRomCurve3([
                 currentTarget,
                 new THREE.Vector3(0, 0.2, 0),
-                new THREE.Vector3(-0.6, 0.4, -4.0),
-                new THREE.Vector3(1.5, 1.2, -18.0),
-                new THREE.Vector3(3.0, 1.5, -29.8)   // Gömbpalást felfeszített képének közepe
+                new THREE.Vector3(-0.5, 0.5, -3.0),
+                new THREE.Vector3(3.0, 1.2, -8.0),
+                new THREE.Vector3(14.0, 2.0, -3.0),
+                new THREE.Vector3(28.5, 2.4, 9.5)   // Gömbpalást felfeszített bolygó textúrájának pontos közepe
             ]);
-
-            initWarpLines();
-            if (warpLinesMesh) warpLinesMesh.material.opacity = 0.0;
 
             isCinematicFlight = true;
             flightStartTime = performance.now();
             flightDuration = 3800; // ~3.8 mp
             flightOnComplete = onComplete;
+        }
+
+        function reset3DTerminalState() {
+            isCinematicFlight = false;
+            if (camera) {
+                camera.position.set(0, 0.35, 2.6);
+                camera.fov = 45;
+                camera.updateProjectionMatrix();
+            }
+            if (controls) {
+                controls.enabled = true;
+                controls.target.set(0, 0.15, 0);
+                controls.update();
+            }
+            if (renderer && renderer.domElement) {
+                renderer.domElement.style.filter = 'none';
+            }
+            terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
+            isStatusError = false;
+            switchMode('LOGIN');
+            updateScreenDisplay();
         }
 
         // --- RENDER & ANIMÁCIÓS CIKLUS ---
@@ -2529,26 +2516,14 @@
                 camera.lookAt(newTarget);
                 if (controls) controls.target.copy(newTarget);
 
-                // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 78 -> 50)
+                // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 76 -> 50)
                 if (progress > 0.2) {
                     const fovFactor = Math.sin((progress - 0.2) / 0.8 * Math.PI);
-                    camera.fov = initialCameraFov + fovFactor * 28;
+                    camera.fov = initialCameraFov + fovFactor * 26;
                     camera.updateProjectionMatrix();
                 }
 
-                // Warp fénycsíkok megjelenítése és animálása a kamera körül
-                if (warpLinesMesh) {
-                    if (progress > 0.15 && progress < 0.95) {
-                        warpLinesMesh.material.opacity = Math.min(0.85, (progress - 0.15) * 3.0);
-                        warpLinesMesh.position.copy(camera.position);
-                        warpLinesMesh.rotation.y += 0.03;
-                        warpLinesMesh.rotation.z += 0.01;
-                    } else {
-                        warpLinesMesh.material.opacity = Math.max(0, warpLinesMesh.material.opacity - 0.08);
-                    }
-                }
-
-                // Kiszürkülés (Grayscale) és finom sötétülés mielőtt eléri a gömbpalástot (progress > 0.60)
+                // Kiszürkülés (Grayscale) és finom sötétülés mielőtt eléri a gömbpalástot (progress > 0.58)
                 if (renderer && renderer.domElement) {
                     if (progress > 0.58) {
                         const grayProgress = (progress - 0.58) / 0.42; // 0.0 -> 1.0
@@ -2586,6 +2561,7 @@
         window.onModalBackdropClick = onModalBackdropClick;
         window.handleLangSwitch = handleLangSwitch;
         window.startHyperspaceCinematic = startHyperspaceCinematic;
+        window.reset3DTerminalState = reset3DTerminalState;
 
         if (document.readyState === 'loading') {
             window.addEventListener('DOMContentLoaded', initThree);

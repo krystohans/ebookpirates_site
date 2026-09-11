@@ -615,18 +615,8 @@ function logout() {
     // Globális változók nullázása
     if (typeof currentUserEmail !== 'undefined') currentUserEmail = '';
 
-    // Védett nézet elrejtése, 3D Terminál és Mobil Dokk aktiválása
-    var appView = document.getElementById('app-view');
-    if (appView) appView.style.display = 'none';
-    var auth3d = document.getElementById('auth-3d-container');
-    if (auth3d) auth3d.style.display = 'block';
-    var mobDock = document.getElementById('mobile-input-dock');
-    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(max-width: 820px)').matches;
-    if (mobDock) mobDock.style.display = isTouch ? 'block' : 'none';
-
-    if (typeof window.setTerminalStatus === 'function') {
-        window.setTerminalStatus("KIJELENTKEZVE // KÉRJÜK LÉPJ BE ISMÉT");
-    }
+    // Tiszta frissítés a belépő aloldalra, hogy a 3D kamera és vezérlő fókuszba álljon
+    window.location.href = 'index.html';
 }
 
 /**

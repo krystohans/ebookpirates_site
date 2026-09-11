@@ -19,6 +19,8 @@ global_dev_context.txt
 Archy_Master.code-workspace
 *.code-workspace
 *.py
+auth_terminal_3d.js
+*auth_terminal_3d.js*
 
 # 3D models and media assets (Cloud GCS bucket used instead)
 *.blend

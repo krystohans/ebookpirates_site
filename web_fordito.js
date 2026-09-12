@@ -70,6 +70,7 @@ const translations = {
         'header_treasures': 'Kincsek',
         'header_credits_tooltip': 'Kreditegyenleg frissítése',
         'header_back_to_port': 'Vissza a kikötőbe',
+        'header_logout': 'Hebok elhagyása',
 
         // --- Kikoto ---
         'harbor_title': 'Kikötő',
@@ -1273,6 +1274,7 @@ const translations = {
         'header_treasures': 'Treasures',
         'header_credits_tooltip': 'Refresh credit balance',
         'header_back_to_port': 'Back to the harbor',
+        'header_logout': 'Leaving Hebok',
 
         // --- Harbor ---
         'harbor_title': 'Harbor',
@@ -2477,6 +2479,7 @@ const translations = {
         'header_treasures': 'Schätze',
         'header_credits_tooltip': 'Guthaben aktualisieren',
         'header_back_to_port': 'Zurück zum Hafen',
+        'header_logout': 'Hebok verlassen',
 
         // --- Hafen ---
         'harbor_title': 'Hafen',
@@ -3666,6 +3669,7 @@ const translations = {
         'header_treasures': 'Trésors',
         'header_credits_tooltip': 'Actualiser le solde',
         'header_back_to_port': 'Retour au port',
+        'header_logout': 'Quitter Hebok',
 
         // --- Port ---
         'harbor_title': 'Port',
@@ -4863,6 +4867,7 @@ const translations = {
         'header_treasures': 'Tesoros',
         'header_credits_tooltip': 'Actualizar saldo',
         'header_back_to_port': 'Volver al puerto',
+        'header_logout': 'Abandonar Hebok',
 
         // --- Puerto ---
         'harbor_title': 'Puerto',
@@ -6051,6 +6056,7 @@ const translations = {
         'header_treasures': 'Skarby',
         'header_credits_tooltip': 'Odśwież saldo',
         'header_back_to_port': 'Powrót do portu',
+        'header_logout': 'Opuszczenie Hebok',
 
         // --- Port ---
         'harbor_title': 'Port',
@@ -7239,6 +7245,7 @@ const translations = {
         'header_treasures': 'Сокровища',
         'header_credits_tooltip': 'Обновить баланс',
         'header_back_to_port': 'Назад в порт',
+        'header_logout': 'Покинуть Hebok',
 
         // --- Порт ---
         'harbor_title': 'Порт',

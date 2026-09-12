@@ -502,7 +502,11 @@ function initializeApp(user) {
         sessionStorage.setItem('ebookPiratesLoginName', user.name || '');
         sessionStorage.setItem('cached_user_data', JSON.stringify(user));
     } catch(e) {}
-    document.querySelector('.header-title').innerText = user.name;
+    var displayName = (user && user.name) ? user.name : (localStorage.getItem('ebook_pirates_username') || 'Turista');
+    var userEl = document.getElementById('header-user-name');
+    if (userEl) userEl.innerText = displayName;
+    var titleEl = document.querySelector('.header-title');
+    if (titleEl) titleEl.innerText = displayName;
     ensureCreditDisplayIsPresent();
 
     // 3D Terminál, Mobil Dokk és 2D Login elrejtése
@@ -521,9 +525,12 @@ function initializeApp(user) {
     preloadLoadingGif();
 
     // Eseménykezelők
-    document.getElementById('creditCell').onclick = updateCreditDisplay;
-    document.getElementById('libraryLink').onclick = function () { loadPage('konyvtar'); };
-    document.getElementById('treasuresLink').onclick = function () { loadPage('kincsek'); };
+    var creditCellEl = document.getElementById('creditCell');
+    if (creditCellEl) creditCellEl.onclick = updateCreditDisplay;
+    var libLinkEl = document.getElementById('libraryLink');
+    if (libLinkEl) libLinkEl.onclick = function () { loadPage('konyvtar'); };
+    var treasLinkEl = document.getElementById('treasuresLink');
+    if (treasLinkEl) treasLinkEl.onclick = function () { loadPage('kincsek'); };
 
     // --- MARKETING ÁTIRÁNYÍTÁS ---
     if (window.pendingMarketingData) {
@@ -626,6 +633,88 @@ function logout() {
 
     // Tiszta frissítés a belépő aloldalra, hogy a 3D kamera és vezérlő fókuszba álljon
     window.location.href = 'index.html';
+}
+
+// ==========================================
+// === KALÓZKREDIT BEOLVASÁS ÉS FRISSÍTÉS ===
+// ==========================================
+
+function updateCreditDisplay() {
+    var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
+    if (!currentUserEmail && !token) return;
+    var creditValEl = document.getElementById('creditValue');
+    if (creditValEl) {
+        creditValEl.innerText = (typeof t === 'function') ? t('credit_loading') : '...';
+    }
+
+    // ÜRES TÖMB a paraméter, mert a Backend automatikusan megkapja az Emailt / Tokent!
+    callBackend('getPirateCredit', [],
+        function (credit) {
+            var creditValEl = document.getElementById('creditValue');
+            if (creditValEl) {
+                creditValEl.innerText = (credit !== undefined && credit !== null) ? credit : '0';
+            }
+        },
+        function (error) {
+            var creditValEl = document.getElementById('creditValue');
+            if (creditValEl) {
+                creditValEl.innerText = (typeof t === 'function') ? t('credit_error') : '0';
+            }
+        }
+    );
+}
+
+function ensureCreditDisplayIsPresent() {
+    if (!document.getElementById('creditValue')) {
+        console.warn("Hiba: A 'creditValue' HTML elem nem található a fejlécben!");
+    }
+}
+
+// =======================================================
+// === FEJLÉC VEZÉRLŐK (NYELVVÁLASZTÓ ÉS MOBIL MENÜ) ===
+// =======================================================
+
+function toggleHeaderLangDropdown(event, forceState) {
+    if (event && event.stopPropagation) event.stopPropagation();
+    var dropdown = document.getElementById('header-lang-dropdown');
+    if (!dropdown) return;
+    var mobilePopup = document.getElementById('header-mobile-popup');
+    if (mobilePopup) mobilePopup.style.display = 'none';
+
+    if (typeof forceState === 'boolean') {
+        dropdown.style.display = forceState ? 'flex' : 'none';
+    } else {
+        dropdown.style.display = (dropdown.style.display === 'none' || !dropdown.style.display) ? 'flex' : 'none';
+    }
+}
+
+function toggleHeaderMobileSettings(event, forceState) {
+    if (event && event.stopPropagation) event.stopPropagation();
+    var popup = document.getElementById('header-mobile-popup');
+    if (!popup) return;
+    var langDropdown = document.getElementById('header-lang-dropdown');
+    if (langDropdown) langDropdown.style.display = 'none';
+
+    if (typeof forceState === 'boolean') {
+        popup.style.display = forceState ? 'flex' : 'none';
+    } else {
+        popup.style.display = (popup.style.display === 'none' || !popup.style.display) ? 'flex' : 'none';
+    }
+}
+
+// Globális kattintás figyelő a felugró fejlécpanelek bezárására
+if (typeof document !== 'undefined' && !window._headerDropdownListenerBound) {
+    window._headerDropdownListenerBound = true;
+    document.addEventListener('click', function(e) {
+        var langDropdown = document.getElementById('header-lang-dropdown');
+        if (langDropdown && langDropdown.style.display !== 'none') {
+            langDropdown.style.display = 'none';
+        }
+        var mobilePopup = document.getElementById('header-mobile-popup');
+        if (mobilePopup && mobilePopup.style.display !== 'none') {
+            mobilePopup.style.display = 'none';
+        }
+    });
 }
 
 /**

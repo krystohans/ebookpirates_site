@@ -35,91 +35,307 @@ html {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: 100vw;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#app-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'BriskB';
+    src: url('assets/fonts/Briskb.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
 }
 
 /* ========================================= */
-/* === 2. FEJLÉC (VISSZAÁLLÍTVA) === */
+/* === 2. FEJLÉC (3D STEAMPUNK & KALÓZ STÍLUS) === */
 /* ========================================= */
 #header {
     flex: 0 0 auto;
-    /* Nem zsugorodhat, nem nőhet */
     width: 100%;
+    max-width: 100%;
+    height: 66px;
     box-sizing: border-box;
-    /* Padding nem növeli a méretet */
-    padding: 10px 20px;
-    background-color: #fff;
-    border-bottom: 3px solid var(--color-accent);
+    background: url('assets/images/monolog_window.png') no-repeat center center;
+    background-size: 100% 100%;
+    border: none;
     display: flex;
     justify-content: space-between;
-    /* Cím balra, Statisztika középen/jobbra, X jobbra */
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    margin: 0;
+    padding: 0 calc(20px + 17px) 0 30px; /* Balról 30px (+20px beljebb a névtáblának), jobbról 37px (+20px beljebb a kilépés ikonnak a görgetősáv mellett) */
+    z-index: 1000;
+    position: relative;
+    user-select: none;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.85));
 }
 
-.header-title {
-    font-size: 1.3em;
-    font-weight: bold;
-    color: var(--color-accent);
-    font-family: var(--font-serif);
-    white-space: nowrap;
-}
-
-#header-stats {
+/* 1. Névtábla zóna (áttetsző szövegkonténer a teljes fejléc fatábla háttere felett) */
+.header-nameplate {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 4px;
+    box-sizing: border-box;
+    flex-shrink: 1;
+    min-width: 70px;
+    max-width: 280px;
+    overflow: hidden;
+}
+
+.header-username-text {
+    font-family: 'BriskB', 'Georgia', serif;
+    font-size: 33px;
+    font-weight: bold;
+    color: #2b1704;
+    text-shadow: 0 1px 1px rgba(255, 235, 180, 0.9), 0 -1px 1px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    max-width: 100%;
+    line-height: 1;
+    letter-spacing: 0.5px;
+}
+
+/* 2. Középső akciók: Kreditek, Könyvtár, Kincsek */
+#header-main-actions {
+    display: flex;
+    gap: 16px;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
-    /* Kitölti a helyet középen */
+    flex-shrink: 0;
 }
 
-.header-stat-item {
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.9em;
+.header-action-btn {
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    transition: background 0.2s;
-}
-
-.header-stat-item:hover {
-    background-color: #e0e0e0;
-}
-
-#creditCell i {
-    color: #f0ad4e;
-}
-
-.header-close-icon {
-    font-size: 1.5em;
-    cursor: pointer;
-    color: #666;
-    margin-left: 15px;
-    transition: 0.2s;
+    justify-content: center;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.15s ease;
     flex-shrink: 0;
-    /* Biztosítja, hogy ne nyomódjon össze */
-    font-weight: bold;
-    /* Az X karakter legyen vastag és jól látható */
-    line-height: 1;
-    /* Pontosabb függőleges igazítás */
-    min-width: 24px;
-    /* Garantált szélesség */
-    text-align: center;
-    /* középre igazítás */
-    display: inline-block;
-    /* Hogy a méretek érvényesüljenek */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
-.header-close-icon:hover {
-    color: #000;
-    transform: scale(1.1);
+.header-action-btn:hover {
+    transform: scale(1.12) translateY(-2px);
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 8px rgba(255, 215, 0, 0.85));
+}
+
+.header-action-btn:active {
+    transform: scale(0.95) translateY(0);
+}
+
+.header-icon-img {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+.credit-btn {
+    gap: 8px;
+    background: rgba(20, 12, 5, 0.65);
+    border: 2px solid #8b5a2b;
+    border-radius: 24px;
+    padding: 2px 14px 2px 6px;
+    height: 48px;
+    box-sizing: border-box;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.credit-btn .header-icon-img {
+    width: 40px;
+    height: 40px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+#creditValue {
+    font-family: 'BriskB', monospace;
+    font-size: 21px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    letter-spacing: 1px;
+}
+
+/* 3. Jobb oldali vezérlők: Horgony, Földgömb, Kilépés */
+#header-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.header-desktop-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+#header-exit-btn:hover {
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 10px rgba(255, 70, 70, 0.9));
+}
+
+.header-lang-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Földgömb alatti nyelvválasztó dropdown */
+.header-popup-menu {
+    position: absolute;
+    top: 54px;
+    right: -6px;
+    background: linear-gradient(180deg, #2e2118 0%, #1a120c 100%);
+    border: 2px solid #8b5a2b;
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+.lang-flag-btn {
+    background: transparent;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+}
+
+.lang-flag-btn:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.9));
+}
+
+.lang-flag-btn img {
+    width: 40px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Mobil / Szűk képernyő Beállítások Összevonás */
+.header-mobile-settings-wrapper {
+    position: relative;
+    display: none;
+    align-items: center;
+}
+
+.mobile-settings-popup {
+    top: 52px;
+    right: 0;
+    min-width: 200px;
+    padding: 10px;
+}
+
+.mobile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: #ffea00;
+    font-family: 'BriskB', 'Courier New', monospace;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background 0.15s ease;
+}
+
+.mobile-menu-item:hover {
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.menu-item-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.mobile-menu-divider {
+    width: 100%;
+    height: 1px;
+    background: #8b5a2b;
+    margin: 6px 0;
+}
+
+.mobile-lang-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+    justify-items: center;
+}
+
+.mobile-lang-grid .lang-flag-btn img {
+    width: 34px;
+    height: 38px;
+}
+
+.logout-item {
+    color: #ff6666 !important;
+}
+
+/* Reszponzív nézetek */
+@media (max-width: 860px) {
+    #header {
+        padding: 0 calc(12px + 17px) 0 16px;
+        height: 56px;
+    }
+    .header-desktop-controls {
+        display: none !important;
+    }
+    .header-mobile-settings-wrapper {
+        display: flex !important;
+    }
+    .header-username-text {
+        font-size: 18px;
+    }
+    #header-main-actions {
+        gap: 8px;
+    }
+    .credit-btn {
+        padding: 2px 8px 2px 4px;
+        height: 36px;
+    }
+    .credit-btn .header-icon-img {
+        width: 26px;
+        height: 26px;
+    }
+    #creditValue {
+        font-size: 16px;
+    }
+    .header-icon-img {
+        width: 34px;
+        height: 34px;
+    }
 }
 
 /* ========================================= */
@@ -1376,4 +1592,381 @@ button:disabled {
 .lang-btn.active {
     border-color: #8b0000;
     border-radius: 4px;
+}
+
+/* ========================================= */
+/* === 3D KOZMOSZ BELÉPTETŐ ÉS MODALOK === */
+/* ========================================= */
+#auth-3d-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    background-color: #020408;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+    color: #00ffcc;
+}
+
+#webgl-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    touch-action: none;
+}
+
+#screen-canvas {
+    display: none;
+}
+
+/* Láthatatlan virtuális beviteli mező (szoftveres billentyűzet stabil nyitva tartásához mobilon) */
+#virtual-input-capturer {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    opacity: 0.01;
+    pointer-events: auto;
+    font-size: 16px;
+    line-height: 1;
+    z-index: 999;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    color: transparent !important;
+    caret-color: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-user-select: auto;
+    user-select: auto;
+    -webkit-touch-callout: none;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.info-toggle-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(5, 14, 24, 0.85);
+    border: 2px solid rgba(0, 255, 204, 0.5);
+    color: #00ffcc;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 204, 0.3);
+    transition: all 0.3s ease;
+}
+
+.info-toggle-btn:hover {
+    transform: scale(1.15) rotate(15deg);
+    border-color: #00ffcc;
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.7);
+    background: rgba(0, 255, 204, 0.15);
+}
+
+#info-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(2, 6, 12, 0.85);
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.info-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    background: rgba(5, 14, 24, 0.96);
+    border: 2px solid rgba(0, 255, 204, 0.5);
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 204, 0.2);
+    color: #e0f8f2;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    color: #00ffcc;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    border-color: #ff4444;
+    color: #ff4444;
+    transform: scale(1.1);
+}
+
+.modal-title {
+    font-family: 'Pirata One', cursive;
+    font-size: 30px;
+    color: #00ffcc;
+    text-shadow: 0 0 12px rgba(0, 255, 204, 0.5);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-lang-switch {
+    display: flex;
+    gap: 8px;
+    background: rgba(2, 8, 15, 0.8);
+    border: 1px solid rgba(0, 255, 204, 0.25);
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin-bottom: 18px;
+    justify-content: center;
+}
+
+.guide-section {
+    background: rgba(0, 255, 204, 0.04);
+    border: 1px solid rgba(0, 255, 204, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.guide-section h4 {
+    color: #00ffcc;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.guide-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.guide-list li {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.guide-list i {
+    color: #00ffcc;
+    margin-top: 3px;
+}
+
+.modal-mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.modal-tab-btn {
+    background: rgba(0, 255, 204, 0.08);
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    color: #88c0b0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 10px 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.modal-tab-btn:hover {
+    background: rgba(0, 255, 204, 0.2);
+    color: #00ffcc;
+    border-color: #00ffcc;
+}
+
+.modal-tab-btn.active {
+    background: rgba(0, 255, 204, 0.3);
+    color: #ffffff;
+    border-color: #00ffcc;
+    box-shadow: 0 0 12px rgba(0, 255, 204, 0.4);
+}
+
+.accessible-form-container {
+    background: rgba(2, 10, 18, 0.85);
+    border: 1px solid rgba(0, 255, 204, 0.25);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-form-group {
+    margin-bottom: 12px;
+}
+
+.modal-form-group label {
+    display: block;
+    font-size: 11px;
+    color: #00ffcc;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-input {
+    width: 100%;
+    background: #1e222b !important;
+    background-color: #1e222b !important;
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: 6px;
+    padding: 9px 12px;
+    color: #ffffff !important;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    background: #282e3a !important;
+    background-color: #282e3a !important;
+    border-color: #00ffcc;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+    color: #ffffff !important;
+}
+
+.modal-input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.modal-input:-webkit-autofill,
+.modal-input:-webkit-autofill:hover, 
+.modal-input:-webkit-autofill:focus, 
+.modal-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #1e222b inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.modal-submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    color: #021210;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+}
+
+.modal-submit-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 255, 204, 0.5);
+}
+
+.camera-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.cam-action-btn {
+    background: rgba(0, 255, 204, 0.05);
+    border: 1px solid rgba(0, 255, 204, 0.25);
+    color: #88c0b0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.cam-action-btn:hover {
+    background: rgba(0, 255, 204, 0.15);
+    color: #00ffcc;
+    border-color: #00ffcc;
+}
+
+#loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #020408;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease;
+}
+
+.loader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(0, 255, 204, 0.1);
+    border-top: 3px solid #00ffcc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#mobile-keyboard-bar {
+    display: none !important;
 }

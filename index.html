@@ -10,407 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=20260528_2">
+    <link rel="stylesheet" href="styles.css?v=20260912_3">
     <link rel="icon" href="data:,">
-
-    <style>
-        /* 3D Kozmosz Beléptető Stílusok */
-        #auth-3d-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 999;
-            background-color: #020408;
-            overflow: hidden;
-            font-family: 'Share Tech Mono', monospace;
-            color: #00ffcc;
-        }
-
-        #webgl-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            touch-action: none;
-        }
-
-        #screen-canvas {
-            display: none;
-        }
-
-        /* Láthatatlan virtuális beviteli mező (szoftveres billentyűzet stabil nyitva tartásához mobilon) */
-        #virtual-input-capturer {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            opacity: 0.01;
-            pointer-events: auto;
-            font-size: 16px;
-            line-height: 1;
-            z-index: 999;
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
-            color: transparent !important;
-            caret-color: transparent !important;
-            box-shadow: none !important;
-            text-shadow: none !important;
-            -webkit-user-select: auto;
-            user-select: auto;
-            -webkit-touch-callout: none;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        .info-toggle-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: rgba(5, 14, 24, 0.85);
-            border: 2px solid rgba(0, 255, 204, 0.5);
-            color: #00ffcc;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 204, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .info-toggle-btn:hover {
-            transform: scale(1.15) rotate(15deg);
-            border-color: #00ffcc;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.7);
-            background: rgba(0, 255, 204, 0.15);
-        }
-
-        #info-modal {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(2, 6, 12, 0.85);
-            z-index: 50;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-        }
-
-        .info-modal-content {
-            position: relative;
-            width: 100%;
-            max-width: 540px;
-            background: rgba(5, 14, 24, 0.96);
-            border: 2px solid rgba(0, 255, 204, 0.5);
-            border-radius: 16px;
-            padding: 24px 28px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 204, 0.2);
-            color: #e0f8f2;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: transparent;
-            border: 1px solid rgba(0, 255, 204, 0.3);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            color: #00ffcc;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .modal-close-btn:hover {
-            border-color: #ff4444;
-            color: #ff4444;
-            transform: scale(1.1);
-        }
-
-        .modal-title {
-            font-family: 'Pirata One', cursive;
-            font-size: 30px;
-            color: #00ffcc;
-            text-shadow: 0 0 12px rgba(0, 255, 204, 0.5);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modal-lang-switch {
-            display: flex;
-            gap: 8px;
-            background: rgba(2, 8, 15, 0.8);
-            border: 1px solid rgba(0, 255, 204, 0.25);
-            border-radius: 20px;
-            padding: 6px 12px;
-            margin-bottom: 18px;
-            justify-content: center;
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .lang-btn:hover {
-            transform: scale(1.2);
-            border-color: #00ffcc;
-            box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
-        }
-
-        .lang-btn.active {
-            border-color: #00ffcc;
-            box-shadow: 0 0 10px #00ffcc;
-            transform: scale(1.15);
-        }
-
-        .guide-section {
-            background: rgba(0, 255, 204, 0.04);
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 18px;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .guide-section h4 {
-            color: #00ffcc;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .guide-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .guide-list li {
-            margin-bottom: 5px;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .guide-list i {
-            color: #00ffcc;
-            margin-top: 3px;
-        }
-
-        .modal-mode-tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .modal-tab-btn {
-            background: rgba(0, 255, 204, 0.08);
-            border: 1px solid rgba(0, 255, 204, 0.3);
-            color: #88c0b0;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 10px 6px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-
-        .modal-tab-btn:hover {
-            background: rgba(0, 255, 204, 0.2);
-            color: #00ffcc;
-            border-color: #00ffcc;
-        }
-
-        .modal-tab-btn.active {
-            background: rgba(0, 255, 204, 0.3);
-            color: #ffffff;
-            border-color: #00ffcc;
-            box-shadow: 0 0 12px rgba(0, 255, 204, 0.4);
-        }
-
-        .accessible-form-container {
-            background: rgba(2, 10, 18, 0.85);
-            border: 1px solid rgba(0, 255, 204, 0.25);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .modal-form-group {
-            margin-bottom: 12px;
-        }
-
-        .modal-form-group label {
-            display: block;
-            font-size: 11px;
-            color: #00ffcc;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .modal-input {
-            width: 100%;
-            background: #1e222b !important;
-            background-color: #1e222b !important;
-            border: 1px solid rgba(0, 229, 255, 0.4);
-            border-radius: 6px;
-            padding: 9px 12px;
-            color: #ffffff !important;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .modal-input:focus {
-            background: #282e3a !important;
-            background-color: #282e3a !important;
-            border-color: #00ffcc;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-            color: #ffffff !important;
-        }
-
-        .modal-input::placeholder {
-            color: rgba(255, 255, 255, 0.55);
-        }
-
-        .modal-input:-webkit-autofill,
-        .modal-input:-webkit-autofill:hover, 
-        .modal-input:-webkit-autofill:focus, 
-        .modal-input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 1000px #1e222b inset !important;
-            -webkit-text-fill-color: #ffffff !important;
-            transition: background-color 5000s ease-in-out 0s;
-        }
-
-        .modal-submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
-            border: none;
-            border-radius: 8px;
-            padding: 11px;
-            color: #021210;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            margin-top: 6px;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
-        }
-
-        .modal-submit-btn:hover {
-            filter: brightness(1.15);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 255, 204, 0.5);
-        }
-
-        .camera-actions-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .cam-action-btn {
-            background: rgba(0, 255, 204, 0.05);
-            border: 1px solid rgba(0, 255, 204, 0.25);
-            color: #88c0b0;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-
-        .cam-action-btn:hover {
-            background: rgba(0, 255, 204, 0.15);
-            color: #00ffcc;
-            border-color: #00ffcc;
-        }
-
-        #loading-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #020408;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease;
-        }
-
-        .loader-spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(0, 255, 204, 0.1);
-            border-top: 3px solid #00ffcc;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #mobile-keyboard-bar {
-            display: none !important;
-        }
-    </style>
 
     <!-- Three.js és Kiegészítők Importmap -->
     <script type="importmap">
@@ -538,34 +139,84 @@
 
     <div id="app-view" style="display: none;">
         <div id="header">
-            <span class="header-title">eBookPirates</span>
-            
-            <div id="header-stats">
-                <div id="creditCell" class="header-stat-item" title="Kreditegyenleg frissítése" data-lang-title="header_credits_tooltip">
-                    <i class="fas fa-coins"></i> <span id="creditValue">0</span>
+            <!-- 1. Bal oldali zóna: Zozo_monolog_window_2 névtábla -->
+            <div class="header-nameplate" id="header-user-badge" title="Játékos Kalózprofil">
+                <span class="header-username-text" id="header-user-name">Turista</span>
+                <!-- Rejtett kompatibilitási elem meglévő kódrészletekhez -->
+                <span class="header-title" style="display: none;">Turista</span>
+            </div>
+
+            <!-- 2. Középső zóna: Kreditek, Könyvtár, Kincsek -->
+            <div id="header-main-actions">
+                <div id="creditCell" class="header-action-btn credit-btn" title="Kreditegyenleg frissítése" data-lang-title="header_credits_tooltip" onclick="updateCreditDisplay()">
+                    <img src="assets/images/eBookPirates_coin_r.png" alt="Kredit" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png'">
+                    <span id="creditValue">0</span>
                 </div>
-                <div id="libraryLink" class="header-stat-item" title="Könyvtár" data-lang-title="header_library">
-                    <i class="fas fa-book"></i> <span class="stat-label" data-lang="header_library">Könyvtár</span>
+                <div id="libraryLink" class="header-action-btn" title="Könyvtár" data-lang-title="header_library" onclick="loadPage('konyvtar')">
+                    <img src="assets/images/konyvtar_removebg.png" alt="Könyvtár" class="header-icon-img" onerror="this.src='assets/images/konyvtar-removebg-preview.png'">
                 </div>
-                <div id="treasuresLink" class="header-stat-item" title="Kincsek" data-lang-title="header_treasures">
-                    <i class="fas fa-gem"></i> <span class="stat-label" data-lang="header_treasures">Kincsek</span>
+                <div id="treasuresLink" class="header-action-btn" title="Kincsek" data-lang-title="header_treasures" onclick="loadPage('kincsek')">
+                    <img src="assets/images/lada_nocolor.png" alt="Kincsek" class="header-icon-img" onerror="this.src='assets/images/lada_nocolorjpg-removebg-preview.png'">
                 </div>
             </div>
-            <div>
-                <div class="lang-switch" aria-label="Nyelvvalaszto">
-                    <button type="button" class="lang-btn" data-lang="hu" title="Magyar"><span class="fi fi-hu"></span></button>
-                    <button type="button" class="lang-btn" data-lang="en" title="English"><span class="fi fi-gb"></span></button>
-                    <button type="button" class="lang-btn" data-lang="de" title="Deutsch"><span class="fi fi-de"></span></button>
-                    <button type="button" class="lang-btn" data-lang="fr" title="Francais"><span class="fi fi-fr"></span></button>
-                    <button type="button" class="lang-btn" data-lang="es" title="Espanol"><span class="fi fi-es"></span></button>
-                    <button type="button" class="lang-btn" data-lang="pl" title="Polski"><span class="fi fi-pl"></span></button>
-                    <button type="button" class="lang-btn" data-lang="ru" title="Russkiy"><span class="fi fi-ru"></span></button>
-                </div>
-                <div class="header-close-icon" onclick="loadPage('kikoto_oldal')" title="Vissza a kikötőbe" data-lang-title="header_back_to_port">
-                    <span id="close-icon-text">X</span>
-                    <img src="assets/icons/vissza.png" alt="X" style="height: 1em; width: auto; vertical-align: middle; display: none;" onload="this.style.display='inline'; document.getElementById('close-icon-text').style.display='none';" onerror="this.remove()">
+
+            <!-- 3. Jobb oldali vezérlők: Asztali gyorsgombok + Mobil beállítások -->
+            <div id="header-controls">
+                <!-- Asztali ikonsor -->
+                <div class="header-desktop-controls">
+                    <div class="header-action-btn" id="header-anchor-btn" title="Vissza a kikötőbe" data-lang-title="header_back_to_port" onclick="loadPage('kikoto_oldal')">
+                        <img src="assets/images/horgony_removebg.png" alt="Kikötő" class="header-icon-img" onerror="this.src='assets/images/horgony_removebg2.png'">
+                    </div>
+
+                    <!-- Földgömb + Nyelvválasztó lenyíló panel -->
+                    <div class="header-lang-wrapper">
+                        <div class="header-action-btn" id="header-lang-globe-btn" title="Nyelvválasztás" data-lang-title="header_lang_select" onclick="toggleHeaderLangDropdown(event)">
+                            <img src="assets/images/nyelvvalaszto.png" alt="Nyelv" class="header-icon-img">
+                        </div>
+                        <div id="header-lang-dropdown" class="header-popup-menu" style="display: none;" onclick="event.stopPropagation()">
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_hu-removebg-preview.png" alt="HU"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_en-removebg-preview.png" alt="EN"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_de-removebg-preview.png" alt="DE"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_fr-removebg-preview.png" alt="FR"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_es-removebg-preview.png" alt="ES"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_pl-removebg-preview.png" alt="PL"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_ru-removebg-preview.png" alt="RU"></button>
+                        </div>
+                    </div>
+
+                    <!-- Kilépés gomb -->
+                    <div class="header-action-btn" id="header-exit-btn" title="Hebok elhagyása" data-lang-title="header_logout" onclick="logout()">
+                        <img src="assets/images/exit-r 1.png" alt="Kilépés" class="header-icon-img">
+                    </div>
                 </div>
 
+                <!-- Mobil / Kis felbontás esetén megjelenő fogaskerék (settings_icon) -->
+                <div class="header-mobile-settings-wrapper">
+                    <div class="header-action-btn" id="header-mobile-settings-btn" title="Beállítások & Menü" data-lang-title="header_settings" onclick="toggleHeaderMobileSettings(event)">
+                        <img src="assets/images/settings_icon.png" alt="Beállítások" class="header-icon-img" onerror="this.src='assets/images/settings_removebg.png'">
+                    </div>
+                    <div id="header-mobile-popup" class="header-popup-menu mobile-settings-popup" style="display: none;" onclick="event.stopPropagation()">
+                        <div class="mobile-menu-item" onclick="loadPage('kikoto_oldal'); toggleHeaderMobileSettings(event, false);">
+                            <img src="assets/images/horgony_removebg.png" alt="Kikötő" class="menu-item-icon">
+                            <span data-lang="header_back_to_port">Kikötő</span>
+                        </div>
+                        <div class="mobile-menu-divider"></div>
+                        <div class="mobile-lang-grid">
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_hu-removebg-preview.png" alt="HU"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_en-removebg-preview.png" alt="EN"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_de-removebg-preview.png" alt="DE"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_fr-removebg-preview.png" alt="FR"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_es-removebg-preview.png" alt="ES"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_pl-removebg-preview.png" alt="PL"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_ru-removebg-preview.png" alt="RU"></button>
+                        </div>
+                        <div class="mobile-menu-divider"></div>
+                        <div class="mobile-menu-item logout-item" onclick="logout()">
+                            <img src="assets/images/exit-r 1.png" alt="Kilépés" class="menu-item-icon">
+                            <span data-lang="header_logout">Hebok elhagyása</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

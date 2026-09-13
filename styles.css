@@ -55,7 +55,8 @@ html {
 
 @font-face {
     font-family: 'BriskB';
-    src: url('assets/fonts/Briskb.otf') format('opentype');
+    src: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf') format('opentype'),
+         url('assets/fonts/Briskb.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
 }
@@ -69,7 +70,7 @@ html {
     max-width: 100%;
     height: 66px;
     box-sizing: border-box;
-    background: url('assets/images/monolog_window.png') no-repeat center center;
+    background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/monolog_window.png') no-repeat center center;
     background-size: 100% 100%;
     border: none;
     display: flex;

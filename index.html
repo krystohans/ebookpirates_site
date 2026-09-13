@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=20260912_3">
+    <link rel="stylesheet" href="styles.css?v=20260913_1">
     <link rel="icon" href="data:,">
 
     <!-- Three.js és Kiegészítők Importmap -->
@@ -149,14 +149,14 @@
             <!-- 2. Középső zóna: Kreditek, Könyvtár, Kincsek -->
             <div id="header-main-actions">
                 <div id="creditCell" class="header-action-btn credit-btn" title="Kreditegyenleg frissítése" data-lang-title="header_credits_tooltip" onclick="updateCreditDisplay()">
-                    <img src="assets/images/eBookPirates_coin_r.png" alt="Kredit" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png'">
+                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png" alt="Kredit" class="header-icon-img" onerror="this.src='assets/images/eBookPirates_coin_r.png'">
                     <span id="creditValue">0</span>
                 </div>
                 <div id="libraryLink" class="header-action-btn" title="Könyvtár" data-lang-title="header_library" onclick="loadPage('konyvtar')">
-                    <img src="assets/images/konyvtar_removebg.png" alt="Könyvtár" class="header-icon-img" onerror="this.src='assets/images/konyvtar-removebg-preview.png'">
+                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/konyvtar_removebg.png" alt="Könyvtár" class="header-icon-img" onerror="this.src='assets/images/konyvtar_removebg.png'">
                 </div>
                 <div id="treasuresLink" class="header-action-btn" title="Kincsek" data-lang-title="header_treasures" onclick="loadPage('kincsek')">
-                    <img src="assets/images/lada_nocolor.png" alt="Kincsek" class="header-icon-img" onerror="this.src='assets/images/lada_nocolorjpg-removebg-preview.png'">
+                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada_nocolor.png" alt="Kincsek" class="header-icon-img" onerror="this.src='assets/images/lada_nocolor.png'">
                 </div>
             </div>
 
@@ -165,54 +165,54 @@
                 <!-- Asztali ikonsor -->
                 <div class="header-desktop-controls">
                     <div class="header-action-btn" id="header-anchor-btn" title="Vissza a kikötőbe" data-lang-title="header_back_to_port" onclick="loadPage('kikoto_oldal')">
-                        <img src="assets/images/horgony_removebg.png" alt="Kikötő" class="header-icon-img" onerror="this.src='assets/images/horgony_removebg2.png'">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="header-icon-img" onerror="this.src='assets/images/horgony_removebg.png'">
                     </div>
 
                     <!-- Földgömb + Nyelvválasztó lenyíló panel -->
                     <div class="header-lang-wrapper">
                         <div class="header-action-btn" id="header-lang-globe-btn" title="Nyelvválasztás" data-lang-title="header_lang_select" onclick="toggleHeaderLangDropdown(event)">
-                            <img src="assets/images/nyelvvalaszto.png" alt="Nyelv" class="header-icon-img">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/nyelvvalaszto.png" alt="Nyelv" class="header-icon-img" onerror="this.src='assets/images/nyelvvalaszto.png'">
                         </div>
                         <div id="header-lang-dropdown" class="header-popup-menu" style="display: none;" onclick="event.stopPropagation()">
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_hu-removebg-preview.png" alt="HU"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_en-removebg-preview.png" alt="EN"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_de-removebg-preview.png" alt="DE"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_fr-removebg-preview.png" alt="FR"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_es-removebg-preview.png" alt="ES"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_pl-removebg-preview.png" alt="PL"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderLangDropdown(event, false);"><img src="assets/images/flags/lang_ru-removebg-preview.png" alt="RU"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" alt="HU" onerror="this.src='assets/images/flags/lang_hu-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" alt="EN" onerror="this.src='assets/images/flags/lang_en-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" alt="DE" onerror="this.src='assets/images/flags/lang_de-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" alt="FR" onerror="this.src='assets/images/flags/lang_fr-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" alt="ES" onerror="this.src='assets/images/flags/lang_es-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" alt="PL" onerror="this.src='assets/images/flags/lang_pl-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" alt="RU" onerror="this.src='assets/images/flags/lang_ru-removebg-preview.png'"></button>
                         </div>
                     </div>
 
                     <!-- Kilépés gomb -->
                     <div class="header-action-btn" id="header-exit-btn" title="Hebok elhagyása" data-lang-title="header_logout" onclick="logout()">
-                        <img src="assets/images/exit-r 1.png" alt="Kilépés" class="header-icon-img">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png" alt="Kilépés" class="header-icon-img" onerror="this.src='assets/images/exit-r 1.png'">
                     </div>
                 </div>
 
                 <!-- Mobil / Kis felbontás esetén megjelenő fogaskerék (settings_icon) -->
                 <div class="header-mobile-settings-wrapper">
                     <div class="header-action-btn" id="header-mobile-settings-btn" title="Beállítások & Menü" data-lang-title="header_settings" onclick="toggleHeaderMobileSettings(event)">
-                        <img src="assets/images/settings_icon.png" alt="Beállítások" class="header-icon-img" onerror="this.src='assets/images/settings_removebg.png'">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/settings_icon.png" alt="Beállítások" class="header-icon-img" onerror="this.src='assets/images/settings_icon.png'">
                     </div>
                     <div id="header-mobile-popup" class="header-popup-menu mobile-settings-popup" style="display: none;" onclick="event.stopPropagation()">
                         <div class="mobile-menu-item" onclick="loadPage('kikoto_oldal'); toggleHeaderMobileSettings(event, false);">
-                            <img src="assets/images/horgony_removebg.png" alt="Kikötő" class="menu-item-icon">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="menu-item-icon" onerror="this.src='assets/images/horgony_removebg.png'">
                             <span data-lang="header_back_to_port">Kikötő</span>
                         </div>
                         <div class="mobile-menu-divider"></div>
                         <div class="mobile-lang-grid">
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_hu-removebg-preview.png" alt="HU"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_en-removebg-preview.png" alt="EN"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_de-removebg-preview.png" alt="DE"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_fr-removebg-preview.png" alt="FR"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_es-removebg-preview.png" alt="ES"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_pl-removebg-preview.png" alt="PL"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderMobileSettings(event, false);"><img src="assets/images/flags/lang_ru-removebg-preview.png" alt="RU"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" alt="HU" onerror="this.src='assets/images/flags/lang_hu-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" alt="EN" onerror="this.src='assets/images/flags/lang_en-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" alt="DE" onerror="this.src='assets/images/flags/lang_de-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" alt="FR" onerror="this.src='assets/images/flags/lang_fr-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" alt="ES" onerror="this.src='assets/images/flags/lang_es-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" alt="PL" onerror="this.src='assets/images/flags/lang_pl-removebg-preview.png'"></button>
+                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" alt="RU" onerror="this.src='assets/images/flags/lang_ru-removebg-preview.png'"></button>
                         </div>
                         <div class="mobile-menu-divider"></div>
                         <div class="mobile-menu-item logout-item" onclick="logout()">
-                            <img src="assets/images/exit-r 1.png" alt="Kilépés" class="menu-item-icon">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png" alt="Kilépés" class="menu-item-icon" onerror="this.src='assets/images/exit-r 1.png'">
                             <span data-lang="header_logout">Hebok elhagyása</span>
                         </div>
                     </div>

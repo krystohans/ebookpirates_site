@@ -22,7 +22,7 @@ Archy_Master.code-workspace
 auth_terminal_3d.js
 *auth_terminal_3d.js*
 
-# 3D models and media assets (Cloud GCS bucket used instead)
+# 3D models and media assets (Cloud GCS bucket used for heavy assets)
 *.blend
 *.blend1
 *.glb
@@ -31,9 +31,9 @@ auth_terminal_3d.js
 *.webm
 *.mp3
 *.wav
-*.otf
-*.ttf
-assets/
+assets/models/
+assets/videos/
+assets/pirates_assets/
 models/
 demojatek/assets/
 demojatek/models/

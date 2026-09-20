@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'Briskb';
-  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  src: url("assets/fonts/Briskb.otf") format('opentype');
   font-weight: bold;
 }
 
@@ -27,20 +27,62 @@ body,
 html {
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  background: #050a12;
+  background: radial-gradient(ellipse at center, #2c3848 0%, #1a222e 60%, #0d1219 100%) !important;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Courier New', Courier, monospace;
 }
 
+body {
+  padding: 12px;
+  box-sizing: border-box;
+}
+
 #game-wrapper {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   overflow: hidden;
-  background: #1a2a3a;
+  background: #000000;
+  border: 3px solid #3b4754;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:fullscreen body,
+:-webkit-full-screen body,
+:-moz-full-screen body,
+:ms-fullscreen body,
+body.is-fullscreen {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #000000 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+:fullscreen #game-wrapper,
+:-webkit-full-screen #game-wrapper,
+:-moz-full-screen #game-wrapper,
+:ms-fullscreen #game-wrapper,
+body.is-fullscreen #game-wrapper {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 canvas {
@@ -225,6 +267,22 @@ canvas {
   flex-direction: column;
   justify-content: space-between;
 }
+
+#welcome-space-hint,
+.welcome-mode #welcome-space-hint,
+.welcome-mode.step-0 #welcome-space-hint {
+  position: absolute !important;
+  bottom: 40px !important;
+  right: 200px !important;
+  font-family: 'Briskb', 'Courier New', monospace !important;
+  font-size: 20px !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  opacity: 1.00 !important;
+  pointer-events: none !important;
+  z-index: 99 !important;
+}
+
 
 /* ─── PONTOS NAMEPLATE BEÁLLÍTÁS ─── */
 #zozo-nameplate,

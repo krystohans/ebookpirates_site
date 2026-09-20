@@ -208,6 +208,7 @@
       width: auto;
       object-fit: contain;
       display: block;
+      transform: translateY(350px) !important;
     }
 
     #zozo-dialogue-box {
@@ -359,11 +360,15 @@
         <span id="tb-player-name" style="letter-spacing: 2px;">Kalóz</span>
       </div>
       <div id="topbar-center">
-        <div class="counter-box">
-          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hajo_r.PNG" class="counter-icon" title="Szállított hártyák">
+        <div class="counter-box" id="tb-durability-box" title="Csónak Élettartam (HP)">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hajo_r.PNG" class="counter-icon" title="Csónak Életerő">
+          <span id="tb-durability-count">10</span>
+        </div>
+        <div class="counter-box" title="Szállított hártyák">
+          <img src="assets/images/hordo_hartya_2-removebg-preview.png" class="counter-icon" title="Szállított hártyák">
           <span id="tb-carried-count">0</span>
         </div>
-        <div class="counter-box">
+        <div class="counter-box" title="Bázison tárolt hártyák">
           <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada-r.png" class="counter-icon" title="Bázison tárolt hártyák">
           <span id="tb-stored-count">0</span>
         </div>
@@ -381,7 +386,7 @@
     <div id="crash-overlay"><span>💥 Zátonyra futottál!</span></div>
 
     <!-- ─── ZOZÓ WELCOME OVERLAY ─── -->
-    <div id="zozo-welcome-overlay" onclick="window.advanceZozoWelcome()">
+    <div id="zozo-welcome-overlay">
       <!-- Zozó Full Body Karakter -->
       <div id="zozo-character-container">
         <img id="zozo-char-img" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02.png" alt="Zozó" />
@@ -395,6 +400,7 @@
         <div id="zozo-dialogue-text">
           Na, te vagy az új jövevény? Egy Szárazföldi Patkány?
         </div>
+        <div id="welcome-space-hint" style="position: absolute; bottom: 40px !important; right: 200px !important; font-family: 'Briskb', 'Courier New', monospace !important; font-size: 20px !important; color: #000000 !important; font-weight: bold !important; opacity: 1.00 !important; pointer-events: none !important; user-select: none !important; z-index: 99 !important;">&lt; space &gt;</div>
       </div>
     </div>
 
@@ -406,8 +412,8 @@
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      cursor: pointer;
-    " onclick="window.advanceInGameMonolog()">
+      cursor: default;
+    ">
       <div style="
         position: relative;
         width: 781px;
@@ -1159,7 +1165,11 @@
     addEventListener('mouseup', () => { mDown = false; canvas.style.cursor = 'grab'; });
     addEventListener('mousemove', e => {
       if (!mDown) return;
-      orbH += (e.clientX - mx) * ORB_SENS_H;
+      const deltaX = (e.clientX - mx) * ORB_SENS_H * (Math.PI / 180);
+      if (typeof boat !== 'undefined' && boat && boat.rotation) {
+        boat.rotation.y -= deltaX;
+      }
+      orbH = 0.0;
       orbV = THREE.MathUtils.clamp(orbV + (e.clientY - my) * ORB_SENS_V, ORB_MIN_V, ORB_MAX_V);
       mx = e.clientX; my = e.clientY;
     });
@@ -1471,12 +1481,12 @@
     // Farvíz (Wake / Ripple) változók
     const boatWakes = [];
     const foamTex = createFoamTexture();
-    const wakeGeo = new THREE.PlaneGeometry(2.1, 2.1);
+    const wakeGeo = new THREE.PlaneGeometry(1.8, 1.5);
     const wakeMatBase = new THREE.MeshBasicMaterial({
       map: foamTex,
       color: 0xffffff,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.50,
       depthWrite: false,
       blending: THREE.NormalBlending
     });
@@ -1501,7 +1511,7 @@
     function getPooledWakeMaterial() {
       const mat = wakeMaterialPool[wakeMatIndex];
       wakeMatIndex = (wakeMatIndex + 1) % WAKE_POOL_SIZE;
-      mat.opacity = 0.72;
+      mat.opacity = 0.50;
       return mat;
     }
 
@@ -1813,14 +1823,29 @@
       }
 
       // ─── PlayerController.cs FixedUpdate ───
-      const SPEED = 120, TURN = 75;
-      let mv = 0, tr = 0;
+      const SPEED = 50, TURN = 75;
+      let targetMv = 0, tr = 0;
       if (!window.isCutscenePlaying) { // Csak akkor irányítható a csónak, ha nem fut az átvezető!
-        if (keys.KeyW || keys.ArrowUp) mv = 1;
-        if (keys.KeyS || keys.ArrowDown) mv = -1;
+        if (keys.KeyW || keys.ArrowUp) targetMv = 1;
+        if (keys.KeyS || keys.ArrowDown) targetMv = -1;
         if (keys.KeyA || keys.ArrowLeft) tr = -1;
         if (keys.KeyD || keys.ArrowRight) tr = 1;
       }
+
+      window.currentMv = window.currentMv || 0;
+      if (dt > 0) {
+        if (targetMv > 0) {
+          if (window.currentMv < 0.20) window.currentMv = 0.20;
+          window.currentMv = Math.min(1, window.currentMv + dt * 0.75);
+        } else if (targetMv < 0) {
+          if (window.currentMv > -0.20) window.currentMv = -0.20;
+          window.currentMv = Math.max(-1, window.currentMv - dt * 0.75);
+        } else {
+          if (window.currentMv > 0) window.currentMv = Math.max(0, window.currentMv - dt * 8.0);
+          else if (window.currentMv < 0) window.currentMv = Math.min(0, window.currentMv + dt * 8.0);
+        }
+      }
+      let mv = window.currentMv;
 
       _prevPos.copy(boat.position);
       const prevRot = boat.rotation.y;
@@ -1829,12 +1854,13 @@
         const dir = mv < 0 ? -1 : 1;
         boat.rotation.y -= tr * dir * (TURN * Math.PI / 180) * dt;
         let spd = SPEED;
-        if (mv < 0) spd *= 0.5;
+        if (mv < 0) spd = 30.0;
         _fwd.set(0, 0, -1).applyQuaternion(boat.quaternion);
         _step.copy(_fwd).multiplyScalar(mv * spd * dt);
         boat.position.add(_step);
       } else if (Math.abs(tr) > 0.01) {
         boat.rotation.y -= tr * (TURN * Math.PI / 180) * dt;
+        orbH = 0.0;
       }
 
       let collisionDetected = false;
@@ -1878,13 +1904,15 @@
         }
       }
 
-      // Hajó lágy ringása a vízen - KIKAPCSOLVA A FELHASZNÁLÓ KÉRÉSÉRE
-      // boat.position.y = -0.5 + Math.sin(t*1.4)*0.22;
-      // boat.rotation.z = Math.sin(t*0.75)*0.035;
-      // boat.rotation.x = Math.sin(t*1.1)*0.02;
+      // Hajó lágy, lassított fel-le ringása a vízen
+      const waveTime = t * 1.2;
+      boat.position.y = Math.sin(waveTime * 1.8) * 0.18 + Math.cos(waveTime * 0.9) * 0.08;
+      boat.rotation.z = Math.sin(waveTime * 0.75) * 0.035 + (tr * -0.04);
+      boat.rotation.x = Math.cos(waveTime * 0.9) * 0.02 + (mv * 0.02);
 
-      // 🌊 FAHAJÓ / EVEZŐS SŰRŰ V-ALAKÚ FARVÍZ (DENSE V-WAKE)
-      if (Math.abs(mv) > 0.01) {
+      // 🌊 FAHAJÓ / EVEZŐS LÁGY FARVÍZ
+      window._wakeFrameCount = (window._wakeFrameCount || 0) + 1;
+      if (Math.abs(mv) > 0.01 && window._wakeFrameCount % 2 === 0) {
         // Középső gerinc fodor (central keel triangle)
         const wakeMatC = getPooledWakeMaterial();
         const wakeC = new THREE.Mesh(wakeGeo, wakeMatC);
@@ -1921,18 +1949,17 @@
         boatWakes.push(wakeR);
       }
 
-      // Vízfodrok animálása (sűrű, finom tágulás)
+      // Vízfodrok animálása (finom tágulás és gyors eloszlás)
       const timeScale = dt * 60;
       for (let i = boatWakes.length - 1; i >= 0; i--) {
         let w = boatWakes[i];
         if (w.userData.vel) {
           w.position.addScaledVector(w.userData.vel, dt);
         }
-        w.scale.x += 0.009 * timeScale;
-        w.scale.y += 0.009 * timeScale;
+        w.scale.x += 0.005 * timeScale;
+        w.scale.y += 0.005 * timeScale;
         
-        // Eredeti logika, csak egy picit gyorsabban oszlik el az egész csík (0.0032 helyett 0.008)
-        w.material.opacity -= 0.008 * timeScale;
+        w.material.opacity -= 0.016 * timeScale;
         
         if (w.material.opacity <= 0) {
           scene.remove(w);
@@ -1947,24 +1974,26 @@
         if (window.eogState === 'CINEMATIC' && window.homePos) {
           // EoG Cinematic: orbit kamera kovetik a hazatero csónakot (indulasi nezopont)
           const hR = orbH * Math.PI / 180, vR = orbV * Math.PI / 180;
+          const camY = 0.0;
           cam.position.set(
             boat.position.x + orbDist * Math.sin(hR) * Math.cos(vR),
-            boat.position.y + orbDist * Math.sin(vR) + LOOK_OFFSET_Y,
+            camY + orbDist * Math.sin(vR) + LOOK_OFFSET_Y,
             boat.position.z + orbDist * Math.cos(hR) * Math.cos(vR)
           );
-          cam.lookAt(boat.position.x, boat.position.y + LOOK_OFFSET_Y, boat.position.z);
+          cam.lookAt(boat.position.x, camY + LOOK_OFFSET_Y, boat.position.z);
         } else if (window.isCutscenePlaying && window.airshipAscentStarted && !window.airshipAscentDone && window.foundZeppelin && window.homePos) {
           // Airship cutscene: statikus filmes sziklarol nezi a leghajot
           cam.position.set(-374, 15, 1347);
           cam.lookAt(window.foundZeppelin.position);
         } else {
-          const hR = orbH * Math.PI / 180, vR = orbV * Math.PI / 180;
+          const hR = boat.rotation.y + (orbH * Math.PI / 180), vR = orbV * Math.PI / 180;
+          const camY = 0.0;
           cam.position.set(
             boat.position.x + orbDist * Math.sin(hR) * Math.cos(vR),
-            boat.position.y + orbDist * Math.sin(vR) + LOOK_OFFSET_Y,
+            camY + orbDist * Math.sin(vR) + LOOK_OFFSET_Y,
             boat.position.z + orbDist * Math.cos(hR) * Math.cos(vR)
           );
-          cam.lookAt(boat.position.x, boat.position.y + LOOK_OFFSET_Y, boat.position.z);
+          cam.lookAt(boat.position.x, camY + LOOK_OFFSET_Y, boat.position.z);
         }
       }
 

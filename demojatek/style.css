@@ -27,11 +27,16 @@ html {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: #050a12;
+  background: radial-gradient(ellipse at center, #2c3848 0%, #1a222e 60%, #0d1219 100%) !important;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 #game-wrapper {
@@ -41,7 +46,40 @@ html {
   max-width: 100%;
   max-height: 100%;
   overflow: hidden;
-  background: #1a2a3a;
+  background: #000000;
+  border: 3px solid #3b4754;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:fullscreen body,
+:-webkit-full-screen body,
+:-moz-full-screen body,
+:ms-fullscreen body,
+body.is-fullscreen {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #000000 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+:fullscreen #game-wrapper,
+:-webkit-full-screen #game-wrapper,
+:-moz-full-screen #game-wrapper,
+:ms-fullscreen #game-wrapper,
+body.is-fullscreen #game-wrapper {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 canvas {
@@ -105,6 +143,7 @@ canvas {
   width: auto;
   object-fit: contain;
   display: block;
+  transform: translateY(350px) !important;
 }
 
 #zozo-dialogue-box {
@@ -127,6 +166,22 @@ canvas {
   flex-direction: column;
   justify-content: space-between;
 }
+
+#welcome-space-hint,
+.welcome-mode #welcome-space-hint,
+.welcome-mode.step-0 #welcome-space-hint {
+  position: absolute !important;
+  bottom: 40px !important;
+  right: 200px !important;
+  font-family: 'Briskb', 'Courier New', monospace !important;
+  font-size: 20px !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  opacity: 1.00 !important;
+  pointer-events: none !important;
+  z-index: 99 !important;
+}
+
 
 /* ─── AZ ÁLTALAD MEGJELÖLT PONTOS NAMEPLATE BEÁLLÍTÁS ─── */
 #zozo-nameplate,
@@ -165,7 +220,8 @@ canvas {
 }
 
 /* Lépésenkénti Pozíciók */
-.welcome-mode #zozo-character-container { left: auto !important; height: 57vh; transform: translateX(-35px); }
+.welcome-mode #zozo-character-container { left: auto !important; height: 84vh !important; transform: translateX(-35px); }
+#zozo-character-container img { transform: translate(16px, 189px) rotate(0deg) !important; }
 .welcome-mode #zozo-dialogue-box { min-height: 155px; }
 
 /* ─── 1. WELCOME BOX (STEP-0) ─── */
@@ -182,7 +238,7 @@ canvas {
   justify-content: center;
   align-items: center;
 }
-.welcome-mode.step-0 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
+.welcome-mode.step-0 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 84vh !important; }
 .welcome-mode.step-0 #zozo-dialogue-text {
   font-size: 28px;
   line-height: 1.25;

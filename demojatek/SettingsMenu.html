@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Beállítások</title>
   <!-- Behúzzuk az eredeti stíluslapot a betűtípus (Briskb) és egyebek miatt -->
   <link rel="stylesheet" href="style.css">
   
   <style>
-    /* Teljes képernyős, középre igazító konténer */
+    /* Teljes képernyős, középre igazító konténer - Pontos szinkronban a MainMenuTutorial.html-lel */
     body, html {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      background-color: transparent;
+      background: #000000 !important;
       overflow: hidden;
       font-family: 'Briskb', 'Courier New', monospace;
     }
@@ -32,19 +35,18 @@
       z-index: 10000;
     }
 
-    /* A logó mögötti négyzetes fa panel */
+    /* A logó mögötti négyzetes fa panel - Hajszálpontosan a Főmenü mérete és pozíciója */
     .menu-logo-container {
-      width: 275px;
-      height: 275px;
+      width: 330px;
+      height: 330px;
       background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
       background-size: 100% 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: -100px;
-      margin-bottom: 5px;
-      /* Kicsit bentebb húzzuk a belső tartalmat, hogy a keretre ne lógjon rá (megnövelve) */
-      padding: 55px;
+      margin-top: -20px;
+      margin-bottom: -60px;
+      padding: 75px;
       box-sizing: border-box;
     }
 
@@ -54,16 +56,16 @@
       object-fit: contain;
     }
 
-    /* A menüpontok fa paneljei */
+    /* A menüpontok fa paneljei - Pontosan 450x70px */
     .menu-button {
-      width: 380px;
+      width: 450px;
       height: 70px;
       background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
       background-size: 100% 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 1px 0; /* Csökkentett sortávolság */
+      margin: 1px 0;
       cursor: pointer;
       transition: transform 0.1s ease-in-out;
       
@@ -75,74 +77,40 @@
       text-transform: none;
     }
 
-    /* Hover effektus: egy picit megugrik, mikor ráviszed az egeret */
+    /* Hover effektus */
     .menu-button:hover {
       transform: scale(1.05);
       color: #333333;
     }
 
-    /* Nyelvválasztó modal (felugró ablak) */
-    #lang-modal {
-      display: none;
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.7);
-      z-index: 10001;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Kép konténer a relatív pozicionáláshoz */
-    .lang-img-wrapper {
-      position: relative;
-      display: inline-block;
-      max-width: 80%;
-      max-height: 80%;
-    }
-
-    .lang-img-wrapper img {
-      max-width: 100%;
-      max-height: 80vh;
-      display: block;
-      border: 3px solid #3d2b1f;
-      border-radius: 10px;
-    }
-
-    /* Hotspot a visszanyílhoz */
-    .back-btn-hotspot {
-      position: absolute;
-      bottom: 1%;
-      right: 1%;
-      width: 25%;
-      height: 25%;
-      cursor: pointer;
-      border-radius: 50%;
-    }
-    
-    /* Hover effekt (fejlesztéshez opcionális border) */
-    /* .back-btn-hotspot:hover { border: 2px solid red; } */
-
-    /* Hangerő csúszka konténer (ugyanaz a fatábla, csak kicsit más belső layouttal) */
+    /* Hangerő csúszka konténer - Pontosan 450x70px fa fatábla */
     .menu-slider-container {
-      width: 380px;
-      height: 70px; /* Szinkronizálva a MainMenu gombmagasságával */
+      width: 450px;
+      height: 70px;
       background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
       background-size: 100% 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: 1px 0; /* Csökkentett sortávolság */
+      margin: 1px 0;
       padding-top: 0px;
       padding-bottom: 2px;
+      box-sizing: border-box;
+      transition: transform 0.1s ease-in-out;
+    }
+
+    .menu-slider-container:hover {
+      transform: scale(1.03);
     }
     
     .slider-label {
       color: #000000;
       font-family: 'Briskb', 'Courier New', monospace;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
+      line-height: 1;
     }
 
     /* Steampunk Slider CSS */
@@ -150,7 +118,7 @@
       -webkit-appearance: none;
       width: 75%;
       height: 8px;
-      background: rgba(61, 43, 31, 0.7); /* Sötétbarna sáv */
+      background: rgba(61, 43, 31, 0.7);
       border: 1px solid #3d2b1f;
       border-radius: 4px;
       outline: none;
@@ -179,10 +147,53 @@
       cursor: pointer;
       filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.6));
     }
+
+    /* Nyelvválasztó modal (felugró ablak) */
+    #lang-modal {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lang-img-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 80%;
+      max-height: 80%;
+    }
+
+    .lang-img-wrapper img {
+      max-width: 100%;
+      max-height: 80vh;
+      display: block;
+      border: 3px solid #3d2b1f;
+      border-radius: 10px;
+    }
+
+    .back-btn-hotspot {
+      position: absolute;
+      bottom: 1%;
+      right: 1%;
+      width: 25%;
+      height: 25%;
+      cursor: pointer;
+      border-radius: 50%;
+    }
   </style>
 
   <script>
       document.addEventListener('DOMContentLoaded', () => {
+        // Videó automatikus lejátszás megerősítése
+        const bgVid = document.getElementById('bg-video');
+        if (bgVid) {
+          bgVid.muted = true;
+          bgVid.play().catch(function(err) { console.log('Video autoplay:', err); });
+        }
+
         // Menü zene és hangok betöltése
         const menuMusic = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3');
         menuMusic.loop = true;
@@ -241,61 +252,54 @@
       document.getElementById('lang-modal').style.display = 'none';
     }
 
-    // Teljes képernyő ki/be kapcsolása
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        localStorage.setItem('ebook_pirates_fullscreen', 'true');
-        document.documentElement.requestFullscreen().catch(err => console.log(err));
-      } else {
-        localStorage.setItem('ebook_pirates_fullscreen', 'false');
-        if (document.exitFullscreen) {
-          document.exitFullscreen().catch(err => console.log(err));
-        }
-      }
+    function goBackToMainMenu() {
+      window.location.href = 'MainMenuTutorial.html?v=' + Date.now();
     }
   </script>
 </head>
 <body>
-  <video id="bg-video" autoplay loop muted playsinline oncanplay="this.playbackRate = 0.5" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1000; pointer-events: none;">
-    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/eBookPirates – Kalózsziget 3D Tutorial_2.mp4" type="video/mp4">
+  <!-- 🚁 Forgó Léghajó Videó Háttér (Teljesen megegyezik a Főmenüvel) -->
+  <video id="bg-video" autoplay loop muted playsinline preload="auto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none;">
+    <source src="assets/videos/Zeppelin forog (1).mp4" type="video/mp4">
+    <source src="assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
+    <source src="assets/videos/eBookPirates – Kalózsziget 3D Tutorial_2.mp4" type="video/mp4">
+    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
+    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/eBookPirates%20%E2%80%93%20Kal%C3%B3zsziget%203D%20Tutorial_2.mp4" type="video/mp4">
   </video>
-  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: -999; pointer-events: none;"></div>
+  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: 1; pointer-events: none;"></div>
 
   <div id="main-menu-overlay">
     
-    <!-- Felső Logó Panel -->
+    <!-- Felső Logó Panel (Hajszálpontosan a Főmenü pozíciójában) -->
     <div class="menu-logo-container">
       <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Color_logó.png" alt="eBookPirates Logo">
     </div>
 
-    <!-- Láthatatlan távtartó, hogy a gombok pont ott kezdődjenek, mint a Főmenüben a zászló miatt -->
-    <div style="height: 68px; margin-bottom: 2px; margin-top: -100px; visibility: hidden;"></div>
+    <!-- Nyelvi Ikon (Pontosan azonos magasság és pozíció a Főmenü zászlójával) -->
+    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="showLanguageSelector()" title="Nyelv / Language">
+      <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+    </div>
 
-    <!-- Menüpontok -->
-    <!-- Zene Csúszka -->
+    <!-- 4 Menüpont pontosan a Főmenü 4 gombjának helyén és méretében -->
+    <!-- 1. Zene Csúszka -->
     <div class="menu-slider-container">
       <div class="slider-label">Zene</div>
       <input type="range" min="0" max="100" class="steampunk-slider" id="music-slider" title="Zene hangereje">
     </div>
     
-    <!-- Hang Csúszka -->
+    <!-- 2. Hang Csúszka -->
     <div class="menu-slider-container">
       <div class="slider-label">Hang</div>
       <input type="range" min="0" max="100" class="steampunk-slider" id="sound-slider" title="Effektek hangereje">
     </div>
 
-    <div class="menu-button" onclick="toggleFullscreen()">Teljes Képernyő</div>
+    <!-- 3. Nyelv gomb -->
     <div class="menu-button" onclick="showLanguageSelector()">Nyelv</div>
+
+    <!-- 4. Vissza a Főmenübe gomb -->
     <div class="menu-button" onclick="goBackToMainMenu()">Vissza a Főmenübe</div>
 
   </div>
-
-  <script>
-    function goBackToMainMenu() {
-      // Megőrizzük a teljes képernyős módot navigációkor, ha aktív volt
-      window.location.href = 'MainMenuTutorial.html';
-    }
-  </script>
 
   <!-- A Nyelvválasztó felugró ablak -->
   <div id="lang-modal">

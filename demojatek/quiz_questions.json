@@ -374,7 +374,7 @@
   {
     "id": 32,
     "category": "TUTORZEP",
-    "question": "Mi adta Michael<br>Crichton-nak az ötletet a Jurassic Perk megírásához?",
+    "question": "Mi adta Michael<br>Crichton-nak az ötletet a Jurassic Park megírásához?",
     "answers": [
       "Érdekelte a génklónozás",
       "Ki akarta találni a legdrágább húst",
@@ -764,6 +764,18 @@
       "Tizedik",
       "Hetedik",
       "Első"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 65,
+    "category": "TUTORZEP",
+    "question": "Mit zártak be <br>Victor Hugo halálakor a tiszteletére?",
+    "answers": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáját"
     ],
     "correctIndex": 0
   }

@@ -17,7 +17,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
+      background: radial-gradient(ellipse at center, #2c3848 0%, #1a222e 60%, #0d1219 100%) !important;
+      padding: 12px;
+      box-sizing: border-box;
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
@@ -35,7 +37,7 @@
 </head>
 
 <body>
-  <iframe id="game-frame" allow="autoplay; fullscreen" scrolling="no"></iframe>
+  <iframe id="game-frame" allow="autoplay; fullscreen" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
 
   <script>
     (function () {
@@ -58,8 +60,12 @@
           if (window.parent && window.parent !== window) {
             window.parent.postMessage(event.data, '*');
           } else if (event.data.status === 'COMPLETED') {
-            const targetPage = event.data.targetPage || (event.data.exitType === 'DESTROYED' ? 'hajomuhely_oldal' : 'fedelzet_oldal');
-            window.location.href = targetPage + '.html';
+            if (event.data.exitType === 'DESTROYED' || event.data.targetPage === 'MainMenuTutorial') {
+              window.location.href = 'demojatek/MainMenuTutorial.html';
+            } else {
+              const targetPage = event.data.targetPage || 'fedelzet_oldal';
+              window.location.href = targetPage + '.html';
+            }
           }
         }
       });

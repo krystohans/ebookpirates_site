@@ -1,7 +1,7 @@
-<style>
+﻿<style>
   @font-face {
     font-family: 'BriskB';
-    src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+    src: url("assets/fonts/Briskb.otf") format('opentype');
     font-weight: bold;
     font-style: normal;
   }
@@ -25,6 +25,9 @@
   .counter-icon { width: 52px; height: 52px; object-fit: contain; }
   .topbar-btn { width: 52px; height: 52px; cursor: pointer; transition: transform 0.1s; object-fit: contain; display: block; }
   .topbar-btn:hover { transform: scale(1.08); }
+  
+  #btn-tb-pause { transform: scale(1.75); margin: 0 8px; }
+  #btn-tb-pause:hover { transform: scale(1.9); }
 
   /* ─── LEGÖRDÜLŐ MENÜ STÍLUSÚ TOOLTIP ─── */
   #topbar-custom-tooltip {
@@ -64,10 +67,10 @@
   <div id="topbar-center">
     <div class="counter-box" id="tb-durability-box" title="Csónak Élettartam (HP)">
       <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hajo_r.PNG" class="counter-icon" title="Csónak Életerő">
-      <span id="tb-durability-count" style="color: #8b0000; font-weight: bold;">10 HP</span>
+      <span id="tb-durability-count">10</span>
     </div>
     <div class="counter-box" title="Szállított hártyák">
-      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png" class="counter-icon" title="Szállított hártyák">
+      <img src="assets/images/hordo_hartya_2-removebg-preview.png" class="counter-icon" title="Szállított hártyák">
       <span id="tb-carried-count">0</span>
     </div>
     <div class="counter-box" title="Bázison tárolt hártyák">
@@ -101,6 +104,7 @@
       </div>
     </div>
 
+    <img src="assets/images/pause.png" id="btn-tb-pause" class="topbar-btn" title="Szünet" onclick="window.togglePauseGame()">
     <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/menu-r.png" id="btn-tb-menu" class="topbar-btn" title="STOP">
     <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r 1.png" id="btn-tb-exit" class="topbar-btn" title="Kilépés">
   </div>
@@ -254,17 +258,16 @@ Nesze, itt van minden leírva, amit tudnod kell.
 
 A játék célja:
 - 30 darab, vizen lebegő, világító Hártyát kell összeszedéned és eljuttatnod a kikötőbe. Oda az utat a viharlámpa mutatja. 
-- A hajón levő hártyák elvesznek, ha zátonnyal ütközöl, vagy utolér a léghajó. Ilyenkor a játék a kikötőből indul újra.  
+- A hajódnak 10 életereje van. Minden egyes sziklának ütközéskor elveszítesz ezekből egyet. Ha ez az érték eléri az egyet, figyelmeztetést kapsz. Ha a csónak életereje nullára csökken, akkor a hajó összetörik és elsüllyed, te pedig kezdheted a játékot elölről a főmenüből és minden addig szerzett hártyád elvész.  
 - A gyűjtögetés során időről időre kvízkédések ugranak fel a játék szabályaival kapcsolatban. Helyes válasz esetén felszeded a hártyát, hibás válasz esetén nem.
 
 Az irányításról:
 - Te irányítod a vitorlás csónakot w, a, s, d és az iránynyíl billentyűkkel. 
-- Az egérrel a kamerát lehet forgatni.
+- Az egérrel a kamerát lehet forgatni. Amíg lenyomva tartod a bal egérgombot, addig a hajód arra fordul, amerre a kamera néz.
 - A főmenüt a Menü ikonnal tudod elérni (felső menüsor, a halálfej melletti ikon). 
-- A szövegbuborékokat kattintással tudod léptetni. 
+- A szövegbuborékokat a space-el tudod léptetni. 
 - Az info scrollt a halálfejre kattintva (jobb alsó sarok) tudod összezárni.
 - A Beállítások menüben a hangokat, zenét, teljes képernyőt és játék nyelvét beállítani.
-- VIGYÁZZ! Ha zátonynak ütközöl, elveszted a Hártyáidat.
 - A harmadik hártya felvétele után felszáll léghajó, ami addig az öböl bejáratában fog horgonyozni. Ezt követően a tutorial során végig követ. Ha utolér, akkor feltesz egy kérdést. Ha jó válaszolsz, tovéábbmehetsz, ha rosszul, a hajón levő hártyákat elveszíted (a kikötőben leadott hártyák megmaradnak). Ha nem volt hártyád a hajón, akkor a tutorial újraindul a kikötőből.
 
 A világról:

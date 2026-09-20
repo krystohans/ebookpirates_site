@@ -928,7 +928,7 @@ function saveTutorialState(syncBackend = false) {
 
   try {
     localStorage.setItem('ebp_tutorial_save', JSON.stringify(state));
-  } catch (e) {}
+  } catch (e) { }
 
   if (syncBackend && window.parent && window.parent !== window) {
     window.parent.postMessage({
@@ -963,7 +963,7 @@ function checkSavedStateOrStart() {
         showPopupToast("Játékállás sikeresen betöltve!");
         return;
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   showWelcomeStep(0);

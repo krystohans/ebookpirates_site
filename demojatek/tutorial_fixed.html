@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eBookPirates – Kalózsziget 3D Tutorial</title>
-  <link rel="stylesheet" href="style.css?v=20260831_04">
+  <link rel="stylesheet" href="style.css?v=20260920_17">
 
   <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
   <style>
@@ -81,9 +81,12 @@
         <div id="zozo-dialogue-text">
           Na, te vagy az új jövevény? Egy Szárazföldi Patkány?
         </div>
-        <div id="welcome-space-hint" style="position: absolute; bottom: 42px; right: 140px; font-family: 'Briskb', 'Courier New', monospace; font-size: 13px; color: rgba(30, 15, 5, 0.55); font-weight: bold; pointer-events: none;">space</div>
+        <div id="welcome-space-hint" style="position: absolute; bottom: 40px !important; right: 200px !important; font-family: 'Briskb', 'Courier New', monospace !important; font-size: 20px !important; color: #000000 !important; font-weight: bold !important; opacity: 1.00 !important; pointer-events: none !important; user-select: none !important; z-index: 99 !important;">&lt; space &gt;</div>
       </div>
     </div>
+
+
+
 
     <!-- IN-GAME ZOZÓ MONOLÓG DOBOZ (Az in-game monológokhoz) -->
     <div id="zozo-ingame-monolog-container" class="zozo-monolog-box-std" style="display: none;">
@@ -264,7 +267,28 @@
     </div>
   </div>
 
-  <!-- FEJLESZTŐI TOOLBOX (KIZÁRÓLAG LOKÁLIS KÖRNYEZETBEN: localhost / 127.0.0.1) -->
+  <!-- ─── KVÍZ PANEL OVERLAY ─── -->
+<div id="quiz-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99995; align-items: center; justify-content: center; pointer-events: auto;">
+  <div id="quiz-panel-box" style="position: relative; width: 831px; height: 768px; max-width: none; max-height: none; transform-origin: center center; background: transparent url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center center / 100% 100%; padding: 181px 120px 150px 120px; box-sizing: border-box; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.9)); display: flex; flex-direction: column; align-items: center; transition: all 0.2s ease-in-out; pointer-events: auto;">
+    
+    <div id="quiz-title" style="color: #6b4c2a; font-family: 'Briskb', 'Courier New', monospace; font-size: 18px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">
+      📜 HÁRTYA KVÍZKÉRDÉS
+    </div>
+
+    <div id="quiz-question-text" style="color: #1a0a00; font-family: 'Briskb', 'Courier New', monospace; font-size: 20px; font-weight: bold; text-align: center; line-height: 1.35; min-height: 60px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; white-space: pre-wrap;">
+      Kérdés betöltése...
+    </div>
+
+    <div id="quiz-answers-container" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+      <button class="quiz-ans-btn" data-index="0" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">A) Válasz 1</button>
+      <button class="quiz-ans-btn" data-index="1" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">B) Válasz 2</button>
+      <button class="quiz-ans-btn" data-index="2" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">C) Válasz 3</button>
+      <button class="quiz-ans-btn" data-index="3" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">D) Válasz 4</button>
+    </div>
+
+  </div>
+</div>
+ <!-- FEJLESZTŐI TOOLBOX (KIZÁRÓLAG LOKÁLIS KÖRNYEZETBEN: localhost / 127.0.0.1) -->
   <script>
     (function() {
       const isLocal = window.location.hostname === 'localhost' || 
@@ -298,8 +322,19 @@
       });
     })();
   </script>
-  <script src="quiz_manager.js?v=20260831_04"></script>
-  <script type="module" src="script.js?v=20260831_04"></script>
+  <script src="quiz_manager.js?v=20260920_17"></script>
+  <script type="module" src="script.js?v=20260920_17"></script>
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+

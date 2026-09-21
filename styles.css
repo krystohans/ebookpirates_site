@@ -2047,20 +2047,27 @@ html.ebp-authenticated #app-view {
 /* 3D Kikötő Betöltő Képernyő */
 #kikoto_oldal-content #loading-overlay,
 #kikoto-3d-loading-overlay {
+/* ==========================================================
+   === STEAMPUNK 3D CLOCKWORK & KINETIC DISPENSER LOADER ===
+   ========================================================== */
+
+#kikoto-3d-loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%);
+    background: radial-gradient(circle at 50% 45%, #152238 0%, #08101a 60%, #020509 100%);
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 1000;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    perspective: 1200px;
 }
 
 #kikoto-3d-loading-overlay.active {
@@ -2069,23 +2076,263 @@ html.ebp-authenticated #app-view {
     pointer-events: all;
 }
 
-.loader-title {
-    font-family: 'Pirata One', cursive;
-    font-size: 2.8rem;
-    color: #d4af37;
-    text-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.4);
+/* Three.js 3D WebGL Óramű Konténer */
+#clockwork-canvas-container {
+    width: 480px;
+    height: 280px;
+    max-width: 92vw;
+    max-height: 42vh;
+    position: relative;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.9));
+}
+
+#clockwork-canvas-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    border-radius: 10px;
+}
+
+/* 3D Izometrikus Óramű Színpad */
+.clockwork-stage {
+    position: relative;
+    width: 380px;
+    height: 220px;
+    transform-style: preserve-3d;
+    transform: rotateX(24deg) rotateY(-16deg) rotateZ(4deg);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.85));
+}
+
+/* Háttér derengés a fogaskerekek mögött */
+.clockwork-glow {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, rgba(184, 115, 51, 0.1) 45%, transparent 70%);
+    border-radius: 50%;
+    transform: translateZ(-30px);
+    pointer-events: none;
+    animation: clockworkPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes clockworkPulse {
+    0% { transform: translateZ(-30px) scale(0.9); opacity: 0.6; }
+    100% { transform: translateZ(-30px) scale(1.15); opacity: 1; }
+}
+
+/* Egyedi Fogaskerekek és Pozíciók */
+.gear-unit {
+    position: absolute;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.gear-unit svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.6));
+}
+
+/* 1. Fő Hajtó Fogaskerék (Nagy Arany/Réz - 24 fog) */
+.gear-main {
+    width: 160px;
+    height: 160px;
+    top: 30px;
+    left: 45px;
+    transform: translateZ(20px);
+    animation: spinClockwise 8s linear infinite;
+}
+
+/* 2. Közepes Áttétel Fogaskerék (Bronz - 16 fog) */
+.gear-medium {
+    width: 110px;
+    height: 110px;
+    top: 75px;
+    left: 175px;
+    transform: translateZ(10px);
+    animation: spinCounterClockwise 5.333s linear infinite;
+}
+
+/* 3. Kis Hajtó Fogaskerék (Sárgaréz - 12 fog) */
+.gear-small {
+    width: 80px;
+    height: 80px;
+    top: 15px;
+    left: 185px;
+    transform: translateZ(35px);
+    animation: spinClockwise 4s linear infinite;
+}
+
+/* 4. Mini Gátkerék / Kilincsmű (Acél/Réz - 8 fog) */
+.gear-pinion {
+    width: 60px;
+    height: 60px;
+    top: 115px;
+    left: 265px;
+    transform: translateZ(5px);
+    animation: spinClockwise 3s linear infinite;
+}
+
+/* Forgás animációk (GPU Composited) */
+@keyframes spinClockwise {
+    0% { transform: translateZ(var(--tz, 0px)) rotateZ(0deg); }
+    100% { transform: translateZ(var(--tz, 0px)) rotateZ(360deg); }
+}
+
+@keyframes spinCounterClockwise {
+    0% { transform: translateZ(var(--tz, 0px)) rotateZ(0deg); }
+    100% { transform: translateZ(var(--tz, 0px)) rotateZ(-360deg); }
+}
+
+.gear-main { --tz: 20px; }
+.gear-medium { --tz: 10px; }
+.gear-small { --tz: 35px; }
+.gear-pinion { --tz: 5px; }
+
+/* ==========================================================
+   === KINETIKUS KARAKTER ADAGOLÓ (KIPOTYOGÓ SZÖVEGEK) ===
+   ========================================================== */
+
+.clockwork-dispenser-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 85px;
     margin-bottom: 20px;
+    perspective: 800px;
+    z-index: 10;
+}
+
+/* Réz adagolónyílás / keret */
+.clockwork-chute-aperture {
+    display: inline-block;
+    padding: 10px 24px;
+    background: rgba(10, 20, 32, 0.85);
+    border: 1.5px solid #d4af37;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.9);
+    position: relative;
+}
+
+.clockwork-chute-aperture::before,
+.clockwork-chute-aperture::after {
+    content: '⚙';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #b87333;
+    text-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
+}
+.clockwork-chute-aperture::before { left: 8px; }
+.clockwork-chute-aperture::after { right: 8px; }
+
+/* Kinetikus szöveg sor */
+.clockwork-text-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: 'Pirata One', cursive, serif;
+    font-size: 2.2rem;
+    color: #ffd700;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.9), 0 3px 6px rgba(0,0,0,0.8);
     letter-spacing: 2px;
+    margin: 0;
+    padding: 0 12px;
+    min-height: 44px;
+    user-select: none;
+    transform-style: preserve-3d;
+}
+
+/* Egyedi kipotyogó karakter */
+.dispenser-char {
+    display: inline-block;
+    will-change: transform, opacity, filter;
+    transform-origin: center bottom;
+    transition: none;
+}
+
+/* 1. Állapot: Érkezés / Kipottyanás a gépből rugózással */
+.dispenser-char.char-drop-in {
+    animation: charMechanicalDrop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: var(--char-delay, 0s);
+}
+
+@keyframes charMechanicalDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-45px) rotateX(90deg) rotateZ(var(--rand-rot, 0deg)) scale(0.3);
+        filter: blur(4px) brightness(2);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(4px) rotateX(-12deg) rotateZ(calc(var(--rand-rot, 0deg) * -0.3)) scale(1.1);
+        filter: blur(0px) brightness(1.4);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px) rotateX(0deg) rotateZ(0deg) scale(1);
+        filter: blur(0px) brightness(1);
+    }
+}
+
+/* 2. Állapot: Karakterek szétesése és gravitációs lehullása */
+.dispenser-char.char-fall-out {
+    animation: charMechanicalFall 0.65s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+    animation-delay: var(--fall-delay, 0s);
+}
+
+@keyframes charMechanicalFall {
+    0% {
+        opacity: 1;
+        transform: translateY(0px) rotateX(0deg) rotateZ(0deg) scale(1);
+        filter: blur(0px);
+    }
+    30% {
+        transform: translateY(-8px) rotateZ(calc(var(--rand-rot, 10deg) * 0.5));
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(75px) rotateX(-75deg) rotateZ(calc(var(--rand-rot, 15deg) * 2.5)) scale(0.65);
+        filter: blur(3px) brightness(0.6);
+    }
+}
+
+/* Szóköz kezelése */
+.dispenser-char.char-space {
+    width: 0.45em;
+}
+
+/* ==========================================================
+   === STEAMPUNK FOLYAMATJELZŐ (PROGRESS TRACK & BAR) ===
+   ========================================================== */
+
+.clockwork-progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 320px;
+    max-width: 85vw;
+    z-index: 10;
 }
 
 .loader-bar-bg {
-    width: 320px;
-    height: 16px;
-    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 14px;
+    background: rgba(5, 10, 18, 0.85);
     border: 2px solid #8b5a2b;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8), 0 0 10px rgba(212, 175, 55, 0.3);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.9), 0 0 15px rgba(212, 175, 55, 0.35);
     position: relative;
 }
 
@@ -2093,17 +2340,18 @@ html.ebp-authenticated #app-view {
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, #8b5a2b 0%, #d4af37 50%, #fff2a3 100%);
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
-    transition: width 0.15s ease-out;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.9);
+    transition: width 0.2s ease-out;
 }
 
 .loader-text {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.85rem;
+    font-family: 'Share Tech Mono', 'Orbitron', monospace;
+    font-size: 0.88rem;
     color: #00ffcc;
-    margin-top: 14px;
+    margin-top: 12px;
     letter-spacing: 1.5px;
-    text-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+    text-shadow: 0 0 8px rgba(0, 255, 204, 0.7);
+    text-align: center;
 }
 
 /* Interaktív Épület / Célpont Lebegő Szövegbuborék */

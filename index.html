@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=20260921_audio1">
+    <link rel="stylesheet" href="styles.css?v=20260922_clockwork2">
     <link rel="icon" href="data:,">
 
     <script>
@@ -237,9 +237,27 @@
         <div id="content"></div>
     </div>
 
-    <div id="loading-overlay">
-        <img id="loading-gif" src="" alt="Betöltés..."/>
-        <p data-lang="loading_overlay_text">Kis türelmet, kalóz...</p>
+    <!-- Steampunk 3D Óramű & Kinetikus Karakter-Adagoló Töltőképernyő -->
+    <div id="kikoto-3d-loading-overlay" style="display: none; opacity: 0; pointer-events: none;">
+        <!-- 3D Three.js WebGL Óramű Színpad -->
+        <div id="clockwork-canvas-container"></div>
+
+        <!-- Kinetikus Karakter-Adagoló Gép (Kipotyogó Szövegek) -->
+        <div class="clockwork-dispenser-container">
+            <div class="clockwork-chute-aperture">
+                <div id="clockwork-dispenser-text" class="clockwork-text-line">
+                    <!-- Dinamikusan kipottyanó karakterek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Steampunk Folyamatjelző és Százalék -->
+        <div class="clockwork-progress-container">
+            <div class="loader-bar-bg">
+                <div id="loader-fill" class="loader-bar-fill"></div>
+            </div>
+            <div id="loader-status" class="loader-text">3D ÓRAMŰ INICIALIZÁLÁSA...</div>
+        </div>
     </div>
 
     <div id="marketing-view" style="display: none;">
@@ -609,6 +627,6 @@
 </div>
 
     <script src="web_fordito.js?v=20260920_toborzo3"></script>
-    <script src="app.js?v=20260921_audio1"></script>
+    <script src="app.js?v=20260922_clockwork2"></script>
 </body>
 </html>

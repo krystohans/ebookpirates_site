@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steampunk 3D Óramű (Three.js WebGL GPU) & Kinetikus Töltőképernyő</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260922_clockwork1">
+    
+    <!-- Three.js importmap -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #020509;
+            overflow: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            color: #fff;
+        }
+
+        #clockwork-overlay-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 38%, #142236 0%, #08101a 55%, #010306 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        /* Three.js 3D WebGL Vászon konténer */
+        #clockwork-canvas-container {
+            width: 520px;
+            height: 310px;
+            max-width: 95vw;
+            max-height: 44vh;
+            position: relative;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.95));
+        }
+
+        #clockwork-canvas-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            border-radius: 12px;
+        }
+
+        /* Kinetikus Karakter-Adagoló */
+        .clockwork-dispenser-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 85px;
+            margin-bottom: 22px;
+            perspective: 800px;
+            z-index: 10;
+        }
+
+        .clockwork-chute-aperture {
+            display: inline-block;
+            padding: 10px 28px;
+            background: rgba(10, 20, 32, 0.9);
+            border: 1.5px solid #d4af37;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.35), inset 0 0 15px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .clockwork-chute-aperture::before,
+        .clockwork-chute-aperture::after {
+            content: '⚙';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #d4af37;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+        }
+        .clockwork-chute-aperture::before { left: 10px; }
+        .clockwork-chute-aperture::after { right: 10px; }
+
+        .clockwork-text-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            font-family: 'Pirata One', cursive, serif;
+            font-size: 2.3rem;
+            color: #ffd700;
+            text-shadow: 0 0 14px rgba(212, 175, 55, 0.95), 0 3px 8px rgba(0,0,0,0.9);
+            letter-spacing: 2px;
+            margin: 0;
+            padding: 0 16px;
+            min-height: 48px;
+            user-select: none;
+            transform-style: preserve-3d;
+        }
+
+        /* Egyedi kipotyogó karakter */
+        .dispenser-char {
+            display: inline-block;
+            will-change: transform, opacity, filter;
+            transform-origin: center bottom;
+        }
+
+        .dispenser-char.char-drop-in {
+            animation: charMechanicalDrop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: var(--char-delay, 0s);
+        }
+
+        @keyframes charMechanicalDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) rotateX(90deg) rotateZ(var(--rand-rot, 0deg)) scale(0.3);
+                filter: blur(4px) brightness(2.2);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(4px) rotateX(-12deg) rotateZ(calc(var(--rand-rot, 0deg) * -0.3)) scale(1.12);
+                filter: blur(0px) brightness(1.4);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0px) rotateX(0deg) rotateZ(0deg) scale(1);
+                filter: blur(0px) brightness(1);
+            }
+        }
+
+        .dispenser-char.char-fall-out {
+            animation: charMechanicalFall 0.65s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+            animation-delay: var(--fall-delay, 0s);
+        }
+
+        @keyframes charMechanicalFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0px) rotateX(0deg) rotateZ(0deg) scale(1);
+                filter: blur(0px);
+            }
+            30% {
+                transform: translateY(-8px) rotateZ(calc(var(--rand-rot, 10deg) * 0.5));
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(80px) rotateX(-75deg) rotateZ(calc(var(--rand-rot, 15deg) * 2.5)) scale(0.6);
+                filter: blur(3px) brightness(0.5);
+            }
+        }
+
+        .dispenser-char.char-space {
+            width: 0.45em;
+        }
+
+        /* Steampunk Folyamatjelző */
+        .clockwork-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 360px;
+            max-width: 88vw;
+            z-index: 10;
+        }
+
+        .loader-bar-bg {
+            width: 100%;
+            height: 15px;
+            background: rgba(5, 10, 18, 0.9);
+            border: 2px solid #8b5a2b;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.95), 0 0 16px rgba(212, 175, 55, 0.4);
+            position: relative;
+        }
+
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #8b5a2b 0%, #d4af37 50%, #fff2a3 100%);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.95);
+            transition: width 0.15s ease-out;
+        }
+
+        .loader-text {
+            font-family: 'Share Tech Mono', 'Orbitron', monospace;
+            font-size: 0.92rem;
+            color: #00ffcc;
+            margin-top: 12px;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="clockwork-overlay-screen">
+        <!-- 1. Valódi 3D Three.js WebGL Óramű Színpad (Procedurális 3D Fogaskerekek) -->
+        <div id="clockwork-canvas-container"></div>
+
+        <!-- 2. Kinetikus Karakter-Adagoló Gép (Kipotyogó Szövegek) -->
+        <div class="clockwork-dispenser-container">
+            <div class="clockwork-chute-aperture">
+                <div id="clockwork-dispenser-text" class="clockwork-text-line">
+                    <!-- Dinamikusan kipottyanó karakterek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Steampunk Folyamatjelző és Százalék -->
+        <div class="clockwork-progress-container">
+            <div class="loader-bar-bg">
+                <div id="loader-fill" class="loader-bar-fill"></div>
+            </div>
+            <div id="loader-status" class="loader-text">3D ÓRAMŰ INICIALIZÁLÁSA...</div>
+        </div>
+    </div>
+
+    <!-- 1. Three.js 3D Procedurális Óramű Motor -->
+    <script type="module">
+        import * as THREE from 'three';
+
+        function createGearGeometry(numTeeth, rootRadius, pitchRadius, outerRadius, holeRadius, thickness) {
+            const shape = new THREE.Shape();
+            const toothAngle = (Math.PI * 2) / numTeeth;
+
+            for (let i = 0; i < numTeeth; i++) {
+                const angle = i * toothAngle;
+                const a0 = angle;
+                const a1 = angle + toothAngle * 0.22;
+                const a2 = angle + toothAngle * 0.38;
+                const a3 = angle + toothAngle * 0.62;
+                const a4 = angle + toothAngle * 0.78;
+                const a5 = angle + toothAngle;
+
+                const r0x = Math.cos(a0) * rootRadius, r0y = Math.sin(a0) * rootRadius;
+                const t1x = Math.cos(a1) * pitchRadius, t1y = Math.sin(a1) * pitchRadius;
+                const tip1x = Math.cos(a2) * outerRadius, tip1y = Math.sin(a2) * outerRadius;
+                const tip2x = Math.cos(a3) * outerRadius, tip2y = Math.sin(a3) * outerRadius;
+                const t2x = Math.cos(a4) * pitchRadius, t2y = Math.sin(a4) * pitchRadius;
+                const r1x = Math.cos(a5) * rootRadius, r1y = Math.sin(a5) * rootRadius;
+
+                if (i === 0) shape.moveTo(r0x, r0y);
+                else shape.lineTo(r0x, r0y);
+
+                shape.lineTo(t1x, t1y);
+                shape.lineTo(tip1x, tip1y);
+                shape.lineTo(tip2x, tip2y);
+                shape.lineTo(t2x, t2y);
+                shape.lineTo(r1x, r1y);
+            }
+            shape.closePath();
+
+            const centerHole = new THREE.Path();
+            centerHole.absarc(0, 0, holeRadius, 0, Math.PI * 2, true);
+            shape.holes.push(centerHole);
+
+            const numSpokes = numTeeth >= 20 ? 6 : (numTeeth >= 14 ? 5 : 4);
+            const spokeHoleRadius = (rootRadius - holeRadius) * 0.26;
+            const spokeDist = holeRadius + spokeHoleRadius * 1.55;
+
+            for (let s = 0; s < numSpokes; s++) {
+                const sa = (s * Math.PI * 2) / numSpokes;
+                const sp = new THREE.Path();
+                sp.absarc(Math.cos(sa) * spokeDist, Math.sin(sa) * spokeDist, spokeHoleRadius, 0, Math.PI * 2, true);
+                shape.holes.push(sp);
+            }
+
+            const extrudeSettings = {
+                depth: thickness,
+                bevelEnabled: true,
+                bevelSegments: 3,
+                steps: 1,
+                bevelSize: thickness * 0.12,
+                bevelThickness: thickness * 0.12
+            };
+
+            const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geo.center();
+            return geo;
+        }
+
+        const container = document.getElementById('clockwork-canvas-container');
+        const width = container.clientWidth || 520;
+        const height = container.clientHeight || 310;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+        camera.position.set(0, 0, 15.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.35;
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xfff0dd, 0.95);
+        scene.add(ambientLight);
+
+        const mainSun = new THREE.DirectionalLight(0xffd700, 3.8);
+        mainSun.position.set(8, 12, 10);
+        mainSun.castShadow = true;
+        mainSun.shadow.mapSize.width = 1024;
+        mainSun.shadow.mapSize.height = 1024;
+        scene.add(mainSun);
+
+        const fillLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
+        fillLight.position.set(-10, -6, 6);
+        scene.add(fillLight);
+
+        const centerGlowLight = new THREE.PointLight(0xff9922, 5.0, 12);
+        centerGlowLight.position.set(0, 0, 2);
+        scene.add(centerGlowLight);
+
+        const goldMaterial = new THREE.MeshStandardMaterial({
+            color: 0xe6b800,
+            metalness: 0.92,
+            roughness: 0.22
+        });
+
+        const copperMaterial = new THREE.MeshStandardMaterial({
+            color: 0xcc6633,
+            metalness: 0.90,
+            roughness: 0.28
+        });
+
+        const brassMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd4af37,
+            metalness: 0.88,
+            roughness: 0.25
+        });
+
+        const steelMaterial = new THREE.MeshStandardMaterial({
+            color: 0x8899aa,
+            metalness: 0.95,
+            roughness: 0.20
+        });
+
+        const rubyMaterial = new THREE.MeshStandardMaterial({
+            color: 0xcc0022,
+            metalness: 0.2,
+            roughness: 0.1,
+            emissive: 0x440008,
+            emissiveIntensity: 0.4
+        });
+
+        const clockworkGroup = new THREE.Group();
+        clockworkGroup.rotation.x = 0.38;
+        clockworkGroup.rotation.y = -0.25;
+        clockworkGroup.rotation.z = 0.06;
+        scene.add(clockworkGroup);
+
+        // 1. Főkerék (24 fogú)
+        const g1Geo = createGearGeometry(24, 2.3, 2.55, 2.85, 0.7, 0.45);
+        const gear1 = new THREE.Mesh(g1Geo, goldMaterial);
+        gear1.position.set(-2.1, 0.2, 0.1);
+        gear1.castShadow = true;
+        gear1.receiveShadow = true;
+        clockworkGroup.add(gear1);
+
+        const capGeo = new THREE.CylinderGeometry(0.5, 0.55, 0.55, 24);
+        capGeo.rotateX(Math.PI / 2);
+        const capMesh1 = new THREE.Mesh(capGeo, brassMaterial);
+        gear1.add(capMesh1);
+        const rubyGeo = new THREE.SphereGeometry(0.25, 16, 16);
+        const rubyMesh = new THREE.Mesh(rubyGeo, rubyMaterial);
+        rubyMesh.position.z = 0.32;
+        gear1.add(rubyMesh);
+
+        // 2. Közepes kerék (16 fogú)
+        const g2Geo = createGearGeometry(16, 1.5, 1.7, 1.95, 0.5, 0.4);
+        const gear2 = new THREE.Mesh(g2Geo, copperMaterial);
+        gear2.position.set(1.9, 1.2, -0.15);
+        gear2.castShadow = true;
+        gear2.receiveShadow = true;
+        clockworkGroup.add(gear2);
+
+        const capMesh2 = new THREE.Mesh(capGeo, brassMaterial);
+        capMesh2.scale.set(0.8, 0.8, 0.8);
+        gear2.add(capMesh2);
+
+        // 3. Kis kerék (12 fogú)
+        const g3Geo = createGearGeometry(12, 1.1, 1.25, 1.45, 0.4, 0.35);
+        const gear3 = new THREE.Mesh(g3Geo, brassMaterial);
+        gear3.position.set(1.5, -1.8, 0.25);
+        gear3.castShadow = true;
+        gear3.receiveShadow = true;
+        clockworkGroup.add(gear3);
+
+        const capMesh3 = new THREE.Mesh(capGeo, steelMaterial);
+        capMesh3.scale.set(0.7, 0.7, 0.7);
+        gear3.add(capMesh3);
+
+        // 4. Gátkerék (8 fogú)
+        const g4Geo = createGearGeometry(8, 0.7, 0.82, 0.98, 0.3, 0.3);
+        const gear4 = new THREE.Mesh(g4Geo, steelMaterial);
+        gear4.position.set(3.4, -0.6, -0.2);
+        gear4.castShadow = true;
+        gear4.receiveShadow = true;
+        clockworkGroup.add(gear4);
+
+        // Háttérlemez
+        const backplateGeo = new THREE.CylinderGeometry(4.8, 4.8, 0.15, 32);
+        backplateGeo.rotateX(Math.PI / 2);
+        const backplateMat = new THREE.MeshStandardMaterial({
+            color: 0x0a1420,
+            metalness: 0.8,
+            roughness: 0.6
+        });
+        const backplate = new THREE.Mesh(backplateGeo, backplateMat);
+        backplate.position.set(0.4, -0.2, -0.6);
+        backplate.receiveShadow = true;
+        clockworkGroup.add(backplate);
+
+        const baseSpeed = 0.009;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            gear1.rotation.z += baseSpeed;
+            gear2.rotation.z -= baseSpeed * (24 / 16);
+            gear3.rotation.z += baseSpeed * (24 / 12);
+            gear4.rotation.z -= baseSpeed * (24 / 8);
+
+            const time = Date.now() * 0.0015;
+            clockworkGroup.rotation.x = 0.38 + Math.sin(time) * 0.03;
+            clockworkGroup.rotation.y = -0.25 + Math.cos(time * 0.8) * 0.04;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            const w = container.clientWidth || 520;
+            const h = container.clientHeight || 310;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+    </script>
+
+    <!-- 2. Kinetikus Tipográfia & Folyamatjelző Motor (Azonnali Folyamatos Indítás) -->
+    <script>
+        (function() {
+            const phrases = [
+                "Hajók kirakodása...",
+                "Legénységi sorakozó...",
+                "Piaci leltár felvétele...",
+                "Horgonyok felhúzása...",
+                "Kikötői vizek kalibrálása...",
+                "Térképek kicsomagolása...",
+                "Kincsesládák számlálása...",
+                "Ágyúk tisztítása és készletezése...",
+                "Hajónapló előkészítése..."
+            ];
+
+            let currentPhraseIndex = 0;
+            let timerId = null;
+
+            function renderPhrase(text, container) {
+                if (!container) return;
+                container.innerHTML = '';
+
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text[i];
+                    const span = document.createElement('span');
+                    span.className = 'dispenser-char char-drop-in';
+                    if (ch === ' ') {
+                        span.className += ' char-space';
+                        span.innerHTML = '&nbsp;';
+                    } else {
+                        span.textContent = ch;
+                    }
+
+                    const randRot = ((Math.random() * 36) - 18).toFixed(1) + 'deg';
+                    const charDelay = (i * 0.045).toFixed(3) + 's';
+
+                    span.style.setProperty('--rand-rot', randRot);
+                    span.style.setProperty('--char-delay', charDelay);
+                    container.appendChild(span);
+                }
+            }
+
+            function triggerFallOut(container, onComplete) {
+                if (!container) {
+                    if (onComplete) onComplete();
+                    return;
+                }
+                const chars = container.querySelectorAll('.dispenser-char');
+                if (chars.length === 0) {
+                    if (onComplete) onComplete();
+                    return;
+                }
+
+                let maxFallTime = 0;
+                for (let i = 0; i < chars.length; i++) {
+                    const span = chars[i];
+                    span.classList.remove('char-drop-in');
+                    span.classList.add('char-fall-out');
+                    const fallDelay = (i * 0.025 + (Math.random() * 0.05)).toFixed(3) + 's';
+                    const randRot = ((Math.random() * 60) - 30).toFixed(1) + 'deg';
+                    span.style.setProperty('--fall-delay', fallDelay);
+                    span.style.setProperty('--rand-rot', randRot);
+                    const totalTime = parseFloat(fallDelay) + 0.65;
+                    if (totalTime > maxFallTime) maxFallTime = totalTime;
+                }
+
+                setTimeout(() => {
+                    if (onComplete) onComplete();
+                }, Math.max(700, Math.round(maxFallTime * 1000)));
+            }
+
+            function cycle() {
+                const container = document.getElementById('clockwork-dispenser-text');
+                if (!container) return;
+
+                const text = phrases[currentPhraseIndex];
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+
+                renderPhrase(text, container);
+
+                // Olvasási idő a kipottyanás után
+                const readTime = 800 + (text.length * 45) + 2200;
+
+                timerId = setTimeout(() => {
+                    triggerFallOut(container, () => {
+                        timerId = setTimeout(cycle, 250);
+                    });
+                }, readTime);
+            }
+
+            // Folyamatjelző Szimuláció (0 - 100% ciklikus töltés)
+            function startProgressLoop() {
+                const fill = document.getElementById('loader-fill');
+                const status = document.getElementById('loader-status');
+                if (!fill || !status) return;
+
+                let p = 0;
+                fill.style.width = '0%';
+
+                const interval = setInterval(() => {
+                    p += Math.floor(Math.random() * 6) + 3;
+                    if (p >= 100) {
+                        p = 100;
+                        fill.style.width = '100%';
+                        status.textContent = 'HEBOK KIKÖTŐ BETÖLTVE (71.2 MB / 71.2 MB)';
+                        setTimeout(() => {
+                            p = 0;
+                            fill.style.width = '0%';
+                        }, 2500);
+                    } else {
+                        fill.style.width = p + '%';
+                        status.textContent = '3D MODELL BETÖLTÉSE: ' + p + '% (' + (p * 0.71).toFixed(1) + ' / 71.2 MB)';
+                    }
+                }, 200);
+            }
+
+            // AZONNALI INDÍTÁS
+            cycle();
+            startProgressLoop();
+        })();
+    </script>
+</body>
+</html>

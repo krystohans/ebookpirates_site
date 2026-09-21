@@ -43,23 +43,94 @@ function preloadPageTemplate(pageName) {
 }
 window.preloadPageTemplate = preloadPageTemplate;
 
-function preloadAllSubpages() {
-    if (window._hasPreloadedSubpages) return;
+function showUniversalLoading(statusText, customPhrases) {
+    var overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'all';
+        overlay.classList.add('active');
+    }
+    if (statusText) {
+        var statusEl = document.getElementById('loader-status');
+        if (statusEl) statusEl.textContent = statusText;
+    }
+    if (window.ClockworkEngine) {
+        window.ClockworkEngine.start();
+    }
+    if (window.ClockworkDispenser) {
+        window.ClockworkDispenser.start(customPhrases);
+    }
+}
+window.showUniversalLoading = showUniversalLoading;
+
+function updateUniversalLoadingProgress(percent, statusText) {
+    var fill = document.getElementById('loader-fill');
+    if (fill) {
+        fill.style.width = Math.min(100, Math.max(0, percent)) + '%';
+    }
+    if (statusText) {
+        var statusEl = document.getElementById('loader-status');
+        if (statusEl) statusEl.textContent = statusText;
+    }
+}
+window.updateUniversalLoadingProgress = updateUniversalLoadingProgress;
+
+function hideUniversalLoading(completionText, delayMs) {
+    var wait = typeof delayMs === 'number' ? delayMs : 500;
+    if (completionText && window.ClockworkDispenser) {
+        window.ClockworkDispenser.showSingle(completionText);
+    }
+    var fill = document.getElementById('loader-fill');
+    if (fill) fill.style.width = '100%';
+
+    setTimeout(function() {
+        if (window.ClockworkEngine) {
+            window.ClockworkEngine.stop();
+        }
+        if (window.ClockworkDispenser) {
+            window.ClockworkDispenser.stop();
+        }
+        var overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+            overlay.classList.remove('active');
+            setTimeout(function() {
+                overlay.style.display = 'none';
+            }, 600);
+        }
+    }, wait);
+}
+window.hideUniversalLoading = hideUniversalLoading;
+
+function preloadAllSubpages(onComplete) {
+    if (window._hasPreloadedSubpages) {
+        if (onComplete) onComplete();
+        return;
+    }
     window._hasPreloadedSubpages = true;
-    console.log("⚡ [Preload Pipeline] Aloldal sablonok háttértáras előtöltése elindult...");
+    console.log("⚡ [Preload Pipeline] Aloldal sablonok háttértáras előtöltése és prepozícionálása elindult...");
     
+    var total = PRELOAD_PAGES_LIST.length;
     var index = 0;
+
     function loadNext() {
-        if (index >= PRELOAD_PAGES_LIST.length) {
+        if (index >= total) {
             console.log("✅ [Preload Pipeline] Minden aloldal sablon sikeresen előtöltve a memóriába.");
+            updateUniversalLoadingProgress(100, "MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)");
+            if (onComplete) onComplete();
             return;
         }
         var pName = PRELOAD_PAGES_LIST[index++];
+        var progressPercent = Math.round((index / total) * 100);
+        updateUniversalLoadingProgress(progressPercent, "ALOLDALAK PREPOZÍCIONÁLÁSA: " + progressPercent + "% (" + pName + ")");
+
         preloadPageTemplate(pName).then(function() {
             if ('requestIdleCallback' in window) {
                 window.requestIdleCallback(loadNext, { timeout: 150 });
             } else {
-                setTimeout(loadNext, 40);
+                setTimeout(loadNext, 30);
             }
         });
     }
@@ -586,7 +657,9 @@ function login() {
 }
 
 function initializeApp(user) {
-    if (typeof preloadAllSubpages === 'function') preloadAllSubpages();
+    if (typeof showUniversalLoading === 'function') {
+        showUniversalLoading("KALÓZSZIGET PREPOZÍCIONÁLÁSA...");
+    }
     if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
     window.inGame = user.inGame === true;
     window.activeShipId = user.activeShipId || '';
@@ -632,29 +705,32 @@ function initializeApp(user) {
     var treasLinkEl = document.getElementById('treasuresLink');
     if (treasLinkEl) treasLinkEl.onclick = function () { loadPage('kincsek'); };
 
-    // --- MARKETING ÁTIRÁNYÍTÁS ---
-    if (window.pendingMarketingData) {
-        console.log("Marketing átirányítás aktiválva...");
-        loadMarketingView(window.pendingMarketingData.bookId, window.pendingMarketingData.folderId);
-        window.pendingMarketingData = null;
-    } else {
-        // Normál irányítás: utolsó látogatott aloldal vagy alapértelmezett
-        var lastPage = null;
-        try { lastPage = localStorage.getItem('ebook_last_active_page'); } catch(e) {}
-
-        if (window.userTutorialCompleted) {
-            if (lastPage && lastPage !== 'login' && lastPage !== 'index' && lastPage !== 'tutorial_oldal') {
-                console.log("⚓ Visszatérés az utoljára látogatott aloldalra:", lastPage);
-                loadPage(lastPage);
-            } else if (user.startPage && user.startPage !== 'tutorial_oldal') {
-                loadPage(user.startPage);
-            } else {
-                loadPage('kikoto_oldal');
-            }
+    // --- ALOLDALAK PREPOZÍCIONÁLÁSA ÉS ÁTIRÁNYÍTÁS ---
+    preloadAllSubpages(function() {
+        console.log("⚓ Minden aloldal prepozícionálva a memóriában!");
+        if (window.pendingMarketingData) {
+            console.log("Marketing átirányítás aktiválva...");
+            loadMarketingView(window.pendingMarketingData.bookId, window.pendingMarketingData.folderId);
+            window.pendingMarketingData = null;
         } else {
-            loadPage('tutorial_oldal');
+            // Normál irányítás: utolsó látogatott aloldal vagy alapértelmezett
+            var lastPage = null;
+            try { lastPage = localStorage.getItem('ebook_last_active_page'); } catch(e) {}
+
+            if (window.userTutorialCompleted) {
+                if (lastPage && lastPage !== 'login' && lastPage !== 'index' && lastPage !== 'tutorial_oldal') {
+                    console.log("⚓ Visszatérés az utoljára látogatott aloldalra:", lastPage);
+                    loadPage(lastPage);
+                } else if (user.startPage && user.startPage !== 'tutorial_oldal') {
+                    loadPage(user.startPage);
+                } else {
+                    loadPage('kikoto_oldal');
+                }
+            } else {
+                loadPage('tutorial_oldal');
+            }
         }
-    }
+    });
 }
 
 var isSessionChecked = false;
@@ -1212,10 +1288,12 @@ function loadPage(pageName) {
 
                 setupAccordionListeners();
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
+                if (typeof hideUniversalLoading === 'function') hideUniversalLoading("ÜDVÖZÖL A KALÓZSZIGET!", 600);
             },
             function (error) {
                 console.warn("Oldal adatok betöltési hiba (fallback inicializálás):", error);
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
+                if (typeof hideUniversalLoading === 'function') hideUniversalLoading();
                 if (pageName === 'tutorial_oldal') {
                     runTutorialScript();
                 } else {
@@ -1247,6 +1325,7 @@ function loadPage(pageName) {
                     contentDiv.innerHTML = '<p>' + (typeof t === 'function' ? t('page_load_error_prefix') : 'Hiba: ') + error.message + '</p>';
                 }
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
+                if (typeof hideUniversalLoading === 'function') hideUniversalLoading();
             });
     }
 }
@@ -14750,7 +14829,338 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                 }
             }
         }
-        window.updateEnvironmentLighting = updateEnvironmentLighting;
+        // ==========================================================
+        // === STEAMPUNK CLOCKWORK KINETIC TYPOGRAPHY DISPENSER ===
+        // ==========================================================
+        (function() {
+            var phrases = [
+                "Hajók kirakodása...",
+                "Legénységi sorakozó...",
+                "Piaci leltár felvétele...",
+                "Horgonyok felhúzása...",
+                "Kikötői vizek kalibrálása...",
+                "Térképek kicsomagolása...",
+                "Kincsesládák számlálása...",
+                "Ágyúk tisztítása és készletezése...",
+                "Hajónapló előkészítése..."
+            ];
+
+            var currentPhraseIndex = 0;
+            var timerId = null;
+            var isRunning = false;
+
+            function renderPhrase(text, container) {
+                if (!container) return;
+                container.innerHTML = '';
+
+                for (var i = 0; i < text.length; i++) {
+                    var ch = text[i];
+                    var span = document.createElement('span');
+                    span.className = 'dispenser-char char-drop-in';
+                    if (ch === ' ') {
+                        span.className += ' char-space';
+                        span.innerHTML = '&nbsp;';
+                    } else {
+                        span.textContent = ch;
+                    }
+
+                    var randRot = ((Math.random() * 36) - 18).toFixed(1) + 'deg';
+                    var charDelay = (i * 0.045).toFixed(3) + 's';
+
+                    span.style.setProperty('--rand-rot', randRot);
+                    span.style.setProperty('--char-delay', charDelay);
+                    container.appendChild(span);
+                }
+            }
+
+            function triggerFallOut(container, onComplete) {
+                if (!container) {
+                    if (onComplete) onComplete();
+                    return;
+                }
+                var chars = container.querySelectorAll('.dispenser-char');
+                if (chars.length === 0) {
+                    if (onComplete) onComplete();
+                    return;
+                }
+
+                var maxFallTime = 0;
+                for (var i = 0; i < chars.length; i++) {
+                    var span = chars[i];
+                    span.classList.remove('char-drop-in');
+                    span.classList.add('char-fall-out');
+                    var fallDelay = (i * 0.025 + (Math.random() * 0.05)).toFixed(3) + 's';
+                    var randRot = ((Math.random() * 60) - 30).toFixed(1) + 'deg';
+                    span.style.setProperty('--fall-delay', fallDelay);
+                    span.style.setProperty('--rand-rot', randRot);
+                    var totalTime = parseFloat(fallDelay) + 0.65;
+                    if (totalTime > maxFallTime) maxFallTime = totalTime;
+                }
+
+                setTimeout(function() {
+                    if (onComplete) onComplete();
+                }, Math.max(700, Math.round(maxFallTime * 1000)));
+            }
+
+            function cycle() {
+                if (!isRunning) return;
+                var container = document.getElementById('clockwork-dispenser-text');
+                if (!container) {
+                    var altContainers = document.querySelectorAll('#clockwork-dispenser-text');
+                    if (altContainers.length > 0) container = altContainers[0];
+                }
+
+                if (!container) {
+                    timerId = setTimeout(cycle, 1000);
+                    return;
+                }
+
+                var text = phrases[currentPhraseIndex];
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+
+                renderPhrase(text, container);
+
+                var readTime = 1000 + (text.length * 45) + 2200;
+
+                timerId = setTimeout(function() {
+                    if (!isRunning) return;
+                    triggerFallOut(container, function() {
+                        if (!isRunning) return;
+                        timerId = setTimeout(cycle, 250);
+                    });
+                }, readTime);
+            }
+
+            window.ClockworkDispenser = {
+                start: function(customPhrases) {
+                    if (customPhrases && Array.isArray(customPhrases) && customPhrases.length > 0) {
+                        phrases = customPhrases;
+                    }
+                    if (isRunning) return;
+                    isRunning = true;
+                    currentPhraseIndex = 0;
+                    cycle();
+                },
+                stop: function() {
+                    isRunning = false;
+                    if (timerId) {
+                        clearTimeout(timerId);
+                        timerId = null;
+                    }
+                    var container = document.getElementById('clockwork-dispenser-text');
+                    if (container) {
+                        container.innerHTML = '';
+                    }
+                },
+                showSingle: function(text) {
+                    var container = document.getElementById('clockwork-dispenser-text');
+                    if (container) {
+                        renderPhrase(text, container);
+                    }
+                }
+            };
+        })();
+
+        // ==========================================================
+        // === PROCEDURAL 3D THREE.JS CLOCKWORK ENGINE (NO GLB) ===
+        // ==========================================================
+        var clockworkEngine = (function() {
+            var renderer = null;
+            var scene = null;
+            var camera = null;
+            var animFrameId = null;
+            var gears = [];
+            var clockworkGroup = null;
+
+            function createGearGeometry(numTeeth, rootRadius, pitchRadius, outerRadius, holeRadius, thickness) {
+                var shape = new THREE.Shape();
+                var toothAngle = (Math.PI * 2) / numTeeth;
+
+                for (var i = 0; i < numTeeth; i++) {
+                    var angle = i * toothAngle;
+                    var a0 = angle;
+                    var a1 = angle + toothAngle * 0.22;
+                    var a2 = angle + toothAngle * 0.38;
+                    var a3 = angle + toothAngle * 0.62;
+                    var a4 = angle + toothAngle * 0.78;
+                    var a5 = angle + toothAngle;
+
+                    var r0x = Math.cos(a0) * rootRadius, r0y = Math.sin(a0) * rootRadius;
+                    var t1x = Math.cos(a1) * pitchRadius, t1y = Math.sin(a1) * pitchRadius;
+                    var tip1x = Math.cos(a2) * outerRadius, tip1y = Math.sin(a2) * outerRadius;
+                    var tip2x = Math.cos(a3) * outerRadius, tip2y = Math.sin(a3) * outerRadius;
+                    var t2x = Math.cos(a4) * pitchRadius, t2y = Math.sin(a4) * pitchRadius;
+                    var r1x = Math.cos(a5) * rootRadius, r1y = Math.sin(a5) * rootRadius;
+
+                    if (i === 0) shape.moveTo(r0x, r0y);
+                    else shape.lineTo(r0x, r0y);
+
+                    shape.lineTo(t1x, t1y);
+                    shape.lineTo(tip1x, tip1y);
+                    shape.lineTo(tip2x, tip2y);
+                    shape.lineTo(t2x, t2y);
+                    shape.lineTo(r1x, r1y);
+                }
+                shape.closePath();
+
+                var centerHole = new THREE.Path();
+                centerHole.absarc(0, 0, holeRadius, 0, Math.PI * 2, true);
+                shape.holes.push(centerHole);
+
+                var numSpokes = numTeeth >= 20 ? 6 : (numTeeth >= 14 ? 5 : 4);
+                var spokeHoleRadius = (rootRadius - holeRadius) * 0.26;
+                var spokeDist = holeRadius + spokeHoleRadius * 1.55;
+
+                for (var s = 0; s < numSpokes; s++) {
+                    var sa = (s * Math.PI * 2) / numSpokes;
+                    var sp = new THREE.Path();
+                    sp.absarc(Math.cos(sa) * spokeDist, Math.sin(sa) * spokeDist, spokeHoleRadius, 0, Math.PI * 2, true);
+                    shape.holes.push(sp);
+                }
+
+                var extrudeSettings = {
+                    depth: thickness,
+                    bevelEnabled: true,
+                    bevelSegments: 3,
+                    steps: 1,
+                    bevelSize: thickness * 0.12,
+                    bevelThickness: thickness * 0.12
+                };
+
+                var geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                geo.center();
+                return geo;
+            }
+
+            function init(container) {
+                if (!container || renderer) return;
+                var w = container.clientWidth || 480;
+                var h = container.clientHeight || 280;
+
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+                camera.position.set(0, 0, 15.5);
+
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(w, h);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.35;
+                container.appendChild(renderer.domElement);
+
+                var ambientLight = new THREE.AmbientLight(0xfff0dd, 0.9);
+                scene.add(ambientLight);
+
+                var mainSun = new THREE.DirectionalLight(0xffd700, 3.5);
+                mainSun.position.set(8, 12, 10);
+                mainSun.castShadow = true;
+                scene.add(mainSun);
+
+                var fillLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
+                fillLight.position.set(-10, -6, 6);
+                scene.add(fillLight);
+
+                var goldMaterial = new THREE.MeshStandardMaterial({ color: 0xe6b800, metalness: 0.92, roughness: 0.22 });
+                var copperMaterial = new THREE.MeshStandardMaterial({ color: 0xcc6633, metalness: 0.90, roughness: 0.28 });
+                var brassMaterial = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.88, roughness: 0.25 });
+                var steelMaterial = new THREE.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.95, roughness: 0.20 });
+                var rubyMaterial = new THREE.MeshStandardMaterial({ color: 0xcc0022, metalness: 0.2, roughness: 0.1, emissive: 0x440008, emissiveIntensity: 0.4 });
+
+                clockworkGroup = new THREE.Group();
+                clockworkGroup.rotation.x = 0.38;
+                clockworkGroup.rotation.y = -0.25;
+                clockworkGroup.rotation.z = 0.06;
+                scene.add(clockworkGroup);
+
+                var g1Geo = createGearGeometry(24, 2.3, 2.55, 2.85, 0.7, 0.45);
+                var gear1 = new THREE.Mesh(g1Geo, goldMaterial);
+                gear1.position.set(-2.1, 0.2, 0.1);
+                gear1.castShadow = true;
+                gear1.receiveShadow = true;
+                clockworkGroup.add(gear1);
+
+                var capGeo = new THREE.CylinderGeometry(0.5, 0.55, 0.55, 24);
+                capGeo.rotateX(Math.PI / 2);
+                var capMesh1 = new THREE.Mesh(capGeo, brassMaterial);
+                gear1.add(capMesh1);
+                var rubyGeo = new THREE.SphereGeometry(0.25, 16, 16);
+                var rubyMesh = new THREE.Mesh(rubyGeo, rubyMaterial);
+                rubyMesh.position.z = 0.32;
+                gear1.add(rubyMesh);
+
+                var g2Geo = createGearGeometry(16, 1.5, 1.7, 1.95, 0.5, 0.4);
+                var gear2 = new THREE.Mesh(g2Geo, copperMaterial);
+                gear2.position.set(1.9, 1.2, -0.15);
+                gear2.castShadow = true;
+                gear2.receiveShadow = true;
+                clockworkGroup.add(gear2);
+
+                var g3Geo = createGearGeometry(12, 1.1, 1.25, 1.45, 0.4, 0.35);
+                var gear3 = new THREE.Mesh(g3Geo, brassMaterial);
+                gear3.position.set(1.5, -1.8, 0.25);
+                gear3.castShadow = true;
+                gear3.receiveShadow = true;
+                clockworkGroup.add(gear3);
+
+                var g4Geo = createGearGeometry(8, 0.7, 0.82, 0.98, 0.3, 0.3);
+                var gear4 = new THREE.Mesh(g4Geo, steelMaterial);
+                gear4.position.set(3.4, -0.6, -0.2);
+                gear4.castShadow = true;
+                gear4.receiveShadow = true;
+                clockworkGroup.add(gear4);
+
+                var backplateGeo = new THREE.CylinderGeometry(4.8, 4.8, 0.15, 32);
+                backplateGeo.rotateX(Math.PI / 2);
+                var backplateMat = new THREE.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.6 });
+                var backplate = new THREE.Mesh(backplateGeo, backplateMat);
+                backplate.position.set(0.4, -0.2, -0.6);
+                clockworkGroup.add(backplate);
+
+                gears = [gear1, gear2, gear3, gear4];
+            }
+
+            function animate() {
+                if (!renderer || !scene || !camera) return;
+                animFrameId = requestAnimationFrame(animate);
+
+                var speed = 0.008;
+                if (gears.length >= 4) {
+                    gears[0].rotation.z += speed;
+                    gears[1].rotation.z -= speed * (24 / 16);
+                    gears[2].rotation.z += speed * (24 / 12);
+                    gears[3].rotation.z -= speed * (24 / 8);
+                }
+
+                var time = Date.now() * 0.0015;
+                if (clockworkGroup) {
+                    clockworkGroup.rotation.x = 0.38 + Math.sin(time) * 0.03;
+                    clockworkGroup.rotation.y = -0.25 + Math.cos(time * 0.8) * 0.04;
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            return {
+                start: function(container) {
+                    if (!renderer) {
+                        var c = container || document.getElementById('clockwork-canvas-container');
+                        if (c) init(c);
+                    }
+                    if (!animFrameId && renderer) {
+                        animate();
+                    }
+                },
+                stop: function() {
+                    if (animFrameId) {
+                        cancelAnimationFrame(animFrameId);
+                        animFrameId = null;
+                    }
+                }
+            };
+        })();
+        window.ClockworkEngine = clockworkEngine;
 
         // Modell Betöltő (GLTFLoader)
         function loadHarborModel() {
@@ -14761,6 +15171,19 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             const loaderStatus = document.getElementById('loader-status');
             const overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
             const statsText = document.getElementById('model-stats-text');
+
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'all';
+                overlay.classList.add('active');
+            }
+            if (window.ClockworkEngine) {
+                window.ClockworkEngine.start();
+            }
+            if (window.ClockworkDispenser) {
+                window.ClockworkDispenser.start();
+            }
 
             loader.load(
                 modelPath,
@@ -16203,16 +16626,27 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                     // Betöltő képernyő eltüntetése
                     if (loaderFill) loaderFill.style.width = '100%';
                     if (loaderStatus) loaderStatus.textContent = 'KIKÖTŐ BETÖLTVE!';
+                    if (window.ClockworkDispenser) {
+                        window.ClockworkDispenser.showSingle('KIKÖTŐ BETÖLTVE!');
+                    }
                     setTimeout(() => {
+                        if (window.ClockworkEngine) {
+                            window.ClockworkEngine.stop();
+                        }
+                        if (window.ClockworkDispenser) {
+                            window.ClockworkDispenser.stop();
+                        }
                         if (overlay) {
                             overlay.style.opacity = '0';
                             overlay.style.pointerEvents = 'none';
+                            overlay.classList.remove('active');
                             setTimeout(() => { overlay.style.display = 'none'; }, 600);
                         }
                         const kikoto3DOverlay = document.getElementById('kikoto-3d-loading-overlay');
                         if (kikoto3DOverlay && kikoto3DOverlay !== overlay) {
                             kikoto3DOverlay.style.opacity = '0';
                             kikoto3DOverlay.style.pointerEvents = 'none';
+                            kikoto3DOverlay.classList.remove('active');
                             setTimeout(() => { kikoto3DOverlay.style.display = 'none'; }, 600);
                         }
                         const transOverlay = document.getElementById('scene-transition-overlay');
@@ -16556,6 +16990,12 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         pointerDownTime = 0;
 
         // 1. Fekete sötétítő rétegek azonnali feloldása
+        if (window.ClockworkEngine) {
+            window.ClockworkEngine.stop();
+        }
+        if (window.ClockworkDispenser) {
+            window.ClockworkDispenser.stop();
+        }
         const overlay = document.getElementById('scene-transition-overlay');
         if (overlay) {
             overlay.classList.remove('active');
@@ -16565,6 +17005,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         }
         const kikoto3DOverlay = document.getElementById('kikoto-3d-loading-overlay');
         if (kikoto3DOverlay) {
+            kikoto3DOverlay.classList.remove('active');
             kikoto3DOverlay.style.opacity = '0';
             kikoto3DOverlay.style.pointerEvents = 'none';
             kikoto3DOverlay.style.display = 'none';

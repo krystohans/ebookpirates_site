@@ -15034,91 +15034,109 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
             function init(container) {
                 if (!container || renderer) return;
+                var T = window.THREE;
+                if (!T) return;
+
                 var w = container.clientWidth || 480;
                 var h = container.clientHeight || 280;
 
-                scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+                scene = new T.Scene();
+                camera = new T.PerspectiveCamera(40, w / h, 0.1, 100);
                 camera.position.set(0, 0, 15.5);
 
-                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer = new T.WebGLRenderer({ antialias: true, alpha: true });
                 renderer.setSize(w, h);
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 renderer.shadowMap.enabled = true;
-                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.shadowMap.type = T.PCFSoftShadowMap;
+                renderer.toneMapping = T.ACESFilmicToneMapping;
                 renderer.toneMappingExposure = 1.35;
                 container.appendChild(renderer.domElement);
 
-                var ambientLight = new THREE.AmbientLight(0xfff0dd, 0.9);
+                var ambientLight = new T.AmbientLight(0xfff0dd, 0.9);
                 scene.add(ambientLight);
 
-                var mainSun = new THREE.DirectionalLight(0xffd700, 3.5);
+                var mainSun = new T.DirectionalLight(0xffd700, 3.5);
                 mainSun.position.set(8, 12, 10);
                 mainSun.castShadow = true;
                 scene.add(mainSun);
 
-                var fillLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
+                var fillLight = new T.DirectionalLight(0x00e5ff, 1.8);
                 fillLight.position.set(-10, -6, 6);
                 scene.add(fillLight);
 
-                var goldMaterial = new THREE.MeshStandardMaterial({ color: 0xe6b800, metalness: 0.92, roughness: 0.22 });
-                var copperMaterial = new THREE.MeshStandardMaterial({ color: 0xcc6633, metalness: 0.90, roughness: 0.28 });
-                var brassMaterial = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.88, roughness: 0.25 });
-                var steelMaterial = new THREE.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.95, roughness: 0.20 });
-                var rubyMaterial = new THREE.MeshStandardMaterial({ color: 0xcc0022, metalness: 0.2, roughness: 0.1, emissive: 0x440008, emissiveIntensity: 0.4 });
+                var goldMaterial = new T.MeshStandardMaterial({ color: 0xe6b800, metalness: 0.92, roughness: 0.22 });
+                var copperMaterial = new T.MeshStandardMaterial({ color: 0xcc6633, metalness: 0.90, roughness: 0.28 });
+                var brassMaterial = new T.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.88, roughness: 0.25 });
+                var steelMaterial = new T.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.95, roughness: 0.20 });
+                var rubyMaterial = new T.MeshStandardMaterial({ color: 0xcc0022, metalness: 0.2, roughness: 0.1, emissive: 0x440008, emissiveIntensity: 0.4 });
 
-                clockworkGroup = new THREE.Group();
+                clockworkGroup = new T.Group();
                 clockworkGroup.rotation.x = 0.38;
                 clockworkGroup.rotation.y = -0.25;
                 clockworkGroup.rotation.z = 0.06;
                 scene.add(clockworkGroup);
 
                 var g1Geo = createGearGeometry(24, 2.3, 2.55, 2.85, 0.7, 0.45);
-                var gear1 = new THREE.Mesh(g1Geo, goldMaterial);
+                var gear1 = new T.Mesh(g1Geo, goldMaterial);
                 gear1.position.set(-2.1, 0.2, 0.1);
                 gear1.castShadow = true;
                 gear1.receiveShadow = true;
                 clockworkGroup.add(gear1);
 
-                var capGeo = new THREE.CylinderGeometry(0.5, 0.55, 0.55, 24);
+                var capGeo = new T.CylinderGeometry(0.5, 0.55, 0.55, 24);
                 capGeo.rotateX(Math.PI / 2);
-                var capMesh1 = new THREE.Mesh(capGeo, brassMaterial);
+                var capMesh1 = new T.Mesh(capGeo, brassMaterial);
                 gear1.add(capMesh1);
-                var rubyGeo = new THREE.SphereGeometry(0.25, 16, 16);
-                var rubyMesh = new THREE.Mesh(rubyGeo, rubyMaterial);
+                var rubyGeo = new T.SphereGeometry(0.25, 16, 16);
+                var rubyMesh = new T.Mesh(rubyGeo, rubyMaterial);
                 rubyMesh.position.z = 0.32;
                 gear1.add(rubyMesh);
 
                 var g2Geo = createGearGeometry(16, 1.5, 1.7, 1.95, 0.5, 0.4);
-                var gear2 = new THREE.Mesh(g2Geo, copperMaterial);
+                var gear2 = new T.Mesh(g2Geo, copperMaterial);
                 gear2.position.set(1.9, 1.2, -0.15);
                 gear2.castShadow = true;
                 gear2.receiveShadow = true;
                 clockworkGroup.add(gear2);
 
                 var g3Geo = createGearGeometry(12, 1.1, 1.25, 1.45, 0.4, 0.35);
-                var gear3 = new THREE.Mesh(g3Geo, brassMaterial);
+                var gear3 = new T.Mesh(g3Geo, brassMaterial);
                 gear3.position.set(1.5, -1.8, 0.25);
                 gear3.castShadow = true;
                 gear3.receiveShadow = true;
                 clockworkGroup.add(gear3);
 
                 var g4Geo = createGearGeometry(8, 0.7, 0.82, 0.98, 0.3, 0.3);
-                var gear4 = new THREE.Mesh(g4Geo, steelMaterial);
+                var gear4 = new T.Mesh(g4Geo, steelMaterial);
                 gear4.position.set(3.4, -0.6, -0.2);
                 gear4.castShadow = true;
                 gear4.receiveShadow = true;
                 clockworkGroup.add(gear4);
 
-                var backplateGeo = new THREE.CylinderGeometry(4.8, 4.8, 0.15, 32);
+                var backplateGeo = new T.CylinderGeometry(4.8, 4.8, 0.15, 32);
                 backplateGeo.rotateX(Math.PI / 2);
-                var backplateMat = new THREE.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.6 });
-                var backplate = new THREE.Mesh(backplateGeo, backplateMat);
+                var backplateMat = new T.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.6 });
+                var backplate = new T.Mesh(backplateGeo, backplateMat);
                 backplate.position.set(0.4, -0.2, -0.6);
                 clockworkGroup.add(backplate);
 
                 gears = [gear1, gear2, gear3, gear4];
+            }
+
+            function ensureThreeAndInit(container) {
+                if (window.THREE) {
+                    init(container);
+                    if (!animFrameId && renderer) animate();
+                    return;
+                }
+                import('three').then(function(module) {
+                    window.THREE = module;
+                    init(container);
+                    if (!animFrameId && renderer) animate();
+                }).catch(function(err) {
+                    console.warn("⚠️ Three.js dinamikus betöltési figyelmeztetés az óraműhöz:", err);
+                });
             }
 
             function animate() {
@@ -15144,11 +15162,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
             return {
                 start: function(container) {
-                    if (!renderer) {
-                        var c = container || document.getElementById('clockwork-canvas-container');
-                        if (c) init(c);
-                    }
-                    if (!animFrameId && renderer) {
+                    var c = container || document.getElementById('clockwork-canvas-container');
+                    if (!renderer && c) {
+                        ensureThreeAndInit(c);
+                    } else if (!animFrameId && renderer) {
                         animate();
                     }
                 },

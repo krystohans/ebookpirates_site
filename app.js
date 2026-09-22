@@ -43,6 +43,8 @@ function preloadPageTemplate(pageName) {
 }
 window.preloadPageTemplate = preloadPageTemplate;
 
+var _universalLoadingWatchdog = null;
+
 function showUniversalLoading(statusText, customPhrases) {
     var overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
     if (overlay) {
@@ -61,6 +63,15 @@ function showUniversalLoading(statusText, customPhrases) {
     if (window.ClockworkDispenser) {
         window.ClockworkDispenser.start(customPhrases);
     }
+
+    if (_universalLoadingWatchdog) {
+        clearTimeout(_universalLoadingWatchdog);
+    }
+    // Biztonsági Védelmi Időzítő (Watchdog): Ha 15 mp-ig nem érkezne feloldás (pl. hálózati/3D akadás), kényszerített direkt átváltás az aloldalra
+    _universalLoadingWatchdog = setTimeout(function() {
+        console.warn("⚠️ [Watchdog] Betöltési biztonsági időkorlát elérve (15s), kényszerített direkt feloldás az aloldalra.");
+        hideUniversalLoading("BETÖLTÉS BEFEJEZVE", 300);
+    }, 15000);
 }
 window.showUniversalLoading = showUniversalLoading;
 
@@ -77,6 +88,10 @@ function updateUniversalLoadingProgress(percent, statusText) {
 window.updateUniversalLoadingProgress = updateUniversalLoadingProgress;
 
 function hideUniversalLoading(completionText, delayMs) {
+    if (_universalLoadingWatchdog) {
+        clearTimeout(_universalLoadingWatchdog);
+        _universalLoadingWatchdog = null;
+    }
     var wait = typeof delayMs === 'number' ? delayMs : 500;
     if (completionText && window.ClockworkDispenser) {
         window.ClockworkDispenser.showSingle(completionText);
@@ -110,33 +125,398 @@ function preloadAllSubpages(onComplete) {
         return;
     }
     window._hasPreloadedSubpages = true;
-    console.log("⚡ [Preload Pipeline] Aloldal sablonok háttértáras előtöltése és prepozícionálása elindult...");
-    
+    console.log("⚡ [Preload Pipeline] Aloldal sablonok párhuzamos előtöltése és prepozícionálása...");
+
     var total = PRELOAD_PAGES_LIST.length;
-    var index = 0;
+    var loaded = 0;
 
-    function loadNext() {
-        if (index >= total) {
-            console.log("✅ [Preload Pipeline] Minden aloldal sablon sikeresen előtöltve a memóriába.");
-            updateUniversalLoadingProgress(100, "MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)");
-            if (onComplete) onComplete();
-            return;
-        }
-        var pName = PRELOAD_PAGES_LIST[index++];
-        var progressPercent = Math.round((index / total) * 100);
-        updateUniversalLoadingProgress(progressPercent, "ALOLDALAK PREPOZÍCIONÁLÁSA: " + progressPercent + "% (" + pName + ")");
+    var promises = PRELOAD_PAGES_LIST.map(function(pName) {
+        return preloadPageTemplate(pName).then(function() {
+            loaded++;
+            var pct = Math.round((loaded / total) * 100);
+            updateUniversalLoadingProgress(pct, "ALOLDALAK PREPOZÍCIONÁLÁSA: " + pct + "% (" + pName + ")");
+        }).catch(function() {
+            loaded++;
+        });
+    });
 
-        preloadPageTemplate(pName).then(function() {
-            if ('requestIdleCallback' in window) {
-                window.requestIdleCallback(loadNext, { timeout: 150 });
-            } else {
-                setTimeout(loadNext, 30);
+    Promise.all(promises).then(function() {
+        console.log("✅ [Preload Pipeline] Minden aloldal sablon sikeresen előtöltve a memóriába.");
+        updateUniversalLoadingProgress(100, "MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)");
+        if (onComplete) onComplete();
+    });
+}
+window.preloadAllSubpages = preloadAllSubpages;
+
+// ==========================================================
+// === STEAMPUNK CLOCKWORK KINETIC TYPOGRAPHY DISPENSER ===
+// ==========================================================
+(function() {
+    var defaultPhrases = [
+        "Hajók kirakodása...",
+        "Legénységi sorakozó...",
+        "Piaci leltár felvétele...",
+        "Horgonyok felhúzása...",
+        "Kikötői vizek kalibrálása...",
+        "Térképek kicsomagolása...",
+        "Kincsesládák számlálása...",
+        "Ágyúk tisztítása és készletezése...",
+        "Hajónapló előkészítése..."
+    ];
+
+    var phrases = defaultPhrases.slice();
+    var currentPhraseIndex = 0;
+    var timerId = null;
+    var isRunning = false;
+
+    function getContainers() {
+        return document.querySelectorAll('#clockwork-dispenser-text, .clockwork-text-line');
+    }
+
+    function renderPhrase(text) {
+        var containers = getContainers();
+        if (!containers || containers.length === 0) return;
+
+        containers.forEach(function(container) {
+            container.innerHTML = '';
+            for (var i = 0; i < text.length; i++) {
+                var ch = text[i];
+                var span = document.createElement('span');
+                span.className = 'dispenser-char char-drop-in';
+                if (ch === ' ') {
+                    span.className += ' char-space';
+                    span.innerHTML = '&nbsp;';
+                } else {
+                    span.textContent = ch;
+                }
+
+                var randRot = ((Math.random() * 36) - 18).toFixed(1) + 'deg';
+                var charDelay = (i * 0.045).toFixed(3) + 's';
+
+                span.style.setProperty('--rand-rot', randRot);
+                span.style.setProperty('--char-delay', charDelay);
+                container.appendChild(span);
             }
         });
     }
-    loadNext();
-}
-window.preloadAllSubpages = preloadAllSubpages;
+
+    function triggerFallOut(onComplete) {
+        var containers = getContainers();
+        if (!containers || containers.length === 0) {
+            if (onComplete) onComplete();
+            return;
+        }
+
+        var maxFallTime = 0;
+        containers.forEach(function(container) {
+            var chars = container.querySelectorAll('.dispenser-char');
+            for (var i = 0; i < chars.length; i++) {
+                var span = chars[i];
+                span.classList.remove('char-drop-in');
+                span.classList.add('char-fall-out');
+                var fallDelay = (i * 0.025 + (Math.random() * 0.05)).toFixed(3) + 's';
+                var randRot = ((Math.random() * 60) - 30).toFixed(1) + 'deg';
+                span.style.setProperty('--fall-delay', fallDelay);
+                span.style.setProperty('--rand-rot', randRot);
+                var totalTime = parseFloat(fallDelay) + 0.65;
+                if (totalTime > maxFallTime) maxFallTime = totalTime;
+            }
+        });
+
+        setTimeout(function() {
+            if (onComplete) onComplete();
+        }, Math.max(700, Math.round(maxFallTime * 1000)));
+    }
+
+    function cycle() {
+        if (!isRunning) return;
+        var containers = getContainers();
+        if (!containers || containers.length === 0) {
+            timerId = setTimeout(cycle, 400);
+            return;
+        }
+
+        var text = phrases[currentPhraseIndex];
+        currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+
+        renderPhrase(text);
+
+        var readTime = 800 + (text.length * 45) + 2000;
+
+        timerId = setTimeout(function() {
+            if (!isRunning) return;
+            triggerFallOut(function() {
+                if (!isRunning) return;
+                timerId = setTimeout(cycle, 250);
+            });
+        }, readTime);
+    }
+
+    window.ClockworkDispenser = {
+        start: function(customPhrases) {
+            if (customPhrases && Array.isArray(customPhrases) && customPhrases.length > 0) {
+                phrases = customPhrases;
+            } else if (!phrases || phrases.length === 0) {
+                phrases = defaultPhrases.slice();
+            }
+            if (isRunning) return;
+            isRunning = true;
+            if (timerId) {
+                clearTimeout(timerId);
+                timerId = null;
+            }
+            currentPhraseIndex = 0;
+            cycle();
+        },
+        stop: function() {
+            isRunning = false;
+            if (timerId) {
+                clearTimeout(timerId);
+                timerId = null;
+            }
+            var containers = getContainers();
+            if (containers) {
+                containers.forEach(function(c) { c.innerHTML = ''; });
+            }
+        },
+        showSingle: function(text) {
+            isRunning = false;
+            if (timerId) {
+                clearTimeout(timerId);
+                timerId = null;
+            }
+            renderPhrase(text);
+        }
+    };
+})();
+
+// ==========================================================
+// === PROCEDURAL 3D THREE.JS CLOCKWORK ENGINE (NO GLB) ===
+// ==========================================================
+var clockworkEngine = (function() {
+    var renderer = null;
+    var scene = null;
+    var camera = null;
+    var animFrameId = null;
+    var gears = [];
+    var clockworkGroup = null;
+
+    function createGearGeometry(T, numTeeth, rootRadius, pitchRadius, outerRadius, holeRadius, thickness) {
+        var shape = new T.Shape();
+        var toothAngle = (Math.PI * 2) / numTeeth;
+
+        for (var i = 0; i < numTeeth; i++) {
+            var angle = i * toothAngle;
+            var a0 = angle;
+            var a1 = angle + toothAngle * 0.22;
+            var a2 = angle + toothAngle * 0.38;
+            var a3 = angle + toothAngle * 0.62;
+            var a4 = angle + toothAngle * 0.78;
+            var a5 = angle + toothAngle;
+
+            var r0x = Math.cos(a0) * rootRadius, r0y = Math.sin(a0) * rootRadius;
+            var t1x = Math.cos(a1) * pitchRadius, t1y = Math.sin(a1) * pitchRadius;
+            var tip1x = Math.cos(a2) * outerRadius, tip1y = Math.sin(a2) * outerRadius;
+            var tip2x = Math.cos(a3) * outerRadius, tip2y = Math.sin(a3) * outerRadius;
+            var t2x = Math.cos(a4) * pitchRadius, t2y = Math.sin(a4) * pitchRadius;
+            var r1x = Math.cos(a5) * rootRadius, r1y = Math.sin(a5) * rootRadius;
+
+            if (i === 0) shape.moveTo(r0x, r0y);
+            else shape.lineTo(r0x, r0y);
+
+            shape.lineTo(t1x, t1y);
+            shape.lineTo(tip1x, tip1y);
+            shape.lineTo(tip2x, tip2y);
+            shape.lineTo(t2x, t2y);
+            shape.lineTo(r1x, r1y);
+        }
+        shape.closePath();
+
+        var centerHole = new T.Path();
+        centerHole.absarc(0, 0, holeRadius, 0, Math.PI * 2, true);
+        shape.holes.push(centerHole);
+
+        var numSpokes = numTeeth >= 20 ? 6 : (numTeeth >= 14 ? 5 : 4);
+        var spokeHoleRadius = (rootRadius - holeRadius) * 0.26;
+        var spokeDist = holeRadius + spokeHoleRadius * 1.55;
+
+        for (var s = 0; s < numSpokes; s++) {
+            var sa = (s * Math.PI * 2) / numSpokes;
+            var sp = new T.Path();
+            sp.absarc(Math.cos(sa) * spokeDist, Math.sin(sa) * spokeDist, spokeHoleRadius, 0, Math.PI * 2, true);
+            shape.holes.push(sp);
+        }
+
+        var extrudeSettings = {
+            depth: thickness,
+            bevelEnabled: true,
+            bevelSegments: 3,
+            steps: 1,
+            bevelSize: thickness * 0.12,
+            bevelThickness: thickness * 0.12
+        };
+
+        var geo = new T.ExtrudeGeometry(shape, extrudeSettings);
+        geo.center();
+        return geo;
+    }
+
+    function init(container) {
+        if (!container) return;
+        if (renderer && renderer.domElement && container.contains(renderer.domElement)) return;
+        var T = window.THREE;
+        if (!T) return;
+
+        container.innerHTML = '';
+        var w = container.clientWidth || 480;
+        var h = container.clientHeight || 280;
+
+        scene = new T.Scene();
+        camera = new T.PerspectiveCamera(40, w / h, 0.1, 100);
+        camera.position.set(0, 0, 15.5);
+
+        renderer = new T.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = T.PCFSoftShadowMap;
+        renderer.toneMapping = T.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.35;
+        container.appendChild(renderer.domElement);
+
+        var ambientLight = new T.AmbientLight(0xfff0dd, 0.9);
+        scene.add(ambientLight);
+
+        var mainSun = new T.DirectionalLight(0xffd700, 3.5);
+        mainSun.position.set(8, 12, 10);
+        mainSun.castShadow = true;
+        scene.add(mainSun);
+
+        var fillLight = new T.DirectionalLight(0x00e5ff, 1.8);
+        fillLight.position.set(-10, -6, 6);
+        scene.add(fillLight);
+
+        var goldMaterial = new T.MeshStandardMaterial({ color: 0xe6b800, metalness: 0.92, roughness: 0.22 });
+        var copperMaterial = new T.MeshStandardMaterial({ color: 0xcc6633, metalness: 0.90, roughness: 0.28 });
+        var brassMaterial = new T.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.88, roughness: 0.25 });
+        var steelMaterial = new T.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.95, roughness: 0.20 });
+        var rubyMaterial = new T.MeshStandardMaterial({ color: 0xcc0022, metalness: 0.2, roughness: 0.1, emissive: 0x440008, emissiveIntensity: 0.4 });
+
+        clockworkGroup = new T.Group();
+        clockworkGroup.rotation.x = 0.38;
+        clockworkGroup.rotation.y = -0.25;
+        clockworkGroup.rotation.z = 0.06;
+        scene.add(clockworkGroup);
+
+        var g1Geo = createGearGeometry(T, 24, 2.3, 2.55, 2.85, 0.7, 0.45);
+        var gear1 = new T.Mesh(g1Geo, goldMaterial);
+        gear1.position.set(-2.1, 0.2, 0.1);
+        gear1.castShadow = true;
+        gear1.receiveShadow = true;
+        clockworkGroup.add(gear1);
+
+        var capGeo = new T.CylinderGeometry(0.5, 0.55, 0.55, 24);
+        capGeo.rotateX(Math.PI / 2);
+        var capMesh1 = new T.Mesh(capGeo, brassMaterial);
+        gear1.add(capMesh1);
+        var rubyGeo = new T.SphereGeometry(0.25, 16, 16);
+        var rubyMesh = new T.Mesh(rubyGeo, rubyMaterial);
+        rubyMesh.position.z = 0.32;
+        gear1.add(rubyMesh);
+
+        var g2Geo = createGearGeometry(T, 16, 1.5, 1.7, 1.95, 0.5, 0.4);
+        var gear2 = new T.Mesh(g2Geo, copperMaterial);
+        gear2.position.set(1.9, 1.2, -0.15);
+        gear2.castShadow = true;
+        gear2.receiveShadow = true;
+        clockworkGroup.add(gear2);
+
+        var g3Geo = createGearGeometry(T, 12, 1.1, 1.25, 1.45, 0.4, 0.35);
+        var gear3 = new T.Mesh(g3Geo, brassMaterial);
+        gear3.position.set(1.5, -1.8, 0.25);
+        gear3.castShadow = true;
+        gear3.receiveShadow = true;
+        clockworkGroup.add(gear3);
+
+        var g4Geo = createGearGeometry(T, 8, 0.7, 0.82, 0.98, 0.3, 0.3);
+        var gear4 = new T.Mesh(g4Geo, steelMaterial);
+        gear4.position.set(3.4, -0.6, -0.2);
+        gear4.castShadow = true;
+        gear4.receiveShadow = true;
+        clockworkGroup.add(gear4);
+
+        var backplateGeo = new T.CylinderGeometry(4.8, 4.8, 0.15, 32);
+        backplateGeo.rotateX(Math.PI / 2);
+        var backplateMat = new T.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.6 });
+        var backplate = new T.Mesh(backplateGeo, backplateMat);
+        backplate.position.set(0.4, -0.2, -0.6);
+        clockworkGroup.add(backplate);
+
+        gears = [gear1, gear2, gear3, gear4];
+    }
+
+    function ensureThreeAndInit(container) {
+        if (window.THREE) {
+            init(container);
+            if (!animFrameId && renderer) animate();
+            return;
+        }
+        import('three').then(function(module) {
+            window.THREE = module;
+            init(container);
+            if (!animFrameId && renderer) animate();
+        }).catch(function(err) {
+            console.warn("⚠️ Three.js dinamikus betöltési figyelmeztetés az óraműhöz:", err);
+        });
+    }
+
+    function animate() {
+        if (!renderer || !scene || !camera) return;
+        animFrameId = requestAnimationFrame(animate);
+
+        var speed = 0.008;
+        if (gears.length >= 4) {
+            gears[0].rotation.z += speed;
+            gears[1].rotation.z -= speed * (24 / 16);
+            gears[2].rotation.z += speed * (24 / 12);
+            gears[3].rotation.z -= speed * (24 / 8);
+        }
+
+        var time = Date.now() * 0.0015;
+        if (clockworkGroup) {
+            clockworkGroup.rotation.x = 0.38 + Math.sin(time) * 0.03;
+            clockworkGroup.rotation.y = -0.25 + Math.cos(time * 0.8) * 0.04;
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    return {
+        start: function(container) {
+            var c = container || document.getElementById('clockwork-canvas-container');
+            if (c) {
+                if (!renderer) {
+                    ensureThreeAndInit(c);
+                } else {
+                    if (renderer.domElement && !c.contains(renderer.domElement)) {
+                        c.innerHTML = '';
+                        c.appendChild(renderer.domElement);
+                    }
+                    if (!animFrameId) {
+                        animate();
+                    }
+                }
+            }
+        },
+        stop: function() {
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+        }
+    };
+})();
+window.ClockworkEngine = clockworkEngine;
 
 function warmup3DHarborAssets() {
     if (window._hasWarmedUp3DHarbor) return;
@@ -161,18 +541,8 @@ function warmup3DHarborAssets() {
         fetch(url, { mode: 'cors' }).catch(function() {});
     });
 
-    // 3. Perzisztens konténer előkészítése és háttérbeli inicializálása
-    var kikotoContainer = document.getElementById('persistent-kikoto-container');
-    if (kikotoContainer && kikotoContainer.children.length === 0 && !window._kikoto3DInitialized) {
-        preloadPageTemplate('kikoto_oldal').then(function(htmlText) {
-            if (htmlText && kikotoContainer && kikotoContainer.children.length === 0 && !window._kikoto3DInitialized) {
-                kikotoContainer.innerHTML = htmlText;
-                if (typeof initializeKikotoOldal === 'function') {
-                    initializeKikotoOldal();
-                }
-            }
-        });
-    }
+    // 3. Kikötő sablon előtöltése a memóriába
+    preloadPageTemplate('kikoto_oldal').catch(function() {});
 }
 window.warmup3DHarborAssets = warmup3DHarborAssets;
 
@@ -12143,10 +12513,17 @@ function initializeKikotoOldal() {
         return;
     }
 
+    if (window._kikoto3DLoading) {
+        return;
+    }
+    window._kikoto3DLoading = true;
+
     // WebGL támogatott: 3D indítása
     if (container2D) container2D.style.display = 'none';
     if (canvasContainer) canvasContainer.style.display = 'block';
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    if (typeof showUniversalLoading === 'function') {
+        showUniversalLoading("3D KIKÖTŐ ÉPÍTÉSE...");
+    }
 
     Promise.all([
         import('three'),
@@ -12162,10 +12539,10 @@ function initializeKikotoOldal() {
         const { Water } = modules[4];
         
         window.THREE = THREE;
-        window._kikoto3DInitialized = true;
         runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Water);
     }).catch(function(err) {
         console.error("❌ Hiba a Three.js 3D Kikötő modulok betöltésekor, visszaváltás 2D felületre:", err);
+        window._kikoto3DLoading = false;
         window._kikoto3DInitialized = false;
         if (canvasContainer) canvasContainer.style.display = 'none';
         if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -14829,355 +15206,6 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                 }
             }
         }
-        // ==========================================================
-        // === STEAMPUNK CLOCKWORK KINETIC TYPOGRAPHY DISPENSER ===
-        // ==========================================================
-        (function() {
-            var phrases = [
-                "Hajók kirakodása...",
-                "Legénységi sorakozó...",
-                "Piaci leltár felvétele...",
-                "Horgonyok felhúzása...",
-                "Kikötői vizek kalibrálása...",
-                "Térképek kicsomagolása...",
-                "Kincsesládák számlálása...",
-                "Ágyúk tisztítása és készletezése...",
-                "Hajónapló előkészítése..."
-            ];
-
-            var currentPhraseIndex = 0;
-            var timerId = null;
-            var isRunning = false;
-
-            function renderPhrase(text, container) {
-                if (!container) return;
-                container.innerHTML = '';
-
-                for (var i = 0; i < text.length; i++) {
-                    var ch = text[i];
-                    var span = document.createElement('span');
-                    span.className = 'dispenser-char char-drop-in';
-                    if (ch === ' ') {
-                        span.className += ' char-space';
-                        span.innerHTML = '&nbsp;';
-                    } else {
-                        span.textContent = ch;
-                    }
-
-                    var randRot = ((Math.random() * 36) - 18).toFixed(1) + 'deg';
-                    var charDelay = (i * 0.045).toFixed(3) + 's';
-
-                    span.style.setProperty('--rand-rot', randRot);
-                    span.style.setProperty('--char-delay', charDelay);
-                    container.appendChild(span);
-                }
-            }
-
-            function triggerFallOut(container, onComplete) {
-                if (!container) {
-                    if (onComplete) onComplete();
-                    return;
-                }
-                var chars = container.querySelectorAll('.dispenser-char');
-                if (chars.length === 0) {
-                    if (onComplete) onComplete();
-                    return;
-                }
-
-                var maxFallTime = 0;
-                for (var i = 0; i < chars.length; i++) {
-                    var span = chars[i];
-                    span.classList.remove('char-drop-in');
-                    span.classList.add('char-fall-out');
-                    var fallDelay = (i * 0.025 + (Math.random() * 0.05)).toFixed(3) + 's';
-                    var randRot = ((Math.random() * 60) - 30).toFixed(1) + 'deg';
-                    span.style.setProperty('--fall-delay', fallDelay);
-                    span.style.setProperty('--rand-rot', randRot);
-                    var totalTime = parseFloat(fallDelay) + 0.65;
-                    if (totalTime > maxFallTime) maxFallTime = totalTime;
-                }
-
-                setTimeout(function() {
-                    if (onComplete) onComplete();
-                }, Math.max(700, Math.round(maxFallTime * 1000)));
-            }
-
-            function cycle() {
-                if (!isRunning) return;
-                var container = document.getElementById('clockwork-dispenser-text');
-                if (!container) {
-                    var altContainers = document.querySelectorAll('#clockwork-dispenser-text');
-                    if (altContainers.length > 0) container = altContainers[0];
-                }
-
-                if (!container) {
-                    timerId = setTimeout(cycle, 1000);
-                    return;
-                }
-
-                var text = phrases[currentPhraseIndex];
-                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
-
-                renderPhrase(text, container);
-
-                var readTime = 1000 + (text.length * 45) + 2200;
-
-                timerId = setTimeout(function() {
-                    if (!isRunning) return;
-                    triggerFallOut(container, function() {
-                        if (!isRunning) return;
-                        timerId = setTimeout(cycle, 250);
-                    });
-                }, readTime);
-            }
-
-            window.ClockworkDispenser = {
-                start: function(customPhrases) {
-                    if (customPhrases && Array.isArray(customPhrases) && customPhrases.length > 0) {
-                        phrases = customPhrases;
-                    }
-                    if (isRunning) return;
-                    isRunning = true;
-                    currentPhraseIndex = 0;
-                    cycle();
-                },
-                stop: function() {
-                    isRunning = false;
-                    if (timerId) {
-                        clearTimeout(timerId);
-                        timerId = null;
-                    }
-                    var container = document.getElementById('clockwork-dispenser-text');
-                    if (container) {
-                        container.innerHTML = '';
-                    }
-                },
-                showSingle: function(text) {
-                    var container = document.getElementById('clockwork-dispenser-text');
-                    if (container) {
-                        renderPhrase(text, container);
-                    }
-                }
-            };
-        })();
-
-        // ==========================================================
-        // === PROCEDURAL 3D THREE.JS CLOCKWORK ENGINE (NO GLB) ===
-        // ==========================================================
-        var clockworkEngine = (function() {
-            var renderer = null;
-            var scene = null;
-            var camera = null;
-            var animFrameId = null;
-            var gears = [];
-            var clockworkGroup = null;
-
-            function createGearGeometry(numTeeth, rootRadius, pitchRadius, outerRadius, holeRadius, thickness) {
-                var shape = new THREE.Shape();
-                var toothAngle = (Math.PI * 2) / numTeeth;
-
-                for (var i = 0; i < numTeeth; i++) {
-                    var angle = i * toothAngle;
-                    var a0 = angle;
-                    var a1 = angle + toothAngle * 0.22;
-                    var a2 = angle + toothAngle * 0.38;
-                    var a3 = angle + toothAngle * 0.62;
-                    var a4 = angle + toothAngle * 0.78;
-                    var a5 = angle + toothAngle;
-
-                    var r0x = Math.cos(a0) * rootRadius, r0y = Math.sin(a0) * rootRadius;
-                    var t1x = Math.cos(a1) * pitchRadius, t1y = Math.sin(a1) * pitchRadius;
-                    var tip1x = Math.cos(a2) * outerRadius, tip1y = Math.sin(a2) * outerRadius;
-                    var tip2x = Math.cos(a3) * outerRadius, tip2y = Math.sin(a3) * outerRadius;
-                    var t2x = Math.cos(a4) * pitchRadius, t2y = Math.sin(a4) * pitchRadius;
-                    var r1x = Math.cos(a5) * rootRadius, r1y = Math.sin(a5) * rootRadius;
-
-                    if (i === 0) shape.moveTo(r0x, r0y);
-                    else shape.lineTo(r0x, r0y);
-
-                    shape.lineTo(t1x, t1y);
-                    shape.lineTo(tip1x, tip1y);
-                    shape.lineTo(tip2x, tip2y);
-                    shape.lineTo(t2x, t2y);
-                    shape.lineTo(r1x, r1y);
-                }
-                shape.closePath();
-
-                var centerHole = new THREE.Path();
-                centerHole.absarc(0, 0, holeRadius, 0, Math.PI * 2, true);
-                shape.holes.push(centerHole);
-
-                var numSpokes = numTeeth >= 20 ? 6 : (numTeeth >= 14 ? 5 : 4);
-                var spokeHoleRadius = (rootRadius - holeRadius) * 0.26;
-                var spokeDist = holeRadius + spokeHoleRadius * 1.55;
-
-                for (var s = 0; s < numSpokes; s++) {
-                    var sa = (s * Math.PI * 2) / numSpokes;
-                    var sp = new THREE.Path();
-                    sp.absarc(Math.cos(sa) * spokeDist, Math.sin(sa) * spokeDist, spokeHoleRadius, 0, Math.PI * 2, true);
-                    shape.holes.push(sp);
-                }
-
-                var extrudeSettings = {
-                    depth: thickness,
-                    bevelEnabled: true,
-                    bevelSegments: 3,
-                    steps: 1,
-                    bevelSize: thickness * 0.12,
-                    bevelThickness: thickness * 0.12
-                };
-
-                var geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                geo.center();
-                return geo;
-            }
-
-            function init(container) {
-                if (!container || renderer) return;
-                var T = window.THREE;
-                if (!T) return;
-
-                var w = container.clientWidth || 480;
-                var h = container.clientHeight || 280;
-
-                scene = new T.Scene();
-                camera = new T.PerspectiveCamera(40, w / h, 0.1, 100);
-                camera.position.set(0, 0, 15.5);
-
-                renderer = new T.WebGLRenderer({ antialias: true, alpha: true });
-                renderer.setSize(w, h);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                renderer.shadowMap.enabled = true;
-                renderer.shadowMap.type = T.PCFSoftShadowMap;
-                renderer.toneMapping = T.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 1.35;
-                container.appendChild(renderer.domElement);
-
-                var ambientLight = new T.AmbientLight(0xfff0dd, 0.9);
-                scene.add(ambientLight);
-
-                var mainSun = new T.DirectionalLight(0xffd700, 3.5);
-                mainSun.position.set(8, 12, 10);
-                mainSun.castShadow = true;
-                scene.add(mainSun);
-
-                var fillLight = new T.DirectionalLight(0x00e5ff, 1.8);
-                fillLight.position.set(-10, -6, 6);
-                scene.add(fillLight);
-
-                var goldMaterial = new T.MeshStandardMaterial({ color: 0xe6b800, metalness: 0.92, roughness: 0.22 });
-                var copperMaterial = new T.MeshStandardMaterial({ color: 0xcc6633, metalness: 0.90, roughness: 0.28 });
-                var brassMaterial = new T.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.88, roughness: 0.25 });
-                var steelMaterial = new T.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.95, roughness: 0.20 });
-                var rubyMaterial = new T.MeshStandardMaterial({ color: 0xcc0022, metalness: 0.2, roughness: 0.1, emissive: 0x440008, emissiveIntensity: 0.4 });
-
-                clockworkGroup = new T.Group();
-                clockworkGroup.rotation.x = 0.38;
-                clockworkGroup.rotation.y = -0.25;
-                clockworkGroup.rotation.z = 0.06;
-                scene.add(clockworkGroup);
-
-                var g1Geo = createGearGeometry(24, 2.3, 2.55, 2.85, 0.7, 0.45);
-                var gear1 = new T.Mesh(g1Geo, goldMaterial);
-                gear1.position.set(-2.1, 0.2, 0.1);
-                gear1.castShadow = true;
-                gear1.receiveShadow = true;
-                clockworkGroup.add(gear1);
-
-                var capGeo = new T.CylinderGeometry(0.5, 0.55, 0.55, 24);
-                capGeo.rotateX(Math.PI / 2);
-                var capMesh1 = new T.Mesh(capGeo, brassMaterial);
-                gear1.add(capMesh1);
-                var rubyGeo = new T.SphereGeometry(0.25, 16, 16);
-                var rubyMesh = new T.Mesh(rubyGeo, rubyMaterial);
-                rubyMesh.position.z = 0.32;
-                gear1.add(rubyMesh);
-
-                var g2Geo = createGearGeometry(16, 1.5, 1.7, 1.95, 0.5, 0.4);
-                var gear2 = new T.Mesh(g2Geo, copperMaterial);
-                gear2.position.set(1.9, 1.2, -0.15);
-                gear2.castShadow = true;
-                gear2.receiveShadow = true;
-                clockworkGroup.add(gear2);
-
-                var g3Geo = createGearGeometry(12, 1.1, 1.25, 1.45, 0.4, 0.35);
-                var gear3 = new T.Mesh(g3Geo, brassMaterial);
-                gear3.position.set(1.5, -1.8, 0.25);
-                gear3.castShadow = true;
-                gear3.receiveShadow = true;
-                clockworkGroup.add(gear3);
-
-                var g4Geo = createGearGeometry(8, 0.7, 0.82, 0.98, 0.3, 0.3);
-                var gear4 = new T.Mesh(g4Geo, steelMaterial);
-                gear4.position.set(3.4, -0.6, -0.2);
-                gear4.castShadow = true;
-                gear4.receiveShadow = true;
-                clockworkGroup.add(gear4);
-
-                var backplateGeo = new T.CylinderGeometry(4.8, 4.8, 0.15, 32);
-                backplateGeo.rotateX(Math.PI / 2);
-                var backplateMat = new T.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.6 });
-                var backplate = new T.Mesh(backplateGeo, backplateMat);
-                backplate.position.set(0.4, -0.2, -0.6);
-                clockworkGroup.add(backplate);
-
-                gears = [gear1, gear2, gear3, gear4];
-            }
-
-            function ensureThreeAndInit(container) {
-                if (window.THREE) {
-                    init(container);
-                    if (!animFrameId && renderer) animate();
-                    return;
-                }
-                import('three').then(function(module) {
-                    window.THREE = module;
-                    init(container);
-                    if (!animFrameId && renderer) animate();
-                }).catch(function(err) {
-                    console.warn("⚠️ Three.js dinamikus betöltési figyelmeztetés az óraműhöz:", err);
-                });
-            }
-
-            function animate() {
-                if (!renderer || !scene || !camera) return;
-                animFrameId = requestAnimationFrame(animate);
-
-                var speed = 0.008;
-                if (gears.length >= 4) {
-                    gears[0].rotation.z += speed;
-                    gears[1].rotation.z -= speed * (24 / 16);
-                    gears[2].rotation.z += speed * (24 / 12);
-                    gears[3].rotation.z -= speed * (24 / 8);
-                }
-
-                var time = Date.now() * 0.0015;
-                if (clockworkGroup) {
-                    clockworkGroup.rotation.x = 0.38 + Math.sin(time) * 0.03;
-                    clockworkGroup.rotation.y = -0.25 + Math.cos(time * 0.8) * 0.04;
-                }
-
-                renderer.render(scene, camera);
-            }
-
-            return {
-                start: function(container) {
-                    var c = container || document.getElementById('clockwork-canvas-container');
-                    if (!renderer && c) {
-                        ensureThreeAndInit(c);
-                    } else if (!animFrameId && renderer) {
-                        animate();
-                    }
-                },
-                stop: function() {
-                    if (animFrameId) {
-                        cancelAnimationFrame(animFrameId);
-                        animFrameId = null;
-                    }
-                }
-            };
-        })();
-        window.ClockworkEngine = clockworkEngine;
 
         // Modell Betöltő (GLTFLoader)
         function loadHarborModel() {
@@ -16640,6 +16668,9 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                     // 4. Modell Fókusz és 45 fokos, 2x méretarányos Kamera Beállítás
                     setupCameraToModel(harborModel);
 
+                    window._kikoto3DInitialized = true;
+                    window._kikoto3DLoading = false;
+
                     // Betöltő képernyő eltüntetése
                     if (loaderFill) loaderFill.style.width = '100%';
                     if (loaderStatus) loaderStatus.textContent = 'KIKÖTŐ BETÖLTVE!';
@@ -16697,6 +16728,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                     console.error('Hiba a 3D modell betöltése során:', error);
                     loaderStatus.textContent = 'HIBA A MODELL BETÖLTÉSEKOR: ' + error.message;
                     loaderStatus.style.color = '#ff4444';
+                    setTimeout(function() {
+                        if (typeof hideUniversalLoading === 'function') hideUniversalLoading();
+                        var container2D = document.getElementById('kikoto-2d-container');
+                        if (container2D) container2D.style.display = 'block';
+                    }, 1500);
                 }
             );
         }

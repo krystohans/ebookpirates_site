@@ -87,7 +87,15 @@ function updateUniversalLoadingProgress(percent, statusText) {
 }
 window.updateUniversalLoadingProgress = updateUniversalLoadingProgress;
 
-function hideUniversalLoading(completionText, delayMs) {
+function hideUniversalLoading(completionText, delayMs, force) {
+    if (!force) {
+        // Ha az aktív céloldal a 3D Kikötő és a 3D modell még töltődik a háttérben, a betöltő aktív marad
+        if (currentPageName === 'kikoto_oldal' && !window._kikoto3DInitialized && !window._kikoto2DFallbackActive) {
+            console.log("⏳ [Universal Loader] 3D Kikötő még inicializálódik a háttérben, óramű animáció aktív marad...");
+            return;
+        }
+    }
+
     if (_universalLoadingWatchdog) {
         clearTimeout(_universalLoadingWatchdog);
         _universalLoadingWatchdog = null;
@@ -1510,12 +1518,10 @@ function loadPage(pageName) {
             callBackend('getPageDataAndContent', ['kikoto_oldal'],
                 function (result) {
                     setupAccordionListeners();
-                    if (loadingOverlay) loadingOverlay.style.display = 'none';
                 },
                 function (error) {
                     console.warn("Kikötő adatok betöltési figyelmeztetés:", error);
                     setupAccordionListeners();
-                    if (loadingOverlay) loadingOverlay.style.display = 'none';
                 }
             );
         }
@@ -16671,39 +16677,16 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                     window._kikoto3DInitialized = true;
                     window._kikoto3DLoading = false;
 
-                    // Betöltő képernyő eltüntetése
-                    if (loaderFill) loaderFill.style.width = '100%';
-                    if (loaderStatus) loaderStatus.textContent = 'KIKÖTŐ BETÖLTVE!';
-                    if (window.ClockworkDispenser) {
-                        window.ClockworkDispenser.showSingle('KIKÖTŐ BETÖLTVE!');
+                    // Betöltő képernyő sima átmenetes eltüntetése a 3D modell teljes felépülésekor
+                    if (typeof hideUniversalLoading === 'function') {
+                        hideUniversalLoading('KIKÖTŐ BETÖLTVE!', 600, true);
                     }
-                    setTimeout(() => {
-                        if (window.ClockworkEngine) {
-                            window.ClockworkEngine.stop();
-                        }
-                        if (window.ClockworkDispenser) {
-                            window.ClockworkDispenser.stop();
-                        }
-                        if (overlay) {
-                            overlay.style.opacity = '0';
-                            overlay.style.pointerEvents = 'none';
-                            overlay.classList.remove('active');
-                            setTimeout(() => { overlay.style.display = 'none'; }, 600);
-                        }
-                        const kikoto3DOverlay = document.getElementById('kikoto-3d-loading-overlay');
-                        if (kikoto3DOverlay && kikoto3DOverlay !== overlay) {
-                            kikoto3DOverlay.style.opacity = '0';
-                            kikoto3DOverlay.style.pointerEvents = 'none';
-                            kikoto3DOverlay.classList.remove('active');
-                            setTimeout(() => { kikoto3DOverlay.style.display = 'none'; }, 600);
-                        }
-                        const transOverlay = document.getElementById('scene-transition-overlay');
-                        if (transOverlay) {
-                            transOverlay.classList.remove('active');
-                            transOverlay.style.opacity = '0';
-                            transOverlay.style.pointerEvents = 'none';
-                        }
-                    }, 300);
+                    const transOverlay = document.getElementById('scene-transition-overlay');
+                    if (transOverlay) {
+                        transOverlay.classList.remove('active');
+                        transOverlay.style.opacity = '0';
+                        transOverlay.style.pointerEvents = 'none';
+                    }
 
                     // Modell információk kiírása (ha van statsText elem)
                     if (statsText) {

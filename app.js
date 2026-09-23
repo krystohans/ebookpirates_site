@@ -55,7 +55,10 @@ function showUniversalLoading(statusText, customPhrases) {
     }
     if (statusText) {
         var statusEl = document.getElementById('loader-status');
-        if (statusEl) statusEl.textContent = statusText;
+        if (statusEl) {
+            var translated = (typeof t === 'function') ? t(statusText) : statusText;
+            statusEl.textContent = translated;
+        }
     }
     if (window.ClockworkEngine) {
         window.ClockworkEngine.start();
@@ -70,7 +73,7 @@ function showUniversalLoading(statusText, customPhrases) {
     // Biztonsági Védelmi Időzítő (Watchdog): Ha 15 mp-ig nem érkezne feloldás (pl. hálózati/3D akadás), kényszerített direkt átváltás az aloldalra
     _universalLoadingWatchdog = setTimeout(function() {
         console.warn("⚠️ [Watchdog] Betöltési biztonsági időkorlát elérve (15s), kényszerített direkt feloldás az aloldalra.");
-        hideUniversalLoading("BETÖLTÉS BEFEJEZVE", 300);
+        hideUniversalLoading("sot_loading_complete", 300);
     }, 15000);
 }
 window.showUniversalLoading = showUniversalLoading;
@@ -102,7 +105,8 @@ function hideUniversalLoading(completionText, delayMs, force) {
     }
     var wait = typeof delayMs === 'number' ? delayMs : 500;
     if (completionText && window.ClockworkDispenser) {
-        window.ClockworkDispenser.showSingle(completionText);
+        var translated = (typeof t === 'function') ? t(completionText) : completionText;
+        window.ClockworkDispenser.showSingle(translated);
     }
     var fill = document.getElementById('loader-fill');
     if (fill) fill.style.width = '100%';
@@ -142,7 +146,8 @@ function preloadAllSubpages(onComplete) {
         return preloadPageTemplate(pName).then(function() {
             loaded++;
             var pct = Math.round((loaded / total) * 100);
-            updateUniversalLoadingProgress(pct, "ALOLDALAK PREPOZÍCIONÁLÁSA: " + pct + "% (" + pName + ")");
+            var prefix = (typeof t === 'function') ? t('sot_preload_subpages') : 'ALOLDALAK PREPOZÍCIONÁLÁSA: ';
+            updateUniversalLoadingProgress(pct, prefix + pct + "% (" + pName + ")");
         }).catch(function() {
             loaded++;
         });
@@ -150,7 +155,8 @@ function preloadAllSubpages(onComplete) {
 
     Promise.all(promises).then(function() {
         console.log("✅ [Preload Pipeline] Minden aloldal sablon sikeresen előtöltve a memóriába.");
-        updateUniversalLoadingProgress(100, "MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)");
+        var doneMsg = (typeof t === 'function') ? t('sot_all_subpages_ready') : 'MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)';
+        updateUniversalLoadingProgress(100, doneMsg);
         if (onComplete) onComplete();
     });
 }
@@ -264,6 +270,8 @@ window.preloadAllSubpages = preloadAllSubpages;
         start: function(customPhrases) {
             if (customPhrases && Array.isArray(customPhrases) && customPhrases.length > 0) {
                 phrases = customPhrases;
+            } else if (typeof getClockworkPhrases === 'function') {
+                phrases = getClockworkPhrases(typeof currentLang !== 'undefined' ? currentLang : 'hu');
             } else if (!phrases || phrases.length === 0) {
                 phrases = defaultPhrases.slice();
             }
@@ -1036,7 +1044,7 @@ function login() {
 
 function initializeApp(user) {
     if (typeof showUniversalLoading === 'function') {
-        showUniversalLoading("KALÓZSZIGET PREPOZÍCIONÁLÁSA...");
+        showUniversalLoading("sot_preload_island");
     }
     if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
     window.inGame = user.inGame === true;
@@ -1664,7 +1672,7 @@ function loadPage(pageName) {
 
                 setupAccordionListeners();
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
-                if (typeof hideUniversalLoading === 'function') hideUniversalLoading("ÜDVÖZÖL A KALÓZSZIGET!", 600);
+                if (typeof hideUniversalLoading === 'function') hideUniversalLoading("sot_welcome_pirate_island", 600);
             },
             function (error) {
                 console.warn("Oldal adatok betöltési hiba (fallback inicializálás):", error);
@@ -12528,7 +12536,7 @@ function initializeKikotoOldal() {
     if (container2D) container2D.style.display = 'none';
     if (canvasContainer) canvasContainer.style.display = 'block';
     if (typeof showUniversalLoading === 'function') {
-        showUniversalLoading("3D KIKÖTŐ ÉPÍTÉSE...");
+        showUniversalLoading("sot_build_3d_harbor");
     }
 
     Promise.all([
@@ -16679,7 +16687,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
                     // Betöltő képernyő sima átmenetes eltüntetése a 3D modell teljes felépülésekor
                     if (typeof hideUniversalLoading === 'function') {
-                        hideUniversalLoading('KIKÖTŐ BETÖLTVE!', 600, true);
+                        hideUniversalLoading('sot_harbor_loaded', 600, true);
                     }
                     const transOverlay = document.getElementById('scene-transition-overlay');
                     if (transOverlay) {
@@ -17167,6 +17175,8 @@ const formValues = {
 
 let cursorVisible = true;
 let lastCursorBlink = 0;
+let currentStatusKey = 'status_ready';
+let currentStatusParam = '';
 let terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
 let isStatusError = false;
 let isPasswordVisible = false;
@@ -17212,9 +17222,7 @@ function togglePasswordVisibility() {
         }
     }
 
-    terminalStatusText = isPasswordVisible ? "PASSWORD VISIBLE // JELSZÓ MEGJELENÍTVE" : "PASSWORD MASKED // JELSZÓ ELREJTVE";
-    isStatusError = false;
-    updateScreenDisplay();
+    setTerminalStatus(isPasswordVisible ? 'status_pass_visible' : 'status_pass_masked', false);
 }
 window.togglePasswordVisibility = togglePasswordVisibility;
 
@@ -17424,37 +17432,37 @@ function initScreenCanvasTexture() {
 // --- 3D Képernyő Szem-ikon rajzoló ---
 function drawEyeIconOnCanvas(context, cx, cy, isVisible) {
     context.save();
-    context.fillStyle = isVisible ? 'rgba(255, 221, 0, 0.22)' : 'rgba(0, 255, 204, 0.12)';
-    context.fillRect(cx - 24, cy - 16, 48, 32);
+    context.fillStyle = isVisible ? 'rgba(255, 221, 0, 0.25)' : 'rgba(0, 255, 204, 0.14)';
+    context.fillRect(cx - 28, cy - 20, 56, 40);
     context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
-    context.lineWidth = 1.5;
-    context.strokeRect(cx - 24, cy - 16, 48, 32);
+    context.lineWidth = 2;
+    context.strokeRect(cx - 28, cy - 20, 56, 40);
 
     context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
     context.fillStyle = isVisible ? '#ffdd00' : '#00ffcc';
-    context.lineWidth = 2;
+    context.lineWidth = 2.5;
     context.beginPath();
-    context.moveTo(cx - 14, cy);
-    context.quadraticCurveTo(cx, cy - 9, cx + 14, cy);
-    context.quadraticCurveTo(cx, cy + 9, cx - 14, cy);
+    context.moveTo(cx - 16, cy);
+    context.quadraticCurveTo(cx, cy - 11, cx + 16, cy);
+    context.quadraticCurveTo(cx, cy + 11, cx - 16, cy);
     context.stroke();
 
     context.beginPath();
-    context.arc(cx, cy, 3.5, 0, Math.PI * 2);
+    context.arc(cx, cy, 4.5, 0, Math.PI * 2);
     context.fill();
 
     if (isVisible) {
         context.strokeStyle = '#ffdd00';
-        context.lineWidth = 2.2;
+        context.lineWidth = 2.8;
         context.beginPath();
-        context.moveTo(cx - 14, cy - 10);
-        context.lineTo(cx + 14, cy + 10);
+        context.moveTo(cx - 16, cy - 12);
+        context.lineTo(cx + 16, cy + 12);
         context.stroke();
     }
     context.restore();
 }
 
-// Képernyő újra-rajzolása többnyelvű feliratokkal
+// Képernyő újra-rajzolása többnyelvű feliratokkal (1.5x NÖVELT BETŰMÉRET & ÚJ TABSOR)
 function updateScreenDisplay() {
     if (!screenCanvas || !ctx) return;
     const w = screenCanvas.width;
@@ -17484,129 +17492,140 @@ function updateScreenDisplay() {
     ctx.lineWidth = 2;
     ctx.strokeRect(26, 26, w - 52, h - 52);
 
-    // 3. Fejléc és Mód Tabok a 3D kijelzőn
+    // 3. I. SOR: Főcím (1.5x Növelt Orbitron cím)
     ctx.fillStyle = '#00ffcc';
-    ctx.font = 'bold 22px "Orbitron", "Segoe UI", sans-serif';
-    ctx.fillText(currentMode === 'INFO' ? (L.guideTitle || 'eBookPirates // HASZNÁLATI ÚTMUTATÓ') : L.title, 45, 65);
+    ctx.font = 'bold 24px "Orbitron", "Segoe UI", sans-serif';
+    ctx.fillText(currentMode === 'INFO' ? (L.guideTitle || 'eBookPirates // HASZNÁLATI ÚTMUTATÓ') : (L.title || 'eBookPirates // NEURÁLIS TERMINÁL v4.2'), 45, 52);
 
-    drawTerminalTab(ctx, 620, 36, 115, 34, L.loginTab, currentMode === 'LOGIN');
-    drawTerminalTab(ctx, 745, 36, 125, 34, L.regTab, currentMode === 'REGISTER');
-    drawTerminalTab(ctx, 880, 36, 95, 34, L.delTab, currentMode === 'DEREGISTER');
+    // 4. II. SOR: Különálló, Nagyobb Fül-gombok (3 nagy tab a cím alatt)
+    drawTerminalTab(ctx, 45, 68, 298, 40, L.loginTab, currentMode === 'LOGIN');
+    drawTerminalTab(ctx, 359, 68, 298, 40, L.regTab, currentMode === 'REGISTER');
+    drawTerminalTab(ctx, 673, 68, 306, 40, L.delTab, currentMode === 'DEREGISTER');
 
     ctx.strokeStyle = '#00ffcc';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.moveTo(45, 82);
-    ctx.lineTo(w - 45, 82);
+    ctx.moveTo(45, 118);
+    ctx.lineTo(w - 45, 118);
     ctx.stroke();
 
-    // 4. Mezők és Tartalom kirajzolása mód szerint
+    // 5. Tartalom kirajzolása mód szerint (1.5x Növelt Tipográfia)
     const cursorChar = cursorVisible ? '█' : ' ';
 
     if (currentMode === 'LOGIN') {
         const u = formValues.LOGIN.username;
         const p = isPasswordVisible ? formValues.LOGIN.password : '•'.repeat(formValues.LOGIN.password.length);
 
-        drawField(ctx, 45, 145, L.userLabel, u, activeFieldIndex === 0, cursorChar);
-        drawField(ctx, 45, 250, L.passLabel, p, activeFieldIndex === 1, cursorChar);
-        drawEyeIconOnCanvas(ctx, 940, 278, isPasswordVisible);
+        drawField(ctx, 45, 144, L.userLabel, u, activeFieldIndex === 0, cursorChar, 48, 20, 28);
+        drawField(ctx, 45, 228, L.passLabel, p, activeFieldIndex === 1, cursorChar, 48, 20, 28);
+        drawEyeIconOnCanvas(ctx, 940, 258, isPasswordVisible);
 
-        drawActionButton(ctx, 45, 360, w - 90, 52, L.loginBtn);
+        drawActionButton(ctx, 45, 318, w - 90, 58, L.loginBtn, false, 24);
 
     } else if (currentMode === 'REGISTER') {
         const em = formValues.REGISTER.email;
         const un = formValues.REGISTER.username;
 
-        drawField(ctx, 45, 145, L.emailLabel, em, activeFieldIndex === 0, cursorChar);
-        drawField(ctx, 45, 250, L.newNickLabel, un, activeFieldIndex === 1, cursorChar);
+        drawField(ctx, 45, 144, L.emailLabel, em, activeFieldIndex === 0, cursorChar, 48, 20, 26);
+        drawField(ctx, 45, 228, L.newNickLabel, un, activeFieldIndex === 1, cursorChar, 48, 20, 28);
 
-        drawActionButton(ctx, 45, 360, w - 90, 52, L.regBtn);
+        drawActionButton(ctx, 45, 318, w - 90, 58, L.regBtn, false, 24);
 
     } else if (currentMode === 'DEREGISTER') {
         const un = formValues.DEREGISTER.username;
         const em = formValues.DEREGISTER.email;
         const rz = formValues.DEREGISTER.reason;
 
-        drawField(ctx, 45, 125, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 36);
-        drawField(ctx, 45, 205, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 36);
-        drawField(ctx, 45, 285, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 36);
+        drawField(ctx, 45, 136, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 38, 16, 22);
+        drawField(ctx, 45, 200, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 38, 16, 22);
+        drawField(ctx, 45, 264, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 38, 16, 22);
 
-        drawActionButton(ctx, 45, 365, w - 90, 48, L.delBtn, true);
+        drawActionButton(ctx, 45, 328, w - 90, 52, L.delBtn, true, 22);
 
     } else if (currentMode === 'INFO') {
         ctx.fillStyle = 'rgba(0, 30, 45, 0.75)';
-        ctx.fillRect(45, 110, w - 90, 235);
+        ctx.fillRect(45, 126, w - 90, 192);
         ctx.strokeStyle = 'rgba(0, 255, 204, 0.35)';
         ctx.lineWidth = 1.5;
-        ctx.strokeRect(45, 110, w - 90, 235);
+        ctx.strokeRect(45, 126, w - 90, 192);
 
         ctx.fillStyle = '#00ffcc';
-        ctx.font = 'bold 16px "Consolas", "Roboto Mono", "Segoe UI", monospace';
-        ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 148);
-        ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 190);
-        ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 232);
-        ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 274);
-        ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 316);
+        ctx.font = 'bold 18px "Consolas", "Roboto Mono", "Segoe UI", monospace';
+        ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 156);
+        ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 192);
+        ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 228);
+        ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 264);
+        ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 300);
 
-        drawActionButton(ctx, 45, 360, w - 90, 52, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false);
+        drawActionButton(ctx, 45, 328, w - 90, 52, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false, 22);
     }
 
-    // 5. Alsó Rendszer Státuszsor
+    // 6. Alsó Rendszer Státuszsor (1.5x Növelt 20px Tipográfia)
+    let displayStatus = terminalStatusText;
+    if (currentStatusKey && L[currentStatusKey]) {
+        displayStatus = L[currentStatusKey];
+        if (currentStatusParam !== undefined && currentStatusParam !== '') {
+            displayStatus = displayStatus.replace('{0}', currentStatusParam);
+        }
+    } else if (!displayStatus) {
+        displayStatus = L.status_ready || L.readyStatus || 'SYSTEM READY // CLICK SCREEN TO TYPE';
+    }
+
     ctx.fillStyle = isStatusError ? 'rgba(50, 10, 10, 0.95)' : 'rgba(0, 20, 30, 0.9)';
-    ctx.fillRect(45, h - 75, w - 90, 42);
+    ctx.fillRect(45, h - 82, w - 90, 46);
     ctx.strokeStyle = isStatusError ? '#ff4444' : 'rgba(0, 255, 204, 0.4)';
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(45, h - 75, w - 90, 42);
+    ctx.strokeRect(45, h - 82, w - 90, 46);
 
     ctx.fillStyle = isStatusError ? '#ff6666' : '#00ffcc';
-    ctx.font = 'bold 17px "Orbitron", "Consolas", sans-serif';
-    ctx.fillText('> ' + terminalStatusText, 60, h - 48);
+    ctx.font = 'bold 20px "Orbitron", "Consolas", sans-serif';
+    ctx.fillText('> ' + displayStatus, 60, h - 52);
 
     if (screenTexture) screenTexture.needsUpdate = true;
 }
 
 function drawTerminalTab(context, x, y, w, h, text, isActive) {
-    context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.3)' : 'rgba(0, 255, 204, 0.05)';
+    context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.32)' : 'rgba(0, 255, 204, 0.06)';
     context.fillRect(x, y, w, h);
-    context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.3)';
-    context.lineWidth = isActive ? 2 : 1;
+    context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.35)';
+    context.lineWidth = isActive ? 2.5 : 1;
     context.strokeRect(x, y, w, h);
 
     context.fillStyle = isActive ? '#ffffff' : '#88c0b0';
-    context.font = 'bold 13px "Orbitron", "Segoe UI", sans-serif';
+    context.font = 'bold 18px "Orbitron", "Segoe UI", sans-serif';
     context.textAlign = 'center';
-    context.fillText(text, x + w / 2, y + 21);
+    context.fillText(text || '', x + w / 2, y + 26);
     context.textAlign = 'left';
 }
 
-function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 44) {
-    context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.6)';
-    context.font = 'bold 16px "Orbitron", "Segoe UI", sans-serif';
-    context.fillText(label, x, y);
+function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 48, labelSize = 20, valueSize = 28) {
+    context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.7)';
+    context.font = 'bold ' + labelSize + 'px "Orbitron", "Segoe UI", sans-serif';
+    context.fillText(label || '', x, y);
 
-    context.fillStyle = isActive ? 'rgba(0, 50, 60, 0.85)' : 'rgba(0, 30, 40, 0.5)';
+    context.fillStyle = isActive ? 'rgba(0, 50, 60, 0.88)' : 'rgba(0, 30, 40, 0.55)';
     context.fillRect(x, y + 6, 934, boxHeight);
-    context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.25)';
+    context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.3)';
     context.lineWidth = isActive ? 2.5 : 1;
     context.strokeRect(x, y + 6, 934, boxHeight);
 
     context.fillStyle = '#ffffff';
-    context.font = 'bold 22px "Consolas", "Roboto Mono", "Courier New", monospace';
+    context.font = 'bold ' + valueSize + 'px "Consolas", "Roboto Mono", "Courier New", monospace';
     const displayText = (value || '') + (isActive ? cursor : '');
-    context.fillText(displayText, x + 14, y + 6 + (boxHeight * 0.68));
+    context.fillText(displayText, x + 16, y + 6 + (boxHeight * 0.68));
 }
 
-function drawActionButton(context, x, y, w, h, text, isDanger = false) {
+function drawActionButton(context, x, y, w, h, text, isDanger = false, fontSize = 24) {
     context.fillStyle = isDanger ? '#661111' : '#004d40';
     context.fillRect(x, y, w, h);
     context.strokeStyle = isDanger ? '#ff4444' : '#00ffcc';
-    context.lineWidth = 2;
+    context.lineWidth = 2.5;
     context.strokeRect(x, y, w, h);
 
     context.fillStyle = '#ffffff';
-    context.font = 'bold 19px "Orbitron", "Segoe UI", sans-serif';
+    context.font = 'bold ' + fontSize + 'px "Orbitron", "Segoe UI", sans-serif';
     context.textAlign = 'center';
-    context.fillText(text, x + w / 2, y + h / 2 + 7);
+    context.fillText(text || '', x + w / 2, y + h / 2 + 8);
     context.textAlign = 'left';
 }
 
@@ -18093,9 +18112,7 @@ function setupDirectKeyboardAndRaycast() {
             if (objName.includes('fokusz') || parentName.includes('fokusz') || hit.object.material === fokuszMaterial || objName === 'mesh_0.010') {
                 blurVirtualInput();
                 focusOnScreen();
-                terminalStatusText = "CAMERA FOCUSED // SCREEN RETICLE LOCKED";
-                isStatusError = false;
-                updateScreenDisplay();
+                setTerminalStatus("status_cam_focused", false);
                 break;
             }
 
@@ -18185,10 +18202,8 @@ function setupDirectKeyboardAndRaycast() {
                 const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
                 if (activeFieldIndex < maxFields - 1) {
                     activeFieldIndex++;
-                    terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
-                    isStatusError = false;
+                    setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
                     focusVirtualInput();
-                    updateScreenDisplay();
                 } else {
                     blurVirtualInput();
                     executeCurrentMode();
@@ -18197,10 +18212,8 @@ function setupDirectKeyboardAndRaycast() {
                 e.preventDefault();
                 const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
                 activeFieldIndex = (activeFieldIndex + 1) % maxFields;
-                terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
-                isStatusError = false;
+                setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
                 focusVirtualInput();
-                updateScreenDisplay();
             } else if (e.key === 'Escape') {
                 e.preventDefault();
                 blurVirtualInput();
@@ -18271,16 +18284,16 @@ function handleScreenUVClick(uv, clickX, clickY) {
     const pxX = uv.x * 1024;
     const pxY = (1 - uv.y) * 512;
 
-    // Felső tabok kattintása
-    if (pxY >= 20 && pxY <= 75) {
+    // Felső Dedikált Tab-sor kattintása (Y: 60 - 116)
+    if (pxY >= 55 && pxY <= 116) {
         blurVirtualInput();
-        if (pxX >= 620 && pxX < 745) {
+        if (pxX >= 45 && pxX < 350) {
             switchMode('LOGIN');
             return;
-        } else if (pxX >= 745 && pxX < 875) {
+        } else if (pxX >= 350 && pxX < 665) {
             switchMode('REGISTER');
             return;
-        } else if (pxX >= 875) {
+        } else if (pxX >= 665 && pxX <= 985) {
             switchMode('DEREGISTER');
             return;
         }
@@ -18288,7 +18301,7 @@ function handleScreenUVClick(uv, clickX, clickY) {
 
     // Info mód bezáró gomb
     if (currentMode === 'INFO') {
-        if (pxY >= 355 && pxY <= 425 && pxX >= 45 && pxX <= 979) {
+        if (pxY >= 320 && pxY <= 395 && pxX >= 45 && pxX <= 979) {
             blurVirtualInput();
             switchMode(previousMode || 'LOGIN');
             return;
@@ -18297,55 +18310,51 @@ function handleScreenUVClick(uv, clickX, clickY) {
 
     // Mezők és Szem-ikon kiválasztása
     if (currentMode === 'LOGIN') {
-        if (pxY >= 230 && pxY <= 330 && pxX >= 860 && pxX <= 990) {
+        if (pxY >= 225 && pxY <= 295 && pxX >= 890 && pxX <= 985) {
             togglePasswordVisibility();
             return;
         }
 
-        if (pxY >= 100 && pxY <= 230) {
+        if (pxY >= 125 && pxY <= 215) {
             activeFieldIndex = 0;
-            terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
-            isStatusError = false;
+            setTerminalStatus("status_field_selected", false, 1);
             focusVirtualInput(clickX, clickY);
-        } else if (pxY > 230 && pxY <= 340) {
+        } else if (pxY > 215 && pxY <= 305) {
             activeFieldIndex = 1;
-            terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
-            isStatusError = false;
+            setTerminalStatus("status_field_selected", false, 2);
             focusVirtualInput(clickX, clickY);
-        } else if (pxY >= 355 && pxY <= 440) {
+        } else if (pxY >= 310 && pxY <= 390) {
             blurVirtualInput();
             executeCurrentMode();
         } else {
             focusVirtualInput(clickX, clickY);
         }
     } else if (currentMode === 'REGISTER') {
-        if (pxY >= 100 && pxY <= 230) {
+        if (pxY >= 125 && pxY <= 215) {
             activeFieldIndex = 0;
-            terminalStatusText = "FIELD 1 SELECTED // TYPE ON KEYBOARD";
-            isStatusError = false;
+            setTerminalStatus("status_field_selected", false, 1);
             focusVirtualInput(clickX, clickY);
-        } else if (pxY > 230 && pxY <= 340) {
+        } else if (pxY > 215 && pxY <= 305) {
             activeFieldIndex = 1;
-            terminalStatusText = "FIELD 2 SELECTED // TYPE ON KEYBOARD";
-            isStatusError = false;
+            setTerminalStatus("status_field_selected", false, 2);
             focusVirtualInput(clickX, clickY);
-        } else if (pxY >= 355 && pxY <= 440) {
+        } else if (pxY >= 310 && pxY <= 390) {
             blurVirtualInput();
             executeCurrentMode();
         } else {
             focusVirtualInput(clickX, clickY);
         }
     } else if (currentMode === 'DEREGISTER') {
-        if (pxY >= 100 && pxY <= 190) {
+        if (pxY >= 120 && pxY <= 188) {
             activeFieldIndex = 0;
             focusVirtualInput(clickX, clickY);
-        } else if (pxY > 190 && pxY <= 270) {
+        } else if (pxY > 188 && pxY <= 252) {
             activeFieldIndex = 1;
             focusVirtualInput(clickX, clickY);
-        } else if (pxY > 270 && pxY <= 350) {
+        } else if (pxY > 252 && pxY <= 316) {
             activeFieldIndex = 2;
             focusVirtualInput(clickX, clickY);
-        } else if (pxY >= 355 && pxY <= 440) {
+        } else if (pxY >= 320 && pxY <= 395) {
             blurVirtualInput();
             executeCurrentMode();
         } else {
@@ -18419,10 +18428,8 @@ function handleDirectKeyInput(event) {
         event.preventDefault();
         const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
         activeFieldIndex = (activeFieldIndex + 1) % maxFields;
-        terminalStatusText = "SWITCHED TO FIELD " + (activeFieldIndex + 1);
-        isStatusError = false;
+        setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
         focusVirtualInput();
-        updateScreenDisplay();
         return;
     }
 
@@ -18460,7 +18467,9 @@ function handleDirectKeyInput(event) {
     if (key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
         formValues[currentMode][targetFieldKey] = currentVal + key;
         if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
-        terminalStatusText = "EDITING // " + targetFieldKey.toUpperCase();
+        var L = getL();
+        terminalStatusText = (L.status_editing || "EDITING // ") + targetFieldKey.toUpperCase();
+        currentStatusKey = null;
         isStatusError = false;
         syncModalInputsFrom3D();
         updateScreenDisplay();
@@ -18506,21 +18515,21 @@ function switchMode(mode) {
         if (b) b.classList.add('active');
         const f = document.getElementById('modal-form-login');
         if (f) f.style.display = 'block';
-        terminalStatusText = "LOGIN MODE // READY FOR CREDENTIALS";
+        setTerminalStatus("status_login_mode", false);
     } else if (mode === 'REGISTER') {
         const b = document.getElementById('modal-tab-register');
         if (b) b.classList.add('active');
         const f = document.getElementById('modal-form-register');
         if (f) f.style.display = 'block';
-        terminalStatusText = "REGISTRATION // ENTER PIRATE DOSSIER";
+        setTerminalStatus("status_reg_mode", false);
     } else if (mode === 'DEREGISTER') {
         const b = document.getElementById('modal-tab-deregister');
         if (b) b.classList.add('active');
         const f = document.getElementById('modal-form-deregister');
         if (f) f.style.display = 'block';
-        terminalStatusText = "DISCHARGE // CONFIRM REMOVAL";
+        setTerminalStatus("status_del_mode", false);
     } else if (mode === 'INFO') {
-        terminalStatusText = "INFO MODE // USER MANUAL DISPLAYED";
+        setTerminalStatus("status_info_mode", false);
     }
 
     syncModalInputsFrom3D();
@@ -18685,9 +18694,15 @@ function callBackendApi(action, dataObj, onSuccess, onFailure) {
     });
 }
 
-function setTerminalStatus(text, isError = false) {
-    terminalStatusText = text;
+function setTerminalStatus(keyOrText, isError = false, param = '') {
     isStatusError = isError;
+    if (typeof keyOrText === 'string' && keyOrText.startsWith('status_')) {
+        currentStatusKey = keyOrText;
+        currentStatusParam = param;
+    } else {
+        currentStatusKey = null;
+        terminalStatusText = keyOrText;
+    }
     updateScreenDisplay();
 }
 
@@ -18696,18 +18711,18 @@ function executeLogin() {
     const p = formValues.LOGIN.password.trim();
 
     if (!u || !p) {
-        setTerminalStatus("HIBA: Add meg a kalózneved és a jelszót!", true);
+        setTerminalStatus("status_err_login_empty", true);
         return;
     }
 
-    setTerminalStatus("HITELESÍTÉS FOLYAMATBAN... KÉRJÜK VÁRJ...");
+    setTerminalStatus("status_auth_checking", false);
 
     callBackendApi('performLogin', { name: u, jelszo: p }, (data) => {
         if (data && data.success) {
             const user = data.user || {};
             const startPage = user.startPage || (user.tutorialCompleted ? 'kikoto_oldal' : 'tutorial_oldal');
             const isTutorial = (startPage.indexOf('tutorial') !== -1);
-            setTerminalStatus("SIKERES BELÉPÉS // 🚀 HIPERHAJTÓMŰ AKTIVÁLVA... IRÁNY A KIKÖTŐ!");
+            setTerminalStatus("status_login_success", false);
 
             try {
                 if (data.token) {
@@ -18744,10 +18759,10 @@ function executeLogin() {
             });
         } else {
             const msg = (data && (data.message || data.error)) ? (data.message || data.error) : "Érvénytelen kalóznév vagy jelszó!";
-            setTerminalStatus("ELUTASÍTVA // " + msg.toUpperCase(), true);
+            var L = getL(); setTerminalStatus((L.status_rejected || "ELUTASÍTVA // ") + msg.toUpperCase(), true);
         }
     }, (err) => {
-        setTerminalStatus("HÁLÓZATI HIBA: " + (err.message || "A szerver nem elérhető"), true);
+        var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
     });
 }
 
@@ -18756,20 +18771,20 @@ function executeRegister() {
     const un = formValues.REGISTER.username.trim();
 
     if (!em || !un) {
-        setTerminalStatus("HIBA: E-mail és Kalóznév megadása kötelező!", true);
+        setTerminalStatus("status_err_reg_empty", true);
         return;
     }
 
-    setTerminalStatus("REGISZTRÁCIÓ KÜLDÉSE A KÖNYVTÁRNÓL...");
+    setTerminalStatus("status_reg_progress", false);
 
     callBackendApi('submitRegistrationRequest', { email: em, name: un }, (data) => {
         if (data && data.success) {
-            setTerminalStatus("SIKERES REGISZTRÁCIÓ! ÜDV A BANDÁBAN!");
+            setTerminalStatus("status_reg_success", false);
         } else {
             setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen regisztráció!"), true);
         }
     }, (err) => {
-        setTerminalStatus("HÁLÓZATI HIBA: " + (err.message || "A szerver nem elérhető"), true);
+        var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
     });
 }
 
@@ -18779,20 +18794,20 @@ function executeDeregister() {
     const rz = formValues.DEREGISTER.reason.trim();
 
     if (!un || !em || !rz) {
-        setTerminalStatus("HIBA: Minden mező kitöltése kötelező!", true);
+        setTerminalStatus("status_err_del_empty", true);
         return;
     }
 
-    setTerminalStatus("LELÉPTETÉSI KÉRELEM FELDOLGOZÁSA...");
+    setTerminalStatus("status_del_progress", false);
 
     callBackendApi('submitDeletionRequest', { name: un, email: em, reason: rz }, (data) => {
         if (data && data.success) {
-            setTerminalStatus("KÉRELEM RÖGZÍTVE. VISSZAVÁRUNK, KALÓZ!");
+            setTerminalStatus("status_del_success", false);
         } else {
             setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen leléptetés!"), true);
         }
     }, (err) => {
-        setTerminalStatus("HÁLÓZATI HIBA: " + (err.message || "A szerver nem elérhető"), true);
+        var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
     });
 }
 

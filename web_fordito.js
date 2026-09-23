@@ -18,6 +18,24 @@ var currentLang = localStorage.getItem('siteLang') || 'hu';
 // IDE KELL MAJD BEÍRNOD A TÖBBI SZÖVEGET IS!
 const translations = {
     'hu': {
+        // --- Steampunk Óramű Töltőképernyő (SÓT) (HU) ---
+        'sot_init_clockwork': '3D ÓRAMŰ INICIALIZÁLÁSA...',
+        'sot_preload_island': 'KALÓZSZIGET PREPOZÍCIONÁLÁSA...',
+        'sot_preload_subpages': 'ALOLDALAK PREPOZÍCIONÁLÁSA: ',
+        'sot_all_subpages_ready': 'MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)',
+        'sot_build_3d_harbor': '3D KIKÖTŐ ÉPÍTÉSE...',
+        'sot_harbor_loaded': 'KIKÖTŐ BETÖLTVE!',
+        'sot_welcome_pirate_island': 'ÜDVÖZÖL A KALÓZSZIGET!',
+        'sot_loading_complete': 'BETÖLTÉS BEFEJEZVE',
+        'sot_phrase_1': 'Hajók kirakodása...',
+        'sot_phrase_2': 'Legénységi sorakozó...',
+        'sot_phrase_3': 'Piaci leltár felvétele...',
+        'sot_phrase_4': 'Horgonyok felhúzása...',
+        'sot_phrase_5': 'Kikötői vizek kalibrálása...',
+        'sot_phrase_6': 'Térképek kicsomagolása...',
+        'sot_phrase_7': 'Kincsesládák számlálása...',
+        'sot_phrase_8': 'Ágyúk tisztítása és készletezése...',
+        'sot_phrase_9': 'Hajónapló előkészítése...',
         // --- 3D Kozmosz Beléptető Terminál (HU) ---
         'terminal_title': 'eBookPirates // NEURÁLIS TERMINÁL v4.2',
         'terminal_loginTab': 'BELÉPÉS',
@@ -42,6 +60,29 @@ const translations = {
         'terminal_guideLine4': '4. KAMERA: Bal egérgomb forgat, görgő nagyít.',
         'terminal_guideLine5': '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.',
         'terminal_guideCloseBtn': '✖ VISSZA A TERMINÁLHOZ [ENTER]',
+        // --- 3D Kozmosz Terminál Kijelző Státusz Szövegek (HU) ---
+        'terminal_status_ready': 'RENDSZER KÉSZ // KATTINTS A KIJELZŐRE',
+        'terminal_status_pass_visible': 'JELSZÓ MEGJELENÍTVE',
+        'terminal_status_pass_masked': 'JELSZÓ ELREJTVE',
+        'terminal_status_cam_focused': 'KAMERA FÓKUSZBAN // KÉPERNYŐ CÉLKERESZT RÖGZÍTVE',
+        'terminal_status_field_switched': 'VÁLTÁS A(Z) {0}. MEZŐRE',
+        'terminal_status_field_selected': '{0}. MEZŐ KIVÁLASZTVA // GÉPELJ A BILLENTYŰZETEN',
+        'terminal_status_editing': 'SZERKESZTÉS // ',
+        'terminal_status_login_mode': 'BELÉPÉS MÓD // MEZŐK KITÖLTÉSRE KÉSZEN',
+        'terminal_status_reg_mode': 'REGISZTRÁCIÓ // KALÓZ DOSSSZIÉ MEGADÁSA',
+        'terminal_status_del_mode': 'LELÉPÉS // TÖRLÉS MEGERŐSÍTÉSE',
+        'terminal_status_info_mode': 'INFÓ MÓD // HASZNÁLATI ÚTMUTATÓ MEGJELENÍTVE',
+        'terminal_status_err_login_empty': 'HIBA: Add meg a kalózneved és a jelszót!',
+        'terminal_status_auth_checking': 'HITELESÍTÉS & JOGOSULTSÁG ELLENŐRZÉSE FOLYAMATBAN... KÉRJÜK VÁRJ...',
+        'terminal_status_login_success': 'SIKERES BELÉPÉS // 🚀 HIPERHAJTÓMŰ AKTIVÁLVA... IRÁNY A KIKÖTŐ!',
+        'terminal_status_rejected': 'ELUTASÍTVA // ',
+        'terminal_status_net_error': 'HÁLÓZATI HIBA: ',
+        'terminal_status_err_reg_empty': 'HIBA: E-mail és Kalóznév megadása kötelező!',
+        'terminal_status_reg_progress': 'REGISZTRÁCIÓ KÜLDÉSE A KÖNYVTÁRNAK...',
+        'terminal_status_reg_success': 'SIKERES REGISZTRÁCIÓ! ÜDV A BANDÁBAN!',
+        'terminal_status_err_del_empty': 'HIBA: Minden mező kitöltése kötelező!',
+        'terminal_status_del_progress': 'LELÉPTETÉSI KÉRELEM FELDOLGOZÁSA...',
+        'terminal_status_del_success': 'KÉRELEM RÖGZÍTVE. VISSZAVÁRUNK, KALÓZ!',
         // --- 3D Kozmosz Keszulek & Info Panel (HU) ---
         'auth_info_btn_title': 'Információ & Beállítások',
         'auth_loading_text': 'KOZMOSZ TERMINÁL INICIALIZÁLÁSA...',
@@ -1272,6 +1313,24 @@ const translations = {
 
     },
     'en': {
+        // --- Steampunk Clockwork Loading Screen (SÓT) (EN) ---
+        'sot_init_clockwork': 'INITIALIZING 3D CLOCKWORK...',
+        'sot_preload_island': 'PREPOSITIONING PIRATE ISLAND...',
+        'sot_preload_subpages': 'PREPOSITIONING SUBPAGES: ',
+        'sot_all_subpages_ready': 'ALL SUBPAGES PREPOSITIONED (100%)',
+        'sot_build_3d_harbor': 'BUILDING 3D HARBOR...',
+        'sot_harbor_loaded': 'HARBOR LOADED!',
+        'sot_welcome_pirate_island': 'WELCOME TO PIRATE ISLAND!',
+        'sot_loading_complete': 'LOADING COMPLETE',
+        'sot_phrase_1': 'Unloading ships...',
+        'sot_phrase_2': 'Crew assembly...',
+        'sot_phrase_3': 'Taking market inventory...',
+        'sot_phrase_4': 'Weighing anchors...',
+        'sot_phrase_5': 'Calibrating harbor waters...',
+        'sot_phrase_6': 'Unfurling sea charts...',
+        'sot_phrase_7': 'Counting treasure chests...',
+        'sot_phrase_8': 'Cleaning and stocking cannons...',
+        'sot_phrase_9': "Preparing ship's logbook...",
         // --- 3D Kozmosz Beléptető Terminál (EN) ---
         'terminal_title': 'eBookPirates // NEURAL TERMINAL v4.2',
         'terminal_loginTab': 'LOGIN',
@@ -1296,6 +1355,29 @@ const translations = {
         'terminal_guideLine4': '4. CAMERA: Left mouse orbits, scroll wheel zooms.',
         'terminal_guideLine5': '5. INFO BUTTON: Press the 3D button anytime to reopen.',
         'terminal_guideCloseBtn': '✖ RETURN TO TERMINAL [ENTER]',
+        // --- 3D Cosmos Terminal Screen Status Texts (EN) ---
+        'terminal_status_ready': 'SYSTEM READY // CLICK SCREEN TO TYPE',
+        'terminal_status_pass_visible': 'PASSWORD VISIBLE',
+        'terminal_status_pass_masked': 'PASSWORD MASKED',
+        'terminal_status_cam_focused': 'CAMERA FOCUSED // SCREEN RETICLE LOCKED',
+        'terminal_status_field_switched': 'SWITCHED TO FIELD {0}',
+        'terminal_status_field_selected': 'FIELD {0} SELECTED // TYPE ON KEYBOARD',
+        'terminal_status_editing': 'EDITING // ',
+        'terminal_status_login_mode': 'LOGIN MODE // READY FOR CREDENTIALS',
+        'terminal_status_reg_mode': 'REGISTRATION // ENTER PIRATE DOSSIER',
+        'terminal_status_del_mode': 'DISCHARGE // CONFIRM REMOVAL',
+        'terminal_status_info_mode': 'INFO MODE // USER MANUAL DISPLAYED',
+        'terminal_status_err_login_empty': 'ERROR: Enter your pirate callsign and password!',
+        'terminal_status_auth_checking': 'AUTHENTICATION & PERMISSION CHECK IN PROGRESS... PLEASE WAIT...',
+        'terminal_status_login_success': 'LOGIN SUCCESSFUL // 🚀 HYPERDRIVE ENGAGED... HEADING TO PORT!',
+        'terminal_status_rejected': 'REJECTED // ',
+        'terminal_status_net_error': 'NETWORK ERROR: ',
+        'terminal_status_err_reg_empty': 'ERROR: Email and Pirate Callsign are required!',
+        'terminal_status_reg_progress': 'SUBMITTING REGISTRATION TO THE ARCHIVES...',
+        'terminal_status_reg_success': 'REGISTRATION SUCCESSFUL! WELCOME TO THE CREW!',
+        'terminal_status_err_del_empty': 'ERROR: All fields are required!',
+        'terminal_status_del_progress': 'PROCESSING DISCHARGE REQUEST...',
+        'terminal_status_del_success': 'REQUEST RECORDED. WE HOPE TO SEE YOU AGAIN, PIRATE!',
         // --- 3D Kozmosz Keszulek & Info Panel (EN) ---
         'auth_info_btn_title': 'Information & Settings',
         'auth_loading_text': 'INITIALIZING COSMOS TERMINAL...',
@@ -2527,6 +2609,24 @@ const translations = {
 
     },
     'de': {
+        // --- Steampunk-Uhrwerk-Ladebildschirm (SÓT) (DE) ---
+        'sot_init_clockwork': '3D-UHRWERK WIRD INITIALISIERT...',
+        'sot_preload_island': 'PIRATENINSEL WIRD VORPOSITIONIERT...',
+        'sot_preload_subpages': 'UNTERSEITEN WERDEN VORPOSITIONIERT: ',
+        'sot_all_subpages_ready': 'ALLE UNTERSEITEN VORPOSITIONIERT (100%)',
+        'sot_build_3d_harbor': '3D-HAFEN WIRD ERRICHTET...',
+        'sot_harbor_loaded': 'HAFEN GELADEN!',
+        'sot_welcome_pirate_island': 'WILLKOMMEN AUF DER PIRATENINSEL!',
+        'sot_loading_complete': 'LADEN ABGESCHLOSSEN',
+        'sot_phrase_1': 'Schiffe entladen...',
+        'sot_phrase_2': 'Besatzungsappell...',
+        'sot_phrase_3': 'Marktinventar erfassen...',
+        'sot_phrase_4': 'Anker lichten...',
+        'sot_phrase_5': 'Hafenbecken kalibrieren...',
+        'sot_phrase_6': 'Seekarten entrollen...',
+        'sot_phrase_7': 'Schatztruhen zählen...',
+        'sot_phrase_8': 'Kanonen reinigen und bestücken...',
+        'sot_phrase_9': 'Schiffstagebuch vorbereiten...',
         // --- 3D Kozmosz Beléptető Terminál (DE) ---
         'terminal_title': 'eBookPirates // NEURALES TERMINAL v4.2',
         'terminal_loginTab': 'LOGIN',
@@ -2551,6 +2651,29 @@ const translations = {
         'terminal_guideLine4': '4. KAMERA: Linksklick dreht, Mausrad zoomt heran.',
         'terminal_guideLine5': '5. INFO-TASTE: Jederzeit über 3D-Taste aufrufbar.',
         'terminal_guideCloseBtn': '✖ ZURÜCK ZUM TERMINAL [ENTER]',
+        // --- 3D Kosmos-Terminal Bildschirm Status-Texte (DE) ---
+        'terminal_status_ready': 'SYSTEM BEREIT // AUF BILDSCHIRM KLICKEN',
+        'terminal_status_pass_visible': 'PASSWORT SICHTBAR',
+        'terminal_status_pass_masked': 'PASSWORT VERBORGEN',
+        'terminal_status_cam_focused': 'KAMERA FOKUSSIERT // ZIELKREUZ ARRETIERT',
+        'terminal_status_field_switched': 'GEWECHSELT ZU FELD {0}',
+        'terminal_status_field_selected': 'FELD {0} AUSGEWÄHLT // AUF TASTATUR TIPPEN',
+        'terminal_status_editing': 'BEARBEITUNG // ',
+        'terminal_status_login_mode': 'ANMELDE-MODUS // BEREIT FÜR ZUGANGSDATEN',
+        'terminal_status_reg_mode': 'REGISTRIERUNG // PIRATENAKTE EINGEBEN',
+        'terminal_status_del_mode': 'AUSTRITT // LÖSCHUNG BESTÄTIGEN',
+        'terminal_status_info_mode': 'INFO-MODUS // ANLEITUNG WIRD ANGEZEIGT',
+        'terminal_status_err_login_empty': 'FEHLER: Gib deinen Piratennamen und das Passwort ein!',
+        'terminal_status_auth_checking': 'AUTHENTIFIZIERUNG & BERECHTIGUNGSPRÜFUNG LÄUFT... BITTE WARTEN...',
+        'terminal_status_login_success': 'ANMELDUNG ERFOLGREICH // 🚀 HYPERANTRIEB AKTIVIERT... KURS AUF DEN HAFEN!',
+        'terminal_status_rejected': 'ABGELEHNT // ',
+        'terminal_status_net_error': 'NETZWERKFEHLER: ',
+        'terminal_status_err_reg_empty': 'FEHLER: E-Mail und Piratenname sind erforderlich!',
+        'terminal_status_reg_progress': 'REGISTRIERUNG WIRD AN DAS ARCHIV GESENDET...',
+        'terminal_status_reg_success': 'REGISTRIERUNG ERFOLGREICH! WILLKOMMEN IN DER CREW!',
+        'terminal_status_err_del_empty': 'FEHLER: Alle Felder müssen ausgefüllt werden!',
+        'terminal_status_del_progress': 'AUSTRITTSANTRAG WIRD BEARBEITET...',
+        'terminal_status_del_success': 'ANTRAG ERFASST. WIR FREUEN UNS AUF DICH, PIRAT!',
         // --- 3D Kozmosz Keszulek & Info Panel (DE) ---
         'auth_info_btn_title': 'Informationen & Einstellungen',
         'auth_loading_text': 'KOSMOS-TERMINAL WIRD INITIALISIERT...',
@@ -3767,6 +3890,24 @@ const translations = {
 
     },
     'fr': {
+        // --- Écran de Chargement Horloge Steampunk (SÓT) (FR) ---
+        'sot_init_clockwork': 'INITIALISATION DU MÉCANISME 3D...',
+        'sot_preload_island': "PRÉPOSITIONNEMENT DE L'ÎLE DES PIRATES...",
+        'sot_preload_subpages': 'PRÉPOSITIONNEMENT DES SOUS-PAGES : ',
+        'sot_all_subpages_ready': 'TOUTES LES SOUS-PAGES SONT PRÉPOSITIONNÉES (100%)',
+        'sot_build_3d_harbor': 'CONSTRUCTION DU PORT 3D...',
+        'sot_harbor_loaded': 'PORT CHARGÉ !',
+        'sot_welcome_pirate_island': "BIENVENUE SUR L'ÎLE DES PIRATES !",
+        'sot_loading_complete': 'CHARGEMENT TERMINÉ',
+        'sot_phrase_1': 'Déchargement des navires...',
+        'sot_phrase_2': "Rassemblement de l'équipage...",
+        'sot_phrase_3': 'Inventaire du marché...',
+        'sot_phrase_4': 'Levée des ancres...',
+        'sot_phrase_5': 'Calibration des eaux du port...',
+        'sot_phrase_6': 'Déploiement des cartes marines...',
+        'sot_phrase_7': 'Comptage des coffres au trésor...',
+        'sot_phrase_8': 'Nettoyage et approvisionnement des canons...',
+        'sot_phrase_9': 'Préparation du journal de bord...',
         // --- 3D Kozmosz Beléptető Terminál (FR) ---
         'terminal_title': 'eBookPirates // TERMINAL NEURAL v4.2',
         'terminal_loginTab': 'CONNEXION',
@@ -3791,6 +3932,29 @@ const translations = {
         'terminal_guideLine4': '4. CAMÉRA : Clic gauche pivote, molette zoome.',
         'terminal_guideLine5': '5. BOUTON INFO : Disponible à tout moment sur le boîtier.',
         'terminal_guideCloseBtn': '✖ RETOUR AU TERMINAL [ENTER]',
+        // --- Textes de Statut de l'Écran du Terminal 3D Cosmos (FR) ---
+        'terminal_status_ready': 'SYSTÈME PRÊT // CLIQUEZ POUR ÉCRIRE',
+        'terminal_status_pass_visible': 'MOT DE PASSE VISIBLE',
+        'terminal_status_pass_masked': 'MOT DE PASSE MASQUÉ',
+        'terminal_status_cam_focused': 'CAMÉRA FOCALISÉE // RÉTICULE VERROUILLÉ',
+        'terminal_status_field_switched': 'PASSAGE AU CHAMP {0}',
+        'terminal_status_field_selected': 'CHAMP {0} SÉLECTIONNÉ // ÉCRIVEZ AU CLAVIER',
+        'terminal_status_editing': 'ÉDITION // ',
+        'terminal_status_login_mode': 'MODE CONNEXION // PRÊT POUR IDENTIFIANTS',
+        'terminal_status_reg_mode': 'INSCRIPTION // SAISIR LE DOSSIER PIRATE',
+        'terminal_status_del_mode': 'DÉPART // CONFIRMER LA SUPPRESSION',
+        'terminal_status_info_mode': "MODE INFO // MANUEL D'UTILISATION AFFICHÉ",
+        'terminal_status_err_login_empty': 'ERREUR : Entrez votre nom de pirate et mot de passe !',
+        'terminal_status_auth_checking': 'AUTHENTIFICATION & VÉRIFICATION DES DROITS EN COURS... VEUILLEZ PATIENTER...',
+        'terminal_status_login_success': 'CONNEXION RÉUSSIE // 🚀 HYPERPROPULSION ACTIVÉE... CAP SUR LE PORT !',
+        'terminal_status_rejected': 'REJETÉ // ',
+        'terminal_status_net_error': 'ERREUR RÉSEAU : ',
+        'terminal_status_err_reg_empty': 'ERREUR : E-mail et nom de pirate obligatoires !',
+        'terminal_status_reg_progress': "ENVOI DE L'INSCRIPTION AUX ARCHIVES...",
+        'terminal_status_reg_success': 'INSCRIPTION RÉUSSIE ! BIENVENUE DANS L\'ÉQUIPAGE !',
+        'terminal_status_err_del_empty': 'ERREUR : Tous les champs sont obligatoires !',
+        'terminal_status_del_progress': 'TRAITEMENT DE LA DEMANDE DE DÉPART...',
+        'terminal_status_del_success': 'DEMANDE ENREGISTRÉE. REVIENS-NOUS VITE, PIRATE !',
         // --- 3D Kozmosz Keszulek & Info Panel (FR) ---
         'auth_info_btn_title': 'Informations & Paramètres',
         'auth_loading_text': 'INITIALISATION DU TERMINAL COSMOS...',
@@ -5015,6 +5179,24 @@ const translations = {
 
     },
     'es': {
+        // --- Pantalla de Carga de Relojería Steampunk (SÓT) (ES) ---
+        'sot_init_clockwork': 'INICIALIZANDO RELOJERÍA 3D...',
+        'sot_preload_island': 'PREPOSICIONANDO ISLA PIRATA...',
+        'sot_preload_subpages': 'PREPOSICIONANDO SUBPÁGINAS: ',
+        'sot_all_subpages_ready': 'TODAS LAS SUBPÁGINAS PREPOSICIONADAS (100%)',
+        'sot_build_3d_harbor': 'CONSTRUYENDO PUERTO 3D...',
+        'sot_harbor_loaded': '¡PUERTO CARGADO!',
+        'sot_welcome_pirate_island': '¡BIENVENIDO A LA ISLA PIRATA!',
+        'sot_loading_complete': 'CARGA COMPLETADA',
+        'sot_phrase_1': 'Descargando barcos...',
+        'sot_phrase_2': 'Formación de la tripulación...',
+        'sot_phrase_3': 'Haciendo inventario del mercado...',
+        'sot_phrase_4': 'Levantando anclas...',
+        'sot_phrase_5': 'Calibrando aguas del puerto...',
+        'sot_phrase_6': 'Desplegando cartas náuticas...',
+        'sot_phrase_7': 'Contando cofres del tesoro...',
+        'sot_phrase_8': 'Limpiando y pertrechando cañones...',
+        'sot_phrase_9': 'Preparando cuaderno de bitácora...',
         // --- 3D Kozmosz Beléptető Terminál (ES) ---
         'terminal_title': 'eBookPirates // TERMINAL NEURONAL v4.2',
         'terminal_loginTab': 'ENTRAR',
@@ -5039,6 +5221,29 @@ const translations = {
         'terminal_guideLine4': '4. CÁMARA: Clic izquierdo gira, rueda hace zoom.',
         'terminal_guideLine5': '5. BOTÓN INFO: Actívalo desde el botón del dispositivo.',
         'terminal_guideCloseBtn': '✖ VOLVER AL TERMINAL [ENTER]',
+        // --- Textos de Estado de Pantalla de Terminal Cosmos 3D (ES) ---
+        'terminal_status_ready': 'SISTEMA LISTO // CLIC PARA ESCRIBIR',
+        'terminal_status_pass_visible': 'CONTRASEÑA VISIBLE',
+        'terminal_status_pass_masked': 'CONTRASEÑA OCULTA',
+        'terminal_status_cam_focused': 'CÁMARA ENFOCADA // RETÍCULA FIJADA',
+        'terminal_status_field_switched': 'CAMBIADO AL CAMPO {0}',
+        'terminal_status_field_selected': 'CAMPO {0} SELECCIONADO // ESCRIBE CON EL TECLADO',
+        'terminal_status_editing': 'EDITANDO // ',
+        'terminal_status_login_mode': 'MODO ACCESO // LISTO PARA CREDENCIALES',
+        'terminal_status_reg_mode': 'REGISTRO // INGRESAR EXPEDIENTE PIRATA',
+        'terminal_status_del_mode': 'BAJA // CONFIRMAR ELIMINACIÓN',
+        'terminal_status_info_mode': 'MODO INFO // MANUAL DE USUARIO MOSTRADO',
+        'terminal_status_err_login_empty': 'ERROR: ¡Introduce tu nombre pirata y contraseña!',
+        'terminal_status_auth_checking': 'AUTENTICACIÓN Y VERIFICACIÓN DE PERMISOS EN CURSO... POR FAVOR ESPERA...',
+        'terminal_status_login_success': '¡ACCESO EXITOSO! // 🚀 HIPERPROPULSIÓN ACTIVADA... ¡RUMBO AL PUERTO!',
+        'terminal_status_rejected': 'RECHAZADO // ',
+        'terminal_status_net_error': 'ERROR DE RED: ',
+        'terminal_status_err_reg_empty': 'ERROR: ¡Correo electrónico y nombre pirata obligatorios!',
+        'terminal_status_reg_progress': 'ENVIANDO REGISTRO AL ARCHIVO...',
+        'terminal_status_reg_success': '¡REGISTRO EXITOSO! ¡BIENVENIDO A LA TRIPULACIÓN!',
+        'terminal_status_err_del_empty': 'ERROR: ¡Todos los campos son obligatorios!',
+        'terminal_status_del_progress': 'PROCESANDO SOLICITUD DE BAJA...',
+        'terminal_status_del_success': 'SOLICITUD REGISTRADA. ¡TE ESPERAMOS DE VUELTA, PIRATA!',
         // --- 3D Kozmosz Keszulek & Info Panel (ES) ---
         'auth_info_btn_title': 'Información y Ajustes',
         'auth_loading_text': 'INICIALIZANDO TERMINAL COSMOS...',
@@ -6254,6 +6459,24 @@ const translations = {
 
     },
     'pl': {
+        // --- Ekran Ładowania Mechanizmu Steampunk (SÓT) (PL) ---
+        'sot_init_clockwork': 'INICJALIZACJA MECHANIZMU ZEGAROWEGO 3D...',
+        'sot_preload_island': 'PREPOZYCJONOWANIE WYSPY PIRATÓW...',
+        'sot_preload_subpages': 'PREPOZYCJONOWANIE PODSTRON: ',
+        'sot_all_subpages_ready': 'WSZYSTKIE PODSTRONY SĄ ZAPOZYCJONOWANE (100%)',
+        'sot_build_3d_harbor': 'BUDOWANIE PORTU 3D...',
+        'sot_harbor_loaded': 'PORT ZAŁADOWANY!',
+        'sot_welcome_pirate_island': 'WITAMY NA WYSPIE PIRATÓW!',
+        'sot_loading_complete': 'ŁADOWANIE ZAKOŃCZONE',
+        'sot_phrase_1': 'Rozładunek statków...',
+        'sot_phrase_2': 'Zbiórka załogi...',
+        'sot_phrase_3': 'Inwentaryzacja targu...',
+        'sot_phrase_4': 'Podnoszenie kotwic...',
+        'sot_phrase_5': 'Kalibracja wód portowych...',
+        'sot_phrase_6': 'Rozwijanie map morskich...',
+        'sot_phrase_7': 'Liczenie skrzyń ze skarbami...',
+        'sot_phrase_8': 'Czyszczenie i zbrojenie armat...',
+        'sot_phrase_9': 'Przygotowanie dziennika pokładowego...',
         // --- 3D Kozmosz Beléptető Terminál (PL) ---
         'terminal_title': 'eBookPirates // TERMINAL NEURONOWY v4.2',
         'terminal_loginTab': 'LOGOWANIE',
@@ -6278,6 +6501,29 @@ const translations = {
         'terminal_guideLine4': '4. KAMERA: Lewy przycisk obraca, kółko przybliża.',
         'terminal_guideLine5': '5. PRZYCISK INFO: Dostępny w każdej chwili na obudowie.',
         'terminal_guideCloseBtn': '✖ POWRÓT DO TERMINALA [ENTER]',
+        // --- Teksty Stanu Ekranu Terminala Kosmos 3D (PL) ---
+        'terminal_status_ready': 'SYSTEM GOTOWY // KLIKNIJ ABY PISAĆ',
+        'terminal_status_pass_visible': 'HASŁO WIDOCZNE',
+        'terminal_status_pass_masked': 'HASŁO UKRYTE',
+        'terminal_status_cam_focused': 'KAMERA WYCYSZCZONA // CELOWNIK ZABLOKOWANY',
+        'terminal_status_field_switched': 'PRZEŁĄCZONO NA POLE {0}',
+        'terminal_status_field_selected': 'POLE {0} WYBRANE // PISZ NA KLAWIATURZE',
+        'terminal_status_editing': 'EDYCJA // ',
+        'terminal_status_login_mode': 'TRYB LOGOWANIA // GOTOWY NA DANE',
+        'terminal_status_reg_mode': 'REJESTRACJA // WPROWADŹ AKTA PIRATA',
+        'terminal_status_del_mode': 'WYPISANIE // POTWIERDŹ USUNIĘCIE',
+        'terminal_status_info_mode': 'TRYB INFO // INSTRUKCJA WYŚWIETLONA',
+        'terminal_status_err_login_empty': 'BŁĄD: Podaj swoje imię pirata i hasło!',
+        'terminal_status_auth_checking': 'UWIERZYTELNIANIE I SPRAWDZANIE UPRAWNIEŃ W TOKU... PROSZĘ CZEKAĆ...',
+        'terminal_status_login_success': 'LOGOWANIE UDANE // 🚀 HIPERNAPĘD WŁĄCZONY... KIERUNEK PORT!',
+        'terminal_status_rejected': 'ODRZUCONO // ',
+        'terminal_status_net_error': 'BŁĄD SIECI: ',
+        'terminal_status_err_reg_empty': 'BŁĄD: E-mail i imię pirata są wymagane!',
+        'terminal_status_reg_progress': 'WYSYŁANIE REJESTRACJI DO ARCHIWUM...',
+        'terminal_status_reg_success': 'REJESTRACJA UDANA! WITAMY W ZAŁODZE!',
+        'terminal_status_err_del_empty': 'BŁĄD: Wszystkie pola są wymagane!',
+        'terminal_status_del_progress': 'PRZETWARZANIE WNIOSKU O WYPISANIE...',
+        'terminal_status_del_success': 'WNIOSEK ZAPISANY. CZEKAMY NA TWÓJ POWRÓT, PIRACIE!',
         // --- 3D Kozmosz Keszulek & Info Panel (PL) ---
         'auth_info_btn_title': 'Informacje i Ustawienia',
         'auth_loading_text': 'INICJALIZACJA TERMINALA KOSMICZNEGO...',
@@ -7493,6 +7739,24 @@ const translations = {
 
     },
     'ru': {
+        // --- Экран Загрузки Часового Механизма Стимпанк (SÓT) (RU) ---
+        'sot_init_clockwork': 'ИНИЦИАЛИЗАЦИЯ 3D-ЧАСОВОГО МЕХАНИЗМА...',
+        'sot_preload_island': 'ПРЕПОЗИЦИОНИРОВАНИЕ ПИРАТСКОГО ОСТРОВА...',
+        'sot_preload_subpages': 'ПРЕПОЗИЦИОНИРОВАНИЕ ПОДСТРАНИЦ: ',
+        'sot_all_subpages_ready': 'ВСЕ ПОДСТРАНИЦЫ ПРЕПОЗИЦИОНИРОВАНЫ (100%)',
+        'sot_build_3d_harbor': 'ПОСТРОЙКА 3D-ГАВАНИ...',
+        'sot_harbor_loaded': 'ГАВАНЬ ЗАГРУЖЕНА!',
+        'sot_welcome_pirate_island': 'ДОБРО ПОЖАЛОВАТЬ НА ПИРАТСКИЙ ОСТРОВ!',
+        'sot_loading_complete': 'ЗАГРУЗКА ЗАВЕРШЕНА',
+        'sot_phrase_1': 'Разгрузка кораблей...',
+        'sot_phrase_2': 'Построение команды...',
+        'sot_phrase_3': 'Инвентаризация рынка...',
+        'sot_phrase_4': 'Поднятие якорей...',
+        'sot_phrase_5': 'Калибровка вод гавани...',
+        'sot_phrase_6': 'Разворачивание морских карт...',
+        'sot_phrase_7': 'Подсчет сундуков с сокровищами...',
+        'sot_phrase_8': 'Чистка и зарядка пушек...',
+        'sot_phrase_9': 'Подготовка судового журнала...',
         // --- 3D Kozmosz Beléptető Terminál (RU) ---
         'terminal_title': 'eBookPirates // НЕЙРОТЕРМИНАЛ v4.2',
         'terminal_loginTab': 'ВХОД',
@@ -7517,6 +7781,29 @@ const translations = {
         'terminal_guideLine4': '4. КАМЕРА: ЛКМ вращает обзор, колесико приближает.',
         'terminal_guideLine5': '5. КНОПКА ИНФО: Доступна на корпусе устройства.',
         'terminal_guideCloseBtn': '✖ ВЕРНУТЬСЯ К ТЕРМИНАЛУ [ENTER]',
+        // --- Тексты Статуса Экрана Терминала Космос 3D (RU) ---
+        'terminal_status_ready': 'СИСТЕМА ГОТОВА // НАЖМИТЕ ДЛЯ ВВОДА',
+        'terminal_status_pass_visible': 'ПАРОЛЬ ОТОБРАЖАЕТСЯ',
+        'terminal_status_pass_masked': 'ПАРОЛЬ СКРЫТ',
+        'terminal_status_cam_focused': 'КАМЕРА СФОКУСИРОВАНА // ПРИЦЕЛ ЗАФИКСИРОВАН',
+        'terminal_status_field_switched': 'ПЕРЕКЛЮЧЕНО НА ПОЛЕ {0}',
+        'terminal_status_field_selected': 'ПОLE {0} ВЫБРАНО // ВВОДИТЕ С КЛАВИАТУРЫ',
+        'terminal_status_editing': 'РЕДАКТИРОВАНИЕ // ',
+        'terminal_status_login_mode': 'РЕЖИМ ВХОДА // ГОТОВ К ВВОДУ ДАННЫХ',
+        'terminal_status_reg_mode': 'РЕГИСТРАЦИЯ // ВВЕДИТЕ ДОСЬЕ ПИРАТА',
+        'terminal_status_del_mode': 'УВОЛЬНЕНИЕ // ПОДТВЕРДИТЕ УДАЛЕНИЕ',
+        'terminal_status_info_mode': 'ИНФО РЕЖИМ // РУКОВОДСТВО ОТОБРАЖЕНО',
+        'terminal_status_err_login_empty': 'ОШИБКА: Введите имя пирата и пароль!',
+        'terminal_status_auth_checking': 'ПРОВЕРКА ПОДЛИННОСТИ И ПРАВ ДОСТУПА... ПОЖАЛУЙСТА, ЖДИТЕ...',
+        'terminal_status_login_success': 'ВХОД ВЫПОЛНЕН // 🚀 ГИПЕРДВИГАТЕЛЬ ВКЛЮЧЕН... КУРС В ГАВАНЬ!',
+        'terminal_status_rejected': 'ОТКЛОНЕНО // ',
+        'terminal_status_net_error': 'СЕТЕВАЯ ОШИБКА: ',
+        'terminal_status_err_reg_empty': 'ОШИБКА: Требуются электронная почта и имя пирата!',
+        'terminal_status_reg_progress': 'ОТПРАВКА РЕГИСТРАЦИИ В АРХИВ...',
+        'terminal_status_reg_success': 'РЕГИСТРАЦИЯ УСПЕШНА! ДОБРО ПОЖАЛОВАТЬ В КОМАНДУ!',
+        'terminal_status_err_del_empty': 'ОШИБКА: Все поля обязательны для заполнения!',
+        'terminal_status_del_progress': 'ОБРАБОТКА ЗАПРОСА НА УВОЛЬНЕНИЕ...',
+        'terminal_status_del_success': 'ЗАЯВКА ПРИНЯТА. МЫ ЖДЕМ ТЕБЯ СНОВА, ПИРАТ!',
         // --- 3D Kozmosz Keszulek & Info Panel (RU) ---
         'auth_info_btn_title': 'Информация и Настройки',
         'auth_loading_text': 'ИНИЦИАЛИЗАЦИЯ ТЕРМИНАЛА КОСМОСА...',
@@ -9224,7 +9511,14 @@ function getTerminalLabels(lang) {
         'delNickLabel', 'delEmailLabel', 'delReasonLabel',
         'loginBtn', 'regBtn', 'delBtn', 'readyStatus',
         'guideTitle', 'guideLine1', 'guideLine2', 'guideLine3', 'guideLine4', 'guideLine5',
-        'guideCloseBtn'
+        'guideCloseBtn',
+        'status_ready', 'status_pass_visible', 'status_pass_masked', 'status_cam_focused',
+        'status_field_switched', 'status_field_selected', 'status_editing',
+        'status_login_mode', 'status_reg_mode', 'status_del_mode', 'status_info_mode',
+        'status_err_login_empty', 'status_auth_checking', 'status_login_success',
+        'status_rejected', 'status_net_error', 'status_err_reg_empty',
+        'status_reg_progress', 'status_reg_success', 'status_err_del_empty',
+        'status_del_progress', 'status_del_success'
     ];
     
     var res = {};
@@ -9236,3 +9530,32 @@ function getTerminalLabels(lang) {
     return res;
 }
 window.getTerminalLabels = getTerminalLabels;
+
+// ----------------------------------------------------------------
+// STEAMPUNK ÓRAMŰ TÖLTŐKÉPERNYŐ (SÓT) KIFEJEZÉS KINYERŐ SEGÉDFÜGGVÉNY
+// ----------------------------------------------------------------
+function getClockworkPhrases(lang) {
+    var l = lang || currentLang || 'hu';
+    if (typeof translations === 'undefined' || !translations[l]) l = 'hu';
+    var t = (typeof translations !== 'undefined' && translations[l]) ? translations[l] : {};
+    var fallback = (typeof translations !== 'undefined' && translations['hu']) ? translations['hu'] : {};
+    
+    var phrases = [];
+    for (var i = 1; i <= 9; i++) {
+        var k = 'sot_phrase_' + i;
+        var val = t[k] || fallback[k];
+        if (val) phrases.push(val);
+    }
+    return phrases.length > 0 ? phrases : [
+        "Hajók kirakodása...",
+        "Legénységi sorakozó...",
+        "Piaci leltár felvétele...",
+        "Horgonyok felhúzása...",
+        "Kikötői vizek kalibrálása...",
+        "Térképek kicsomagolása...",
+        "Kincsesládák számlálása...",
+        "Ágyúk tisztítása és készletezése...",
+        "Hajónapló előkészítése..."
+    ];
+}
+window.getClockworkPhrases = getClockworkPhrases;

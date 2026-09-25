@@ -1354,8 +1354,7 @@ textarea:focus {
 /* === NPC PORTRÉ (SLIDE-OUT) STÍLUSOK === */
 /* ========================================= */
 
-#npc-portrait-panel,
-#fedelzet-portrait-panel {
+#npc-portrait-panel {
     height: 80vh;
     /* Igazodik a chat ablak magasságához (alapból) */
     background-color: transparent;
@@ -3061,4 +3060,220 @@ html.ebp-authenticated #app-view {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+/* ==================================================== */
+/* === DOKKOLÓ (FEDÉLZET OLDAL) KIBER KONZOL STÍLUSOK === */
+/* ==================================================== */
+
+.fedelzet-stage-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 338.66666 / 190.5;
+    background-color: #020408;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 2px solid var(--color-gold, #d4af37);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.35), 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.9);
+    box-sizing: border-box;
+}
+
+.deck-screen-path {
+    fill: transparent !important;
+    stroke: transparent !important;
+    cursor: pointer;
+    transition: fill 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Amikor a kepernyo aktív (szöveg van rajta) vagy közvetlenül rámutatnak, a path#kepernyo kitöltése sötétszürke lesz keret nélkül */
+path#kepernyo.deck-screen-active,
+path#kepernyo:hover {
+    fill: rgba(18, 24, 30, 0.94) !important;
+    stroke: transparent !important;
+    filter: none !important;
+}
+
+/* Az összes többi _gomb aktív terület láthatatlan marad a kurzor mozgatásakor */
+path:not(#kepernyo).deck-screen-path {
+    fill: transparent !important;
+    stroke: transparent !important;
+    filter: none !important;
+}
+
+/* Dokkoló Képernyő Szövegkonténer - KERET NÉLKÜL, teljesen átlátszó */
+.deck-screen-overlay {
+    position: absolute;
+    top: 28.5%;
+    left: 37.5%;
+    width: 31.5%;
+    height: 43.5%;
+    z-index: 6;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+#deck-screen-body {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+    border: none !important;
+    background: transparent !important;
+}
+
+#deck-console-panel {
+    animation: expandDeckConsoleFromScreen 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), crtTwitch 6s infinite ease-in-out;
+    transform-origin: 53.2% 50.2%;
+}
+
+@keyframes expandDeckConsoleFromScreen {
+    0% { opacity: 0; transform: scale(0.32); filter: brightness(2.8); }
+    70% { opacity: 1; transform: scale(1.02); filter: brightness(1.2); }
+    100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+}
+
+.deck-ship-card {
+    background: rgba(13, 27, 42, 0.85);
+    border: 1px solid rgba(0, 255, 204, 0.35);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.deck-ship-card:hover {
+    border-color: #00ffcc;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    background: rgba(13, 27, 42, 0.95);
+}
+
+.deck-ship-card.active-ship {
+    border-color: #d4af37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.45);
+    background: rgba(25, 35, 20, 0.85);
+}
+
+/* Fedélzet Modalba ágyazott aloldal megjelenítés */
+#fedelzet-modal-body #fedelzet-subpage-portrait-panel {
+    display: none !important;
+}
+
+#fedelzet-modal-body #fedelzet_oldal-splash {
+    display: none !important;
+}
+
+#fedelzet-modal-body #fedelzet_oldal-content {
+    display: block !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* ========================================================= */
+/* === FEDÉLZET MODÁLIS ÖSSZESZERELÉS & FIÓKOS PORTRÉ PANEL === */
+/* ========================================================= */
+
+.fedelzet-modal-assembly {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    width: 95%;
+    max-width: 1240px;
+    max-height: 94vh;
+    position: relative;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+#fedelzet-portrait-panel {
+    height: auto;
+    align-self: stretch;
+    background: rgba(2, 4, 8, 0.96);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 2px solid #d4af37;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -10px 0 25px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.9);
+    z-index: 10;
+    transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.5s ease, padding 0.5s ease;
+}
+
+#fedelzet-portrait-panel.npc-portrait-closed {
+    width: 0px !important;
+    opacity: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: none;
+}
+
+#fedelzet-portrait-panel.npc-portrait-open {
+    width: 270px !important;
+    max-width: 28vw;
+    opacity: 1 !important;
+    border: 2px solid #d4af37 !important;
+    border-right: none !important;
+    padding: 4px;
+    margin: 0 !important;
+}
+
+#fedelzet-portrait-video,
+#fedelzet-portrait-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px 0 0 6px;
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+}
+
+.fedelzet-modal-content {
+    flex: 1 1 880px;
+    max-width: 960px;
+    max-height: 94vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    position: relative;
+    border-radius: 0 8px 8px 0;
+    box-sizing: border-box;
+}
+
+#fedelzet-portrait-panel.npc-portrait-open + .fedelzet-modal-content #fedelzet-stage-container {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+@media (max-width: 800px) {
+    #fedelzet-portrait-panel {
+        display: none !important;
+    }
+    .fedelzet-modal-assembly {
+        flex-direction: column;
+    }
 }

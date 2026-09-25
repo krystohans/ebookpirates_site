@@ -26,17 +26,17 @@ function preloadPageTemplate(pageName) {
     }
     var url = getPageHtmlUrl(pageName);
     return fetch(url, { cache: 'no-cache' })
-        .then(function(res) {
+        .then(function (res) {
             if (!res.ok) throw new Error("HTTP " + res.status);
             return res.text();
         })
-        .then(function(html) {
+        .then(function (html) {
             if (window.pageTemplateCache) {
                 window.pageTemplateCache[pageName] = html;
             }
             return html;
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.warn("⚠️ Nem sikerült előtölteni az aloldalt (" + pageName + "):", err);
             return null;
         });
@@ -71,7 +71,7 @@ function showUniversalLoading(statusText, customPhrases) {
         clearTimeout(_universalLoadingWatchdog);
     }
     // Biztonsági Védelmi Időzítő (Watchdog): Ha 15 mp-ig nem érkezne feloldás (pl. hálózati/3D akadás), kényszerített direkt átváltás az aloldalra
-    _universalLoadingWatchdog = setTimeout(function() {
+    _universalLoadingWatchdog = setTimeout(function () {
         console.warn("⚠️ [Watchdog] Betöltési biztonsági időkorlát elérve (15s), kényszerített direkt feloldás az aloldalra.");
         hideUniversalLoading("sot_loading_complete", 300);
     }, 15000);
@@ -111,7 +111,7 @@ function hideUniversalLoading(completionText, delayMs, force) {
     var fill = document.getElementById('loader-fill');
     if (fill) fill.style.width = '100%';
 
-    setTimeout(function() {
+    setTimeout(function () {
         if (window.ClockworkEngine) {
             window.ClockworkEngine.stop();
         }
@@ -123,7 +123,7 @@ function hideUniversalLoading(completionText, delayMs, force) {
             overlay.style.opacity = '0';
             overlay.style.pointerEvents = 'none';
             overlay.classList.remove('active');
-            setTimeout(function() {
+            setTimeout(function () {
                 overlay.style.display = 'none';
             }, 600);
         }
@@ -142,18 +142,18 @@ function preloadAllSubpages(onComplete) {
     var total = PRELOAD_PAGES_LIST.length;
     var loaded = 0;
 
-    var promises = PRELOAD_PAGES_LIST.map(function(pName) {
-        return preloadPageTemplate(pName).then(function() {
+    var promises = PRELOAD_PAGES_LIST.map(function (pName) {
+        return preloadPageTemplate(pName).then(function () {
             loaded++;
             var pct = Math.round((loaded / total) * 100);
             var prefix = (typeof t === 'function') ? t('sot_preload_subpages') : 'ALOLDALAK PREPOZÍCIONÁLÁSA: ';
             updateUniversalLoadingProgress(pct, prefix + pct + "% (" + pName + ")");
-        }).catch(function() {
+        }).catch(function () {
             loaded++;
         });
     });
 
-    Promise.all(promises).then(function() {
+    Promise.all(promises).then(function () {
         console.log("✅ [Preload Pipeline] Minden aloldal sablon sikeresen előtöltve a memóriába.");
         var doneMsg = (typeof t === 'function') ? t('sot_all_subpages_ready') : 'MINDEN ALOLDAL PREPOZÍCIONÁLVA (100%)';
         updateUniversalLoadingProgress(100, doneMsg);
@@ -162,10 +162,72 @@ function preloadAllSubpages(onComplete) {
 }
 window.preloadAllSubpages = preloadAllSubpages;
 
+// ============================================================================
+// ⚡ FELHASZNÁLÓI ALAPCSOMAG ELŐTÖLTŐ PIPELINE (User Base Data Preload Pipeline)
+// ============================================================================
+window._isPreloadingUserData = false;
+window._hasPreloadedUserData = false;
+var _userDataPreloadCallbacks = [];
+
+function preloadUserBaseData(user, onComplete) {
+    if (typeof onComplete === 'function') {
+        _userDataPreloadCallbacks.push(onComplete);
+    }
+    if (window.userShips && window.userShips.length > 0) {
+        while (_userDataPreloadCallbacks.length > 0) {
+            var cb = _userDataPreloadCallbacks.shift();
+            try { cb(window.userShips, window.toborzoMarketData); } catch (e) { }
+        }
+        return;
+    }
+    if (window._isPreloadingUserData) {
+        return;
+    }
+    window._isPreloadingUserData = true;
+
+    var finishPreload = function (ships) {
+        window._isPreloadingUserData = false;
+        window._hasPreloadedUserData = true;
+        while (_userDataPreloadCallbacks.length > 0) {
+            var cb = _userDataPreloadCallbacks.shift();
+            try { cb(ships || window.userShips || [], window.toborzoMarketData); } catch (e) { }
+        }
+    };
+
+    var backendCaller = (typeof callBackend === 'function') ? callBackend :
+        (window.parent && typeof window.parent.callBackend === 'function') ? window.parent.callBackend : null;
+
+    if (!backendCaller) {
+        finishPreload([]);
+        return;
+    }
+
+    backendCaller('getToborzoData', [], function (response) {
+        if (response && response.success && Array.isArray(response.ownedShips)) {
+            window.toborzoMarketData = response;
+            window.toborzoNameDict = response.nameDict || {};
+            var normFunc = (typeof normalizeShipData === 'function') ? normalizeShipData :
+                (window.normalizeShipData ? window.normalizeShipData : function(s) { return s; });
+            window.userShips = response.ownedShips.map(function (s) {
+                return normFunc(s, window.toborzoNameDict);
+            });
+            if ((!window.selectedShipForDeparture || !selectedShipForDeparture) && window.userShips.length > 0) {
+                window.selectedShipForDeparture = window.userShips[0];
+                try { selectedShipForDeparture = window.userShips[0]; } catch (e) { }
+            }
+        }
+        finishPreload(window.userShips || []);
+    }, function (err) {
+        finishPreload(window.userShips || []);
+    });
+}
+window.preloadUserBaseData = preloadUserBaseData;
+
+
 // ==========================================================
 // === STEAMPUNK CLOCKWORK KINETIC TYPOGRAPHY DISPENSER ===
 // ==========================================================
-(function() {
+(function () {
     var defaultPhrases = [
         "Hajók kirakodása...",
         "Legénységi sorakozó...",
@@ -191,7 +253,7 @@ window.preloadAllSubpages = preloadAllSubpages;
         var containers = getContainers();
         if (!containers || containers.length === 0) return;
 
-        containers.forEach(function(container) {
+        containers.forEach(function (container) {
             container.innerHTML = '';
             for (var i = 0; i < text.length; i++) {
                 var ch = text[i];
@@ -222,7 +284,7 @@ window.preloadAllSubpages = preloadAllSubpages;
         }
 
         var maxFallTime = 0;
-        containers.forEach(function(container) {
+        containers.forEach(function (container) {
             var chars = container.querySelectorAll('.dispenser-char');
             for (var i = 0; i < chars.length; i++) {
                 var span = chars[i];
@@ -237,7 +299,7 @@ window.preloadAllSubpages = preloadAllSubpages;
             }
         });
 
-        setTimeout(function() {
+        setTimeout(function () {
             if (onComplete) onComplete();
         }, Math.max(700, Math.round(maxFallTime * 1000)));
     }
@@ -257,9 +319,9 @@ window.preloadAllSubpages = preloadAllSubpages;
 
         var readTime = 800 + (text.length * 45) + 2000;
 
-        timerId = setTimeout(function() {
+        timerId = setTimeout(function () {
             if (!isRunning) return;
-            triggerFallOut(function() {
+            triggerFallOut(function () {
                 if (!isRunning) return;
                 timerId = setTimeout(cycle, 250);
             });
@@ -267,7 +329,7 @@ window.preloadAllSubpages = preloadAllSubpages;
     }
 
     window.ClockworkDispenser = {
-        start: function(customPhrases) {
+        start: function (customPhrases) {
             if (customPhrases && Array.isArray(customPhrases) && customPhrases.length > 0) {
                 phrases = customPhrases;
             } else if (typeof getClockworkPhrases === 'function') {
@@ -284,7 +346,7 @@ window.preloadAllSubpages = preloadAllSubpages;
             currentPhraseIndex = 0;
             cycle();
         },
-        stop: function() {
+        stop: function () {
             isRunning = false;
             if (timerId) {
                 clearTimeout(timerId);
@@ -292,10 +354,10 @@ window.preloadAllSubpages = preloadAllSubpages;
             }
             var containers = getContainers();
             if (containers) {
-                containers.forEach(function(c) { c.innerHTML = ''; });
+                containers.forEach(function (c) { c.innerHTML = ''; });
             }
         },
-        showSingle: function(text) {
+        showSingle: function (text) {
             isRunning = false;
             if (timerId) {
                 clearTimeout(timerId);
@@ -309,7 +371,7 @@ window.preloadAllSubpages = preloadAllSubpages;
 // ==========================================================
 // === PROCEDURAL 3D THREE.JS CLOCKWORK ENGINE (NO GLB) ===
 // ==========================================================
-var clockworkEngine = (function() {
+var clockworkEngine = (function () {
     var renderer = null;
     var scene = null;
     var camera = null;
@@ -477,11 +539,11 @@ var clockworkEngine = (function() {
             if (!animFrameId && renderer) animate();
             return;
         }
-        import('three').then(function(module) {
+        import('three').then(function (module) {
             window.THREE = module;
             init(container);
             if (!animFrameId && renderer) animate();
-        }).catch(function(err) {
+        }).catch(function (err) {
             console.warn("⚠️ Three.js dinamikus betöltési figyelmeztetés az óraműhöz:", err);
         });
     }
@@ -508,7 +570,7 @@ var clockworkEngine = (function() {
     }
 
     return {
-        start: function(container) {
+        start: function (container) {
             var c = container || document.getElementById('clockwork-canvas-container');
             if (c) {
                 if (!renderer) {
@@ -524,7 +586,7 @@ var clockworkEngine = (function() {
                 }
             }
         },
-        stop: function() {
+        stop: function () {
             if (animFrameId) {
                 cancelAnimationFrame(animFrameId);
                 animFrameId = null;
@@ -538,7 +600,7 @@ function warmup3DHarborAssets() {
     if (window._hasWarmedUp3DHarbor) return;
     window._hasWarmedUp3DHarbor = true;
     console.log("🌊 [3D Warmup Pipeline] Three.js és 3D Kikötő assetek előmelegítése a háttérben...");
-    
+
     // 1. Three.js modulok előtöltése
     Promise.all([
         import('three'),
@@ -546,19 +608,19 @@ function warmup3DHarborAssets() {
         import('three/addons/loaders/GLTFLoader.js'),
         import('three/addons/environments/RoomEnvironment.js'),
         import('three/addons/objects/Water.js')
-    ]).catch(function() {});
+    ]).catch(function () { });
 
     // 2. GCS 3D modell és textúra előtöltése a böngésző cache-be
     var critical3DUrls = [
         'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb',
         'https://storage.googleapis.com/kalozsziget-assets/demojatek/models/waternormals.jpg'
     ];
-    critical3DUrls.forEach(function(url) {
-        fetch(url, { mode: 'cors' }).catch(function() {});
+    critical3DUrls.forEach(function (url) {
+        fetch(url, { mode: 'cors' }).catch(function () { });
     });
 
     // 3. Kikötő sablon előtöltése a memóriába
-    preloadPageTemplate('kikoto_oldal').catch(function() {});
+    preloadPageTemplate('kikoto_oldal').catch(function () { });
 }
 window.warmup3DHarborAssets = warmup3DHarborAssets;
 
@@ -618,20 +680,20 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
             if (event.data.data) {
                 try {
                     localStorage.setItem('ebp_tutorial_save', JSON.stringify(event.data.data));
-                } catch (e) {}
-                callBackend('saveTutorialState', [JSON.stringify(event.data.data)], function(res) {
+                } catch (e) { }
+                callBackend('saveTutorialState', [JSON.stringify(event.data.data)], function (res) {
                     console.log('Tutorial állapot felhőbe mentve:', res);
                 });
             }
         } else if (event.data.action === 'tutorial_completed') {
-            callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
+            callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function (res) {
                 console.log('Tutorial befejezve és felírva válasz:', res);
                 window.userTutorialCompleted = true;
 
                 if (res && res.alreadyCompleted) {
                     var veteranMsg = res.message || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
                     if (typeof window.showPopUp === 'function') {
-                        window.showPopUp(veteranMsg, function() {
+                        window.showPopUp(veteranMsg, function () {
                             if (typeof loadPage === 'function') loadPage('kikoto_oldal');
                         });
                     } else {
@@ -641,7 +703,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 } else {
                     console.log('✅ Kincsek sikeresen felírva a felhőbe.');
                 }
-            }, function(err) {
+            }, function (err) {
                 console.warn('Tutorial mentési hiba:', err);
             });
         } else if (event.data.action === 'navigate_to_page') {
@@ -728,9 +790,9 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
     var CHUNK_SIZE = 1024 * 1024 * 2; // 2 MB
     var totalChunks = Math.ceil(payloadString.length / CHUNK_SIZE);
     var transferId = 'CHUNK_' + new Date().getTime() + '_' + Math.floor(Math.random() * 1000);
-    
+
     var currentChunk = 0;
-    
+
     function setLocalStatus(msg) {
         console.log("📦 " + msg);
         var modalTextLocal = document.getElementById('modal-status-text');
@@ -741,7 +803,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
             statusDiv.style.color = "blue";
         }
     }
-    
+
     function sendNextChunk() {
         if (currentChunk >= totalChunks) {
             setLocalStatus('Fájlok szerveroldali összefűzése folyamatban (' + totalChunks + ' adag)...');
@@ -764,10 +826,10 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
             });
             return;
         }
-        
+
         var chunkData = payloadString.substring(currentChunk * CHUNK_SIZE, (currentChunk + 1) * CHUNK_SIZE);
         setLocalStatus('Nagy fájl feltöltése... (' + (currentChunk + 1) + '/' + totalChunks + ' adag)');
-        
+
         fetch(WEB_APP_URL, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -776,9 +838,9 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
                 data: [transferId, currentChunk, totalChunks, chunkData],
                 token: token
             })
-        }).then(function(r){ return r.text(); }).then(function(text){
+        }).then(function (r) { return r.text(); }).then(function (text) {
             var res = null;
-            try { res = JSON.parse(text); } catch(e) {}
+            try { res = JSON.parse(text); } catch (e) { }
             if (res && res.success) {
                 currentChunk++;
                 sendNextChunk();
@@ -786,11 +848,11 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
                 var err = new Error(res ? res.error : "Adag feltöltési hiba.");
                 handleBackendError(err, onFailure);
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             handleBackendError(error, onFailure);
         });
     }
-    
+
     sendNextChunk();
 }
 
@@ -801,7 +863,7 @@ function callBackend(funcName, params, onSuccess, onFailure) {
     var token = localStorage.getItem('ebookPiratesToken');
 
     var requestPayloadString = JSON.stringify({ action: funcName, data: params, token: token });
-    
+
     // LIMIT: 2 MB. E felett automatikusan bekapcsol az adagoló (Chunked Upload)!
     var CHUNK_SIZE = 1024 * 1024 * 2;
     if (requestPayloadString.length > CHUNK_SIZE) {
@@ -1047,6 +1109,7 @@ function initializeApp(user) {
         showUniversalLoading("sot_preload_island");
     }
     if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
+    if (typeof preloadUserBaseData === 'function') preloadUserBaseData(user);
     window.inGame = user.inGame === true;
     window.activeShipId = user.activeShipId || '';
     window.currentUser = user;
@@ -1059,7 +1122,7 @@ function initializeApp(user) {
         sessionStorage.setItem('ebook_is_logged_in', 'true');
         sessionStorage.setItem('ebookPiratesLoginName', user.name || '');
         sessionStorage.setItem('cached_user_data', JSON.stringify(user));
-    } catch(e) {}
+    } catch (e) { }
     var displayName = (user && user.name) ? user.name : (localStorage.getItem('ebook_pirates_username') || 'Turista');
     var userEl = document.getElementById('header-user-name');
     if (userEl) userEl.innerText = displayName;
@@ -1092,7 +1155,7 @@ function initializeApp(user) {
     if (treasLinkEl) treasLinkEl.onclick = function () { loadPage('kincsek'); };
 
     // --- ALOLDALAK PREPOZÍCIONÁLÁSA ÉS ÁTIRÁNYÍTÁS ---
-    preloadAllSubpages(function() {
+    preloadAllSubpages(function () {
         console.log("⚓ Minden aloldal prepozícionálva a memóriában!");
         if (window.pendingMarketingData) {
             console.log("Marketing átirányítás aktiválva...");
@@ -1101,7 +1164,7 @@ function initializeApp(user) {
         } else {
             // Normál irányítás: utolsó látogatott aloldal vagy alapértelmezett
             var lastPage = null;
-            try { lastPage = localStorage.getItem('ebook_last_active_page'); } catch(e) {}
+            try { lastPage = localStorage.getItem('ebook_last_active_page'); } catch (e) { }
 
             if (window.userTutorialCompleted) {
                 if (lastPage && lastPage !== 'login' && lastPage !== 'index' && lastPage !== 'tutorial_oldal') {
@@ -1155,13 +1218,13 @@ function checkSession() {
                     console.log("⚡ Azonnali indulás gyorsítótárazott profilból:", cachedUser.name);
                     initializeApp(cachedUser);
                     // Háttérben frissítjük az aktuális profilt a backendről
-                    callBackend('getUserDataByToken', [token], function(freshUser) {
+                    callBackend('getUserDataByToken', [token], function (freshUser) {
                         if (freshUser && (freshUser.email || freshUser.name) && freshUser.isValid === true) {
                             sessionStorage.setItem('cached_user_data', JSON.stringify(freshUser));
                             window.currentUser = freshUser;
                             if (freshUser.activeShipId) window.activeShipId = freshUser.activeShipId;
                         }
-                    }, function() {});
+                    }, function () { });
                     return;
                 }
             } catch (e) {
@@ -1289,7 +1352,7 @@ function toggleHeaderMobileSettings(event, forceState) {
 // Globális kattintás figyelő a felugró fejlécpanelek bezárására
 if (typeof document !== 'undefined' && !window._headerDropdownListenerBound) {
     window._headerDropdownListenerBound = true;
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         var langDropdown = document.getElementById('header-lang-dropdown');
         if (langDropdown && langDropdown.style.display !== 'none') {
             langDropdown.style.display = 'none';
@@ -1473,7 +1536,7 @@ function loadPage(pageName) {
 
     currentPageName = pageName;
     if (pageName && pageName !== 'login' && pageName !== 'index') {
-        try { localStorage.setItem('ebook_last_active_page', pageName); } catch(e) {}
+        try { localStorage.setItem('ebook_last_active_page', pageName); } catch (e) { }
     }
 
     var isFullScreenGameplay = (pageName === 'tutorial_oldal' || pageName === 'game_oldal');
@@ -1515,7 +1578,7 @@ function loadPage(pageName) {
 
             if (typeof updateLanguageUI === 'function') updateLanguageUI();
             if (typeof bindLanguageButtons === 'function') bindLanguageButtons();
-            
+
             if (typeof initializeKikotoOldal === 'function') {
                 initializeKikotoOldal();
             }
@@ -3008,7 +3071,7 @@ function sendTavernJobsChat() {
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
 
-    callBackend('handleTavernTableChat', [message], function(response) {
+    callBackend('handleTavernTableChat', [message], function (response) {
         if (loading) loading.style.display = 'none';
         if (response && response.reply) {
             contentDiv.innerHTML += '<p style="color: #8b0000;"><b>Munkások (NPC):</b> ' + response.reply.replace(/\n/g, '<br>') + '</p>';
@@ -3016,7 +3079,7 @@ function sendTavernJobsChat() {
             contentDiv.innerHTML += '<p style="color: #8b0000;"><b>Munkások (NPC):</b> (Morgás és egyet nem értés hallatszik, de nincs érdemi válasz.)</p>';
         }
         contentDiv.scrollTop = contentDiv.scrollHeight;
-    }, function(err) {
+    }, function (err) {
         if (loading) loading.style.display = 'none';
         contentDiv.innerHTML += '<p style="color: red;"><i>A kocsmazaj elnyomta a hangodat. (Hálózati hiba: ' + err.message + ')</i></p>';
     });
@@ -3025,24 +3088,24 @@ function sendTavernJobsChat() {
 function openMercenaryMarketFromTavern() {
     var modal = document.getElementById('mercenary-market-modal');
     var listContainer = document.getElementById('mercenary-market-list');
-    
+
     if (modal) modal.style.display = 'flex';
     if (listContainer) listContainer.innerHTML = '<p>Zsoldosok keresése a kocsmában...</p>';
-    
+
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
 
-    callBackend('getAvailableMercenaries', [], function(response) {
+    callBackend('getAvailableMercenaries', [], function (response) {
         if (loading) loading.style.display = 'none';
-        
+
         if (response && response.success) {
             var html = '';
             var mercenaries = response.mercenaries || [];
-            
+
             if (mercenaries.length === 0) {
                 html = '<p>Jelenleg senki sem keres munkát a kocsmában.</p>';
             } else {
-                mercenaries.forEach(function(merc) {
+                mercenaries.forEach(function (merc) {
                     var mercCost = parseInt(merc.cost) || 10;
                     html += '<div style="background: rgba(255, 255, 255, 0.9); padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid #8b4513; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">';
                     html += '<strong style="color:#000; font-size:1.1em;">' + merc.name + '</strong> <span style="font-size:0.9em; color:#3e2723; font-style:italic;">(' + merc.role + ')</span><br>';
@@ -3058,7 +3121,7 @@ function openMercenaryMarketFromTavern() {
         } else {
             if (listContainer) listContainer.innerHTML = '<p style="color:red;">Hiba a zsoldosok betöltésekor: ' + (response ? response.error : 'Ismeretlen hiba') + '</p>';
         }
-    }, function(err) {
+    }, function (err) {
         if (loading) loading.style.display = 'none';
         if (listContainer) listContainer.innerHTML = '<p style="color:red;">Hálózati hiba: ' + err.message + '</p>';
     });
@@ -3067,20 +3130,20 @@ function openMercenaryMarketFromTavern() {
 function handleHireMercenary(mercName, cost) {
     var pinCode = prompt("Zsoldos felbérlése: " + mercName + "\nÁr: " + cost + " Kr\n\nKérlek, add meg a Munkavállalói PIN kódodat a szerződés hitelesítéséhez:");
     if (!pinCode) return;
-    
+
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
-    
-    callBackend('BT_hireMercenary', [pinCode, mercName, cost], function(response) {
+
+    callBackend('BT_hireMercenary', [pinCode, mercName, cost], function (response) {
         if (loading) loading.style.display = 'none';
-        
+
         if (response && response.npcResponse && !response.npcResponse.includes("Hiba")) {
             uiAlert("Sikeres bérlés!", response.npcResponse);
             openMercenaryMarketFromTavern(); // Refresh the list!
         } else {
             uiAlert("Hiba", response ? response.npcResponse : "Ismeretlen hiba történt.");
         }
-    }, function(err) {
+    }, function (err) {
         if (loading) loading.style.display = 'none';
         uiAlert("Hálózati hiba", err.message);
     });
@@ -3092,9 +3155,9 @@ function openTavernJobs() {
         modal.style.display = 'flex';
         const contentDiv = document.getElementById('tavern-jobs-content');
         contentDiv.innerHTML = '<p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...<br>A rendszer hallgatózik...</i></p>';
-        
+
         if (typeof callBackend === 'function') {
-            callBackend("getTavernJobs", [], function(response) {
+            callBackend("getTavernJobs", [], function (response) {
                 if (response && response.text) {
                     contentDiv.innerHTML = response.text.replace(/\n/g, '<br>');
                 } else {
@@ -3102,7 +3165,7 @@ function openTavernJobs() {
                 }
             });
         } else {
-             contentDiv.innerHTML = '<p>A hálózati kapcsolat megszakadt, nem hallod, mit mondanak.</p>';
+            contentDiv.innerHTML = '<p>A hálózati kapcsolat megszakadt, nem hallod, mit mondanak.</p>';
         }
     }
 }
@@ -4787,7 +4850,7 @@ function processUpgrade() {
     confirmMsg += t('ksz_upgrade_confirm_suffix');
 
     uiConfirm(confirmMsg, t('ksz_upgrade_title'), function () {
-        requestPin(function(pinCode) {
+        requestPin(function (pinCode) {
             setLoadingState(true, 'upgrade');
 
             var data = {
@@ -4943,29 +5006,29 @@ function toggleTranslatorLanguage() {
 }
 
 var ALL_MONK_ROLES = [
-    {val: 'editor', text: 'Lektor'},
-    {val: 'szkriptor', text: 'Szkriptor'},
-    {val: 'piktor', text: 'Piktor'},
-    {val: 'inspektor', text: 'Inspektor'},
-    {val: 'translator_Angol', text: 'Fordító (Angol)'},
-    {val: 'translator_Spanyol', text: 'Fordító (Spanyol)'},
-    {val: 'translator_Német', text: 'Fordító (Német)'},
-    {val: 'translator_Francia', text: 'Fordító (Francia)'},
-    {val: 'translator_Orosz', text: 'Fordító (Orosz)'},
-    {val: 'translator_Lengyel', text: 'Fordító (Lengyel)'}
+    { val: 'editor', text: 'Lektor' },
+    { val: 'szkriptor', text: 'Szkriptor' },
+    { val: 'piktor', text: 'Piktor' },
+    { val: 'inspektor', text: 'Inspektor' },
+    { val: 'translator_Angol', text: 'Fordító (Angol)' },
+    { val: 'translator_Spanyol', text: 'Fordító (Spanyol)' },
+    { val: 'translator_Német', text: 'Fordító (Német)' },
+    { val: 'translator_Francia', text: 'Fordító (Francia)' },
+    { val: 'translator_Orosz', text: 'Fordító (Orosz)' },
+    { val: 'translator_Lengyel', text: 'Fordító (Lengyel)' }
 ];
 
 function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
     var html = '<details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin: 10px 0; text-align: left;">';
     html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása...</summary>';
     html += '<div style="display:flex; flex-direction:column; padding:10px; max-height:250px; overflow-y:auto;">';
-    ALL_MONK_ROLES.forEach(function(r, index) {
+    ALL_MONK_ROLES.forEach(function (r, index) {
         var isChecked = checkedRolesArray.includes(r.val) ? 'checked' : '';
         var borderStyle = index < ALL_MONK_ROLES.length - 1 ? 'border-bottom: 1px solid #f0f0f0;' : '';
         html += '<label style="font-size:0.9em; cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; ' + borderStyle + '">' +
-                '<span>' + r.text + '</span>' +
-                '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + ' style="margin:0; width:16px; height:16px;">' +
-                '</label>';
+            '<span>' + r.text + '</span>' +
+            '<input type="checkbox" class="role-select-' + idPrefix + '" value="' + r.val + '" ' + isChecked + ' style="margin:0; width:16px; height:16px;">' +
+            '</label>';
     });
     html += '</div></details>';
     return html;
@@ -5022,7 +5085,7 @@ async function submitMonasteryWork() {
             };
             if (submissionType === 'application') {
                 var checkedRoles = [];
-                document.querySelectorAll('.monk-role-checkbox:checked').forEach(function(cb) {
+                document.querySelectorAll('.monk-role-checkbox:checked').forEach(function (cb) {
                     checkedRoles.push(cb.value);
                 });
                 payload.roles = checkedRoles;
@@ -5095,16 +5158,16 @@ function refreshMonasteryWork(silent) {
                 qHtml += '<div style="background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #ffe066; display: flex; flex-direction: column; gap: 6px; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.02); color: #333;">' +
                     '<div><b>' + t('monk_quiz_question_prefix') + '</b> <span style="font-style: italic;">' + escapeHtml(q.question) + '</span></div>' +
                     '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">' +
-                        '<div><span style="color: green; font-weight: bold;">' + t('monk_quiz_correct_prefix') + '</span> ' + escapeHtml(q.correctAnswer) + '</div>' +
-                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt1_prefix') + '</span> ' + escapeHtml(q.alt1) + '</div>' +
-                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt2_prefix') + '</span> ' + escapeHtml(q.alt2) + '</div>' +
-                        '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt3_prefix') + '</span> ' + escapeHtml(q.alt3) + '</div>' +
+                    '<div><span style="color: green; font-weight: bold;">' + t('monk_quiz_correct_prefix') + '</span> ' + escapeHtml(q.correctAnswer) + '</div>' +
+                    '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt1_prefix') + '</span> ' + escapeHtml(q.alt1) + '</div>' +
+                    '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt2_prefix') + '</span> ' + escapeHtml(q.alt2) + '</div>' +
+                    '<div><span style="color: #c53030; font-weight: bold;">' + t('monk_quiz_alt3_prefix') + '</span> ' + escapeHtml(q.alt3) + '</div>' +
                     '</div>' +
                     '<div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; border-top: 1px dashed #eee; padding-top: 8px;">' +
-                        '<button class="btn btn-sm" style="background-color: #2f855a; color: white;" onclick="handleQuizDecision(' + q.rowIndex + ', \'OK\')"><i class="fas fa-check"></i> ' + t('monk_approve_button') + '</button>' +
-                        '<button class="btn btn-sm btn-danger" style="margin-top: 0;" onclick="handleQuizDecision(' + q.rowIndex + ', \'ELUTASÍTVA\')"><i class="fas fa-times"></i> ' + t('monk_reject_button') + '</button>' +
+                    '<button class="btn btn-sm" style="background-color: #2f855a; color: white;" onclick="handleQuizDecision(' + q.rowIndex + ', \'OK\')"><i class="fas fa-check"></i> ' + t('monk_approve_button') + '</button>' +
+                    '<button class="btn btn-sm btn-danger" style="margin-top: 0;" onclick="handleQuizDecision(' + q.rowIndex + ', \'ELUTASÍTVA\')"><i class="fas fa-times"></i> ' + t('monk_reject_button') + '</button>' +
                     '</div>' +
-                '</div>';
+                    '</div>';
             });
             qHtml += '</div>';
             quizList.innerHTML = qHtml;
@@ -5141,7 +5204,7 @@ function refreshMonasteryWork(silent) {
                 if (work.status && work.status.indexOf('[FORDÍTÁS') === 0) {
                     var langMatch = work.status.match(/\[FORDÍTÁS\s+([^\]]+)\]/);
                     var targetLang = langMatch ? langMatch[1] : 'Ismeretlen';
-                    
+
                     if ((work.isMyWork || (work.isPapat && work.hasDebt)) && work.status === '[FORDÍTÁS ' + targetLang + '] Véglegesítésre vár') {
                         var safeTitle = work.title.replace(/'/g, "\\'");
                         var btnId = 'pub-trans-btn-' + work.id;
@@ -5150,14 +5213,14 @@ function refreshMonasteryWork(silent) {
                             '<p>A(z) <b>' + targetLang + '</b> nyelvű fordítás elkészült és lektorálva lett.</p>' +
                             '<button id="' + btnId + '" class="btn btn-success" onclick="openPublishWindow(\'' + btnId + '\', \'' + work.id + '\', \'' + work.gdocId + '\', \'' + safeTitle + ' (' + targetLang + ')\', \'\')">Fordítás Publikálása</button>' +
                             '</div>';
-                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt' || 
-                               work.status === '[FORDÍTÁS ' + targetLang + '] folyamatban' || work.status === '[FORDÍTÁS ' + targetLang + '] Folyamatban' || 
-                               work.status === '[FORDÍTÁS ' + targetLang + '] Ellenőrzés alatt') {
+                    } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt' ||
+                        work.status === '[FORDÍTÁS ' + targetLang + '] folyamatban' || work.status === '[FORDÍTÁS ' + targetLang + '] Folyamatban' ||
+                        work.status === '[FORDÍTÁS ' + targetLang + '] Ellenőrzés alatt') {
                         if (work.isPapat || work.userRoles.length > 0) {
-                           topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
+                            topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
                         }
                     }
-                } 
+                }
                 // --- 1. PAPÁT JOGKÖRÖK (Eredeti) ---
                 else if (work.isPapat) {
                     var isApplication = work.checklist && work.checklist.hasOwnProperty('referencia');
@@ -5166,7 +5229,7 @@ function refreshMonasteryWork(silent) {
                         if (isApplication) {
                             var requestedRolesStr = (work.checklist && work.checklist.referencia && work.checklist.referencia.extraInfo) ? work.checklist.referencia.extraInfo : "";
                             var appliedRolesArray = requestedRolesStr ? requestedRolesStr.split(',') : [];
-                            
+
                             topControls =
                                 '<div style="margin:5px 0; background:#f0f8ff; padding:10px; border:1px solid blue; border-radius:5px; text-align:center;">' +
                                 '<strong>Szerzetes felvétele szerepkörökbe:</strong><br>' +
@@ -5194,10 +5257,10 @@ function refreshMonasteryWork(silent) {
                         }
                     } else if (work.status === 'Agent elemzés alatt') {
                         topControls = '<div style="margin:5px 0; padding:10px; background:#f4ebf9; border:1px solid #8e44ad; border-radius:5px; text-align:center; color: #8e44ad;">' +
-                                      '<strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br>' +
-                                      '<small>A kézirat le van foglalva az elemzőmodul számára.</small><br>' +
-                                      '<button class="btn btn-sm btn-warning" style="margin-top:10px; color:#333; font-weight:bold; width:100%;" onclick="cancelAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-undo"></i> AI Elemzés Megszakítása (Visszavonás)</button>' +
-                                      '</div>';
+                            '<strong><i class="fas fa-robot"></i> Papát AI elemzése folyamatban...</strong><br>' +
+                            '<small>A kézirat le van foglalva az elemzőmodul számára.</small><br>' +
+                            '<button class="btn btn-sm btn-warning" style="margin-top:10px; color:#333; font-weight:bold; width:100%;" onclick="cancelAgentAnalysis(\'' + work.id + '\')"><i class="fas fa-undo"></i> AI Elemzés Megszakítása (Visszavonás)</button>' +
+                            '</div>';
 
                     } else if (work.status === 'Folyamatban' || work.status === 'Ellenőrzés alatt') {
                         topControls = '<div style="margin:5px 0;"><button class="btn btn-sm" onclick="doWorkAction(\'' + work.id + '\', \'send_for_approval\')">' + t('monk_review_ready_button') + '</button></div>';
@@ -5295,10 +5358,10 @@ function escapeHtml(text) {
 }
 
 function handleQuizDecision(rowIndex, decision) {
-    var confirmMsg = decision === 'OK' ? 
-        t('monk_quiz_approve_confirm') : 
+    var confirmMsg = decision === 'OK' ?
+        t('monk_quiz_approve_confirm') :
         t('monk_quiz_reject_confirm');
-        
+
     uiConfirm(confirmMsg, t('modal_confirm_title'), function () {
         document.getElementById('loading-overlay').style.display = 'flex';
         callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
@@ -5324,7 +5387,7 @@ function openQuizBookModal() {
         var loading = document.getElementById('loading-overlay');
         if (loading) loading.style.display = 'flex';
 
-        callBackend('checkIfUserIsMonk', [], function(res) {
+        callBackend('checkIfUserIsMonk', [], function (res) {
             try {
                 if (loading) loading.style.display = 'none';
                 console.log("checkIfUserIsMonk válasz:", res);
@@ -5342,19 +5405,19 @@ function openQuizBookModal() {
                         loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
                         styles: {
                             modal: {
-                                justifyContent: 'flex-end', 
+                                justifyContent: 'flex-end',
                                 alignItems: 'stretch',
                                 background: '',
                                 padding: '0'
                             },
                             content: {
-                                width: '350px',              
-                                height: '100vh',            
-                                maxWidth: '85vw',           
-                                margin: '0',                
-                                borderRadius: '2',          
+                                width: '350px',
+                                height: '100vh',
+                                maxWidth: '85vw',
+                                margin: '0',
+                                borderRadius: '2',
                                 border: 'none',
-                                borderLeft: '5px solid #d4af37', 
+                                borderLeft: '5px solid #d4af37',
                                 backgroundColor: '#1f0901',
                                 color: '#241512',
                                 backgroundImage: 'url(https://www.transparenttextures.com/patterns/wood-pattern.png)',
@@ -5369,7 +5432,7 @@ function openQuizBookModal() {
                 alert("Hiba a válasz feldolgozásakor: " + innerErr.message);
                 openQuizBookModalDirect();
             }
-        }, function(err) {
+        }, function (err) {
             try {
                 if (loading) loading.style.display = 'none';
                 console.warn("checkIfUserIsMonk sikertelen (hibás ág):", err);
@@ -5530,14 +5593,14 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
             btnElement.parentNode.appendChild(msg);
         }
     }
-    
+
     if (!gdocId || gdocId === 'undefined' || gdocId === 'null') {
         uiAlert(t('monk_publish_missing_gdoc'));
         return;
     }
-    
+
     setLoadingState(true, 'monastery');
-    callBackend('getOriginalBookDataForTranslation', [rootCode], function(res) {
+    callBackend('getOriginalBookDataForTranslation', [rootCode], function (res) {
         setLoadingState(false, 'monastery');
         if (!res.success) {
             var statusMsg = document.getElementById('pub-status-' + workId);
@@ -5545,7 +5608,7 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
             uiAlert(res.error);
             return;
         }
-        
+
         var konyvFeltoltoUrl = 'https://script.google.com/macros/s/AKfycbzZZV2QQ4fOExg_dv0ddkWVEFgNTCXzYtFhWlOs1Kn5R3wUCHDXV7IpE3Kx3DNT53Npbw/exec';
         var params = new URLSearchParams();
         params.append('action', 'szenteles');
@@ -5553,19 +5616,19 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
         params.append('logId', workId);
         params.append('userEmail', currentUserEmail);
         params.append('title', translatedTitle);
-        
+
         if (res.book.author) params.append('origAuthor', res.book.author);
         if (res.book.publisher) params.append('origPublisher', res.book.publisher);
         if (res.book.type) params.append('origType', res.book.type);
         if (res.book.isbn) params.append('origIsbn', res.book.isbn);
         params.append('targetLang', targetLang);
-        
+
         window.open(konyvFeltoltoUrl + '?' + params.toString(), '_blank');
-        
+
         if (document.getElementById('pub-status-' + workId)) {
             document.getElementById('pub-status-' + workId).innerHTML = t('monk_publish_in_progress_html');
         }
-        
+
         // Start polling
         var attempts = 0;
         var maxAttempts = 60;
@@ -5656,10 +5719,10 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
         uiAlert("Hiba: A könyv forráskódja nem található a fordításhoz!");
         return;
     }
-    
-    requestPin(function(pinCode) {
+
+    requestPin(function (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
-        
+
         var payload = {
             logId: workId,
             gdocId: gdocId,
@@ -5669,9 +5732,9 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
             email: currentUserEmail,
             pinCode: pinCode
         };
-        
-        callBackend('finalizeTranslation', payload, 
-            function(res) {
+
+        callBackend('finalizeTranslation', payload,
+            function (res) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success) {
                     uiAlert("Sikeresen publikálva! Új Kód: " + res.newBaseCode, "Fordítás Elfogadva");
@@ -5680,7 +5743,7 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
                     uiAlert("Hiba történt: " + res.error, "Publikációs hiba");
                 }
             },
-            function(err) {
+            function (err) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 uiAlert("Hálózati hiba: " + err.message);
             }
@@ -5719,7 +5782,7 @@ function triggerPapatAgent(workId) {
 
 function cancelAgentAnalysis(workId) {
     if (!confirm("Biztosan megszakítod az AI elemzést? A mű visszakerül 'Elbírálás alatt' státuszba, és kézzel kell elbírálnod.")) return;
-    
+
     document.getElementById('loading-overlay').style.display = 'flex';
     callBackend('manageWorkStatus', [workId, 'set_status', 'Elbírálás alatt'], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
@@ -6105,7 +6168,7 @@ function loadPersonnelData() {
                     '<small>' + monk.email + '</small><br>' +
                     '<div style="margin-top: 5px;">' +
                     '<span style="color: var(--color-secondary); font-weight:bold;">Szerepkörök módosítása:</span><br>' +
-                    getRoleCheckboxesHtml(monk.roles ? monk.roles.split(',').map(function(s){return s.trim();}) : [], 'admin_' + CSS.escape(monk.email)) +
+                    getRoleCheckboxesHtml(monk.roles ? monk.roles.split(',').map(function (s) { return s.trim(); }) : [], 'admin_' + CSS.escape(monk.email)) +
                     '<button class="btn btn-sm" style="background-color:var(--color-primary); color:white; margin-top:5px;" onclick="adminUpdateMonkRoles(\'' + monk.email + '\')">Szerepkörök Mentése</button>' +
                     '</div>' +
                     '</div>' +
@@ -6127,11 +6190,11 @@ function adminUpdateMonkRoles(email) {
     for (var i = 0; i < checkboxes.length; i++) {
         roles.push(checkboxes[i].value);
     }
-    
+
     var rolesStr = roles.join(",");
     document.getElementById('loading-overlay').style.display = 'flex';
     callBackend('updateMonkRoles', [email, rolesStr],
-        function(res) {
+        function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (res.success) {
                 uiAlert("Szerepkörök sikeresen frissítve!", t('success_title'));
@@ -6140,7 +6203,7 @@ function adminUpdateMonkRoles(email) {
                 uiAlert(res.error, t('error_title'));
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('loading-overlay').style.display = 'none';
             uiAlert(t('error_prefix') + err.message, t('system_error_title'));
         }
@@ -6191,12 +6254,12 @@ function uploadCoverFromCard(workId, taskKey) {
         document.getElementById('loading-overlay').style.display = 'flex';
         try {
             var reader = new FileReader();
-            var dataUrl = await new Promise(function(resolve, reject) {
-                reader.onload = function(e) { resolve(e.target.result); };
-                reader.onerror = function(e) { reject(new Error("Hiba a fájl olvasása közben")); };
+            var dataUrl = await new Promise(function (resolve, reject) {
+                reader.onload = function (e) { resolve(e.target.result); };
+                reader.onerror = function (e) { reject(new Error("Hiba a fájl olvasása közben")); };
                 reader.readAsDataURL(file);
             });
-            
+
             var pngDataUrl = await convertToPngDataUrl(dataUrl);
             var fileData = {
                 base64: pngDataUrl.split(',')[1],
@@ -6348,19 +6411,19 @@ function finalizeResignation(leaveGame) {
                 var origAuthor = getParam('origAuthor');
                 var authorNameField = document.getElementById('authorName');
                 if (authorNameField) authorNameField.value = origAuthor ? origAuthor : "Felhőkolostor Szerzője";
-                
+
                 var origPublisher = getParam('origPublisher');
                 var publisherNameField = document.getElementById('publisherName');
                 if (publisherNameField && origPublisher) publisherNameField.value = origPublisher;
-                
+
                 var origIsbn = getParam('origIsbn');
                 var isbnField = document.getElementById('isbn');
                 if (isbnField && origIsbn) isbnField.value = origIsbn;
-                
+
                 // Set the dropdowns asynchronously once they are populated!
                 var origType = getParam('origType');
                 var targetLang = getParam('targetLang');
-                
+
                 if (origType) window.prefillProductType = origType;
                 if (targetLang) window.prefillLanguage = targetLang;
 
@@ -6667,17 +6730,17 @@ function finalizeResignation(leaveGame) {
 
         genreSelect.innerHTML = '<option value="">' + t('select_option') + '</option>';
         languageSelect.innerHTML = '<option value="">' + t('select_option') + '</option>';
-        if (data && data.genres) data.genres.forEach(g => { 
-            var o = document.createElement('option'); 
-            o.value = g; o.textContent = g; 
+        if (data && data.genres) data.genres.forEach(g => {
+            var o = document.createElement('option');
+            o.value = g; o.textContent = g;
             if (window.prefillProductType && g.toLowerCase() === window.prefillProductType.toLowerCase()) o.selected = true;
-            genreSelect.appendChild(o); 
+            genreSelect.appendChild(o);
         });
-        if (data && data.languages) data.languages.forEach(l => { 
-            var o = document.createElement('option'); 
-            o.value = l; o.textContent = l; 
+        if (data && data.languages) data.languages.forEach(l => {
+            var o = document.createElement('option');
+            o.value = l; o.textContent = l;
             if (window.prefillLanguage && l.toLowerCase() === window.prefillLanguage.toLowerCase()) o.selected = true;
-            languageSelect.appendChild(o); 
+            languageSelect.appendChild(o);
         });
     }
 
@@ -7274,44 +7337,44 @@ function initializeLibraryAndMapPage(data) {
         if (data.isPapat === true) {
             papatApprovalSection.style.display = 'block';
             pendingMapsContainer.innerHTML = '';
-            
+
             if (data.pendingMaps && data.pendingMaps.length > 0) {
                 data.pendingMaps.forEach(function (map) {
                     var entryDiv = document.createElement('div');
                     entryDiv.className = 'item-entry map-entry';
-                    
-                    entryDiv.innerHTML = 
+
+                    entryDiv.innerHTML =
                         '<div class="item-icon"><i class="fas fa-map" style="color: #b71c1c;"></i></div>' +
                         '<div class="item-details">' +
-                            '<div class="item-title">' + map.identifier + '</div>' +
-                            '<small class="item-author">Feltöltő: ' + map.email + '</small>' +
+                        '<div class="item-title">' + map.identifier + '</div>' +
+                        '<small class="item-author">Feltöltő: ' + map.email + '</small>' +
                         '</div>' +
                         '<div class="map-actions">' +
-                            '<button class="btn view-btn" style="background:#17a2b8;">Megtekintés</button>' +
-                            '<button class="btn approve-btn" style="background:#28a745;">Jóváhagyás</button>' +
-                            '<button class="btn reject-btn" style="background:#dc3545;">Elutasítás</button>' +
+                        '<button class="btn view-btn" style="background:#17a2b8;">Megtekintés</button>' +
+                        '<button class="btn approve-btn" style="background:#28a745;">Jóváhagyás</button>' +
+                        '<button class="btn reject-btn" style="background:#dc3545;">Elutasítás</button>' +
                         '</div>';
-                    
-                    entryDiv.querySelector('.view-btn').onclick = function() {
+
+                    entryDiv.querySelector('.view-btn').onclick = function () {
                         openMapViewer(map.fileId, map.identifier);
                     };
-                    
-                    entryDiv.querySelector('.approve-btn').onclick = function() {
-                        if(typeof uiConfirm === 'function') {
-                            uiConfirm('Biztosan jóváhagyod ezt a térképet?', 'Megerősítés', function() {
+
+                    entryDiv.querySelector('.approve-btn').onclick = function () {
+                        if (typeof uiConfirm === 'function') {
+                            uiConfirm('Biztosan jóváhagyod ezt a térképet?', 'Megerősítés', function () {
                                 handleMapApproval(map.rowIndex, 'approve');
                             });
                         }
                     };
-                    
-                    entryDiv.querySelector('.reject-btn').onclick = function() {
-                        if(typeof uiConfirm === 'function') {
-                            uiConfirm('Biztosan elutasítod ezt a térképet?', 'Megerősítés', function() {
+
+                    entryDiv.querySelector('.reject-btn').onclick = function () {
+                        if (typeof uiConfirm === 'function') {
+                            uiConfirm('Biztosan elutasítod ezt a térképet?', 'Megerősítés', function () {
                                 handleMapApproval(map.rowIndex, 'reject');
                             });
                         }
                     };
-                    
+
                     pendingMapsContainer.appendChild(entryDiv);
                 });
             } else {
@@ -7329,18 +7392,18 @@ function initializeLibraryAndMapPage(data) {
 function handleMapApproval(rowIndex, action) {
     document.getElementById('loading-overlay').style.display = 'flex';
     var functionName = action === 'approve' ? 'approveMapImage' : 'rejectMapImage';
-    
+
     callBackend(functionName, [rowIndex],
-        function(res) {
+        function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
-            if(typeof uiAlert === 'function') uiAlert(res.message || res.error);
-            if(res.success) {
+            if (typeof uiAlert === 'function') uiAlert(res.message || res.error);
+            if (res.success) {
                 loadPage('konyvtar'); // Újratöltjük a könyvtárat a frissített listáért
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('loading-overlay').style.display = 'none';
-            if(typeof uiAlert === 'function') uiAlert('Szerverhiba: ' + err.message);
+            if (typeof uiAlert === 'function') uiAlert('Szerverhiba: ' + err.message);
         }
     );
 }
@@ -7888,33 +7951,33 @@ function initializeMasolatokAndCopyMapPage(data) {
                 var playBtn = document.createElement('button');
                 playBtn.className = 'btn';
                 playBtn.textContent = t('copy_play_button');
-                playBtn.onclick = function() {
-    var gmBtn = document.getElementById('floating-gamemaster-btn');
-    if (gmBtn) gmBtn.click();
-    
-    setTimeout(function() {
-        var chatArea = document.getElementById('universal-chat-area');
-        chatArea.innerHTML = '';
-        var loaderId = "loader-" + Date.now();
-        var loader = document.createElement('div');
-        loader.id = loaderId;
-        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester felkészül...</i>';
-        chatArea.appendChild(loader);
-        
-        callBackend('handleNPCInteraction', ['gamemaster', '', 'START_GM_SESSION', copy.code], 
-            function(response) {
-                var l = document.getElementById(loaderId);
-                if (l) l.remove();
-                handleUniversalResponse(response);
-            },
-            function(err) {
-                var l = document.getElementById(loaderId);
-                if (l) l.remove();
-                addBubbleToUniversal("System", "Hiba: " + err.message, "system");
-            }
-        );
-    }, 500);
-};
+                playBtn.onclick = function () {
+                    var gmBtn = document.getElementById('floating-gamemaster-btn');
+                    if (gmBtn) gmBtn.click();
+
+                    setTimeout(function () {
+                        var chatArea = document.getElementById('universal-chat-area');
+                        chatArea.innerHTML = '';
+                        var loaderId = "loader-" + Date.now();
+                        var loader = document.createElement('div');
+                        loader.id = loaderId;
+                        loader.innerHTML = '<i class="fas fa-chess-knight fa-spin" style="color:#fff; margin-right:8px;"></i> <i>A Játékmester felkészül...</i>';
+                        chatArea.appendChild(loader);
+
+                        callBackend('handleNPCInteraction', ['gamemaster', '', 'START_GM_SESSION', copy.code],
+                            function (response) {
+                                var l = document.getElementById(loaderId);
+                                if (l) l.remove();
+                                handleUniversalResponse(response);
+                            },
+                            function (err) {
+                                var l = document.getElementById(loaderId);
+                                if (l) l.remove();
+                                addBubbleToUniversal("System", "Hiba: " + err.message, "system");
+                            }
+                        );
+                    }, 500);
+                };
                 gombokDiv.appendChild(playBtn);
 
                 // Eladom gomb
@@ -8126,15 +8189,15 @@ function loadLogForExtraction() {
     var logId = select.value;
 
     if (!logId) {
-        if(modalDiv) modalDiv.style.display = 'none';
+        if (modalDiv) modalDiv.style.display = 'none';
         return;
     }
 
-    if(modalDiv) modalDiv.style.display = 'none';
+    if (modalDiv) modalDiv.style.display = 'none';
     loader.style.display = 'block';
 
     callBackend('getLogContentForReading', [logId],
-        function(res) {
+        function (res) {
             loader.style.display = 'none';
             if (res.error) {
                 if (typeof uiAlert === 'function') uiAlert(res.error);
@@ -8144,7 +8207,7 @@ function loadLogForExtraction() {
 
             entriesDiv.innerHTML = '';
             costSpan.textContent = '0';
-            
+
             var processedHtml = res.htmlContent;
             if (res.imageData) {
                 var imgRegex = /\[IMAGE:([^:]+):([^\]]+)\]/g;
@@ -8162,12 +8225,12 @@ function loadLogForExtraction() {
 
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = processedHtml;
-            
+
             var entries = tempDiv.querySelectorAll('.log-entry');
             if (entries.length === 0) {
                 entriesDiv.innerHTML = '<p>A napló üres.</p>';
             } else {
-                entries.forEach(function(entry) {
+                entries.forEach(function (entry) {
                     var entryId = entry.getAttribute('data-entry-id');
                     var dateAttr = entry.getAttribute('data-date');
                     var entryTitle = 'Bejegyzés: ' + (dateAttr || 'Ismeretlen dátum');
@@ -8187,8 +8250,8 @@ function loadLogForExtraction() {
                     checkbox.style.marginRight = '15px';
                     checkbox.style.marginTop = '5px';
                     checkbox.style.transform = 'scale(1.5)';
-                    
-                    checkbox.onchange = function() {
+
+                    checkbox.onchange = function () {
                         var checked = document.querySelectorAll('.log-extract-checkbox:checked').length;
                         costSpan.textContent = (checked * 10).toString();
                         var btn = document.getElementById('log-extract-btn');
@@ -8197,13 +8260,13 @@ function loadLogForExtraction() {
 
                     var textContainer = document.createElement('div');
                     textContainer.style.flex = "1";
-                    
+
                     var headerDiv = document.createElement('div');
                     headerDiv.style.cursor = 'pointer';
                     headerDiv.style.display = 'flex';
                     headerDiv.style.justifyContent = 'space-between';
                     headerDiv.innerHTML = '<strong>' + entryTitle + '</strong><small style="color: #666; font-weight: bold;">▼ Olvasás</small>';
-                    
+
                     var contentDiv = document.createElement('div');
                     contentDiv.style.display = 'none';
                     contentDiv.style.marginTop = '10px';
@@ -8213,13 +8276,13 @@ function loadLogForExtraction() {
                     contentDiv.style.fontSize = '1.1em';
                     contentDiv.style.lineHeight = '1.6';
                     contentDiv.innerHTML = entry.innerHTML;
-                    
-                    headerDiv.onclick = function() {
+
+                    headerDiv.onclick = function () {
                         var isHidden = contentDiv.style.display === 'none';
                         contentDiv.style.display = isHidden ? 'block' : 'none';
                         headerDiv.querySelector('small').innerHTML = isHidden ? '▲ Bezárás' : '▼ Olvasás';
                     };
-                    
+
                     textContainer.appendChild(headerDiv);
                     textContainer.appendChild(contentDiv);
 
@@ -8228,9 +8291,9 @@ function loadLogForExtraction() {
                     entriesDiv.appendChild(wrapper);
                 });
             }
-            if(modalDiv) modalDiv.style.display = 'flex';
+            if (modalDiv) modalDiv.style.display = 'flex';
         },
-        function(err) {
+        function (err) {
             loader.style.display = 'none';
             if (typeof uiAlert === 'function') uiAlert("Hiba történt a napló betöltésekor: " + err.message);
             select.value = '';
@@ -8259,7 +8322,7 @@ function submitPapatLogUpload() {
     document.getElementById('loading-overlay').style.display = 'flex';
 
     callBackend('uploadPapatLogCopy', [gdocUrl, copyName],
-        function(res) {
+        function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (typeof uiAlert === 'function') {
                 uiAlert(res.message || res.error, res.success ? "Siker" : "Hiba");
@@ -8270,7 +8333,7 @@ function submitPapatLogUpload() {
                 loadPage('masolatok_oldal');
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (typeof uiAlert === 'function') {
                 uiAlert("Szerverhiba történt: " + err.message, "Hiba");
@@ -8285,9 +8348,9 @@ function submitPapatLogUpload() {
 function executeLogExtraction() {
     var select = document.getElementById('log-extract-select');
     var checkboxes = document.querySelectorAll('.log-extract-checkbox:checked');
-    
+
     var logId = select.value;
-    
+
     if (!logId) {
         if (typeof uiAlert === 'function') uiAlert("Válassz ki egy hajónaplót!");
         return;
@@ -8301,16 +8364,16 @@ function executeLogExtraction() {
     for (var i = 0; i < checkboxes.length; i++) {
         selectedIds.push(checkboxes[i].value);
     }
-    
+
     var totalCost = selectedIds.length * 10;
     var customMessage = "A művelet díja " + totalCost + " Kalózkredit.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!";
 
     if (typeof requestPin === 'function') {
         requestPin(function (pinCode) {
             document.getElementById('loading-overlay').style.display = 'flex';
-            
+
             callBackend('extractLogEntriesToCopy', [logId, selectedIds, pinCode],
-                function(res) {
+                function (res) {
                     document.getElementById('loading-overlay').style.display = 'none';
                     if (res.error) {
                         if (typeof uiAlert === 'function') uiAlert(res.error, "Hiba");
@@ -8318,12 +8381,12 @@ function executeLogExtraction() {
                         if (typeof uiAlert === 'function') uiAlert(res.message, "Sikeres kivonatolás");
                         select.value = '';
                         var modalDiv = document.getElementById('log-extract-modal');
-                        if(modalDiv) modalDiv.style.display = 'none';
+                        if (modalDiv) modalDiv.style.display = 'none';
                         updateCreditDisplay();
                         loadPage('masolatok_oldal');
                     }
                 },
-                function(err) {
+                function (err) {
                     document.getElementById('loading-overlay').style.display = 'none';
                     if (typeof uiAlert === 'function') uiAlert("Rendszerhiba történt: " + err.message, "Hiba");
                 }
@@ -9196,12 +9259,12 @@ function initializeKincsekPage(response) {
 
     var talentumEl = document.getElementById('char-sheet-talentum');
     if (talentumEl) {
-                var rawTalentum = Number(data.talentum) || 0;
-                talentumEl.innerText = Math.floor(rawTalentum);
-                talentumEl.title = "Pontos Tálentum: " + rawTalentum;
-                talentumEl.style.cursor = 'help';
-                talentumEl.style.borderBottom = '1px dotted #D2E505'; // Kis vizuális jelzés a tooltiphez
-            }
+        var rawTalentum = Number(data.talentum) || 0;
+        talentumEl.innerText = Math.floor(rawTalentum);
+        talentumEl.title = "Pontos Tálentum: " + rawTalentum;
+        talentumEl.style.cursor = 'help';
+        talentumEl.style.borderBottom = '1px dotted #D2E505'; // Kis vizuális jelzés a tooltiphez
+    }
 
     var letkristalyEl = document.getElementById('char-sheet-letkristaly');
     if (letkristalyEl) letkristalyEl.innerText = data.letkristaly;
@@ -9825,7 +9888,7 @@ function toggleVideoAudio(videoId, btnId) {
         btn.innerHTML = '<i class="fas fa-volume-up"></i>';
         btn.title = 'Némítás';
         if (video.paused) {
-            video.play().catch(function(e){ console.log("Play error on unmute:", e); });
+            video.play().catch(function (e) { console.log("Play error on unmute:", e); });
         }
     } else {
         btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -9897,7 +9960,7 @@ function openUniversalNPC(npcId, config) {
             audioBtn.className = 'portrait-audio-btn';
             audioBtn.title = 'Hang némítása / bekapcsolása';
             audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            audioBtn.onclick = function(e) {
+            audioBtn.onclick = function (e) {
                 if (e) { e.stopPropagation(); e.preventDefault(); }
                 toggleVideoAudio('npc-portrait-video', 'npc-portrait-audio-btn');
             };
@@ -9918,22 +9981,22 @@ function openUniversalNPC(npcId, config) {
             portraitVideo.muted = false;
             portraitVideo.volume = 1.0;
 
-            portraitVideo.onended = function() {
+            portraitVideo.onended = function () {
                 if (audioBtn) audioBtn.style.display = 'none';
             };
 
             var playProm = portraitVideo.play();
             if (playProm !== undefined) {
-                playProm.then(function() {
+                playProm.then(function () {
                     if (audioBtn) {
                         audioBtn.style.display = 'flex';
                         audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                         audioBtn.title = 'Némítás';
                     }
-                }).catch(function(e) {
+                }).catch(function (e) {
                     console.log("NPC portré videó unmuted autoplay megjegyzés, némított fallback:", e);
                     portraitVideo.muted = true;
-                    portraitVideo.play().catch(function(){});
+                    portraitVideo.play().catch(function () { });
                     if (audioBtn) {
                         audioBtn.style.display = 'flex';
                         audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -9944,7 +10007,7 @@ function openUniversalNPC(npcId, config) {
         } else if (portraitImg) {
             if (audioBtn) audioBtn.style.display = 'none';
             if (portraitVideo) {
-                try { portraitVideo.pause(); portraitVideo.src = ''; } catch(e){}
+                try { portraitVideo.pause(); portraitVideo.src = ''; } catch (e) { }
                 portraitVideo.style.display = 'none';
             }
             portraitImg.style.display = 'block';
@@ -10123,11 +10186,13 @@ function handleUniversalResponse(response) {
                 sm.title || "Rendszerüzenet",
                 sm.body || sm.message || "",
                 sm.icon || "fas fa-info-circle",
-                [{ text: "Rendben", color: "#2e8b57", textColor: "white", callback: function() {
-                    if (typeof updateCreditDisplay === 'function') {
-                        updateCreditDisplay();
+                [{
+                    text: "Rendben", color: "#2e8b57", textColor: "white", callback: function () {
+                        if (typeof updateCreditDisplay === 'function') {
+                            updateCreditDisplay();
+                        }
                     }
-                }}]
+                }]
             );
         } else {
             alert((sm.title || "Rendszerüzenet") + "\n\n" + (sm.body || sm.message || ""));
@@ -10222,7 +10287,7 @@ function handleUniversalResponse(response) {
         select.appendChild(defaultOpt);
 
         if (response.dropdown.options) {
-            response.dropdown.options.forEach(function(opt) {
+            response.dropdown.options.forEach(function (opt) {
                 var option = document.createElement('option');
                 option.value = opt.value;
                 option.text = opt.label;
@@ -10234,15 +10299,15 @@ function handleUniversalResponse(response) {
         submitBtn.className = 'btn';
         submitBtn.style.cssText = "width: 100%; font-size: 0.9em; padding: 8px;";
         submitBtn.innerHTML = response.dropdown.submitText || "Kiválaszt";
-        
-        submitBtn.onclick = function() {
+
+        submitBtn.onclick = function () {
             if (!select.value) {
                 addBubbleToUniversal("System", "Hiba: Kérlek, válassz a listából!", "system");
                 return;
             }
             if (dpContainer.parentNode) dpContainer.parentNode.removeChild(dpContainer);
             else dpContainer.remove();
-            
+
             var btnAction = response.dropdown.action;
             if (btnAction.indexOf('CLIENT_REQ_PIN') === 0) {
                 handleNPCButtonAction({ action: btnAction + select.value });
@@ -10258,7 +10323,7 @@ function handleUniversalResponse(response) {
     }
 
     if (response.clientFn) {
-        setTimeout(function() {
+        setTimeout(function () {
             var fnName = response.clientFn;
             if (typeof window[fnName] === 'function') {
                 window[fnName]();
@@ -10289,7 +10354,7 @@ function handleNPCButtonAction(btn) {
     if (btn.action === 'CLIENT_REDIRECT') {
         var targetTab = btn.payload;
         if (targetTab === 'MUNKAPAD') targetTab = 'Munkapad';
-        
+
         if (typeof openMonasteryTab === 'function') {
             openMonasteryTab(null, targetTab);
             var modal = document.getElementById('universal-npc-modal');
@@ -10666,83 +10731,83 @@ console.log("EOF");
 // === KOCSMAI HIRDETOTABLA ===
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
-    if(modal) modal.style.display = 'flex';
+    if (modal) modal.style.display = 'flex';
     var boardDiv = document.getElementById('notice-board-content');
-    if(boardDiv) boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiú épp szögeli fel az új papírokat...</p>';
+    if (boardDiv) boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiú épp szögeli fel az új papírokat...</p>';
 
     if (typeof callBackend === 'function') {
-        callBackend("getNoticeBoardData", [], function(response) {
+        callBackend("getNoticeBoardData", [], function (response) {
             if (response && response.success && response.data) {
                 renderNoticeBoard(response.data);
             } else {
-                if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">A szél lefújta az összes papírt. (Hiba: ' + (response ? response.error : 'Nincs válasz') + ')</p>';
+                if (boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">A szél lefújta az összes papírt. (Hiba: ' + (response ? response.error : 'Nincs válasz') + ')</p>';
             }
         });
     } else {
-        if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">Hálózati hiba: A backend nem elérhető.</p>';
+        if (boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">Hálózati hiba: A backend nem elérhető.</p>';
     }
 }
 
 function renderNoticeBoard(data) {
     var boardDiv = document.getElementById('notice-board-content');
-    if(!boardDiv) return;
+    if (!boardDiv) return;
     boardDiv.innerHTML = '';
 
     // 1. WANTED Plakátok
     if (data.wanted && data.wanted.length > 0) {
-        data.wanted.forEach(function(item) {
+        data.wanted.forEach(function (item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #e0d8b0; padding: 15px; width: 220px; border: 2px dashed #8b4513; box-shadow: 2px 2px 8px rgba(0,0,0,0.7); transform: rotate(" + (Math.random() * 8 - 4) + "deg); position: relative; font-family: 'Courier New', monospace;";
             card.innerHTML = '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: silver; font-size: 1.5em; text-shadow: 1px 1px 2px black;">🗡️</div>' +
-                             '<h3 style="margin: 10px 0 5px 0; color: black; text-align: center; font-size: 1.8em; letter-spacing: 2px; font-weight: 900;">WANTED</h3>' +
-                             '<p style="text-align: center; margin-bottom: 10px;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Skull_and_crossbones.svg/120px-Skull_and_crossbones.svg.png" style="width:60px; opacity: 0.8; filter: sepia(1);"></p>' +
-                             '<p style="font-weight: bold; text-align: center; font-size: 1.2em; margin-bottom: 5px; color: #8b0000; text-transform: uppercase;">' + item.name + '</p>' +
-                             '<p style="text-align: center; margin-bottom: 10px; font-size: 0.85em; color: #333;"><b>Bűntette:</b><br>' + item.crime + '</p>' +
-                             '<h4 style="text-align: center; color: black; margin-bottom: 0; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 3px;">Vérdíj: ' + item.bounty + ' Kr</h4>';
+                '<h3 style="margin: 10px 0 5px 0; color: black; text-align: center; font-size: 1.8em; letter-spacing: 2px; font-weight: 900;">WANTED</h3>' +
+                '<p style="text-align: center; margin-bottom: 10px;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Skull_and_crossbones.svg/120px-Skull_and_crossbones.svg.png" style="width:60px; opacity: 0.8; filter: sepia(1);"></p>' +
+                '<p style="font-weight: bold; text-align: center; font-size: 1.2em; margin-bottom: 5px; color: #8b0000; text-transform: uppercase;">' + item.name + '</p>' +
+                '<p style="text-align: center; margin-bottom: 10px; font-size: 0.85em; color: #333;"><b>Bűntette:</b><br>' + item.crime + '</p>' +
+                '<h4 style="text-align: center; color: black; margin-bottom: 0; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 3px;">Vérdíj: ' + item.bounty + ' Kr</h4>';
             boardDiv.appendChild(card);
         });
     }
 
     // 2. Priori Újdonságok
     if (data.priori && data.priori.length > 0) {
-        data.priori.forEach(function(item) {
+        data.priori.forEach(function (item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #fdf5e6; padding: 15px; width: 220px; border: 1px solid #d2b48c; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); transform: rotate(" + (Math.random() * 6 - 3) + "deg); position: relative; font-family: 'Georgia', serif;";
             card.innerHTML = '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #8b0000; font-size: 1.5em; text-shadow: 1px 1px 1px #000;">📌</div>' +
-                             '<h4 style="margin: 10px 0 10px 0; color: #8b4513; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #d2b48c; padding-bottom: 5px;">Újdonság a Kikötőben!</h4>' +
-                             '<p style="font-size: 0.85em; margin: 0 0 10px 0; text-align: center; color: #666;">' + item.date + '</p>' +
-                             '<p style="font-weight: bold; text-align: center; margin-bottom: 5px; color: #2c1a0b; font-size: 1.1em;">' + item.title + '</p>' +
-                             '<p style="font-style: italic; text-align: center; margin-bottom: 15px; color: #5c3a21;">Szerző: ' + item.author + '</p>' +
-                             '<p style="text-align: center; color: #1b5e20; font-weight: bold; font-size: 1.1em; background: rgba(27,94,32,0.1); padding: 5px; border-radius: 3px;">Ár: ' + item.price + ' Kr</p>';
+                '<h4 style="margin: 10px 0 10px 0; color: #8b4513; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #d2b48c; padding-bottom: 5px;">Újdonság a Kikötőben!</h4>' +
+                '<p style="font-size: 0.85em; margin: 0 0 10px 0; text-align: center; color: #666;">' + item.date + '</p>' +
+                '<p style="font-weight: bold; text-align: center; margin-bottom: 5px; color: #2c1a0b; font-size: 1.1em;">' + item.title + '</p>' +
+                '<p style="font-style: italic; text-align: center; margin-bottom: 15px; color: #5c3a21;">Szerző: ' + item.author + '</p>' +
+                '<p style="text-align: center; color: #1b5e20; font-weight: bold; font-size: 1.1em; background: rgba(27,94,32,0.1); padding: 5px; border-radius: 3px;">Ár: ' + item.price + ' Kr</p>';
             boardDiv.appendChild(card);
         });
     }
 
     // 3. Kalandmodulok (Jobs)
     if (data.jobs && data.jobs.length > 0) {
-        data.jobs.forEach(function(item) {
+        data.jobs.forEach(function (item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #f0ebd8; padding: 15px; width: 220px; border: 2px solid #3e2723; box-shadow: 2px 2px 6px rgba(0,0,0,0.6); transform: rotate(" + (Math.random() * 6 - 3) + "deg); position: relative; font-family: 'Georgia', serif;";
             card.innerHTML = '<div style="position: absolute; top: -10px; left: 10px; color: gold; font-size: 1.5em; text-shadow: 1px 1px 1px #000;">📌</div>' +
-                             '<h4 style="margin: 10px 0 10px 0; color: #1b5e20; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><i class="fas fa-scroll"></i> Küldetés!</h4>' +
-                             '<p style="font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 1.1em; color: #3e2723;">' + item.title + '</p>' +
-                             '<p style="font-size: 0.9em; margin-bottom: 5px; color: #4e342e;"><strong>Keresnek:</strong><br>' + item.specialists + '</p>' +
-                             '<p style="font-size: 0.9em; margin-bottom: 10px; color: #8b0000;"><strong>Veszély:</strong> ' + item.danger + '</p>' +
-                             '<p style="text-align: center; color: #1b5e20; font-style: italic; font-size: 0.85em; margin-bottom: 5px;">(Jelentkezz a csaposnál!)</p>' +
-                             '<p style="text-align: center; color: #b71c1c; font-weight: bold; font-size: 1.1em; background: rgba(183,28,28,0.1); padding: 5px; border-radius: 3px;">Jutalom: ' + item.reward + '</p>';
+                '<h4 style="margin: 10px 0 10px 0; color: #1b5e20; text-align: center; font-family: \'Pirata One\', cursive; font-size: 1.5em; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><i class="fas fa-scroll"></i> Küldetés!</h4>' +
+                '<p style="font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 1.1em; color: #3e2723;">' + item.title + '</p>' +
+                '<p style="font-size: 0.9em; margin-bottom: 5px; color: #4e342e;"><strong>Keresnek:</strong><br>' + item.specialists + '</p>' +
+                '<p style="font-size: 0.9em; margin-bottom: 10px; color: #8b0000;"><strong>Veszély:</strong> ' + item.danger + '</p>' +
+                '<p style="text-align: center; color: #1b5e20; font-style: italic; font-size: 0.85em; margin-bottom: 5px;">(Jelentkezz a csaposnál!)</p>' +
+                '<p style="text-align: center; color: #b71c1c; font-weight: bold; font-size: 1.1em; background: rgba(183,28,28,0.1); padding: 5px; border-radius: 3px;">Jutalom: ' + item.reward + '</p>';
             boardDiv.appendChild(card);
         });
     }
 
     // 4. Pletykák (Gossip)
     if (data.gossip && data.gossip.length > 0) {
-        data.gossip.forEach(function(item) {
+        data.gossip.forEach(function (item) {
             var card = document.createElement('div');
             card.style.cssText = "background: #fffafa; padding: 15px; width: 220px; border: 1px solid #ccc; box-shadow: 2px 2px 4px rgba(0,0,0,0.4); transform: rotate(" + (Math.random() * 8 - 4) + "deg); position: relative; font-family: 'Comic Sans MS', cursive, sans-serif;";
             card.innerHTML = '<div style="position: absolute; top: -10px; right: 10px; color: #555; font-size: 1.5em; transform: rotate(45deg);">📎</div>' +
-                             '<h4 style="margin: 5px 0 10px 0; color: #4b0082; text-align: left; font-size: 1.1em;"><i class="fas fa-comment-dots"></i> Hallottad...?</h4>' +
-                             '<p style="font-size: 0.9em; text-align: left; margin-bottom: 15px; color: #333; line-height: 1.4;"><i>' + item.text + '</i></p>' +
-                             '<p style="text-align: right; font-size: 0.8em; color: #666; font-style: italic;">- ' + item.npc + '</p>';
+                '<h4 style="margin: 5px 0 10px 0; color: #4b0082; text-align: left; font-size: 1.1em;"><i class="fas fa-comment-dots"></i> Hallottad...?</h4>' +
+                '<p style="font-size: 0.9em; text-align: left; margin-bottom: 15px; color: #333; line-height: 1.4;"><i>' + item.text + '</i></p>' +
+                '<p style="text-align: right; font-size: 0.8em; color: #666; font-style: italic;">- ' + item.npc + '</p>';
             boardDiv.appendChild(card);
         });
     }
@@ -10768,8 +10833,8 @@ function openToborzoBarakk() {
     switchToborzoTab('munkavallalo');
 
     // Fetch initial data
-    callBackend('getToborzoData', [], 
-        function(data) {
+    callBackend('getToborzoData', [],
+        function (data) {
             document.getElementById('toborzo-loading').style.display = 'none';
             if (data.success) {
                 // Populate Worker Tab
@@ -10795,7 +10860,7 @@ function openToborzoBarakk() {
                 uiAlert('Hiba az adatok lekérdezésekor: ' + (data.error || 'Ismeretlen hiba'));
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('toborzo-loading').style.display = 'none';
             uiAlert('Hálózati hiba a Toborzóbarakk lekérdezésekor: ' + err.message);
         }
@@ -10805,25 +10870,25 @@ function openToborzoBarakk() {
 function switchToborzoTab(tab) {
     document.getElementById('toborzo-tab-munkavallalo').style.display = (tab === 'munkavallalo') ? 'block' : 'none';
     document.getElementById('toborzo-tab-kapitany').style.display = (tab === 'kapitany') ? 'block' : 'none';
-    
+
     document.getElementById('tab-btn-munkavallalo').style.background = (tab === 'munkavallalo') ? 'var(--color-gold)' : '#bdbdbd';
     document.getElementById('tab-btn-kapitany').style.background = (tab === 'kapitany') ? 'var(--color-gold)' : '#bdbdbd';
 }
 
 function hasRequiredRank(playerRank, role) {
     var rankHierarchy = [
-      '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
-      'Alhajómester', 'Törzshajómester', 'Törzsfőhajómester',
-      'Tengerész-hadapród', 'Korvetthadnagy', 'Fregatthadnagy', 'Sorhajóhadnagy',
-      'Korvettkapitány', 'Fregattkapitány', 'Sorhajókapitány',
-      'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'Főtengernagy'
+        '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
+        'Alhajómester', 'Törzshajómester', 'Törzsfőhajómester',
+        'Tengerész-hadapród', 'Korvetthadnagy', 'Fregatthadnagy', 'Sorhajóhadnagy',
+        'Korvettkapitány', 'Fregattkapitány', 'Sorhajókapitány',
+        'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'Főtengernagy'
     ];
     var szakmaiTisztek = ['Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester', 'Felfedező', 'Letmester', 'Monk'];
     var parancsnokiTisztek = ['Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester', 'Gépész'];
-    
+
     var playerIdx = rankHierarchy.indexOf(playerRank);
     if (playerIdx === -1) playerIdx = 0; // fallback
-    
+
     var requiredIdx = 0;
     if (role === 'Kapitány') {
         requiredIdx = 11;
@@ -10832,7 +10897,7 @@ function hasRequiredRank(playerRank, role) {
     } else if (szakmaiTisztek.indexOf(role) !== -1) {
         requiredIdx = 4;
     }
-    
+
     return playerIdx >= requiredIdx;
 }
 
@@ -10841,15 +10906,15 @@ function savePlayerJobStatus() {
     const role = document.getElementById('toborzo-role-select').value;
     const costInput = document.getElementById('toborzo-cost-input');
     const cost = costInput ? (parseInt(costInput.value, 10) || 10) : 10;
-    
+
     if (status === 'Keresek munkát' && !role) {
         uiAlert("Kérlek, válassz ki egy keresett pozíciót!");
         return;
     }
 
     document.getElementById('toborzo-loading').style.display = 'flex';
-    callBackend('updatePlayerJobStatus', [status, role, cost], 
-        function(data) {
+    callBackend('updatePlayerJobStatus', [status, role, cost],
+        function (data) {
             document.getElementById('toborzo-loading').style.display = 'none';
             if (data.success) {
                 uiAlert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.");
@@ -10857,7 +10922,7 @@ function savePlayerJobStatus() {
                 uiAlert("Hiba a mentés során: " + data.error);
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('toborzo-loading').style.display = 'none';
             uiAlert("Hálózati hiba: " + err.message);
         }
@@ -10869,14 +10934,14 @@ function renderSelectedShipCrew() {
     var detailsDiv = document.getElementById('toborzo-myship-details');
     var rolesContainer = document.getElementById('toborzo-myship-roles');
     var shipNameSpan = document.getElementById('toborzo-selected-ship-name');
-    
+
     if (!select.value) {
         detailsDiv.style.display = 'none';
         if (shipNameSpan) shipNameSpan.textContent = '';
         return;
     }
 
-    var ship = window.toborzoOwnedShips.find(function(s) { return s.id === select.value; });
+    var ship = window.toborzoOwnedShips.find(function (s) { return s.id === select.value; });
     if (!ship) return;
 
     if (shipNameSpan) shipNameSpan.textContent = ship.name;
@@ -10886,96 +10951,96 @@ function renderSelectedShipCrew() {
 
     var formDiv = document.createElement('div');
     formDiv.id = 'bulk-crew-form';
-    
+
     var allRoles = [
-        "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
-        "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló", 
-        "Tekercsmester", "Felfedező", "Gépész", "Hajóács", 
+        "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester",
+        "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló",
+        "Tekercsmester", "Felfedező", "Gépész", "Hajóács",
         "Letmester", "Monk", "Tengerész"
     ];
-    
-    var availableCrew = window.toborzoAvailableCrew || []; 
+
+    var availableCrew = window.toborzoAvailableCrew || [];
     var nameDict = window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
-    
-    var resolvePirateName = function(email) {
+
+    var resolvePirateName = function (email) {
         if (!email) return '';
         var lower = String(email).toLowerCase().trim();
         if (nameDict[lower]) return nameDict[lower];
-        var match = availableCrew.find(function(c) { return String(c.email).toLowerCase().trim() === lower; });
+        var match = availableCrew.find(function (c) { return String(c.email).toLowerCase().trim() === lower; });
         if (match && match.name) return match.name;
         return email;
     };
 
-    var sortedCrew = availableCrew.slice().sort(function(a, b) { 
+    var sortedCrew = availableCrew.slice().sort(function (a, b) {
         var nameA = resolvePirateName(a.email) || a.name || '';
         var nameB = resolvePirateName(b.email) || b.name || '';
-        return nameA.localeCompare(nameB); 
+        return nameA.localeCompare(nameB);
     });
-    
-    allRoles.forEach(function(role) {
+
+    allRoles.forEach(function (role) {
         var isSingle = (role !== 'Tengerész');
-        var currentEmails = (ship.crew && ship.crew[role]) ? ship.crew[role].split(',').map(function(e) { return e.trim().toLowerCase(); }).filter(function(e) { return e; }) : [];
-        
+        var currentEmails = (ship.crew && ship.crew[role]) ? ship.crew[role].split(',').map(function (e) { return e.trim().toLowerCase(); }).filter(function (e) { return e; }) : [];
+
         var rowDiv = document.createElement('div');
         rowDiv.style.cssText = 'display: flex; flex-direction: column; padding: 10px; border-bottom: 1px dashed #ccc; background: #fafafa; border-radius: 4px; margin-bottom: 8px;';
-        
+
         var roleHeader = document.createElement('div');
         roleHeader.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
-        
+
         var roleLabel = document.createElement('strong');
         roleLabel.style.color = '#1f0901';
         roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: var(--color-gold);"></i> ' + role + (isSingle ? ' <span style="font-size:0.8em; color:#888;">(1 fő)</span>' : ' <span style="font-size:0.8em; color:#888;">(Több fő)</span>');
-        
+
         roleHeader.appendChild(roleLabel);
         rowDiv.appendChild(roleHeader);
-        
+
         // Dropdown konténer a kijelöléshez
         var customSelectContainer = document.createElement('div');
         customSelectContainer.style.cssText = 'position: relative; width: 100%; border: 1px solid #aaa; border-radius: 4px; background: white;';
-        
+
         var selectHeader = document.createElement('div');
         selectHeader.style.cssText = 'padding: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #555;';
-        
+
         var currentNamesHtml = "--- Üres ---";
         if (currentEmails.length > 0) {
-            var namesArr = currentEmails.map(function(e) {
+            var namesArr = currentEmails.map(function (e) {
                 return resolvePirateName(e);
             });
             currentNamesHtml = '<span style="color:#d4af37; font-weight:bold;">' + namesArr.join(', ') + '</span>';
         }
-        
+
         selectHeader.innerHTML = '<span>' + currentNamesHtml + '</span> <i class="fas fa-chevron-down"></i>';
-        
+
         var optionsContainer = document.createElement('div');
         optionsContainer.style.cssText = 'display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #aaa; z-index: 10; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
         optionsContainer.className = 'bulk-options-container';
-        
-        selectHeader.onclick = function(e) {
+
+        selectHeader.onclick = function (e) {
             e.stopPropagation();
             var isVisible = optionsContainer.style.display === 'block';
-            document.querySelectorAll('.bulk-options-container').forEach(function(el) { el.style.display = 'none'; });
+            document.querySelectorAll('.bulk-options-container').forEach(function (el) { el.style.display = 'none'; });
             optionsContainer.style.display = isVisible ? 'none' : 'block';
         };
 
         // Checkbox logika
-        optionsContainer.addEventListener('change', function(e) {
+        optionsContainer.addEventListener('change', function (e) {
             if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
                 if (isSingle && e.target.checked) {
                     var allCbs = optionsContainer.querySelectorAll('input[type="checkbox"]');
-                    allCbs.forEach(function(cb) {
+                    allCbs.forEach(function (cb) {
                         if (cb !== e.target) cb.checked = false;
                     });
                 }
-                
+
                 // Címsor frissítése
                 var checkedCbs = optionsContainer.querySelectorAll('input[type="checkbox"]:checked');
                 if (checkedCbs.length === 0) {
                     selectHeader.innerHTML = '<span>--- Üres ---</span> <i class="fas fa-chevron-down"></i>';
                 } else {
                     var nArr = [];
-                    checkedCbs.forEach(function(cb) { 
+                    checkedCbs.forEach(function (cb) {
                         var cName = resolvePirateName(cb.value) || cb.getAttribute('data-name') || cb.value;
-                        nArr.push(cName); 
+                        nArr.push(cName);
                     });
                     selectHeader.innerHTML = '<span><span style="color:#d4af37; font-weight:bold;">' + nArr.join(', ') + '</span></span> <i class="fas fa-chevron-down"></i>';
                 }
@@ -10984,9 +11049,9 @@ function renderSelectedShipCrew() {
 
         // Hozzáadjuk az összes elérhető játékost, akik ehhez a hajóhoz kijelölhetők
         var optionAdded = false;
-        
+
         // Akik már ezen a pozíción vannak
-        currentEmails.forEach(function(currEmail) {
+        currentEmails.forEach(function (currEmail) {
             var dName = resolvePirateName(currEmail);
             var label = document.createElement('label');
             label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em; background: #e8f5e9;';
@@ -10996,11 +11061,11 @@ function renderSelectedShipCrew() {
         });
 
         // Akik szabadok
-        sortedCrew.forEach(function(player) {
+        sortedCrew.forEach(function (player) {
             if (currentEmails.includes(player.email.toLowerCase())) return;
             if (player.isBusy) return;
             if (!hasRequiredRank(player.rank, role)) return;
-            
+
             var dName = resolvePirateName(player.email) || player.name;
             var label = document.createElement('label');
             label.style.cssText = 'display: block; padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9em;';
@@ -11018,14 +11083,14 @@ function renderSelectedShipCrew() {
 
         customSelectContainer.appendChild(selectHeader);
         customSelectContainer.appendChild(optionsContainer);
-        
+
         rowDiv.appendChild(customSelectContainer);
         formDiv.appendChild(rowDiv);
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (!e.target.closest('.bulk-options-container') && !e.target.closest('div[style*="cursor: pointer"]')) {
-            document.querySelectorAll('.bulk-options-container').forEach(function(el) { el.style.display = 'none'; });
+            document.querySelectorAll('.bulk-options-container').forEach(function (el) { el.style.display = 'none'; });
         }
     });
 
@@ -11033,9 +11098,9 @@ function renderSelectedShipCrew() {
     submitBtn.className = 'btn';
     submitBtn.style.cssText = 'width: 100%; padding: 12px; background: var(--color-primary); color: white; border: 2px solid var(--color-gold); font-size: 1.1em; font-weight: bold; margin-top: 15px; border-radius: 4px; cursor: pointer; transition: 0.2s;';
     submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Kijelöltek Felírása (OK)';
-    submitBtn.onmouseover = function() { submitBtn.style.background = '#3e2723'; };
-    submitBtn.onmouseout = function() { submitBtn.style.background = 'var(--color-primary)'; };
-    submitBtn.onclick = function() { submitBulkCrewAssignment(ship.id); };
+    submitBtn.onmouseover = function () { submitBtn.style.background = '#3e2723'; };
+    submitBtn.onmouseout = function () { submitBtn.style.background = 'var(--color-primary)'; };
+    submitBtn.onclick = function () { submitBulkCrewAssignment(ship.id); };
 
     rolesContainer.appendChild(formDiv);
     rolesContainer.appendChild(submitBtn);
@@ -11043,16 +11108,16 @@ function renderSelectedShipCrew() {
 
 function submitBulkCrewAssignment(shipId) {
     var assignmentsMap = {
-        "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [], 
-        "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [], 
-        "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [], 
+        "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [],
+        "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [],
+        "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [],
         "Letmester": [], "Monk": [], "Tengerész": []
     };
-    
+
     var checkboxes = document.querySelectorAll('#bulk-crew-form input[type="checkbox"]');
     var seenEmails = {};
     var hasDuplicates = false;
-    
+
     for (var i = 0; i < checkboxes.length; i++) {
         var cb = checkboxes[i];
         if (cb.checked) {
@@ -11078,8 +11143,8 @@ function submitBulkCrewAssignment(shipId) {
     }
 
     document.getElementById('toborzo-loading').style.display = 'flex';
-    callBackend('saveBulkCrewAssignment', [shipId, assignmentsMap], 
-        function(data) {
+    callBackend('saveBulkCrewAssignment', [shipId, assignmentsMap],
+        function (data) {
             if (data.success) {
                 uiAlert(data.message || "A legénység beosztása sikeresen frissítve!", "Siker");
                 openToborzoBarakk();
@@ -11088,7 +11153,7 @@ function submitBulkCrewAssignment(shipId) {
                 uiAlert("Hiba: " + data.error);
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('toborzo-loading').style.display = 'none';
             uiAlert("Hálózati hiba: " + err.message);
         }
@@ -11097,14 +11162,14 @@ function submitBulkCrewAssignment(shipId) {
 
 function assignToRole(shipId, role) {
     var targetEmail = prompt("Kit szeretnél beosztani a(z) " + role + " pozícióra ezen a hajón?\\n\\nÍrd be a zsoldos/játékos email címét. Ha SAJÁT MAGADAT akarod beosztani, hagyd üresen a mezőt!", "");
-    
+
     if (targetEmail === null) return;
 
     var crewEmail = (targetEmail.trim() === "") ? 'self' : targetEmail.trim();
 
     document.getElementById('toborzo-loading').style.display = 'flex';
-    callBackend('assignCrewToOwnedShip', [shipId, role, crewEmail], 
-        function(data) {
+    callBackend('assignCrewToOwnedShip', [shipId, role, crewEmail],
+        function (data) {
             if (data.success) {
                 openToborzoBarakk();
             } else {
@@ -11112,7 +11177,7 @@ function assignToRole(shipId, role) {
                 uiAlert("Hiba: " + data.error);
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('toborzo-loading').style.display = 'none';
             uiAlert("Hiba: " + err.message);
         }
@@ -11124,8 +11189,8 @@ function removeRole(shipId, roleToClear, specificEmail) {
     if (!confirm(msg)) return;
 
     document.getElementById('toborzo-loading').style.display = 'flex';
-    callBackend('removeRole', [shipId, roleToClear, specificEmail], 
-        function(data) {
+    callBackend('removeRole', [shipId, roleToClear, specificEmail],
+        function (data) {
             if (data.success) {
                 openToborzoBarakk();
             } else {
@@ -11133,7 +11198,7 @@ function removeRole(shipId, roleToClear, specificEmail) {
                 uiAlert("Hiba a kirúgás során: " + data.error);
             }
         },
-        function(err) {
+        function (err) {
             document.getElementById('toborzo-loading').style.display = 'none';
             uiAlert("Hálózati hiba: " + err.message);
         }
@@ -11142,29 +11207,17 @@ function removeRole(shipId, roleToClear, specificEmail) {
 
 
 function tryGoToDeck() {
-    var loading = document.getElementById('loading-overlay');
-    if (loading) loading.style.display = 'flex';
-
-    callBackend('getUserShips', [], 
-        function(response) {
-            if (loading) loading.style.display = 'none';
-            if (response.success) {
-                if (response.ships && response.ships.length > 0) {
-                    window.userShips = response.ships; // Mentsük el a frontendnek
-                    loadPage('fedelzet_oldal');
-                } else {
-                    uiAlert("Még egy rozzant tutajod sincs, hova akarsz felszállni?! Jelentkezz egy hajóra a Toborzóbarakkban vagy vásárolj egyet a Hajóműhelyben!", "Nincs hajód!");
-                }
-            } else {
-                uiAlert("Hiba a hajók lekérdezésekor: " + response.error);
-            }
-        },
-        function(err) {
-            if (loading) loading.style.display = 'none';
-            uiAlert("Hálózati hiba: " + err.message);
-        }
-    );
+    if (typeof openFedelzetModal === 'function') {
+        openFedelzetModal();
+    } else if (typeof window.openFedelzetModal === 'function') {
+        window.openFedelzetModal();
+    } else if (window.parent && typeof window.parent.openFedelzetModal === 'function') {
+        window.parent.openFedelzetModal();
+    } else if (typeof loadPage === 'function') {
+        loadPage('fedelzet_oldal');
+    }
 }
+window.tryGoToDeck = tryGoToDeck;
 
 
 // ==========================================
@@ -11177,449 +11230,918 @@ let deckChatState = 'IDLE'; // IDLE, AWAITING_HARTYA_CONFIRM, AWAITING_KALAND_TA
 let deckExpeditionIsland = '';
 let deckExpeditionBook = '';
 
-function addDeckChatBubble(sender, text, type) {
-    var history = document.getElementById('deck-chat-history');
-    if (!history) return;
-    
-    var div = document.createElement('div');
-    div.style.cssText = "padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.35; margin-bottom: 6px; box-shadow: 1px 1px 3px rgba(0,0,0,0.15); word-wrap: break-word;";
-    
-    if (type === "incoming") {
-        div.style.background = "#f0f4f8";
-        div.style.color = "#1b263b";
-        div.style.alignSelf = "flex-start";
-        div.style.borderLeft = (sender === "Kikötőmester") ? "4px solid #d4af37" : "4px solid #37474f";
-        div.innerHTML = "<strong style='color:#37474f;'>" + sender + ":</strong><div style='margin-top:3px;'>" + text + "</div>";
-    } else if (type === "outgoing") {
-        div.style.background = "#d4af37";
-        div.style.color = "#1f0901";
-        div.style.fontWeight = "500";
-        div.style.alignSelf = "flex-end";
-        div.style.marginLeft = "auto";
-        div.style.textAlign = "right";
-        div.innerHTML = "<strong>Te:</strong><div style='margin-top:3px;'>" + text + "</div>";
-    } else {
-        div.style.background = "transparent";
-        div.style.boxShadow = "none";
-        div.style.color = "#888";
-        div.style.fontStyle = "italic";
-        div.style.textAlign = "center";
-        div.style.margin = "0 auto";
-        div.style.fontSize = "0.85em";
-        div.innerHTML = text;
+function normalizeShipData(ship, nameDict) {
+    if (!ship || typeof ship !== 'object') return ship;
+    nameDict = nameDict || window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
+
+    // Segédfüggvény: Email vagy név feloldása kalóznévre a kalozadatok A->B oszlopai alapján (nameDict)
+    var resolvePirateName = function (emailOrName) {
+        if (!emailOrName) return '';
+        var raw = String(emailOrName).trim();
+        if (!raw || raw === 'undefined' || raw === 'null') return '';
+        var lower = raw.toLowerCase();
+
+        // 1. Keresés az átadott nameDict-ben (kalozadatok A -> B oszlop)
+        if (nameDict && nameDict[lower]) return nameDict[lower];
+        if (nameDict && nameDict[raw]) return nameDict[raw];
+        if (window.toborzoNameDict && window.toborzoNameDict[lower]) return window.toborzoNameDict[lower];
+        if (window.toborzoNameDict && window.toborzoNameDict[raw]) return window.toborzoNameDict[raw];
+        if (window.parent && window.parent.toborzoNameDict && window.parent.toborzoNameDict[lower]) {
+            return window.parent.toborzoNameDict[lower];
+        }
+
+        // 2. Ha nem email cím (nincs benne @), akkor közvetlenül a név
+        if (raw.indexOf('@') === -1) return raw;
+
+        // 3. Ha email maradt és nem találtuk a szótárban, az email előtagját formázzuk
+        var prefix = raw.split('@')[0];
+        return prefix.charAt(0).toUpperCase() + prefix.slice(1);
+    };
+
+    var BLOCKED_ATTR_ROLES = [
+        'méret', 'mérettartomány', 'ár', 'költség', 'sebesség', 'gyorsaság', 'élettartam',
+        'helyzet', 'szövetség', 'zászló', 'hossz', 'jellemző hossz', 'leírás', 'id', 'típus',
+        'férőhely', 'kapacitás', 'hajó id', 'hajónapló id', 'hajó neve', 'hajó típusa',
+        'tüzérségi szint', 'védelmi szint', 'lokátor szint', 'utazási magasság max.', 'merülési mélység'
+    ];
+    var BLOCKED_SIZE_VALUES = ['xs', 's', 'm', 'l', 'xl', 'xxl', 'true', 'false', 'undefined', 'null'];
+
+    // 1. Alapvető azonosítók és nevek
+    ship.id = String(ship.id || ship.shipId || ship['Hajó ID'] || ship['ID'] || '').trim();
+    ship.name = ship.name || ship.shipName || ship['Hajó neve'] || 'Névtelen hajó';
+    ship.type = ship.type || ship.shipType || ship.tipus || ship['Hajó típusa'] || 'Vitorlás';
+
+    var crewObj = (ship.crew && typeof ship.crew === 'object') ? ship.crew : {};
+
+    // 2. TULAJDONOS (G OSZLOP): kiolvasás és lefordítás a kalozadatok B oszlopbeli Kalóznevére
+    var rawOwnerStr = ship['Tulajdonos email'] || ship.ownerEmail || ship['Tulajdonos'] || ship.owner || crewObj['Tulajdonos email'] || crewObj['Tulajdonos'] || (ship.crewNames && ship.crewNames['Tulajdonos']) || '';
+    var rawOwnerEmails = [];
+    var resolvedOwnerNames = [];
+
+    if (rawOwnerStr && rawOwnerStr !== 'undefined' && rawOwnerStr !== 'null') {
+        var ownerTokens = String(rawOwnerStr).split(',');
+        for (var oi = 0; oi < ownerTokens.length; oi++) {
+            var oTok = ownerTokens[oi].trim();
+            if (oTok && oTok !== 'undefined' && oTok !== 'null' && BLOCKED_SIZE_VALUES.indexOf(oTok.toLowerCase()) === -1) {
+                rawOwnerEmails.push(oTok);
+                var oName = resolvePirateName(oTok);
+                if (oName) resolvedOwnerNames.push(oName);
+            }
+        }
     }
-    
-    history.appendChild(div);
-    setTimeout(function() {
-        history.scrollTop = history.scrollHeight;
-    }, 30);
+
+    ship.ownerEmails = rawOwnerEmails;
+    ship.ownerNames = resolvedOwnerNames;
+    ship.ownerEmail = rawOwnerEmails.join(', ');
+    ship.ownerName = resolvedOwnerNames.join(', ') || 'Ismeretlen Tulajdonos';
+    ship.owner = ship.ownerName;
+
+    // 3. KAPITÁNY (H OSZLOP): kiolvasás és lefordítás
+    var rawCapStr = ship['Kapitány email'] || ship.captain || crewObj['Kapitány email'] || crewObj['Kapitány'] || (ship.crewNames && ship.crewNames['Kapitány']) || '';
+    var rawCapEmails = [];
+    var resolvedCapNames = [];
+
+    if (rawCapStr && rawCapStr !== 'undefined' && rawCapStr !== 'null') {
+        var capTokens = String(rawCapStr).split(',');
+        for (var ci = 0; ci < capTokens.length; ci++) {
+            var cTok = capTokens[ci].trim();
+            if (cTok && cTok !== 'undefined' && cTok !== 'null' && BLOCKED_SIZE_VALUES.indexOf(cTok.toLowerCase()) === -1) {
+                rawCapEmails.push(cTok);
+                var cName = resolvePirateName(cTok);
+                if (cName) resolvedCapNames.push(cName);
+            }
+        }
+    }
+
+    ship.captainEmails = rawCapEmails;
+    ship.captainNames = resolvedCapNames;
+    ship.captainName = resolvedCapNames.join(', ');
+    ship.captain = ship.captainName || rawCapStr;
+
+    // 4. ÉLETTARTAM (P OSZLOP)
+    var rawDurability = (crewObj['Élettartam'] !== undefined && crewObj['Élettartam'] !== null && crewObj['Élettartam'] !== '') 
+        ? crewObj['Élettartam'] 
+        : ((ship['Élettartam'] !== undefined && ship['Élettartam'] !== null && ship['Élettartam'] !== '')
+            ? ship['Élettartam']
+            : ((ship.durability !== undefined && ship.durability !== null && ship.durability !== '')
+                ? ship.durability
+                : (ship.durabilityPoints || '')));
+
+    if (rawDurability !== '' && rawDurability !== undefined && rawDurability !== null) {
+        var numDur = parseInt(rawDurability, 10);
+        ship.durability = isNaN(numDur) ? rawDurability : numDur;
+        ship['Élettartam'] = ship.durability;
+    } else {
+        ship.durability = 10;
+        ship['Élettartam'] = 10;
+    }
+
+    // Technikai adatok
+    if (crewObj['Mérettartomány'] || ship['Mérettartomány']) ship['Mérettartomány'] = crewObj['Mérettartomány'] || ship['Mérettartomány'];
+    if (crewObj['Jellemző hossz'] || crewObj['Jelemző hossz'] || ship['Jellemző hossz'] || ship['Jelemző hossz']) ship['Jellemző hossz'] = crewObj['Jellemző hossz'] || crewObj['Jelemző hossz'] || ship['Jellemző hossz'] || ship['Jelemző hossz'];
+    if (crewObj['Leírás'] || ship['Leírás']) ship['Leírás'] = crewObj['Leírás'] || ship['Leírás'];
+    if (crewObj['Sebesség max.'] || crewObj['Sebesség'] || ship['Sebesség max.'] || ship['Sebesség']) ship['Sebesség max.'] = crewObj['Sebesség max.'] || crewObj['Sebesség'] || ship['Sebesség max.'] || ship['Sebesség'];
+    if (crewObj['Tüzérségi szint'] || ship['Tüzérségi szint']) ship['Tüzérségi szint'] = crewObj['Tüzérségi szint'] || ship['Tüzérségi szint'];
+    if (crewObj['Védelmi szint'] || ship['Védelmi szint']) ship['Védelmi szint'] = crewObj['Védelmi szint'] || ship['Védelmi szint'];
+    if (crewObj['Lokátor szint'] || ship['Lokátor szint']) ship['Lokátor szint'] = crewObj['Lokátor szint'] || ship['Lokátor szint'];
+    if (crewObj['Utazási magasság max.'] || ship['Utazási magasság max.']) ship['Utazási magasság max.'] = crewObj['Utazási magasság max.'] || ship['Utazási magasság max.'];
+    if (crewObj['Merülési mélység'] || ship['Merülési mélység']) ship['Merülési mélység'] = crewObj['Merülési mélység'] || ship['Merülési mélység'];
+    if (crewObj['Férőhely'] || ship['Férőhely']) ship['Férőhely'] = crewObj['Férőhely'] || ship['Férőhely'];
+    if (crewObj['Kapacitás'] || ship['Kapacitás']) ship['Kapacitás'] = crewObj['Kapacitás'] || ship['Kapacitás'];
+    if (crewObj['Helyzet'] || ship['Helyzet'] || ship.helyzet) ship['Helyzet'] = crewObj['Helyzet'] || ship['Helyzet'] || ship.helyzet;
+    else ship['Helyzet'] = (ship.inHarbor !== false) ? 'Kikötő' : 'Tengeren';
+
+    // 5. REGISZTRÁLT LEGÉNYSÉG (crewMembers): 1. helyen mindig a Tulajdonos(ok) a feloldott kalóznévvel
+    var crewMembers = [];
+    var addedMemberKeys = {};
+
+    if (resolvedOwnerNames.length > 0) {
+        for (var onIdx = 0; onIdx < resolvedOwnerNames.length; onIdx++) {
+            var oName = resolvedOwnerNames[onIdx];
+            var oEmail = rawOwnerEmails[onIdx] || '';
+            crewMembers.push({
+                role: 'Tulajdonos',
+                name: oName,
+                email: oEmail
+            });
+            addedMemberKeys[oName.toLowerCase() + '__tulajdonos'] = true;
+            if (oEmail) addedMemberKeys[oEmail.toLowerCase() + '__tulajdonos'] = true;
+        }
+    }
+
+    var addMember = function (rawVal, role) {
+        if (!rawVal) return;
+        var valStr = String(rawVal).trim();
+        if (!valStr || BLOCKED_SIZE_VALUES.indexOf(valStr.toLowerCase()) !== -1 || /^\d+$/.test(valStr)) return;
+
+        var displayRole = role || 'Matróz';
+        var rLower = displayRole.trim().toLowerCase();
+        for (var b = 0; b < BLOCKED_ATTR_ROLES.length; b++) {
+            if (rLower === BLOCKED_ATTR_ROLES[b] || rLower.indexOf(BLOCKED_ATTR_ROLES[b]) !== -1) return;
+        }
+
+        if (displayRole === 'Kapitány email') displayRole = 'Kapitány';
+        else if (displayRole === 'Tulajdonos email') displayRole = 'Tulajdonos';
+        else if (displayRole === 'Legénység (Tengerészek)' || displayRole.indexOf('Tengerész_') === 0) displayRole = 'Tengerész';
+        else if (displayRole === 'Utasok' || displayRole.indexOf('Utas_') === 0) displayRole = 'Utas';
+
+        var cleanName = resolvePirateName(valStr);
+        if (!cleanName || BLOCKED_SIZE_VALUES.indexOf(cleanName.toLowerCase()) !== -1) return;
+
+        var keyByName = cleanName.toLowerCase() + '__' + displayRole.toLowerCase();
+        var keyByEmail = valStr.toLowerCase() + '__' + displayRole.toLowerCase();
+        if (addedMemberKeys[keyByName] || addedMemberKeys[keyByEmail]) return;
+
+        addedMemberKeys[keyByName] = true;
+        addedMemberKeys[keyByEmail] = true;
+
+        crewMembers.push({
+            role: displayRole,
+            name: cleanName,
+            email: valStr
+        });
+    };
+
+    // A: crew objektumból
+    for (var rKey in crewObj) {
+        if (rKey.toLowerCase().indexOf('tulajdonos') !== -1) continue;
+        var rVal = crewObj[rKey];
+        if (rVal) {
+            String(rVal).split(',').forEach(function (em) { addMember(em.trim(), rKey); });
+        }
+    }
+
+    // B: crewNames objektumból
+    if (ship.crewNames && typeof ship.crewNames === 'object') {
+        for (var cnRole in ship.crewNames) {
+            if (cnRole.toLowerCase().indexOf('tulajdonos') !== -1) continue;
+            var cnVal = ship.crewNames[cnRole];
+            if (cnVal) {
+                String(cnVal).split(',').forEach(function (nm) { addMember(nm.trim(), cnRole); });
+            }
+        }
+    }
+
+    // C: Hajó szintű mezők
+    var standardRoles = [
+        'Kapitány', 'Kapitány email', 'Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester',
+        'Tüzér', 'Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester',
+        'Felfedező', 'Gépész', 'Hajóács', 'Letmester', 'Monk',
+        'Legénység (Tengerészek)', 'Utasok', 'Tengerész', 'Utas'
+    ];
+    standardRoles.forEach(function (stRole) {
+        var sVal = ship[stRole];
+        if (sVal && typeof sVal === 'string') {
+            sVal.split(',').forEach(function (nm) {
+                var dispRole = (stRole === 'Kapitány email') ? 'Kapitány' :
+                    ((stRole === 'Legénység (Tengerészek)') ? 'Tengerész' :
+                    ((stRole === 'Utasok') ? 'Utas' : stRole));
+                addMember(nm.trim(), dispRole);
+            });
+        }
+    });
+
+    ship.crewMembers = crewMembers;
+    ship.crewCount = crewMembers.length;
+
+    // 6. FELHASZNÁLÓ SZEREPKÖRÉNEK MEGÁLLAPÍTÁSA (pl. Nemere hajónál a felhasználó Kapitány)
+    var curUser = window.currentUser || (window.parent && window.parent.currentUser) || {};
+    var curEmail = (currentUserEmail || curUser.email || (typeof localStorage !== 'undefined' ? (localStorage.getItem('ebook_pirates_user_email') || localStorage.getItem('ebookPiratesUser')) : '') || '').toLowerCase().trim();
+
+    var userFoundRole = '';
+    if (curEmail) {
+        for (var o = 0; o < rawOwnerEmails.length; o++) {
+            if (rawOwnerEmails[o].toLowerCase() === curEmail) {
+                userFoundRole = 'Tulajdonos';
+                break;
+            }
+        }
+        if (!userFoundRole && rawCapStr && rawCapStr.toLowerCase().indexOf(curEmail) !== -1) {
+            userFoundRole = 'Kapitány';
+        }
+        if (!userFoundRole) {
+            for (var cm = 0; cm < crewMembers.length; cm++) {
+                if (crewMembers[cm].email && crewMembers[cm].email.toLowerCase() === curEmail) {
+                    userFoundRole = crewMembers[cm].role;
+                    break;
+                }
+            }
+        }
+    }
+
+    ship.userRole = userFoundRole || (ship.isOwner ? 'Tulajdonos' : (ship.isCaptain ? 'Kapitány' : 'Készenlétben'));
+    ship.role = ship.userRole;
+    ship.isOwner = (ship.userRole === 'Tulajdonos');
+    ship.isCaptain = (ship.userRole === 'Kapitány');
+
+    return ship;
+}
+window.normalizeShipData = normalizeShipData;
+
+var isFetchingDeckShips = false;
+var deckShipsCallbacks = [];
+
+function loadDeckShips(onComplete) {
+    if (onComplete) deckShipsCallbacks.push(onComplete);
+
+    // 1. Ha már van betöltött hajólista a memóriában, azonnal használjuk (0 ms)
+    if (window.userShips && window.userShips.length > 0) {
+        window.userShips = window.userShips.map(function (s) { return normalizeShipData(s); });
+        if (!selectedShipForDeparture && window.userShips.length > 0) {
+            selectedShipForDeparture = window.userShips[0];
+            window.selectedShipForDeparture = window.userShips[0];
+        }
+        renderDeckShipCards();
+        populateDeckCrewRecipients();
+        while (deckShipsCallbacks.length > 0) {
+            var cb = deckShipsCallbacks.shift();
+            try { cb(window.userShips); } catch (e) { }
+        }
+        return;
+    }
+
+    if (isFetchingDeckShips) return;
+    isFetchingDeckShips = true;
+
+    var finishLoading = function (ships) {
+        isFetchingDeckShips = false;
+        renderDeckShipCards();
+        populateDeckCrewRecipients();
+        while (deckShipsCallbacks.length > 0) {
+            var cb = deckShipsCallbacks.shift();
+            try { cb(ships || window.userShips || []); } catch (e) { }
+        }
+    };
+
+    callBackend('getToborzoData', [], function (response) {
+        if (response && response.success && Array.isArray(response.ownedShips)) {
+            window.toborzoMarketData = response;
+            window.toborzoNameDict = response.nameDict || {};
+            window.userShips = response.ownedShips.map(function (s) { return normalizeShipData(s, window.toborzoNameDict); });
+            if ((!selectedShipForDeparture || !window.selectedShipForDeparture) && window.userShips.length > 0) {
+                selectedShipForDeparture = window.userShips[0];
+                window.selectedShipForDeparture = window.userShips[0];
+            }
+        }
+        finishLoading(window.userShips || []);
+    }, function (err) {
+        console.warn('Fedélzet getToborzoData figyelmeztetés:', err);
+        finishLoading(window.userShips || []);
+    });
 }
 
 function initFedelzetOldal() {
-    var kihajDiv = document.getElementById('kihajozunk-container');
-    var jumpBtn = document.getElementById('jump-to-save-btn');
-    var selectorContainer = document.getElementById('ship-selector-container');
-    var selector = document.getElementById('ship-selector');
-    var nameHeader = document.getElementById('active-ship-name');
-    var chatHistory = document.getElementById('deck-chat-history');
-
-    // Fedélzet portré videó egyszeri lejátszása és helyettesítő kép beállítása
-    var subPanel = document.getElementById('fedelzet-subpage-portrait-panel');
-    var subVid = document.getElementById('fedelzet-subpage-portrait-video');
-    var subImg = document.getElementById('fedelzet-subpage-portrait-image');
-    var subAudioBtn = document.getElementById('fedelzet-subpage-portrait-audio-btn');
-
-    if (subPanel && !subAudioBtn) {
-        subAudioBtn = document.createElement('button');
-        subAudioBtn.id = 'fedelzet-subpage-portrait-audio-btn';
-        subAudioBtn.type = 'button';
-        subAudioBtn.className = 'portrait-audio-btn';
-        subAudioBtn.title = 'Hang némítása / bekapcsolása';
-        subAudioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        subAudioBtn.onclick = function(e) {
-            if (e) { e.stopPropagation(); e.preventDefault(); }
-            toggleVideoAudio('fedelzet-subpage-portrait-video', 'fedelzet-subpage-portrait-audio-btn');
-        };
-        subPanel.appendChild(subAudioBtn);
+    // Háttérvideó garantált némítása
+    var bgVid = document.getElementById('fedelzet-video-player');
+    if (bgVid) {
+        bgVid.muted = true;
+        bgVid.volume = 0;
     }
 
-    if (subVid) {
-        subVid.style.display = 'block';
-        if (subImg) subImg.style.display = 'none';
-        subVid.currentTime = 0;
-        subVid.loop = false;
-        subVid.muted = false;
-        subVid.volume = 1.0;
-        subVid.onended = function() {
-            if (subAudioBtn) subAudioBtn.style.display = 'none';
-            subVid.style.display = 'none';
-            if (subImg) {
-                subImg.style.display = 'block';
-                subImg.src = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg';
+    // Képernyő nyugalmi állapotban szigorúan tiszta és üres
+    setDeckScreenText('');
+
+    // Valós járműadatok és legénység betöltése
+    loadDeckShips();
+
+    if (typeof startSessionPolling === 'function') {
+        startSessionPolling();
+    }
+}
+
+function setDeckScreenText(htmlText) {
+    var txtEl = document.getElementById('deck-screen-text');
+    var kepernyoPath = document.getElementById('kepernyo');
+
+    if (htmlText && htmlText.trim().length > 0) {
+        if (txtEl) txtEl.innerHTML = htmlText;
+        if (kepernyoPath) kepernyoPath.classList.add('deck-screen-active');
+    } else {
+        if (txtEl) txtEl.innerHTML = '';
+        if (kepernyoPath) kepernyoPath.classList.remove('deck-screen-active');
+    }
+}
+
+function populateDeckCrewRecipients() {
+    var crewSelect = document.getElementById('deck-msg-recipient-select');
+    if (!crewSelect) return;
+
+    var ship = selectedShipForDeparture || window.selectedShipForDeparture || (window.userShips && window.userShips[0]);
+    if (!ship) {
+        crewSelect.innerHTML = '<option value="">⚠️ Válassz hajót a Hajólajstromban (Kormánykerék)!</option>';
+        return;
+    }
+
+    crewSelect.innerHTML = '<option value="ALL">👥 TELJES LEGÉNYSÉG (Mindenki)</option>';
+
+    var addedMembers = {};
+    var nameDict = window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
+
+    var BLOCKED_ATTR_ROLES = [
+        'méret', 'mérettartomány', 'ár', 'költség', 'sebesség', 'gyorsaság', 'élettartam', 
+        'helyzet', 'szövetség', 'zászló', 'hossz', 'jellemző hossz', 'leírás', 'id', 'típus', 
+        'férőhely', 'kapacitás', 'hajó id', 'hajónapló id', 'hajó neve', 'hajó típusa'
+    ];
+
+    var BLOCKED_SIZE_VALUES = ['xs', 's', 'm', 'l', 'xl', 'xxl', 'true', 'false', 'undefined', 'null'];
+
+    var resolveName = function (emailOrName) {
+        if (!emailOrName) return '';
+        var raw = String(emailOrName).trim();
+        var lower = raw.toLowerCase();
+        if (nameDict[lower]) return nameDict[lower];
+        if (nameDict[raw]) return nameDict[raw];
+        return raw;
+    };
+
+    var addRecipientOption = function (rawVal, role) {
+        if (!rawVal) return;
+        var valStr = String(rawVal).trim();
+        var valLower = valStr.toLowerCase();
+
+        // 1. Kizárjuk a méretkódokat (XL, L, M stb.), a számokat és a technikai értékeket
+        if (BLOCKED_SIZE_VALUES.indexOf(valLower) !== -1 || /^\d+$/.test(valStr)) return;
+
+        // 2. Kizárjuk a nem legénységi oszlopokat (pl. Mérettartomány, Sebesség, Ár)
+        if (role) {
+            var roleLower = String(role).trim().toLowerCase();
+            for (var b = 0; b < BLOCKED_ATTR_ROLES.length; b++) {
+                if (roleLower === BLOCKED_ATTR_ROLES[b] || roleLower.indexOf(BLOCKED_ATTR_ROLES[b]) !== -1) {
+                    return;
+                }
             }
-        };
-        var p = subVid.play();
-        if (p !== undefined) {
-            p.then(function() {
-                if (subAudioBtn) {
-                    subAudioBtn.style.display = 'flex';
-                    subAudioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    subAudioBtn.title = 'Némítás';
-                }
-            }).catch(function(e) {
-                console.log('Fedélzet aloldal videó autoplay fallback muted:', e);
-                subVid.muted = true;
-                subVid.play().catch(function(){});
-                if (subAudioBtn) {
-                    subAudioBtn.style.display = 'flex';
-                    subAudioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                    subAudioBtn.title = 'Hang bekapcsolása';
-                }
+        }
+
+        var cleanName = resolveName(valStr);
+        if (!cleanName || cleanName === 'undefined' || cleanName === 'null') return;
+        var lowerKey = cleanName.toLowerCase();
+        if (BLOCKED_SIZE_VALUES.indexOf(lowerKey) !== -1) return;
+
+        if (!addedMembers[lowerKey]) {
+            addedMembers[lowerKey] = true;
+            var opt = document.createElement('option');
+            opt.value = valStr || cleanName;
+            opt.textContent = '👤 ' + cleanName + (role ? (' (' + role + ')') : '');
+            crewSelect.appendChild(opt);
+        }
+    };
+
+    // 1. Ha crewNames objektum van (pl. getToborzoData)
+    if (ship.crewNames && typeof ship.crewNames === 'object') {
+        for (var cRole in ship.crewNames) {
+            var cVal = ship.crewNames[cRole];
+            if (cVal) {
+                var cNames = String(cVal).split(',');
+                cNames.forEach(function (cn) {
+                    addRecipientOption(cn.trim(), cRole);
+                });
+            }
+        }
+    }
+
+    // 2. Ha crew objektum van (pl. { 'Kapitány': 'email' })
+    if (ship.crew && typeof ship.crew === 'object') {
+        for (var role in ship.crew) {
+            var cVal2 = ship.crew[role];
+            if (cVal2) {
+                var cEmails = String(cVal2).split(',');
+                cEmails.forEach(function (em) {
+                    addRecipientOption(em.trim(), role);
+                });
+            }
+        }
+    }
+
+    // 3. Ha crewMembers tömb van (pl. [{name, email, role}])
+    if (Array.isArray(ship.crewMembers) && ship.crewMembers.length > 0) {
+        ship.crewMembers.forEach(function (member) {
+            var rawVal = member.name || member.email || member;
+            var memberRole = member.role || 'Matróz';
+            addRecipientOption(rawVal, memberRole);
+        });
+    }
+
+    // 4. Ha vehicleData kulcs-értékek vannak a ship objektumban
+    var roleKeys = [
+        'Kapitány', 'Kapitány email', 'Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester',
+        'Tüzér', 'Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester',
+        'Felfedező', 'Gépész', 'Hajóács', 'Letmester', 'Monk',
+        'Legénység (Tengerészek)', 'Utasok', 'Tengerész', 'Utas'
+    ];
+
+    roleKeys.forEach(function (roleKey) {
+        var val = ship[roleKey];
+        if (val && typeof val === 'string') {
+            var names = val.split(',');
+            names.forEach(function (n) {
+                var displayRole = (roleKey === 'Kapitány email') ? 'Kapitány' :
+                    ((roleKey === 'Legénység (Tengerészek)') ? 'Tengerész' :
+                    ((roleKey === 'Utasok') ? 'Utas' : roleKey));
+                addRecipientOption(n.trim(), displayRole);
             });
         }
-    } else if (subImg) {
-        if (subAudioBtn) subAudioBtn.style.display = 'none';
-        subImg.style.display = 'block';
-        subImg.src = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg';
+    });
+
+    // 5. Kapitány / Tulajdonos mezők pótlása
+    if (ship.captain) addRecipientOption(ship.captain, 'Kapitány');
+    if (ship.owner) addRecipientOption(ship.owner, 'Tulajdonos');
+}
+
+function renderDeckShipCards() {
+    var list = document.getElementById('deck-ship-cards-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!window.userShips || window.userShips.length === 0) {
+        list.innerHTML = '<div style="padding: 15px; text-align: center; color: #00ffcc;"><i class="fas fa-spinner fa-spin"></i> Hajólajstrom lekérdezése a kikötőből...</div>';
+        return;
     }
 
-    selectedShipForDeparture = null;
-    selectedGameTypeForDeparture = null;
-    deckChatState = 'IDLE';
-    deckExpeditionIsland = '';
-    deckExpeditionBook = '';
+    // 1. Típus és Helyzet szerinti szűrés a frontenden: Csak vízi hajók, amik a kikötőben vannak
+    var waterShips = window.userShips.filter(function (ship) {
+        var t = String(ship.type || ship.shipType || ship.tipus || ship['Hajó típusa'] || '').toLowerCase().trim();
+        if (t.includes('búvár') || t.includes('buvar') || t.includes('léghajó') || t.includes('leghajo') || t.includes('zeppelin')) {
+            return false;
+        }
+        var h = String(ship['Helyzet'] || ship.helyzet || '').toLowerCase().trim();
+        if (h === 'tengeren' || ship.isOutAtSea === true || ship.inHarbor === false) {
+            return false;
+        }
+        return true;
+    });
 
-    if (nameHeader) nameHeader.textContent = "Rakodás alatt...";
-    if (selectorContainer) selectorContainer.style.display = 'none';
-    if (chatHistory) {
-        chatHistory.innerHTML = '<p style="color: #888; margin: 0; font-style: italic;">A hajódeszkák csendesen nyikorognak a lábad alatt. A kikötői lajstrom beolvasása folyamatban van...</p>';
+    if (waterShips.length === 0) {
+        list.innerHTML = '<div style="padding: 15px; text-align: center; color: #ffe680;">Nincs kikötőben állomásozó hajód! (Minden hajód a nyílt tengeren van vagy nem vízi jármű)</div>';
+        return;
     }
 
-    if (window.inGame) {
-        // JÁTÉKBAN LÉVŐ NÉZET
-        if (kihajDiv) kihajDiv.style.display = 'none';
-        if (jumpBtn) jumpBtn.style.display = 'block';
-        if (selectorContainer) selectorContainer.style.display = 'none';
-        
-        nameHeader.textContent = "Hajó keresése...";
-        
-        callBackend('getActiveShipDetails', [window.activeShipId || ''], function(res) {
-            if (res.success && res.shipName) {
-                nameHeader.textContent = res.shipName.toUpperCase();
-                selectedShipForDeparture = { id: window.activeShipId, name: res.shipName };
-                addDeckChatBubble("Kikötőmester", "A hajód (<b>" + res.shipName + "</b>) jelenleg a nyílt tengeren tartózkodik.", "incoming");
-            } else {
-                nameHeader.textContent = "ISMERETLEN HAJÓ A TENGEREN";
-            }
-        });
-        
-    } else {
-        // KIKÖTŐI NÉZET
-        if (kihajDiv) kihajDiv.style.display = 'block';
-        if (jumpBtn) jumpBtn.style.display = 'none';
-        
-        callBackend('getAvailableShips', [], function(response) {
-            if (response.success && response.ships) {
-                window.userShips = response.ships;
-                
-                if (window.userShips.length === 0) {
-                    nameHeader.textContent = "Nincs elérhető hajód a kikötőben!";
-                    if (selectorContainer) selectorContainer.style.display = 'none';
-                    addDeckChatBubble("Kikötőmester", "Nem látok a nevedre bejegyzett hajót a kikötői lajstromban, kalóz! Előbb szerezz egyet a Hajóácsműhelyben vagy a Piacon.", "incoming");
-                } else {
-                    nameHeader.textContent = "Melyik hajódra mész?";
-                    if (selectorContainer) selectorContainer.style.display = 'block';
-                    selector.innerHTML = '';
-                    window.userShips.forEach(function(ship) {
-                        var opt = document.createElement('option');
-                        opt.value = ship.id;
-                        opt.textContent = ship.name + " (" + (ship.type || 'Hajó') + ")";
-                        selector.appendChild(opt);
-                    });
-                    selectShip(window.userShips[0].id, true);
-                }
-            } else {
-                nameHeader.textContent = "Nincs elérhető hajó";
-                addDeckChatBubble("Kikötőmester", "A kikötői lajstrom jelenleg nem érhető el. Kérlek, próbáld újra később!", "incoming");
-            }
-        }, function(err) {
-            nameHeader.textContent = "Hiba a lekérdezéskor";
-            addDeckChatBubble("Kikötőmester", "Hiba történt a hajók lekérdezésekor: " + (err ? err.message : 'Hálózati hiba'), "incoming");
-        });
+    var selObj = selectedShipForDeparture || window.selectedShipForDeparture;
+    var selId = selObj ? String(selObj.id || selObj.shipId || selObj['Hajó ID'] || selObj['ID'] || '').trim() : '';
+
+    waterShips.forEach(function (ship, idx) {
+        var sId = String(ship.id || ship.shipId || ship['Hajó ID'] || ship['ID'] || ('SHIP_' + idx)).trim();
+        var sName = ship.name || ship.shipName || ship['Hajó neve'] || 'Névtelen hajó';
+        var sType = ship.type || ship.shipType || ship.tipus || ship['Hajó típusa'] || 'Vitorlás';
+        var isSelected = Boolean(selId && sId && selId === sId);
+
+        var card = document.createElement('div');
+        card.className = 'deck-ship-card' + (isSelected ? ' active-ship' : '');
+
+        var durabilityVal = (ship.durability !== undefined && ship.durability !== null && ship.durability !== '') ? ship.durability : (ship.durabilityPoints || ship['Élettartam'] || 10);
+        var durabilityText = durabilityVal + ' pont';
+
+        var userRoleDisplay = ship.userRole || ship.role || 'Készenlétben';
+        if (userRoleDisplay === 'Tulajdonos email' || userRoleDisplay === 'Tulajdonos') userRoleDisplay = 'Tulajdonos';
+        else if (userRoleDisplay === 'Kapitány email' || userRoleDisplay === 'Kapitány') userRoleDisplay = 'Kapitány';
+        else if (userRoleDisplay.indexOf('Tengerész_') === 0) userRoleDisplay = 'Tengerész';
+        else if (userRoleDisplay.indexOf('Utasszemély_') === 0 || userRoleDisplay.indexOf('Utas_') === 0) userRoleDisplay = 'Utas';
+
+        var crewStatus = ship.crewStatusText || (userRoleDisplay + (ship.crewCount ? (' (' + ship.crewCount + ' fő)') : ''));
+        var isReady = ship.isReady !== false;
+        var crewColor = isReady ? '#00ffcc' : '#ffaa00';
+
+        card.innerHTML =
+            '<div style="flex: 1;">' +
+            '<div style="font-family: \'Orbitron\', sans-serif; font-size: 1.1em; color: #ffe680; font-weight: bold;">' + sName + '</div>' +
+            '<div style="font-size: 0.85em; color: #a0c0c0; margin-top: 4px; font-family: \'Share Tech Mono\', monospace;">' +
+            '🛡️ Élettartam: <b style="color:#00ffcc;">' + durabilityText + '</b> | ' +
+            '⛵ Típus: <b style="color:#00ffcc;">' + sType + '</b> | ' +
+            '👥 Szerepkör: <b style="color:' + crewColor + ';">' + crewStatus + '</b>' +
+            '</div>' +
+            '</div>' +
+            '<div style="display: flex; gap: 8px; align-items: center;">' +
+            '<button class="btn" style="background: rgba(0,255,204,0.15); color: #00ffcc; border: 1px solid #00ffcc; font-weight: bold; padding: 6px 12px;" onclick="openDeckShipModal(' + idx + ')">' +
+            '🔍 ADATLAP' +
+            '</button>' +
+            '<button class="btn" style="background: ' + (isSelected ? '#2e8b57' : '#d4af37') + '; color: ' + (isSelected ? '#fff' : '#111') + '; font-weight: bold; padding: 6px 14px;" onclick="selectDeckShip(\'' + sId + '\')">' +
+            (isSelected ? '✓ KIVÁLASZTVA' : 'KIVÁLASZTÁS') +
+            '</button>' +
+            '</div>';
+
+        list.appendChild(card);
+    });
+
+    populateDeckCrewRecipients();
+}
+
+function openDeckShipModal(index) {
+    if (!window.userShips || !window.userShips[index]) return;
+    currentFetchedVehicles = window.userShips;
+    var modal = document.getElementById('vehicle-modal');
+    var title = document.getElementById('vehicle-modal-title');
+    if (modal) {
+        modal.style.display = 'block';
+        if (title) title.innerText = "Hajó Adatlap";
+        showVehicleDetails(index);
     }
 }
 
-function selectShip(shipId, isInitial) {
+function selectDeckShip(shipId, isInitial) {
     if (!window.userShips) return;
-    var ship = window.userShips.find(function(s) { return s.id === shipId; });
+    var targetId = String(shipId || '').trim();
+    var ship = window.userShips.find(function (s) { 
+        var curId = String(s.id || s.shipId || s['Hajó ID'] || s['ID'] || '').trim();
+        return (curId === targetId); 
+    });
     if (ship) {
         selectedShipForDeparture = ship;
-        var nameHeader = document.getElementById('active-ship-name');
-        if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
-        var selector = document.getElementById('ship-selector');
-        if (selector && selector.value !== ship.id) {
-            selector.value = ship.id;
-        }
-        
-        var msg = isInitial 
-            ? "Üdv a fedélzeten, Kapitány! A(z) <b>" + ship.name + "</b> (" + (ship.type || 'Hajó') + ") készen áll a kihajózásra. Válassz küldetést a lenti gombokkal, vagy mondd el nekem itt a chatben!"
-            : "Átszálltál a(z) <b>" + ship.name + "</b> fedélzetére. A legénység várja a parancsodat!";
-        addDeckChatBubble("Kikötőmester", msg, "incoming");
-        
-        // Session polling indítása ha a fedélzeten vagyunk
-        if (typeof currentPageName !== 'undefined' && currentPageName === 'fedelzet_oldal') {
-            startSessionPolling();
+        window.selectedShipForDeparture = ship;
+        window.activeShipId = ship.id || ship.shipId;
+
+        renderDeckShipCards();
+        populateDeckCrewRecipients();
+
+        if (!isInitial) {
+            setTimeout(function () {
+                closeDeckConsole();
+            }, 350);
         }
     }
 }
 
-function prepareDeparture(gameType) {
-    selectedGameTypeForDeparture = gameType;
-    var targetInput = document.getElementById('departure-target');
-    var bookInput = document.getElementById('departure-book-target');
-    var confirmBtn = document.getElementById('confirm-departure-btn');
-    var chatInput = document.getElementById('deck-chat-input');
-    var ship = selectedShipForDeparture || { name: 'Hajód' };
+function handleDeckElementHover(elemId) {
+    var hoverItems = {
+        'tekero_gomb': {
+            title: 'Melyik hajódra mész?',
+            desc: 'Válaszd ki, melyik hajóval és legénységgel szeretnél kihajózni!'
+        },
+        'sector_gomb': {
+            title: 'Hártyahalászat',
+            desc: 'Átcsónakázhatsz a zátonyos öbölbe, és lehalászhatod a mai termést.'
+        },
+        'comms_gomb': {
+            title: 'Kalandjáték',
+            desc: 'Ha felkészültél a kincskeresésre, akkor itt indulhatsz neki a csapatoddal!'
+        },
+        'log_gomb': {
+            title: 'Könyvexpedíció',
+            desc: 'Ha megvan, pontosan milyen zsánerben vagy pontosan melyik könyvet akarjátok levadászni, akkor itt indulhatsz neki a csapatoddal!'
+        },
+        'master_gomb': {
+            title: 'Legénységi üzenetküldő',
+            desc: 'A beírt szövegedet itt címezheted meg, vagy küldheted el az összes legénységi tagnak.'
+        },
+        'emergency_gomb': {
+            title: 'Kilépés a dokkolóból',
+            desc: 'Bezárja a készüléket, maradsz a kikötőben.'
+        },
+        'kepernyo': {
+            title: 'Hajónapló',
+            desc: 'Amennyiben a te kötelességed a hajónapló vezetése, ide kattintva tudod megnyitni az új bejegyzéshez.'
+        },
+        'auto_gomb': {
+            title: 'Tutorial ismeretek frissítése',
+            desc: 'Hebok kikötő legalapvetőbb szabályainak gyűjteménye.'
+        }
+    };
 
-    if (gameType === 'Hártyahalászat') {
-        deckChatState = 'AWAITING_HARTYA_CONFIRM';
-        if (targetInput) targetInput.style.display = 'none';
-        if (bookInput) bookInput.style.display = 'none';
-        if (confirmBtn) {
-            confirmBtn.style.display = 'block';
-            confirmBtn.innerHTML = '<i class="fas fa-fish"></i> INDULÁS: Hártyahalászat!';
-        }
-        addDeckChatBubble("Te", "Hártyahalászatra készülök a(z) <b>" + ship.name + "</b> fedélzetén.", "outgoing");
-        addDeckChatBubble("Kikötőmester", "A merítőhálókat felkötöttük, a tenger csendes! Készen állsz a kifutásra? Írd be ide a chatbe: <b>'Indulás'</b> (vagy 'Mehet'), vagy kattints a narancssárga <b>INDULÁS</b> gombra!", "incoming");
-    } else if (gameType === 'Kalandjáték') {
-        deckChatState = 'AWAITING_KALAND_TARGET';
-        if (targetInput) {
-            targetInput.style.display = 'block';
-            targetInput.placeholder = 'Add meg a Kaland nevét pontosan!';
-            targetInput.value = '';
-        }
-        if (bookInput) {
-            bookInput.style.display = 'none';
-            bookInput.value = '';
-        }
-        if (confirmBtn) {
-            confirmBtn.style.display = 'block';
-            confirmBtn.innerHTML = '<i class="fas fa-skull-crossbones"></i> INDULÁS: Kalandjáték!';
-        }
-        addDeckChatBubble("Te", "Kalandjáték küldetésre indulunk!", "outgoing");
-        addDeckChatBubble("Kikötőmester", "Merre vegyük az irányt, Kapitány? Kérlek, írd be ide a fedélzeti megbeszélésbe a <b>Kaland pontos nevét</b>!", "incoming");
-    } else if (gameType === 'Könyvexpedíció') {
-        deckChatState = 'AWAITING_EXPEDITION_ISLAND';
-        deckExpeditionIsland = '';
-        deckExpeditionBook = '';
-        if (targetInput) {
-            targetInput.style.display = 'block';
-            targetInput.placeholder = 'Add meg a Zsánersziget nevét!';
-            targetInput.value = '';
-        }
-        if (bookInput) {
-            bookInput.style.display = 'block';
-            bookInput.placeholder = 'Keresett Könyv címe';
-            bookInput.value = '';
-        }
-        if (confirmBtn) {
-            confirmBtn.style.display = 'block';
-            confirmBtn.innerHTML = '<i class="fas fa-book"></i> INDULÁS: Könyvexpedíció!';
-        }
-        addDeckChatBubble("Te", "Könyvexpedíciót indítunk!", "outgoing");
-        addDeckChatBubble("Kikötőmester", "Nemes cél, az elveszett tudás nyomába eredünk! Melyik <b>Zsánerszigetre</b> hajózunk? Írd be a sziget nevét ide a chatbe!", "incoming");
-    }
-
-    if (chatInput) {
-        chatInput.focus();
+    if (hoverItems[elemId]) {
+        var item = hoverItems[elemId];
+        var html = '<div style="font-family: \'Orbitron\', sans-serif; font-size: clamp(11px, 1.25vw, 15px); color: #ffe680; font-weight: bold; margin-bottom: 4px; text-shadow: 0 0 8px rgba(255,230,128,0.7); letter-spacing: 0.5px;">' +
+            '► ' + item.title +
+            '</div>' +
+            '<div style="font-family: \'Share Tech Mono\', monospace; font-size: clamp(9px, 1.05vw, 12px); color: #00ffcc; line-height: 1.35; opacity: 0.95;">' +
+            '(' + item.desc + ')' +
+            '</div>';
+        setDeckScreenText(html);
     }
 }
 
-function executeDeparture() {
+function handleDeckElementLeave() {
+    setDeckScreenText('');
+}
+
+function handleDeckElementClick(elemId) {
+    if (elemId === 'auto_gomb') {
+        loadPage('tutorial_oldal');
+        return;
+    }
+
+    if (elemId === 'emergency_gomb') {
+        if (typeof closeFedelzetModal === 'function') {
+            closeFedelzetModal();
+        }
+        loadPage('kikoto_oldal');
+        return;
+    }
+
+    if (elemId === 'tekero_gomb') {
+        openDeckConsole('ships', 'HAJÓVÁLASZTÓ // KIKÖTŐI LAJSTROM');
+        return;
+    }
+
+    // Hajóválasztási kényszer ellenőrzése
     if (!selectedShipForDeparture) {
-        uiAlert("Nincs kiválasztva hajó!");
+        var html = '<div style="font-family: \'Orbitron\', sans-serif; font-size: clamp(11px, 1.25vw, 15px); color: #ff4444; font-weight: bold; margin-bottom: 4px;">' +
+            '⚠️ VÁLASSZ HAJÓT!' +
+            '</div>' +
+            '<div style="font-family: \'Share Tech Mono\', monospace; font-size: clamp(9px, 1.05vw, 12px); color: #ffcccc;">' +
+            '(Először válaszd ki a hajódat a tekerőgombbal [FELÜL]!)' +
+            '</div>';
+        setDeckScreenText(html);
         return;
     }
-    
-    var targetInput = document.getElementById('departure-target');
-    var bookInput = document.getElementById('departure-book-target');
-    var targetName = targetInput ? targetInput.value.trim() : '';
-    var targetBook = bookInput ? bookInput.value.trim() : '';
-    
-    if (selectedGameTypeForDeparture !== 'Hártyahalászat' && (!targetName || targetName.length < 3)) {
-        uiAlert("Meg kell adnod egy érvényes célt (min 3 karakter)!");
-        if (targetInput) targetInput.focus();
-        return;
-    }
-    
-    if (selectedGameTypeForDeparture === 'Könyvexpedíció' && (!targetBook || targetBook.length < 2)) {
-        uiAlert("Könyvexpedíció esetén meg kell adnod a keresett könyv címét is!");
-        if (bookInput) bookInput.focus();
-        return;
-    }
-    
-    var loadingEl = document.getElementById('loading-overlay');
-    if (loadingEl) loadingEl.style.display = 'flex';
-    
-    var finalTarget = selectedGameTypeForDeparture === 'Könyvexpedíció' ? targetName + "|||" + targetBook : targetName;
-    var targetDesc = (selectedGameTypeForDeparture === 'Hártyahalászat') ? "Hártyahalászat" : (selectedGameTypeForDeparture + " -> " + targetName + (targetBook ? " (" + targetBook + ")" : ""));
 
-    addDeckChatBubble("Te", "Kihajózási engedélyt kérek: <b>" + targetDesc + "</b>!", "outgoing");
-    addDeckChatBubble("Kikötőmester", "Hajónapló és engedélyek ellenőrzése... Kérelem küldése a parancsnokságnak.", "incoming");
+    if (elemId === 'sector_gomb') {
+        openDeckConsole('fishing', 'HÁRTYAHALÁSZAT VEZÉRLŐ');
+    } else if (elemId === 'comms_gomb') {
+        openDeckConsole('adventure', 'KALANDJÁTÉK INDÍTÓ');
+    } else if (elemId === 'log_gomb') {
+        openDeckConsole('expedition', 'KÖNYVEXPEDÍCIÓ INDÍTÓ');
+    } else if (elemId === 'master_gomb') {
+        openDeckConsole('crew-msg', 'LEGÉNYSÉGI ÜZENETKÜLDŐ');
+    } else if (elemId === 'kepernyo') {
+        // Hajónapló jogosultság ellenőrzés (Tulajdonos vagy Kapitány G, H oszlop)
+        var ship = selectedShipForDeparture;
+        var myEmail = (window.currentUserEmail || localStorage.getItem('ebook_pirates_useremail') || '').toLowerCase().trim();
+        var myNick = (window.currentUserNick || localStorage.getItem('ebook_pirates_username') || '').toLowerCase().trim();
 
-    if (selectedGameTypeForDeparture === 'Hártyahalászat') {
-        callBackend('getBoatDurability', [selectedShipForDeparture.id], function(dur) {
-            var d = parseInt(dur);
-            if (!isNaN(d) && d < 2) {
-                if (loadingEl) loadingEl.style.display = 'none';
-                var durMsg = "A(z) " + selectedShipForDeparture.name + " állapota túl alacsony (" + d + ") a kihajózáshoz! Minimum 2 élettartam szükséges. Javíttasd meg a Hajóműhelyben!";
-                uiAlert(durMsg, "Kikötőmester: Megtagadva!");
-                addDeckChatBubble("Kikötőmester", "❌ Megtagadva: " + durMsg, "incoming");
-                return;
-            }
-            proceedWithDepartureRequest();
-        }, function(err) {
-            if (loadingEl) loadingEl.style.display = 'none';
-            uiAlert("Hiba az élettartam lekérdezésekor: " + err);
-        });
-    } else {
-        proceedWithDepartureRequest();
+        var isOwner = ship.isOwner || (ship.owner && (ship.owner.toLowerCase().includes(myEmail) || ship.owner.toLowerCase().includes(myNick)));
+        var isCaptain = ship.isCaptain || (ship.captain && (ship.captain.toLowerCase().includes(myEmail) || ship.captain.toLowerCase().includes(myNick)));
+
+        // Ha a user rangja engedi vagy tulajdonos/kapitány
+        if (isOwner || isCaptain || ship.canEditLog !== false) {
+            var form = document.getElementById('deck-logbook-form');
+            var denied = document.getElementById('deck-logbook-denied');
+            if (form) form.style.display = 'block';
+            if (denied) denied.style.display = 'none';
+            openDeckConsole('logbook', 'HAJÓNAPLÓ BEJEGYZÉS SZERKESZTŐ');
+        } else {
+            var form2 = document.getElementById('deck-logbook-form');
+            var denied2 = document.getElementById('deck-logbook-denied');
+            if (form2) form2.style.display = 'none';
+            if (denied2) denied2.style.display = 'block';
+            openDeckConsole('logbook', 'HAJÓNAPLÓ // HOZZÁFÉRÉS MEGTAGADVA');
+            var htmlDenied = '<div style="font-family: \'Orbitron\', sans-serif; font-size: clamp(11px, 1.25vw, 15px); color: #ff4444; font-weight: bold; margin-bottom: 4px;">' +
+                '⛔ HOZZÁFÉRÉS MEGTAGADVA' +
+                '</div>' +
+                '<div style="font-family: \'Share Tech Mono\', monospace; font-size: clamp(9px, 1.05vw, 12px); color: #ffcccc;">' +
+                '(Csak a hajó Tulajdonosa vagy Kapitánya vezethet hajónaplót!)' +
+                '</div>';
+            setDeckScreenText(htmlDenied);
+        }
     }
-    
-    function proceedWithDepartureRequest() {
-        callBackend('requestDeparture', [selectedShipForDeparture.id, selectedGameTypeForDeparture, finalTarget], function(res) {
-            if (loadingEl) loadingEl.style.display = 'none';
-            if (res.success) {
-                var succMsg = res.message || "Kihajózás engedélyezve! Irány: " + finalTarget;
-                addDeckChatBubble("Kikötőmester", "✅ " + succMsg, "incoming");
-                uiAlert(succMsg, "Sikeres Kihajózás!");
-                if (targetInput) targetInput.value = '';
-                if (bookInput) bookInput.value = '';
-                deckChatState = 'IDLE';
-                
-                if (selectedGameTypeForDeparture === 'Hártyahalászat') {
-                    loadGamePage({ gameType: 'Hártyahalászat' });
+}
+
+function openDeckConsole(subId, titleText) {
+    var panel = document.getElementById('deck-console-panel');
+    var title = document.getElementById('deck-console-title');
+    if (!panel) return;
+
+    if (title && titleText) {
+        title.innerHTML = '<i class=\"fas fa-terminal\" style=\"color: #00ffcc;\"></i> [ ' + titleText + ' ] <span class=\"crt-cursor\">_</span>';
+    }
+
+    var subconsoles = panel.querySelectorAll('.deck-subconsole');
+    subconsoles.forEach(function (el) { el.style.display = 'none'; });
+
+    var targetSub = document.getElementById('deck-console-' + subId);
+    if (targetSub) {
+        targetSub.style.display = 'block';
+    }
+
+    if (subId === 'ships') {
+        if (!window.userShips || window.userShips.length === 0) {
+            loadDeckShips();
+        } else {
+            renderDeckShipCards();
+        }
+    } else if (subId === 'crew-msg') {
+        populateDeckCrewRecipients();
+    }
+
+    panel.style.display = 'flex';
+}
+
+function closeDeckConsole() {
+    var panel = document.getElementById('deck-console-panel');
+    if (panel) {
+        panel.style.display = 'none';
+    }
+}
+
+function executeDeckDeparture(gameType) {
+    if (!selectedShipForDeparture) {
+        setDeckScreenText('<span style=\"color:#ff4444;\">Hiba: Nincs kiválasztva hajó!</span>');
+        return;
+    }
+
+    var targetParam = '';
+
+    if (gameType === 'Kalandjáték') {
+        var advInp = document.getElementById('deck-adventure-name-input');
+        targetParam = advInp ? advInp.value.trim() : '';
+        if (!targetParam || targetParam.length < 2) {
+            setDeckScreenText('<span style=\"color:#ff4444;\">Add meg a Kaland nevét az indításhoz!</span>');
+            return;
+        }
+    } else if (gameType === 'Könyvexpedíció') {
+        var islInp = document.getElementById('deck-expedition-island-input');
+        var bkInp = document.getElementById('deck-expedition-book-input');
+        var targetIsland = islInp ? islInp.value.trim() : '';
+        var targetBook = bkInp ? bkInp.value.trim() : '';
+        if (!targetIsland || !targetBook) {
+            setDeckScreenText('<span style=\"color:#ff4444;\">Add meg a Zsánersziget nevét ÉS a könyv címét!</span>');
+            return;
+        }
+        targetParam = targetIsland + '|||' + targetBook;
+    }
+
+    closeDeckConsole();
+    setDeckScreenText('Kihajózási engedély és legénység ellenőrzése... <span class=\"crt-cursor\">▋</span>');
+
+    // Valós kifutási ellenőrző backend rutin (requestDeparture a Hajók táblázat alapján)
+    callBackend('requestDeparture', [selectedShipForDeparture.id, gameType, targetParam], function (res) {
+        if (res && res.success) {
+            if (gameType === 'Hártyahalászat') {
+                setDeckScreenText('✅ <b style=\"color:#00ffcc;\">Kifutási engedély megadva!</b> Irány a Zátonyos Öböl!');
+                if (typeof startFishingMiniGame === 'function') {
+                    startFishingMiniGame();
                 }
             } else {
-                var errMsg = res.error || 'Ismeretlen hiba';
-                addDeckChatBubble("Kikötőmester", "❌ Kihajózás megtagadva: " + errMsg, "incoming");
-                uiAlert(errMsg, "Kikötőmester: Megtagadva!");
+                setDeckScreenText('✅ <b style=\"color:#00ffcc;\">Sikeres kifutás!</b> ' + (res.message || 'Jó szelet!'));
+                if (typeof showSystemModal === 'function') {
+                    showSystemModal("Kihajózás Engedélyezve!", "A(z) " + selectedShipForDeparture.name + " legénysége készen áll és kifutott a tengerre! (" + gameType + ")", "fas fa-ship", [
+                        { text: "Rendben", color: "#2e8b57", textColor: "white", callback: function () { loadPage('kikoto_oldal'); } }
+                    ]);
+                }
             }
-        }, function(err) {
-            if (loadingEl) loadingEl.style.display = 'none';
-            addDeckChatBubble("Kikötőmester", "❌ Hálózati hiba: " + err.message, "incoming");
-            uiAlert("Szerverhiba: " + err.message);
-        });
-    }
+        } else {
+            var errMsg = (res && res.error) ? res.error : 'A kifutási engedély megtagadva!';
+            setDeckScreenText('❌ <span style=\"color:#ff6666;\">' + errMsg + '</span>');
+        }
+    }, function (err) {
+        setDeckScreenText('❌ <span style=\"color:#ff6666;\">Hálózati hiba: ' + (err ? err.message : 'Szerverhiba') + '</span>');
+    });
 }
 
-function sendDeckChat() {
+function executeDeckChatSubmit() {
     var input = document.getElementById('deck-chat-input');
     if (!input) return;
     var msg = input.value.trim();
     if (!msg) return;
-    
-    addDeckChatBubble("Te", msg, "outgoing");
+
     input.value = '';
-    
+    setDeckScreenText('<b>Te mondtad:</b> \"' + msg + '\"<br><i>A Kikötőmester válaszol...</i>');
+
     var lower = msg.toLowerCase();
-    var targetInput = document.getElementById('departure-target');
-    var bookInput = document.getElementById('departure-book-target');
-
-    // 1. ÁLLAPOTGÉP: Célkijelölési párbeszéd a Kikötőmesterrel
-    if (deckChatState === 'AWAITING_HARTYA_CONFIRM' || deckChatState === 'AWAITING_FINAL_CONFIRM') {
-        if (lower.includes('indul') || lower.includes('mehet') || lower.includes('igen') || lower.includes('start') || lower.includes('gyerünk') || lower.includes('ok')) {
-            addDeckChatBubble("Kikötőmester", "Horgonyt fel! Vitorlákat bontani! Irány a nyílt víz!", "incoming");
-            setTimeout(function() {
-                executeDeparture();
-            }, 400);
-            return;
+    setTimeout(function () {
+        if (lower.includes('hártya') || lower.includes('halász')) {
+            openDeckConsole('fishing', 'HÁRTYAHALÁSZAT VEZÉRLŐ');
+            setDeckScreenText('⚓ Kikötőmester: A Hártyahalászati konzol megnyitva! Készen állsz a merítésre?');
+        } else if (lower.includes('kaland')) {
+            openDeckConsole('adventure', 'KALANDJÁTÉK INDÍTÓ');
+            setDeckScreenText('⚓ Kikötőmester: Kalandjáték előkészítve. Add meg a kaland nevét a konzolon!');
+        } else if (lower.includes('könyv') || lower.includes('expedíció') || lower.includes('expedicio')) {
+            openDeckConsole('expedition', 'KÖNYVEXPEDÍCIÓ INDÍTÓ');
+            setDeckScreenText('⚓ Kikötőmester: Könyvexpedíció konzol megnyitva. Melyik Zsánerszigetre vagy könyvért indultok?');
+        } else if (lower.includes('hajó') || lower.includes('lajstrom')) {
+            openDeckConsole('ships', 'HAJÓVÁLASZTÓ // KIKÖTŐI LAJSTROM');
+        } else {
+            var responses = [
+                "Értettem, Kapitány! A legénység készen áll a kifutásra!",
+                "Mindenki a fedélzeten, a vitorlák felkötve!",
+                "A parancsaidat továbbítom a legénységnek. Jó szelet kívánok!",
+                "A hajó raktára feltöltve, indulhatunk, amint parancsolod!"
+            ];
+            var reply = responses[Math.floor(Math.random() * responses.length)];
+            setDeckScreenText('⚓ <b>Kikötőmester:</b> \"' + reply + '\"');
         }
-    }
-
-    if (deckChatState === 'AWAITING_KALAND_TARGET') {
-        if (msg.length >= 2) {
-            if (targetInput) targetInput.value = msg;
-            deckChatState = 'AWAITING_FINAL_CONFIRM';
-            addDeckChatBubble("Kikötőmester", "Rögzítettem a Kaland nevét a hajónaplóba: <b>" + msg + "</b>! Indulhatunk a szigetre? Írd be: <b>'Indulás'</b> vagy nyomd meg a lenti narancssárga <b>INDULÁS</b> gombot!", "incoming");
-            return;
-        }
-    }
-
-    if (deckChatState === 'AWAITING_EXPEDITION_ISLAND') {
-        if (msg.length >= 2) {
-            deckExpeditionIsland = msg;
-            if (targetInput) targetInput.value = msg;
-            deckChatState = 'AWAITING_EXPEDITION_BOOK';
-            addDeckChatBubble("Kikötőmester", "Célpont Zsánersziget rögzítve: <b>" + msg + "</b>! Most kérlek, add meg a keresett <b>Könyv pontos címét</b> ide a chatbe!", "incoming");
-            return;
-        }
-    }
-
-    if (deckChatState === 'AWAITING_EXPEDITION_BOOK') {
-        if (msg.length >= 2) {
-            deckExpeditionBook = msg;
-            if (bookInput) bookInput.value = msg;
-            deckChatState = 'AWAITING_FINAL_CONFIRM';
-            addDeckChatBubble("Kikötőmester", "Minden adat rögzítve: <b>" + deckExpeditionIsland + "</b> / <b>" + msg + "</b>! Készen áll a hajó a kifutásra? Írd be: <b>'Indulás'</b> vagy kattints az <b>INDULÁS</b> gombra!", "incoming");
-            return;
-        }
-    }
-
-    // 2. SZABAD BESZÉLGETÉS & KULCSSZÓ FELISMERÉS
-    if (lower.includes('hártya') || lower.includes('halász')) {
-        prepareDeparture('Hártyahalászat');
-        return;
-    } else if (lower.includes('kaland')) {
-        prepareDeparture('Kalandjáték');
-        return;
-    } else if (lower.includes('könyv') || lower.includes('expedíció') || lower.includes('expedicio')) {
-        prepareDeparture('Könyvexpedíció');
-        return;
-    } else if ((lower.includes('indul') || lower.includes('mehet')) && selectedGameTypeForDeparture) {
-        executeDeparture();
-        return;
-    }
-
-    // 3. HANGULATI LEGÉNYSÉGI VÁLASZOK
-    setTimeout(function() {
-        var responses = [
-            "Értettem, Kapitány! Mindenki a posztján áll!",
-            "A vitorlák felkötve, a szélirány kedvező!",
-            "Igenis! A raktár feltöltve, indulásra készen állunk.",
-            "A tenger zúgása hívogat. Készen állunk a kihajózásra!"
-        ];
-        var reply = responses[Math.floor(Math.random() * responses.length)];
-        addDeckChatBubble("Legénység", reply, "incoming");
-    }, 500);
+    }, 400);
 }
 
+function executeDeckCrewMessageSend() {
+    var select = document.getElementById('deck-msg-recipient-select');
+    var subj = document.getElementById('deck-msg-subject-select');
+    var textEl = document.getElementById('deck-msg-body-textarea');
 
-// ===============================================
-// === TEKERCSMESTER: MÁSOLATTÁ FŰZÉS LOGIKA ===
-// ===============================================
+    var recipient = select ? select.value : 'ALL';
+    var subject = subj ? subj.value : 'Indulás';
+    var msg = textEl ? textEl.value.trim() : '';
+
+    if (!msg) {
+        setDeckScreenText('<span style=\"color:#ff4444;\">Hiba: Írd be az üzenet szövegét!</span>');
+        return;
+    }
+
+    var senderName = window.currentUserNick || localStorage.getItem('ebook_pirates_username') || 'Kapitány';
+    var fullMessage = '[' + subject.toUpperCase() + '] ' + msg;
+
+    closeDeckConsole();
+    setDeckScreenText('Üzenet kiküldése a legénységnek folyamatban... <span class=\"crt-cursor\">▋</span>');
+
+    // Taverna üzenetküldő backend rutin használata
+    if (recipient === 'ALL' && selectedShipForDeparture && Array.isArray(selectedShipForDeparture.crewMembers) && selectedShipForDeparture.crewMembers.length > 0) {
+        var sentCount = 0;
+        var totalToSend = selectedShipForDeparture.crewMembers.length;
+        selectedShipForDeparture.crewMembers.forEach(function (member) {
+            var memberName = member.name || member.email || member;
+            callBackend('sendTavernaMessage', [senderName, memberName, fullMessage], function (res) {
+                sentCount++;
+                if (sentCount >= totalToSend) {
+                    setDeckScreenText('✉️ <b style=\"color:#00ffcc;\">Üzenet sikeresen elküldve a teljes legénységnek (' + totalToSend + ' fő)!</b><br>Minden matróz belépéskor felugró üzenetként kapja meg.');
+                    if (textEl) textEl.value = '';
+                }
+            });
+        });
+    } else {
+        callBackend('sendTavernaMessage', [senderName, recipient, fullMessage], function (res) {
+            setDeckScreenText('✉️ <b style=\"color:#00ffcc;\">Üzenet sikeresen elküldve!</b><br>A címzett (' + recipient + ') belépéskor felugró üzenetként kapja meg.');
+            if (textEl) textEl.value = '';
+        }, function (err) {
+            setDeckScreenText('✉️ <b style=\"color:#00ffcc;\">Üzenet rögzítve a fedélzeti naplóba!</b>');
+            if (textEl) textEl.value = '';
+        });
+    }
+}
+
+function executeDeckSaveLogEntry() {
+    var titleEl = document.getElementById('deck-log-title-input');
+    var textEl = document.getElementById('deck-log-body-textarea');
+    var logTitle = titleEl ? titleEl.value.trim() : '';
+    var logBody = textEl ? textEl.value.trim() : '';
+
+    if (!logTitle || !logBody) {
+        setDeckScreenText('<span style=\"color:#ff4444;\">Hiba: A napló címét és szövegét is meg kell adnod!</span>');
+        return;
+    }
+
+    closeDeckConsole();
+    setDeckScreenText('Hajónapló bejegyzés mentése folyamatban... <span class=\"crt-cursor\">▋</span>');
+
+    var shipId = selectedShipForDeparture ? selectedShipForDeparture.id : (window.activeShipId || '');
+    callBackend('saveShipLogEntry', [shipId, logTitle, logBody], function (res) {
+        setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló bejegyzés sikeresen elmentve!</b>');
+        if (titleEl) titleEl.value = '';
+        if (textEl) textEl.value = '';
+    }, function (err) {
+        setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló bejegyzés rögzítve!</b>');
+        if (titleEl) titleEl.value = '';
+        if (textEl) textEl.value = '';
+    });
+}
 
 function loadCompletableScrolls() {
-    callBackend('getCompletableScrollSets', [], function(res) {
+    callBackend('getCompletableScrollSets', [], function (res) {
         var container = document.getElementById('completable-scrolls-list');
         var section = document.getElementById('masolatta-fuzes-section');
         if (!container || !section) return;
-        
+
         container.innerHTML = '';
         if (res && res.length > 0) {
             section.style.display = 'block';
-            res.forEach(function(item) {
+            res.forEach(function (item) {
                 var div = document.createElement('div');
                 div.style.border = '1px solid #d2b48c';
                 div.style.borderRadius = '5px';
                 div.style.padding = '15px';
                 div.style.marginBottom = '10px';
                 div.style.backgroundColor = 'rgba(255,255,255,0.6)';
-                
-                div.innerHTML = '<h4 style="margin:0 0 5px 0;">' + item.title + '</h4>' + 
-                                '<p style="margin:0 0 10px 0; font-style:italic;">' + item.author + '</p>' + 
-                                '<button class="btn" style="background-color: var(--color-gold); color: #000; width: 100%;" ' + 
-                                'onclick="bindScrolls(\'' + item.code + '\')"><i class="fas fa-scroll"></i> Másolattá Fűzöm!</button>';
+
+                div.innerHTML = '<h4 style="margin:0 0 5px 0;">' + item.title + '</h4>' +
+                    '<p style="margin:0 0 10px 0; font-style:italic;">' + item.author + '</p>' +
+                    '<button class="btn" style="background-color: var(--color-gold); color: #000; width: 100%;" ' +
+                    'onclick="bindScrolls(\'' + item.code + '\')"><i class="fas fa-scroll"></i> Másolattá Fűzöm!</button>';
                 container.appendChild(div);
             });
         } else {
@@ -11630,9 +12152,9 @@ function loadCompletableScrolls() {
 
 function bindScrolls(baseCode) {
     if (!confirm("Biztosan összefűzöd a tekercseket? A felhasznált fejezetek eltűnnek, és egy új Másolat jön létre!")) return;
-    
+
     document.getElementById('loading-overlay').style.display = 'flex';
-    callBackend('bindScrollsToCopy', [baseCode], function(res) {
+    callBackend('bindScrollsToCopy', [baseCode], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res && res.success) {
             uiAlert("Sikeresen összefűzted a tekercseket! A Másolat bekerült a gyűjteményedbe.", "Siker!");
@@ -11640,7 +12162,7 @@ function bindScrolls(baseCode) {
         } else {
             uiAlert("Hiba: " + (res ? res.error : "Ismeretlen hiba történt."), "Kudarc");
         }
-    }, function(err) {
+    }, function (err) {
         document.getElementById('loading-overlay').style.display = 'none';
         uiAlert("Hálózati hiba: " + err.message);
     });
@@ -11651,104 +12173,154 @@ function bindScrolls(baseCode) {
 var currentFetchedVehicles = [];
 
 function openVehicleModal(category) {
-  var modal = document.getElementById('vehicle-modal');
-  var title = document.getElementById('vehicle-modal-title');
-  var body = document.getElementById('vehicle-modal-body');
-  
-  if (!modal || !title || !body) return;
-  
-  title.innerText = category + " flottád";
-  body.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Hajónaplók felnyitása...</div>';
-  modal.style.display = 'block';
-  
-  var token = localStorage.getItem('session_token');
-  callBackend('getUserVehiclesByCategory', [category],
-    function(res) {
-      if (res && res.success) {
-        currentFetchedVehicles = res.vehicles;
-        renderVehicleList();
-      } else {
-        var msg = res ? res.message : "Ismeretlen hiba";
-        body.innerHTML = '<div style="color:red;">Hiba: ' + msg + '</div>';
-      }
-    },
-    function(err) {
-      body.innerHTML = '<div style="color:red;">Hálózati hiba történt.</div>';
-    }
-  );
+    var modal = document.getElementById('vehicle-modal');
+    var title = document.getElementById('vehicle-modal-title');
+    var body = document.getElementById('vehicle-modal-body');
+
+    if (!modal || !title || !body) return;
+
+    title.innerText = category + " flottád";
+    body.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Hajónaplók felnyitása...</div>';
+    modal.style.display = 'block';
+
+    var token = localStorage.getItem('session_token');
+    callBackend('getUserVehiclesByCategory', [category],
+        function (res) {
+            if (res && res.success) {
+                currentFetchedVehicles = (res.vehicles || []).map(function (v) { return normalizeShipData(v); });
+                renderVehicleList();
+            } else {
+                var msg = res ? res.message : "Ismeretlen hiba";
+                body.innerHTML = '<div style="color:red;">Hiba: ' + msg + '</div>';
+            }
+        },
+        function (err) {
+            body.innerHTML = '<div style="color:red;">Hálózati hiba történt.</div>';
+        }
+    );
 }
 
 function closeVehicleModal() {
-  var modal = document.getElementById('vehicle-modal');
-  if (modal) modal.style.display = 'none';
+    var modal = document.getElementById('vehicle-modal');
+    if (modal) modal.style.display = 'none';
 }
 
 function renderVehicleList() {
-  var body = document.getElementById('vehicle-modal-body');
-  if (currentFetchedVehicles.length === 0) {
-    body.innerHTML = '<div class="stat-block" style="text-align:center;">Nincs a neveden ilyen kategóriájú jármű.</div>';
-    return;
-  }
-  
-  var html = '<ul style="list-style:none; padding:0; margin:0;">';
-  for (var i = 0; i < currentFetchedVehicles.length; i++) {
-    var v = currentFetchedVehicles[i];
-    var vName = v['Hajó neve'] || 'Névtelen jármű';
-    var vType = v['Hajó típusa'] || '';
-    
-    html += '<li class="stat-block" style="margin-bottom:10px; cursor:pointer;" onclick="showVehicleDetails(' + i + ')">';
-    html += '<strong style="color:var(--color-accent); font-size:1.1em;">' + vName + '</strong>';
-    if (vType) html += '<br><small style="color:#aaa;">' + vType + '</small>';
-    html += '</li>';
-  }
-  html += '</ul>';
-  body.innerHTML = html;
+    var body = document.getElementById('vehicle-modal-body');
+    if (currentFetchedVehicles.length === 0) {
+        body.innerHTML = '<div class="stat-block" style="text-align:center;">Nincs a neveden ilyen kategóriájú jármű.</div>';
+        return;
+    }
+
+    var html = '<ul style="list-style:none; padding:0; margin:0;">';
+    for (var i = 0; i < currentFetchedVehicles.length; i++) {
+        var v = currentFetchedVehicles[i];
+        var vName = v['Hajó neve'] || 'Névtelen jármű';
+        var vType = v['Hajó típusa'] || '';
+
+        html += '<li class="stat-block" style="margin-bottom:10px; cursor:pointer;" onclick="showVehicleDetails(' + i + ')">';
+        html += '<strong style="color:var(--color-accent); font-size:1.1em;">' + vName + '</strong>';
+        if (vType) html += '<br><small style="color:#aaa;">' + vType + '</small>';
+        html += '</li>';
+    }
+    html += '</ul>';
+    body.innerHTML = html;
 }
 
 function showVehicleDetails(index) {
-  var v = currentFetchedVehicles[index];
-  if (!v) return;
-  
-  var body = document.getElementById('vehicle-modal-body');
-  var vName = v['Hajó neve'] || 'Névtelen jármű';
-  
-  var html = '<button onclick="renderVehicleList()" class="btn" style="margin-bottom:15px; width:100%;"><i class="fas fa-arrow-left"></i> Vissza a listához</button>';
-  
-  html += '<h3 style="margin-top:0; color:var(--color-accent);">' + vName + '</h3>';
-    
+    var v = currentFetchedVehicles[index];
+    if (!v) return;
+
+    // Normalizálás a legfrissebb névtárral
+    v = normalizeShipData(v);
+    currentFetchedVehicles[index] = v;
+
+    var body = document.getElementById('vehicle-modal-body');
+    if (!body) return;
+    var vName = v['Hajó neve'] || v.name || v.shipName || 'Névtelen jármű';
+    var rawType = v['Hajó típusa'] || v.type || v.shipType || v.tipus || 'Vitorlás';
+
+    var isCategoryList = (typeof currentPageName !== 'undefined' && currentPageName === 'kincsek');
+    var backBtnHtml = isCategoryList
+        ? '<button onclick="renderVehicleList()" class="btn" style="margin-bottom:15px; width:100%;"><i class="fas fa-arrow-left"></i> Vissza a listához</button>'
+        : ''; // A fejléc pirosX gombja zárja be, felesleges a belső 'X Bezárás' gomb
+
+    var html = backBtnHtml;
+    html += '<h3 style="margin-top:0; color:var(--color-accent); font-family:\'Orbitron\', sans-serif;">' + vName + '</h3>';
+
     // Hajókép helye a típus alapján
-    var rawType = v['Hajó típusa'] || 'ismeretlen';
     var safeType = rawType.toLowerCase().replace(/[\s\/\(\)]+/g, '_').replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ö/g, 'o').replace(/ő/g, 'o').replace(/ú/g, 'u').replace(/ü/g, 'u').replace(/ű/g, 'u');
-    html += '<div style="text-align:center; margin-bottom:15px; padding:10px; background:rgba(0,0,0,0.3); border-radius:5px; border:1px dashed var(--color-accent);">';
+    html += '<div style="text-align:center; margin-bottom:15px; padding:10px; background:rgba(0,0,0,0.4); border-radius:5px; border:1px dashed var(--color-accent);">';
     html += '<img src="assets/ships/' + safeType + '.png" alt="' + rawType + '" style="max-width:100%; max-height:200px; object-fit:contain;" onerror="this.onerror=null; this.src=\'assets/ship_placeholder.png\'; this.style.opacity=\'0.5\';">';
     html += '<div style="font-size:0.8em; color:#aaa; margin-top:5px;">Látványterv (' + safeType + '.png)</div>';
     html += '</div>';
-  html += '<div class="stat-block">';
-  
-  // Alapadatok elöl
-  var priorityKeys = ['Hajó típusa', 'Jellemző hossz', 'Leírás', 'Mérettartomány', 'Tüzérségi szint', 'Védelmi szint', 'Lokátor szint', 'Sebesség max.', 'Utazási magasság max.', 'Merülési mélÉlettartam'];
-  
-  for (var i=0; i<priorityKeys.length; i++) {
-    var k = priorityKeys[i];
-    if (v[k]) {
-      html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>' + k + ':</strong> <span>' + v[k] + '</span></div>';
-    }
-  }
-  
-  html += '<hr style="border-color:var(--color-border); margin:10px 0;">';
-  
-  // Többi adat (pl. Legénység, Utasok, Felszerelések)
-  for (var key in v) {
-    if (priorityKeys.indexOf(key) !== -1) continue;
-    if (key === 'Hajó neve') continue;
-    
-    html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>' + key + ':</strong> <span style="color:#d4af37;">' + v[key] + '</span></div>';
-  }
-  
-  html += '</div>';
-  body.innerHTML = html;
-}
 
+    html += '<div class="stat-block">';
+
+    // 1. Főbb Állapot és Élettartam (P oszlop)
+    var durabilityVal = (v.durability !== undefined && v.durability !== null && v.durability !== '') ? v.durability : (v['Élettartam'] || 10);
+    html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>🛡️ Élettartam (P oszlop):</strong> <span style="color:#00ffcc; font-weight:bold;">' + durabilityVal + ' pont</span></div>';
+    html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>⛵ Hajó típusa:</strong> <span style="color:#00ffcc;">' + rawType + '</span></div>';
+    
+    var inHarborStatus = (v.inHarbor !== false && String(v['Helyzet'] || '').toLowerCase() !== 'tengeren') 
+        ? '<span style="color:#00ffcc; font-weight:bold;">⚓ Kikötőben állomásozik</span>' 
+        : '<span style="color:#ffaa00; font-weight:bold;">🌊 Nyílt tengeren van</span>';
+    html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>📍 Helyzet:</strong> ' + inHarborStatus + '</div>';
+
+    // 2. Technikai Jellemzők (strukturált, szép kiírás)
+    var techSpecs = [
+        { label: '📐 Mérettartomány', key: 'Mérettartomány' },
+        { label: '📏 Jellemző hossz', key: 'Jellemző hossz' },
+        { label: '💨 Sebesség max.', key: 'Sebesség max.' },
+        { label: '💣 Tüzérségi szint', key: 'Tüzérségi szint' },
+        { label: '🛡️ Védelmi szint', key: 'Védelmi szint' },
+        { label: '📡 Lokátor szint', key: 'Lokátor szint' },
+        { label: '☁️ Utazási magasság max.', key: 'Utazási magasság max.' },
+        { label: '🌊 Merülési mélység', key: 'Merülési mélység' },
+        { label: '🪑 Férőhely', key: 'Férőhely' },
+        { label: '📦 Kapacitás', key: 'Kapacitás' },
+        { label: '📜 Leírás', key: 'Leírás' }
+    ];
+
+    var hasTech = false;
+    for (var i = 0; i < techSpecs.length; i++) {
+        var spec = techSpecs[i];
+        var val = v[spec.key];
+        if (val !== undefined && val !== null && typeof val !== 'object' && String(val).trim() !== '') {
+            if (!hasTech) {
+                html += '<hr style="border-color:var(--color-border); margin:10px 0;">';
+                html += '<h4 style="color:#00ffcc; margin:8px 0 5px 0; font-family:\'Share Tech Mono\', monospace;"><i class="fas fa-cogs"></i> Technikai Jellemzők:</h4>';
+                hasTech = true;
+            }
+            html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>' + spec.label + ':</strong> <span style="color:#ffe680;">' + val + '</span></div>';
+        }
+    }
+
+    html += '<hr style="border-color:var(--color-border); margin:10px 0;">';
+
+    // 3. Regisztrált Legénység (Valós nevekkel, Tulajdonos(ok) az 1. helyen, duplikációmentesen)
+    html += '<h4 style="color:#ffe680; margin:10px 0 5px 0; font-family:\'Share Tech Mono\', monospace;"><i class="fas fa-users"></i> Regisztrált Legénység:</h4>';
+    
+    var nonOwnerCrew = (v.crewMembers || []).filter(function (m) { return m.role !== 'Tulajdonos'; });
+    var ownerMembers = (v.crewMembers || []).filter(function (m) { return m.role === 'Tulajdonos'; });
+    var ownerDisplayNames = (ownerMembers.length > 0) ? ownerMembers.map(function (m) { return m.name; }).join(', ') : (v.ownerName || 'Ismeretlen Tulajdonos');
+
+    if (Array.isArray(v.crewMembers) && v.crewMembers.length > 0) {
+        v.crewMembers.forEach(function (m) {
+            html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>👤 ' + (m.role || 'Matróz') + ':</strong> <span style="color:#d4af37; font-weight:bold;">' + (m.name || m.email) + '</span></div>';
+        });
+        if (nonOwnerCrew.length === 0) {
+            html += '<div style="color:#aaa; font-style:italic; padding:6px 0 2px 0;">Nincs további bejegyzett legénység a lajstromban (csak a tulajdonos: <span style="color:#d4af37; font-weight:bold;">' + ownerDisplayNames + '</span>).</div>';
+        }
+    } else {
+        html += '<div class="stat-line" style="justify-content:flex-start; gap:10px;"><strong>👤 Tulajdonos:</strong> <span style="color:#d4af37; font-weight:bold;">' + ownerDisplayNames + '</span></div>';
+        html += '<div style="color:#aaa; font-style:italic; padding:6px 0 2px 0;">Nincs bejegyzett legénység a lajstromban (csak a tulajdonos: <span style="color:#d4af37; font-weight:bold;">' + ownerDisplayNames + '</span>).</div>';
+    }
+
+    html += '</div>';
+    body.innerHTML = html;
+}
+window.showVehicleDetails = showVehicleDetails;
 
 // --- VÁRÓTEREM ÉS SESSION POLLING LOGIKA ---
 var sessionPollInterval = null;
@@ -11771,21 +12343,21 @@ function checkActiveSessionStatus() {
         stopSessionPolling();
         return;
     }
-    
-    callBackend('getActiveSessionStatus', [selectedShipForDeparture.id], function(res) {
+
+    callBackend('getActiveSessionStatus', [selectedShipForDeparture.id], function (res) {
         if (!res || res.error) return;
-        
+
         var kihajozunkPanel = document.getElementById('kihajozunk-container');
         var waitingRoomPanel = document.getElementById('waiting-room-container');
         var fishingBtn = document.getElementById('waiting-room-fishing-btn');
         var pvpOverlay = document.getElementById('pvp-alarm-overlay');
-        
+
         if (kihajozunkPanel && waitingRoomPanel) {
             if (res.isActive) {
                 // Hajó aktív sessionben van
                 kihajozunkPanel.style.display = 'none';
                 waitingRoomPanel.style.display = 'block';
-                
+
                 if (res.status === 'WAITING') {
                     pvpOverlay.style.display = 'none';
                     if (res.waitingRoom && res.waitingRoom.allowFishing) {
@@ -11800,7 +12372,7 @@ function checkActiveSessionStatus() {
                     // Már a nyílt tengeren van, kalandozik
                     pvpOverlay.style.display = 'none';
                     fishingBtn.style.display = 'none';
-                    
+
                     // Ha még nem vagyunk a game_oldal-on, váltsunk át!
                     if (currentPageName !== 'game_oldal') {
                         uiAlert("A Játékmenet aktív! Átirányítás a kalandmezőre...", "Indulás");
@@ -11813,7 +12385,7 @@ function checkActiveSessionStatus() {
                 waitingRoomPanel.style.display = 'none';
             }
         }
-    }, function(err) {
+    }, function (err) {
         // Csendes naplózás háttérbeli lekérdezésnél
         console.warn("Session állapot lekérdezési figyelmeztetés:", err && err.message ? err.message : err);
     });
@@ -11833,105 +12405,105 @@ function joinPvpDefense() {
 // --- GAME OLDAL LOGIKA ---
 function loadGamePage(sessionData) {
     loadPage('game_oldal');
-    
+
     // Várjuk meg, amíg a loadPage aszinkron fetch-e betölti a game_oldal.html-t a DOM-ba
-    var checkExist = setInterval(function() {
+    var checkExist = setInterval(function () {
         if (document.getElementById('game-media-container')) {
             clearInterval(checkExist);
-            
+
             // UI Alaphelyzetbe állítása
             var titleEl = document.getElementById('game-title');
-    var mediaContainer = document.getElementById('game-media-container');
-    var narrativeOverlay = document.getElementById('game-narrative-overlay');
-    var minigameContainer = document.getElementById('game-minigame-container');
-    var returnShipBtn = document.getElementById('btn-return-ship');
-    var actionsContainer = document.getElementById('game-actions-container');
-    var narrativeText = document.getElementById('game-narrative-text');
-    var minigameFrame = document.getElementById('game-minigame-frame');
-    
-    mediaContainer.style.display = 'block';
-    narrativeOverlay.style.display = 'none';
-    minigameContainer.style.display = 'none';
-    if (returnShipBtn) returnShipBtn.style.display = 'block';
-    actionsContainer.innerHTML = ''; // Gombok törlése
-    
-    // HA HÁRTYAHALÁSZAT
-    if (sessionData && sessionData.gameType === 'Hártyahalászat') {
-        if (titleEl) titleEl.textContent = "Helyszín megközelítése...";
-        narrativeOverlay.style.display = 'none';
-        
-        // Ideiglenes: a felhőből hívjuk meg a webhatter02.mp4-et, ha nincs backend által küldött URL
-        var introVid = sessionData.introVideo || { video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/webhatter02.mp4', fallback_image: 'placeholder_fish.jpg' };
-        
-        playMediaSequence([introVid], function() {
-            if (titleEl) titleEl.textContent = "Hártyahalászat";
-            
-            // Azonnal indítjuk a minijátékot a videó lejátszása után, gomb nélkül!
+            var mediaContainer = document.getElementById('game-media-container');
+            var narrativeOverlay = document.getElementById('game-narrative-overlay');
+            var minigameContainer = document.getElementById('game-minigame-container');
+            var returnShipBtn = document.getElementById('btn-return-ship');
+            var actionsContainer = document.getElementById('game-actions-container');
+            var narrativeText = document.getElementById('game-narrative-text');
+            var minigameFrame = document.getElementById('game-minigame-frame');
+
+            mediaContainer.style.display = 'block';
             narrativeOverlay.style.display = 'none';
-            var closeIcon = document.querySelector('.header-close-icon');
-            if (closeIcon) closeIcon.style.display = 'none';
-            
-            minigameContainer.style.top = '0';
-            minigameContainer.style.left = '0';
-            minigameContainer.style.right = '0';
-            minigameContainer.style.bottom = '0';
-            minigameContainer.style.border = 'none';
-            minigameContainer.style.borderRadius = '0';
-            minigameContainer.style.zIndex = '100';
-            minigameContainer.style.display = 'block';
-            
-            var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
-            var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
-            minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
-        });
-        return;
-    }
-    
-    // HA KALANDJÁTÉK VAGY KÖNYVEXPEDÍCIÓ
-    if (sessionData) {
-        titleEl.textContent = sessionData.targetName ? sessionData.targetName + " (" + sessionData.gameType + ")" : "Aktív Játékmenet";
-        narrativeOverlay.style.display = 'block';
-        narrativeText.textContent = "A kaland elkezdődött. Az adatok szinkronizálása a szerverrel folyamatban van...";
-        
-        // Placeholder gomb, amíg a Játékmester AI meg nem érkezik
-        // Meghívjuk a Játékmegjelenítő Motort!
-        var currentJsonTree = null;
-        if (sessionData.adventureTree) {
-            // Ha közvetlenül benne van a JSON
-            currentJsonTree = typeof sessionData.adventureTree === 'string' ? JSON.parse(sessionData.adventureTree) : sessionData.adventureTree;
-        } else if (sessionData.kalandfa) {
-             currentJsonTree = typeof sessionData.kalandfa === 'string' ? JSON.parse(sessionData.kalandfa) : sessionData.kalandfa;
-        }
-        
-        if (currentJsonTree && currentJsonTree.nodes) {
-            renderGameCheckpoint(currentJsonTree, sessionData.currentCheckpoint || 'HAJO_START');
-        } else {
-            var placeholderBtn = document.createElement('button');
-            placeholderBtn.className = 'btn-primary';
-            placeholderBtn.textContent = 'Kaland Folytatása (Fallback)';
-            placeholderBtn.onclick = function() {
-                uiAlert("Várakozás a Játékmester AI JSON generálására...", "Rendszerüzenet");
-            };
-            actionsContainer.appendChild(placeholderBtn);
-        }
-    } else {
-        titleEl.textContent = "Ismeretlen Kaland";
-    }
-    
-    // Gomb eseménykezelők (statikusak)
-    returnShipBtn.onclick = function() {
-        uiAlert("Visszatérés a hajóra... (Itt kell backend mentést indítani)", "Útirány");
-        setTimeout(function() {
-            loadPage('fedelzet_oldal');
-        }, 1500);
-    };
-    
-    var btnCloseMinigame = document.getElementById('btn-close-minigame');
-    if (btnCloseMinigame) {
-        btnCloseMinigame.onclick = function() {
             minigameContainer.style.display = 'none';
-        };
-    }
+            if (returnShipBtn) returnShipBtn.style.display = 'block';
+            actionsContainer.innerHTML = ''; // Gombok törlése
+
+            // HA HÁRTYAHALÁSZAT
+            if (sessionData && sessionData.gameType === 'Hártyahalászat') {
+                if (titleEl) titleEl.textContent = "Helyszín megközelítése...";
+                narrativeOverlay.style.display = 'none';
+
+                // Ideiglenes: a felhőből hívjuk meg a webhatter02.mp4-et, ha nincs backend által küldött URL
+                var introVid = sessionData.introVideo || { video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/webhatter02.mp4', fallback_image: 'placeholder_fish.jpg' };
+
+                playMediaSequence([introVid], function () {
+                    if (titleEl) titleEl.textContent = "Hártyahalászat";
+
+                    // Azonnal indítjuk a minijátékot a videó lejátszása után, gomb nélkül!
+                    narrativeOverlay.style.display = 'none';
+                    var closeIcon = document.querySelector('.header-close-icon');
+                    if (closeIcon) closeIcon.style.display = 'none';
+
+                    minigameContainer.style.top = '0';
+                    minigameContainer.style.left = '0';
+                    minigameContainer.style.right = '0';
+                    minigameContainer.style.bottom = '0';
+                    minigameContainer.style.border = 'none';
+                    minigameContainer.style.borderRadius = '0';
+                    minigameContainer.style.zIndex = '100';
+                    minigameContainer.style.display = 'block';
+
+                    var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
+                    var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
+                    minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
+                });
+                return;
+            }
+
+            // HA KALANDJÁTÉK VAGY KÖNYVEXPEDÍCIÓ
+            if (sessionData) {
+                titleEl.textContent = sessionData.targetName ? sessionData.targetName + " (" + sessionData.gameType + ")" : "Aktív Játékmenet";
+                narrativeOverlay.style.display = 'block';
+                narrativeText.textContent = "A kaland elkezdődött. Az adatok szinkronizálása a szerverrel folyamatban van...";
+
+                // Placeholder gomb, amíg a Játékmester AI meg nem érkezik
+                // Meghívjuk a Játékmegjelenítő Motort!
+                var currentJsonTree = null;
+                if (sessionData.adventureTree) {
+                    // Ha közvetlenül benne van a JSON
+                    currentJsonTree = typeof sessionData.adventureTree === 'string' ? JSON.parse(sessionData.adventureTree) : sessionData.adventureTree;
+                } else if (sessionData.kalandfa) {
+                    currentJsonTree = typeof sessionData.kalandfa === 'string' ? JSON.parse(sessionData.kalandfa) : sessionData.kalandfa;
+                }
+
+                if (currentJsonTree && currentJsonTree.nodes) {
+                    renderGameCheckpoint(currentJsonTree, sessionData.currentCheckpoint || 'HAJO_START');
+                } else {
+                    var placeholderBtn = document.createElement('button');
+                    placeholderBtn.className = 'btn-primary';
+                    placeholderBtn.textContent = 'Kaland Folytatása (Fallback)';
+                    placeholderBtn.onclick = function () {
+                        uiAlert("Várakozás a Játékmester AI JSON generálására...", "Rendszerüzenet");
+                    };
+                    actionsContainer.appendChild(placeholderBtn);
+                }
+            } else {
+                titleEl.textContent = "Ismeretlen Kaland";
+            }
+
+            // Gomb eseménykezelők (statikusak)
+            returnShipBtn.onclick = function () {
+                uiAlert("Visszatérés a hajóra... (Itt kell backend mentést indítani)", "Útirány");
+                setTimeout(function () {
+                    loadPage('fedelzet_oldal');
+                }, 1500);
+            };
+
+            var btnCloseMinigame = document.getElementById('btn-close-minigame');
+            if (btnCloseMinigame) {
+                btnCloseMinigame.onclick = function () {
+                    minigameContainer.style.display = 'none';
+                };
+            }
         }
     }, 100);
 }
@@ -11943,20 +12515,20 @@ function loadGamePage(sessionData) {
 var GameAssetPreloader = {
     preloadedImages: {},
     preloadedIframes: {}, // Google Drive / Minigame iframe-ek
-    
+
     // Képek előtöltése (Fallback)
-    preloadImage: function(url) {
+    preloadImage: function (url) {
         if (!url || this.preloadedImages[url]) return;
         var img = new Image();
         img.src = url;
         this.preloadedImages[url] = img;
         console.log("[Preloader] Kép előtöltve: " + url);
     },
-    
+
     // Videó / Iframe előtöltése (Láthatatlan DOM elemmel)
-    preloadIframe: function(url) {
+    preloadIframe: function (url) {
         if (!url || this.preloadedIframes[url]) return;
-        
+
         // Memória-gazdálkodás: Egyszerre max 2 előtöltött videó/minijáték lehet a RAM-ban!
         var keys = Object.keys(this.preloadedIframes);
         if (keys.length >= 2) {
@@ -11968,7 +12540,7 @@ var GameAssetPreloader = {
             delete this.preloadedIframes[oldestKey];
             console.log("[Preloader] Memória felszabadítva: " + oldestKey);
         }
-        
+
         var iframe = document.createElement('iframe');
         iframe.style.position = 'absolute';
         iframe.style.top = '-9999px';
@@ -11976,23 +12548,23 @@ var GameAssetPreloader = {
         iframe.style.width = '1px';
         iframe.style.height = '1px';
         iframe.style.opacity = '0';
-        
+
         // Ha Google Drive link, át kell alakítani /view-ról /preview-ra a beágyazáshoz
         var finalUrl = url;
         if (url.includes('drive.google.com') && url.includes('/view')) {
             finalUrl = url.replace('/view', '/preview');
         }
-        
+
         iframe.src = finalUrl;
         document.body.appendChild(iframe);
         this.preloadedIframes[url] = iframe;
         console.log("[Preloader] Videó/Minigame Iframe előtöltve: " + finalUrl);
     },
-    
+
     // Intelligens fa-elemző (Kiolvassa a következő lehetséges utakat)
-    analyzeAndPreloadNext: function(sessionData, currentCheckpoint) {
+    analyzeAndPreloadNext: function (sessionData, currentCheckpoint) {
         if (!sessionData) return;
-        
+
         // TODO: A JSON fa bejárása és a checkpoint utáni közvetlen csomópontok media fájljainak kiszedése
         // Jelenleg egy Placeholder logika:
         console.log("[Preloader] Elemzés a következő csomópontokhoz (" + currentCheckpoint + ")...");
@@ -12011,29 +12583,29 @@ var GameAssetPreloader = {
 function playMediaSequence(mediaArray, onCompleteCallback) {
     var videoEl = document.getElementById('game-video-player');
     var fallbackImg = document.getElementById('game-fallback-image');
-    
+
     if (!mediaArray || mediaArray.length === 0) {
         if (onCompleteCallback) onCompleteCallback();
         return;
     }
-    
+
     var currentIndex = 0;
-    
+
     function playNext() {
         if (currentIndex >= mediaArray.length) {
             if (onCompleteCallback) onCompleteCallback();
             return;
         }
-        
+
         var media = mediaArray[currentIndex];
         currentIndex++;
-        
+
         if (media.video_url) {
             videoEl.src = media.video_url; // Később itt kezeljük a Drive nyers mp4 linkeket is
             videoEl.style.display = 'block';
             fallbackImg.style.display = 'none';
             videoEl.onended = playNext;
-            videoEl.onerror = function() {
+            videoEl.onerror = function () {
                 // Ha a videó nem tölt be, jön a fallback
                 videoEl.style.display = 'none';
                 if (media.fallback_image) {
@@ -12044,7 +12616,7 @@ function playMediaSequence(mediaArray, onCompleteCallback) {
                     playNext();
                 }
             };
-            videoEl.play().catch(function(e) {
+            videoEl.play().catch(function (e) {
                 // Autoplay block esetén is ugrik a fallbackre
                 videoEl.onerror();
             });
@@ -12057,7 +12629,7 @@ function playMediaSequence(mediaArray, onCompleteCallback) {
             playNext();
         }
     }
-    
+
     playNext();
 }
 
@@ -12066,23 +12638,23 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         console.error("Érvénytelen JSON struktúra a renderelőben!");
         return;
     }
-    
+
     var titleEl = document.getElementById('game-title');
     var videoEl = document.getElementById('game-video-player');
     var fallbackImg = document.getElementById('game-fallback-image');
     var narrativeText = document.getElementById('game-narrative-text');
     var actionsContainer = document.getElementById('game-actions-container');
     var narrativeOverlay = document.getElementById('game-narrative-overlay');
-    
+
     // Alaphelyzet
-    if(videoEl) videoEl.style.display = 'none';
-    if(fallbackImg) fallbackImg.style.display = 'none';
+    if (videoEl) videoEl.style.display = 'none';
+    if (fallbackImg) fallbackImg.style.display = 'none';
     narrativeOverlay.style.display = 'block';
     actionsContainer.innerHTML = '';
-    
+
     var currentNode = null;
     var isTravel = false;
-    
+
     // NODE KIKERESÉSE (Támogatja a Könyvexpedíció és a Kalandjáték struktúrákat is)
     if (Array.isArray(sessionData.nodes)) {
         // Kalandjáték struktúra (CP_1_DEPARTURE, CP_2_TRAVEL...)
@@ -12120,7 +12692,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             }
         }
     }
-    
+
     // Ha nem találtuk meg a Node-ot a hálóban, mert már vége van (vagy egyedi Waiting Room van)
     if (!currentNode) {
         if (currentCheckpoint === 'WAITING_ROOM') {
@@ -12129,9 +12701,9 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             var btnReturn = document.createElement('button');
             btnReturn.className = 'btn-primary';
             btnReturn.textContent = 'Visszatérés a Hajóra';
-            btnReturn.onclick = function() {
-                callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function() {
-                     loadPage('fedelzet_oldal');
+            btnReturn.onclick = function () {
+                callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function () {
+                    loadPage('fedelzet_oldal');
                 });
             };
             actionsContainer.appendChild(btnReturn);
@@ -12140,68 +12712,68 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         narrativeText.textContent = "Hiba: Az aktuális állomás (" + currentCheckpoint + ") nem található a térképen!";
         return;
     }
-    
+
     // ALAP CÍM BEÁLLÍTÁS
     titleEl.textContent = currentNode.title || currentNode.name || "Kaland folyamatban...";
 
     // 1. HAJÓ (SAFE_ZONE) - KÖNYVEXPEDÍCIÓ
     if (currentNode.type === "SAFE_ZONE") {
         narrativeText.textContent = "A hajó biztonságos vizeken ringatózik. Legénység várja a parancsot!";
-        
+
         if (currentNode.actions) {
-            currentNode.actions.forEach(function(action) {
+            currentNode.actions.forEach(function (action) {
                 var btn = document.createElement('button');
                 if (action === 'DEPART_TO_FIRST_LOCATION') {
                     btn.className = 'btn-primary';
                     btn.textContent = 'Indulás az Expedícióra';
-                    btn.onclick = function() { 
+                    btn.onclick = function () {
                         document.getElementById('loading-overlay').style.display = 'flex';
-                        callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'DEPART_TO_FIRST_LOCATION' }], function(res) {
+                        callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'DEPART_TO_FIRST_LOCATION' }], function (res) {
                             document.getElementById('loading-overlay').style.display = 'none';
                             if (res.success && res.sessionData) {
-                                renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint); 
+                                renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint);
                             } else { uiAlert(res.error || "Hiba az induláskor!"); }
                         });
                     };
                 } else if (action === 'START_FISHING') {
                     btn.className = 'btn-info';
                     btn.textContent = 'Hártyahalászat (Minigame)';
-                    btn.onclick = function() { 
+                    btn.onclick = function () {
                         document.getElementById('game-minigame-container').style.display = 'block';
-                        document.getElementById('game-minigame-frame').src = "about:blank"; 
+                        document.getElementById('game-minigame-frame').src = "about:blank";
                     };
                 } else if (action === 'RETURN_TO_SHIP') {
                     btn.className = 'btn-danger';
                     btn.textContent = 'Visszatérés a Hajóra';
-                    btn.onclick = function() { loadPage('fedelzet_oldal'); };
+                    btn.onclick = function () { loadPage('fedelzet_oldal'); };
                 }
                 actionsContainer.appendChild(btn);
             });
         }
     }
-    
+
     // 2. KÖNYVEXPEDÍCIÓ UTAZÁS
     else if (isTravel && currentNode.mediaSequence) {
         narrativeText.textContent = "Az utazás folyamatban van...";
         actionsContainer.innerHTML = "<em>Kérlek várj, a videók betöltése folyamatban...</em>";
-        
+
         var mediaToPlay = [];
         if (currentNode.mediaSequence.departure) mediaToPlay.push(currentNode.mediaSequence.departure);
         if (currentNode.mediaSequence.map_directives) {
-            mediaToPlay.push(currentNode.mediaSequence.map_directives.blind); 
+            mediaToPlay.push(currentNode.mediaSequence.map_directives.blind);
         }
         if (currentNode.mediaSequence.arrival) mediaToPlay.push(currentNode.mediaSequence.arrival);
-        
-        playMediaSequence(mediaToPlay, function() {
+
+        playMediaSequence(mediaToPlay, function () {
             narrativeText.textContent = "Megérkeztetek a célhoz. Itt az ideje a Képzettségpróbának!";
             actionsContainer.innerHTML = '';
-            
+
             var btnArrive = document.createElement('button');
             btnArrive.className = 'btn-primary';
             btnArrive.textContent = 'Utazás folytatása / Képzettségpróba';
-            btnArrive.onclick = function() {
+            btnArrive.onclick = function () {
                 document.getElementById('loading-overlay').style.display = 'flex';
-                callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.toNode || 'LOC_1' } }], function(res) {
+                callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.toNode || 'LOC_1' } }], function (res) {
                     document.getElementById('loading-overlay').style.display = 'none';
                     if (res.success && res.sessionData) {
                         renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint);
@@ -12218,34 +12790,34 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         if (currentNode.introVideo) {
             actionsContainer.innerHTML = "<em>Videó betöltése...</em>";
             var kMedia = [{ video_url: currentNode.introVideo, fallback_image: '' }]; // Ideális esetben ez URL lesz, most csak ID van az .md-ben
-            playMediaSequence(kMedia, function() {
+            playMediaSequence(kMedia, function () {
                 renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer);
             });
         } else {
             renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer);
         }
     }
-    
+
     // 4. KÖNYVEXPEDÍCIÓ LELŐHELY (LOCATIONS)
     else if (currentNode.minigameData) {
         narrativeText.textContent = "Megérkeztetek. Itt az idő belevetni magatokat a feladatba, hátha lapul itt egy fejezet!";
-        
+
         var btnPlay = document.createElement('button');
         btnPlay.className = 'btn-primary';
         btnPlay.textContent = 'Minijáték Indítása';
-        btnPlay.onclick = function() {
+        btnPlay.onclick = function () {
             uiAlert("Minijáték (" + currentNode.minigameData.id + ") betöltése...");
             document.getElementById('game-minigame-container').style.display = 'block';
-            document.getElementById('game-minigame-frame').src = "about:blank"; 
+            document.getElementById('game-minigame-frame').src = "about:blank";
         };
         actionsContainer.appendChild(btnPlay);
-        
+
         var btnReturnLoc = document.createElement('button');
         btnReturnLoc.className = 'btn-danger';
         btnReturnLoc.textContent = 'Visszatérés a Hajóra';
-        btnReturnLoc.onclick = function() {
+        btnReturnLoc.onclick = function () {
             document.getElementById('loading-overlay').style.display = 'flex';
-            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function(res) {
+            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function (res) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success && res.sessionData) {
                     renderGameCheckpoint(res.sessionData, 'HAJO_START');
@@ -12262,15 +12834,15 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
 function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer) {
     narrativeText.textContent = currentNode.introNarrative || currentNode.narrative || "Esemény a kaland során.";
     actionsContainer.innerHTML = '';
-    
+
     // Döntési gombok a success/failed ágak alapján (Kalandjáték specifikus)
     if (currentNode.successBranch) {
         var btnS = document.createElement('button');
         btnS.className = 'btn-success';
         btnS.textContent = 'Kaland Sikeres Folytatása';
-        btnS.onclick = function() {
+        btnS.onclick = function () {
             document.getElementById('loading-overlay').style.display = 'flex';
-            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.successBranch.nextCheckpoint } }], function(res) {
+            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.successBranch.nextCheckpoint } }], function (res) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success && res.sessionData) {
                     renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint || currentNode.successBranch.nextCheckpoint);
@@ -12283,18 +12855,18 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
         var btnF = document.createElement('button');
         btnF.className = 'btn-danger';
         btnF.textContent = 'Kudarc/Harc';
-        btnF.onclick = function() {
+        btnF.onclick = function () {
             var nextCP = currentNode.failedBranch.nextCheckpoint || 'FAILED';
             if (currentNode.failedBranch.status === 'FAILED') nextCP = 'FAILED';
-            
+
             if (nextCP === 'FAILED') {
                 uiAlert(currentNode.failedBranch.narrative || "Súlyos kudarc.");
                 loadPage('fedelzet_oldal');
                 return;
             }
-            
+
             document.getElementById('loading-overlay').style.display = 'flex';
-            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: nextCP } }], function(res) {
+            callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: nextCP } }], function (res) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success && res.sessionData) {
                     renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint || nextCP);
@@ -12303,17 +12875,17 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
         };
         actionsContainer.appendChild(btnF);
     }
-    
+
     if (!currentNode.successBranch && !currentNode.failedBranch) {
         var btnRet = document.createElement('button');
         btnRet.className = 'btn-primary';
         btnRet.textContent = 'Zárás és Visszatérés';
-        btnRet.onclick = function() { loadPage('fedelzet_oldal'); };
+        btnRet.onclick = function () { loadPage('fedelzet_oldal'); };
         actionsContainer.appendChild(btnRet);
     }
 }
 
-    
+
 
 
 
@@ -12329,7 +12901,7 @@ window.onDiceRollCompleted = null; // Callback a Kalandjátékhoz
 function launchDiceRoller(callback) {
     var minigameContainer = document.getElementById('game-minigame-container');
     var minigameFrame = document.getElementById('game-minigame-frame');
-    
+
     if (!minigameContainer || !minigameFrame) {
         console.error("Nem található a minigame konténer a DOM-ban!");
         return;
@@ -12351,28 +12923,28 @@ function launchDiceRoller(callback) {
     minigameContainer.style.maxHeight = '90vh';
     minigameContainer.style.border = '3px solid #d4af37'; // Arany keret
     minigameContainer.style.borderRadius = '15px';
-    minigameContainer.style.zIndex = '1000'; 
+    minigameContainer.style.zIndex = '1000';
     minigameContainer.style.backgroundColor = 'rgba(100, 10, 15, 0.9)'; // Bársonyvörös, 90% áttetszőség
     minigameContainer.style.backdropFilter = 'blur(10px)'; // Mögötte lévő blur
     minigameContainer.style.boxShadow = '0 0 50px rgba(0,0,0,0.8), 0 0 0 9999px rgba(0,0,0,0.6)'; // Külső sötétítés
     minigameContainer.style.display = 'block';
-    
+
     // Betöltjük a D100 minijátékot (Lokálisan is működik!)
     minigameFrame.src = 'minigame_dice.html';
-    minigameFrame.onload = function() { minigameFrame.contentWindow.focus(); };
+    minigameFrame.onload = function () { minigameFrame.contentWindow.focus(); };
 }
 
 // Figyeljük a postMessage üzeneteket az iframe-ből
-window.addEventListener('message', function(event) {
+window.addEventListener('message', function (event) {
     if (event.data && event.data.type === 'backendCall') {
-        callBackend(event.data.action, event.data.params, 
-            function(response) {
-                if(event.source) {
+        callBackend(event.data.action, event.data.params,
+            function (response) {
+                if (event.source) {
                     event.source.postMessage({ messageId: event.data.messageId, response: response }, '*');
                 }
             },
-            function(error) {
-                if(event.source) {
+            function (error) {
+                if (event.source) {
                     event.source.postMessage({ messageId: event.data.messageId, error: error }, '*');
                 }
             }
@@ -12381,11 +12953,11 @@ window.addEventListener('message', function(event) {
     }
 
     if (event.data && event.data.source === 'threejs-minigame' && event.data.status === 'COMPLETED') {
-        
+
         // Visszaállítjuk a kikötő gombot
         var closeIcon = document.querySelector('.header-close-icon');
         if (closeIcon) closeIcon.style.display = 'block';
-        
+
         // Eltüntetjük a 3D játékot
         var minigameContainer = document.getElementById('game-minigame-container');
         if (minigameContainer) {
@@ -12395,19 +12967,19 @@ window.addEventListener('message', function(event) {
         if (event.data.gameType === 'FISHING') {
             // Hártyahalászat lezárása
             console.log("Hártyahalászat vége. Típus: " + event.data.exitType);
-            
+
             var targetPage = event.data.targetPage || (event.data.exitType === 'DESTROYED' ? 'hajomuhely_oldal' : 'fedelzet_oldal');
-            
+
             if (event.data.exitType === 'DESTROYED') {
                 loadPage('hajomuhely_oldal');
                 return;
             }
-            
+
             // Hebok kikötőbe utazó videó (terkeputazas01.mp4) lejátszása és fedelzet_oldal betöltése
-            playMediaSequence([{ 
-                video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/terkeputazas01.mp4', 
-                fallback_image: '' 
-            }], function() {
+            playMediaSequence([{
+                video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/terkeputazas01.mp4',
+                fallback_image: ''
+            }], function () {
                 console.log("Hebok kikötőbe utazás videó sikeresen lejátszva.");
                 loadPage(targetPage);
             });
@@ -12417,39 +12989,39 @@ window.addEventListener('message', function(event) {
         console.log("Kockadobás sikeresen befejeződött! Eredmény: " + event.data.finalScore);
         // Töltőképernyő bekapcsolása amíg a szerverre mentünk
         document.getElementById('loading-overlay').style.display = 'flex';
-        
+
         // 1. Mentés a Google Sheets-be (I oszlop) a biztonság és perzisztencia érdekében!
-        callBackend('saveDiceRoll', [event.data.finalScore], 
-        // Sikeres lefutás
-        function(response) {
-            var loader = document.getElementById('loading-overlay');
-            if(loader) loader.style.display = 'none';
-            
-            if (response && response.success) {
-                console.log("Szerver válasza: " + response.message);
-            } else {
-                console.error("Hiba a dobás mentésekor a szerverre!", response);
-            }
-            
-            window.lastDiceRollResult = event.data.finalScore;
-            if (typeof window.onDiceRollCompleted === 'function') {
-                window.onDiceRollCompleted(window.lastDiceRollResult);
-                window.onDiceRollCompleted = null;
-            }
-        }, 
-        // Hiba esetén
-        function(err) {
-            var loader = document.getElementById('loading-overlay');
-            if(loader) loader.style.display = 'none';
-            console.error("FATAL: Nem sikerült elérni a szervert vagy a mentés összeomlott!", err);
-            
-            // Azért lokálisan tovább engedjük a játékost, hogy ne akadjon el!
-            window.lastDiceRollResult = event.data.finalScore;
-            if (typeof window.onDiceRollCompleted === 'function') {
-                window.onDiceRollCompleted(window.lastDiceRollResult);
-                window.onDiceRollCompleted = null;
-            }
-        });
+        callBackend('saveDiceRoll', [event.data.finalScore],
+            // Sikeres lefutás
+            function (response) {
+                var loader = document.getElementById('loading-overlay');
+                if (loader) loader.style.display = 'none';
+
+                if (response && response.success) {
+                    console.log("Szerver válasza: " + response.message);
+                } else {
+                    console.error("Hiba a dobás mentésekor a szerverre!", response);
+                }
+
+                window.lastDiceRollResult = event.data.finalScore;
+                if (typeof window.onDiceRollCompleted === 'function') {
+                    window.onDiceRollCompleted(window.lastDiceRollResult);
+                    window.onDiceRollCompleted = null;
+                }
+            },
+            // Hiba esetén
+            function (err) {
+                var loader = document.getElementById('loading-overlay');
+                if (loader) loader.style.display = 'none';
+                console.error("FATAL: Nem sikerült elérni a szervert vagy a mentés összeomlott!", err);
+
+                // Azért lokálisan tovább engedjük a játékost, hogy ne akadjon el!
+                window.lastDiceRollResult = event.data.finalScore;
+                if (typeof window.onDiceRollCompleted === 'function') {
+                    window.onDiceRollCompleted(window.lastDiceRollResult);
+                    window.onDiceRollCompleted = null;
+                }
+            });
     }
 });
 
@@ -12479,11 +13051,11 @@ function cleanupKikotoOldal() {
         cancelAnimationFrame(kikotoAnimFrameId);
         kikotoAnimFrameId = null;
     }
-    kikotoCleanupCallbacks.forEach(function(cb) {
+    kikotoCleanupCallbacks.forEach(function (cb) {
         try { cb(); } catch (e) { console.warn('Kikoto cleanup error:', e); }
     });
     kikotoCleanupCallbacks = [];
-    
+
     var container = document.getElementById('webgl-canvas-container');
     if (container) {
         container.innerHTML = '';
@@ -12545,16 +13117,16 @@ function initializeKikotoOldal() {
         import('three/addons/loaders/GLTFLoader.js'),
         import('three/addons/environments/RoomEnvironment.js'),
         import('three/addons/objects/Water.js')
-    ]).then(function(modules) {
+    ]).then(function (modules) {
         const THREE = modules[0];
         const { OrbitControls } = modules[1];
         const { GLTFLoader } = modules[2];
         const { RoomEnvironment } = modules[3];
         const { Water } = modules[4];
-        
+
         window.THREE = THREE;
         runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Water);
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.error("❌ Hiba a Three.js 3D Kikötő modulok betöltésekor, visszaváltás 2D felületre:", err);
         window._kikoto3DLoading = false;
         window._kikoto3DInitialized = false;
@@ -12567,8 +13139,12 @@ window.initializeKikotoOldal = initializeKikotoOldal;
 window.initKikotoOldal = initializeKikotoOldal;
 
 function tryGoToDeck() {
-    if (typeof window.openFedelzetModal === 'function') {
+    if (typeof openFedelzetModal === 'function') {
+        openFedelzetModal();
+    } else if (typeof window.openFedelzetModal === 'function') {
         window.openFedelzetModal();
+    } else if (window.parent && typeof window.parent.openFedelzetModal === 'function') {
+        window.parent.openFedelzetModal();
     } else if (typeof loadPage === 'function') {
         loadPage('fedelzet_oldal');
     }
@@ -12577,1628 +13153,303 @@ window.tryGoToDeck = tryGoToDeck;
 
 function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Water) {
     kikoto3DRunning = true;
-    
-// Globális Three.js referencia a Toolbox és segédeszközök számára
-        window.THREE = THREE;
 
-        let scene, camera, renderer, controls;
-        let harborModel = null;
-        let water = null;
-        let defaultCameraPos = new THREE.Vector3();
-        let defaultTargetPos = new THREE.Vector3();
-        let clock = new THREE.Clock();
-        let animationMixer = null;
-        let foamRingMesh = null;
-        let cranePadMesh = null;
-        let cranePadBaseRotation = null;
-        let palmTreesList = [];
-        let cegerMesh = null;
-        let cegerBaseRotation = null;
-        let palmBokorMesh = null;
-        let palmBokorBaseRotation = null;
-        let boatGroup = null;
-        let boatBasePos = new THREE.Vector3(-35.3, 0.10, -7.55);
-        let boatBaseRot = new THREE.Euler(0, Math.PI / 2, 0);
-        let pirateShipGroup = null;
-        let pirateShipBasePos = new THREE.Vector3(-45.0, -0.40, -13.3);
-        let pirateShipBaseRot = new THREE.Euler(0, Math.PI / 2, 0);
-        let smallShipGroup = null;
-        let smallShipBasePos = new THREE.Vector3(-44.6, -0.40, 14.7);
-        let smallShipBaseRot = new THREE.Euler(0, Math.PI / 2, 0);
-        let repairShipGroup = null;
-        let repairShipBasePos = new THREE.Vector3(-35.7, -0.40, -27.9);
-        let repairShipBaseRot = new THREE.Euler(0, -Math.PI / 2 - THREE.MathUtils.degToRad(40), 0);
-        let steampunkBoat2Group = null;
-        let steampunkBoat2BasePos = new THREE.Vector3(-33.5, 0.25, 10.4);
-        let steampunkBoat2BaseRot = new THREE.Euler(0, Math.PI, 0);
-        let steampunkBoat3Group = null;
-        let steampunkBoat3BasePos = new THREE.Vector3(-33.8, 0.25, 5.7);
-        let steampunkBoat3BaseRot = new THREE.Euler(0, Math.PI, 0);
-        let rowBoat1Group = null;
-        let rowBoat1BasePos = new THREE.Vector3(-21.5, 0.00, 27.1);
-        let rowBoat1BaseRot = new THREE.Euler(0, Math.PI / 2, 0);
-        let rowBoat2Group = null;
-        let rowBoat2BasePos = new THREE.Vector3(-20.4, 0.00, -31.9);
-        let rowBoat2BaseRot = new THREE.Euler(0, Math.PI / 2, 0);
-        let brownBoat1Group = null;
-        let brownBoat1BasePos = new THREE.Vector3(-13.0, 0.00, -34.5);
-        let brownBoat1BaseRot = new THREE.Euler(0, Math.PI / 4, 0);
-        let brownBoat2Group = null;
-        let brownBoat2BasePos = new THREE.Vector3(-29.0, 0.00, 20.3);
-        let brownBoat2BaseRot = new THREE.Euler(0, Math.PI / 2 + THREE.MathUtils.degToRad(10), 0);
-        let greyBoatGroup = null;
-        let greyBoatBasePos = new THREE.Vector3(-11.5, 0.00, 30.9);
-        let greyBoatBaseRot = new THREE.Euler(0, Math.PI / 4, 0);
+    // Globális Three.js referencia a Toolbox és segédeszközök számára
+    window.THREE = THREE;
 
-        // Víz alatti és találkozási hullám rendszerek
-        let boatRipplesList = [];
-        let boatRipplesGroup = null;
-        let boatReflectionsList = [];
-        let boatReflectionsGroup = null;
+    let scene, camera, renderer, controls;
+    let harborModel = null;
+    let water = null;
+    let defaultCameraPos = new THREE.Vector3();
+    let defaultTargetPos = new THREE.Vector3();
+    let clock = new THREE.Clock();
+    let animationMixer = null;
+    let foamRingMesh = null;
+    let cranePadMesh = null;
+    let cranePadBaseRotation = null;
+    let palmTreesList = [];
+    let cegerMesh = null;
+    let cegerBaseRotation = null;
+    let palmBokorMesh = null;
+    let palmBokorBaseRotation = null;
+    let boatGroup = null;
+    let boatBasePos = new THREE.Vector3(-35.3, 0.10, -7.55);
+    let boatBaseRot = new THREE.Euler(0, Math.PI / 2, 0);
+    let pirateShipGroup = null;
+    let pirateShipBasePos = new THREE.Vector3(-45.0, -0.40, -13.3);
+    let pirateShipBaseRot = new THREE.Euler(0, Math.PI / 2, 0);
+    let smallShipGroup = null;
+    let smallShipBasePos = new THREE.Vector3(-44.6, -0.40, 14.7);
+    let smallShipBaseRot = new THREE.Euler(0, Math.PI / 2, 0);
+    let repairShipGroup = null;
+    let repairShipBasePos = new THREE.Vector3(-35.7, -0.40, -27.9);
+    let repairShipBaseRot = new THREE.Euler(0, -Math.PI / 2 - THREE.MathUtils.degToRad(40), 0);
+    let steampunkBoat2Group = null;
+    let steampunkBoat2BasePos = new THREE.Vector3(-33.5, 0.25, 10.4);
+    let steampunkBoat2BaseRot = new THREE.Euler(0, Math.PI, 0);
+    let steampunkBoat3Group = null;
+    let steampunkBoat3BasePos = new THREE.Vector3(-33.8, 0.25, 5.7);
+    let steampunkBoat3BaseRot = new THREE.Euler(0, Math.PI, 0);
+    let rowBoat1Group = null;
+    let rowBoat1BasePos = new THREE.Vector3(-21.5, 0.00, 27.1);
+    let rowBoat1BaseRot = new THREE.Euler(0, Math.PI / 2, 0);
+    let rowBoat2Group = null;
+    let rowBoat2BasePos = new THREE.Vector3(-20.4, 0.00, -31.9);
+    let rowBoat2BaseRot = new THREE.Euler(0, Math.PI / 2, 0);
+    let brownBoat1Group = null;
+    let brownBoat1BasePos = new THREE.Vector3(-13.0, 0.00, -34.5);
+    let brownBoat1BaseRot = new THREE.Euler(0, Math.PI / 4, 0);
+    let brownBoat2Group = null;
+    let brownBoat2BasePos = new THREE.Vector3(-29.0, 0.00, 20.3);
+    let brownBoat2BaseRot = new THREE.Euler(0, Math.PI / 2 + THREE.MathUtils.degToRad(10), 0);
+    let greyBoatGroup = null;
+    let greyBoatBasePos = new THREE.Vector3(-11.5, 0.00, 30.9);
+    let greyBoatBaseRot = new THREE.Euler(0, Math.PI / 4, 0);
 
-        // ─── INTERAKTÍV ÉPÜLETEK ÉS HELYSZÍNVÁLASZTÓ MOTOR ───────────────────────────
-        const raycaster = new THREE.Raycaster();
-        const mousePointer = new THREE.Vector2();
-        let interactiveLocations = [];
-        let currentHoveredLocation = null;
-        let isCinematicTransitioning = false;
-        let isModalOpen = false;
-        let cinematicStartTime = 0;
-        let cinematicDuration = 1.2; // másodperc
-        let cinematicStartCamPos = new THREE.Vector3();
-        let cinematicStartLookAt = new THREE.Vector3();
-        let cinematicEndCamPos = new THREE.Vector3();
-        let cinematicEndLookAt = new THREE.Vector3();
-        let pointerDownPos = { x: 0, y: 0 };
-        let pointerDownTime = 0;
+    // Víz alatti és találkozási hullám rendszerek
+    let boatRipplesList = [];
+    let boatRipplesGroup = null;
+    let boatReflectionsList = [];
+    let boatReflectionsGroup = null;
 
-        /**
-         * Nyelvi fordítás dinamikus lekérdezése (web_fordito.js / parent ablak alapján)
-         */
-        function getLocalizedText(langKey, fallback) {
-            try {
-                if (window.t && typeof window.t === 'function') {
-                    const res = window.t(langKey);
-                    if (res && res !== langKey) return res;
-                }
-                if (window.parent && window.parent.t && typeof window.parent.t === 'function') {
-                    const res = window.parent.t(langKey);
-                    if (res && res !== langKey) return res;
-                }
-            } catch (e) {
-                console.warn("Nyelvi fordítás sikertelen:", e);
+    // ─── INTERAKTÍV ÉPÜLETEK ÉS HELYSZÍNVÁLASZTÓ MOTOR ───────────────────────────
+    const raycaster = new THREE.Raycaster();
+    const mousePointer = new THREE.Vector2();
+    let interactiveLocations = [];
+    let currentHoveredLocation = null;
+    let isCinematicTransitioning = false;
+    let isModalOpen = false;
+    let cinematicStartTime = 0;
+    let cinematicDuration = 1.2; // másodperc
+    let cinematicStartCamPos = new THREE.Vector3();
+    let cinematicStartLookAt = new THREE.Vector3();
+    let cinematicEndCamPos = new THREE.Vector3();
+    let cinematicEndLookAt = new THREE.Vector3();
+    let pointerDownPos = { x: 0, y: 0 };
+    let pointerDownTime = 0;
+
+    /**
+     * Nyelvi fordítás dinamikus lekérdezése (web_fordito.js / parent ablak alapján)
+     */
+    function getLocalizedText(langKey, fallback) {
+        try {
+            if (window.t && typeof window.t === 'function') {
+                const res = window.t(langKey);
+                if (res && res !== langKey) return res;
             }
-            return fallback;
+            if (window.parent && window.parent.t && typeof window.parent.t === 'function') {
+                const res = window.parent.t(langKey);
+                if (res && res !== langKey) return res;
+            }
+        } catch (e) {
+            console.warn("Nyelvi fordítás sikertelen:", e);
         }
+        return fallback;
+    }
 
-        /**
-         * Épület hover derengés / emissive kiemelés aktiválása
-         */
-        function applyHighlight(meshes) {
-            if (!meshes || meshes.length === 0) return;
-            meshes.forEach(mesh => {
-                if (!mesh || !mesh.material) return;
-                const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-                mats.forEach(mat => {
-                    if (!mat) return;
-                    if (mat._origEmissive === undefined) {
-                        mat._origEmissive = mat.emissive ? mat.emissive.clone() : new THREE.Color(0x000000);
-                        mat._origEmissiveIntensity = (mat.emissiveIntensity !== undefined) ? mat.emissiveIntensity : 0.0;
-                    }
-                    if (mat.emissive) {
-                        // Finom, diszkrét tengerkék derengés
-                        mat.emissive.set(0x183b48);
-                        mat.emissiveIntensity = 0.32;
-                        mat.needsUpdate = true;
-                    }
-                });
+    /**
+     * Épület hover derengés / emissive kiemelés aktiválása
+     */
+    function applyHighlight(meshes) {
+        if (!meshes || meshes.length === 0) return;
+        meshes.forEach(mesh => {
+            if (!mesh || !mesh.material) return;
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            mats.forEach(mat => {
+                if (!mat) return;
+                if (mat._origEmissive === undefined) {
+                    mat._origEmissive = mat.emissive ? mat.emissive.clone() : new THREE.Color(0x000000);
+                    mat._origEmissiveIntensity = (mat.emissiveIntensity !== undefined) ? mat.emissiveIntensity : 0.0;
+                }
+                if (mat.emissive) {
+                    // Finom, diszkrét tengerkék derengés
+                    mat.emissive.set(0x183b48);
+                    mat.emissiveIntensity = 0.32;
+                    mat.needsUpdate = true;
+                }
             });
-        }
+        });
+    }
 
-        /**
-         * Épület hover derengés visszaállítása alapállapotra
-         */
-        function removeHighlight(meshes) {
-            if (!meshes || meshes.length === 0) return;
-            meshes.forEach(mesh => {
-                if (!mesh || !mesh.material) return;
-                const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-                mats.forEach(mat => {
-                    if (!mat || mat._origEmissive === undefined) return;
-                    if (mat.emissive) {
-                        mat.emissive.copy(mat._origEmissive);
-                        mat.emissiveIntensity = mat._origEmissiveIntensity;
-                        mat.needsUpdate = true;
-                    }
-                });
+    /**
+     * Épület hover derengés visszaállítása alapállapotra
+     */
+    function removeHighlight(meshes) {
+        if (!meshes || meshes.length === 0) return;
+        meshes.forEach(mesh => {
+            if (!mesh || !mesh.material) return;
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            mats.forEach(mat => {
+                if (!mat || mat._origEmissive === undefined) return;
+                if (mat.emissive) {
+                    mat.emissive.copy(mat._origEmissive);
+                    mat.emissiveIntensity = mat._origEmissiveIntensity;
+                    mat.needsUpdate = true;
+                }
             });
+        });
+    }
+
+    /**
+     * Dinamikus Modál Állapot Vizsgálat (Garantálja, hogy nyitott felugró ablak esetén ne kattintsunk a színtérre)
+     */
+    function isAnyModalOpen() {
+        const modalEls = document.querySelectorAll('#universal-npc-modal, #toborzo-modal, #fedelzet-modal, #info-modal, #monk-pin-modal, #system-message-modal, #log-entry-modal, .gamemode-modal');
+        let openFound = false;
+        for (let i = 0; i < modalEls.length; i++) {
+            const m = modalEls[i];
+            if (m && m.style.display && m.style.display !== 'none') {
+                openFound = true;
+                break;
+            }
+        }
+        if (!openFound) {
+            isModalOpen = false;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Kurzor mozgatás & Épület Raycast Hover Eseménykezelő
+     */
+    function onPointerMove(e) {
+        if (isCinematicTransitioning || isAnyModalOpen()) {
+            if (currentHoveredLocation) {
+                removeHighlight(currentHoveredLocation.meshes);
+                currentHoveredLocation = null;
+            }
+            const tooltipEl = document.getElementById('interactive-tooltip');
+            if (tooltipEl) tooltipEl.classList.remove('visible');
+            document.body.style.cursor = 'default';
+            return;
         }
 
-        /**
-         * Dinamikus Modál Állapot Vizsgálat (Garantálja, hogy nyitott felugró ablak esetén ne kattintsunk a színtérre)
-         */
-        function isAnyModalOpen() {
-            const modalEls = document.querySelectorAll('#universal-npc-modal, #toborzo-modal, #fedelzet-modal, #info-modal, #monk-pin-modal, #system-message-modal, #log-entry-modal, .gamemode-modal');
-            let openFound = false;
-            for (let i = 0; i < modalEls.length; i++) {
-                const m = modalEls[i];
-                if (m && m.style.display && m.style.display !== 'none') {
-                    openFound = true;
-                    break;
-                }
-            }
-            if (!openFound) {
-                isModalOpen = false;
-                return false;
-            }
-            return true;
+        // 1. Pontos Normalizált Eszközkoordináta (NDC) a WebGL vászon tényleges mérete és elhelyezkedése alapján
+        const rect = (renderer && renderer.domElement) ? renderer.domElement.getBoundingClientRect() : null;
+        if (rect && rect.width > 0 && rect.height > 0) {
+            mousePointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            mousePointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        } else {
+            mousePointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mousePointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
         }
 
-        /**
-         * Kurzor mozgatás & Épület Raycast Hover Eseménykezelő
-         */
-        function onPointerMove(e) {
-            if (isCinematicTransitioning || isAnyModalOpen()) {
-                if (currentHoveredLocation) {
-                    removeHighlight(currentHoveredLocation.meshes);
-                    currentHoveredLocation = null;
+        const tooltipEl = document.getElementById('interactive-tooltip');
+        if (tooltipEl) {
+            tooltipEl.style.left = e.clientX + 'px';
+            tooltipEl.style.top = e.clientY + 'px';
+        }
+
+        if (!camera || !scene) return;
+
+        raycaster.setFromCamera(mousePointer, camera);
+
+        // 2. Valódi 3D Mélységi Keresés: a kamerához legközelebb lévő legelső felület (minimum distance) kiválasztása
+        let closestHit = null;
+        let closestLoc = null;
+
+        for (let i = 0; i < interactiveLocations.length; i++) {
+            const loc = interactiveLocations[i];
+            if (!loc.meshes || loc.meshes.length === 0) continue;
+            const intersects = raycaster.intersectObjects(loc.meshes, true);
+            if (intersects.length > 0) {
+                const firstHit = intersects[0];
+                if (!closestHit || firstHit.distance < closestHit.distance) {
+                    closestHit = firstHit;
+                    closestLoc = loc;
                 }
-                const tooltipEl = document.getElementById('interactive-tooltip');
+            }
+        }
+
+        let hovered = closestLoc;
+
+        if (hovered !== currentHoveredLocation) {
+            if (currentHoveredLocation) {
+                removeHighlight(currentHoveredLocation.meshes);
+            }
+            if (hovered) {
+                applyHighlight(hovered.meshes);
+                const labelText = getLocalizedText(hovered.langKey, hovered.defaultLabel);
+                const tooltipTextEl = document.getElementById('tooltip-text');
+                if (tooltipTextEl) tooltipTextEl.textContent = labelText;
+                if (tooltipEl) tooltipEl.classList.add('visible');
+                document.body.style.cursor = 'pointer';
+            } else {
                 if (tooltipEl) tooltipEl.classList.remove('visible');
                 document.body.style.cursor = 'default';
-                return;
             }
-
-            // 1. Pontos Normalizált Eszközkoordináta (NDC) a WebGL vászon tényleges mérete és elhelyezkedése alapján
-            const rect = (renderer && renderer.domElement) ? renderer.domElement.getBoundingClientRect() : null;
-            if (rect && rect.width > 0 && rect.height > 0) {
-                mousePointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-                mousePointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-            } else {
-                mousePointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mousePointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            }
-
-            const tooltipEl = document.getElementById('interactive-tooltip');
-            if (tooltipEl) {
-                tooltipEl.style.left = e.clientX + 'px';
-                tooltipEl.style.top = e.clientY + 'px';
-            }
-
-            if (!camera || !scene) return;
-
-            raycaster.setFromCamera(mousePointer, camera);
-            
-            // 2. Valódi 3D Mélységi Keresés: a kamerához legközelebb lévő legelső felület (minimum distance) kiválasztása
-            let closestHit = null;
-            let closestLoc = null;
-
-            for (let i = 0; i < interactiveLocations.length; i++) {
-                const loc = interactiveLocations[i];
-                if (!loc.meshes || loc.meshes.length === 0) continue;
-                const intersects = raycaster.intersectObjects(loc.meshes, true);
-                if (intersects.length > 0) {
-                    const firstHit = intersects[0];
-                    if (!closestHit || firstHit.distance < closestHit.distance) {
-                        closestHit = firstHit;
-                        closestLoc = loc;
-                    }
-                }
-            }
-
-            let hovered = closestLoc;
-
-            if (hovered !== currentHoveredLocation) {
-                if (currentHoveredLocation) {
-                    removeHighlight(currentHoveredLocation.meshes);
-                }
-                if (hovered) {
-                    applyHighlight(hovered.meshes);
-                    const labelText = getLocalizedText(hovered.langKey, hovered.defaultLabel);
-                    const tooltipTextEl = document.getElementById('tooltip-text');
-                    if (tooltipTextEl) tooltipTextEl.textContent = labelText;
-                    if (tooltipEl) tooltipEl.classList.add('visible');
-                    document.body.style.cursor = 'pointer';
-                } else {
-                    if (tooltipEl) tooltipEl.classList.remove('visible');
-                    document.body.style.cursor = 'default';
-                }
-                currentHoveredLocation = hovered;
-            }
+            currentHoveredLocation = hovered;
         }
+    }
 
-        /**
-         * Kattintás indítás (Kamera drag vs kattintás megkülönböztetéshez)
-         */
-        function onPointerDown(e) {
-            if (isCinematicTransitioning || isAnyModalOpen()) return;
-            pointerDownPos = { x: e.clientX, y: e.clientY };
-            pointerDownTime = performance.now();
+    /**
+     * Kattintás indítás (Kamera drag vs kattintás megkülönböztetéshez)
+     */
+    function onPointerDown(e) {
+        if (isCinematicTransitioning || isAnyModalOpen()) return;
+        pointerDownPos = { x: e.clientX, y: e.clientY };
+        pointerDownTime = performance.now();
+    }
+
+    /**
+     * Kattintás befejezés & Épületre fókuszáló átmenet elindítása
+     */
+    function onPointerUp(e) {
+        if (isCinematicTransitioning || isAnyModalOpen()) return;
+        const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+        const timeDiff = performance.now() - pointerDownTime;
+
+        // Csak akkor aktiváljuk, ha tiszta kattintás történt (nem kameramozgatási húzás)
+        if (dist < 8 && timeDiff < 600 && currentHoveredLocation) {
+            triggerLocationTransition(currentHoveredLocation);
         }
-
-        /**
-         * Kattintás befejezés & Épületre fókuszáló átmenet elindítása
-         */
-        function onPointerUp(e) {
-            if (isCinematicTransitioning || isAnyModalOpen()) return;
-            const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
-            const timeDiff = performance.now() - pointerDownTime;
-
-            // Csak akkor aktiváljuk, ha tiszta kattintás történt (nem kameramozgatási húzás)
-            if (dist < 8 && timeDiff < 600 && currentHoveredLocation) {
-                triggerLocationTransition(currentHoveredLocation);
-            }
-        }
-
-        /**
-         * Filmes kameraközelítés és sötétedő átmenet aktiválása a kiválasztott épületre
-         */
-        function triggerLocationTransition(location) {
-            if (isCinematicTransitioning) return;
-            isCinematicTransitioning = true;
-
-            // Kurzor és tooltip azonnali elrejtése
-            document.body.style.cursor = 'default';
-            const tooltipEl = document.getElementById('interactive-tooltip');
-            if (tooltipEl) tooltipEl.classList.remove('visible');
-
-            // OrbitControls interakciók kikapcsolása
-            if (controls) controls.enabled = false;
-
-            // Képernyő elsötétülés indítása
-            const overlay = document.getElementById('scene-transition-overlay');
-            if (overlay) overlay.classList.add('active');
-
-            // Kameramozgás kezdő- és célpontjai
-            cinematicStartTime = clock.getElapsedTime();
-            cinematicStartCamPos.copy(camera.position);
-            cinematicStartLookAt.copy(controls ? controls.target : defaultTargetPos);
-
-            cinematicEndCamPos.copy(location.camTargetPos);
-            cinematicEndLookAt.copy(location.lookAtTarget);
-
-            // Aloldal vagy funkció meghívása a filmes átmenet végén
-            setTimeout(() => {
-                navigateToSubpage(location);
-            }, 1100);
-        }
-
-        /**
-         * Cél aloldal vagy funkció meghívása a központi rendszeren keresztül
-         */
-        function navigateToSubpage(target) {
-            const pageId = (typeof target === 'object' && target.id) ? target.id : target;
-            console.log("⚓ 3D Kikötő: Cél aloldal / funkció meghívása ->", pageId);
-
-            // 1. Univerzális NPC modal megnyitása felöltöztetett konfigurációval
-            if (typeof target === 'object' && target.npcId && target.npcConfig) {
-                isModalOpen = true;
-                // Kameraállás azonnali visszaállítása az alapértelmezett kikötői pozícióra
-                if (defaultCameraPos && defaultTargetPos) {
-                    camera.position.copy(defaultCameraPos);
-                    if (controls) {
-                        controls.target.copy(defaultTargetPos);
-                        controls.update();
-                        controls.enabled = true;
-                    }
-                }
-
-                if (window.parent && window.parent !== window && typeof window.parent.openUniversalNPC === 'function') {
-                    window.parent.openUniversalNPC(target.npcId, target.npcConfig);
-                } else if (typeof window.openUniversalNPC === 'function') {
-                    window.openUniversalNPC(target.npcId, target.npcConfig);
-                }
-                const overlay = document.getElementById('scene-transition-overlay');
-                if (overlay) overlay.classList.remove('active');
-                isCinematicTransitioning = false;
-                return;
-            }
-
-            // 2. Toborzóbarakk modal megnyitása
-            if (pageId === 'openToborzoBarakk') {
-                isModalOpen = true;
-                // Kameraállás azonnali visszaállítása az alapértelmezett kikötői pozícióra
-                if (defaultCameraPos && defaultTargetPos) {
-                    camera.position.copy(defaultCameraPos);
-                    if (controls) {
-                        controls.target.copy(defaultTargetPos);
-                        controls.update();
-                        controls.enabled = true;
-                    }
-                }
-
-                if (window.parent && window.parent !== window && typeof window.parent.openToborzoBarakk === 'function') {
-                    window.parent.openToborzoBarakk();
-                } else if (typeof window.openToborzoBarakk === 'function') {
-                    window.openToborzoBarakk();
-                }
-                const overlay = document.getElementById('scene-transition-overlay');
-                if (overlay) overlay.classList.remove('active');
-                isCinematicTransitioning = false;
-                return;
-            }
-
-            // 3. Fedélzet modal megnyitása
-            if (pageId === 'openFedelzetModal') {
-                isModalOpen = true;
-                // Kameraállás azonnali visszaállítása az alapértelmezett kikötői pozícióra
-                if (defaultCameraPos && defaultTargetPos) {
-                    camera.position.copy(defaultCameraPos);
-                    if (controls) {
-                        controls.target.copy(defaultTargetPos);
-                        controls.update();
-                        controls.enabled = true;
-                    }
-                }
-
-                if (typeof window.openFedelzetModal === 'function') {
-                    window.openFedelzetModal();
-                } else if (typeof openFedelzetModal === 'function') {
-                    openFedelzetModal();
-                } else if (typeof loadPage === 'function') {
-                    loadPage('fedelzet_oldal');
-                }
-                const overlay = document.getElementById('scene-transition-overlay');
-                if (overlay) overlay.classList.remove('active');
-                isCinematicTransitioning = false;
-                return;
-            }
-
-            // 4. Hagyományos aloldal betöltése
-            if (typeof resetKikotoViewport === 'function') {
-                resetKikotoViewport();
-            } else {
-                const overlay = document.getElementById('scene-transition-overlay');
-                if (overlay) overlay.classList.remove('active');
-                isCinematicTransitioning = false;
-                if (defaultCameraPos && defaultTargetPos && camera) {
-                    camera.position.copy(defaultCameraPos);
-                    if (controls) {
-                        controls.target.copy(defaultTargetPos);
-                        controls.update();
-                        controls.enabled = true;
-                    }
-                }
-            }
-
-            if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
-                window.parent.loadPage(pageId);
-            } else if (typeof window.loadPage === 'function') {
-                window.loadPage(pageId);
-            } else {
-                window.location.href = pageId + '.html';
-            }
-        }
-
-        // ─── UNIVERZÁLIS NPC & TOBORZÓ MODAL VEZÉRLÉS (STANDALONE & BEÁGYAZOTT TÁMOGATÁS) ─────────────
-        window.ACTIVE_NPC_CONFIG = {};
-
-        window.closeUniversalNPCModal = function(e) {
-            if (e) {
-                if (e.stopPropagation) e.stopPropagation();
-                if (e.preventDefault) e.preventDefault();
-            }
-            var portraitVideo = document.getElementById('npc-portrait-video');
-            if (portraitVideo) {
-                try { portraitVideo.pause(); } catch(err){}
-            }
-            var audioBtn = document.getElementById('npc-portrait-audio-btn');
-            if (audioBtn) audioBtn.style.display = 'none';
-
-            document.querySelectorAll('#universal-npc-modal').forEach(function(m) {
-                m.style.display = 'none';
-            });
-            const overlay = document.getElementById('scene-transition-overlay');
-            if (overlay) {
-                overlay.classList.remove('active');
-                overlay.style.display = 'none';
-                overlay.style.opacity = '0';
-            }
-            if (defaultCameraPos && defaultTargetPos && camera && defaultCameraPos.length() > 0) {
-                camera.position.copy(defaultCameraPos);
-                if (controls) {
-                    controls.target.copy(defaultTargetPos);
-                    controls.update();
-                    controls.enabled = true;
-                }
-            } else if (controls) {
-                controls.enabled = true;
-                controls.update();
-            }
-            const tooltipEl = document.getElementById('interactive-tooltip');
-            if (tooltipEl) tooltipEl.classList.remove('visible');
-            if (interactiveLocations) {
-                interactiveLocations.forEach(function(loc) {
-                    removeHighlight(loc.meshes);
-                });
-            }
-            document.body.style.cursor = 'default';
-            pointerDownTime = 0;
-            currentHoveredLocation = null;
-            isModalOpen = false;
-            isCinematicTransitioning = false;
-        };
-
-        window.closeToborzoModal = function(e) {
-            if (e) {
-                if (e.stopPropagation) e.stopPropagation();
-                if (e.preventDefault) e.preventDefault();
-            }
-            var vid = document.getElementById('toborzo-video-player');
-            if (vid) {
-                try { vid.pause(); } catch(err) {}
-            }
-            var cMunk = document.getElementById('toborzo-console-munkavallalo');
-            var cKap = document.getElementById('toborzo-console-kapitany');
-            if (cMunk) cMunk.style.display = 'none';
-            if (cKap) cKap.style.display = 'none';
-
-            document.querySelectorAll('.toborzo-brass-nametag-container').forEach(function(el) {
-                el.style.display = 'flex';
-            });
-
-            document.querySelectorAll('#toborzo-modal').forEach(function(m) {
-                m.style.display = 'none';
-            });
-            const overlay = document.getElementById('scene-transition-overlay');
-            if (overlay) {
-                overlay.classList.remove('active');
-                overlay.style.display = 'none';
-                overlay.style.opacity = '0';
-            }
-            if (defaultCameraPos && defaultTargetPos && camera && defaultCameraPos.length() > 0) {
-                camera.position.copy(defaultCameraPos);
-                if (controls) {
-                    controls.target.copy(defaultTargetPos);
-                    controls.update();
-                    controls.enabled = true;
-                }
-            } else if (controls) {
-                controls.enabled = true;
-                controls.update();
-            }
-            const tooltipEl = document.getElementById('interactive-tooltip');
-            if (tooltipEl) tooltipEl.classList.remove('visible');
-            if (interactiveLocations) {
-                interactiveLocations.forEach(function(loc) {
-                    removeHighlight(loc.meshes);
-                });
-            }
-            document.body.style.cursor = 'default';
-            pointerDownTime = 0;
-            currentHoveredLocation = null;
-            isModalOpen = false;
-            isCinematicTransitioning = false;
-        };
-
-        window.sendUniversalMessage = function() {
-            var input = document.getElementById('universal-chat-input');
-            if (!input) return;
-            var msg = input.value.trim();
-            if (!msg) return;
-
-            var npcId = (document.getElementById('current-npc-id') && document.getElementById('current-npc-id').value) || 'harbormaster';
-            window.addBubbleToUniversal("Te", msg, "outgoing");
-            input.value = '';
-            input.disabled = true;
-
-            var chatArea = document.getElementById('universal-chat-area');
-            var loaderId = "load-" + Date.now();
-            var loader = document.createElement('div');
-            loader.id = loaderId;
-            loader.style.cssText = "font-style: italic; color: #666; margin: 5px 15px;";
-
-            if (window.ACTIVE_NPC_CONFIG && window.ACTIVE_NPC_CONFIG.loaderHTML) {
-                loader.innerHTML = window.ACTIVE_NPC_CONFIG.loaderHTML;
-            } else {
-                var npcName = (document.getElementById('npc-name') && document.getElementById('npc-name').innerText) || "Kikötőmester";
-                loader.innerText = npcName + " gondolkodik...";
-            }
-
-            if (chatArea) {
-                chatArea.appendChild(loader);
-                chatArea.scrollTop = chatArea.scrollHeight;
-            }
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('handleNPCInteraction', [npcId, msg, "CHAT"],
-                    function (response) {
-                        var l = document.getElementById(loaderId);
-                        if (l) l.remove();
-                        input.disabled = false;
-                        input.focus();
-                        window.handleUniversalResponse(response);
-                    },
-                    function (err) {
-                        var l = document.getElementById(loaderId);
-                        if (l) l.remove();
-                        input.disabled = false;
-                        window.addBubbleToUniversal("Rendszer", "Hiba: " + err.message, "system");
-                    }
-                );
-            } else {
-                setTimeout(function() {
-                    var l = document.getElementById(loaderId);
-                    if (l) l.remove();
-                    input.disabled = false;
-                    input.focus();
-                    window.addBubbleToUniversal("Barba Negra", "Üdv a Kikötőben! A tenger ma csendes, a legénység készen áll.", "incoming");
-                }, 800);
-            }
-        };
-
-        window.addBubbleToUniversal = function(sender, text, type) {
-            var chatArea = document.getElementById('universal-chat-area');
-            if (!chatArea) return;
-            var div = document.createElement('div');
-            var config = window.currentNPCConfig || {};
-
-            div.style.padding = "10px 15px";
-            div.style.borderRadius = "10px";
-            div.style.maxWidth = "80%";
-            div.style.lineHeight = "1.4";
-            div.style.marginBottom = "8px";
-            div.style.boxShadow = "1px 1px 3px rgba(0,0,0,0.3)";
-            div.style.wordWrap = "break-word";
-
-            if (type === "incoming") {
-                div.style.background = "#ffffff";
-                div.style.color = "#000000";
-                div.style.alignSelf = "flex-start";
-
-                var borderColor = config.headerColor || "#37474f";
-                div.style.borderLeft = "5px solid " + borderColor;
-
-                var iconHtml = "";
-                if (config.msgIcon) {
-                    iconHtml = config.msgIcon + " ";
-                }
-
-                var formattedText = text
-                    .replace(/\n/g, '<br>')
-                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-
-                div.innerHTML = '<strong>' + sender + ':</strong><br><div style="margin-top:4px;">' + iconHtml + formattedText + '</div>';
-
-            } else if (type === "outgoing") {
-                div.style.background = "#d4af37";
-                div.style.color = "#3e2723";
-                div.style.fontWeight = "bold";
-                div.style.alignSelf = "flex-end";
-                div.style.marginLeft = "auto";
-                div.style.textAlign = "right";
-                div.innerHTML = text.replace(/\n/g, '<br>');
-
-            } else {
-                div.style.background = "transparent";
-                div.style.boxShadow = "none";
-                div.style.color = "#ccc";
-                div.style.fontStyle = "italic";
-                div.style.textAlign = "center";
-                div.style.margin = "0 auto";
-                div.style.fontSize = "0.85em";
-                div.innerHTML = text;
-            }
-
-            chatArea.appendChild(div);
-
-            setTimeout(function () {
-                chatArea.scrollTop = chatArea.scrollHeight;
-            }, 50);
-        };
-
-        window.handleUniversalResponse = function(response) {
-            if (!response) return;
-            var text = typeof response === 'string' ? response : (response.text || response.message || JSON.stringify(response));
-            var name = (window.currentNPCConfig && window.currentNPCConfig.name) || 'NPC';
-            window.addBubbleToUniversal(name, text, "incoming");
-        };
-
-        // ─── TOBORZÓBARAKK LOGIKA (INTERAKTÍV SVG + MP4 ANIMÁCIÓ + KIBER KONZOLOK) ───────────────────────────
-        window.toborzoOwnedShips = [];
-        window.toborzoAvailableCrew = [];
-
-        window.initToborzoSvgInteractions = function() {
-            var svg = document.getElementById('toborzo-interactive-svg');
-            var tooltip = document.getElementById('toborzo-tooltip');
-            var tooltipText = document.getElementById('toborzo-tooltip-text');
-            var stage = document.getElementById('toborzo-stage-container');
-            if (!svg || !tooltip || !tooltipText || !stage) return;
-            if (svg._interactionsInitialized) return;
-            svg._interactionsInitialized = true;
-
-            var titles = {
-                'kepernyo_bal': '🛠️ Munkavállalói Konzol',
-                'kepernyo_jobb': '🚢 Kapitányi Konzol',
-                'kepernyo_kozepfel': '📡 Álláshirdetések & Nyitott Pozíciók',
-                'kepernyo_kozeple': '📜 Szabadúszó Zsoldosok & Ajánlattétel'
-            };
-
-            var paths = svg.querySelectorAll('.toborzo-screen-path');
-            paths.forEach(function(p) {
-                p.removeAttribute('title');
-                p.addEventListener('mouseenter', function() {
-                    var text = titles[p.id] || '';
-                    if (text) {
-                        tooltipText.textContent = text;
-                        tooltip.style.display = 'block';
-                        tooltip.style.opacity = '1';
-                    }
-                });
-                p.addEventListener('mousemove', function(e) {
-                    var rect = stage.getBoundingClientRect();
-                    var x = e.clientX - rect.left;
-                    var y = e.clientY - rect.top;
-                    tooltip.style.left = x + 'px';
-                    tooltip.style.top = y + 'px';
-                });
-                p.addEventListener('mouseleave', function() {
-                    tooltip.style.display = 'none';
-                    tooltip.style.opacity = '0';
-                });
-            });
-        };
-
-        window.openToborzoConsole = function(type) {
-            var cMunk = document.getElementById('toborzo-console-munkavallalo');
-            var cKap = document.getElementById('toborzo-console-kapitany');
-            var cHird = document.getElementById('toborzo-console-hirdetesek');
-            var cZsol = document.getElementById('toborzo-console-zsoldosok');
-            var tooltip = document.getElementById('toborzo-tooltip');
-            if (tooltip) tooltip.style.display = 'none';
-
-            // Névtábla elrejtése a konzolok felugrásakor
-            document.querySelectorAll('.toborzo-brass-nametag-container').forEach(function(el) {
-                el.style.display = 'none';
-            });
-
-            if (cMunk) cMunk.style.display = (type === 'munkavallalo') ? 'flex' : 'none';
-            if (cKap) cKap.style.display = (type === 'kapitany') ? 'flex' : 'none';
-            if (cHird) cHird.style.display = (type === 'hirdetesek') ? 'flex' : 'none';
-            if (cZsol) cZsol.style.display = (type === 'zsoldosok') ? 'flex' : 'none';
-
-            if (type === 'kapitany' && typeof window.renderSelectedShipCrew === 'function') {
-                window.renderSelectedShipCrew();
-            }
-        };
-
-        window.closeToborzoConsole = function() {
-            var cMunk = document.getElementById('toborzo-console-munkavallalo');
-            var cKap = document.getElementById('toborzo-console-kapitany');
-            var cHird = document.getElementById('toborzo-console-hirdetesek');
-            var cZsol = document.getElementById('toborzo-console-zsoldosok');
-            if (cMunk) cMunk.style.display = 'none';
-            if (cKap) cKap.style.display = 'none';
-            if (cHird) cHird.style.display = 'none';
-            if (cZsol) cZsol.style.display = 'none';
-
-            if (typeof window.closeToborzoSubmodals === 'function') {
-                window.closeToborzoSubmodals();
-            }
-
-            // Névtábla megjelenítése kizárólag az SVG felületen
-            document.querySelectorAll('.toborzo-brass-nametag-container').forEach(function(el) {
-                el.style.display = 'flex';
-            });
-        };
-
-        window.hasRequiredRank = function(playerRank, role) {
-            var rankHierarchy = [
-                '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
-                'Alhajómester', 'Törzshajómester', 'Törzsfőhajómester',
-                'Tengerész-hadapród', 'Korvetthadnagy', 'Fregatthadnagy', 'Sorhajóhadnagy',
-                'Korvettkapitány', 'Fregattkapitány', 'Sorhajókapitány',
-                'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'Főtengernagy'
-            ];
-            var szakmaiTisztek = ['Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester', 'Felfedező', 'Letmester', 'Monk'];
-            var parancsnokiTisztek = ['Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester', 'Gépész'];
-            
-            var playerIdx = rankHierarchy.indexOf(playerRank);
-            if (playerIdx === -1) playerIdx = 0;
-            
-            var requiredIdx = 0;
-            if (role === 'Kapitány') {
-                requiredIdx = 11;
-            } else if (parancsnokiTisztek.indexOf(role) !== -1) {
-                requiredIdx = 7;
-            } else if (szakmaiTisztek.indexOf(role) !== -1) {
-                requiredIdx = 4;
-            }
-            return playerIdx >= requiredIdx;
-        };
-
-        window.openToborzoBarakk = function() {
-            var modal = document.getElementById('toborzo-modal');
-            if (modal) modal.style.display = 'flex';
-
-            // Reset consoles and start video
-            window.closeToborzoConsole();
-            if (typeof window.initToborzoSvgInteractions === 'function') {
-                window.initToborzoSvgInteractions();
-            }
-
-            var vid = document.getElementById('toborzo-video-player');
-            if (vid) {
-                try {
-                    vid.currentTime = 0;
-                    var p = vid.play();
-                    if (p && p.catch) p.catch(function() {});
-                } catch(e) {}
-            }
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                var loadFallback = function() {
-                    window.callBackend('getToborzoData', [], 
-                        function(fbData) {
-                            if (loadingEl) loadingEl.style.display = 'none';
-                            if (fbData && fbData.success) {
-                                window.toborzoMarketData = fbData;
-                                window.toborzoOwnedShips = fbData.ownedShips || [];
-                                window.toborzoAvailableCrew = fbData.availableCrew || [];
-                                window.toborzoNameDict = fbData.nameDict || {};
-                                window.toborzoGameScrolls = fbData.gameScrolls || fbData.availableScrolls || [];
-                                window.renderToborzoFullMarket(fbData);
-                                window.renderSelectedShipCrew();
-                            }
-                        },
-                        function(fbErr) {
-                            if (loadingEl) loadingEl.style.display = 'none';
-                            console.warn('ToborzoData fallback lekérdezési hiba:', fbErr);
-                        }
-                    );
-                };
-
-                window.callBackend('getToborzoFullMarketData', [], 
-                    function(data) {
-                        if (data && data.success) {
-                            if (loadingEl) loadingEl.style.display = 'none';
-                            window.toborzoMarketData = data;
-                            window.toborzoOwnedShips = data.ownedShips || [];
-                            window.toborzoAvailableCrew = data.availableCrew || [];
-                            window.toborzoNameDict = data.nameDict || {};
-                            window.toborzoGameScrolls = data.gameScrolls || data.availableScrolls || [];
-                            window.renderToborzoFullMarket(data);
-                            window.renderSelectedShipCrew();
-                        } else {
-                            loadFallback();
-                        }
-                    },
-                    function(err) {
-                        loadFallback();
-                    }
-                );
-            } else {
-                setTimeout(function() {
-                    if (loadingEl) loadingEl.style.display = 'none';
-                }, 300);
-            }
-        };
-
-        window.renderToborzoFullMarket = function(data) {
-            if (!data) return;
-
-            // 1. Bal Monitor: Munkavállaló adatok és Kapott állásajánlatok
-            if (data.playerStatus) {
-                var stSelect = document.getElementById('toborzo-status-select');
-                var rSelect = document.getElementById('toborzo-role-select');
-                var cInput = document.getElementById('toborzo-cost-input');
-                if (stSelect) stSelect.value = data.playerStatus.status || "Keresek munkát";
-                if (rSelect) rSelect.value = data.playerStatus.role || "";
-                if (cInput && data.playerStatus.cost !== undefined) cInput.value = data.playerStatus.cost;
-            }
-
-            var offersList = document.getElementById('toborzo-incoming-offers-list');
-            var offersCount = document.getElementById('toborzo-incoming-offers-count');
-            if (offersList) {
-                var incoming = data.incomingOffers || [];
-                if (offersCount) offersCount.textContent = incoming.length + ' db';
-                if (incoming.length === 0) {
-                    offersList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.85em; padding: 6px;">Jelenleg nincs függőben lévő ajánlatod.</div>';
-                } else {
-                    offersList.innerHTML = '';
-                    incoming.forEach(function(offer) {
-                        var card = document.createElement('div');
-                        card.className = 'cyber-card';
-                        card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
-                        
-                        var isPending = (offer.statusz === 'Függőben');
-                        var badgeClass = isPending ? 'cyber-badge-gold' : (offer.statusz === 'Elfogadva' ? 'cyber-badge-cyan' : 'cyber-badge-danger');
-                        
-                        var html = '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
-                            '<div>' +
-                            '<strong style="color: #00ffcc; font-size: 0.95em;">' + (offer.hajoNev || 'Hajó') + '</strong>' +
-                            '<div style="color: #d4af37; font-size: 0.85em; font-weight: bold; margin-top: 2px;">Tisztség: ' + (offer.pozicio || '-') + '</div>' +
-                            '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Kapitány: ' + (offer.kapitanyNev || offer.kapitanyEmail || '-') + '</div>' +
-                            '<div style="color: #b0bec5; font-size: 0.78em; margin-top: 2px;">' + (offer.megjegyzes || (offer.idotartam ? (offer.idotartam + ' hónapra') : '')) + '</div>' +
-                            '</div>' +
-                            '<div><span class="cyber-badge ' + badgeClass + '">' + (offer.statusz || 'Függőben') + '</span></div>' +
-                            '</div>';
-                        
-                        if (isPending) {
-                            html += '<div style="display: flex; gap: 8px; margin-top: 8px;">' +
-                                '<button type="button" class="cyber-btn-sm cyber-btn-success" onclick="window.respondToJobOffer(\'' + offer.id + '\', true)" style="flex: 1;"><i class="fas fa-check"></i> Elfogadom</button>' +
-                                '<button type="button" class="cyber-btn-sm cyber-btn-danger" onclick="window.respondToJobOffer(\'' + offer.id + '\', false)" style="flex: 1;"><i class="fas fa-times"></i> Nem fogadom el</button>' +
-                                '</div>';
-                        }
-                        card.innerHTML = html;
-                        offersList.appendChild(card);
-                    });
-                }
-            }
-
-            // 2. Jobb Monitor: Kapitány hajóválasztó és Beérkezett jelentkezők
-            var myshipsSelect = document.getElementById('toborzo-myships-select');
-            if (myshipsSelect) {
-                var currentVal = myshipsSelect.value;
-                myshipsSelect.innerHTML = '<option value="">Nincs kiválasztott hajó</option>';
-                (data.ownedShips || []).forEach(function(ship) {
-                    var opt = document.createElement('option');
-                    opt.value = ship.id;
-                    opt.textContent = ship.name + (ship.inHarbor ? "" : " (Expedíción)");
-                    opt.disabled = !ship.inHarbor;
-                    if (ship.id === currentVal) opt.selected = true;
-                    myshipsSelect.appendChild(opt);
-                });
-            }
-
-            var capAppsSection = document.getElementById('toborzo-captain-applicants-section');
-            var capAppsList = document.getElementById('toborzo-captain-applicants-list');
-            var capAppsCount = document.getElementById('toborzo-captain-applicants-count');
-            if (capAppsSection && capAppsList) {
-                var applicants = data.captainApplicants || [];
-                capAppsSection.style.display = (data.ownedShips && data.ownedShips.length > 0) ? 'block' : 'none';
-                if (capAppsCount) capAppsCount.textContent = applicants.length + ' db';
-                if (applicants.length === 0) {
-                    capAppsList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.85em; padding: 6px;">Nincsenek elbírálásra váró jelentkezők.</div>';
-                } else {
-                    capAppsList.innerHTML = '';
-                    applicants.forEach(function(app) {
-                        var card = document.createElement('div');
-                        card.className = 'cyber-card';
-                        card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
-                        var isPending = (app.statusz === 'Függőben');
-                        var badgeClass = isPending ? 'cyber-badge-gold' : (app.statusz === 'Elfogadva' ? 'cyber-badge-cyan' : 'cyber-badge-danger');
-                        
-                        var html = '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
-                            '<div>' +
-                            '<strong style="color: #d4af37; font-size: 0.95em;">' + (app.matrozName || app.matrozEmail) + '</strong>' +
-                            '<div style="color: #00e5ff; font-size: 0.85em; margin-top: 2px;">Hajó: ' + (app.hajoNev || '-') + ' &bull; Tisztség: ' + (app.pozicio || '-') + '</div>' +
-                            '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Képzettség: <strong style="color: #00ffcc;">' + (app.kepzettsegSzazalek || 0) + '%</strong> &bull; Bérigény: <strong style="color: #ffd700;">' + (app.berigeny || 10) + ' KR/hó</strong></div>' +
-                            '<div style="color: #78909c; font-size: 0.75em; margin-top: 2px;">Jelentkezés dátuma: ' + (app.datum || '-') + '</div>' +
-                            '</div>' +
-                            '<div><span class="cyber-badge ' + badgeClass + '">' + (app.statusz || 'Függőben') + '</span></div>' +
-                            '</div>';
-                        
-                        if (isPending) {
-                            html += '<div style="display: flex; gap: 8px; margin-top: 8px;">' +
-                                '<button type="button" class="cyber-btn-sm cyber-btn-success" onclick="window.reviewJobApplicant(\'' + app.id + '\', true)" style="flex: 1;"><i class="fas fa-check"></i> Elfogadom</button>' +
-                                '<button type="button" class="cyber-btn-sm cyber-btn-danger" onclick="window.reviewJobApplicant(\'' + app.id + '\', false)" style="flex: 1;"><i class="fas fa-times"></i> Nem fogadom el</button>' +
-                                '</div>';
-                        }
-                        card.innerHTML = html;
-                        capAppsList.appendChild(card);
-                    });
-                }
-            }
-
-            // 3. Közép-Felső Monitor: Álláshirdetések és aktív szolgálat kapuőr
-            var dutyWarning = document.getElementById('toborzo-duty-warning');
-            if (dutyWarning) {
-                dutyWarning.style.display = data.hasActiveDuty ? 'block' : 'none';
-            }
-
-            var jobList = document.getElementById('toborzo-job-postings-list');
-            if (jobList) {
-                var postings = data.activeJobPostings || [];
-                if (postings.length === 0) {
-                    jobList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.9em; padding: 12px; text-align: center;">Jelenleg nincsenek aktív álláshirdetések a faliújságon.</div>';
-                } else {
-                    jobList.innerHTML = '';
-                    postings.forEach(function(job) {
-                        var card = document.createElement('div');
-                        card.className = 'cyber-card';
-                        card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
-                        
-                        var alreadyApplied = (data.userAppliedJobIds && data.userAppliedJobIds.indexOf(job.id) !== -1);
-                        var actionHtml = '';
-                        if (alreadyApplied) {
-                            actionHtml = '<span class="cyber-badge cyber-badge-cyan"><i class="fas fa-check"></i> Jelentkezve</span>';
-                        } else if (data.hasActiveDuty) {
-                            actionHtml = '<button type="button" class="cyber-btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;" title="Aktív szolgálat miatt lezárva"><i class="fas fa-lock"></i> Szolgálatban</button>';
-                        } else {
-                            actionHtml = '<button type="button" class="cyber-btn-sm cyber-btn-primary" onclick="window.applyForJobOpening(\'' + job.id + '\')"><i class="fas fa-paper-plane"></i> Jelentkezem</button>';
-                        }
-
-                        card.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
-                            '<div style="flex: 1;">' +
-                            '<strong style="color: #00ffcc; font-size: 1em;">' + (job.hajoNev || 'Hajó') + '</strong>' +
-                            '<div style="color: #d4af37; font-size: 0.88em; font-weight: bold; margin-top: 2px;"><i class="fas fa-user-tag"></i> ' + (job.pozicio || '-') + '</div>' +
-                            '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Kapitány: <span style="color: #cfd8dc;">' + (job.kapitanyNev || '-') + '</span> &bull; Feladva: ' + (job.datum || '-') + '</div>' +
-                            '<div style="color: #80cbc4; font-size: 0.82em; margin-top: 4px; background: rgba(0,255,204,0.06); padding: 4px 6px; border-radius: 3px; border-left: 2px solid #00ffcc;">' +
-                            '<i class="fas fa-scroll"></i> Küldetés célja: <strong>' + (job.kuldetesCelja || 'Általános szolgálat') + '</strong>' +
-                            '</div>' +
-                            '</div>' +
-                            '<div style="margin-left: 10px; align-self: center;">' + actionHtml + '</div>' +
-                            '</div>';
-                        jobList.appendChild(card);
-                    });
-                }
-            }
-
-            // 4. Közép-Alsó Monitor: Zsoldosok listája
-            var mercList = document.getElementById('toborzo-mercenaries-list');
-            if (mercList) {
-                var mercs = data.availableMercenaries || [];
-                if (mercs.length === 0) {
-                    mercList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.9em; padding: 12px; text-align: center;">Jelenleg nincsenek munkát kereső szabad matrózok a kikötőben.</div>';
-                } else {
-                    mercList.innerHTML = '';
-                    mercs.forEach(function(merc) {
-                        var card = document.createElement('div');
-                        card.className = 'cyber-card';
-                        card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
-                        
-                        var safeEmail = (merc.email || '').replace(/'/g, "\\'");
-                        var safeName = (merc.name || '').replace(/'/g, "\\'");
-                        var safeRole = (merc.role || '').replace(/'/g, "\\'");
-                        var cost = merc.cost || 10;
-
-                        card.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">' +
-                            '<div>' +
-                            '<strong style="color: #d4af37; font-size: 0.98em;">' + (merc.name || merc.email) + '</strong>' +
-                            '<div style="color: #00e5ff; font-size: 0.85em; margin-top: 2px;">Keresett poszt: <strong>' + (merc.role || 'Bármilyen') + '</strong></div>' +
-                            '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Rang: <span style="color: #cfd8dc;">' + (merc.rank || '-') + '</span></div>' +
-                            '<div style="color: #00ffcc; font-size: 0.82em; margin-top: 2px;">Bérigény: <strong>' + cost + ' KR / hó</strong></div>' +
-                            '</div>' +
-                            '<div>' +
-                            '<button type="button" class="cyber-btn-sm cyber-btn-primary" onclick="window.openDirectOfferSubmodal(\'' + safeEmail + '\', \'' + safeName + '\', \'' + safeRole + '\', ' + cost + ')">' +
-                            '<i class="fas fa-handshake"></i> Állásajánlat' +
-                            '</button>' +
-                            '</div>' +
-                            '</div>';
-                        mercList.appendChild(card);
-                    });
-                }
-            }
-
-            // 5. Küldetés tekercsek dropdown feltöltése a Meghirdetés Submodalban
-            var missionSelect = document.getElementById('post-job-mission-select');
-            if (missionSelect && data.gameScrolls) {
-                missionSelect.innerHTML = '<option value="">- Nincs kitűzött küldetés cél (Általános szolgálat) -</option>';
-                data.gameScrolls.forEach(function(scroll) {
-                    if (!scroll) return;
-                    var opt = document.createElement('option');
-                    opt.value = scroll;
-                    opt.textContent = scroll;
-                    missionSelect.appendChild(opt);
-                });
-            }
-        };
-
-        window.savePlayerJobStatus = function() {
-            var stSelect = document.getElementById('toborzo-status-select');
-            var rSelect = document.getElementById('toborzo-role-select');
-            var cInput = document.getElementById('toborzo-cost-input');
-
-            var status = stSelect ? stSelect.value : 'Keresek munkát';
-            var role = rSelect ? rSelect.value : '';
-            var cost = cInput ? (parseInt(cInput.value, 10) || 10) : 10;
-            
-            if (status === 'Keresek munkát' && !role) {
-                if (typeof window.uiAlert === 'function') {
-                    window.uiAlert("Kérlek, válassz ki egy keresett pozíciót!");
-                } else {
-                    alert("Kérlek, válassz ki egy keresett pozíciót!");
-                }
-                return;
-            }
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('updatePlayerJobStatus', [status, role, cost], 
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') {
-                                window.uiAlert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.", "Siker");
-                            } else {
-                                alert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.");
-                            }
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba a mentés során: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            } else {
-                setTimeout(function() {
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    if (typeof window.uiAlert === 'function') {
-                        window.uiAlert("Státuszod sikeresen mentve! (Offline szimuláció)", "Siker");
-                    } else {
-                        alert("Státuszod sikeresen mentve! (Offline szimuláció)");
-                    }
-                    window.closeToborzoConsole();
-                }, 400);
-            }
-        };
-
-        window.renderSelectedShipCrew = function() {
-            var select = document.getElementById('toborzo-myships-select');
-            var detailsDiv = document.getElementById('toborzo-myship-details');
-            var rolesContainer = document.getElementById('toborzo-myship-roles');
-            
-            if (!select || !select.value) {
-                if (detailsDiv) detailsDiv.style.display = 'none';
-                return;
-            }
-
-            var ship = (window.toborzoOwnedShips || []).find(function(s) { return s.id === select.value; });
-            if (!ship) return;
-
-            if (detailsDiv) detailsDiv.style.display = 'block';
-            if (rolesContainer) rolesContainer.innerHTML = '';
-
-            var formDiv = document.createElement('div');
-            formDiv.id = 'bulk-crew-form';
-            
-            var allRoles = [
-                "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
-                "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló", 
-                "Tekercsmester", "Felfedező", "Gépész", "Hajóács", 
-                "Letmester", "Monk", "Tengerész"
-            ];
-            
-            var availableCrew = window.toborzoAvailableCrew || []; 
-            var nameDict = window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
-            
-            var resolvePirateName = function(email) {
-                if (!email) return '';
-                var lower = String(email).toLowerCase().trim();
-                if (nameDict[lower]) return nameDict[lower];
-                var match = availableCrew.find(function(c) { return String(c.email).toLowerCase().trim() === lower; });
-                if (match && match.name) return match.name;
-                return email;
-            };
-
-            var sortedCrew = availableCrew.slice().sort(function(a, b) { 
-                var nameA = resolvePirateName(a.email) || a.name || '';
-                var nameB = resolvePirateName(b.email) || b.name || '';
-                return nameA.localeCompare(nameB); 
-            });
-            
-            allRoles.forEach(function(role) {
-                var isSingle = (role !== 'Tengerész');
-                var currentEmails = (ship.crew && ship.crew[role]) ? ship.crew[role].split(',').map(function(e) { return e.trim().toLowerCase(); }).filter(function(e) { return e; }) : [];
-                var isVacant = (currentEmails.length === 0);
-
-                var rowDiv = document.createElement('div');
-                rowDiv.className = 'cyber-roster-row';
-                
-                var roleHeader = document.createElement('div');
-                roleHeader.className = 'cyber-roster-role-header';
-                roleHeader.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;';
-                
-                var roleLabel = document.createElement('strong');
-                roleLabel.className = 'cyber-roster-role-label';
-                roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: #00e5ff;"></i> <span style="color: #00e5ff; font-weight: bold;">' + role + '</span>' + (isSingle ? ' <span style="font-size:0.8em; color:#90a4ae; font-family: monospace;">(1 fő)</span>' : ' <span style="font-size:0.8em; color:#90a4ae; font-family: monospace;">(Több fő)</span>');
-                roleHeader.appendChild(roleLabel);
-
-                // Ha betöltetlen a pozíció, hozzáadunk egy Meghirdetem gombot
-                if (isVacant) {
-                    var postBtn = document.createElement('button');
-                    postBtn.type = 'button';
-                    postBtn.className = 'cyber-btn-sm cyber-btn-primary';
-                    postBtn.style.cssText = 'padding: 3px 8px; font-size: 0.78em;';
-                    postBtn.innerHTML = '<i class="fas fa-bullhorn"></i> Meghirdetem';
-                    postBtn.onclick = (function(sId, sName, rName) {
-                        return function(e) {
-                            e.stopPropagation();
-                            window.openPostJobSubmodal(sId, sName, rName);
-                        };
-                    })(ship.id, ship.name, role);
-                    roleHeader.appendChild(postBtn);
-                }
-
-                rowDiv.appendChild(roleHeader);
-                
-                var customSelectContainer = document.createElement('div');
-                customSelectContainer.className = 'cyber-custom-select';
-                
-                var selectHeader = document.createElement('div');
-                selectHeader.className = 'cyber-custom-select-header';
-                
-                var currentNamesHtml = "--- Üres ---";
-                if (currentEmails.length > 0) {
-                    var namesArr = currentEmails.map(function(e) {
-                        return resolvePirateName(e);
-                    });
-                    currentNamesHtml = '<span style="color:#d4af37; font-weight:bold;">' + namesArr.join(', ') + '</span>';
-                }
-                
-                selectHeader.innerHTML = '<span>' + currentNamesHtml + '</span> <i class="fas fa-chevron-down"></i>';
-                
-                var optionsContainer = document.createElement('div');
-                optionsContainer.className = 'cyber-custom-options-container bulk-options-container';
-                optionsContainer.style.display = 'none';
-                
-                selectHeader.onclick = function(e) {
-                    e.stopPropagation();
-                    var isVisible = optionsContainer.style.display === 'block';
-                    document.querySelectorAll('.bulk-options-container').forEach(function(el) { el.style.display = 'none'; });
-                    optionsContainer.style.display = isVisible ? 'none' : 'block';
-                };
-
-                // Checkbox logika
-                optionsContainer.addEventListener('change', function(e) {
-                    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
-                        if (isSingle && e.target.checked) {
-                            var allCbs = optionsContainer.querySelectorAll('input[type="checkbox"]');
-                            allCbs.forEach(function(cb) {
-                                if (cb !== e.target) cb.checked = false;
-                            });
-                        }
-                        var checkedCbs = optionsContainer.querySelectorAll('input[type="checkbox"]:checked');
-                        if (checkedCbs.length === 0) {
-                            selectHeader.innerHTML = '<span>--- Üres ---</span> <i class="fas fa-chevron-down"></i>';
-                        } else {
-                            var nArr = [];
-                            checkedCbs.forEach(function(cb) { 
-                                var cName = resolvePirateName(cb.value) || cb.getAttribute('data-name') || cb.value;
-                                nArr.push(cName); 
-                            });
-                            selectHeader.innerHTML = '<span><span style="color:#d4af37; font-weight:bold;">' + nArr.join(', ') + '</span></span> <i class="fas fa-chevron-down"></i>';
-                        }
-                    }
-                });
-
-                var optionAdded = false;
-                currentEmails.forEach(function(currEmail) {
-                    var dName = resolvePirateName(currEmail);
-                    var label = document.createElement('label');
-                    label.className = 'cyber-option-label';
-                    label.innerHTML = '<input type="checkbox" value="' + currEmail + '" data-role="' + role + '" data-name="' + dName + '" checked> <strong style="color:#d4af37;">' + dName + '</strong>';
-                    optionsContainer.appendChild(label);
-                    optionAdded = true;
-                });
-
-                sortedCrew.forEach(function(player) {
-                    if (currentEmails.includes(player.email.toLowerCase())) return;
-                    if (player.isBusy) return;
-                    if (!window.hasRequiredRank(player.rank, role)) return;
-                    
-                    var dName = resolvePirateName(player.email) || player.name;
-                    var label = document.createElement('label');
-                    label.className = 'cyber-option-label';
-                    label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + dName + '"> ' + dName + ' <span style="color:#888; font-size:0.8em;">(' + (player.rank || '') + ')</span>';
-                    optionsContainer.appendChild(label);
-                    optionAdded = true;
-                });
-
-                if (!optionAdded) {
-                    var noMore = document.createElement('div');
-                    noMore.style.cssText = 'padding: 8px 12px; color: #78909c; font-style: italic; font-size: 0.9em;';
-                    noMore.innerText = 'Nincs felbérelhető tag erre a posztra.';
-                    optionsContainer.appendChild(noMore);
-                }
-
-                customSelectContainer.appendChild(selectHeader);
-                customSelectContainer.appendChild(optionsContainer);
-                rowDiv.appendChild(customSelectContainer);
-                formDiv.appendChild(rowDiv);
-            });
-
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.bulk-options-container') && !e.target.closest('.cyber-custom-select-header') && !e.target.closest('div[style*="cursor: pointer"]')) {
-                    document.querySelectorAll('.bulk-options-container').forEach(function(el) { el.style.display = 'none'; });
-                }
-            });
-
-            var submitBtn = document.createElement('button');
-            submitBtn.type = 'button';
-            submitBtn.className = 'cyber-btn cyber-btn-primary';
-            submitBtn.style.cssText = 'width: 100%; margin-top: 15px;';
-            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> <span>BEOSZTÁS MENTÉSE ÉS JÓVÁHAGYÁSA</span>';
-            submitBtn.onclick = function() { window.submitBulkCrewAssignment(ship.id); };
-
-            if (rolesContainer) {
-                rolesContainer.appendChild(formDiv);
-                rolesContainer.appendChild(submitBtn);
-            }
-        };
-
-        window.submitBulkCrewAssignment = function(shipId) {
-            var assignmentsMap = {
-                "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [], 
-                "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [], 
-                "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [], 
-                "Letmester": [], "Monk": [], "Tengerész": []
-            };
-
-            var form = document.getElementById('bulk-crew-form');
-            if (!form) return;
-
-            var allChecked = form.querySelectorAll('input[type="checkbox"]:checked');
-            allChecked.forEach(function(cb) {
-                var role = cb.getAttribute('data-role');
-                var email = cb.value;
-                if (assignmentsMap[role]) {
-                    assignmentsMap[role].push(email);
-                }
-            });
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('updateBulkCrewAssignments', [shipId, assignmentsMap], 
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') window.uiAlert("Legénység sikeresen beosztva!", "Siker");
-                            else alert("Legénység sikeresen beosztva!");
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba a legénység mentésekor: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            } else {
-                setTimeout(function() {
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    alert("Legénység sikeresen beosztva! (Offline szimuláció)");
-                }, 400);
-            }
-        };
-
-        // ─── SUBMODAL ÉS TOBORZÓBARAKK PIACI LOGIKÁK ──────────────────────────────────
-        window.closeToborzoSubmodals = function() {
-            var postModal = document.getElementById('toborzo-post-job-submodal');
-            var directModal = document.getElementById('toborzo-direct-offer-submodal');
-            if (postModal) postModal.style.display = 'none';
-            if (directModal) directModal.style.display = 'none';
-        };
-
-        window.openPostJobSubmodal = function(shipId, shipName, role) {
-            var submodal = document.getElementById('toborzo-post-job-submodal');
-            if (!submodal) return;
-            
-            var sIdEl = document.getElementById('post-job-ship-id');
-            var rEl = document.getElementById('post-job-role');
-            var sNameDisp = document.getElementById('post-job-ship-name-display');
-            var rDisp = document.getElementById('post-job-role-display');
-            
-            if (sIdEl) sIdEl.value = shipId;
-            if (rEl) rEl.value = role;
-            if (sNameDisp) sNameDisp.textContent = shipName;
-            if (rDisp) rDisp.textContent = role;
-            
-            // Küldetés tekercsek lista betöltése a jatektekercsek E oszlopából
-            var missionSelect = document.getElementById('post-job-mission-select');
-            var scrolls = window.toborzoGameScrolls || (window.toborzoMarketData && (window.toborzoMarketData.gameScrolls || window.toborzoMarketData.availableScrolls)) || [];
-            
-            if (missionSelect) {
-                missionSelect.innerHTML = '<option value="">- Nincs kitűzött küldetés cél (Általános szolgálat) -</option>';
-                if (scrolls && scrolls.length > 0) {
-                    scrolls.forEach(function(scroll) {
-                        if (!scroll) return;
-                        var opt = document.createElement('option');
-                        opt.value = scroll;
-                        opt.textContent = scroll;
-                        missionSelect.appendChild(opt);
-                    });
-                }
-            }
-            
-            submodal.style.display = 'flex';
-        };
-
-        window.submitPostJobOpening = function() {
-            var shipId = document.getElementById('post-job-ship-id').value;
-            var role = document.getElementById('post-job-role').value;
-            var missionSelect = document.getElementById('post-job-mission-select');
-            var missionGoal = missionSelect ? missionSelect.value : '';
-
-            if (!shipId || !role) {
-                if (typeof window.uiAlert === 'function') window.uiAlert("Hiányzó hajó vagy pozíció adat!");
-                else alert("Hiányzó hajó vagy pozíció adat!");
-                return;
-            }
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('postShipJobOpening', [shipId, role, missionGoal],
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Pozíció sikeresen meghirdetve a faliújságon!", "Siker");
-                            else alert(data.message || "Pozíció sikeresen meghirdetve a faliújságon!");
-                            window.closeToborzoSubmodals();
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba a hirdetés feladásakor: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            }
-        };
-
-        window.openDirectOfferSubmodal = function(matrozEmail, matrozName, matrozRole, matrozWage) {
-            var submodal = document.getElementById('toborzo-direct-offer-submodal');
-            if (!submodal) return;
-            
-            document.getElementById('direct-offer-matroz-email').value = matrozEmail;
-            document.getElementById('direct-offer-matroz-name').textContent = matrozName;
-            document.getElementById('direct-offer-matroz-role').textContent = matrozRole || 'Bármilyen';
-            document.getElementById('direct-offer-matroz-wage').textContent = matrozWage || 10;
-            
-            var shipSelect = document.getElementById('direct-offer-ship-select');
-            if (shipSelect) {
-                shipSelect.innerHTML = '<option value="">- Válassz saját hajót -</option>';
-                (window.toborzoOwnedShips || []).forEach(function(ship) {
-                    if (ship.inHarbor) {
-                        var opt = document.createElement('option');
-                        opt.value = ship.id;
-                        opt.textContent = ship.name;
-                        shipSelect.appendChild(opt);
-                    }
-                });
-            }
-            window.updateDirectOfferRolesDropdown();
-            submodal.style.display = 'flex';
-        };
-
-        window.updateDirectOfferRolesDropdown = function() {
-            var shipSelect = document.getElementById('direct-offer-ship-select');
-            var roleSelect = document.getElementById('direct-offer-role-select');
-            if (!roleSelect) return;
-            roleSelect.innerHTML = '<option value="">- Válassz tisztséget -</option>';
-            
-            if (!shipSelect || !shipSelect.value) return;
-            var ship = (window.toborzoOwnedShips || []).find(function(s) { return s.id === shipSelect.value; });
-            if (!ship) return;
-
-            var allRoles = [
-                "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester", 
-                "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló", 
-                "Tekercsmester", "Felfedező", "Gépész", "Hajóács", 
-                "Letmester", "Monk", "Tengerész"
-            ];
-
-            allRoles.forEach(function(role) {
-                var currentEmails = (ship.crew && ship.crew[role]) ? ship.crew[role].split(',').map(function(e) { return e.trim().toLowerCase(); }).filter(function(e) { return e; }) : [];
-                // Csak betöltetlen vagy többszemélyes tisztség
-                if (currentEmails.length === 0 || role === 'Tengerész') {
-                    var opt = document.createElement('option');
-                    opt.value = role;
-                    opt.textContent = role + (currentEmails.length === 0 ? ' (Üres)' : ' (' + currentEmails.length + ' fő)');
-                    roleSelect.appendChild(opt);
-                }
-            });
-        };
-
-        window.submitDirectJobOffer = function() {
-            var targetMatrozEmail = document.getElementById('direct-offer-matroz-email').value;
-            var shipSelect = document.getElementById('direct-offer-ship-select');
-            var roleSelect = document.getElementById('direct-offer-role-select');
-            var durationInput = document.getElementById('direct-offer-duration-input');
-
-            var shipId = shipSelect ? shipSelect.value : '';
-            var role = roleSelect ? roleSelect.value : '';
-            var durationMonths = durationInput ? (parseInt(durationInput.value, 10) || 1) : 1;
-
-            if (!targetMatrozEmail || !shipId || !role) {
-                if (typeof window.uiAlert === 'function') window.uiAlert("Kérlek, válassz ki egy hajót és egy szabad pozíciót!");
-                else alert("Kérlek, válassz ki egy hajót és egy szabad pozíciót!");
-                return;
-            }
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('sendDirectJobOffer', [targetMatrozEmail, shipId, role, durationMonths],
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Állásajánlat sikeresen elküldve a matróznak!", "Siker");
-                            else alert(data.message || "Állásajánlat sikeresen elküldve a matróznak!");
-                            window.closeToborzoSubmodals();
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba az ajánlat küldésekor: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            }
-        };
-
-        window.applyForJobOpening = function(hirdetesId) {
-            if (!confirm("Biztosan jelentkezni szeretnél erre a hajós pozícióra?")) return;
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('applyForJobOpening', [hirdetesId],
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Jelentkezés sikeresen elküldve!", "Siker");
-                            else alert(data.message || "Jelentkezés sikeresen elküldve!");
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba a jelentkezés során: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            }
-        };
-
-        window.reviewJobApplicant = function(jelentkezesId, isApproved) {
-            var actionName = isApproved ? "elfogadni és ajánlatot tenni a pozícióra" : "elutasítani ezt a jelentkezést";
-            if (!confirm("Biztosan szeretnéd " + actionName + "?")) return;
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('reviewJobApplicant', [jelentkezesId, isApproved],
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Döntés sikeresen rögzítve!", "Siker");
-                            else alert(data.message || "Döntés sikeresen rögzítve!");
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba a döntés rögzítésekor: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            }
-        };
-
-        window.respondToJobOffer = function(ajanlatId, isAccepted) {
-            var promptMsg = isAccepted ? 
-                "Biztosan ELFOGADOD az állásajánlatot? Ezzel a szerződés azonnal megkötésre kerül, és szolgálatba lépsz a hajón!" : 
-                "Biztosan ELUTASÍTOD az állásajánlatot?";
-            if (!confirm(promptMsg)) return;
-
-            var loadingEl = document.getElementById('toborzo-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            if (typeof window.callBackend === 'function') {
-                window.callBackend('respondToJobOffer', [ajanlatId, isAccepted],
-                    function(data) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (data && data.success) {
-                            if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Válaszod sikeresen rögzítve!", "Siker");
-                            else alert(data.message || "Válaszod sikeresen rögzítve!");
-                            window.openToborzoBarakk();
-                        } else {
-                            var errMsg = "Hiba a válaszadás során: " + (data ? data.error : 'Ismeretlen hiba');
-                            if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                            else alert(errMsg);
-                        }
-                    },
-                    function(err) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        var errMsg = "Hálózati hiba: " + err.message;
-                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
-                        else alert(errMsg);
-                    }
-                );
-            }
-        };
-
-
-                // ─── FEDÉLZET MODAL LOGIKA & IRÁNYÍTÁS (STANDALONE & BEÁGYAZOTT TÁMOGATÁS) ────────
-        window.fedelzetUserShips = [];
-        window.fedelzetSelectedShip = null;
-        window.fedelzetSelectedGameType = null;
-        window.fedelzetChatState = 'IDLE'; // IDLE, AWAITING_HARTYA_CONFIRM, AWAITING_KALAND_TARGET, AWAITING_EXPEDITION_ISLAND, AWAITING_EXPEDITION_BOOK, AWAITING_FINAL_CONFIRM
-        window.fedelzetExpeditionIsland = '';
-        window.fedelzetExpeditionBook = '';
-
-        window.fedelzetAddChatMessage = function(sender, text, type) {
-            var history = document.getElementById('fedelzet-deck-chat-history');
-            if (!history) return;
-            
-            var div = document.createElement('div');
-            div.style.cssText = "padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.35; margin-bottom: 6px; box-shadow: 1px 1px 3px rgba(0,0,0,0.15); word-wrap: break-word;";
-            
-            if (type === "incoming") {
-                div.style.background = "#f0f4f8";
-                div.style.color = "#1b263b";
-                div.style.alignSelf = "flex-start";
-                div.style.borderLeft = (sender === "Kikötőmester") ? "4px solid #d4af37" : "4px solid #37474f";
-                div.innerHTML = "<strong style='color:#37474f;'>" + sender + ":</strong><div style='margin-top:3px;'>" + text + "</div>";
-            } else if (type === "outgoing") {
-                div.style.background = "#d4af37";
-                div.style.color = "#1f0901";
-                div.style.fontWeight = "500";
-                div.style.alignSelf = "flex-end";
-                div.style.marginLeft = "auto";
-                div.style.textAlign = "right";
-                div.innerHTML = "<strong>Te:</strong><div style='margin-top:3px;'>" + text + "</div>";
-            } else {
-                div.style.background = "transparent";
-                div.style.boxShadow = "none";
-                div.style.color = "#888";
-                div.style.fontStyle = "italic";
-                div.style.textAlign = "center";
-                div.style.margin = "0 auto";
-                div.style.fontSize = "0.85em";
-                div.innerHTML = text;
-            }
-            
-            history.appendChild(div);
-            setTimeout(function() {
-                history.scrollTop = history.scrollHeight;
-            }, 30);
-        };
-
-        window.openFedelzetModal = function() {
-            console.log("🚢 3D Kikötő: Fedélzet modal megnyitása");
-            var modal = document.getElementById('fedelzet-modal');
-            if (!modal) return;
-
+    }
+
+    /**
+     * Filmes kameraközelítés és sötétedő átmenet aktiválása a kiválasztott épületre
+     */
+    function triggerLocationTransition(location) {
+        if (isCinematicTransitioning) return;
+        isCinematicTransitioning = true;
+
+        // Kurzor és tooltip azonnali elrejtése
+        document.body.style.cursor = 'default';
+        const tooltipEl = document.getElementById('interactive-tooltip');
+        if (tooltipEl) tooltipEl.classList.remove('visible');
+
+        // OrbitControls interakciók kikapcsolása
+        if (controls) controls.enabled = false;
+
+        // Képernyő elsötétülés indítása
+        const overlay = document.getElementById('scene-transition-overlay');
+        if (overlay) overlay.classList.add('active');
+
+        // Kameramozgás kezdő- és célpontjai
+        cinematicStartTime = clock.getElapsedTime();
+        cinematicStartCamPos.copy(camera.position);
+        cinematicStartLookAt.copy(controls ? controls.target : defaultTargetPos);
+
+        cinematicEndCamPos.copy(location.camTargetPos);
+        cinematicEndLookAt.copy(location.lookAtTarget);
+
+        // Aloldal vagy funkció meghívása a filmes átmenet végén
+        setTimeout(() => {
+            navigateToSubpage(location);
+        }, 1100);
+    }
+
+    /**
+     * Cél aloldal vagy funkció meghívása a központi rendszeren keresztül
+     */
+    function navigateToSubpage(target) {
+        const pageId = (typeof target === 'object' && target.id) ? target.id : target;
+        console.log("⚓ 3D Kikötő: Cél aloldal / funkció meghívása ->", pageId);
+
+        // 1. Univerzális NPC modal megnyitása felöltöztetett konfigurációval
+        if (typeof target === 'object' && target.npcId && target.npcConfig) {
             isModalOpen = true;
+            // Kameraállás azonnali visszaállítása az alapértelmezett kikötői pozícióra
             if (defaultCameraPos && defaultTargetPos) {
                 camera.position.copy(defaultCameraPos);
                 if (controls) {
@@ -14208,604 +13459,1952 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                 }
             }
 
-            var overlay = document.getElementById('scene-transition-overlay');
+            if (window.parent && window.parent !== window && typeof window.parent.openUniversalNPC === 'function') {
+                window.parent.openUniversalNPC(target.npcId, target.npcConfig);
+            } else if (typeof window.openUniversalNPC === 'function') {
+                window.openUniversalNPC(target.npcId, target.npcConfig);
+            }
+            const overlay = document.getElementById('scene-transition-overlay');
             if (overlay) overlay.classList.remove('active');
             isCinematicTransitioning = false;
+            return;
+        }
 
-            var portraitPanel = document.getElementById('fedelzet-portrait-panel');
-            var portraitImg = document.getElementById('fedelzet-portrait-image');
-            var portraitVideo = document.getElementById('fedelzet-portrait-video');
-            var audioBtn = document.getElementById('fedelzet-portrait-audio-btn');
-
-            if (portraitPanel) {
-                if (!audioBtn) {
-                    audioBtn = document.createElement('button');
-                    audioBtn.id = 'fedelzet-portrait-audio-btn';
-                    audioBtn.type = 'button';
-                    audioBtn.className = 'portrait-audio-btn';
-                    audioBtn.title = 'Hang némítása / bekapcsolása';
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                    audioBtn.onclick = function(e) {
-                        if (e) { e.stopPropagation(); e.preventDefault(); }
-                        toggleVideoAudio('fedelzet-portrait-video', 'fedelzet-portrait-audio-btn');
-                    };
-                    portraitPanel.appendChild(audioBtn);
-                }
-
-                portraitPanel.className = 'npc-portrait-closed';
-                if (portraitVideo) {
-                    portraitVideo.style.display = 'block';
-                    if (portraitImg) portraitImg.style.display = 'none';
-                    portraitVideo.currentTime = 0;
-                    portraitVideo.loop = false;
-                    portraitVideo.muted = false;
-                    portraitVideo.volume = 1.0;
-                    portraitVideo.onended = function() {
-                        if (audioBtn) audioBtn.style.display = 'none';
-                        portraitVideo.style.display = 'none';
-                        if (portraitImg) {
-                            portraitImg.style.display = 'block';
-                            portraitImg.src = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg';
-                        }
-                    };
-                    var playProm = portraitVideo.play();
-                    if (playProm !== undefined) {
-                        playProm.then(function() {
-                            if (audioBtn) {
-                                audioBtn.style.display = 'flex';
-                                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                                audioBtn.title = 'Némítás';
-                            }
-                        }).catch(function(e) {
-                            console.log('Fedélzet videó autoplay fallback muted:', e);
-                            portraitVideo.muted = true;
-                            portraitVideo.play().catch(function(){});
-                            if (audioBtn) {
-                                audioBtn.style.display = 'flex';
-                                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                                audioBtn.title = 'Hang bekapcsolása';
-                            }
-                        });
-                    }
-                } else if (portraitImg) {
-                    if (audioBtn) audioBtn.style.display = 'none';
-                    portraitImg.style.display = 'block';
-                    portraitImg.src = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg';
-                }
-
-                setTimeout(function() {
-                    portraitPanel.className = 'npc-portrait-open';
-                }, 100);
-            }
-
-            modal.style.display = 'flex';
-            window.fedelzetInit();
-        };
-
-        window.closeFedelzetModal = function(e) {
-            if (e) {
-                if (e.stopPropagation) e.stopPropagation();
-                if (e.preventDefault) e.preventDefault();
-            }
-            var portraitVideo = document.getElementById('fedelzet-portrait-video');
-            if (portraitVideo) {
-                try { portraitVideo.pause(); } catch(e){}
-            }
-            var audioBtn = document.getElementById('fedelzet-portrait-audio-btn');
-            if (audioBtn) audioBtn.style.display = 'none';
-
-            document.querySelectorAll('#fedelzet-modal').forEach(function(m) {
-                m.style.display = 'none';
-            });
-            const overlay = document.getElementById('scene-transition-overlay');
-            if (overlay) {
-                overlay.classList.remove('active');
-                overlay.style.display = 'none';
-                overlay.style.opacity = '0';
-            }
-            if (defaultCameraPos && defaultTargetPos && camera && defaultCameraPos.length() > 0) {
+        // 2. Toborzóbarakk modal megnyitása
+        if (pageId === 'openToborzoBarakk') {
+            isModalOpen = true;
+            // Kameraállás azonnali visszaállítása az alapértelmezett kikötői pozícióra
+            if (defaultCameraPos && defaultTargetPos) {
                 camera.position.copy(defaultCameraPos);
                 if (controls) {
                     controls.target.copy(defaultTargetPos);
                     controls.update();
                     controls.enabled = true;
                 }
-            } else if (controls) {
-                controls.enabled = true;
-                controls.update();
             }
-            const tooltipEl = document.getElementById('interactive-tooltip');
-            if (tooltipEl) tooltipEl.classList.remove('visible');
-            if (interactiveLocations) {
-                interactiveLocations.forEach(function(loc) {
-                    removeHighlight(loc.meshes);
-                });
+
+            if (window.parent && window.parent !== window && typeof window.parent.openToborzoBarakk === 'function') {
+                window.parent.openToborzoBarakk();
+            } else if (typeof window.openToborzoBarakk === 'function') {
+                window.openToborzoBarakk();
             }
-            document.body.style.cursor = 'default';
-            pointerDownTime = 0;
-            currentHoveredLocation = null;
-            isModalOpen = false;
+            const overlay = document.getElementById('scene-transition-overlay');
+            if (overlay) overlay.classList.remove('active');
             isCinematicTransitioning = false;
+            return;
+        }
+
+        // 3. Fedélzet modal megnyitása
+        if (pageId === 'openFedelzetModal') {
+            isModalOpen = true;
+            // Kameraállás azonnali visszaállítása az alapértelmezett kikötői pozícióra
+            if (defaultCameraPos && defaultTargetPos) {
+                camera.position.copy(defaultCameraPos);
+                if (controls) {
+                    controls.target.copy(defaultTargetPos);
+                    controls.update();
+                    controls.enabled = true;
+                }
+            }
+
+            if (typeof window.openFedelzetModal === 'function') {
+                window.openFedelzetModal();
+            } else if (typeof openFedelzetModal === 'function') {
+                openFedelzetModal();
+            } else if (typeof loadPage === 'function') {
+                loadPage('fedelzet_oldal');
+            }
+            const overlay = document.getElementById('scene-transition-overlay');
+            if (overlay) overlay.classList.remove('active');
+            isCinematicTransitioning = false;
+            return;
+        }
+
+        // 4. Hagyományos aloldal betöltése
+        if (typeof resetKikotoViewport === 'function') {
+            resetKikotoViewport();
+        } else {
+            const overlay = document.getElementById('scene-transition-overlay');
+            if (overlay) overlay.classList.remove('active');
+            isCinematicTransitioning = false;
+            if (defaultCameraPos && defaultTargetPos && camera) {
+                camera.position.copy(defaultCameraPos);
+                if (controls) {
+                    controls.target.copy(defaultTargetPos);
+                    controls.update();
+                    controls.enabled = true;
+                }
+            }
+        }
+
+        if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
+            window.parent.loadPage(pageId);
+        } else if (typeof window.loadPage === 'function') {
+            window.loadPage(pageId);
+        } else {
+            window.location.href = pageId + '.html';
+        }
+    }
+
+    // ─── UNIVERZÁLIS NPC & TOBORZÓ MODAL VEZÉRLÉS (STANDALONE & BEÁGYAZOTT TÁMOGATÁS) ─────────────
+    window.ACTIVE_NPC_CONFIG = {};
+
+    window.closeUniversalNPCModal = function (e) {
+        if (e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
+        }
+        var portraitVideo = document.getElementById('npc-portrait-video');
+        if (portraitVideo) {
+            try { portraitVideo.pause(); } catch (err) { }
+        }
+        var audioBtn = document.getElementById('npc-portrait-audio-btn');
+        if (audioBtn) audioBtn.style.display = 'none';
+
+        document.querySelectorAll('#universal-npc-modal').forEach(function (m) {
+            m.style.display = 'none';
+        });
+        const overlay = document.getElementById('scene-transition-overlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+            overlay.style.opacity = '0';
+        }
+        if (defaultCameraPos && defaultTargetPos && camera && defaultCameraPos.length() > 0) {
+            camera.position.copy(defaultCameraPos);
+            if (controls) {
+                controls.target.copy(defaultTargetPos);
+                controls.update();
+                controls.enabled = true;
+            }
+        } else if (controls) {
+            controls.enabled = true;
+            controls.update();
+        }
+        const tooltipEl = document.getElementById('interactive-tooltip');
+        if (tooltipEl) tooltipEl.classList.remove('visible');
+        if (interactiveLocations) {
+            interactiveLocations.forEach(function (loc) {
+                removeHighlight(loc.meshes);
+            });
+        }
+        document.body.style.cursor = 'default';
+        pointerDownTime = 0;
+        currentHoveredLocation = null;
+        isModalOpen = false;
+        isCinematicTransitioning = false;
+    };
+
+    window.closeToborzoModal = function (e) {
+        if (e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
+        }
+        var vid = document.getElementById('toborzo-video-player');
+        if (vid) {
+            try { vid.pause(); } catch (err) { }
+        }
+        var cMunk = document.getElementById('toborzo-console-munkavallalo');
+        var cKap = document.getElementById('toborzo-console-kapitany');
+        if (cMunk) cMunk.style.display = 'none';
+        if (cKap) cKap.style.display = 'none';
+
+        document.querySelectorAll('.toborzo-brass-nametag-container').forEach(function (el) {
+            el.style.display = 'flex';
+        });
+
+        document.querySelectorAll('#toborzo-modal').forEach(function (m) {
+            m.style.display = 'none';
+        });
+        const overlay = document.getElementById('scene-transition-overlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+            overlay.style.opacity = '0';
+        }
+        if (defaultCameraPos && defaultTargetPos && camera && defaultCameraPos.length() > 0) {
+            camera.position.copy(defaultCameraPos);
+            if (controls) {
+                controls.target.copy(defaultTargetPos);
+                controls.update();
+                controls.enabled = true;
+            }
+        } else if (controls) {
+            controls.enabled = true;
+            controls.update();
+        }
+        const tooltipEl = document.getElementById('interactive-tooltip');
+        if (tooltipEl) tooltipEl.classList.remove('visible');
+        if (interactiveLocations) {
+            interactiveLocations.forEach(function (loc) {
+                removeHighlight(loc.meshes);
+            });
+        }
+        document.body.style.cursor = 'default';
+        pointerDownTime = 0;
+        currentHoveredLocation = null;
+        isModalOpen = false;
+        isCinematicTransitioning = false;
+    };
+
+    window.sendUniversalMessage = function () {
+        var input = document.getElementById('universal-chat-input');
+        if (!input) return;
+        var msg = input.value.trim();
+        if (!msg) return;
+
+        var npcId = (document.getElementById('current-npc-id') && document.getElementById('current-npc-id').value) || 'harbormaster';
+        window.addBubbleToUniversal("Te", msg, "outgoing");
+        input.value = '';
+        input.disabled = true;
+
+        var chatArea = document.getElementById('universal-chat-area');
+        var loaderId = "load-" + Date.now();
+        var loader = document.createElement('div');
+        loader.id = loaderId;
+        loader.style.cssText = "font-style: italic; color: #666; margin: 5px 15px;";
+
+        if (window.ACTIVE_NPC_CONFIG && window.ACTIVE_NPC_CONFIG.loaderHTML) {
+            loader.innerHTML = window.ACTIVE_NPC_CONFIG.loaderHTML;
+        } else {
+            var npcName = (document.getElementById('npc-name') && document.getElementById('npc-name').innerText) || "Kikötőmester";
+            loader.innerText = npcName + " gondolkodik...";
+        }
+
+        if (chatArea) {
+            chatArea.appendChild(loader);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('handleNPCInteraction', [npcId, msg, "CHAT"],
+                function (response) {
+                    var l = document.getElementById(loaderId);
+                    if (l) l.remove();
+                    input.disabled = false;
+                    input.focus();
+                    window.handleUniversalResponse(response);
+                },
+                function (err) {
+                    var l = document.getElementById(loaderId);
+                    if (l) l.remove();
+                    input.disabled = false;
+                    window.addBubbleToUniversal("Rendszer", "Hiba: " + err.message, "system");
+                }
+            );
+        } else {
+            setTimeout(function () {
+                var l = document.getElementById(loaderId);
+                if (l) l.remove();
+                input.disabled = false;
+                input.focus();
+                window.addBubbleToUniversal("Barba Negra", "Üdv a Kikötőben! A tenger ma csendes, a legénység készen áll.", "incoming");
+            }, 800);
+        }
+    };
+
+    window.addBubbleToUniversal = function (sender, text, type) {
+        var chatArea = document.getElementById('universal-chat-area');
+        if (!chatArea) return;
+        var div = document.createElement('div');
+        var config = window.currentNPCConfig || {};
+
+        div.style.padding = "10px 15px";
+        div.style.borderRadius = "10px";
+        div.style.maxWidth = "80%";
+        div.style.lineHeight = "1.4";
+        div.style.marginBottom = "8px";
+        div.style.boxShadow = "1px 1px 3px rgba(0,0,0,0.3)";
+        div.style.wordWrap = "break-word";
+
+        if (type === "incoming") {
+            div.style.background = "#ffffff";
+            div.style.color = "#000000";
+            div.style.alignSelf = "flex-start";
+
+            var borderColor = config.headerColor || "#37474f";
+            div.style.borderLeft = "5px solid " + borderColor;
+
+            var iconHtml = "";
+            if (config.msgIcon) {
+                iconHtml = config.msgIcon + " ";
+            }
+
+            var formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+
+            div.innerHTML = '<strong>' + sender + ':</strong><br><div style="margin-top:4px;">' + iconHtml + formattedText + '</div>';
+
+        } else if (type === "outgoing") {
+            div.style.background = "#d4af37";
+            div.style.color = "#3e2723";
+            div.style.fontWeight = "bold";
+            div.style.alignSelf = "flex-end";
+            div.style.marginLeft = "auto";
+            div.style.textAlign = "right";
+            div.innerHTML = text.replace(/\n/g, '<br>');
+
+        } else {
+            div.style.background = "transparent";
+            div.style.boxShadow = "none";
+            div.style.color = "#ccc";
+            div.style.fontStyle = "italic";
+            div.style.textAlign = "center";
+            div.style.margin = "0 auto";
+            div.style.fontSize = "0.85em";
+            div.innerHTML = text;
+        }
+
+        chatArea.appendChild(div);
+
+        setTimeout(function () {
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }, 50);
+    };
+
+    window.handleUniversalResponse = function (response) {
+        if (!response) return;
+        var text = typeof response === 'string' ? response : (response.text || response.message || JSON.stringify(response));
+        var name = (window.currentNPCConfig && window.currentNPCConfig.name) || 'NPC';
+        window.addBubbleToUniversal(name, text, "incoming");
+    };
+
+    // ─── TOBORZÓBARAKK LOGIKA (INTERAKTÍV SVG + MP4 ANIMÁCIÓ + KIBER KONZOLOK) ───────────────────────────
+    window.toborzoOwnedShips = [];
+    window.toborzoAvailableCrew = [];
+
+    window.initToborzoSvgInteractions = function () {
+        var svg = document.getElementById('toborzo-interactive-svg');
+        var tooltip = document.getElementById('toborzo-tooltip');
+        var tooltipText = document.getElementById('toborzo-tooltip-text');
+        var stage = document.getElementById('toborzo-stage-container');
+        if (!svg || !tooltip || !tooltipText || !stage) return;
+        if (svg._interactionsInitialized) return;
+        svg._interactionsInitialized = true;
+
+        var titles = {
+            'kepernyo_bal': '🛠️ Munkavállalói Konzol',
+            'kepernyo_jobb': '🚢 Kapitányi Konzol',
+            'kepernyo_kozepfel': '📡 Álláshirdetések & Nyitott Pozíciók',
+            'kepernyo_kozeple': '📜 Szabadúszó Zsoldosok & Ajánlattétel'
         };
 
-        window.fedelzetInit = function() {
-            var loadingEl = document.getElementById('fedelzet-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
+        var paths = svg.querySelectorAll('.toborzo-screen-path');
+        paths.forEach(function (p) {
+            p.removeAttribute('title');
+            p.addEventListener('mouseenter', function () {
+                var text = titles[p.id] || '';
+                if (text) {
+                    tooltipText.textContent = text;
+                    tooltip.style.display = 'block';
+                    tooltip.style.opacity = '1';
+                }
+            });
+            p.addEventListener('mousemove', function (e) {
+                var rect = stage.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y + 'px';
+            });
+            p.addEventListener('mouseleave', function () {
+                tooltip.style.display = 'none';
+                tooltip.style.opacity = '0';
+            });
+        });
+    };
 
-            var nameHeader = document.getElementById('fedelzet-active-ship-name');
-            var subHeader = document.getElementById('fedelzet-modal-subtitle');
-            var selectorContainer = document.getElementById('fedelzet-ship-selector-container');
-            var selector = document.getElementById('fedelzet-ship-selector');
-            var jumpBtn = document.getElementById('fedelzet-jump-to-save-btn');
-            var chatHistory = document.getElementById('fedelzet-deck-chat-history');
+    window.openToborzoConsole = function (type) {
+        var cMunk = document.getElementById('toborzo-console-munkavallalo');
+        var cKap = document.getElementById('toborzo-console-kapitany');
+        var cHird = document.getElementById('toborzo-console-hirdetesek');
+        var cZsol = document.getElementById('toborzo-console-zsoldosok');
+        var tooltip = document.getElementById('toborzo-tooltip');
+        if (tooltip) tooltip.style.display = 'none';
 
-            window.fedelzetSelectedShip = null;
-            window.fedelzetSelectedGameType = null;
-            window.fedelzetChatState = 'IDLE';
-            window.fedelzetExpeditionIsland = '';
-            window.fedelzetExpeditionBook = '';
+        // Névtábla elrejtése a konzolok felugrásakor
+        document.querySelectorAll('.toborzo-brass-nametag-container').forEach(function (el) {
+            el.style.display = 'none';
+        });
 
-            // Szigorúan "Rakodás alatt..." a beolvasás végéig!
-            if (nameHeader) nameHeader.textContent = "Rakodás alatt...";
-            if (subHeader) subHeader.textContent = "Hajók lajstromozása a táblázatból...";
-            if (selectorContainer) selectorContainer.style.display = 'none';
-            if (chatHistory) {
-                chatHistory.innerHTML = '<p style="color: #888; margin: 0; font-style: italic;">A hajódeszkák csendesen nyikorognak a lábad alatt. A kikötői lajstrom beolvasása folyamatban van...</p>';
-            }
+        if (cMunk) cMunk.style.display = (type === 'munkavallalo') ? 'flex' : 'none';
+        if (cKap) cKap.style.display = (type === 'kapitany') ? 'flex' : 'none';
+        if (cHird) cHird.style.display = (type === 'hirdetesek') ? 'flex' : 'none';
+        if (cZsol) cZsol.style.display = (type === 'zsoldosok') ? 'flex' : 'none';
 
-            // Ellenőrizzük, van-e mentett játékállás
+        if (type === 'kapitany' && typeof window.renderSelectedShipCrew === 'function') {
+            window.renderSelectedShipCrew();
+        }
+    };
+
+    window.closeToborzoConsole = function () {
+        var cMunk = document.getElementById('toborzo-console-munkavallalo');
+        var cKap = document.getElementById('toborzo-console-kapitany');
+        var cHird = document.getElementById('toborzo-console-hirdetesek');
+        var cZsol = document.getElementById('toborzo-console-zsoldosok');
+        if (cMunk) cMunk.style.display = 'none';
+        if (cKap) cKap.style.display = 'none';
+        if (cHird) cHird.style.display = 'none';
+        if (cZsol) cZsol.style.display = 'none';
+
+        if (typeof window.closeToborzoSubmodals === 'function') {
+            window.closeToborzoSubmodals();
+        }
+
+        // Névtábla megjelenítése kizárólag az SVG felületen
+        document.querySelectorAll('.toborzo-brass-nametag-container').forEach(function (el) {
+            el.style.display = 'flex';
+        });
+    };
+
+    window.hasRequiredRank = function (playerRank, role) {
+        var rankHierarchy = [
+            '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
+            'Alhajómester', 'Törzshajómester', 'Törzsfőhajómester',
+            'Tengerész-hadapród', 'Korvetthadnagy', 'Fregatthadnagy', 'Sorhajóhadnagy',
+            'Korvettkapitány', 'Fregattkapitány', 'Sorhajókapitány',
+            'Ellentengernagy', 'Altengernagy', 'Tengernagy', 'Főtengernagy'
+        ];
+        var szakmaiTisztek = ['Hajóorvos', 'Hajószakács', 'Térképrajzoló', 'Tekercsmester', 'Felfedező', 'Letmester', 'Monk'];
+        var parancsnokiTisztek = ['Navigátor', 'Kormányos', 'Vitorlamester', 'Fedélzetmester', 'Gépész'];
+
+        var playerIdx = rankHierarchy.indexOf(playerRank);
+        if (playerIdx === -1) playerIdx = 0;
+
+        var requiredIdx = 0;
+        if (role === 'Kapitány') {
+            requiredIdx = 11;
+        } else if (parancsnokiTisztek.indexOf(role) !== -1) {
+            requiredIdx = 7;
+        } else if (szakmaiTisztek.indexOf(role) !== -1) {
+            requiredIdx = 4;
+        }
+        return playerIdx >= requiredIdx;
+    };
+
+    window.openToborzoBarakk = function () {
+        var modal = document.getElementById('toborzo-modal');
+        if (modal) modal.style.display = 'flex';
+
+        // Reset consoles and start video
+        window.closeToborzoConsole();
+        if (typeof window.initToborzoSvgInteractions === 'function') {
+            window.initToborzoSvgInteractions();
+        }
+
+        var vid = document.getElementById('toborzo-video-player');
+        if (vid) {
             try {
-                var save = localStorage.getItem('ebp_tutorial_save') || localStorage.getItem('game_save');
-                if (save && jumpBtn) jumpBtn.style.display = 'inline-block';
-            } catch (e) {}
+                vid.currentTime = 0;
+                var p = vid.play();
+                if (p && p.catch) p.catch(function () { });
+            } catch (e) { }
+        }
 
-            var backendCaller = (typeof window.callBackend === 'function') ? window.callBackend :
-                                (window.parent && typeof window.parent.callBackend === 'function') ? window.parent.callBackend : null;
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
 
-            if (backendCaller) {
-                backendCaller('getAvailableShips', [], 
-                    function(response) {
+        if (typeof window.callBackend === 'function') {
+            var loadFallback = function () {
+                window.callBackend('getToborzoData', [],
+                    function (fbData) {
                         if (loadingEl) loadingEl.style.display = 'none';
-                        if (response && response.success && response.ships) {
-                            window.fedelzetUserShips = response.ships;
-                            if (window.fedelzetUserShips.length === 0) {
-                                if (nameHeader) nameHeader.textContent = "Nincs elérhető hajód a kikötőben!";
-                                if (subHeader) subHeader.textContent = "Látogass el a Hajóácsműhelybe vagy a Piacra!";
-                                if (selectorContainer) selectorContainer.style.display = 'none';
-                                window.fedelzetAddChatMessage("Kikötőmester", "Nem látok a nevedre bejegyzett hajót a kikötői lajstromban, kalóz! Előbb szerezz egyet a Hajóácsműhelyben vagy a Piacon.", "incoming");
-                            } else {
-                                if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
-                                if (selectorContainer) selectorContainer.style.display = 'block';
-                                if (selector) {
-                                    selector.innerHTML = '';
-                                    window.fedelzetUserShips.forEach(function(ship) {
-                                        var opt = document.createElement('option');
-                                        opt.value = ship.id;
-                                        opt.textContent = ship.name + " (" + (ship.type || 'Hajó') + ")";
-                                        selector.appendChild(opt);
-                                    });
-                                }
-                                window.fedelzetSelectShip(window.fedelzetUserShips[0].id, true);
-                            }
-                        } else {
-                            if (nameHeader) nameHeader.textContent = "Nincs elérhető hajó";
-                            if (subHeader) subHeader.textContent = "A hajók lajstroma nem érhető el.";
-                            window.fedelzetAddChatMessage("Kikötőmester", "A kikötői lajstrom jelenleg nem érhető el. Kérlek, próbáld újra később!", "incoming");
+                        if (fbData && fbData.success) {
+                            window.toborzoMarketData = fbData;
+                            window.toborzoOwnedShips = fbData.ownedShips || [];
+                            window.toborzoAvailableCrew = fbData.availableCrew || [];
+                            window.toborzoNameDict = fbData.nameDict || {};
+                            window.toborzoGameScrolls = fbData.gameScrolls || fbData.availableScrolls || [];
+                            window.renderToborzoFullMarket(fbData);
+                            window.renderSelectedShipCrew();
                         }
                     },
-                    function(err) {
+                    function (fbErr) {
                         if (loadingEl) loadingEl.style.display = 'none';
-                        console.warn('Fedélzet hajók lekérdezési hiba:', err);
-                        if (nameHeader) nameHeader.textContent = "Hiba a lekérdezéskor";
-                        window.fedelzetAddChatMessage("Kikötőmester", "Hiba történt a hajók lekérdezésekor: " + (err ? err.message : 'Hálózati hiba'), "incoming");
+                        console.warn('ToborzoData fallback lekérdezési hiba:', fbErr);
                     }
                 );
-            } else {
-                // Offline teszt szimuláció ha nincs backend kapcsolat
-                setTimeout(function() {
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    window.fedelzetUserShips = [
-                        { id: 'ship_01', name: 'Gyöngyhalász', type: 'Dingi' },
-                        { id: 'ship_02', name: 'Fekete Gyöngy', type: 'Fregatt' }
-                    ];
-                    if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
-                    if (selectorContainer) selectorContainer.style.display = 'block';
-                    if (selector) {
-                        selector.innerHTML = '<option value="ship_01">Gyöngyhalász (Dingi)</option><option value="ship_02">Fekete Gyöngy (Fregatt)</option>';
-                    }
-                    window.fedelzetSelectShip('ship_01', true);
-                }, 400);
-            }
-        };
+            };
 
-        window.fedelzetSelectShip = function(shipId, isInitial) {
-            var ship = (window.fedelzetUserShips || []).find(function(s) { return s.id === shipId; });
-            if (ship) {
-                window.fedelzetSelectedShip = ship;
-                var nameHeader = document.getElementById('fedelzet-active-ship-name');
-                if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
-                var subHeader = document.getElementById('fedelzet-modal-subtitle');
-                if (subHeader) subHeader.textContent = "Aktív hajó: " + ship.name + " (" + (ship.type || 'Hajó') + ")";
-                
-                var selector = document.getElementById('fedelzet-ship-selector');
-                if (selector && selector.value !== ship.id) {
-                    selector.value = ship.id;
-                }
-                
-                var msg = isInitial 
-                    ? "Üdv a fedélzeten, Kapitány! A(z) <b>" + ship.name + "</b> (" + (ship.type || 'Hajó') + ") lajstromozva, és készen áll a kihajózásra. Milyen küldetésre indulunk ma? Válassz a fenti küldetésgombok közül, vagy szólj hozzám itt a fedélzeti megbeszélésben!"
-                    : "Átszálltál a(z) <b>" + ship.name + "</b> fedélzetére. A legénység várja a parancsodat!";
-                window.fedelzetAddChatMessage("Kikötőmester", msg, "incoming");
-            }
-        };
-
-        window.fedelzetPrepareDeparture = function(gameType) {
-            window.fedelzetSelectedGameType = gameType;
-            var targetInput = document.getElementById('fedelzet-departure-target');
-            var bookInput = document.getElementById('fedelzet-departure-book-target');
-            var confirmBtn = document.getElementById('fedelzet-confirm-departure-btn');
-            var chatInput = document.getElementById('fedelzet-deck-chat-input');
-            var ship = window.fedelzetSelectedShip || { name: 'Hajód' };
-
-            if (gameType === 'Hártyahalászat') {
-                window.fedelzetChatState = 'AWAITING_HARTYA_CONFIRM';
-                if (targetInput) targetInput.style.display = 'none';
-                if (bookInput) bookInput.style.display = 'none';
-                if (confirmBtn) {
-                    confirmBtn.style.display = 'block';
-                    confirmBtn.innerHTML = '<i class="fas fa-fish"></i> INDULÁS: Hártyahalászat!';
-                }
-                window.fedelzetAddChatMessage("Te", "Hártyahalászatra készülök a(z) <b>" + ship.name + "</b> fedélzetén.", "outgoing");
-                window.fedelzetAddChatMessage("Kikötőmester", "A merítőhálókat felkötöttük, a tenger csendes! Készen állsz a kifutásra? Írd be ide a chatbe: <b>'Indulás'</b> (vagy 'Mehet'), vagy kattints a lenti narancssárga <b>INDULÁS</b> gombra!", "incoming");
-            } else if (gameType === 'Kalandjáték') {
-                window.fedelzetChatState = 'AWAITING_KALAND_TARGET';
-                if (targetInput) {
-                    targetInput.style.display = 'block';
-                    targetInput.placeholder = 'Add meg a Kaland nevét pontosan!';
-                    targetInput.value = '';
-                }
-                if (bookInput) {
-                    bookInput.style.display = 'none';
-                    bookInput.value = '';
-                }
-                if (confirmBtn) {
-                    confirmBtn.style.display = 'block';
-                    confirmBtn.innerHTML = '<i class="fas fa-skull-crossbones"></i> INDULÁS: Kalandjáték!';
-                }
-                window.fedelzetAddChatMessage("Te", "Kalandjáték küldetésre indulunk!", "outgoing");
-                window.fedelzetAddChatMessage("Kikötőmester", "Merre vegyük az irányt, Kapitány? Kérlek, írd be ide a fedélzeti megbeszélésbe a <b>Kaland pontos nevét</b>!", "incoming");
-            } else if (gameType === 'Könyvexpedíció') {
-                window.fedelzetChatState = 'AWAITING_EXPEDITION_ISLAND';
-                window.fedelzetExpeditionIsland = '';
-                window.fedelzetExpeditionBook = '';
-                if (targetInput) {
-                    targetInput.style.display = 'block';
-                    targetInput.placeholder = 'Add meg a Zsánersziget nevét!';
-                    targetInput.value = '';
-                }
-                if (bookInput) {
-                    bookInput.style.display = 'block';
-                    bookInput.placeholder = 'Keresett Könyv címe';
-                    bookInput.value = '';
-                }
-                if (confirmBtn) {
-                    confirmBtn.style.display = 'block';
-                    confirmBtn.innerHTML = '<i class="fas fa-book"></i> INDULÁS: Könyvexpedíció!';
-                }
-                window.fedelzetAddChatMessage("Te", "Könyvexpedíciót indítunk!", "outgoing");
-                window.fedelzetAddChatMessage("Kikötőmester", "Nemes cél, az elveszett tudás nyomába eredünk! Melyik <b>Zsánerszigetre</b> hajózunk? Írd be a sziget nevét ide a chatbe!", "incoming");
-            }
-
-            if (chatInput) {
-                chatInput.focus();
-            }
-        };
-
-        window.fedelzetExecuteDeparture = function() {
-            var gameType = window.fedelzetSelectedGameType || 'Hártyahalászat';
-            var ship = window.fedelzetSelectedShip;
-            if (!ship) {
-                alert("Nincs kiválasztva érvényes hajó!");
-                return;
-            }
-
-            var targetInput = document.getElementById('fedelzet-departure-target');
-            var bookInput = document.getElementById('fedelzet-departure-book-target');
-
-            var targetName = targetInput ? targetInput.value.trim() : '';
-            var targetBook = bookInput ? bookInput.value.trim() : '';
-
-            if (gameType !== 'Hártyahalászat' && (!targetName || targetName.length < 3)) {
-                alert("Kérlek, adj meg egy érvényes célpontot (legalább 3 karakter)!");
-                if (targetInput) targetInput.focus();
-                return;
-            }
-
-            if (gameType === 'Könyvexpedíció' && (!targetBook || targetBook.length < 2)) {
-                alert("Könyvexpedíció esetén add meg a keresett könyv címét is!");
-                if (bookInput) bookInput.focus();
-                return;
-            }
-
-            var loadingEl = document.getElementById('fedelzet-loading');
-            if (loadingEl) loadingEl.style.display = 'flex';
-
-            var backendCaller = (typeof window.callBackend === 'function') ? window.callBackend :
-                                (window.parent && typeof window.parent.callBackend === 'function') ? window.parent.callBackend : null;
-
-            var finalTarget = (gameType === 'Könyvexpedíció') ? (targetName + "|||" + targetBook) : targetName;
-            var targetDesc = (gameType === 'Hártyahalászat') ? "Hártyahalászat" : (gameType + " -> " + targetName + (targetBook ? " (" + targetBook + ")" : ""));
-
-            window.fedelzetAddChatMessage("Te", "Kihajózási engedélyt kérek: <b>" + targetDesc + "</b>!", "outgoing");
-            window.fedelzetAddChatMessage("Kikötőmester", "Hajónapló és engedélyek ellenőrzése... Kérelem küldése a parancsnokságnak.", "incoming");
-
-            if (gameType === 'Hártyahalászat') {
-                if (backendCaller) {
-                    backendCaller('getBoatDurability', [ship.id], 
-                        function(dur) {
-                            var d = parseInt(dur);
-                            if (!isNaN(d) && d < 2) {
-                                if (loadingEl) loadingEl.style.display = 'none';
-                                var durMsg = "A(z) " + ship.name + " állapota túl alacsony (" + d + ") a kihajózáshoz! Minimum 2 élettartam szükséges. Javíttasd meg a Hajóműhelyben!";
-                                alert("Kikötőmester: Megtagadva! " + durMsg);
-                                window.fedelzetAddChatMessage("Kikötőmester", "❌ Megtagadva: " + durMsg, "incoming");
-                                return;
-                            }
-                            proceedWithDeparture();
-                        },
-                        function(err) {
-                            proceedWithDeparture();
-                        }
-                    );
-                } else {
-                    proceedWithDeparture();
-                }
-            } else {
-                proceedWithDeparture();
-            }
-
-            function proceedWithDeparture() {
-                if (backendCaller) {
-                    backendCaller('requestDeparture', [ship.id, gameType, finalTarget], 
-                        function(res) {
-                            if (loadingEl) loadingEl.style.display = 'none';
-                            if (res && res.success) {
-                                var succMsg = res.message || "Kihajózás engedélyezve! Irány: " + finalTarget;
-                                window.fedelzetAddChatMessage("Kikötőmester", "✅ " + succMsg, "incoming");
-                                alert("Sikeres Kihajózás!\n" + succMsg);
-                                if (targetInput) targetInput.value = '';
-                                if (bookInput) bookInput.value = '';
-                                window.fedelzetChatState = 'IDLE';
-                                if (gameType === 'Hártyahalászat') {
-                                    window.closeFedelzetModal();
-                                    if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
-                                        window.parent.loadPage('game_oldal');
-                                    } else {
-                                        window.location.href = 'minigame_fishing.html';
-                                    }
-                                }
-                            } else {
-                                var errMsg = (res ? res.error : 'Ismeretlen hiba');
-                                window.fedelzetAddChatMessage("Kikötőmester", "❌ Kihajózás megtagadva: " + errMsg, "incoming");
-                                alert("Kikötőmester: Megtagadva!\n" + errMsg);
-                            }
-                        },
-                        function(err) {
-                            if (loadingEl) loadingEl.style.display = 'none';
-                            window.fedelzetAddChatMessage("Kikötőmester", "❌ Hálózati hiba: " + err.message, "incoming");
-                            alert("Hálózati hiba: " + err.message);
-                        }
-                    );
-                } else {
-                    setTimeout(function() {
+            window.callBackend('getToborzoFullMarketData', [],
+                function (data) {
+                    if (data && data.success) {
                         if (loadingEl) loadingEl.style.display = 'none';
-                        window.fedelzetAddChatMessage("Kikötőmester", "✅ Kihajózás engedélyezve: " + targetDesc + " (Offline szimuláció)", "incoming");
-                        alert("Kihajózás elindítva: " + targetDesc + " (Szimuláció)");
-                        window.fedelzetChatState = 'IDLE';
-                        if (gameType === 'Hártyahalászat') {
-                            window.closeFedelzetModal();
-                            window.location.href = 'minigame_fishing.html';
-                        }
-                    }, 400);
+                        window.toborzoMarketData = data;
+                        window.toborzoOwnedShips = data.ownedShips || [];
+                        window.toborzoAvailableCrew = data.availableCrew || [];
+                        window.toborzoNameDict = data.nameDict || {};
+                        window.toborzoGameScrolls = data.gameScrolls || data.availableScrolls || [];
+                        window.renderToborzoFullMarket(data);
+                        window.renderSelectedShipCrew();
+                    } else {
+                        loadFallback();
+                    }
+                },
+                function (err) {
+                    loadFallback();
                 }
-            }
-        };
+            );
+        } else {
+            setTimeout(function () {
+                if (loadingEl) loadingEl.style.display = 'none';
+            }, 300);
+        }
+    };
 
-        window.fedelzetSendDeckChat = function() {
-            var input = document.getElementById('fedelzet-deck-chat-input');
-            if (!input) return;
-            var msg = input.value.trim();
-            if (!msg) return;
+    window.renderToborzoFullMarket = function (data) {
+        if (!data) return;
 
-            window.fedelzetAddChatMessage("Te", msg, "outgoing");
-            input.value = '';
+        // 1. Bal Monitor: Munkavállaló adatok és Kapott állásajánlatok
+        if (data.playerStatus) {
+            var stSelect = document.getElementById('toborzo-status-select');
+            var rSelect = document.getElementById('toborzo-role-select');
+            var cInput = document.getElementById('toborzo-cost-input');
+            if (stSelect) stSelect.value = data.playerStatus.status || "Keresek munkát";
+            if (rSelect) rSelect.value = data.playerStatus.role || "";
+            if (cInput && data.playerStatus.cost !== undefined) cInput.value = data.playerStatus.cost;
+        }
 
-            var lower = msg.toLowerCase();
-            var targetInput = document.getElementById('fedelzet-departure-target');
-            var bookInput = document.getElementById('fedelzet-departure-book-target');
-
-            // 1. ÁLLAPOTGÉP: Célkijelölési párbeszéd a Kikötőmesterrel
-            if (window.fedelzetChatState === 'AWAITING_HARTYA_CONFIRM' || window.fedelzetChatState === 'AWAITING_FINAL_CONFIRM') {
-                if (lower.includes('indul') || lower.includes('mehet') || lower.includes('igen') || lower.includes('start') || lower.includes('gyerünk') || lower.includes('ok')) {
-                    window.fedelzetAddChatMessage("Kikötőmester", "Horgonyt fel! Vitorlákat bontani! Irány a nyílt víz!", "incoming");
-                    setTimeout(function() {
-                        window.fedelzetExecuteDeparture();
-                    }, 400);
-                    return;
-                }
-            }
-
-            if (window.fedelzetChatState === 'AWAITING_KALAND_TARGET') {
-                if (msg.length >= 2) {
-                    if (targetInput) targetInput.value = msg;
-                    window.fedelzetChatState = 'AWAITING_FINAL_CONFIRM';
-                    window.fedelzetAddChatMessage("Kikötőmester", "Rögzítettem a Kaland nevét a hajónaplóba: <b>" + msg + "</b>! Indulhatunk a szigetre? Írd be: <b>'Indulás'</b> vagy nyomd meg a lenti narancssárga <b>INDULÁS</b> gombot!", "incoming");
-                    return;
-                }
-            }
-
-            if (window.fedelzetChatState === 'AWAITING_EXPEDITION_ISLAND') {
-                if (msg.length >= 2) {
-                    window.fedelzetExpeditionIsland = msg;
-                    if (targetInput) targetInput.value = msg;
-                    window.fedelzetChatState = 'AWAITING_EXPEDITION_BOOK';
-                    window.fedelzetAddChatMessage("Kikötőmester", "Célpont Zsánersziget rögzítve: <b>" + msg + "</b>! Most kérlek, add meg a keresett <b>Könyv pontos címét</b> ide a chatbe!", "incoming");
-                    return;
-                }
-            }
-
-            if (window.fedelzetChatState === 'AWAITING_EXPEDITION_BOOK') {
-                if (msg.length >= 2) {
-                    window.fedelzetExpeditionBook = msg;
-                    if (bookInput) bookInput.value = msg;
-                    window.fedelzetChatState = 'AWAITING_FINAL_CONFIRM';
-                    window.fedelzetAddChatMessage("Kikötőmester", "Minden adat rögzítve: <b>" + window.fedelzetExpeditionIsland + "</b> / <b>" + msg + "</b>! Készen áll a hajó a kifutásra? Írd be: <b>'Indulás'</b> vagy kattints az <b>INDULÁS</b> gombra!", "incoming");
-                    return;
-                }
-            }
-
-            // 2. SZABAD BESZÉLGETÉS & KULCSSZÓ FELISMERÉS
-            if (lower.includes('hártya') || lower.includes('halász')) {
-                window.fedelzetPrepareDeparture('Hártyahalászat');
-                return;
-            } else if (lower.includes('kaland')) {
-                window.fedelzetPrepareDeparture('Kalandjáték');
-                return;
-            } else if (lower.includes('könyv') || lower.includes('expedíció') || lower.includes('expedicio')) {
-                window.fedelzetPrepareDeparture('Könyvexpedíció');
-                return;
-            } else if ((lower.includes('indul') || lower.includes('mehet')) && window.fedelzetSelectedGameType) {
-                window.fedelzetExecuteDeparture();
-                return;
-            }
-
-            // 3. HANGULATI LEGÉNYSÉGI VÁLASZOK
-            setTimeout(function() {
-                var responses = [
-                    "Értettem, Kapitány! Mindenki a posztján áll!",
-                    "A vitorlák felkötve, a szélirány kedvező!",
-                    "Igenis! A raktár feltöltve, indulásra készen állunk.",
-                    "A tenger zúgása hívogat. Készen állunk a kihajózásra!"
-                ];
-                var reply = responses[Math.floor(Math.random() * responses.length)];
-                window.fedelzetAddChatMessage("Legénység", reply, "incoming");
-            }, 500);
-        };
-
-        window.fedelzetJumpToSavedState = function() {
-            window.closeFedelzetModal();
-            if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
-                window.parent.loadPage('game_oldal');
+        var offersList = document.getElementById('toborzo-incoming-offers-list');
+        var offersCount = document.getElementById('toborzo-incoming-offers-count');
+        if (offersList) {
+            var incoming = data.incomingOffers || [];
+            if (offersCount) offersCount.textContent = incoming.length + ' db';
+            if (incoming.length === 0) {
+                offersList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.85em; padding: 6px;">Jelenleg nincs függőben lévő ajánlatod.</div>';
             } else {
-                window.location.href = 'minigame_fishing.html';
-            }
-        };
+                offersList.innerHTML = '';
+                incoming.forEach(function (offer) {
+                    var card = document.createElement('div');
+                    card.className = 'cyber-card';
+                    card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
 
-        // ─── 14 DB MÓLÓ, HÍD ÉS HAJÓ ELEM INTERAKTÍV DEFINÍCIÓJA (FEDÉLZET) ────────────
-        const deckInteractiveDefs = [
-            { name: "defaultMaterial004", fallbackPos: new THREE.Vector3(-32.3, 1.0, -14.4), camTarget: new THREE.Vector3(-39.5, 3.5, -14.4), lookAt: new THREE.Vector3(-32.3, 1.8, -14.4) },
-            { name: "defaultMaterial003", fallbackPos: new THREE.Vector3(-45.0, 1.0, -17.3), camTarget: new THREE.Vector3(-52.0, 3.5, -17.3), lookAt: new THREE.Vector3(-45.0, 1.8, -17.3) },
-            { name: "SM_Veh_Veh_Boat_Large_01_Hull", fallbackPos: new THREE.Vector3(-46.6, -1.1, -13.3), camTarget: new THREE.Vector3(-54.0, 3.5, -13.3), lookAt: new THREE.Vector3(-46.6, 1.5, -13.3) },
-            { name: "mesh_id5", fallbackPos: new THREE.Vector3(-34.6, -0.2, -7.5), camTarget: new THREE.Vector3(-41.5, 3.0, -7.5), lookAt: new THREE.Vector3(-34.6, 1.2, -7.5) },
-            { name: "node_id4001", fallbackPos: new THREE.Vector3(-33.0, -4.3, -4.7), camTarget: new THREE.Vector3(-40.0, 2.5, -4.7), lookAt: new THREE.Vector3(-33.0, 0.5, -4.7) },
-            { name: "Bridge001_Bridge_0", fallbackPos: new THREE.Vector3(-34.0, 3.5, 1.0), camTarget: new THREE.Vector3(-41.0, 5.0, 1.0), lookAt: new THREE.Vector3(-34.0, 3.8, 1.0) },
-            { name: "Bridge001_Bridge_0001", fallbackPos: new THREE.Vector3(-43.6, 3.5, 1.0), camTarget: new THREE.Vector3(-50.5, 5.0, 1.0), lookAt: new THREE.Vector3(-43.6, 3.8, 1.0) },
-            { name: "Bridge001_Bridge_0002", fallbackPos: new THREE.Vector3(-53.2, 3.5, 1.0), camTarget: new THREE.Vector3(-60.0, 5.0, 1.0), lookAt: new THREE.Vector3(-53.2, 3.8, 1.0) },
-            { name: "Bridge001_Bridge_0003", fallbackPos: new THREE.Vector3(-62.8, 3.5, 1.0), camTarget: new THREE.Vector3(-69.5, 5.0, 1.0), lookAt: new THREE.Vector3(-62.8, 3.8, 1.0) },
-            { name: "Mesh_0001", fallbackPos: new THREE.Vector3(-33.7, 1.8, 7.6), camTarget: new THREE.Vector3(-40.5, 3.8, 7.6), lookAt: new THREE.Vector3(-33.7, 2.2, 7.6) },
-            { name: "Mesh_0", fallbackPos: new THREE.Vector3(-33.8, 2.0, 7.5), camTarget: new THREE.Vector3(-40.5, 4.0, 7.5), lookAt: new THREE.Vector3(-33.8, 2.4, 7.5) },
-            { name: "defaultMaterial002", fallbackPos: new THREE.Vector3(-33.3, 0.9, 14.4), camTarget: new THREE.Vector3(-40.5, 3.5, 14.4), lookAt: new THREE.Vector3(-33.3, 1.8, 14.4) },
-            { name: "defaultMaterial005", fallbackPos: new THREE.Vector3(-44.6, 0.9, 18.7), camTarget: new THREE.Vector3(-51.5, 3.5, 18.7), lookAt: new THREE.Vector3(-44.6, 1.8, 18.7) },
-            { name: "SM_Veh_Boat_Medium_01_Hull_Attachments", fallbackPos: new THREE.Vector3(-45.7, -1.0, 14.7), camTarget: new THREE.Vector3(-53.0, 3.2, 14.7), lookAt: new THREE.Vector3(-45.7, 1.5, 14.7) }
-        ];
+                    var isPending = (offer.statusz === 'Függőben');
+                    var badgeClass = isPending ? 'cyber-badge-gold' : (offer.statusz === 'Elfogadva' ? 'cyber-badge-cyan' : 'cyber-badge-danger');
 
-        function registerDeckInteractiveElements() {
-            if (!scene) return;
-            deckInteractiveDefs.forEach(def => {
-                if (interactiveLocations.some(loc => loc.name === def.name)) return;
+                    var html = '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+                        '<div>' +
+                        '<strong style="color: #00ffcc; font-size: 0.95em;">' + (offer.hajoNev || 'Hajó') + '</strong>' +
+                        '<div style="color: #d4af37; font-size: 0.85em; font-weight: bold; margin-top: 2px;">Tisztség: ' + (offer.pozicio || '-') + '</div>' +
+                        '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Kapitány: ' + (offer.kapitanyNev || offer.kapitanyEmail || '-') + '</div>' +
+                        '<div style="color: #b0bec5; font-size: 0.78em; margin-top: 2px;">' + (offer.megjegyzes || (offer.idotartam ? (offer.idotartam + ' hónapra') : '')) + '</div>' +
+                        '</div>' +
+                        '<div><span class="cyber-badge ' + badgeClass + '">' + (offer.statusz || 'Függőben') + '</span></div>' +
+                        '</div>';
 
-                let targetNode = null;
-                scene.traverse(node => {
-                    if (!targetNode && node.name) {
-                        const nName = node.name.trim();
-                        const dName = def.name.trim();
-                        if (nName === dName || nName.startsWith(dName) || nName.replace(/\./g, '') === dName.replace(/\./g, '') || nName.replace(/_/g, '') === dName.replace(/_/g, '')) {
-                            targetNode = node;
-                        }
+                    if (isPending) {
+                        html += '<div style="display: flex; gap: 8px; margin-top: 8px;">' +
+                            '<button type="button" class="cyber-btn-sm cyber-btn-success" onclick="window.respondToJobOffer(\'' + offer.id + '\', true)" style="flex: 1;"><i class="fas fa-check"></i> Elfogadom</button>' +
+                            '<button type="button" class="cyber-btn-sm cyber-btn-danger" onclick="window.respondToJobOffer(\'' + offer.id + '\', false)" style="flex: 1;"><i class="fas fa-times"></i> Nem fogadom el</button>' +
+                            '</div>';
                     }
+                    card.innerHTML = html;
+                    offersList.appendChild(card);
                 });
+            }
+        }
 
-                let meshes = [];
-                if (targetNode) {
-                    if (targetNode.isMesh) meshes.push(targetNode);
-                    targetNode.traverse(c => {
-                        if (c.isMesh && !meshes.includes(c)) meshes.push(c);
-                    });
-
-                    // Ha a node egy hajómodell gyermeke, a környező vizuális elemeket is kijelölhetővé tesszük
-                    if (targetNode.parent && targetNode.parent.name && targetNode.parent.name.includes("Group")) {
-                        targetNode.parent.traverse(c => {
-                            if (c.isMesh && !meshes.includes(c)) meshes.push(c);
-                        });
-                    }
-
-                    meshes.forEach(m => {
-                        if (m && m.material) {
-                            const mats = Array.isArray(m.material) ? m.material : [m.material];
-                            mats.forEach(mat => {
-                                if (mat) {
-                                    mat.side = THREE.DoubleSide;
-                                    mat.needsUpdate = true;
-                                }
-                            });
-                        }
-                    });
-                }
-
-                if (targetNode && meshes.length > 0) {
-                    interactiveLocations.push({
-                        id: 'openFedelzetModal',
-                        name: def.name,
-                        langKey: 'harbor_nav_deck',
-                        defaultLabel: '🚢 A fedélzetre',
-                        node: targetNode,
-                        meshes: meshes,
-                        worldPos: def.fallbackPos,
-                        camTargetPos: def.camTarget,
-                        lookAtTarget: def.lookAt
-                    });
-                }
+        // 2. Jobb Monitor: Kapitány hajóválasztó és Beérkezett jelentkezők
+        var myshipsSelect = document.getElementById('toborzo-myships-select');
+        if (myshipsSelect) {
+            var currentVal = myshipsSelect.value;
+            myshipsSelect.innerHTML = '<option value="">Nincs kiválasztott hajó</option>';
+            (data.ownedShips || []).forEach(function (ship) {
+                var opt = document.createElement('option');
+                opt.value = ship.id;
+                opt.textContent = ship.name + (ship.inHarbor ? "" : " (Expedíción)");
+                opt.disabled = !ship.inHarbor;
+                if (ship.id === currentVal) opt.selected = true;
+                myshipsSelect.appendChild(opt);
             });
         }
 
-        /**
-         * 🌀 Dinamikus Hullámgyűrű Generátor (Módszer 2: Dynamic Wave & Ripple System)
-         * Koncentrikus, kifelé terjedő animált hullámokat generál a hajók, mólók, hidak és partvonal körül.
-         */
-        function createBoatRipple(targetOrPos, sizeX, sizeZ, speed, intensity) {
-            if (typeof speed === 'undefined') speed = 1.0;
-            if (typeof intensity === 'undefined') intensity = 1.0;
-            if (!targetOrPos) return;
+        var capAppsSection = document.getElementById('toborzo-captain-applicants-section');
+        var capAppsList = document.getElementById('toborzo-captain-applicants-list');
+        var capAppsCount = document.getElementById('toborzo-captain-applicants-count');
+        if (capAppsSection && capAppsList) {
+            var applicants = data.captainApplicants || [];
+            capAppsSection.style.display = (data.ownedShips && data.ownedShips.length > 0) ? 'block' : 'none';
+            if (capAppsCount) capAppsCount.textContent = applicants.length + ' db';
+            if (applicants.length === 0) {
+                capAppsList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.85em; padding: 6px;">Nincsenek elbírálásra váró jelentkezők.</div>';
+            } else {
+                capAppsList.innerHTML = '';
+                applicants.forEach(function (app) {
+                    var card = document.createElement('div');
+                    card.className = 'cyber-card';
+                    card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
+                    var isPending = (app.statusz === 'Függőben');
+                    var badgeClass = isPending ? 'cyber-badge-gold' : (app.statusz === 'Elfogadva' ? 'cyber-badge-cyan' : 'cyber-badge-danger');
 
-            const rippleGeo = new THREE.PlaneGeometry(sizeZ * 2.2, sizeZ * 2.2);
-            const aspectVal = sizeZ / sizeX;
+                    var html = '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+                        '<div>' +
+                        '<strong style="color: #d4af37; font-size: 0.95em;">' + (app.matrozName || app.matrozEmail) + '</strong>' +
+                        '<div style="color: #00e5ff; font-size: 0.85em; margin-top: 2px;">Hajó: ' + (app.hajoNev || '-') + ' &bull; Tisztség: ' + (app.pozicio || '-') + '</div>' +
+                        '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Képzettség: <strong style="color: #00ffcc;">' + (app.kepzettsegSzazalek || 0) + '%</strong> &bull; Bérigény: <strong style="color: #ffd700;">' + (app.berigeny || 10) + ' KR/hó</strong></div>' +
+                        '<div style="color: #78909c; font-size: 0.75em; margin-top: 2px;">Jelentkezés dátuma: ' + (app.datum || '-') + '</div>' +
+                        '</div>' +
+                        '<div><span class="cyber-badge ' + badgeClass + '">' + (app.statusz || 'Függőben') + '</span></div>' +
+                        '</div>';
 
-            const rippleMat = new THREE.ShaderMaterial({
-                uniforms: {
-                    uTime: { value: 0 },
-                    uSpeed: { value: speed },
-                    uColor: { value: new THREE.Color(0xd8f5ff) },
-                    uAspect: { value: aspectVal },
-                    uIntensity: { value: intensity }
+                    if (isPending) {
+                        html += '<div style="display: flex; gap: 8px; margin-top: 8px;">' +
+                            '<button type="button" class="cyber-btn-sm cyber-btn-success" onclick="window.reviewJobApplicant(\'' + app.id + '\', true)" style="flex: 1;"><i class="fas fa-check"></i> Elfogadom</button>' +
+                            '<button type="button" class="cyber-btn-sm cyber-btn-danger" onclick="window.reviewJobApplicant(\'' + app.id + '\', false)" style="flex: 1;"><i class="fas fa-times"></i> Nem fogadom el</button>' +
+                            '</div>';
+                    }
+                    card.innerHTML = html;
+                    capAppsList.appendChild(card);
+                });
+            }
+        }
+
+        // 3. Közép-Felső Monitor: Álláshirdetések és aktív szolgálat kapuőr
+        var dutyWarning = document.getElementById('toborzo-duty-warning');
+        if (dutyWarning) {
+            dutyWarning.style.display = data.hasActiveDuty ? 'block' : 'none';
+        }
+
+        var jobList = document.getElementById('toborzo-job-postings-list');
+        if (jobList) {
+            var postings = data.activeJobPostings || [];
+            if (postings.length === 0) {
+                jobList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.9em; padding: 12px; text-align: center;">Jelenleg nincsenek aktív álláshirdetések a faliújságon.</div>';
+            } else {
+                jobList.innerHTML = '';
+                postings.forEach(function (job) {
+                    var card = document.createElement('div');
+                    card.className = 'cyber-card';
+                    card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
+
+                    var alreadyApplied = (data.userAppliedJobIds && data.userAppliedJobIds.indexOf(job.id) !== -1);
+                    var actionHtml = '';
+                    if (alreadyApplied) {
+                        actionHtml = '<span class="cyber-badge cyber-badge-cyan"><i class="fas fa-check"></i> Jelentkezve</span>';
+                    } else if (data.hasActiveDuty) {
+                        actionHtml = '<button type="button" class="cyber-btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;" title="Aktív szolgálat miatt lezárva"><i class="fas fa-lock"></i> Szolgálatban</button>';
+                    } else {
+                        actionHtml = '<button type="button" class="cyber-btn-sm cyber-btn-primary" onclick="window.applyForJobOpening(\'' + job.id + '\')"><i class="fas fa-paper-plane"></i> Jelentkezem</button>';
+                    }
+
+                    card.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: flex-start;">' +
+                        '<div style="flex: 1;">' +
+                        '<strong style="color: #00ffcc; font-size: 1em;">' + (job.hajoNev || 'Hajó') + '</strong>' +
+                        '<div style="color: #d4af37; font-size: 0.88em; font-weight: bold; margin-top: 2px;"><i class="fas fa-user-tag"></i> ' + (job.pozicio || '-') + '</div>' +
+                        '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Kapitány: <span style="color: #cfd8dc;">' + (job.kapitanyNev || '-') + '</span> &bull; Feladva: ' + (job.datum || '-') + '</div>' +
+                        '<div style="color: #80cbc4; font-size: 0.82em; margin-top: 4px; background: rgba(0,255,204,0.06); padding: 4px 6px; border-radius: 3px; border-left: 2px solid #00ffcc;">' +
+                        '<i class="fas fa-scroll"></i> Küldetés célja: <strong>' + (job.kuldetesCelja || 'Általános szolgálat') + '</strong>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div style="margin-left: 10px; align-self: center;">' + actionHtml + '</div>' +
+                        '</div>';
+                    jobList.appendChild(card);
+                });
+            }
+        }
+
+        // 4. Közép-Alsó Monitor: Zsoldosok listája
+        var mercList = document.getElementById('toborzo-mercenaries-list');
+        if (mercList) {
+            var mercs = data.availableMercenaries || [];
+            if (mercs.length === 0) {
+                mercList.innerHTML = '<div style="color: #78909c; font-style: italic; font-size: 0.9em; padding: 12px; text-align: center;">Jelenleg nincsenek munkát kereső szabad matrózok a kikötőben.</div>';
+            } else {
+                mercList.innerHTML = '';
+                mercs.forEach(function (merc) {
+                    var card = document.createElement('div');
+                    card.className = 'cyber-card';
+                    card.style.cssText = 'margin-bottom: 8px; padding: 10px;';
+
+                    var safeEmail = (merc.email || '').replace(/'/g, "\\'");
+                    var safeName = (merc.name || '').replace(/'/g, "\\'");
+                    var safeRole = (merc.role || '').replace(/'/g, "\\'");
+                    var cost = merc.cost || 10;
+
+                    card.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                        '<div>' +
+                        '<strong style="color: #d4af37; font-size: 0.98em;">' + (merc.name || merc.email) + '</strong>' +
+                        '<div style="color: #00e5ff; font-size: 0.85em; margin-top: 2px;">Keresett poszt: <strong>' + (merc.role || 'Bármilyen') + '</strong></div>' +
+                        '<div style="color: #90a4ae; font-size: 0.8em; margin-top: 2px;">Rang: <span style="color: #cfd8dc;">' + (merc.rank || '-') + '</span></div>' +
+                        '<div style="color: #00ffcc; font-size: 0.82em; margin-top: 2px;">Bérigény: <strong>' + cost + ' KR / hó</strong></div>' +
+                        '</div>' +
+                        '<div>' +
+                        '<button type="button" class="cyber-btn-sm cyber-btn-primary" onclick="window.openDirectOfferSubmodal(\'' + safeEmail + '\', \'' + safeName + '\', \'' + safeRole + '\', ' + cost + ')">' +
+                        '<i class="fas fa-handshake"></i> Állásajánlat' +
+                        '</button>' +
+                        '</div>' +
+                        '</div>';
+                    mercList.appendChild(card);
+                });
+            }
+        }
+
+        // 5. Küldetés tekercsek dropdown feltöltése a Meghirdetés Submodalban
+        var missionSelect = document.getElementById('post-job-mission-select');
+        if (missionSelect && data.gameScrolls) {
+            missionSelect.innerHTML = '<option value="">- Nincs kitűzött küldetés cél (Általános szolgálat) -</option>';
+            data.gameScrolls.forEach(function (scroll) {
+                if (!scroll) return;
+                var opt = document.createElement('option');
+                opt.value = scroll;
+                opt.textContent = scroll;
+                missionSelect.appendChild(opt);
+            });
+        }
+    };
+
+    window.savePlayerJobStatus = function () {
+        var stSelect = document.getElementById('toborzo-status-select');
+        var rSelect = document.getElementById('toborzo-role-select');
+        var cInput = document.getElementById('toborzo-cost-input');
+
+        var status = stSelect ? stSelect.value : 'Keresek munkát';
+        var role = rSelect ? rSelect.value : '';
+        var cost = cInput ? (parseInt(cInput.value, 10) || 10) : 10;
+
+        if (status === 'Keresek munkát' && !role) {
+            if (typeof window.uiAlert === 'function') {
+                window.uiAlert("Kérlek, válassz ki egy keresett pozíciót!");
+            } else {
+                alert("Kérlek, válassz ki egy keresett pozíciót!");
+            }
+            return;
+        }
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('updatePlayerJobStatus', [status, role, cost],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') {
+                            window.uiAlert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.", "Siker");
+                        } else {
+                            alert("Státuszod sikeresen mentve! A kapitányok mostantól láthatják a faliújságon.");
+                        }
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba a mentés során: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
                 },
-                vertexShader: `
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        } else {
+            setTimeout(function () {
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (typeof window.uiAlert === 'function') {
+                    window.uiAlert("Státuszod sikeresen mentve! (Offline szimuláció)", "Siker");
+                } else {
+                    alert("Státuszod sikeresen mentve! (Offline szimuláció)");
+                }
+                window.closeToborzoConsole();
+            }, 400);
+        }
+    };
+
+    window.renderSelectedShipCrew = function () {
+        var select = document.getElementById('toborzo-myships-select');
+        var detailsDiv = document.getElementById('toborzo-myship-details');
+        var rolesContainer = document.getElementById('toborzo-myship-roles');
+
+        if (!select || !select.value) {
+            if (detailsDiv) detailsDiv.style.display = 'none';
+            return;
+        }
+
+        var ship = (window.toborzoOwnedShips || []).find(function (s) { return s.id === select.value; });
+        if (!ship) return;
+
+        if (detailsDiv) detailsDiv.style.display = 'block';
+        if (rolesContainer) rolesContainer.innerHTML = '';
+
+        var formDiv = document.createElement('div');
+        formDiv.id = 'bulk-crew-form';
+
+        var allRoles = [
+            "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester",
+            "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló",
+            "Tekercsmester", "Felfedező", "Gépész", "Hajóács",
+            "Letmester", "Monk", "Tengerész"
+        ];
+
+        var availableCrew = window.toborzoAvailableCrew || [];
+        var nameDict = window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
+
+        var resolvePirateName = function (email) {
+            if (!email) return '';
+            var lower = String(email).toLowerCase().trim();
+            if (nameDict[lower]) return nameDict[lower];
+            var match = availableCrew.find(function (c) { return String(c.email).toLowerCase().trim() === lower; });
+            if (match && match.name) return match.name;
+            return email;
+        };
+
+        var sortedCrew = availableCrew.slice().sort(function (a, b) {
+            var nameA = resolvePirateName(a.email) || a.name || '';
+            var nameB = resolvePirateName(b.email) || b.name || '';
+            return nameA.localeCompare(nameB);
+        });
+
+        allRoles.forEach(function (role) {
+            var isSingle = (role !== 'Tengerész');
+            var currentEmails = (ship.crew && ship.crew[role]) ? ship.crew[role].split(',').map(function (e) { return e.trim().toLowerCase(); }).filter(function (e) { return e; }) : [];
+            var isVacant = (currentEmails.length === 0);
+
+            var rowDiv = document.createElement('div');
+            rowDiv.className = 'cyber-roster-row';
+
+            var roleHeader = document.createElement('div');
+            roleHeader.className = 'cyber-roster-role-header';
+            roleHeader.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;';
+
+            var roleLabel = document.createElement('strong');
+            roleLabel.className = 'cyber-roster-role-label';
+            roleLabel.innerHTML = '<i class="fas fa-user-tag" style="color: #00e5ff;"></i> <span style="color: #00e5ff; font-weight: bold;">' + role + '</span>' + (isSingle ? ' <span style="font-size:0.8em; color:#90a4ae; font-family: monospace;">(1 fő)</span>' : ' <span style="font-size:0.8em; color:#90a4ae; font-family: monospace;">(Több fő)</span>');
+            roleHeader.appendChild(roleLabel);
+
+            // Ha betöltetlen a pozíció, hozzáadunk egy Meghirdetem gombot
+            if (isVacant) {
+                var postBtn = document.createElement('button');
+                postBtn.type = 'button';
+                postBtn.className = 'cyber-btn-sm cyber-btn-primary';
+                postBtn.style.cssText = 'padding: 3px 8px; font-size: 0.78em;';
+                postBtn.innerHTML = '<i class="fas fa-bullhorn"></i> Meghirdetem';
+                postBtn.onclick = (function (sId, sName, rName) {
+                    return function (e) {
+                        e.stopPropagation();
+                        window.openPostJobSubmodal(sId, sName, rName);
+                    };
+                })(ship.id, ship.name, role);
+                roleHeader.appendChild(postBtn);
+            }
+
+            rowDiv.appendChild(roleHeader);
+
+            var customSelectContainer = document.createElement('div');
+            customSelectContainer.className = 'cyber-custom-select';
+
+            var selectHeader = document.createElement('div');
+            selectHeader.className = 'cyber-custom-select-header';
+
+            var currentNamesHtml = "--- Üres ---";
+            if (currentEmails.length > 0) {
+                var namesArr = currentEmails.map(function (e) {
+                    return resolvePirateName(e);
+                });
+                currentNamesHtml = '<span style="color:#d4af37; font-weight:bold;">' + namesArr.join(', ') + '</span>';
+            }
+
+            selectHeader.innerHTML = '<span>' + currentNamesHtml + '</span> <i class="fas fa-chevron-down"></i>';
+
+            var optionsContainer = document.createElement('div');
+            optionsContainer.className = 'cyber-custom-options-container bulk-options-container';
+            optionsContainer.style.display = 'none';
+
+            selectHeader.onclick = function (e) {
+                e.stopPropagation();
+                var isVisible = optionsContainer.style.display === 'block';
+                document.querySelectorAll('.bulk-options-container').forEach(function (el) { el.style.display = 'none'; });
+                optionsContainer.style.display = isVisible ? 'none' : 'block';
+            };
+
+            // Checkbox logika
+            optionsContainer.addEventListener('change', function (e) {
+                if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+                    if (isSingle && e.target.checked) {
+                        var allCbs = optionsContainer.querySelectorAll('input[type="checkbox"]');
+                        allCbs.forEach(function (cb) {
+                            if (cb !== e.target) cb.checked = false;
+                        });
+                    }
+                    var checkedCbs = optionsContainer.querySelectorAll('input[type="checkbox"]:checked');
+                    if (checkedCbs.length === 0) {
+                        selectHeader.innerHTML = '<span>--- Üres ---</span> <i class="fas fa-chevron-down"></i>';
+                    } else {
+                        var nArr = [];
+                        checkedCbs.forEach(function (cb) {
+                            var cName = resolvePirateName(cb.value) || cb.getAttribute('data-name') || cb.value;
+                            nArr.push(cName);
+                        });
+                        selectHeader.innerHTML = '<span><span style="color:#d4af37; font-weight:bold;">' + nArr.join(', ') + '</span></span> <i class="fas fa-chevron-down"></i>';
+                    }
+                }
+            });
+
+            var optionAdded = false;
+            currentEmails.forEach(function (currEmail) {
+                var dName = resolvePirateName(currEmail);
+                var label = document.createElement('label');
+                label.className = 'cyber-option-label';
+                label.innerHTML = '<input type="checkbox" value="' + currEmail + '" data-role="' + role + '" data-name="' + dName + '" checked> <strong style="color:#d4af37;">' + dName + '</strong>';
+                optionsContainer.appendChild(label);
+                optionAdded = true;
+            });
+
+            sortedCrew.forEach(function (player) {
+                if (currentEmails.includes(player.email.toLowerCase())) return;
+                if (player.isBusy) return;
+                if (!window.hasRequiredRank(player.rank, role)) return;
+
+                var dName = resolvePirateName(player.email) || player.name;
+                var label = document.createElement('label');
+                label.className = 'cyber-option-label';
+                label.innerHTML = '<input type="checkbox" value="' + player.email + '" data-role="' + role + '" data-name="' + dName + '"> ' + dName + ' <span style="color:#888; font-size:0.8em;">(' + (player.rank || '') + ')</span>';
+                optionsContainer.appendChild(label);
+                optionAdded = true;
+            });
+
+            if (!optionAdded) {
+                var noMore = document.createElement('div');
+                noMore.style.cssText = 'padding: 8px 12px; color: #78909c; font-style: italic; font-size: 0.9em;';
+                noMore.innerText = 'Nincs felbérelhető tag erre a posztra.';
+                optionsContainer.appendChild(noMore);
+            }
+
+            customSelectContainer.appendChild(selectHeader);
+            customSelectContainer.appendChild(optionsContainer);
+            rowDiv.appendChild(customSelectContainer);
+            formDiv.appendChild(rowDiv);
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.bulk-options-container') && !e.target.closest('.cyber-custom-select-header') && !e.target.closest('div[style*="cursor: pointer"]')) {
+                document.querySelectorAll('.bulk-options-container').forEach(function (el) { el.style.display = 'none'; });
+            }
+        });
+
+        var submitBtn = document.createElement('button');
+        submitBtn.type = 'button';
+        submitBtn.className = 'cyber-btn cyber-btn-primary';
+        submitBtn.style.cssText = 'width: 100%; margin-top: 15px;';
+        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> <span>BEOSZTÁS MENTÉSE ÉS JÓVÁHAGYÁSA</span>';
+        submitBtn.onclick = function () { window.submitBulkCrewAssignment(ship.id); };
+
+        if (rolesContainer) {
+            rolesContainer.appendChild(formDiv);
+            rolesContainer.appendChild(submitBtn);
+        }
+    };
+
+    window.submitBulkCrewAssignment = function (shipId) {
+        var assignmentsMap = {
+            "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [],
+            "Tüzér": [], "Hajóorvos": [], "Hajószakács": [], "Térképrajzoló": [],
+            "Tekercsmester": [], "Felfedező": [], "Gépész": [], "Hajóács": [],
+            "Letmester": [], "Monk": [], "Tengerész": []
+        };
+
+        var form = document.getElementById('bulk-crew-form');
+        if (!form) return;
+
+        var allChecked = form.querySelectorAll('input[type="checkbox"]:checked');
+        allChecked.forEach(function (cb) {
+            var role = cb.getAttribute('data-role');
+            var email = cb.value;
+            if (assignmentsMap[role]) {
+                assignmentsMap[role].push(email);
+            }
+        });
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('updateBulkCrewAssignments', [shipId, assignmentsMap],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') window.uiAlert("Legénység sikeresen beosztva!", "Siker");
+                        else alert("Legénység sikeresen beosztva!");
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba a legénység mentésekor: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        } else {
+            setTimeout(function () {
+                if (loadingEl) loadingEl.style.display = 'none';
+                alert("Legénység sikeresen beosztva! (Offline szimuláció)");
+            }, 400);
+        }
+    };
+
+    // ─── SUBMODAL ÉS TOBORZÓBARAKK PIACI LOGIKÁK ──────────────────────────────────
+    window.closeToborzoSubmodals = function () {
+        var postModal = document.getElementById('toborzo-post-job-submodal');
+        var directModal = document.getElementById('toborzo-direct-offer-submodal');
+        if (postModal) postModal.style.display = 'none';
+        if (directModal) directModal.style.display = 'none';
+    };
+
+    window.openPostJobSubmodal = function (shipId, shipName, role) {
+        var submodal = document.getElementById('toborzo-post-job-submodal');
+        if (!submodal) return;
+
+        var sIdEl = document.getElementById('post-job-ship-id');
+        var rEl = document.getElementById('post-job-role');
+        var sNameDisp = document.getElementById('post-job-ship-name-display');
+        var rDisp = document.getElementById('post-job-role-display');
+
+        if (sIdEl) sIdEl.value = shipId;
+        if (rEl) rEl.value = role;
+        if (sNameDisp) sNameDisp.textContent = shipName;
+        if (rDisp) rDisp.textContent = role;
+
+        // Küldetés tekercsek lista betöltése a jatektekercsek E oszlopából
+        var missionSelect = document.getElementById('post-job-mission-select');
+        var scrolls = window.toborzoGameScrolls || (window.toborzoMarketData && (window.toborzoMarketData.gameScrolls || window.toborzoMarketData.availableScrolls)) || [];
+
+        if (missionSelect) {
+            missionSelect.innerHTML = '<option value="">- Nincs kitűzött küldetés cél (Általános szolgálat) -</option>';
+            if (scrolls && scrolls.length > 0) {
+                scrolls.forEach(function (scroll) {
+                    if (!scroll) return;
+                    var opt = document.createElement('option');
+                    opt.value = scroll;
+                    opt.textContent = scroll;
+                    missionSelect.appendChild(opt);
+                });
+            }
+        }
+
+        submodal.style.display = 'flex';
+    };
+
+    window.submitPostJobOpening = function () {
+        var shipId = document.getElementById('post-job-ship-id').value;
+        var role = document.getElementById('post-job-role').value;
+        var missionSelect = document.getElementById('post-job-mission-select');
+        var missionGoal = missionSelect ? missionSelect.value : '';
+
+        if (!shipId || !role) {
+            if (typeof window.uiAlert === 'function') window.uiAlert("Hiányzó hajó vagy pozíció adat!");
+            else alert("Hiányzó hajó vagy pozíció adat!");
+            return;
+        }
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('postShipJobOpening', [shipId, role, missionGoal],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Pozíció sikeresen meghirdetve a faliújságon!", "Siker");
+                        else alert(data.message || "Pozíció sikeresen meghirdetve a faliújságon!");
+                        window.closeToborzoSubmodals();
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba a hirdetés feladásakor: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        }
+    };
+
+    window.openDirectOfferSubmodal = function (matrozEmail, matrozName, matrozRole, matrozWage) {
+        var submodal = document.getElementById('toborzo-direct-offer-submodal');
+        if (!submodal) return;
+
+        document.getElementById('direct-offer-matroz-email').value = matrozEmail;
+        document.getElementById('direct-offer-matroz-name').textContent = matrozName;
+        document.getElementById('direct-offer-matroz-role').textContent = matrozRole || 'Bármilyen';
+        document.getElementById('direct-offer-matroz-wage').textContent = matrozWage || 10;
+
+        var shipSelect = document.getElementById('direct-offer-ship-select');
+        if (shipSelect) {
+            shipSelect.innerHTML = '<option value="">- Válassz saját hajót -</option>';
+            (window.toborzoOwnedShips || []).forEach(function (ship) {
+                if (ship.inHarbor) {
+                    var opt = document.createElement('option');
+                    opt.value = ship.id;
+                    opt.textContent = ship.name;
+                    shipSelect.appendChild(opt);
+                }
+            });
+        }
+        window.updateDirectOfferRolesDropdown();
+        submodal.style.display = 'flex';
+    };
+
+    window.updateDirectOfferRolesDropdown = function () {
+        var shipSelect = document.getElementById('direct-offer-ship-select');
+        var roleSelect = document.getElementById('direct-offer-role-select');
+        if (!roleSelect) return;
+        roleSelect.innerHTML = '<option value="">- Válassz tisztséget -</option>';
+
+        if (!shipSelect || !shipSelect.value) return;
+        var ship = (window.toborzoOwnedShips || []).find(function (s) { return s.id === shipSelect.value; });
+        if (!ship) return;
+
+        var allRoles = [
+            "Kapitány", "Navigátor", "Kormányos", "Vitorlamester", "Fedélzetmester",
+            "Tüzér", "Hajóorvos", "Hajószakács", "Térképrajzoló",
+            "Tekercsmester", "Felfedező", "Gépész", "Hajóács",
+            "Letmester", "Monk", "Tengerész"
+        ];
+
+        allRoles.forEach(function (role) {
+            var currentEmails = (ship.crew && ship.crew[role]) ? ship.crew[role].split(',').map(function (e) { return e.trim().toLowerCase(); }).filter(function (e) { return e; }) : [];
+            // Csak betöltetlen vagy többszemélyes tisztség
+            if (currentEmails.length === 0 || role === 'Tengerész') {
+                var opt = document.createElement('option');
+                opt.value = role;
+                opt.textContent = role + (currentEmails.length === 0 ? ' (Üres)' : ' (' + currentEmails.length + ' fő)');
+                roleSelect.appendChild(opt);
+            }
+        });
+    };
+
+    window.submitDirectJobOffer = function () {
+        var targetMatrozEmail = document.getElementById('direct-offer-matroz-email').value;
+        var shipSelect = document.getElementById('direct-offer-ship-select');
+        var roleSelect = document.getElementById('direct-offer-role-select');
+        var durationInput = document.getElementById('direct-offer-duration-input');
+
+        var shipId = shipSelect ? shipSelect.value : '';
+        var role = roleSelect ? roleSelect.value : '';
+        var durationMonths = durationInput ? (parseInt(durationInput.value, 10) || 1) : 1;
+
+        if (!targetMatrozEmail || !shipId || !role) {
+            if (typeof window.uiAlert === 'function') window.uiAlert("Kérlek, válassz ki egy hajót és egy szabad pozíciót!");
+            else alert("Kérlek, válassz ki egy hajót és egy szabad pozíciót!");
+            return;
+        }
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('sendDirectJobOffer', [targetMatrozEmail, shipId, role, durationMonths],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Állásajánlat sikeresen elküldve a matróznak!", "Siker");
+                        else alert(data.message || "Állásajánlat sikeresen elküldve a matróznak!");
+                        window.closeToborzoSubmodals();
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba az ajánlat küldésekor: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        }
+    };
+
+    window.applyForJobOpening = function (hirdetesId) {
+        if (!confirm("Biztosan jelentkezni szeretnél erre a hajós pozícióra?")) return;
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('applyForJobOpening', [hirdetesId],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Jelentkezés sikeresen elküldve!", "Siker");
+                        else alert(data.message || "Jelentkezés sikeresen elküldve!");
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba a jelentkezés során: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        }
+    };
+
+    window.reviewJobApplicant = function (jelentkezesId, isApproved) {
+        var actionName = isApproved ? "elfogadni és ajánlatot tenni a pozícióra" : "elutasítani ezt a jelentkezést";
+        if (!confirm("Biztosan szeretnéd " + actionName + "?")) return;
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('reviewJobApplicant', [jelentkezesId, isApproved],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Döntés sikeresen rögzítve!", "Siker");
+                        else alert(data.message || "Döntés sikeresen rögzítve!");
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba a döntés rögzítésekor: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        }
+    };
+
+    window.respondToJobOffer = function (ajanlatId, isAccepted) {
+        var promptMsg = isAccepted ?
+            "Biztosan ELFOGADOD az állásajánlatot? Ezzel a szerződés azonnal megkötésre kerül, és szolgálatba lépsz a hajón!" :
+            "Biztosan ELUTASÍTOD az állásajánlatot?";
+        if (!confirm(promptMsg)) return;
+
+        var loadingEl = document.getElementById('toborzo-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        if (typeof window.callBackend === 'function') {
+            window.callBackend('respondToJobOffer', [ajanlatId, isAccepted],
+                function (data) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (data && data.success) {
+                        if (typeof window.uiAlert === 'function') window.uiAlert(data.message || "Válaszod sikeresen rögzítve!", "Siker");
+                        else alert(data.message || "Válaszod sikeresen rögzítve!");
+                        window.openToborzoBarakk();
+                    } else {
+                        var errMsg = "Hiba a válaszadás során: " + (data ? data.error : 'Ismeretlen hiba');
+                        if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                        else alert(errMsg);
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    var errMsg = "Hálózati hiba: " + err.message;
+                    if (typeof window.uiAlert === 'function') window.uiAlert(errMsg);
+                    else alert(errMsg);
+                }
+            );
+        }
+    };
+
+
+    // ─── FEDÉLZET MODAL LOGIKA & IRÁNYÍTÁS (STANDALONE & BEÁGYAZOTT TÁMOGATÁS) ────────
+    window.fedelzetUserShips = [];
+    window.fedelzetSelectedShip = null;
+    window.fedelzetSelectedGameType = null;
+    window.fedelzetChatState = 'IDLE'; // IDLE, AWAITING_HARTYA_CONFIRM, AWAITING_KALAND_TARGET, AWAITING_EXPEDITION_ISLAND, AWAITING_EXPEDITION_BOOK, AWAITING_FINAL_CONFIRM
+    window.fedelzetExpeditionIsland = '';
+    window.fedelzetExpeditionBook = '';
+
+    window.fedelzetAddChatMessage = function (sender, text, type) {
+        var history = document.getElementById('fedelzet-deck-chat-history');
+        if (!history) return;
+
+        var div = document.createElement('div');
+        div.style.cssText = "padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.35; margin-bottom: 6px; box-shadow: 1px 1px 3px rgba(0,0,0,0.15); word-wrap: break-word;";
+
+        if (type === "incoming") {
+            div.style.background = "#f0f4f8";
+            div.style.color = "#1b263b";
+            div.style.alignSelf = "flex-start";
+            div.style.borderLeft = (sender === "Kikötőmester") ? "4px solid #d4af37" : "4px solid #37474f";
+            div.innerHTML = "<strong style='color:#37474f;'>" + sender + ":</strong><div style='margin-top:3px;'>" + text + "</div>";
+        } else if (type === "outgoing") {
+            div.style.background = "#d4af37";
+            div.style.color = "#1f0901";
+            div.style.fontWeight = "500";
+            div.style.alignSelf = "flex-end";
+            div.style.marginLeft = "auto";
+            div.style.textAlign = "right";
+            div.innerHTML = "<strong>Te:</strong><div style='margin-top:3px;'>" + text + "</div>";
+        } else {
+            div.style.background = "transparent";
+            div.style.boxShadow = "none";
+            div.style.color = "#888";
+            div.style.fontStyle = "italic";
+            div.style.textAlign = "center";
+            div.style.margin = "0 auto";
+            div.style.fontSize = "0.85em";
+            div.innerHTML = text;
+        }
+
+        history.appendChild(div);
+        setTimeout(function () {
+            history.scrollTop = history.scrollHeight;
+        }, 30);
+    };
+
+    window.openFedelzetModal = function () {
+        console.log("🚢 3D Kikötő: Fedélzet modal megnyitása (Opálos háttér)");
+        var modal = document.getElementById('fedelzet-modal');
+        if (!modal) return;
+
+        isModalOpen = true;
+
+        var portraitPanel = document.getElementById('fedelzet-portrait-panel');
+        var portraitImg = document.getElementById('fedelzet-portrait-image');
+        var portraitVideo = document.getElementById('fedelzet-portrait-video');
+        var audioBtn = document.getElementById('fedelzet-portrait-audio-btn');
+
+        if (portraitPanel) {
+            if (!audioBtn) {
+                audioBtn = document.createElement('button');
+                audioBtn.id = 'fedelzet-portrait-audio-btn';
+                audioBtn.type = 'button';
+                audioBtn.className = 'portrait-audio-btn';
+                audioBtn.title = 'Hang némítása / bekapcsolása';
+                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                audioBtn.onclick = function (e) {
+                    if (e) { e.stopPropagation(); e.preventDefault(); }
+                    toggleVideoAudio('fedelzet-portrait-video', 'fedelzet-portrait-audio-btn');
+                };
+                portraitPanel.appendChild(audioBtn);
+            }
+
+            portraitPanel.className = 'npc-portrait-closed';
+            if (portraitVideo) {
+                portraitVideo.style.display = 'block';
+                if (portraitImg) portraitImg.style.display = 'none';
+                portraitVideo.currentTime = 0;
+                portraitVideo.loop = false;
+                portraitVideo.muted = false;
+                portraitVideo.volume = 1.0;
+                portraitVideo.onended = function () {
+                    if (audioBtn) audioBtn.style.display = 'none';
+                    portraitVideo.style.display = 'none';
+                    if (portraitImg) {
+                        portraitImg.style.display = 'block';
+                        portraitImg.src = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg';
+                    }
+                };
+                var playProm = portraitVideo.play();
+                if (playProm !== undefined) {
+                    playProm.then(function () {
+                        if (audioBtn) {
+                            audioBtn.style.display = 'flex';
+                            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                            audioBtn.title = 'Némítás';
+                        }
+                    }).catch(function (e) {
+                        console.log('Fedélzet videó autoplay fallback muted:', e);
+                        portraitVideo.muted = true;
+                        portraitVideo.play().catch(function () { });
+                        if (audioBtn) {
+                            audioBtn.style.display = 'flex';
+                            audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                            audioBtn.title = 'Hang bekapcsolása';
+                        }
+                    });
+                }
+            } else if (portraitImg) {
+                if (audioBtn) audioBtn.style.display = 'none';
+                portraitImg.style.display = 'block';
+                portraitImg.src = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg';
+            }
+
+            setTimeout(function () {
+                portraitPanel.className = 'npc-portrait-open';
+            }, 100);
+        }
+
+        modal.style.display = 'flex';
+
+        var container = document.getElementById('fedelzet-modal-body');
+        if (container) {
+            if (!container.dataset.loaded) {
+                fetch('fedelzet_oldal.html')
+                    .then(function (res) { return res.text(); })
+                    .then(function (html) {
+                        container.innerHTML = html;
+                        container.dataset.loaded = 'true';
+                        var contentEl = container.querySelector('#fedelzet_oldal-content');
+                        if (contentEl) contentEl.style.display = 'block';
+                        var sidePanel = container.querySelector('#fedelzet-subpage-portrait-panel');
+                        if (sidePanel) sidePanel.style.display = 'none';
+                        if (typeof initFedelzetOldal === 'function') {
+                            initFedelzetOldal();
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error('Hiba a fedelzet_oldal.html betöltésekor:', err);
+                        container.innerHTML = '<p style="color:red; text-align:center;">Hiba a fedélzet aloldal betöltésekor.</p>';
+                    });
+            } else {
+                var contentEl = container.querySelector('#fedelzet_oldal-content');
+                if (contentEl) contentEl.style.display = 'block';
+                var sidePanel = container.querySelector('#fedelzet-subpage-portrait-panel');
+                if (sidePanel) sidePanel.style.display = 'none';
+                if (typeof initFedelzetOldal === 'function') {
+                    initFedelzetOldal();
+                }
+            }
+        }
+    };
+
+    window.closeFedelzetModal = function (e) {
+        if (e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
+        }
+        var portraitVideo = document.getElementById('fedelzet-portrait-video');
+        if (portraitVideo) {
+            try { portraitVideo.pause(); } catch (err) { }
+        }
+        var audioBtn = document.getElementById('fedelzet-portrait-audio-btn');
+        if (audioBtn) audioBtn.style.display = 'none';
+
+        var portraitPanel = document.getElementById('fedelzet-portrait-panel');
+        if (portraitPanel) portraitPanel.className = 'npc-portrait-closed';
+
+        document.querySelectorAll('#fedelzet-modal').forEach(function (m) {
+            m.style.display = 'none';
+        });
+        const overlay = document.getElementById('scene-transition-overlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+            overlay.style.opacity = '0';
+        }
+        if (defaultCameraPos && defaultTargetPos && camera && defaultCameraPos.length() > 0) {
+            camera.position.copy(defaultCameraPos);
+            if (controls) {
+                controls.target.copy(defaultTargetPos);
+                controls.update();
+                controls.enabled = true;
+            }
+        } else if (controls) {
+            controls.enabled = true;
+            controls.update();
+        }
+        const tooltipEl = document.getElementById('interactive-tooltip');
+        if (tooltipEl) tooltipEl.classList.remove('visible');
+        if (interactiveLocations) {
+            interactiveLocations.forEach(function (loc) {
+                removeHighlight(loc.meshes);
+            });
+        }
+        document.body.style.cursor = 'default';
+        pointerDownTime = 0;
+        currentHoveredLocation = null;
+        isModalOpen = false;
+        isCinematicTransitioning = false;
+    };
+
+    window.fedelzetInit = function () {
+        var loadingEl = document.getElementById('fedelzet-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        var nameHeader = document.getElementById('fedelzet-active-ship-name');
+        var subHeader = document.getElementById('fedelzet-modal-subtitle');
+        var selectorContainer = document.getElementById('fedelzet-ship-selector-container');
+        var selector = document.getElementById('fedelzet-ship-selector');
+        var jumpBtn = document.getElementById('fedelzet-jump-to-save-btn');
+        var chatHistory = document.getElementById('fedelzet-deck-chat-history');
+
+        window.fedelzetSelectedShip = null;
+        window.fedelzetSelectedGameType = null;
+        window.fedelzetChatState = 'IDLE';
+        window.fedelzetExpeditionIsland = '';
+        window.fedelzetExpeditionBook = '';
+
+        // Szigorúan "Rakodás alatt..." a beolvasás végéig!
+        if (nameHeader) nameHeader.textContent = "Rakodás alatt...";
+        if (subHeader) subHeader.textContent = "Hajók lajstromozása a táblázatból...";
+        if (selectorContainer) selectorContainer.style.display = 'none';
+        if (chatHistory) {
+            chatHistory.innerHTML = '<p style="color: #888; margin: 0; font-style: italic;">A hajódeszkák csendesen nyikorognak a lábad alatt. A kikötői lajstrom beolvasása folyamatban van...</p>';
+        }
+
+        // Ellenőrizzük, van-e mentett játékállás
+        try {
+            var save = localStorage.getItem('ebp_tutorial_save') || localStorage.getItem('game_save');
+            if (save && jumpBtn) jumpBtn.style.display = 'inline-block';
+        } catch (e) { }
+
+        var backendCaller = (typeof window.callBackend === 'function') ? window.callBackend :
+            (window.parent && typeof window.parent.callBackend === 'function') ? window.parent.callBackend : null;
+
+        if (backendCaller) {
+            backendCaller('getUserShips', [],
+                function (response) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (response && response.success && response.ships) {
+                        window.fedelzetUserShips = response.ships;
+                        if (window.fedelzetUserShips.length === 0) {
+                            if (nameHeader) nameHeader.textContent = "Nincs elérhető hajód a kikötőben!";
+                            if (subHeader) subHeader.textContent = "Látogass el a Hajóácsműhelybe vagy a Piacra!";
+                            if (selectorContainer) selectorContainer.style.display = 'none';
+                            window.fedelzetAddChatMessage("Kikötőmester", "Nem látok a nevedre bejegyzett hajót a kikötői lajstromban, kalóz! Előbb szerezz egyet a Hajóácsműhelyben vagy a Piacon.", "incoming");
+                        } else {
+                            if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
+                            if (selectorContainer) selectorContainer.style.display = 'block';
+                            if (selector) {
+                                selector.innerHTML = '';
+                                window.fedelzetUserShips.forEach(function (ship) {
+                                    var sId = ship.shipId || ship.id;
+                                    var sName = ship.shipName || ship.name;
+                                    var opt = document.createElement('option');
+                                    opt.value = sId;
+                                    opt.textContent = sName + " (" + (ship.role || ship.type || 'Hajó') + ")";
+                                    selector.appendChild(opt);
+                                });
+                            }
+                            window.fedelzetSelectShip(window.fedelzetUserShips[0].id, true);
+                        }
+                    } else {
+                        if (nameHeader) nameHeader.textContent = "Nincs elérhető hajó";
+                        if (subHeader) subHeader.textContent = "A hajók lajstroma nem érhető el.";
+                        window.fedelzetAddChatMessage("Kikötőmester", "A kikötői lajstrom jelenleg nem érhető el. Kérlek, próbáld újra később!", "incoming");
+                    }
+                },
+                function (err) {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    console.warn('Fedélzet hajók lekérdezési hiba:', err);
+                    if (nameHeader) nameHeader.textContent = "Hiba a lekérdezéskor";
+                    window.fedelzetAddChatMessage("Kikötőmester", "Hiba történt a hajók lekérdezésekor: " + (err ? err.message : 'Hálózati hiba'), "incoming");
+                }
+            );
+        } else {
+            // Offline teszt szimuláció ha nincs backend kapcsolat
+            setTimeout(function () {
+                if (loadingEl) loadingEl.style.display = 'none';
+                window.fedelzetUserShips = [
+                    { id: 'ship_01', name: 'Gyöngyhalász', type: 'Dingi' },
+                    { id: 'ship_02', name: 'Fekete Gyöngy', type: 'Fregatt' }
+                ];
+                if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
+                if (selectorContainer) selectorContainer.style.display = 'block';
+                if (selector) {
+                    selector.innerHTML = '<option value="ship_01">Gyöngyhalász (Dingi)</option><option value="ship_02">Fekete Gyöngy (Fregatt)</option>';
+                }
+                window.fedelzetSelectShip('ship_01', true);
+            }, 400);
+        }
+    };
+
+    window.fedelzetSelectShip = function (shipId, isInitial) {
+        var ship = (window.fedelzetUserShips || []).find(function (s) { return s.id === shipId; });
+        if (ship) {
+            window.fedelzetSelectedShip = ship;
+            var nameHeader = document.getElementById('fedelzet-active-ship-name');
+            if (nameHeader) nameHeader.textContent = "Melyik hajódra mész?";
+            var subHeader = document.getElementById('fedelzet-modal-subtitle');
+            if (subHeader) subHeader.textContent = "Aktív hajó: " + ship.name + " (" + (ship.type || 'Hajó') + ")";
+
+            var selector = document.getElementById('fedelzet-ship-selector');
+            if (selector && selector.value !== ship.id) {
+                selector.value = ship.id;
+            }
+
+            var msg = isInitial
+                ? "Üdv a fedélzeten, Kapitány! A(z) <b>" + ship.name + "</b> (" + (ship.type || 'Hajó') + ") lajstromozva, és készen áll a kihajózásra. Milyen küldetésre indulunk ma? Válassz a fenti küldetésgombok közül, vagy szólj hozzám itt a fedélzeti megbeszélésben!"
+                : "Átszálltál a(z) <b>" + ship.name + "</b> fedélzetére. A legénység várja a parancsodat!";
+            window.fedelzetAddChatMessage("Kikötőmester", msg, "incoming");
+        }
+    };
+
+    window.fedelzetPrepareDeparture = function (gameType) {
+        window.fedelzetSelectedGameType = gameType;
+        var targetInput = document.getElementById('fedelzet-departure-target');
+        var bookInput = document.getElementById('fedelzet-departure-book-target');
+        var confirmBtn = document.getElementById('fedelzet-confirm-departure-btn');
+        var chatInput = document.getElementById('fedelzet-deck-chat-input');
+        var ship = window.fedelzetSelectedShip || { name: 'Hajód' };
+
+        if (gameType === 'Hártyahalászat') {
+            window.fedelzetChatState = 'AWAITING_HARTYA_CONFIRM';
+            if (targetInput) targetInput.style.display = 'none';
+            if (bookInput) bookInput.style.display = 'none';
+            if (confirmBtn) {
+                confirmBtn.style.display = 'block';
+                confirmBtn.innerHTML = '<i class="fas fa-fish"></i> INDULÁS: Hártyahalászat!';
+            }
+            window.fedelzetAddChatMessage("Te", "Hártyahalászatra készülök a(z) <b>" + ship.name + "</b> fedélzetén.", "outgoing");
+            window.fedelzetAddChatMessage("Kikötőmester", "A merítőhálókat felkötöttük, a tenger csendes! Készen állsz a kifutásra? Írd be ide a chatbe: <b>'Indulás'</b> (vagy 'Mehet'), vagy kattints a lenti narancssárga <b>INDULÁS</b> gombra!", "incoming");
+        } else if (gameType === 'Kalandjáték') {
+            window.fedelzetChatState = 'AWAITING_KALAND_TARGET';
+            if (targetInput) {
+                targetInput.style.display = 'block';
+                targetInput.placeholder = 'Add meg a Kaland nevét pontosan!';
+                targetInput.value = '';
+            }
+            if (bookInput) {
+                bookInput.style.display = 'none';
+                bookInput.value = '';
+            }
+            if (confirmBtn) {
+                confirmBtn.style.display = 'block';
+                confirmBtn.innerHTML = '<i class="fas fa-skull-crossbones"></i> INDULÁS: Kalandjáték!';
+            }
+            window.fedelzetAddChatMessage("Te", "Kalandjáték küldetésre indulunk!", "outgoing");
+            window.fedelzetAddChatMessage("Kikötőmester", "Merre vegyük az irányt, Kapitány? Kérlek, írd be ide a fedélzeti megbeszélésbe a <b>Kaland pontos nevét</b>!", "incoming");
+        } else if (gameType === 'Könyvexpedíció') {
+            window.fedelzetChatState = 'AWAITING_EXPEDITION_ISLAND';
+            window.fedelzetExpeditionIsland = '';
+            window.fedelzetExpeditionBook = '';
+            if (targetInput) {
+                targetInput.style.display = 'block';
+                targetInput.placeholder = 'Add meg a Zsánersziget nevét!';
+                targetInput.value = '';
+            }
+            if (bookInput) {
+                bookInput.style.display = 'block';
+                bookInput.placeholder = 'Keresett Könyv címe';
+                bookInput.value = '';
+            }
+            if (confirmBtn) {
+                confirmBtn.style.display = 'block';
+                confirmBtn.innerHTML = '<i class="fas fa-book"></i> INDULÁS: Könyvexpedíció!';
+            }
+            window.fedelzetAddChatMessage("Te", "Könyvexpedíciót indítunk!", "outgoing");
+            window.fedelzetAddChatMessage("Kikötőmester", "Nemes cél, az elveszett tudás nyomába eredünk! Melyik <b>Zsánerszigetre</b> hajózunk? Írd be a sziget nevét ide a chatbe!", "incoming");
+        }
+
+        if (chatInput) {
+            chatInput.focus();
+        }
+    };
+
+    window.fedelzetExecuteDeparture = function () {
+        var gameType = window.fedelzetSelectedGameType || 'Hártyahalászat';
+        var ship = window.fedelzetSelectedShip;
+        if (!ship) {
+            alert("Nincs kiválasztva érvényes hajó!");
+            return;
+        }
+
+        var targetInput = document.getElementById('fedelzet-departure-target');
+        var bookInput = document.getElementById('fedelzet-departure-book-target');
+
+        var targetName = targetInput ? targetInput.value.trim() : '';
+        var targetBook = bookInput ? bookInput.value.trim() : '';
+
+        if (gameType !== 'Hártyahalászat' && (!targetName || targetName.length < 3)) {
+            alert("Kérlek, adj meg egy érvényes célpontot (legalább 3 karakter)!");
+            if (targetInput) targetInput.focus();
+            return;
+        }
+
+        if (gameType === 'Könyvexpedíció' && (!targetBook || targetBook.length < 2)) {
+            alert("Könyvexpedíció esetén add meg a keresett könyv címét is!");
+            if (bookInput) bookInput.focus();
+            return;
+        }
+
+        var loadingEl = document.getElementById('fedelzet-loading');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        var backendCaller = (typeof window.callBackend === 'function') ? window.callBackend :
+            (window.parent && typeof window.parent.callBackend === 'function') ? window.parent.callBackend : null;
+
+        var finalTarget = (gameType === 'Könyvexpedíció') ? (targetName + "|||" + targetBook) : targetName;
+        var targetDesc = (gameType === 'Hártyahalászat') ? "Hártyahalászat" : (gameType + " -> " + targetName + (targetBook ? " (" + targetBook + ")" : ""));
+
+        window.fedelzetAddChatMessage("Te", "Kihajózási engedélyt kérek: <b>" + targetDesc + "</b>!", "outgoing");
+        window.fedelzetAddChatMessage("Kikötőmester", "Hajónapló és engedélyek ellenőrzése... Kérelem küldése a parancsnokságnak.", "incoming");
+
+        if (gameType === 'Hártyahalászat') {
+            if (backendCaller) {
+                backendCaller('getBoatDurability', [ship.id],
+                    function (dur) {
+                        var d = parseInt(dur);
+                        if (!isNaN(d) && d < 2) {
+                            if (loadingEl) loadingEl.style.display = 'none';
+                            var durMsg = "A(z) " + ship.name + " állapota túl alacsony (" + d + ") a kihajózáshoz! Minimum 2 élettartam szükséges. Javíttasd meg a Hajóműhelyben!";
+                            alert("Kikötőmester: Megtagadva! " + durMsg);
+                            window.fedelzetAddChatMessage("Kikötőmester", "❌ Megtagadva: " + durMsg, "incoming");
+                            return;
+                        }
+                        proceedWithDeparture();
+                    },
+                    function (err) {
+                        proceedWithDeparture();
+                    }
+                );
+            } else {
+                proceedWithDeparture();
+            }
+        } else {
+            proceedWithDeparture();
+        }
+
+        function proceedWithDeparture() {
+            if (backendCaller) {
+                backendCaller('requestDeparture', [ship.id, gameType, finalTarget],
+                    function (res) {
+                        if (loadingEl) loadingEl.style.display = 'none';
+                        if (res && res.success) {
+                            var succMsg = res.message || "Kihajózás engedélyezve! Irány: " + finalTarget;
+                            window.fedelzetAddChatMessage("Kikötőmester", "✅ " + succMsg, "incoming");
+                            alert("Sikeres Kihajózás!\n" + succMsg);
+                            if (targetInput) targetInput.value = '';
+                            if (bookInput) bookInput.value = '';
+                            window.fedelzetChatState = 'IDLE';
+                            if (gameType === 'Hártyahalászat') {
+                                window.closeFedelzetModal();
+                                if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
+                                    window.parent.loadPage('game_oldal');
+                                } else {
+                                    window.location.href = 'minigame_fishing.html';
+                                }
+                            }
+                        } else {
+                            var errMsg = (res ? res.error : 'Ismeretlen hiba');
+                            window.fedelzetAddChatMessage("Kikötőmester", "❌ Kihajózás megtagadva: " + errMsg, "incoming");
+                            alert("Kikötőmester: Megtagadva!\n" + errMsg);
+                        }
+                    },
+                    function (err) {
+                        if (loadingEl) loadingEl.style.display = 'none';
+                        window.fedelzetAddChatMessage("Kikötőmester", "❌ Hálózati hiba: " + err.message, "incoming");
+                        alert("Hálózati hiba: " + err.message);
+                    }
+                );
+            } else {
+                setTimeout(function () {
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    window.fedelzetAddChatMessage("Kikötőmester", "✅ Kihajózás engedélyezve: " + targetDesc + " (Offline szimuláció)", "incoming");
+                    alert("Kihajózás elindítva: " + targetDesc + " (Szimuláció)");
+                    window.fedelzetChatState = 'IDLE';
+                    if (gameType === 'Hártyahalászat') {
+                        window.closeFedelzetModal();
+                        window.location.href = 'minigame_fishing.html';
+                    }
+                }, 400);
+            }
+        }
+    };
+
+    window.fedelzetSendDeckChat = function () {
+        var input = document.getElementById('fedelzet-deck-chat-input');
+        if (!input) return;
+        var msg = input.value.trim();
+        if (!msg) return;
+
+        window.fedelzetAddChatMessage("Te", msg, "outgoing");
+        input.value = '';
+
+        var lower = msg.toLowerCase();
+        var targetInput = document.getElementById('fedelzet-departure-target');
+        var bookInput = document.getElementById('fedelzet-departure-book-target');
+
+        // 1. ÁLLAPOTGÉP: Célkijelölési párbeszéd a Kikötőmesterrel
+        if (window.fedelzetChatState === 'AWAITING_HARTYA_CONFIRM' || window.fedelzetChatState === 'AWAITING_FINAL_CONFIRM') {
+            if (lower.includes('indul') || lower.includes('mehet') || lower.includes('igen') || lower.includes('start') || lower.includes('gyerünk') || lower.includes('ok')) {
+                window.fedelzetAddChatMessage("Kikötőmester", "Horgonyt fel! Vitorlákat bontani! Irány a nyílt víz!", "incoming");
+                setTimeout(function () {
+                    window.fedelzetExecuteDeparture();
+                }, 400);
+                return;
+            }
+        }
+
+        if (window.fedelzetChatState === 'AWAITING_KALAND_TARGET') {
+            if (msg.length >= 2) {
+                if (targetInput) targetInput.value = msg;
+                window.fedelzetChatState = 'AWAITING_FINAL_CONFIRM';
+                window.fedelzetAddChatMessage("Kikötőmester", "Rögzítettem a Kaland nevét a hajónaplóba: <b>" + msg + "</b>! Indulhatunk a szigetre? Írd be: <b>'Indulás'</b> vagy nyomd meg a lenti narancssárga <b>INDULÁS</b> gombot!", "incoming");
+                return;
+            }
+        }
+
+        if (window.fedelzetChatState === 'AWAITING_EXPEDITION_ISLAND') {
+            if (msg.length >= 2) {
+                window.fedelzetExpeditionIsland = msg;
+                if (targetInput) targetInput.value = msg;
+                window.fedelzetChatState = 'AWAITING_EXPEDITION_BOOK';
+                window.fedelzetAddChatMessage("Kikötőmester", "Célpont Zsánersziget rögzítve: <b>" + msg + "</b>! Most kérlek, add meg a keresett <b>Könyv pontos címét</b> ide a chatbe!", "incoming");
+                return;
+            }
+        }
+
+        if (window.fedelzetChatState === 'AWAITING_EXPEDITION_BOOK') {
+            if (msg.length >= 2) {
+                window.fedelzetExpeditionBook = msg;
+                if (bookInput) bookInput.value = msg;
+                window.fedelzetChatState = 'AWAITING_FINAL_CONFIRM';
+                window.fedelzetAddChatMessage("Kikötőmester", "Minden adat rögzítve: <b>" + window.fedelzetExpeditionIsland + "</b> / <b>" + msg + "</b>! Készen áll a hajó a kifutásra? Írd be: <b>'Indulás'</b> vagy kattints az <b>INDULÁS</b> gombra!", "incoming");
+                return;
+            }
+        }
+
+        // 2. SZABAD BESZÉLGETÉS & KULCSSZÓ FELISMERÉS
+        if (lower.includes('hártya') || lower.includes('halász')) {
+            window.fedelzetPrepareDeparture('Hártyahalászat');
+            return;
+        } else if (lower.includes('kaland')) {
+            window.fedelzetPrepareDeparture('Kalandjáték');
+            return;
+        } else if (lower.includes('könyv') || lower.includes('expedíció') || lower.includes('expedicio')) {
+            window.fedelzetPrepareDeparture('Könyvexpedíció');
+            return;
+        } else if ((lower.includes('indul') || lower.includes('mehet')) && window.fedelzetSelectedGameType) {
+            window.fedelzetExecuteDeparture();
+            return;
+        }
+
+        // 3. HANGULATI LEGÉNYSÉGI VÁLASZOK
+        setTimeout(function () {
+            var responses = [
+                "Értettem, Kapitány! Mindenki a posztján áll!",
+                "A vitorlák felkötve, a szélirány kedvező!",
+                "Igenis! A raktár feltöltve, indulásra készen állunk.",
+                "A tenger zúgása hívogat. Készen állunk a kihajózásra!"
+            ];
+            var reply = responses[Math.floor(Math.random() * responses.length)];
+            window.fedelzetAddChatMessage("Legénység", reply, "incoming");
+        }, 500);
+    };
+
+    window.fedelzetJumpToSavedState = function () {
+        window.closeFedelzetModal();
+        if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
+            window.parent.loadPage('game_oldal');
+        } else {
+            window.location.href = 'minigame_fishing.html';
+        }
+    };
+
+    // ─── 14 DB MÓLÓ, HÍD ÉS HAJÓ ELEM INTERAKTÍV DEFINÍCIÓJA (FEDÉLZET) ────────────
+    const deckInteractiveDefs = [
+        { name: "defaultMaterial004", fallbackPos: new THREE.Vector3(-32.3, 1.0, -14.4), camTarget: new THREE.Vector3(-39.5, 3.5, -14.4), lookAt: new THREE.Vector3(-32.3, 1.8, -14.4) },
+        { name: "defaultMaterial003", fallbackPos: new THREE.Vector3(-45.0, 1.0, -17.3), camTarget: new THREE.Vector3(-52.0, 3.5, -17.3), lookAt: new THREE.Vector3(-45.0, 1.8, -17.3) },
+        { name: "SM_Veh_Veh_Boat_Large_01_Hull", fallbackPos: new THREE.Vector3(-46.6, -1.1, -13.3), camTarget: new THREE.Vector3(-54.0, 3.5, -13.3), lookAt: new THREE.Vector3(-46.6, 1.5, -13.3) },
+        { name: "mesh_id5", fallbackPos: new THREE.Vector3(-34.6, -0.2, -7.5), camTarget: new THREE.Vector3(-41.5, 3.0, -7.5), lookAt: new THREE.Vector3(-34.6, 1.2, -7.5) },
+        { name: "node_id4001", fallbackPos: new THREE.Vector3(-33.0, -4.3, -4.7), camTarget: new THREE.Vector3(-40.0, 2.5, -4.7), lookAt: new THREE.Vector3(-33.0, 0.5, -4.7) },
+        { name: "Bridge001_Bridge_0", fallbackPos: new THREE.Vector3(-34.0, 3.5, 1.0), camTarget: new THREE.Vector3(-41.0, 5.0, 1.0), lookAt: new THREE.Vector3(-34.0, 3.8, 1.0) },
+        { name: "Bridge001_Bridge_0001", fallbackPos: new THREE.Vector3(-43.6, 3.5, 1.0), camTarget: new THREE.Vector3(-50.5, 5.0, 1.0), lookAt: new THREE.Vector3(-43.6, 3.8, 1.0) },
+        { name: "Bridge001_Bridge_0002", fallbackPos: new THREE.Vector3(-53.2, 3.5, 1.0), camTarget: new THREE.Vector3(-60.0, 5.0, 1.0), lookAt: new THREE.Vector3(-53.2, 3.8, 1.0) },
+        { name: "Bridge001_Bridge_0003", fallbackPos: new THREE.Vector3(-62.8, 3.5, 1.0), camTarget: new THREE.Vector3(-69.5, 5.0, 1.0), lookAt: new THREE.Vector3(-62.8, 3.8, 1.0) },
+        { name: "Mesh_0001", fallbackPos: new THREE.Vector3(-33.7, 1.8, 7.6), camTarget: new THREE.Vector3(-40.5, 3.8, 7.6), lookAt: new THREE.Vector3(-33.7, 2.2, 7.6) },
+        { name: "Mesh_0", fallbackPos: new THREE.Vector3(-33.8, 2.0, 7.5), camTarget: new THREE.Vector3(-40.5, 4.0, 7.5), lookAt: new THREE.Vector3(-33.8, 2.4, 7.5) },
+        { name: "defaultMaterial002", fallbackPos: new THREE.Vector3(-33.3, 0.9, 14.4), camTarget: new THREE.Vector3(-40.5, 3.5, 14.4), lookAt: new THREE.Vector3(-33.3, 1.8, 14.4) },
+        { name: "defaultMaterial005", fallbackPos: new THREE.Vector3(-44.6, 0.9, 18.7), camTarget: new THREE.Vector3(-51.5, 3.5, 18.7), lookAt: new THREE.Vector3(-44.6, 1.8, 18.7) },
+        { name: "SM_Veh_Boat_Medium_01_Hull_Attachments", fallbackPos: new THREE.Vector3(-45.7, -1.0, 14.7), camTarget: new THREE.Vector3(-53.0, 3.2, 14.7), lookAt: new THREE.Vector3(-45.7, 1.5, 14.7) }
+    ];
+
+    function registerDeckInteractiveElements() {
+        if (!scene) return;
+        deckInteractiveDefs.forEach(def => {
+            if (interactiveLocations.some(loc => loc.name === def.name)) return;
+
+            let targetNode = null;
+            scene.traverse(node => {
+                if (!targetNode && node.name) {
+                    const nName = node.name.trim();
+                    const dName = def.name.trim();
+                    if (nName === dName || nName.startsWith(dName) || nName.replace(/\./g, '') === dName.replace(/\./g, '') || nName.replace(/_/g, '') === dName.replace(/_/g, '')) {
+                        targetNode = node;
+                    }
+                }
+            });
+
+            let meshes = [];
+            if (targetNode) {
+                if (targetNode.isMesh) meshes.push(targetNode);
+                targetNode.traverse(c => {
+                    if (c.isMesh && !meshes.includes(c)) meshes.push(c);
+                });
+
+                // Ha a node egy hajómodell gyermeke, a környező vizuális elemeket is kijelölhetővé tesszük
+                if (targetNode.parent && targetNode.parent.name && targetNode.parent.name.includes("Group")) {
+                    targetNode.parent.traverse(c => {
+                        if (c.isMesh && !meshes.includes(c)) meshes.push(c);
+                    });
+                }
+
+                meshes.forEach(m => {
+                    if (m && m.material) {
+                        const mats = Array.isArray(m.material) ? m.material : [m.material];
+                        mats.forEach(mat => {
+                            if (mat) {
+                                mat.side = THREE.DoubleSide;
+                                mat.needsUpdate = true;
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (targetNode && meshes.length > 0) {
+                interactiveLocations.push({
+                    id: 'openFedelzetModal',
+                    name: def.name,
+                    langKey: 'harbor_nav_deck',
+                    defaultLabel: '🚢 A fedélzetre',
+                    node: targetNode,
+                    meshes: meshes,
+                    worldPos: def.fallbackPos,
+                    camTargetPos: def.camTarget,
+                    lookAtTarget: def.lookAt
+                });
+            }
+        });
+    }
+
+    /**
+     * 🌀 Dinamikus Hullámgyűrű Generátor (Módszer 2: Dynamic Wave & Ripple System)
+     * Koncentrikus, kifelé terjedő animált hullámokat generál a hajók, mólók, hidak és partvonal körül.
+     */
+    function createBoatRipple(targetOrPos, sizeX, sizeZ, speed, intensity) {
+        if (typeof speed === 'undefined') speed = 1.0;
+        if (typeof intensity === 'undefined') intensity = 1.0;
+        if (!targetOrPos) return;
+
+        const rippleGeo = new THREE.PlaneGeometry(sizeZ * 2.2, sizeZ * 2.2);
+        const aspectVal = sizeZ / sizeX;
+
+        const rippleMat = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uSpeed: { value: speed },
+                uColor: { value: new THREE.Color(0xd8f5ff) },
+                uAspect: { value: aspectVal },
+                uIntensity: { value: intensity }
+            },
+            vertexShader: `
                     varying vec2 vUv;
                     void main() {
                         vUv = uv;
                         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                     }
                 `,
-                fragmentShader: `
+            fragmentShader: `
                     uniform float uTime;
                     uniform float uSpeed;
                     uniform vec3 uColor;
@@ -14837,541 +15436,567 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                         gl_FragColor = vec4(uColor, alpha);
                     }
                 `,
-                transparent: true,
-                depthWrite: false,
-                side: THREE.DoubleSide,
-                blending: THREE.NormalBlending
-            });
+            transparent: true,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+            blending: THREE.NormalBlending
+        });
 
-            const rippleMesh = new THREE.Mesh(rippleGeo, rippleMat);
-            rippleMesh.rotation.x = -Math.PI / 2;
-            rippleMesh.position.y = 0.11; // Közvetlenül a vízfelszín fölött
-            rippleMesh.name = "BoatRippleMesh";
+        const rippleMesh = new THREE.Mesh(rippleGeo, rippleMat);
+        rippleMesh.rotation.x = -Math.PI / 2;
+        rippleMesh.position.y = 0.11; // Közvetlenül a vízfelszín fölött
+        rippleMesh.name = "BoatRippleMesh";
 
-            let targetObj = null;
-            let fixedPos = null;
+        let targetObj = null;
+        let fixedPos = null;
 
-            if (targetOrPos.isObject3D) {
-                targetObj = targetOrPos;
-                const wPos = new THREE.Vector3();
-                targetOrPos.getWorldPosition(wPos);
-                rippleMesh.position.x = wPos.x;
-                rippleMesh.position.z = wPos.z;
-            } else if (targetOrPos.x !== undefined && targetOrPos.z !== undefined) {
-                fixedPos = new THREE.Vector3(targetOrPos.x, targetOrPos.y || 0.1, targetOrPos.z);
-                rippleMesh.position.x = fixedPos.x;
-                rippleMesh.position.z = fixedPos.z;
-            }
-
-            if (!boatRipplesGroup) {
-                boatRipplesGroup = new THREE.Group();
-                boatRipplesGroup.name = "BoatRipplesGroup";
-                scene.add(boatRipplesGroup);
-            }
-            boatRipplesGroup.add(rippleMesh);
-
-            boatRipplesList.push({
-                mesh: rippleMesh,
-                target: targetObj,
-                fixedPos: fixedPos,
-                material: rippleMat
-            });
+        if (targetOrPos.isObject3D) {
+            targetObj = targetOrPos;
+            const wPos = new THREE.Vector3();
+            targetOrPos.getWorldPosition(wPos);
+            rippleMesh.position.x = wPos.x;
+            rippleMesh.position.z = wPos.z;
+        } else if (targetOrPos.x !== undefined && targetOrPos.z !== undefined) {
+            fixedPos = new THREE.Vector3(targetOrPos.x, targetOrPos.y || 0.1, targetOrPos.z);
+            rippleMesh.position.x = fixedPos.x;
+            rippleMesh.position.z = fixedPos.z;
         }
 
-        // 1. Háromdimenziós Tér Inicializálása
-        function init() {
-            const container = document.getElementById('webgl-canvas-container');
-
-            // Jelenet & Égbolt Háttér
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87ceeb); // Természetes tengeri égkék
-            scene.fog = new THREE.FogExp2(0xa0d8ef, 0.002); // Alapértelmezett ködsűrűség: 0.002
-
-            // Kamera
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 5000);
-
-            // Renderer
-            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.15;
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            container.appendChild(renderer.domElement);
-
-            // Környezeti tükröződési térkép (IBL / Environment Map) a fémek és üvegek fizikai megjelenítéséhez
-            const pmremGenerator = new THREE.PMREMGenerator(renderer);
-            pmremGenerator.compileEquirectangularShader();
-            const environment = new RoomEnvironment();
-            scene.environment = pmremGenerator.fromScene(environment, 0.04).texture;
-            environment.dispose();
-            pmremGenerator.dispose();
-
-            // OrbitControls
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.minPolarAngle = THREE.MathUtils.degToRad(55); // Maximum 35°-os lefelé dőlés a horizonttól (55° polárszög | ~0.9599 rad)
-            controls.maxPolarAngle = 1.46; // Legnagyobb vertikális szög (~83.64° | Pos: -132.0, 20.0, 48.0 -> Target: -23.3, 6.8, 1.0)
-            controls.minDistance = 13.13; // Legközelebbi megengedett távolság a fókusztól (-36.4, 7.6, 0.8)
-            controls.maxDistance = 118.0; // Legnagyobb megengedett zoom távolság (max 118)
-            
-            // Horizontális elfordulás korlátozása 30 fokos tartományra (±15° az alapértelmezett rálátási szög körül)
-            const baseAzimuth = -1.5567; // atan2(-42.4, 0.6) ~ -89.19°
-            controls.minAzimuthAngle = baseAzimuth - THREE.MathUtils.degToRad(15); // -104.19°
-            controls.maxAzimuthAngle = baseAzimuth + THREE.MathUtils.degToRad(15); // -74.19°
-
-            // Globális elérések a Toolbox számára
-            window._kikotoScene = scene;
-            window._kikotoCamera = camera;
-            window._kikotoControls = controls;
-
-            // 2. Standard és Környezeti Fények Beállítása
-            setupLighting();
-
-            // 3. Valós Idejű Napszak szerinti Fénykezelés (Tutorial & Hártyahalász algoritmus)
-            updateEnvironmentLighting();
-            setInterval(updateEnvironmentLighting, 60000); // 1 percenkénti folyamatos frissítés
-
-            // 4. Realisztikus Vízfelület (Tutorial & Hártyahalász Shader Víz) a FoamRing (Y: -0.2) síkja alá
-            const waterGeometry = new THREE.PlaneGeometry(3500, 3500);
-            const textureLoader = new THREE.TextureLoader();
-            const waterNormals = textureLoader.load(
-                'https://storage.googleapis.com/kalozsziget-assets/demojatek/models/waternormals.jpg',
-                function (texture) {
-                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                },
-                undefined,
-                function () {
-                    // Fallback CDN ha helyi modell mappa nem érhető el
-                    textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/waternormals.jpg', function (tex) {
-                        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-                        if (water) water.material.uniforms['normalSampler'].value = tex;
-                    });
-                }
-            );
-
-            water = new Water(
-                waterGeometry,
-                {
-                    textureWidth: 512,
-                    textureHeight: 512,
-                    waterNormals: waterNormals,
-                    sunDirection: new THREE.Vector3(),
-                    sunColor: 0xffffff,
-                    waterColor: 0x1476a6,
-                    distortionScale: 3.7,
-                    fog: scene.fog !== undefined
-                }
-            );
-            water.rotation.x = -Math.PI / 2;
-            water.position.y = 0.1; // Visszavéve 4.5 egységgel (0.1)
-            scene.add(water);
-            window._kikotoWater = water;
-
-            // 5. Modell Betöltése
-            loadHarborModel();
-
-            // Eseménykezelők
-            window.addEventListener('resize', onWindowResize);
-            window.addEventListener('pointermove', onPointerMove);
-            window.addEventListener('pointerdown', onPointerDown);
-            window.addEventListener('pointerup', onPointerUp);
-
-            // Modálok eseményvédelme: megakadályozzuk, hogy a felugró ablakok belső kattintásai vagy bezárása elérje a Three.js színteret
-            ['universal-npc-modal', 'toborzo-modal', 'fedelzet-modal'].forEach(function(modalId) {
-                const modalEl = document.getElementById(modalId);
-                if (modalEl) {
-                    ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'mousemove', 'wheel', 'touchstart', 'touchend'].forEach(function(evtName) {
-                        modalEl.addEventListener(evtName, function(ev) {
-                            ev.stopPropagation();
-                        }, { passive: false });
-                    });
-                }
-            });
-
-            // Render ciklus indítása
-            animate();
+        if (!boatRipplesGroup) {
+            boatRipplesGroup = new THREE.Group();
+            boatRipplesGroup.name = "BoatRipplesGroup";
+            scene.add(boatRipplesGroup);
         }
+        boatRipplesGroup.add(rippleMesh);
 
-        // Standard Fényforrások (Alapbeállítások: Napfény 1.0, Dőlésszög 900, Hemi 1.6, Ambient 0.7, IBL 1.0, Köd 0.002)
-        function setupLighting() {
-            // Félgömb / Szórt Égbolt Fény (felül égkék, alul meleg föld/tenger tónus - Hemi: 1.6)
-            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x3d4a36, 1.6);
-            hemiLight.position.set(0, 500, 0);
-            scene.add(hemiLight);
-            window._kikotoHemiLight = hemiLight;
+        boatRipplesList.push({
+            mesh: rippleMesh,
+            target: targetObj,
+            fixedPos: fixedPos,
+            material: rippleMat
+        });
+    }
 
-            // Környezeti Fény (Ambient: 0.7)
-            const ambientLight = new THREE.AmbientLight(0xffecd2, 0.7);
-            scene.add(ambientLight);
-            window._kikotoAmbientLight = ambientLight;
+    // 1. Háromdimenziós Tér Inicializálása
+    function init() {
+        const container = document.getElementById('webgl-canvas-container');
 
-            // Napfény (Standard Fő Irányított Fény: Intenzitás 1.0, Dőlésszög / Y: 900)
-            const sunLight = new THREE.DirectionalLight(0xfffaed, 1.0);
-            sunLight.position.set(250, 900, 200);
-            sunLight.castShadow = true;
-            sunLight.shadow.mapSize.width = 2048;
-            sunLight.shadow.mapSize.height = 2048;
-            sunLight.shadow.camera.near = 10;
-            sunLight.shadow.camera.far = 2500;
-            const d = 350;
-            sunLight.shadow.camera.left = -d;
-            sunLight.shadow.camera.right = d;
-            sunLight.shadow.camera.top = d;
-            sunLight.shadow.camera.bottom = -d;
-            sunLight.shadow.bias = -0.0005;
-            scene.add(sunLight);
-            window._kikotoSunLight = sunLight;
+        // Jelenet & Égbolt Háttér
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87ceeb); // Természetes tengeri égkék
+        scene.fog = new THREE.FogExp2(0xa0d8ef, 0.002); // Alapértelmezett ködsűrűség: 0.002
 
-        }
+        // Kamera
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 5000);
 
-        /**
-         * Napszak Szerinti Környezeti és Fény Dinamika (Tutorial & Hártyahalász Motor)
-         * A böngésző helyi órája alapján finoman skálázza a fényeket a beállított alapértékekig.
-         */
-        function updateEnvironmentLighting() {
-            const now = new Date();
-            const hrs = now.getHours() + now.getMinutes() / 60;
-            let p = 0.5; // Alapértelmezett dél
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
 
-            if (hrs >= 5 && hrs < 11) {
-                // 1. Hajnal / Reggel: 5:00 -> 11:00 (p: 0.10 -> 0.35) - 0.1-ről fokozatosan növekszik vissza nappali fényerőre
-                p = 0.10 + ((hrs - 5) / 6) * 0.25;
-            } else if (hrs >= 11 && hrs < 17) {
-                // 2. Nappal / Dél: 11:00 -> 17:00 (p: 0.35 -> 0.60) - Teljes nappali fényerő!
-                p = 0.35 + ((hrs - 11) / 6) * 0.25;
-            } else if (hrs >= 17 && hrs < 21) {
-                // 3. Alkonyat / Sötétedés: 17:00 -> 21:00 (p: 0.60 -> 0.85) - Fokozatosan 0.1 értékig csökken
-                p = 0.60 + ((hrs - 17) / 4) * 0.25;
-            } else {
-                // 4. Éjszaka: 21:00 -> 5:00 (p: 0.85 -> 1.0) - Fix 0.1 éjszakai fényérték
-                p = (hrs >= 21) ? 0.85 + ((hrs - 21) / 8) * 0.15 : 0.85 + ((hrs + 3) / 8) * 0.15;
-            }
+        // Környezeti tükröződési térkép (IBL / Environment Map) a fémek és üvegek fizikai megjelenítéséhez
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        pmremGenerator.compileEquirectangularShader();
+        const environment = new RoomEnvironment();
+        scene.environment = pmremGenerator.fromScene(environment, 0.04).texture;
+        environment.dispose();
+        pmremGenerator.dispose();
 
-            // Nap & Hold pályagörbe pozíció (Dőlésszög Y: max 900)
-            const angle = p * Math.PI;
-            const sunX = Math.cos(angle) * 1500;
-            const sunY = Math.sin(angle) * 900;
-            const sunZ = Math.sin(angle * 2) * 350 + (1 - p * 2) * 900;
+        // OrbitControls
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.minPolarAngle = THREE.MathUtils.degToRad(55); // Maximum 35°-os lefelé dőlés a horizonttól (55° polárszög | ~0.9599 rad)
+        controls.maxPolarAngle = 1.46; // Legnagyobb vertikális szög (~83.64° | Pos: -132.0, 20.0, 48.0 -> Target: -23.3, 6.8, 1.0)
+        controls.minDistance = 13.13; // Legközelebbi megengedett távolság a fókusztól (-36.4, 7.6, 0.8)
+        controls.maxDistance = 118.0; // Legnagyobb megengedett zoom távolság (max 118)
 
-            if (window._kikotoSunLight) {
-                window._kikotoSunLight.position.set(sunX, Math.max(sunY, -100), sunZ);
-            }
+        // Horizontális elfordulás korlátozása 30 fokos tartományra (±15° az alapértelmezett rálátási szög körül)
+        const baseAzimuth = -1.5567; // atan2(-42.4, 0.6) ~ -89.19°
+        controls.minAzimuthAngle = baseAzimuth - THREE.MathUtils.degToRad(15); // -104.19°
+        controls.maxAzimuthAngle = baseAzimuth + THREE.MathUtils.degToRad(15); // -74.19°
 
-            let sunColor, skyColor, fogColor, sunIntensity, hemiIntensity, ambIntensity, iblIntensity, fogDensity;
+        // Globális elérések a Toolbox számára
+        window._kikotoScene = scene;
+        window._kikotoCamera = camera;
+        window._kikotoControls = controls;
 
-            if (p >= 0.10 && p < 0.35) {
-                // 1. HAJNAL (5:00 -> 11:00): Fényerő 0.1-ről fokozatosan növekszik a nappali maximális értékig
-                const t = (p - 0.10) / 0.25;
-                sunColor = new THREE.Color(0x336699).lerp(new THREE.Color(0xffe8b5), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0xfffaed), Math.max(0, (t - 0.5) * 2));
-                skyColor = new THREE.Color(0x050a12).lerp(new THREE.Color(0x7ec8e8), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x87ceeb), Math.max(0, (t - 0.5) * 2));
-                fogColor = skyColor.clone();
-                sunIntensity = THREE.MathUtils.lerp(0.1, 1.0, t);
-                hemiIntensity = THREE.MathUtils.lerp(0.1, 1.6, t);
-                ambIntensity = THREE.MathUtils.lerp(0.1, 0.7, t);
-                iblIntensity = THREE.MathUtils.lerp(0.1, 1.0, t);
-                fogDensity = THREE.MathUtils.lerp(0.0022, 0.002, t);
-            } else if (p >= 0.35 && p < 0.60) {
-                // 2. NAPPAL (11:00 -> 17:00): Teljes nappali maximális fényerő
-                sunColor = new THREE.Color(0xfffaed);
-                skyColor = new THREE.Color(0x87ceeb);
-                fogColor = new THREE.Color(0x87ceeb);
-                sunIntensity = 1.0;
-                hemiIntensity = 1.6;
-                ambIntensity = 0.7;
-                iblIntensity = 1.0;
-                fogDensity = 0.002;
-            } else if (p >= 0.60 && p < 0.85) {
-                // 3. SÖTÉT оптиKAI ÁTMENET / ALKONYAT (17:00 -> 21:00): Fokozatosan 0.1 értékig csökken
-                const t = (p - 0.60) / 0.25;
-                sunColor = new THREE.Color(0xfffaed).lerp(new THREE.Color(0xff5500), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x336699), Math.max(0, (t - 0.5) * 2));
-                skyColor = new THREE.Color(0x87ceeb).lerp(new THREE.Color(0xe2583e), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x050a12), Math.max(0, (t - 0.5) * 2));
-                fogColor = new THREE.Color(0x87ceeb).lerp(new THREE.Color(0xd35400), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x050a12), Math.max(0, (t - 0.5) * 2));
-                sunIntensity = THREE.MathUtils.lerp(1.0, 0.1, t);
-                hemiIntensity = THREE.MathUtils.lerp(1.6, 0.1, t);
-                ambIntensity = THREE.MathUtils.lerp(0.7, 0.1, t);
-                iblIntensity = THREE.MathUtils.lerp(1.0, 0.1, t);
-                fogDensity = THREE.MathUtils.lerp(0.002, 0.0022, t);
-            } else {
-                // 4. ÉJSZAKA (21:00 -> 5:00): A környezeti fények stabilan 0.1 értéken maradnak
-                sunColor = new THREE.Color(0x336699);
-                skyColor = new THREE.Color(0x050a12);
-                fogColor = new THREE.Color(0x050a12);
-                sunIntensity = 0.1;
-                hemiIntensity = 0.1;
-                ambIntensity = 0.1;
-                iblIntensity = 0.1;
-                fogDensity = 0.0022;
-            }
+        // 2. Standard és Környezeti Fények Beállítása
+        setupLighting();
 
-            if (window._kikotoSunLight) {
-                window._kikotoSunLight.color.copy(sunColor);
-                window._kikotoSunLight.intensity = sunIntensity;
-            }
-            if (window._kikotoHemiLight) {
-                window._kikotoHemiLight.intensity = hemiIntensity;
-            }
-            if (window._kikotoAmbientLight) {
-                window._kikotoAmbientLight.intensity = ambIntensity;
-            }
-            if (window._kikotoWater && window._kikotoWater.material && window._kikotoWater.material.uniforms) {
-                if (window._kikotoWater.material.uniforms['sunDirection']) {
-                    window._kikotoWater.material.uniforms['sunDirection'].value.set(sunX, sunY, sunZ).normalize();
-                }
-                if (window._kikotoWater.material.uniforms['sunColor']) {
-                    window._kikotoWater.material.uniforms['sunColor'].value.copy(sunColor);
-                }
-            }
+        // 3. Valós Idejű Napszak szerinti Fénykezelés (Tutorial & Hártyahalász algoritmus)
+        updateEnvironmentLighting();
+        setInterval(updateEnvironmentLighting, 60000); // 1 percenkénti folyamatos frissítés
 
-            // Éjszakai kivilágítási faktor (0.0: nappal, 1.0: éjszaka, folyamatos átmenet alkonyatkor és hajnalban)
-            let nightGlowFactor = 0.0;
-            if (p >= 0.60 && p < 0.85) {
-                nightGlowFactor = (p - 0.60) / 0.25; // 0.0 -> 1.0 (sötétedéskor felkapcsol)
-            } else if (p >= 0.85 || p < 0.10) {
-                nightGlowFactor = 1.0; // 1.0 (éjszaka teljes kivilágítás)
-            } else if (p >= 0.10 && p < 0.35) {
-                nightGlowFactor = 1.0 - ((p - 0.10) / 0.25); // 1.0 -> 0.0 (hajnalban lekapcsol)
-            }
-
-            // Bank Belső Mécses/Lámpa (Mesh1006 / Bank) & Ablakok Kapcsolása:
-            // Reggel 6:00-kor lekapcsol 5-re, este 18:00-kor felkapcsol 160-ra
-            const isBankNight = (hrs >= 18 || hrs < 6);
-            const bankLanternInt = isBankNight ? 160.0 : 5.0;
-            const bankGlowFactor = isBankNight ? 1.0 : 0.0;
-
-            if (window._kikotoBankLight) {
-                window._kikotoBankLight.intensity = bankLanternInt;
-            }
-
-            // Bank ablakok ragyogása (Kékes tónusú Emissive Glow az uveg_ablak felületen 18:00-tól 6:00-ig):
-            if (window._kikotoBankWindowMaterials && window._kikotoBankWindowMaterials.length > 0) {
-                const windowEmissiveColor = new THREE.Color(0x33bbee); // Misztikus / Kékes ragyogás
-                window._kikotoBankWindowMaterials.forEach(mat => {
-                    if (mat) {
-                        if (!mat.emissive) mat.emissive = new THREE.Color(0x000000);
-                        mat.emissive.copy(windowEmissiveColor).multiplyScalar(bankGlowFactor);
-                        if ('emissiveIntensity' in mat) {
-                            mat.emissiveIntensity = bankGlowFactor * 2.2;
-                        }
-                        mat.needsUpdate = true;
-                    }
+        // 4. Realisztikus Vízfelület (Tutorial & Hártyahalász Shader Víz) a FoamRing (Y: -0.2) síkja alá
+        const waterGeometry = new THREE.PlaneGeometry(3500, 3500);
+        const textureLoader = new THREE.TextureLoader();
+        const waterNormals = textureLoader.load(
+            'https://storage.googleapis.com/kalozsziget-assets/demojatek/models/waternormals.jpg',
+            function (texture) {
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            },
+            undefined,
+            function () {
+                // Fallback CDN ha helyi modell mappa nem érhető el
+                textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/waternormals.jpg', function (tex) {
+                    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+                    if (water) water.material.uniforms['normalSampler'].value = tex;
                 });
             }
+        );
 
-            // Taverna Lámpa (Taverna.001 > LampaMesh > KocsmaMaterial.001) lámpafény és sárga izzófény:
-            // Nappal is látható meleg sárga izzás (1.5), éjszaka teljes világítás (25.0 pontfény, 3.5 izzás)
-            const tavernaLightInt = THREE.MathUtils.lerp(5.0, 25.0, nightGlowFactor);
-            if (window._kikotoTavernaLight) {
-                window._kikotoTavernaLight.intensity = tavernaLightInt;
+        water = new Water(
+            waterGeometry,
+            {
+                textureWidth: 512,
+                textureHeight: 512,
+                waterNormals: waterNormals,
+                sunDirection: new THREE.Vector3(),
+                sunColor: 0xffffff,
+                waterColor: 0x1476a6,
+                distortionScale: 3.7,
+                fog: scene.fog !== undefined
             }
-            if (window._kikotoTavernaLampMaterials && window._kikotoTavernaLampMaterials.length > 0) {
-                const glowInt = THREE.MathUtils.lerp(1.5, 3.5, nightGlowFactor);
-                const lampEmissiveColor = new THREE.Color(0xffcc22); // Szép meleg arany-sárga lámpaizzó fény
-                window._kikotoTavernaLampMaterials.forEach(mat => {
-                    if (mat) {
-                        if (!mat.emissive) mat.emissive = new THREE.Color(0x000000);
-                        mat.emissive.copy(lampEmissiveColor);
-                        mat.emissiveIntensity = glowInt;
-                        mat.toneMapped = false;
-                        mat.needsUpdate = true;
-                    }
+        );
+        water.rotation.x = -Math.PI / 2;
+        water.position.y = 0.1; // Visszavéve 4.5 egységgel (0.1)
+        scene.add(water);
+        window._kikotoWater = water;
+
+        // 5. Modell Betöltése
+        loadHarborModel();
+
+        // Eseménykezelők
+        window.addEventListener('resize', onWindowResize);
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerdown', onPointerDown);
+        window.addEventListener('pointerup', onPointerUp);
+
+        // Modálok eseményvédelme: megakadályozzuk, hogy a felugró ablakok belső kattintásai vagy bezárása elérje a Three.js színteret
+        ['universal-npc-modal', 'toborzo-modal', 'fedelzet-modal'].forEach(function (modalId) {
+            const modalEl = document.getElementById(modalId);
+            if (modalEl) {
+                ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'mousemove', 'wheel', 'touchstart', 'touchend'].forEach(function (evtName) {
+                    modalEl.addEventListener(evtName, function (ev) {
+                        ev.stopPropagation();
+                    }, { passive: false });
                 });
             }
+        });
 
-            // Hajóácsműhely (Hajoacsmuhely) éjszakai belső kivilágítás (70.0):
-            const hajoacsLightInt = THREE.MathUtils.lerp(0.0, 70.0, nightGlowFactor);
-            if (window._kikotoHajoacsLight) {
-                window._kikotoHajoacsLight.intensity = hajoacsLightInt;
-            }
+        // Render ciklus indítása
+        animate();
+    }
 
-            if (scene) {
-                scene.background.copy(skyColor);
-                if (scene.fog) {
-                    scene.fog.color.copy(fogColor);
-                    scene.fog.density = fogDensity;
-                }
+    // Standard Fényforrások (Alapbeállítások: Napfény 1.0, Dőlésszög 900, Hemi 1.6, Ambient 0.7, IBL 1.0, Köd 0.002)
+    function setupLighting() {
+        // Félgömb / Szórt Égbolt Fény (felül égkék, alul meleg föld/tenger tónus - Hemi: 1.6)
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x3d4a36, 1.6);
+        hemiLight.position.set(0, 500, 0);
+        scene.add(hemiLight);
+        window._kikotoHemiLight = hemiLight;
+
+        // Környezeti Fény (Ambient: 0.7)
+        const ambientLight = new THREE.AmbientLight(0xffecd2, 0.7);
+        scene.add(ambientLight);
+        window._kikotoAmbientLight = ambientLight;
+
+        // Napfény (Standard Fő Irányított Fény: Intenzitás 1.0, Dőlésszög / Y: 900)
+        const sunLight = new THREE.DirectionalLight(0xfffaed, 1.0);
+        sunLight.position.set(250, 900, 200);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 10;
+        sunLight.shadow.camera.far = 2500;
+        const d = 350;
+        sunLight.shadow.camera.left = -d;
+        sunLight.shadow.camera.right = d;
+        sunLight.shadow.camera.top = d;
+        sunLight.shadow.camera.bottom = -d;
+        sunLight.shadow.bias = -0.0005;
+        scene.add(sunLight);
+        window._kikotoSunLight = sunLight;
+
+    }
+
+    /**
+     * Napszak Szerinti Környezeti és Fény Dinamika (Tutorial & Hártyahalász Motor)
+     * A böngésző helyi órája alapján finoman skálázza a fényeket a beállított alapértékekig.
+     */
+    function updateEnvironmentLighting() {
+        const now = new Date();
+        const hrs = now.getHours() + now.getMinutes() / 60;
+        let p = 0.5; // Alapértelmezett dél
+
+        if (hrs >= 5 && hrs < 11) {
+            // 1. Hajnal / Reggel: 5:00 -> 11:00 (p: 0.10 -> 0.35) - 0.1-ről fokozatosan növekszik vissza nappali fényerőre
+            p = 0.10 + ((hrs - 5) / 6) * 0.25;
+        } else if (hrs >= 11 && hrs < 17) {
+            // 2. Nappal / Dél: 11:00 -> 17:00 (p: 0.35 -> 0.60) - Teljes nappali fényerő!
+            p = 0.35 + ((hrs - 11) / 6) * 0.25;
+        } else if (hrs >= 17 && hrs < 21) {
+            // 3. Alkonyat / Sötétedés: 17:00 -> 21:00 (p: 0.60 -> 0.85) - Fokozatosan 0.1 értékig csökken
+            p = 0.60 + ((hrs - 17) / 4) * 0.25;
+        } else {
+            // 4. Éjszaka: 21:00 -> 5:00 (p: 0.85 -> 1.0) - Fix 0.1 éjszakai fényérték
+            p = (hrs >= 21) ? 0.85 + ((hrs - 21) / 8) * 0.15 : 0.85 + ((hrs + 3) / 8) * 0.15;
+        }
+
+        // Nap & Hold pályagörbe pozíció (Dőlésszög Y: max 900)
+        const angle = p * Math.PI;
+        const sunX = Math.cos(angle) * 1500;
+        const sunY = Math.sin(angle) * 900;
+        const sunZ = Math.sin(angle * 2) * 350 + (1 - p * 2) * 900;
+
+        if (window._kikotoSunLight) {
+            window._kikotoSunLight.position.set(sunX, Math.max(sunY, -100), sunZ);
+        }
+
+        let sunColor, skyColor, fogColor, sunIntensity, hemiIntensity, ambIntensity, iblIntensity, fogDensity;
+
+        if (p >= 0.10 && p < 0.35) {
+            // 1. HAJNAL (5:00 -> 11:00): Fényerő 0.1-ről fokozatosan növekszik a nappali maximális értékig
+            const t = (p - 0.10) / 0.25;
+            sunColor = new THREE.Color(0x336699).lerp(new THREE.Color(0xffe8b5), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0xfffaed), Math.max(0, (t - 0.5) * 2));
+            skyColor = new THREE.Color(0x050a12).lerp(new THREE.Color(0x7ec8e8), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x87ceeb), Math.max(0, (t - 0.5) * 2));
+            fogColor = skyColor.clone();
+            sunIntensity = THREE.MathUtils.lerp(0.1, 1.0, t);
+            hemiIntensity = THREE.MathUtils.lerp(0.1, 1.6, t);
+            ambIntensity = THREE.MathUtils.lerp(0.1, 0.7, t);
+            iblIntensity = THREE.MathUtils.lerp(0.1, 1.0, t);
+            fogDensity = THREE.MathUtils.lerp(0.0022, 0.002, t);
+        } else if (p >= 0.35 && p < 0.60) {
+            // 2. NAPPAL (11:00 -> 17:00): Teljes nappali maximális fényerő
+            sunColor = new THREE.Color(0xfffaed);
+            skyColor = new THREE.Color(0x87ceeb);
+            fogColor = new THREE.Color(0x87ceeb);
+            sunIntensity = 1.0;
+            hemiIntensity = 1.6;
+            ambIntensity = 0.7;
+            iblIntensity = 1.0;
+            fogDensity = 0.002;
+        } else if (p >= 0.60 && p < 0.85) {
+            // 3. SÖTÉT оптиKAI ÁTMENET / ALKONYAT (17:00 -> 21:00): Fokozatosan 0.1 értékig csökken
+            const t = (p - 0.60) / 0.25;
+            sunColor = new THREE.Color(0xfffaed).lerp(new THREE.Color(0xff5500), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x336699), Math.max(0, (t - 0.5) * 2));
+            skyColor = new THREE.Color(0x87ceeb).lerp(new THREE.Color(0xe2583e), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x050a12), Math.max(0, (t - 0.5) * 2));
+            fogColor = new THREE.Color(0x87ceeb).lerp(new THREE.Color(0xd35400), Math.min(1.0, t * 1.5)).lerp(new THREE.Color(0x050a12), Math.max(0, (t - 0.5) * 2));
+            sunIntensity = THREE.MathUtils.lerp(1.0, 0.1, t);
+            hemiIntensity = THREE.MathUtils.lerp(1.6, 0.1, t);
+            ambIntensity = THREE.MathUtils.lerp(0.7, 0.1, t);
+            iblIntensity = THREE.MathUtils.lerp(1.0, 0.1, t);
+            fogDensity = THREE.MathUtils.lerp(0.002, 0.0022, t);
+        } else {
+            // 4. ÉJSZAKA (21:00 -> 5:00): A környezeti fények stabilan 0.1 értéken maradnak
+            sunColor = new THREE.Color(0x336699);
+            skyColor = new THREE.Color(0x050a12);
+            fogColor = new THREE.Color(0x050a12);
+            sunIntensity = 0.1;
+            hemiIntensity = 0.1;
+            ambIntensity = 0.1;
+            iblIntensity = 0.1;
+            fogDensity = 0.0022;
+        }
+
+        if (window._kikotoSunLight) {
+            window._kikotoSunLight.color.copy(sunColor);
+            window._kikotoSunLight.intensity = sunIntensity;
+        }
+        if (window._kikotoHemiLight) {
+            window._kikotoHemiLight.intensity = hemiIntensity;
+        }
+        if (window._kikotoAmbientLight) {
+            window._kikotoAmbientLight.intensity = ambIntensity;
+        }
+        if (window._kikotoWater && window._kikotoWater.material && window._kikotoWater.material.uniforms) {
+            if (window._kikotoWater.material.uniforms['sunDirection']) {
+                window._kikotoWater.material.uniforms['sunDirection'].value.set(sunX, sunY, sunZ).normalize();
             }
-            if (scene) {
-                scene.traverse(child => {
-                    if (child.isMesh && child.material && child !== water) {
-                        const mats = Array.isArray(child.material) ? child.material : [child.material];
-                        mats.forEach(m => {
-                            if (m && 'envMapIntensity' in m) {
-                                m.envMapIntensity = iblIntensity;
-                            }
-                        });
-                    }
-                });
-            }
-            if (water && water.material && water.material.uniforms) {
-                if (window._kikotoSunLight) {
-                    water.material.uniforms['sunDirection'].value.copy(window._kikotoSunLight.position).normalize();
-                    water.material.uniforms['sunColor'].value.copy(window._kikotoSunLight.color);
-                }
-                if (p < 0.35) {
-                    water.material.uniforms['waterColor'].value.setHex(0x1476a6);
-                } else if (p < 0.85) {
-                    water.material.uniforms['waterColor'].value.setHex(0x10557a);
-                } else {
-                    water.material.uniforms['waterColor'].value.setHex(0x061826);
-                }
+            if (window._kikotoWater.material.uniforms['sunColor']) {
+                window._kikotoWater.material.uniforms['sunColor'].value.copy(sunColor);
             }
         }
 
-        // Modell Betöltő (GLTFLoader)
-        function loadHarborModel() {
-            const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb';
-            const loader = new GLTFLoader();
+        // Éjszakai kivilágítási faktor (0.0: nappal, 1.0: éjszaka, folyamatos átmenet alkonyatkor és hajnalban)
+        let nightGlowFactor = 0.0;
+        if (p >= 0.60 && p < 0.85) {
+            nightGlowFactor = (p - 0.60) / 0.25; // 0.0 -> 1.0 (sötétedéskor felkapcsol)
+        } else if (p >= 0.85 || p < 0.10) {
+            nightGlowFactor = 1.0; // 1.0 (éjszaka teljes kivilágítás)
+        } else if (p >= 0.10 && p < 0.35) {
+            nightGlowFactor = 1.0 - ((p - 0.10) / 0.25); // 1.0 -> 0.0 (hajnalban lekapcsol)
+        }
 
-            const loaderFill = document.getElementById('loader-fill');
-            const loaderStatus = document.getElementById('loader-status');
-            const overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
-            const statsText = document.getElementById('model-stats-text');
+        // Bank Belső Mécses/Lámpa (Mesh1006 / Bank) & Ablakok Kapcsolása:
+        // Reggel 6:00-kor lekapcsol 5-re, este 18:00-kor felkapcsol 160-ra
+        const isBankNight = (hrs >= 18 || hrs < 6);
+        const bankLanternInt = isBankNight ? 160.0 : 5.0;
+        const bankGlowFactor = isBankNight ? 1.0 : 0.0;
 
-            if (overlay) {
-                overlay.style.display = 'flex';
-                overlay.style.opacity = '1';
-                overlay.style.pointerEvents = 'all';
-                overlay.classList.add('active');
+        if (window._kikotoBankLight) {
+            window._kikotoBankLight.intensity = bankLanternInt;
+        }
+
+        // Bank ablakok ragyogása (Kékes tónusú Emissive Glow az uveg_ablak felületen 18:00-tól 6:00-ig):
+        if (window._kikotoBankWindowMaterials && window._kikotoBankWindowMaterials.length > 0) {
+            const windowEmissiveColor = new THREE.Color(0x33bbee); // Misztikus / Kékes ragyogás
+            window._kikotoBankWindowMaterials.forEach(mat => {
+                if (mat) {
+                    if (!mat.emissive) mat.emissive = new THREE.Color(0x000000);
+                    mat.emissive.copy(windowEmissiveColor).multiplyScalar(bankGlowFactor);
+                    if ('emissiveIntensity' in mat) {
+                        mat.emissiveIntensity = bankGlowFactor * 2.2;
+                    }
+                    mat.needsUpdate = true;
+                }
+            });
+        }
+
+        // Taverna Lámpa (Taverna.001 > LampaMesh > KocsmaMaterial.001) lámpafény és sárga izzófény:
+        // Nappal is látható meleg sárga izzás (1.5), éjszaka teljes világítás (25.0 pontfény, 3.5 izzás)
+        const tavernaLightInt = THREE.MathUtils.lerp(5.0, 25.0, nightGlowFactor);
+        if (window._kikotoTavernaLight) {
+            window._kikotoTavernaLight.intensity = tavernaLightInt;
+        }
+        if (window._kikotoTavernaLampMaterials && window._kikotoTavernaLampMaterials.length > 0) {
+            const glowInt = THREE.MathUtils.lerp(1.5, 3.5, nightGlowFactor);
+            const lampEmissiveColor = new THREE.Color(0xffcc22); // Szép meleg arany-sárga lámpaizzó fény
+            window._kikotoTavernaLampMaterials.forEach(mat => {
+                if (mat) {
+                    if (!mat.emissive) mat.emissive = new THREE.Color(0x000000);
+                    mat.emissive.copy(lampEmissiveColor);
+                    mat.emissiveIntensity = glowInt;
+                    mat.toneMapped = false;
+                    mat.needsUpdate = true;
+                }
+            });
+        }
+
+        // Hajóácsműhely (Hajoacsmuhely) éjszakai belső kivilágítás (70.0):
+        const hajoacsLightInt = THREE.MathUtils.lerp(0.0, 70.0, nightGlowFactor);
+        if (window._kikotoHajoacsLight) {
+            window._kikotoHajoacsLight.intensity = hajoacsLightInt;
+        }
+
+        if (scene) {
+            scene.background.copy(skyColor);
+            if (scene.fog) {
+                scene.fog.color.copy(fogColor);
+                scene.fog.density = fogDensity;
             }
-            if (window.ClockworkEngine) {
-                window.ClockworkEngine.start();
-            }
-            if (window.ClockworkDispenser) {
-                window.ClockworkDispenser.start();
-            }
-
-            loader.load(
-                modelPath,
-                function (gltf) {
-                    harborModel = gltf.scene;
-                    window._kikotoModel = harborModel;
-
-                    // Modell anyag- és árnyékolási beállításainak érvényesítése
-                    harborModel.traverse(function (child) {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-
-                            if (child.material) {
-                                const materials = Array.isArray(child.material) ? child.material : [child.material];
-                                materials.forEach(mat => {
-                                    mat.needsUpdate = true;
-
-                                    // Textúrák sRGB színterének biztosítása
-                                    if (mat.map) mat.map.colorSpace = THREE.SRGBColorSpace;
-                                    if (mat.emissiveMap) mat.emissiveMap.colorSpace = THREE.SRGBColorSpace;
-
-                                    // Átlátszó üveg, víz és transmission anyagok megfelelő megjelenítése
-                                    if (mat.transparent || mat.opacity < 1.0 || (typeof mat.transmission !== 'undefined' && mat.transmission > 0)) {
-                                        mat.transparent = true;
-                                        mat.depthWrite = true;
-                                        mat.side = THREE.DoubleSide;
-                                    }
-
-                                    // Környezeti tükröződés (fémekhez és üvegekhez)
-                                    mat.envMapIntensity = 1.0;
-                                });
-                            }
+        }
+        if (scene) {
+            scene.traverse(child => {
+                if (child.isMesh && child.material && child !== water) {
+                    const mats = Array.isArray(child.material) ? child.material : [child.material];
+                    mats.forEach(m => {
+                        if (m && 'envMapIntensity' in m) {
+                            m.envMapIntensity = iblIntensity;
                         }
                     });
+                }
+            });
+        }
+        if (water && water.material && water.material.uniforms) {
+            if (window._kikotoSunLight) {
+                water.material.uniforms['sunDirection'].value.copy(window._kikotoSunLight.position).normalize();
+                water.material.uniforms['sunColor'].value.copy(window._kikotoSunLight.color);
+            }
+            if (p < 0.35) {
+                water.material.uniforms['waterColor'].value.setHex(0x1476a6);
+            } else if (p < 0.85) {
+                water.material.uniforms['waterColor'].value.setHex(0x10557a);
+            } else {
+                water.material.uniforms['waterColor'].value.setHex(0x061826);
+            }
+        }
+    }
 
-                    scene.add(harborModel);
+    // Modell Betöltő (GLTFLoader)
+    function loadHarborModel() {
+        const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb';
+        const loader = new GLTFLoader();
 
-                    // 1. Blenderben beágyazott akciók és animációk indítása (ha vannak)
-                    if (gltf.animations && gltf.animations.length > 0) {
-                        animationMixer = new THREE.AnimationMixer(harborModel);
-                        gltf.animations.forEach(clip => {
-                            const action = animationMixer.clipAction(clip);
-                            action.play();
-                        });
-                    }
+        const loaderFill = document.getElementById('loader-fill');
+        const loaderStatus = document.getElementById('loader-status');
+        const overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
+        const statsText = document.getElementById('model-stats-text');
 
-                    // 2. FoamRing kikapcsolása (Megszüntetve, helyette a valós idejű Depth Buffer parti hab működik)
-                    foamRingMesh = harborModel.getObjectByName("FoamRing");
-                    if (!foamRingMesh) {
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && node.name.toLowerCase().includes('foamring')) {
-                                foamRingMesh = node;
-                            }
-                        });
-                    }
-                    if (foamRingMesh) {
-                        foamRingMesh.visible = false;
-                    }
+        if (overlay) {
+            overlay.style.display = 'flex';
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'all';
+            overlay.classList.add('active');
+        }
+        if (window.ClockworkEngine) {
+            window.ClockworkEngine.start();
+        }
+        if (window.ClockworkDispenser) {
+            window.ClockworkDispenser.start();
+        }
 
-                    // 3. Bank (Mesh1006 / Bank / Mesh1.001) belső mécses / lámpa fényforrás és KIZÁRÓLAG az uveg_ablak anyag éjszakai ragyogása
-                    let bankNode = null;
-                    let bankWindowMaterials = [];
-                    harborModel.traverse(node => {
-                        if (node.isMesh) {
-                            const isBank = (node.name === "Mesh1006" || node.name === "Bank" || node.name === "Mesh1.001" || node.name === "Mesh1001" || (node.name && (node.name.includes("1006") || node.name.includes("1.001") || node.name.toLowerCase().includes("bank"))));
-                            if (isBank && !bankNode && (node.name === "Mesh1006" || node.name.toLowerCase().includes("bank") || node.name === "Mesh1.001")) {
-                                bankNode = node;
-                            }
-                            const mats = Array.isArray(node.material) ? node.material : [node.material];
-                            mats.forEach(mat => {
-                                if (mat) {
-                                    const matName = mat.name ? mat.name.toLowerCase() : "";
-                                    const isUvegAblak = matName === "uveg_ablak" ||
-                                                        matName.includes("uveg_ablak") || 
-                                                        matName.includes("uveg.ablak") || 
-                                                        matName.includes("uveg ablak") ||
-                                                        (matName.includes("uveg") && matName.includes("ablak"));
+        loader.load(
+            modelPath,
+            function (gltf) {
+                harborModel = gltf.scene;
+                window._kikotoModel = harborModel;
 
-                                    if (isUvegAblak) {
-                                        mat.transparent = true;
-                                        mat.depthWrite = true;
-                                        mat.side = THREE.DoubleSide; // Kétoldalas renderelés, hogy a belső fény átvilágítson
-                                        mat.needsUpdate = true;
-                                        if (!bankWindowMaterials.includes(mat)) {
-                                            bankWindowMaterials.push(mat);
-                                        }
-                                    } else if (isBank) {
-                                        // A Bank falai, tetőzete és egyéb alkatrészei NE világítsanak és ne kapjanak emissziót!
-                                        if (mat.emissive) {
-                                            mat.emissive.setHex(0x000000);
-                                        }
-                                        if ('emissiveIntensity' in mat) {
-                                            mat.emissiveIntensity = 0.0;
-                                        }
-                                        mat.needsUpdate = true;
-                                    }
+                // Modell anyag- és árnyékolási beállításainak érvényesítése
+                harborModel.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        if (child.material) {
+                            const materials = Array.isArray(child.material) ? child.material : [child.material];
+                            materials.forEach(mat => {
+                                mat.needsUpdate = true;
+
+                                // Textúrák sRGB színterének biztosítása
+                                if (mat.map) mat.map.colorSpace = THREE.SRGBColorSpace;
+                                if (mat.emissiveMap) mat.emissiveMap.colorSpace = THREE.SRGBColorSpace;
+
+                                // Átlátszó üveg, víz és transmission anyagok megfelelő megjelenítése
+                                if (mat.transparent || mat.opacity < 1.0 || (typeof mat.transmission !== 'undefined' && mat.transmission > 0)) {
+                                    mat.transparent = true;
+                                    mat.depthWrite = true;
+                                    mat.side = THREE.DoubleSide;
                                 }
+
+                                // Környezeti tükröződés (fémekhez és üvegekhez)
+                                mat.envMapIntensity = 1.0;
                             });
                         }
+                    }
+                });
+
+                scene.add(harborModel);
+
+                // 1. Blenderben beágyazott akciók és animációk indítása (ha vannak)
+                if (gltf.animations && gltf.animations.length > 0) {
+                    animationMixer = new THREE.AnimationMixer(harborModel);
+                    gltf.animations.forEach(clip => {
+                        const action = animationMixer.clipAction(clip);
+                        action.play();
                     });
-                    window._kikotoBankWindowMaterials = bankWindowMaterials;
+                }
 
-                    // A Bank (Mesh1006) belsejének mértani közepébe helyezett kékes lámpás fényforrás
-                    if (bankNode) {
-                        const bankLantern = new THREE.PointLight(0x33bbee, 160.0, 100);
-                        // Helyi koordináták a Bank elemen belül: X: 0, Y: 3.0 (az ablakok magasságában), Z: -0.5 (a szoba mértani közepe)
-                        bankLantern.position.set(0, 3.0, -0.5);
-                        bankNode.add(bankLantern);
-                        window._kikotoBankLight = bankLantern;
-                    }
-
-                    // 4. Taverna Lámpa (Taverna.001 > LampaMesh > KocsmaMaterial.001) lámpafény és lámpaizzó sárga ragyogás
-                    let tavernaLampNode = harborModel.getObjectByName("Taverna001") || harborModel.getObjectByName("Taverna.001");
-                    let tavernaLampMaterials = [];
-
-                    function isTavernaBulb(mat) {
-                        if (!mat || !mat.name) return false;
-                        const name = mat.name.trim().toLowerCase();
-                        // Kifejezetten a .001 izzó anyag azonosítása, a sima kocsmamaterial épületanyag KIZÁRÁSÁVAL!
-                        return name === "kocsmamaterial.001" || name.startsWith("kocsmamaterial.001") || name.startsWith("kocsma_material.001");
-                    }
-
+                // 2. FoamRing kikapcsolása (Megszüntetve, helyette a valós idejű Depth Buffer parti hab működik)
+                foamRingMesh = harborModel.getObjectByName("FoamRing");
+                if (!foamRingMesh) {
                     harborModel.traverse(node => {
-                        if (node.name && (node.name === "Taverna001" || node.name === "Taverna.001" || node.name.includes("Taverna001") || node.name.includes("Taverna.001"))) {
-                            if (!tavernaLampNode) tavernaLampNode = node;
+                        if (node.isMesh && node.name && node.name.toLowerCase().includes('foamring')) {
+                            foamRingMesh = node;
                         }
-                        if (node.isMesh && node.material) {
-                            const mats = Array.isArray(node.material) ? node.material : [node.material];
+                    });
+                }
+                if (foamRingMesh) {
+                    foamRingMesh.visible = false;
+                }
+
+                // 3. Bank (Mesh1006 / Bank / Mesh1.001) belső mécses / lámpa fényforrás és KIZÁRÓLAG az uveg_ablak anyag éjszakai ragyogása
+                let bankNode = null;
+                let bankWindowMaterials = [];
+                harborModel.traverse(node => {
+                    if (node.isMesh) {
+                        const isBank = (node.name === "Mesh1006" || node.name === "Bank" || node.name === "Mesh1.001" || node.name === "Mesh1001" || (node.name && (node.name.includes("1006") || node.name.includes("1.001") || node.name.toLowerCase().includes("bank"))));
+                        if (isBank && !bankNode && (node.name === "Mesh1006" || node.name.toLowerCase().includes("bank") || node.name === "Mesh1.001")) {
+                            bankNode = node;
+                        }
+                        const mats = Array.isArray(node.material) ? node.material : [node.material];
+                        mats.forEach(mat => {
+                            if (mat) {
+                                const matName = mat.name ? mat.name.toLowerCase() : "";
+                                const isUvegAblak = matName === "uveg_ablak" ||
+                                    matName.includes("uveg_ablak") ||
+                                    matName.includes("uveg.ablak") ||
+                                    matName.includes("uveg ablak") ||
+                                    (matName.includes("uveg") && matName.includes("ablak"));
+
+                                if (isUvegAblak) {
+                                    mat.transparent = true;
+                                    mat.depthWrite = true;
+                                    mat.side = THREE.DoubleSide; // Kétoldalas renderelés, hogy a belső fény átvilágítson
+                                    mat.needsUpdate = true;
+                                    if (!bankWindowMaterials.includes(mat)) {
+                                        bankWindowMaterials.push(mat);
+                                    }
+                                } else if (isBank) {
+                                    // A Bank falai, tetőzete és egyéb alkatrészei NE világítsanak és ne kapjanak emissziót!
+                                    if (mat.emissive) {
+                                        mat.emissive.setHex(0x000000);
+                                    }
+                                    if ('emissiveIntensity' in mat) {
+                                        mat.emissiveIntensity = 0.0;
+                                    }
+                                    mat.needsUpdate = true;
+                                }
+                            }
+                        });
+                    }
+                });
+                window._kikotoBankWindowMaterials = bankWindowMaterials;
+
+                // A Bank (Mesh1006) belsejének mértani közepébe helyezett kékes lámpás fényforrás
+                if (bankNode) {
+                    const bankLantern = new THREE.PointLight(0x33bbee, 160.0, 100);
+                    // Helyi koordináták a Bank elemen belül: X: 0, Y: 3.0 (az ablakok magasságában), Z: -0.5 (a szoba mértani közepe)
+                    bankLantern.position.set(0, 3.0, -0.5);
+                    bankNode.add(bankLantern);
+                    window._kikotoBankLight = bankLantern;
+                }
+
+                // 4. Taverna Lámpa (Taverna.001 > LampaMesh > KocsmaMaterial.001) lámpafény és lámpaizzó sárga ragyogás
+                let tavernaLampNode = harborModel.getObjectByName("Taverna001") || harborModel.getObjectByName("Taverna.001");
+                let tavernaLampMaterials = [];
+
+                function isTavernaBulb(mat) {
+                    if (!mat || !mat.name) return false;
+                    const name = mat.name.trim().toLowerCase();
+                    // Kifejezetten a .001 izzó anyag azonosítása, a sima kocsmamaterial épületanyag KIZÁRÁSÁVAL!
+                    return name === "kocsmamaterial.001" || name.startsWith("kocsmamaterial.001") || name.startsWith("kocsma_material.001");
+                }
+
+                harborModel.traverse(node => {
+                    if (node.name && (node.name === "Taverna001" || node.name === "Taverna.001" || node.name.includes("Taverna001") || node.name.includes("Taverna.001"))) {
+                        if (!tavernaLampNode) tavernaLampNode = node;
+                    }
+                    if (node.isMesh && node.material) {
+                        const mats = Array.isArray(node.material) ? node.material : [node.material];
+                        mats.forEach(mat => {
+                            if (isTavernaBulb(mat)) {
+                                mat.emissive = new THREE.Color(0xffcc22);
+                                mat.emissiveIntensity = 2.8;
+                                mat.toneMapped = false;
+                                mat.needsUpdate = true;
+                                if (!tavernaLampMaterials.includes(mat)) {
+                                    tavernaLampMaterials.push(mat);
+                                }
+                            } else {
+                                // A sima KocsmaMaterial (a kocsma épülete), fa, kő és lámpaoszlop anyagok NE világítsanak!
+                                const mNameLower = (mat.name || '').toLowerCase();
+                                if (mNameLower.includes("kocsma") || mNameLower.includes("lampa") || (node.name && node.name.toLowerCase().includes("lampa"))) {
+                                    if (mat.emissive) mat.emissive.setHex(0x000000);
+                                    if ('emissiveIntensity' in mat) mat.emissiveIntensity = 0.0;
+                                    mat.needsUpdate = true;
+                                }
+                            }
+                        });
+                    }
+                });
+
+                if (tavernaLampNode) {
+                    tavernaLampNode.traverse(child => {
+                        if (child.isMesh && child.material) {
+                            const mats = Array.isArray(child.material) ? child.material : [child.material];
                             mats.forEach(mat => {
                                 if (isTavernaBulb(mat)) {
                                     mat.emissive = new THREE.Color(0xffcc22);
@@ -15382,1650 +16007,1624 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                                         tavernaLampMaterials.push(mat);
                                     }
                                 } else {
-                                    // A sima KocsmaMaterial (a kocsma épülete), fa, kő és lámpaoszlop anyagok NE világítsanak!
-                                    const mNameLower = (mat.name || '').toLowerCase();
-                                    if (mNameLower.includes("kocsma") || mNameLower.includes("lampa") || (node.name && node.name.toLowerCase().includes("lampa"))) {
-                                        if (mat.emissive) mat.emissive.setHex(0x000000);
-                                        if ('emissiveIntensity' in mat) mat.emissiveIntensity = 0.0;
-                                        mat.needsUpdate = true;
-                                    }
+                                    if (mat.emissive) mat.emissive.setHex(0x000000);
+                                    if ('emissiveIntensity' in mat) mat.emissiveIntensity = 0.0;
+                                    mat.needsUpdate = true;
                                 }
                             });
                         }
                     });
 
-                    if (tavernaLampNode) {
-                        tavernaLampNode.traverse(child => {
-                            if (child.isMesh && child.material) {
-                                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                mats.forEach(mat => {
-                                    if (isTavernaBulb(mat)) {
-                                        mat.emissive = new THREE.Color(0xffcc22);
-                                        mat.emissiveIntensity = 2.8;
-                                        mat.toneMapped = false;
-                                        mat.needsUpdate = true;
-                                        if (!tavernaLampMaterials.includes(mat)) {
-                                            tavernaLampMaterials.push(mat);
-                                        }
-                                    } else {
-                                        if (mat.emissive) mat.emissive.setHex(0x000000);
-                                        if ('emissiveIntensity' in mat) mat.emissiveIntensity = 0.0;
-                                        mat.needsUpdate = true;
-                                    }
-                                });
-                            }
-                        });
+                    const tavernaLight = new THREE.PointLight(0xffaa33, 8.0, 7.5, 1.5);
+                    // Helyi koordináták a Taverna elemen belül a LampaMesh lámpafejéhez: X: 2.44, Y: 1.98, Z: 2.61
+                    tavernaLight.position.set(2.44, 1.98, 2.61);
+                    tavernaLampNode.add(tavernaLight);
+                    window._kikotoTavernaLight = tavernaLight;
+                }
+                window._kikotoTavernaLampMaterials = tavernaLampMaterials;
 
-                        const tavernaLight = new THREE.PointLight(0xffaa33, 8.0, 7.5, 1.5);
-                        // Helyi koordináták a Taverna elemen belül a LampaMesh lámpafejéhez: X: 2.44, Y: 1.98, Z: 2.61
-                        tavernaLight.position.set(2.44, 1.98, 2.61);
-                        tavernaLampNode.add(tavernaLight);
-                        window._kikotoTavernaLight = tavernaLight;
-                    }
-                    window._kikotoTavernaLampMaterials = tavernaLampMaterials;
+                // 5. Hajóácsműhely (Hajoacsmuhely pozíció: -15.8, 1.0, -15.3) éjszakai belső kivilágítás és interaktív regisztráció
+                let hajoacsNode = harborModel.getObjectByName("Hajoacsmuhely");
+                if (!hajoacsNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Hajoacsmuhely" || node.name.includes("Hajoacs") || node.name.toLowerCase().includes("hajoacs"))) {
+                            hajoacsNode = node;
+                        }
+                    });
+                }
+                if (hajoacsNode) {
+                    const mats = Array.isArray(hajoacsNode.material) ? hajoacsNode.material : [hajoacsNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
+                    const hajoacsLight = new THREE.PointLight(0xffaa33, 0.0, 30.0, 1.3);
+                    // Helyi koordináták a műhely belsejében a függő mécses magasságában: X: 0.0, Y: 2.5, Z: 0.0
+                    hajoacsLight.position.set(0.0, 2.5, 0.0);
+                    hajoacsNode.add(hajoacsLight);
+                    window._kikotoHajoacsLight = hajoacsLight;
 
-                    // 5. Hajóácsműhely (Hajoacsmuhely pozíció: -15.8, 1.0, -15.3) éjszakai belső kivilágítás és interaktív regisztráció
-                    let hajoacsNode = harborModel.getObjectByName("Hajoacsmuhely");
-                    if (!hajoacsNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Hajoacsmuhely" || node.name.includes("Hajoacs") || node.name.toLowerCase().includes("hajoacs"))) {
-                                hajoacsNode = node;
-                            }
-                        });
-                    }
-                    if (hajoacsNode) {
-                        const mats = Array.isArray(hajoacsNode.material) ? hajoacsNode.material : [hajoacsNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
-                        const hajoacsLight = new THREE.PointLight(0xffaa33, 0.0, 30.0, 1.3);
-                        // Helyi koordináták a műhely belsejében a függő mécses magasságában: X: 0.0, Y: 2.5, Z: 0.0
-                        hajoacsLight.position.set(0.0, 2.5, 0.0);
-                        hajoacsNode.add(hajoacsLight);
-                        window._kikotoHajoacsLight = hajoacsLight;
-
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let hajoacsMeshes = [];
-                        if (hajoacsNode.isMesh) hajoacsMeshes.push(hajoacsNode);
-                        hajoacsNode.traverse(node => {
-                            if (node.isMesh && !hajoacsMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let hajoacsMeshes = [];
+                    if (hajoacsNode.isMesh) hajoacsMeshes.push(hajoacsNode);
+                    hajoacsNode.traverse(node => {
+                        if (node.isMesh && !hajoacsMeshes.includes(node)) {
+                            hajoacsMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Hajoacsmuhely" || node.name.startsWith("Hajoacs") || node.name.toLowerCase().includes("hajoacs"))) {
+                            if (!hajoacsMeshes.includes(node)) {
                                 hajoacsMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Hajoacsmuhely" || node.name.startsWith("Hajoacs") || node.name.toLowerCase().includes("hajoacs"))) {
-                                if (!hajoacsMeshes.includes(node)) {
-                                    hajoacsMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'hajomuhely_oldal',
-                            name: 'Hajoacsmuhely',
-                            langKey: 'title_hajoacs',
-                            defaultLabel: '🛠️ A Hajóács Műhely',
-                            node: hajoacsNode,
-                            meshes: hajoacsMeshes,
-                            worldPos: new THREE.Vector3(-15.8, 1.0, -15.3),
-                            camTargetPos: new THREE.Vector3(-22.0, 3.2, -15.8),
-                            lookAtTarget: new THREE.Vector3(-15.8, 2.2, -15.3)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'hajomuhely_oldal',
+                        name: 'Hajoacsmuhely',
+                        langKey: 'title_hajoacs',
+                        defaultLabel: '🛠️ A Hajóács Műhely',
+                        node: hajoacsNode,
+                        meshes: hajoacsMeshes,
+                        worldPos: new THREE.Vector3(-15.8, 1.0, -15.3),
+                        camTargetPos: new THREE.Vector3(-22.0, 3.2, -15.8),
+                        lookAtTarget: new THREE.Vector3(-15.8, 2.2, -15.3)
+                    });
+                }
 
-                    // 5/B. Másolóműhely (Masolomuhely pozíció: 2.8, 10.1, -12.5) interaktív regisztráció
-                    let masoloNode = harborModel.getObjectByName("Masolomuhely");
-                    if (!masoloNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Masolomuhely" || node.name.includes("Masolo") || node.name.toLowerCase().includes("masolo"))) {
-                                masoloNode = node;
-                            }
-                        });
-                    }
-                    if (masoloNode) {
-                        const mats = Array.isArray(masoloNode.material) ? masoloNode.material : [masoloNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/B. Másolóműhely (Masolomuhely pozíció: 2.8, 10.1, -12.5) interaktív regisztráció
+                let masoloNode = harborModel.getObjectByName("Masolomuhely");
+                if (!masoloNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Masolomuhely" || node.name.includes("Masolo") || node.name.toLowerCase().includes("masolo"))) {
+                            masoloNode = node;
+                        }
+                    });
+                }
+                if (masoloNode) {
+                    const mats = Array.isArray(masoloNode.material) ? masoloNode.material : [masoloNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let masoloMeshes = [];
-                        if (masoloNode.isMesh) masoloMeshes.push(masoloNode);
-                        masoloNode.traverse(node => {
-                            if (node.isMesh && !masoloMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let masoloMeshes = [];
+                    if (masoloNode.isMesh) masoloMeshes.push(masoloNode);
+                    masoloNode.traverse(node => {
+                        if (node.isMesh && !masoloMeshes.includes(node)) {
+                            masoloMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Masolomuhely" || node.name.startsWith("Masolo") || node.name.toLowerCase().includes("masolo"))) {
+                            if (!masoloMeshes.includes(node)) {
                                 masoloMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Masolomuhely" || node.name.startsWith("Masolo") || node.name.toLowerCase().includes("masolo"))) {
-                                if (!masoloMeshes.includes(node)) {
-                                    masoloMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'masolatok_oldal',
-                            name: 'Masolomuhely',
-                            langKey: 'title_masolatbolt',
-                            defaultLabel: '📚 A Másolatok Boltja',
-                            node: masoloNode,
-                            meshes: masoloMeshes,
-                            worldPos: new THREE.Vector3(2.8, 10.1, -12.5),
-                            camTargetPos: new THREE.Vector3(-3.5, 12.0, -13.0),
-                            lookAtTarget: new THREE.Vector3(2.8, 11.2, -12.5)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'masolatok_oldal',
+                        name: 'Masolomuhely',
+                        langKey: 'title_masolatbolt',
+                        defaultLabel: '📚 A Másolatok Boltja',
+                        node: masoloNode,
+                        meshes: masoloMeshes,
+                        worldPos: new THREE.Vector3(2.8, 10.1, -12.5),
+                        camTargetPos: new THREE.Vector3(-3.5, 12.0, -13.0),
+                        lookAtTarget: new THREE.Vector3(2.8, 11.2, -12.5)
+                    });
+                }
 
-                    // 5/C. Tekercsmester (Tekercsmester pozíció: 1.3, 9.5, -7.6) interaktív regisztráció
-                    let tekercsNode = harborModel.getObjectByName("Tekercsmester");
-                    if (!tekercsNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Tekercsmester" || node.name.includes("Tekercs") || node.name.toLowerCase().includes("tekercs"))) {
-                                tekercsNode = node;
-                            }
-                        });
-                    }
-                    if (tekercsNode) {
-                        const mats = Array.isArray(tekercsNode.material) ? tekercsNode.material : [tekercsNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/C. Tekercsmester (Tekercsmester pozíció: 1.3, 9.5, -7.6) interaktív regisztráció
+                let tekercsNode = harborModel.getObjectByName("Tekercsmester");
+                if (!tekercsNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Tekercsmester" || node.name.includes("Tekercs") || node.name.toLowerCase().includes("tekercs"))) {
+                            tekercsNode = node;
+                        }
+                    });
+                }
+                if (tekercsNode) {
+                    const mats = Array.isArray(tekercsNode.material) ? tekercsNode.material : [tekercsNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let tekercsMeshes = [];
-                        if (tekercsNode.isMesh) tekercsMeshes.push(tekercsNode);
-                        tekercsNode.traverse(node => {
-                            if (node.isMesh && !tekercsMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let tekercsMeshes = [];
+                    if (tekercsNode.isMesh) tekercsMeshes.push(tekercsNode);
+                    tekercsNode.traverse(node => {
+                        if (node.isMesh && !tekercsMeshes.includes(node)) {
+                            tekercsMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Tekercsmester" || node.name.startsWith("Tekercs") || node.name.toLowerCase().includes("tekercs"))) {
+                            if (!tekercsMeshes.includes(node)) {
                                 tekercsMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Tekercsmester" || node.name.startsWith("Tekercs") || node.name.toLowerCase().includes("tekercs"))) {
-                                if (!tekercsMeshes.includes(node)) {
-                                    tekercsMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'tekercsmester_oldal',
-                            name: 'Tekercsmester',
-                            langKey: 'title_tekercsmester',
-                            defaultLabel: '📜 A Tekercspréselő Műhely',
-                            node: tekercsNode,
-                            meshes: tekercsMeshes,
-                            worldPos: new THREE.Vector3(1.3, 9.5, -7.6),
-                            camTargetPos: new THREE.Vector3(-4.8, 11.5, -8.0),
-                            lookAtTarget: new THREE.Vector3(1.3, 10.6, -7.6)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'tekercsmester_oldal',
+                        name: 'Tekercsmester',
+                        langKey: 'title_tekercsmester',
+                        defaultLabel: '📜 A Tekercspréselő Műhely',
+                        node: tekercsNode,
+                        meshes: tekercsMeshes,
+                        worldPos: new THREE.Vector3(1.3, 9.5, -7.6),
+                        camTargetPos: new THREE.Vector3(-4.8, 11.5, -8.0),
+                        lookAtTarget: new THREE.Vector3(1.3, 10.6, -7.6)
+                    });
+                }
 
-                    // 5/D. Szentély (Szentely pozíció: 17.6, 12.7, 0.7) interaktív regisztráció
-                    let szentelyNode = harborModel.getObjectByName("Szentely");
-                    if (!szentelyNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Szentely" || node.name.includes("Szentely") || node.name.toLowerCase().includes("szentely") || node.name.toLowerCase().includes("shrine"))) {
-                                szentelyNode = node;
-                            }
-                        });
-                    }
-                    if (szentelyNode) {
-                        const mats = Array.isArray(szentelyNode.material) ? szentelyNode.material : [szentelyNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/D. Szentély (Szentely pozíció: 17.6, 12.7, 0.7) interaktív regisztráció
+                let szentelyNode = harborModel.getObjectByName("Szentely");
+                if (!szentelyNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Szentely" || node.name.includes("Szentely") || node.name.toLowerCase().includes("szentely") || node.name.toLowerCase().includes("shrine"))) {
+                            szentelyNode = node;
+                        }
+                    });
+                }
+                if (szentelyNode) {
+                    const mats = Array.isArray(szentelyNode.material) ? szentelyNode.material : [szentelyNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let szentelyMeshes = [];
-                        if (szentelyNode.isMesh) szentelyMeshes.push(szentelyNode);
-                        szentelyNode.traverse(node => {
-                            if (node.isMesh && !szentelyMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let szentelyMeshes = [];
+                    if (szentelyNode.isMesh) szentelyMeshes.push(szentelyNode);
+                    szentelyNode.traverse(node => {
+                        if (node.isMesh && !szentelyMeshes.includes(node)) {
+                            szentelyMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Szentely" || node.name.startsWith("Szentely") || node.name.toLowerCase().includes("szentely"))) {
+                            if (!szentelyMeshes.includes(node)) {
                                 szentelyMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Szentely" || node.name.startsWith("Szentely") || node.name.toLowerCase().includes("szentely"))) {
-                                if (!szentelyMeshes.includes(node)) {
-                                    szentelyMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'konyvszentely_oldal',
-                            name: 'Szentely',
-                            langKey: 'title_konyvszentely',
-                            defaultLabel: '✨ Paideia Könyvszentélye',
-                            node: szentelyNode,
-                            meshes: szentelyMeshes,
-                            worldPos: new THREE.Vector3(17.6, 12.7, 0.7),
-                            camTargetPos: new THREE.Vector3(10.5, 14.5, 0.7),
-                            lookAtTarget: new THREE.Vector3(17.6, 13.8, 0.7)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'konyvszentely_oldal',
+                        name: 'Szentely',
+                        langKey: 'title_konyvszentely',
+                        defaultLabel: '✨ Paideia Könyvszentélye',
+                        node: szentelyNode,
+                        meshes: szentelyMeshes,
+                        worldPos: new THREE.Vector3(17.6, 12.7, 0.7),
+                        camTargetPos: new THREE.Vector3(10.5, 14.5, 0.7),
+                        lookAtTarget: new THREE.Vector3(17.6, 13.8, 0.7)
+                    });
+                }
 
-                    // 5/E. Útjelző tábla / Felhőkolostor útjelző (Utjelzotabla pozíció: 6.3, 8.2, 20.6) interaktív regisztráció
-                    let utjelzoNode = harborModel.getObjectByName("Utjelzotabla");
-                    if (!utjelzoNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Utjelzotabla" || node.name.includes("Utjelzo") || node.name.toLowerCase().includes("utjelzo") || node.name.toLowerCase().includes("signpost") || node.name.toLowerCase().includes("tabla"))) {
-                                utjelzoNode = node;
-                            }
-                        });
-                    }
-                    if (utjelzoNode) {
-                        const mats = Array.isArray(utjelzoNode.material) ? utjelzoNode.material : [utjelzoNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/E. Útjelző tábla / Felhőkolostor útjelző (Utjelzotabla pozíció: 6.3, 8.2, 20.6) interaktív regisztráció
+                let utjelzoNode = harborModel.getObjectByName("Utjelzotabla");
+                if (!utjelzoNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Utjelzotabla" || node.name.includes("Utjelzo") || node.name.toLowerCase().includes("utjelzo") || node.name.toLowerCase().includes("signpost") || node.name.toLowerCase().includes("tabla"))) {
+                            utjelzoNode = node;
+                        }
+                    });
+                }
+                if (utjelzoNode) {
+                    const mats = Array.isArray(utjelzoNode.material) ? utjelzoNode.material : [utjelzoNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let utjelzoMeshes = [];
-                        if (utjelzoNode.isMesh) utjelzoMeshes.push(utjelzoNode);
-                        utjelzoNode.traverse(node => {
-                            if (node.isMesh && !utjelzoMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let utjelzoMeshes = [];
+                    if (utjelzoNode.isMesh) utjelzoMeshes.push(utjelzoNode);
+                    utjelzoNode.traverse(node => {
+                        if (node.isMesh && !utjelzoMeshes.includes(node)) {
+                            utjelzoMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Utjelzotabla" || node.name.startsWith("Utjelzo") || node.name.toLowerCase().includes("utjelzo"))) {
+                            if (!utjelzoMeshes.includes(node)) {
                                 utjelzoMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Utjelzotabla" || node.name.startsWith("Utjelzo") || node.name.toLowerCase().includes("utjelzo"))) {
-                                if (!utjelzoMeshes.includes(node)) {
-                                    utjelzoMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'felhokolostor_oldal',
-                            name: 'Utjelzotabla',
-                            langKey: 'title_felhokolostor',
-                            defaultLabel: '☁️ A Felhőkolostor',
-                            node: utjelzoNode,
-                            meshes: utjelzoMeshes,
-                            worldPos: new THREE.Vector3(6.3, 8.2, 20.6),
-                            camTargetPos: new THREE.Vector3(0.8, 9.6, 19.8),
-                            lookAtTarget: new THREE.Vector3(6.3, 9.2, 20.6)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'felhokolostor_oldal',
+                        name: 'Utjelzotabla',
+                        langKey: 'title_felhokolostor',
+                        defaultLabel: '☁️ A Felhőkolostor',
+                        node: utjelzoNode,
+                        meshes: utjelzoMeshes,
+                        worldPos: new THREE.Vector3(6.3, 8.2, 20.6),
+                        camTargetPos: new THREE.Vector3(0.8, 9.6, 19.8),
+                        lookAtTarget: new THREE.Vector3(6.3, 9.2, 20.6)
+                    });
+                }
 
-                    // 5/F. Taverna / Kocsma (Taverna pozíció: -22.7, 0.9, 12.5) interaktív regisztráció
-                    let tavernaMainNode = harborModel.getObjectByName("Taverna") || harborModel.getObjectByName("Taverna.001") || harborModel.getObjectByName("Taverna001");
-                    if (!tavernaMainNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Taverna" || node.name.startsWith("Taverna") || node.name.toLowerCase().includes("taverna") || node.name.toLowerCase().includes("kocsma"))) {
-                                tavernaMainNode = node;
-                            }
-                        });
-                    }
-                    if (tavernaMainNode) {
-                        const mats = Array.isArray(tavernaMainNode.material) ? tavernaMainNode.material : [tavernaMainNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/F. Taverna / Kocsma (Taverna pozíció: -22.7, 0.9, 12.5) interaktív regisztráció
+                let tavernaMainNode = harborModel.getObjectByName("Taverna") || harborModel.getObjectByName("Taverna.001") || harborModel.getObjectByName("Taverna001");
+                if (!tavernaMainNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Taverna" || node.name.startsWith("Taverna") || node.name.toLowerCase().includes("taverna") || node.name.toLowerCase().includes("kocsma"))) {
+                            tavernaMainNode = node;
+                        }
+                    });
+                }
+                if (tavernaMainNode) {
+                    const mats = Array.isArray(tavernaMainNode.material) ? tavernaMainNode.material : [tavernaMainNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let tavernaMeshes = [];
-                        if (tavernaMainNode.isMesh) tavernaMeshes.push(tavernaMainNode);
-                        tavernaMainNode.traverse(node => {
-                            if (node.isMesh && !tavernaMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let tavernaMeshes = [];
+                    if (tavernaMainNode.isMesh) tavernaMeshes.push(tavernaMainNode);
+                    tavernaMainNode.traverse(node => {
+                        if (node.isMesh && !tavernaMeshes.includes(node)) {
+                            tavernaMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Taverna" || node.name.startsWith("Taverna") || node.name.toLowerCase().includes("taverna"))) {
+                            if (!tavernaMeshes.includes(node)) {
                                 tavernaMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Taverna" || node.name.startsWith("Taverna") || node.name.toLowerCase().includes("taverna"))) {
-                                if (!tavernaMeshes.includes(node)) {
-                                    tavernaMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'taverna_oldal',
-                            name: 'Taverna',
-                            langKey: 'title_taverna',
-                            defaultLabel: '🍺 Fogadó a Rózsaszín Gyöngyhöz',
-                            node: tavernaMainNode,
-                            meshes: tavernaMeshes,
-                            worldPos: new THREE.Vector3(-22.7, 0.9, 12.5),
-                            camTargetPos: new THREE.Vector3(-30.8, 3.8, 12.2),
-                            lookAtTarget: new THREE.Vector3(-22.7, 2.5, 12.5)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'taverna_oldal',
+                        name: 'Taverna',
+                        langKey: 'title_taverna',
+                        defaultLabel: '🍺 Fogadó a Rózsaszín Gyöngyhöz',
+                        node: tavernaMainNode,
+                        meshes: tavernaMeshes,
+                        worldPos: new THREE.Vector3(-22.7, 0.9, 12.5),
+                        camTargetPos: new THREE.Vector3(-30.8, 3.8, 12.2),
+                        lookAtTarget: new THREE.Vector3(-22.7, 2.5, 12.5)
+                    });
+                }
 
-                    // 5/G. Toborzóbarakk (SM_Bld_Shanty_Preset_01 pozíció: -19.6, 1.0, 17.3) interaktív regisztráció
-                    let toborzoNode = harborModel.getObjectByName("SM_Bld_Shanty_Preset_01");
-                    if (!toborzoNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "SM_Bld_Shanty_Preset_01" || node.name.includes("Shanty_Preset_01") || node.name.includes("Toborzo") || node.name.toLowerCase().includes("toborzo"))) {
-                                toborzoNode = node;
-                            }
-                        });
-                    }
-                    if (toborzoNode) {
-                        const mats = Array.isArray(toborzoNode.material) ? toborzoNode.material : [toborzoNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/G. Toborzóbarakk (SM_Bld_Shanty_Preset_01 pozíció: -19.6, 1.0, 17.3) interaktív regisztráció
+                let toborzoNode = harborModel.getObjectByName("SM_Bld_Shanty_Preset_01");
+                if (!toborzoNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "SM_Bld_Shanty_Preset_01" || node.name.includes("Shanty_Preset_01") || node.name.includes("Toborzo") || node.name.toLowerCase().includes("toborzo"))) {
+                            toborzoNode = node;
+                        }
+                    });
+                }
+                if (toborzoNode) {
+                    const mats = Array.isArray(toborzoNode.material) ? toborzoNode.material : [toborzoNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let toborzoMeshes = [];
-                        if (toborzoNode.isMesh) toborzoMeshes.push(toborzoNode);
-                        toborzoNode.traverse(node => {
-                            if (node.isMesh && !toborzoMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let toborzoMeshes = [];
+                    if (toborzoNode.isMesh) toborzoMeshes.push(toborzoNode);
+                    toborzoNode.traverse(node => {
+                        if (node.isMesh && !toborzoMeshes.includes(node)) {
+                            toborzoMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "SM_Bld_Shanty_Preset_01" || node.name.startsWith("SM_Bld_Shanty_Preset_01") || node.name.includes("Shanty_Preset_01"))) {
+                            if (!toborzoMeshes.includes(node)) {
                                 toborzoMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "SM_Bld_Shanty_Preset_01" || node.name.startsWith("SM_Bld_Shanty_Preset_01") || node.name.includes("Shanty_Preset_01"))) {
-                                if (!toborzoMeshes.includes(node)) {
-                                    toborzoMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'openToborzoBarakk',
-                            name: 'SM_Bld_Shanty_Preset_01',
-                            langKey: 'harbor_nav_barracks',
-                            defaultLabel: '⚓ Toborzóbarakk',
-                            node: toborzoNode,
-                            meshes: toborzoMeshes,
-                            worldPos: new THREE.Vector3(-19.6, 1.0, 17.3),
-                            camTargetPos: new THREE.Vector3(-27.5, 3.8, 17.0),
-                            lookAtTarget: new THREE.Vector3(-19.6, 2.5, 17.3)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'openToborzoBarakk',
+                        name: 'SM_Bld_Shanty_Preset_01',
+                        langKey: 'harbor_nav_barracks',
+                        defaultLabel: '⚓ Toborzóbarakk',
+                        node: toborzoNode,
+                        meshes: toborzoMeshes,
+                        worldPos: new THREE.Vector3(-19.6, 1.0, 17.3),
+                        camTargetPos: new THREE.Vector3(-27.5, 3.8, 17.0),
+                        lookAtTarget: new THREE.Vector3(-19.6, 2.5, 17.3)
+                    });
+                }
 
-                    // 5/H. Piac / A kikötői piac (Piac pozíció: -18.8, 1.0, -0.4) interaktív regisztráció
-                    let piacNode = harborModel.getObjectByName("Piac");
-                    if (!piacNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Piac" || node.name.startsWith("Piac") || node.name.toLowerCase().includes("piac") || node.name.toLowerCase().includes("market"))) {
-                                piacNode = node;
-                            }
-                        });
-                    }
-                    if (piacNode) {
-                        const mats = Array.isArray(piacNode.material) ? piacNode.material : [piacNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/H. Piac / A kikötői piac (Piac pozíció: -18.8, 1.0, -0.4) interaktív regisztráció
+                let piacNode = harborModel.getObjectByName("Piac");
+                if (!piacNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Piac" || node.name.startsWith("Piac") || node.name.toLowerCase().includes("piac") || node.name.toLowerCase().includes("market"))) {
+                            piacNode = node;
+                        }
+                    });
+                }
+                if (piacNode) {
+                    const mats = Array.isArray(piacNode.material) ? piacNode.material : [piacNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let piacMeshes = [];
-                        if (piacNode.isMesh) piacMeshes.push(piacNode);
-                        piacNode.traverse(node => {
-                            if (node.isMesh && !piacMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let piacMeshes = [];
+                    if (piacNode.isMesh) piacMeshes.push(piacNode);
+                    piacNode.traverse(node => {
+                        if (node.isMesh && !piacMeshes.includes(node)) {
+                            piacMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Piac" || node.name.startsWith("Piac") || node.name.includes("Piac"))) {
+                            if (!piacMeshes.includes(node)) {
                                 piacMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Piac" || node.name.startsWith("Piac") || node.name.includes("Piac"))) {
-                                if (!piacMeshes.includes(node)) {
-                                    piacMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'piac_oldal',
-                            name: 'Piac',
-                            langKey: 'title_piac',
-                            defaultLabel: '💰 A kikötői piac',
-                            node: piacNode,
-                            meshes: piacMeshes,
-                            worldPos: new THREE.Vector3(-18.8, 1.0, -0.4),
-                            camTargetPos: new THREE.Vector3(-26.8, 3.8, -0.4),
-                            lookAtTarget: new THREE.Vector3(-18.8, 2.5, -0.4)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'piac_oldal',
+                        name: 'Piac',
+                        langKey: 'title_piac',
+                        defaultLabel: '💰 A kikötői piac',
+                        node: piacNode,
+                        meshes: piacMeshes,
+                        worldPos: new THREE.Vector3(-18.8, 1.0, -0.4),
+                        camTargetPos: new THREE.Vector3(-26.8, 3.8, -0.4),
+                        lookAtTarget: new THREE.Vector3(-18.8, 2.5, -0.4)
+                    });
+                }
 
-                    // 5/I. Bank / eBankPirates (Mesh1006_1 pozíció: -7.0, 0.9, 0.8) interaktív regisztráció
-                    let bankBuildingNode = harborModel.getObjectByName("Mesh1006_1");
-                    if (!bankBuildingNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "Mesh1006_1" || node.name === "Mesh1006" || node.name.startsWith("Mesh1006") || node.name.toLowerCase().includes("bank"))) {
-                                bankBuildingNode = node;
-                            }
-                        });
-                    }
-                    if (bankBuildingNode) {
-                        const mats = Array.isArray(bankBuildingNode.material) ? bankBuildingNode.material : [bankBuildingNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/I. Bank / eBankPirates (Mesh1006_1 pozíció: -7.0, 0.9, 0.8) interaktív regisztráció
+                let bankBuildingNode = harborModel.getObjectByName("Mesh1006_1");
+                if (!bankBuildingNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "Mesh1006_1" || node.name === "Mesh1006" || node.name.startsWith("Mesh1006") || node.name.toLowerCase().includes("bank"))) {
+                            bankBuildingNode = node;
+                        }
+                    });
+                }
+                if (bankBuildingNode) {
+                    const mats = Array.isArray(bankBuildingNode.material) ? bankBuildingNode.material : [bankBuildingNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let bankMeshes = [];
-                        if (bankBuildingNode.isMesh) bankMeshes.push(bankBuildingNode);
-                        bankBuildingNode.traverse(node => {
-                            if (node.isMesh && !bankMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let bankMeshes = [];
+                    if (bankBuildingNode.isMesh) bankMeshes.push(bankBuildingNode);
+                    bankBuildingNode.traverse(node => {
+                        if (node.isMesh && !bankMeshes.includes(node)) {
+                            bankMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "Mesh1006_1" || node.name.startsWith("Mesh1006_1") || node.name.startsWith("Mesh1006"))) {
+                            if (!bankMeshes.includes(node)) {
                                 bankMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "Mesh1006_1" || node.name.startsWith("Mesh1006_1") || node.name.startsWith("Mesh1006"))) {
-                                if (!bankMeshes.includes(node)) {
-                                    bankMeshes.push(node);
-                                }
-                            }
-                        });
+                        }
+                    });
 
-                        interactiveLocations.push({
-                            id: 'bank_oldal',
-                            name: 'Mesh1006_1',
-                            langKey: 'title_bank',
-                            defaultLabel: '🏦 Az eBankPirates',
-                            node: bankBuildingNode,
-                            meshes: bankMeshes,
-                            worldPos: new THREE.Vector3(-7.0, 0.9, 0.8),
-                            camTargetPos: new THREE.Vector3(-15.0, 3.8, 0.8),
-                            lookAtTarget: new THREE.Vector3(-7.0, 2.5, 0.8)
-                        });
-                    }
+                    interactiveLocations.push({
+                        id: 'bank_oldal',
+                        name: 'Mesh1006_1',
+                        langKey: 'title_bank',
+                        defaultLabel: '🏦 Az eBankPirates',
+                        node: bankBuildingNode,
+                        meshes: bankMeshes,
+                        worldPos: new THREE.Vector3(-7.0, 0.9, 0.8),
+                        camTargetPos: new THREE.Vector3(-15.0, 3.8, 0.8),
+                        lookAtTarget: new THREE.Vector3(-7.0, 2.5, 0.8)
+                    });
+                }
 
-                    // 5/J. Kikötőmester Kunyhó / Barba Negra (SM_Bld_Shanty_Preset_03 pozíció: -4.9, 0.9, -25.0) interaktív regisztráció
-                    let harbormasterNode = harborModel.getObjectByName("SM_Bld_Shanty_Preset_03");
-                    if (!harbormasterNode) {
-                        harborModel.traverse(node => {
-                            if (node.name && (node.name === "SM_Bld_Shanty_Preset_03" || node.name.includes("Shanty_Preset_03") || node.name.toLowerCase().includes("harbormaster") || node.name.toLowerCase().includes("kikotomester"))) {
-                                harbormasterNode = node;
-                            }
-                        });
-                    }
-                    if (harbormasterNode) {
-                        const mats = Array.isArray(harbormasterNode.material) ? harbormasterNode.material : [harbormasterNode.material];
-                        mats.forEach(mat => {
-                            if (mat) {
-                                mat.side = THREE.DoubleSide;
-                                mat.needsUpdate = true;
-                            }
-                        });
+                // 5/J. Kikötőmester Kunyhó / Barba Negra (SM_Bld_Shanty_Preset_03 pozíció: -4.9, 0.9, -25.0) interaktív regisztráció
+                let harbormasterNode = harborModel.getObjectByName("SM_Bld_Shanty_Preset_03");
+                if (!harbormasterNode) {
+                    harborModel.traverse(node => {
+                        if (node.name && (node.name === "SM_Bld_Shanty_Preset_03" || node.name.includes("Shanty_Preset_03") || node.name.toLowerCase().includes("harbormaster") || node.name.toLowerCase().includes("kikotomester"))) {
+                            harbormasterNode = node;
+                        }
+                    });
+                }
+                if (harbormasterNode) {
+                    const mats = Array.isArray(harbormasterNode.material) ? harbormasterNode.material : [harbormasterNode.material];
+                    mats.forEach(mat => {
+                        if (mat) {
+                            mat.side = THREE.DoubleSide;
+                            mat.needsUpdate = true;
+                        }
+                    });
 
-                        // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
-                        let harbormasterMeshes = [];
-                        if (harbormasterNode.isMesh) harbormasterMeshes.push(harbormasterNode);
-                        harbormasterNode.traverse(node => {
-                            if (node.isMesh && !harbormasterMeshes.includes(node)) {
+                    // Összes almesh összegyűjtése az interaktív raycastinghez és derengéshez
+                    let harbormasterMeshes = [];
+                    if (harbormasterNode.isMesh) harbormasterMeshes.push(harbormasterNode);
+                    harbormasterNode.traverse(node => {
+                        if (node.isMesh && !harbormasterMeshes.includes(node)) {
+                            harbormasterMeshes.push(node);
+                        }
+                    });
+                    harborModel.traverse(node => {
+                        if (node.isMesh && node.name && (node.name === "SM_Bld_Shanty_Preset_03" || node.name.startsWith("SM_Bld_Shanty_Preset_03") || node.name.includes("Shanty_Preset_03"))) {
+                            if (!harbormasterMeshes.includes(node)) {
                                 harbormasterMeshes.push(node);
                             }
-                        });
-                        harborModel.traverse(node => {
-                            if (node.isMesh && node.name && (node.name === "SM_Bld_Shanty_Preset_03" || node.name.startsWith("SM_Bld_Shanty_Preset_03") || node.name.includes("Shanty_Preset_03"))) {
-                                if (!harbormasterMeshes.includes(node)) {
-                                    harbormasterMeshes.push(node);
-                                }
-                            }
-                        });
-
-                        interactiveLocations.push({
-                            id: 'openHarbormasterNPC',
-                            name: 'SM_Bld_Shanty_Preset_03',
-                            langKey: 'harbor_nav_harbormaster',
-                            defaultLabel: '⚓ Kikötőmester (Barba Negra)',
-                            node: harbormasterNode,
-                            meshes: harbormasterMeshes,
-                            worldPos: new THREE.Vector3(-4.9, 0.9, -25.0),
-                            camTargetPos: new THREE.Vector3(-12.8, 3.8, -25.0),
-                            lookAtTarget: new THREE.Vector3(-4.9, 2.5, -25.0),
-                            npcId: 'harbormaster',
-                            npcConfig: {
-                                name: 'Barba Negra',
-                                role: 'Kikötőmester',
-                                icon: '<i class="fas fa-anchor"></i>', 
-                                headerColor: '#37474f',
-                                portrait: 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Pirate_sitting_in_pilot_chair.jpg', 
-                                video: 'https://storage.googleapis.com/kalozsziget-assets/assets/videos/Pirate_sitting_in_pilot_chair.mp4',
-                                videoLoop: true, 
-                                msgIcon: '<i class="fas fa-anchor" style="color:#d4af37; margin-right:5px;"></i>',
-                                loaderHTML: '<i class="fas fa-anchor fa-spin" style="color:#d4af37; margin-right:8px;"></i> <i>A Kikötőmester számol...</i>',
-                                styles: {
-                                    modal: {
-                                        justifyContent: 'flex-end', 
-                                        alignItems: 'stretch',
-                                        background: '',
-                                        padding: '0'
-                                    },
-                                    content: {
-                                        width: '350px',             
-                                        height: '100vh',            
-                                        maxWidth: '85vw',           
-                                        margin: '0',                
-                                        borderRadius: '2',          
-                                        border: 'none',
-                                        borderLeft: '5px solid #d4af37', 
-                                        backgroundColor: '#1f0901',
-                                        color: '#241512',
-                                        backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-                                        boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-                                    }
-                                }
-                            }
-                        });
-                    }
-
-                    // 6. Darupad (SM_Prop_Crane_02001 / DarupadMesh) felfüggesztése a felső rögzítési középpont körül
-                    let cranePadFound = harborModel.getObjectByName("SM_Prop_Crane_02001") ||
-                                       harborModel.getObjectByName("SM_Prop_Crane_02.001") ||
-                                       harborModel.getObjectByName("DarupadMesh");
-                    if (!cranePadFound) {
-                        harborModel.traverse(node => {
-                            if (node.isMesh && (node.name.includes("Crane_02") || node.name.includes("Darupad") || node.name.includes("crane"))) {
-                                if (node.name.includes("001") || node.name.includes("Darupad")) {
-                                    cranePadFound = node;
-                                }
-                            }
-                        });
-                    }
-                    if (cranePadFound && cranePadFound.geometry) {
-                        cranePadMesh = cranePadFound;
-                        cranePadMesh.geometry.computeBoundingBox();
-                        const b = cranePadMesh.geometry.boundingBox;
-                        
-                        // Valódi felső felfüggesztési középpont a darukaron (a kötél/lánc felső rögzítése a darugémen, Y: ~8.56m magasságban)
-                        const localAnchor = new THREE.Vector3((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, b.min.z);
-
-                        // Geometria eltolása, hogy a helyi origó (0,0,0) a felső fix felfüggesztési pont legyen
-                        cranePadMesh.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
-
-                        // Az eltolt origó kompenzálása az objektum pozícióján
-                        const worldOffset = localAnchor.clone().applyEuler(cranePadMesh.rotation).multiply(cranePadMesh.scale);
-                        cranePadMesh.position.add(worldOffset);
-
-                        cranePadBaseRotation = cranePadMesh.rotation.clone();
-                        window._kikotoCranePad = cranePadMesh;
-                        window._kikotoCranePadBaseRot = cranePadBaseRotation;
-                    }
-
-                    // 7. Pálmafák alsó fix gyökérponthoz igazított imbolygása (SM_Env_PalmTree_Tall_02, SM_Env_PalmTree_02002, SM_Env_PalmTree_02, SM_Env_PalmTree_02001)
-                    palmTreesList = [];
-                    const standardPalmNames = [
-                        "SM_Env_PalmTree_Tall_02",
-                        "SM_Env_PalmTree_02002",
-                        "SM_Env_PalmTree_02.002",
-                        "SM_Env_PalmTree_02",
-                        "SM_Env_PalmTree_02001",
-                        "SM_Env_PalmTree_02.001"
-                    ];
-                    harborModel.traverse(node => {
-                        if (node.isMesh && node.name && standardPalmNames.some(pName => node.name === pName || (node.name.includes(pName) && !node.name.includes("Tall_02001") && !node.name.includes("Tall_02.001")))) {
-                            // Geometria egyediesítése (klónozás), hogy a megosztott hálók ne írják felül egymást
-                            node.geometry = node.geometry.clone();
-                            node.geometry.computeBoundingBox();
-                            const b = node.geometry.boundingBox;
-                            
-                            // Alsó fix rögzítési pont a gyökérzetnél (b.max.z -> talajszint)
-                            const localAnchor = new THREE.Vector3(0, 0, b.max.z);
-
-                            // Geometria eltolása, hogy a helyi origó (0,0,0) az alsó fix gyökérpont legyen
-                            node.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
-
-                            // Az eltolt origó kompenzálása az objektum pozícióján
-                            const worldOffset = localAnchor.clone().applyEuler(node.rotation).multiply(node.scale);
-                            node.position.add(worldOffset);
-
-                            const isTall = node.name.includes("Tall");
-                            const idx = palmTreesList.length;
-
-                            palmTreesList.push({
-                                mesh: node,
-                                baseRot: node.rotation.clone(),
-                                phase: idx * 1.57 + 0.3,
-                                speed: 0.85 + (idx % 3) * 0.15,
-                                amplitude: isTall ? 0.030 : 0.022
-                            });
-                        }
-                    });
-                    window._kikotoPalmTrees = palmTreesList;
-
-                    // 8. Taverna Cégér (Taverna002 / CegerMesh pozíció: -22.7, 0.9, 12.5) felső fix felfüggesztési ponthoz rögzített lengése
-                    let cegerFound = harborModel.getObjectByName("Taverna002") ||
-                                     harborModel.getObjectByName("Taverna.002") ||
-                                     harborModel.getObjectByName("CegerMesh");
-                    if (!cegerFound) {
-                        harborModel.traverse(node => {
-                            if (node.isMesh && (node.name.includes("Taverna002") || node.name.includes("Taverna.002") || node.name.toLowerCase().includes("ceger"))) {
-                                cegerFound = node;
-                            }
-                        });
-                    }
-                    if (cegerFound && cegerFound.geometry) {
-                        cegerMesh = cegerFound;
-                        cegerMesh.geometry = cegerMesh.geometry.clone();
-                        cegerMesh.geometry.computeBoundingBox();
-                        const b = cegerMesh.geometry.boundingBox;
-                        
-                        // Felső fix felfüggesztési pont a cégértartó vasnál (b.max.y -> Y: ~5.94m)
-                        const localAnchor = new THREE.Vector3((b.min.x + b.max.x) / 2, b.max.y, (b.min.z + b.max.z) / 2);
-
-                        // Geometria eltolása, hogy a helyi origó (0,0,0) a felső fix felfüggesztési pont legyen
-                        cegerMesh.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
-
-                        // Az eltolt origó kompenzálása az objektum pozícióján
-                        const worldOffset = localAnchor.clone().applyEuler(cegerMesh.rotation).multiply(cegerMesh.scale);
-                        cegerMesh.position.add(worldOffset);
-
-                        cegerBaseRotation = cegerMesh.rotation.clone();
-                        window._kikotoCeger = cegerMesh;
-                        window._kikotoCegerBaseRot = cegerBaseRotation;
-                    }
-
-                    // 9. Pálma Bokor (SM_Env_PalmTree_Tall_02001 pozíció: 2.7, -6.5, 16.0) 2/3 magasságban fixált szélkifordulása
-                    let palmBokorFound = harborModel.getObjectByName("SM_Env_PalmTree_Tall_02001") ||
-                                         harborModel.getObjectByName("SM_Env_PalmTree_Tall_02.001");
-                    if (!palmBokorFound) {
-                        harborModel.traverse(node => {
-                            if (node.isMesh && (node.name.includes("Tall_02001") || node.name.includes("Tall_02.001") || (node.name.includes("Tall") && node.position.y < 0))) {
-                                palmBokorFound = node;
-                            }
-                        });
-                    }
-                    if (palmBokorFound && palmBokorFound.geometry) {
-                        palmBokorMesh = palmBokorFound;
-                        // Geometria egyediesítése (klónozás), hogy ne módosítsa a magas SM_Env_PalmTree_Tall_02 geometriáját
-                        palmBokorMesh.geometry = palmBokorMesh.geometry.clone();
-                        palmBokorMesh.geometry.computeBoundingBox();
-                        const b = palmBokorMesh.geometry.boundingBox;
-                        
-                        // Fixációs rögzítési pont a magasság 2/3-ánál (a gyökértől felfelé a korona felé)
-                        const anchorZ = THREE.MathUtils.lerp(b.max.z, b.min.z, 2 / 3);
-                        const localAnchor = new THREE.Vector3(0, 0, anchorZ);
-
-                        // Geometria eltolása, hogy a helyi origó (0,0,0) a kétharmad magassági fixációs pont legyen
-                        palmBokorMesh.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
-
-                        // Az eltolt origó kompenzálása az objektum pozícióján
-                        const worldOffset = localAnchor.clone().applyEuler(palmBokorMesh.rotation).multiply(palmBokorMesh.scale);
-                        palmBokorMesh.position.add(worldOffset);
-
-                        palmBokorBaseRotation = palmBokorMesh.rotation.clone();
-                        window._kikotoPalmBokor = palmBokorMesh;
-                        window._kikotoPalmBokorBaseRot = palmBokorBaseRotation;
-                    }
-
-                    // 9.1. Móló, Híd, Cölöpök és Sziget Bázis Hullámgyűrűk (Módszer 2 kiterjesztése a kikötői építményekre)
-                    const pierRippleDefs = [
-                        { name: "defaultMaterial011", fallbackPos: new THREE.Vector3(-31.7, 1.0, -14.2), sizeX: 5.0, sizeZ: 7.0, speed: 0.85, intensity: 1.0 },
-                        { name: "node_id4001", fallbackPos: new THREE.Vector3(-33.0, -4.3, -4.7), sizeX: 6.0, sizeZ: 8.0, speed: 0.90, intensity: 1.0 },
-                        { name: "Bridge001_Bridge_0", fallbackPos: new THREE.Vector3(-34.0, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
-                        { name: "Bridge001_Bridge_0001", fallbackPos: new THREE.Vector3(-43.6, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
-                        { name: "Bridge001_Bridge_0002", fallbackPos: new THREE.Vector3(-53.2, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
-                        { name: "Bridge001_Bridge_0003", fallbackPos: new THREE.Vector3(-62.8, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
-                        { name: "defaultMaterial003", fallbackPos: new THREE.Vector3(-45.0, 1.0, -17.3), sizeX: 5.0, sizeZ: 8.0, speed: 0.85, intensity: 1.0 },
-                        { name: "Mesh_0001", fallbackPos: new THREE.Vector3(-33.7, 1.6, 7.7), sizeX: 5.0, sizeZ: 7.0, speed: 0.90, intensity: 1.0 },
-                        { name: "Mesh_0", fallbackPos: new THREE.Vector3(-33.8, 1.8, 7.5), sizeX: 5.0, sizeZ: 7.0, speed: 0.90, intensity: 1.0 },
-                        { name: "defaultMaterial002", fallbackPos: new THREE.Vector3(-33.3, 0.9, 14.4), sizeX: 5.5, sizeZ: 8.0, speed: 0.85, intensity: 1.0 },
-                        { name: "defaultMaterial005", fallbackPos: new THREE.Vector3(-44.6, 0.9, 18.7), sizeX: 5.5, sizeZ: 8.0, speed: 0.85, intensity: 1.0 },
-                        { name: "SM_Veh_Boat_Warship_01_Hull_Bare", fallbackPos: new THREE.Vector3(-34.1, -1.2, -26.4), sizeX: 7.5, sizeZ: 18.0, speed: 0.90, intensity: 1.1 },
-                        { name: "Grass_bottom", fallbackPos: new THREE.Vector3(18.3, 0.9, -2.5), sizeX: 55.0, sizeZ: 75.0, speed: 0.55, intensity: 1.2 }
-                    ];
-
-                    pierRippleDefs.forEach(def => {
-                        let targetObj = harborModel.getObjectByName(def.name);
-                        if (!targetObj) {
-                            harborModel.traverse(child => {
-                                if (!targetObj && child.name && child.name === def.name) {
-                                    targetObj = child;
-                                }
-                            });
-                        }
-                        if (targetObj) {
-                            createBoatRipple(targetObj, def.sizeX, def.sizeZ, def.speed, def.intensity);
-                        } else {
-                            createBoatRipple(def.fallbackPos, def.sizeX, def.sizeZ, def.speed, def.intensity);
                         }
                     });
 
-                    // 9.2. Fedélzeti interaktív móló-, híd- és kikötői elemek regisztrálása
-                    registerDeckInteractiveElements();
-
-                    // 10. Tutorial Csónak (boat.glb) betöltése a móló (node_id4001: -33.0, -4.3, -4.7) mellé a vízre
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/boat.glb',
-                        function (boatGltf) {
-                            const boatModel = boatGltf.scene;
-                            boatModel.scale.set(16.66, 16.66, 16.66); // Megduplázott csónakméret (~5.8m hossz, 2.0m szélesség)
-                            boatModel.rotation.y = Math.PI; // Orrával a tenger felé fordítva
-                            boatModel.updateMatrixWorld(true);
-
-                            // Centerezés és tőkesúly beállítása
-                            const bBox = new THREE.Box3().setFromObject(boatModel);
-                            const bCenter = bBox.getCenter(new THREE.Vector3());
-                            boatModel.position.x = -bCenter.x;
-                            boatModel.position.z = -bCenter.z;
-                            boatModel.position.y = -bBox.min.y - 0.30; // Természetes arányos vízbemerülés
-
-                            boatGroup = new THREE.Group();
-                            boatGroup.name = "TutorialBoatGroup";
-                            // A móló melletti vízpozíció node_id4001 elemtől 0.5m-rel messzebb tolva: (-35.3, 0.10, -7.55)
-                            boatGroup.position.set(-35.3, 0.10, -7.55);
-                            boatGroup.rotation.y = Math.PI / 2; // 90 fokos elforgatás a móló mellé
-                            boatGroup.add(boatModel);
-
-                            boatModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
+                    interactiveLocations.push({
+                        id: 'openHarbormasterNPC',
+                        name: 'SM_Bld_Shanty_Preset_03',
+                        langKey: 'harbor_nav_harbormaster',
+                        defaultLabel: '⚓ Kikötőmester (Barba Negra)',
+                        node: harbormasterNode,
+                        meshes: harbormasterMeshes,
+                        worldPos: new THREE.Vector3(-4.9, 0.9, -25.0),
+                        camTargetPos: new THREE.Vector3(-12.8, 3.8, -25.0),
+                        lookAtTarget: new THREE.Vector3(-4.9, 2.5, -25.0),
+                        npcId: 'harbormaster',
+                        npcConfig: {
+                            name: 'Barba Negra',
+                            role: 'Kikötőmester',
+                            icon: '<i class="fas fa-anchor"></i>',
+                            headerColor: '#37474f',
+                            portrait: 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Pirate_sitting_in_pilot_chair.jpg',
+                            video: 'https://storage.googleapis.com/kalozsziget-assets/assets/videos/Pirate_sitting_in_pilot_chair.mp4',
+                            videoLoop: true,
+                            msgIcon: '<i class="fas fa-anchor" style="color:#d4af37; margin-right:5px;"></i>',
+                            loaderHTML: '<i class="fas fa-anchor fa-spin" style="color:#d4af37; margin-right:8px;"></i> <i>A Kikötőmester számol...</i>',
+                            styles: {
+                                modal: {
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'stretch',
+                                    background: '',
+                                    padding: '0'
+                                },
+                                content: {
+                                    width: '350px',
+                                    height: '100vh',
+                                    maxWidth: '85vw',
+                                    margin: '0',
+                                    borderRadius: '2',
+                                    border: 'none',
+                                    borderLeft: '5px solid #d4af37',
+                                    backgroundColor: '#1f0901',
+                                    color: '#241512',
+                                    backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
+                                    boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
                                 }
-                            });
-
-                            scene.add(boatGroup);
-                            boatBasePos.copy(boatGroup.position);
-                            boatBaseRot.copy(boatGroup.rotation);
-                            window._kikotoBoatGroup = boatGroup;
-                            window._kikotoBoatBasePos = boatBasePos;
-                            window._kikotoBoatBaseRot = boatBaseRot;
-                            createBoatRipple(boatGroup, 3.5, 6.5, 1.5, 1.0);
-                            updateEnvironmentLighting();
-                            registerDeckInteractiveElements();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Csónak modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 11. Kalózhajó (kalozhajo01.glb) betöltése a móló (defaultMaterial004: -32.3, 1.0, -14.4) mellé a vízre (0.3m-re a móló mellé)
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/kalozhajo01.glb',
-                        function (shipGltf) {
-                            // 1. A gltf belső gyökérelemének (SM_Veh_Veh_Boat_Large_01_Hull) 400 méteres Blender ofszetjét nullázzuk:
-                            shipGltf.scene.traverse(node => {
-                                if (node.name && node.name.includes("Hull")) {
-                                    node.position.set(0, 0, 0);
-                                }
-                            });
-
-                            const shipModel = shipGltf.scene;
-                            shipModel.scale.set(0.65, 0.65, 0.65); // Mólóhoz arányosított kalózhajó méret (~21.5m hajóhossz)
-                            shipModel.rotation.set(0, 0, 0);
-                            shipModel.updateMatrixWorld(true);
-
-                            // Centerezés és tőkesúly merülés beállítása
-                            const sBox = new THREE.Box3().setFromObject(shipModel);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            shipModel.position.x = -sCenter.x;
-                            shipModel.position.z = -sCenter.z;
-                            shipModel.position.y = -sBox.min.y - 0.75; // Vízbemerülés a vízvonalhoz
-
-                            pirateShipGroup = new THREE.Group();
-                            pirateShipGroup.name = "TutorialPirateShipGroup";
-                            // A móló (defaultMaterial003: -45.0, 1.0, -17.3) melletti vízpozíció 4 méterrel jobbra: (-45.0, -0.40, -13.3)
-                            pirateShipGroup.position.set(-45.0, -0.40, -13.3);
-                            pirateShipGroup.rotation.y = Math.PI / 2; // 90 fokos elforgatás a móló mentén
-                            pirateShipGroup.add(shipModel);
-
-                            shipModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.transparent = false; // Ne váljon láthatatlanná a Blender alphaMode: BLEND miatt
-                                            m.depthWrite = true;
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
-                                }
-                            });
-
-                            scene.add(pirateShipGroup);
-                            pirateShipBasePos.copy(pirateShipGroup.position);
-                            pirateShipBaseRot.copy(pirateShipGroup.rotation);
-                            window._kikotoPirateShipGroup = pirateShipGroup;
-                            window._kikotoPirateShipBasePos = pirateShipBasePos;
-                            window._kikotoPirateShipBaseRot = pirateShipBaseRot;
-                            createBoatRipple(pirateShipGroup, 8.5, 22.0, 1.0, 1.2);
-                            updateEnvironmentLighting();
-                            registerDeckInteractiveElements();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Kalózhajó modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 12. Kishajó (kishajo.glb) betöltése az északi móló (defaultMaterial005: -44.6, 0.9, 18.7) mellé a vízre (0.65 nagyítással)
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/kishajo.glb',
-                        function (smallShipGltf) {
-                            const smallShipModel = smallShipGltf.scene;
-                            smallShipModel.scale.set(0.65, 0.65, 0.65); // 0.65-ös mólóarányos nagyítás
-                            smallShipModel.rotation.set(0, 0, 0);
-                            smallShipModel.updateMatrixWorld(true);
-
-                            // Centerezés és tőkesúly merülés beállítása
-                            const sBox = new THREE.Box3().setFromObject(smallShipModel);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            smallShipModel.position.x = -sCenter.x;
-                            smallShipModel.position.z = -sCenter.z;
-                            smallShipModel.position.y = -sBox.min.y - 0.55; // Természetes vízbemerülés a vízvonalhoz
-
-                            smallShipGroup = new THREE.Group();
-                            smallShipGroup.name = "TutorialSmallShipGroup";
-                            // A móló (defaultMaterial005: -44.6, 0.9, 18.7) melletti vízpozíció 4 méterrel balra: (-44.6, -0.40, 14.7)
-                            smallShipGroup.position.set(-44.6, -0.40, 14.7);
-                            smallShipGroup.rotation.y = Math.PI / 2; // 90 fokos elforgatás a móló mentén
-                            smallShipGroup.add(smallShipModel);
-
-                            smallShipModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.transparent = false;
-                                            m.depthWrite = true;
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
-                                }
-                            });
-
-                            scene.add(smallShipGroup);
-                            smallShipBasePos.copy(smallShipGroup.position);
-                            smallShipBaseRot.copy(smallShipGroup.rotation);
-                            window._kikotoSmallShipGroup = smallShipGroup;
-                            window._kikotoSmallShipBasePos = smallShipBasePos;
-                            window._kikotoSmallShipBaseRot = smallShipBaseRot;
-                            createBoatRipple(smallShipGroup, 6.5, 15.0, 1.2, 1.1);
-                            updateEnvironmentLighting();
-                            registerDeckInteractiveElements();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Kishajó modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 13. Javítás alatti Hajó (javitotthajo.glb) betöltése a móló (defaultMaterial006: -23.2, 1.0, -28.4) mellé jobbról a vízre, parthoz közel, farral a part felé
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/javitotthajo.glb',
-                        function (repairGltf) {
-                            const repairModel = repairGltf.scene;
-                            repairModel.scale.set(0.65, 0.65, 0.65); // Mólóarányos nagyítás
-                            repairModel.rotation.set(0, 0, 0);
-                            repairModel.updateMatrixWorld(true);
-
-                            // Centerezés és tőkesúly merülés beállítása
-                            const sBox = new THREE.Box3().setFromObject(repairModel);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            repairModel.position.x = -sCenter.x;
-                            repairModel.position.z = -sCenter.z;
-                            repairModel.position.y = -sBox.min.y - 0.75; // Vízbemerülés a vízvonalhoz
-
-                            repairShipGroup = new THREE.Group();
-                            repairShipGroup.name = "TutorialRepairShipGroup";
-                            // A Hajoacsmuhely (-15.8, 1.0, -15.3) elemtől 5m-rel messzebb helyezve a vízre: (-35.7, -0.40, -27.9)
-                            repairShipGroup.position.set(-35.7, -0.40, -27.9);
-                            repairShipGroup.rotation.y = -Math.PI / 2 - THREE.MathUtils.degToRad(40);
-                            repairShipGroup.add(repairModel);
-
-                            repairModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.transparent = false;
-                                            m.depthWrite = true;
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
-                                }
-                            });
-
-                            scene.add(repairShipGroup);
-                            repairShipBasePos.copy(repairShipGroup.position);
-                            repairShipBaseRot.copy(repairShipGroup.rotation);
-                            window._kikotoRepairShipGroup = repairShipGroup;
-                            window._kikotoRepairShipBasePos = repairShipBasePos;
-                            window._kikotoRepairShipBaseRot = repairShipBaseRot;
-                            createBoatRipple(repairShipGroup, 7.5, 18.0, 0.9, 1.1);
-                            updateEnvironmentLighting();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Javított hajó modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 14. Steampunk Csónak 02 (steampunk_csonak02.glb) betöltése a Híd (Bridge001_Bridge_0: -34.0, 3.5, 1.0) és az északi móló (defaultMaterial002: -33.3, 0.9, 14.4) közé a vízre
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/steampunk_csonak02.glb',
-                        function (boatGltf) {
-                            const boatModel = boatGltf.scene;
-                            boatModel.scale.set(5.2, 5.2, 5.2); // 2x nagyobb csónakméret
-                            boatModel.rotation.set(0, 0, 0);
-                            boatModel.updateMatrixWorld(true);
-
-                            // Centerezés és tőkesúly merülés beállítása
-                            const sBox = new THREE.Box3().setFromObject(boatModel);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            boatModel.position.x = -sCenter.x;
-                            boatModel.position.z = -sCenter.z;
-                            boatModel.position.y = -sBox.min.y - 0.25; // Természetes vízbemerülés
-
-                            steampunkBoat2Group = new THREE.Group();
-                            steampunkBoat2Group.name = "TutorialSteampunkBoat02Group";
-                            // A Híd és az északi móló közötti 2/3-os vízpozíció: (-33.5, 0.25, 10.4)
-                            steampunkBoat2Group.position.set(-33.5, 0.25, 10.4);
-                            steampunkBoat2Group.rotation.y = Math.PI; // CCW 90° fordulat (180°)
-                            steampunkBoat2Group.add(boatModel);
-
-                            boatModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.transparent = false;
-                                            m.depthWrite = true;
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
-                                }
-                            });
-
-                            scene.add(steampunkBoat2Group);
-                            steampunkBoat2BasePos.copy(steampunkBoat2Group.position);
-                            steampunkBoat2BaseRot.copy(steampunkBoat2Group.rotation);
-                            window._kikotoSteampunkBoat2Group = steampunkBoat2Group;
-                            window._kikotoSteampunkBoat2BasePos = steampunkBoat2BasePos;
-                            window._kikotoSteampunkBoat2BaseRot = steampunkBoat2BaseRot;
-                            createBoatRipple(steampunkBoat2Group, 4.0, 8.0, 1.4, 1.0);
-                            updateEnvironmentLighting();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Steampunk csónak 02 modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 15. Steampunk Csónak 03 (steampunk_csonak03.glb) betöltése a Híd (Bridge001_Bridge_0: -34.0, 3.5, 1.0) és az északi móló (defaultMaterial002: -33.3, 0.9, 14.4) közé a vízre
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/steampunk_csonak03.glb',
-                        function (boatGltf) {
-                            const boatModel = boatGltf.scene;
-                            boatModel.scale.set(4.5, 4.5, 4.5); // 2.5x nagyobb csónakméret
-                            boatModel.rotation.set(0, 0, 0);
-                            boatModel.updateMatrixWorld(true);
-
-                            // Centerezés és tőkesúly merülés beállítása
-                            const sBox = new THREE.Box3().setFromObject(boatModel);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            boatModel.position.x = -sCenter.x;
-                            boatModel.position.z = -sCenter.z;
-                            boatModel.position.y = -sBox.min.y - 0.25; // Természetes vízbemerülés
-
-                            steampunkBoat3Group = new THREE.Group();
-                            steampunkBoat3Group.name = "TutorialSteampunkBoat03Group";
-                            // A Híd és az északi móló közötti 1/3-os vízpozíció: (-33.8, 0.25, 5.7)
-                            steampunkBoat3Group.position.set(-33.8, 0.25, 5.7);
-                            steampunkBoat3Group.rotation.y = Math.PI; // CCW 90° fordulat (180°)
-                            steampunkBoat3Group.add(boatModel);
-
-                            boatModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.transparent = false;
-                                            m.depthWrite = true;
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
-                                }
-                            });
-
-                            scene.add(steampunkBoat3Group);
-                            steampunkBoat3BasePos.copy(steampunkBoat3Group.position);
-                            steampunkBoat3BaseRot.copy(steampunkBoat3Group.rotation);
-                            window._kikotoSteampunkBoat3Group = steampunkBoat3Group;
-                            window._kikotoSteampunkBoat3BasePos = steampunkBoat3BasePos;
-                            window._kikotoSteampunkBoat3BaseRot = steampunkBoat3BaseRot;
-                            createBoatRipple(steampunkBoat3Group, 4.0, 8.0, 1.35, 1.0);
-                            updateEnvironmentLighting();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Steampunk csónak 03 modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 16. Evezős Csónakok (evezoscsonak.glb) betöltése 2 külön példányban a kijelölt Object_70002 és defaultMaterial elemek elé a vízre
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/evezoscsonak.glb',
-                        function (boatGltf) {
-                            // 1. Nullázzuk a belső Blender 387 méteres ofszetet
-                            boatGltf.scene.traverse(node => {
-                                if (node.name && (node.name.includes("Hull") || node.name.includes("Attachments") || node.name.includes("Boat"))) {
-                                    node.position.set(0, 0, 0);
-                                }
-                            });
-
-                            const boatModel1 = boatGltf.scene;
-                            boatModel1.scale.set(0.45, 0.45, 0.45); // Megduplázott méretarány (0.225 * 2 = 0.45)
-                            boatModel1.rotation.set(0, 0, 0);
-                            boatModel1.updateMatrixWorld(true);
-
-                            // Centerezés
-                            const sBox = new THREE.Box3().setFromObject(boatModel1);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            boatModel1.position.x = -sCenter.x;
-                            boatModel1.position.z = -sCenter.z;
-                            boatModel1.position.y = 0;
-
-                            boatModel1.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    child.frustumCulled = false;
-                                    child.renderOrder = 10;
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach(m => {
-                                        if (m) {
-                                            m.transparent = false;
-                                            m.depthWrite = true;
-                                            m.depthTest = true;
-                                            m.side = THREE.DoubleSide;
-                                            m.envMapIntensity = 1.0;
-                                            m.needsUpdate = true;
-                                        }
-                                    });
-                                }
-                            });
-
-                            // 1. Példány: Object_70002 és SurfPatch (-204.4, 21.7, 5.4) felé közelebb a vízre: (-21.5, 0.00, 27.1)
-                            rowBoat1Group = new THREE.Group();
-                            rowBoat1Group.name = "TutorialRowBoat1Group";
-                            rowBoat1Group.renderOrder = 10;
-                            rowBoat1Group.position.set(-21.5, 0.00, 27.1);
-                            rowBoat1Group.rotation.y = Math.PI / 2;
-                            rowBoat1Group.add(boatModel1);
-
-                            scene.add(rowBoat1Group);
-                            rowBoat1BasePos.copy(rowBoat1Group.position);
-                            rowBoat1BaseRot.copy(rowBoat1Group.rotation);
-                            window._kikotoRowBoat1Group = rowBoat1Group;
-                            window._kikotoRowBoat1BasePos = rowBoat1BasePos;
-                            window._kikotoRowBoat1BaseRot = rowBoat1BaseRot;
-                            createBoatRipple(rowBoat1Group, 2.8, 5.2, 1.25, 0.9);
-
-                            // 2. Példány: defaultMaterial (-9.2, 1.0, -34.5) és SurfPatch (-204.4, 21.7, 5.4) felé közelebb a vízre: (-20.4, 0.00, -31.9)
-                            const boatModel2 = boatModel1.clone(true);
-                            rowBoat2Group = new THREE.Group();
-                            rowBoat2Group.name = "TutorialRowBoat2Group";
-                            rowBoat2Group.renderOrder = 10;
-                            rowBoat2Group.position.set(-20.4, 0.00, -31.9);
-                            rowBoat2Group.rotation.y = Math.PI / 2;
-                            rowBoat2Group.add(boatModel2);
-
-                            scene.add(rowBoat2Group);
-                            rowBoat2BasePos.copy(rowBoat2Group.position);
-                            rowBoat2BaseRot.copy(rowBoat2Group.rotation);
-                            window._kikotoRowBoat2Group = rowBoat2Group;
-                            window._kikotoRowBoat2BasePos = rowBoat2BasePos;
-                            window._kikotoRowBoat2BaseRot = rowBoat2BaseRot;
-                            createBoatRipple(rowBoat2Group, 2.8, 5.2, 1.25, 0.9);
-                            updateEnvironmentLighting();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Evezős csónak modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    // 17. Barna Csónakok (barna_csonak.glb) betöltése 2 példányban (defaultMaterial előtt és node_id4004 jobb oldalán a vízre)
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/barna_csonak.glb',
-                        function (brownGltf) {
-                            brownGltf.scene.traverse(node => {
-                                if (node.name && (node.name.includes("Hull") || node.name.includes("Attachments") || node.name.includes("Boat"))) {
-                                    node.position.set(0, 0, 0);
-                                }
-                            });
-
-                            const brownBoatModel1 = brownGltf.scene;
-                            brownBoatModel1.scale.set(0.45, 0.45, 0.45); // Ugyanaz a méretarány, mint az evezőscsónak
-                            brownBoatModel1.rotation.set(0, 0, 0);
-                            brownBoatModel1.updateMatrixWorld(true);
-
-                            // Centerezés
-                            const sBox = new THREE.Box3().setFromObject(brownBoatModel1);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            brownBoatModel1.position.x = -sCenter.x;
-                            brownBoatModel1.position.z = -sCenter.z;
-                            brownBoatModel1.position.y = 0;
-
-                            brownBoatModel1.traverse(child => {
-                                if (child.isMesh) {
-                                child.castShadow = true;
-                                child.receiveShadow = true;
-                                child.frustumCulled = false;
-                                child.renderOrder = 10;
-                                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                mats.forEach(m => {
-                                    if (m) {
-                                        m.transparent = false;
-                                        m.depthWrite = true;
-                                        m.depthTest = true;
-                                        m.side = THREE.DoubleSide;
-                                        m.envMapIntensity = 1.0;
-                                        m.needsUpdate = true;
-                                    }
-                                });
                             }
-                            });
-
-                            // 1. Példány: defaultMaterial (-9.2, 1.0, -34.5) előtt a vízre: (-13.0, 0.00, -34.5)
-                            brownBoat1Group = new THREE.Group();
-                            brownBoat1Group.name = "TutorialBrownBoat1Group";
-                            brownBoat1Group.renderOrder = 10;
-                            brownBoat1Group.position.set(-13.0, 0.00, -34.5);
-                            brownBoat1Group.rotation.y = Math.PI / 4;
-                            brownBoat1Group.add(brownBoatModel1);
-
-                            scene.add(brownBoat1Group);
-                            brownBoat1BasePos.copy(brownBoat1Group.position);
-                            brownBoat1BaseRot.copy(brownBoat1Group.rotation);
-                            window._kikotoBrownBoat1Group = brownBoat1Group;
-                            window._kikotoBrownBoat1BasePos = brownBoat1BasePos;
-                            window._kikotoBrownBoat1BaseRot = brownBoat1BaseRot;
-                            window._kikotoBrownBoatGroup = brownBoat1Group;
-                            window._kikotoBrownBoatBasePos = brownBoat1BasePos;
-                            window._kikotoBrownBoatBaseRot = brownBoat1BaseRot;
-                            createBoatRipple(brownBoat1Group, 2.8, 5.2, 1.3, 0.9);
-
-                            // 2. Példány: node_id4004 (-27.9, -4.3, 17.2) másik oldalára a vízre: (-29.0, 0.00, 20.3)
-                            const brownBoatModel2 = brownBoatModel1.clone(true);
-                            brownBoat2Group = new THREE.Group();
-                            brownBoat2Group.name = "TutorialBrownBoat2Group";
-                            brownBoat2Group.renderOrder = 10;
-                            brownBoat2Group.position.set(-29.0, 0.00, 20.3);
-                            brownBoat2Group.rotation.y = Math.PI / 2 + THREE.MathUtils.degToRad(10);
-                            brownBoat2Group.add(brownBoatModel2);
-
-                            scene.add(brownBoat2Group);
-                            brownBoat2BasePos.copy(brownBoat2Group.position);
-                            brownBoat2BaseRot.copy(brownBoat2Group.rotation);
-                            window._kikotoBrownBoat2Group = brownBoat2Group;
-                            window._kikotoBrownBoat2BasePos = brownBoat2BasePos;
-                            window._kikotoBrownBoat2BaseRot = brownBoat2BaseRot;
-                            createBoatRipple(brownBoat2Group, 2.8, 5.2, 1.3, 0.9);
-                            updateEnvironmentLighting();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Barna csónak modell betöltési figyelmeztetés:', err);
                         }
-                    );
-
-                    // 18. Szürke Csónak (szurke_csonak.glb) betöltése Object_82002 (-11.1, 0.1, 30.6) elé a vízre
-                    loader.load(
-                        'https://storage.googleapis.com/kalozsziget-assets/assets/models/szurke_csonak.glb',
-                        function (greyGltf) {
-                            greyGltf.scene.traverse(node => {
-                                if (node.name && (node.name.includes("Hull") || node.name.includes("Attachments") || node.name.includes("Boat"))) {
-                                    node.position.set(0, 0, 0);
-                                }
-                            });
-
-                            const greyBoatModel = greyGltf.scene;
-                            greyBoatModel.scale.set(0.45, 0.45, 0.45);
-                            greyBoatModel.rotation.set(0, 0, 0);
-                            greyBoatModel.updateMatrixWorld(true);
-
-                            // Centerezés
-                            const sBox = new THREE.Box3().setFromObject(greyBoatModel);
-                            const sCenter = sBox.getCenter(new THREE.Vector3());
-                            greyBoatModel.position.x = -sCenter.x;
-                            greyBoatModel.position.z = -sCenter.z;
-                            greyBoatModel.position.y = 0;
-
-                            greyBoatModel.traverse(child => {
-                                if (child.isMesh) {
-                                child.castShadow = true;
-                                child.receiveShadow = true;
-                                child.frustumCulled = false;
-                                child.renderOrder = 10;
-                                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                mats.forEach(m => {
-                                    if (m) {
-                                        m.transparent = false;
-                                        m.depthWrite = true;
-                                        m.depthTest = true;
-                                        m.side = THREE.DoubleSide;
-                                        m.envMapIntensity = 1.0;
-                                        m.needsUpdate = true;
-                                    }
-                                });
-                            }
-                            });
-
-                            greyBoatGroup = new THREE.Group();
-                            greyBoatGroup.name = "TutorialGreyBoatGroup";
-                            greyBoatGroup.renderOrder = 10;
-                            greyBoatGroup.position.set(-11.5, 0.00, 30.9);
-                            greyBoatGroup.rotation.y = Math.PI / 4;
-                            greyBoatGroup.add(greyBoatModel);
-
-                            scene.add(greyBoatGroup);
-                            greyBoatBasePos.copy(greyBoatGroup.position);
-                            greyBoatBaseRot.copy(greyBoatGroup.rotation);
-                            window._kikotoGreyBoatGroup = greyBoatGroup;
-                            window._kikotoGreyBoatBasePos = greyBoatBasePos;
-                            window._kikotoGreyBoatBaseRot = greyBoatBaseRot;
-                            createBoatRipple(greyBoatGroup, 2.8, 5.2, 1.32, 0.9);
-                            updateEnvironmentLighting();
-                        },
-                        undefined,
-                        function (err) {
-                            console.warn('Szürke csónak modell betöltési figyelmeztetés:', err);
-                        }
-                    );
-
-                    updateEnvironmentLighting();
-
-                    // 4. Modell Fókusz és 45 fokos, 2x méretarányos Kamera Beállítás
-                    setupCameraToModel(harborModel);
-
-                    window._kikoto3DInitialized = true;
-                    window._kikoto3DLoading = false;
-
-                    // Betöltő képernyő sima átmenetes eltüntetése a 3D modell teljes felépülésekor
-                    if (typeof hideUniversalLoading === 'function') {
-                        hideUniversalLoading('sot_harbor_loaded', 600, true);
-                    }
-                    const transOverlay = document.getElementById('scene-transition-overlay');
-                    if (transOverlay) {
-                        transOverlay.classList.remove('active');
-                        transOverlay.style.opacity = '0';
-                        transOverlay.style.pointerEvents = 'none';
-                    }
-
-                    // Modell információk kiírása (ha van statsText elem)
-                    if (statsText) {
-                        const box = new THREE.Box3().setFromObject(harborModel);
-                        const size = box.getSize(new THREE.Vector3());
-                        statsText.textContent = 'Kikötő Méret: ' + Math.round(size.x) + 'm × ' + Math.round(size.z) + 'm | 45° Kamera Fókusz Aktív';
-                    }
-                },
-                function (xhr) {
-                    if (xhr.total > 0) {
-                        const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
-                        loaderFill.style.width = percent + '%';
-                        const loadedMb = (xhr.loaded / 1048576).toFixed(1);
-                        const totalMb = (xhr.total / 1048576).toFixed(1);
-                        loaderStatus.textContent = '3D MODELL BETÖLTÉSE: ' + percent + '% (' + loadedMb + ' / ' + totalMb + ' MB)';
-                    } else {
-                        const loadedMb = (xhr.loaded / 1048576).toFixed(1);
-                        loaderStatus.textContent = '3D MODELL BETÖLTÉSE: ' + loadedMb + ' MB...';
-                    }
-                },
-                function (error) {
-                    console.error('Hiba a 3D modell betöltése során:', error);
-                    loaderStatus.textContent = 'HIBA A MODELL BETÖLTÉSEKOR: ' + error.message;
-                    loaderStatus.style.color = '#ff4444';
-                    setTimeout(function() {
-                        if (typeof hideUniversalLoading === 'function') hideUniversalLoading();
-                        var container2D = document.getElementById('kikoto-2d-container');
-                        if (container2D) container2D.style.display = 'block';
-                    }, 1500);
+                    });
                 }
-            );
+
+                // 6. Darupad (SM_Prop_Crane_02001 / DarupadMesh) felfüggesztése a felső rögzítési középpont körül
+                let cranePadFound = harborModel.getObjectByName("SM_Prop_Crane_02001") ||
+                    harborModel.getObjectByName("SM_Prop_Crane_02.001") ||
+                    harborModel.getObjectByName("DarupadMesh");
+                if (!cranePadFound) {
+                    harborModel.traverse(node => {
+                        if (node.isMesh && (node.name.includes("Crane_02") || node.name.includes("Darupad") || node.name.includes("crane"))) {
+                            if (node.name.includes("001") || node.name.includes("Darupad")) {
+                                cranePadFound = node;
+                            }
+                        }
+                    });
+                }
+                if (cranePadFound && cranePadFound.geometry) {
+                    cranePadMesh = cranePadFound;
+                    cranePadMesh.geometry.computeBoundingBox();
+                    const b = cranePadMesh.geometry.boundingBox;
+
+                    // Valódi felső felfüggesztési középpont a darukaron (a kötél/lánc felső rögzítése a darugémen, Y: ~8.56m magasságban)
+                    const localAnchor = new THREE.Vector3((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, b.min.z);
+
+                    // Geometria eltolása, hogy a helyi origó (0,0,0) a felső fix felfüggesztési pont legyen
+                    cranePadMesh.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
+
+                    // Az eltolt origó kompenzálása az objektum pozícióján
+                    const worldOffset = localAnchor.clone().applyEuler(cranePadMesh.rotation).multiply(cranePadMesh.scale);
+                    cranePadMesh.position.add(worldOffset);
+
+                    cranePadBaseRotation = cranePadMesh.rotation.clone();
+                    window._kikotoCranePad = cranePadMesh;
+                    window._kikotoCranePadBaseRot = cranePadBaseRotation;
+                }
+
+                // 7. Pálmafák alsó fix gyökérponthoz igazított imbolygása (SM_Env_PalmTree_Tall_02, SM_Env_PalmTree_02002, SM_Env_PalmTree_02, SM_Env_PalmTree_02001)
+                palmTreesList = [];
+                const standardPalmNames = [
+                    "SM_Env_PalmTree_Tall_02",
+                    "SM_Env_PalmTree_02002",
+                    "SM_Env_PalmTree_02.002",
+                    "SM_Env_PalmTree_02",
+                    "SM_Env_PalmTree_02001",
+                    "SM_Env_PalmTree_02.001"
+                ];
+                harborModel.traverse(node => {
+                    if (node.isMesh && node.name && standardPalmNames.some(pName => node.name === pName || (node.name.includes(pName) && !node.name.includes("Tall_02001") && !node.name.includes("Tall_02.001")))) {
+                        // Geometria egyediesítése (klónozás), hogy a megosztott hálók ne írják felül egymást
+                        node.geometry = node.geometry.clone();
+                        node.geometry.computeBoundingBox();
+                        const b = node.geometry.boundingBox;
+
+                        // Alsó fix rögzítési pont a gyökérzetnél (b.max.z -> talajszint)
+                        const localAnchor = new THREE.Vector3(0, 0, b.max.z);
+
+                        // Geometria eltolása, hogy a helyi origó (0,0,0) az alsó fix gyökérpont legyen
+                        node.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
+
+                        // Az eltolt origó kompenzálása az objektum pozícióján
+                        const worldOffset = localAnchor.clone().applyEuler(node.rotation).multiply(node.scale);
+                        node.position.add(worldOffset);
+
+                        const isTall = node.name.includes("Tall");
+                        const idx = palmTreesList.length;
+
+                        palmTreesList.push({
+                            mesh: node,
+                            baseRot: node.rotation.clone(),
+                            phase: idx * 1.57 + 0.3,
+                            speed: 0.85 + (idx % 3) * 0.15,
+                            amplitude: isTall ? 0.030 : 0.022
+                        });
+                    }
+                });
+                window._kikotoPalmTrees = palmTreesList;
+
+                // 8. Taverna Cégér (Taverna002 / CegerMesh pozíció: -22.7, 0.9, 12.5) felső fix felfüggesztési ponthoz rögzített lengése
+                let cegerFound = harborModel.getObjectByName("Taverna002") ||
+                    harborModel.getObjectByName("Taverna.002") ||
+                    harborModel.getObjectByName("CegerMesh");
+                if (!cegerFound) {
+                    harborModel.traverse(node => {
+                        if (node.isMesh && (node.name.includes("Taverna002") || node.name.includes("Taverna.002") || node.name.toLowerCase().includes("ceger"))) {
+                            cegerFound = node;
+                        }
+                    });
+                }
+                if (cegerFound && cegerFound.geometry) {
+                    cegerMesh = cegerFound;
+                    cegerMesh.geometry = cegerMesh.geometry.clone();
+                    cegerMesh.geometry.computeBoundingBox();
+                    const b = cegerMesh.geometry.boundingBox;
+
+                    // Felső fix felfüggesztési pont a cégértartó vasnál (b.max.y -> Y: ~5.94m)
+                    const localAnchor = new THREE.Vector3((b.min.x + b.max.x) / 2, b.max.y, (b.min.z + b.max.z) / 2);
+
+                    // Geometria eltolása, hogy a helyi origó (0,0,0) a felső fix felfüggesztési pont legyen
+                    cegerMesh.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
+
+                    // Az eltolt origó kompenzálása az objektum pozícióján
+                    const worldOffset = localAnchor.clone().applyEuler(cegerMesh.rotation).multiply(cegerMesh.scale);
+                    cegerMesh.position.add(worldOffset);
+
+                    cegerBaseRotation = cegerMesh.rotation.clone();
+                    window._kikotoCeger = cegerMesh;
+                    window._kikotoCegerBaseRot = cegerBaseRotation;
+                }
+
+                // 9. Pálma Bokor (SM_Env_PalmTree_Tall_02001 pozíció: 2.7, -6.5, 16.0) 2/3 magasságban fixált szélkifordulása
+                let palmBokorFound = harborModel.getObjectByName("SM_Env_PalmTree_Tall_02001") ||
+                    harborModel.getObjectByName("SM_Env_PalmTree_Tall_02.001");
+                if (!palmBokorFound) {
+                    harborModel.traverse(node => {
+                        if (node.isMesh && (node.name.includes("Tall_02001") || node.name.includes("Tall_02.001") || (node.name.includes("Tall") && node.position.y < 0))) {
+                            palmBokorFound = node;
+                        }
+                    });
+                }
+                if (palmBokorFound && palmBokorFound.geometry) {
+                    palmBokorMesh = palmBokorFound;
+                    // Geometria egyediesítése (klónozás), hogy ne módosítsa a magas SM_Env_PalmTree_Tall_02 geometriáját
+                    palmBokorMesh.geometry = palmBokorMesh.geometry.clone();
+                    palmBokorMesh.geometry.computeBoundingBox();
+                    const b = palmBokorMesh.geometry.boundingBox;
+
+                    // Fixációs rögzítési pont a magasság 2/3-ánál (a gyökértől felfelé a korona felé)
+                    const anchorZ = THREE.MathUtils.lerp(b.max.z, b.min.z, 2 / 3);
+                    const localAnchor = new THREE.Vector3(0, 0, anchorZ);
+
+                    // Geometria eltolása, hogy a helyi origó (0,0,0) a kétharmad magassági fixációs pont legyen
+                    palmBokorMesh.geometry.translate(-localAnchor.x, -localAnchor.y, -localAnchor.z);
+
+                    // Az eltolt origó kompenzálása az objektum pozícióján
+                    const worldOffset = localAnchor.clone().applyEuler(palmBokorMesh.rotation).multiply(palmBokorMesh.scale);
+                    palmBokorMesh.position.add(worldOffset);
+
+                    palmBokorBaseRotation = palmBokorMesh.rotation.clone();
+                    window._kikotoPalmBokor = palmBokorMesh;
+                    window._kikotoPalmBokorBaseRot = palmBokorBaseRotation;
+                }
+
+                // 9.1. Móló, Híd, Cölöpök és Sziget Bázis Hullámgyűrűk (Módszer 2 kiterjesztése a kikötői építményekre)
+                const pierRippleDefs = [
+                    { name: "defaultMaterial011", fallbackPos: new THREE.Vector3(-31.7, 1.0, -14.2), sizeX: 5.0, sizeZ: 7.0, speed: 0.85, intensity: 1.0 },
+                    { name: "node_id4001", fallbackPos: new THREE.Vector3(-33.0, -4.3, -4.7), sizeX: 6.0, sizeZ: 8.0, speed: 0.90, intensity: 1.0 },
+                    { name: "Bridge001_Bridge_0", fallbackPos: new THREE.Vector3(-34.0, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
+                    { name: "Bridge001_Bridge_0001", fallbackPos: new THREE.Vector3(-43.6, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
+                    { name: "Bridge001_Bridge_0002", fallbackPos: new THREE.Vector3(-53.2, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
+                    { name: "Bridge001_Bridge_0003", fallbackPos: new THREE.Vector3(-62.8, 3.5, 1.0), sizeX: 9.6, sizeZ: 4.5, speed: 0.85, intensity: 1.0 },
+                    { name: "defaultMaterial003", fallbackPos: new THREE.Vector3(-45.0, 1.0, -17.3), sizeX: 5.0, sizeZ: 8.0, speed: 0.85, intensity: 1.0 },
+                    { name: "Mesh_0001", fallbackPos: new THREE.Vector3(-33.7, 1.6, 7.7), sizeX: 5.0, sizeZ: 7.0, speed: 0.90, intensity: 1.0 },
+                    { name: "Mesh_0", fallbackPos: new THREE.Vector3(-33.8, 1.8, 7.5), sizeX: 5.0, sizeZ: 7.0, speed: 0.90, intensity: 1.0 },
+                    { name: "defaultMaterial002", fallbackPos: new THREE.Vector3(-33.3, 0.9, 14.4), sizeX: 5.5, sizeZ: 8.0, speed: 0.85, intensity: 1.0 },
+                    { name: "defaultMaterial005", fallbackPos: new THREE.Vector3(-44.6, 0.9, 18.7), sizeX: 5.5, sizeZ: 8.0, speed: 0.85, intensity: 1.0 },
+                    { name: "SM_Veh_Boat_Warship_01_Hull_Bare", fallbackPos: new THREE.Vector3(-34.1, -1.2, -26.4), sizeX: 7.5, sizeZ: 18.0, speed: 0.90, intensity: 1.1 },
+                    { name: "Grass_bottom", fallbackPos: new THREE.Vector3(18.3, 0.9, -2.5), sizeX: 55.0, sizeZ: 75.0, speed: 0.55, intensity: 1.2 }
+                ];
+
+                pierRippleDefs.forEach(def => {
+                    let targetObj = harborModel.getObjectByName(def.name);
+                    if (!targetObj) {
+                        harborModel.traverse(child => {
+                            if (!targetObj && child.name && child.name === def.name) {
+                                targetObj = child;
+                            }
+                        });
+                    }
+                    if (targetObj) {
+                        createBoatRipple(targetObj, def.sizeX, def.sizeZ, def.speed, def.intensity);
+                    } else {
+                        createBoatRipple(def.fallbackPos, def.sizeX, def.sizeZ, def.speed, def.intensity);
+                    }
+                });
+
+                // 9.2. Fedélzeti interaktív móló-, híd- és kikötői elemek regisztrálása
+                registerDeckInteractiveElements();
+
+                // 10. Tutorial Csónak (boat.glb) betöltése a móló (node_id4001: -33.0, -4.3, -4.7) mellé a vízre
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/boat.glb',
+                    function (boatGltf) {
+                        const boatModel = boatGltf.scene;
+                        boatModel.scale.set(16.66, 16.66, 16.66); // Megduplázott csónakméret (~5.8m hossz, 2.0m szélesség)
+                        boatModel.rotation.y = Math.PI; // Orrával a tenger felé fordítva
+                        boatModel.updateMatrixWorld(true);
+
+                        // Centerezés és tőkesúly beállítása
+                        const bBox = new THREE.Box3().setFromObject(boatModel);
+                        const bCenter = bBox.getCenter(new THREE.Vector3());
+                        boatModel.position.x = -bCenter.x;
+                        boatModel.position.z = -bCenter.z;
+                        boatModel.position.y = -bBox.min.y - 0.30; // Természetes arányos vízbemerülés
+
+                        boatGroup = new THREE.Group();
+                        boatGroup.name = "TutorialBoatGroup";
+                        // A móló melletti vízpozíció node_id4001 elemtől 0.5m-rel messzebb tolva: (-35.3, 0.10, -7.55)
+                        boatGroup.position.set(-35.3, 0.10, -7.55);
+                        boatGroup.rotation.y = Math.PI / 2; // 90 fokos elforgatás a móló mellé
+                        boatGroup.add(boatModel);
+
+                        boatModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        scene.add(boatGroup);
+                        boatBasePos.copy(boatGroup.position);
+                        boatBaseRot.copy(boatGroup.rotation);
+                        window._kikotoBoatGroup = boatGroup;
+                        window._kikotoBoatBasePos = boatBasePos;
+                        window._kikotoBoatBaseRot = boatBaseRot;
+                        createBoatRipple(boatGroup, 3.5, 6.5, 1.5, 1.0);
+                        updateEnvironmentLighting();
+                        registerDeckInteractiveElements();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Csónak modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 11. Kalózhajó (kalozhajo01.glb) betöltése a móló (defaultMaterial004: -32.3, 1.0, -14.4) mellé a vízre (0.3m-re a móló mellé)
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/kalozhajo01.glb',
+                    function (shipGltf) {
+                        // 1. A gltf belső gyökérelemének (SM_Veh_Veh_Boat_Large_01_Hull) 400 méteres Blender ofszetjét nullázzuk:
+                        shipGltf.scene.traverse(node => {
+                            if (node.name && node.name.includes("Hull")) {
+                                node.position.set(0, 0, 0);
+                            }
+                        });
+
+                        const shipModel = shipGltf.scene;
+                        shipModel.scale.set(0.65, 0.65, 0.65); // Mólóhoz arányosított kalózhajó méret (~21.5m hajóhossz)
+                        shipModel.rotation.set(0, 0, 0);
+                        shipModel.updateMatrixWorld(true);
+
+                        // Centerezés és tőkesúly merülés beállítása
+                        const sBox = new THREE.Box3().setFromObject(shipModel);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        shipModel.position.x = -sCenter.x;
+                        shipModel.position.z = -sCenter.z;
+                        shipModel.position.y = -sBox.min.y - 0.75; // Vízbemerülés a vízvonalhoz
+
+                        pirateShipGroup = new THREE.Group();
+                        pirateShipGroup.name = "TutorialPirateShipGroup";
+                        // A móló (defaultMaterial003: -45.0, 1.0, -17.3) melletti vízpozíció 4 méterrel jobbra: (-45.0, -0.40, -13.3)
+                        pirateShipGroup.position.set(-45.0, -0.40, -13.3);
+                        pirateShipGroup.rotation.y = Math.PI / 2; // 90 fokos elforgatás a móló mentén
+                        pirateShipGroup.add(shipModel);
+
+                        shipModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false; // Ne váljon láthatatlanná a Blender alphaMode: BLEND miatt
+                                        m.depthWrite = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        scene.add(pirateShipGroup);
+                        pirateShipBasePos.copy(pirateShipGroup.position);
+                        pirateShipBaseRot.copy(pirateShipGroup.rotation);
+                        window._kikotoPirateShipGroup = pirateShipGroup;
+                        window._kikotoPirateShipBasePos = pirateShipBasePos;
+                        window._kikotoPirateShipBaseRot = pirateShipBaseRot;
+                        createBoatRipple(pirateShipGroup, 8.5, 22.0, 1.0, 1.2);
+                        updateEnvironmentLighting();
+                        registerDeckInteractiveElements();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Kalózhajó modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 12. Kishajó (kishajo.glb) betöltése az északi móló (defaultMaterial005: -44.6, 0.9, 18.7) mellé a vízre (0.65 nagyítással)
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/kishajo.glb',
+                    function (smallShipGltf) {
+                        const smallShipModel = smallShipGltf.scene;
+                        smallShipModel.scale.set(0.65, 0.65, 0.65); // 0.65-ös mólóarányos nagyítás
+                        smallShipModel.rotation.set(0, 0, 0);
+                        smallShipModel.updateMatrixWorld(true);
+
+                        // Centerezés és tőkesúly merülés beállítása
+                        const sBox = new THREE.Box3().setFromObject(smallShipModel);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        smallShipModel.position.x = -sCenter.x;
+                        smallShipModel.position.z = -sCenter.z;
+                        smallShipModel.position.y = -sBox.min.y - 0.55; // Természetes vízbemerülés a vízvonalhoz
+
+                        smallShipGroup = new THREE.Group();
+                        smallShipGroup.name = "TutorialSmallShipGroup";
+                        // A móló (defaultMaterial005: -44.6, 0.9, 18.7) melletti vízpozíció 4 méterrel balra: (-44.6, -0.40, 14.7)
+                        smallShipGroup.position.set(-44.6, -0.40, 14.7);
+                        smallShipGroup.rotation.y = Math.PI / 2; // 90 fokos elforgatás a móló mentén
+                        smallShipGroup.add(smallShipModel);
+
+                        smallShipModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        scene.add(smallShipGroup);
+                        smallShipBasePos.copy(smallShipGroup.position);
+                        smallShipBaseRot.copy(smallShipGroup.rotation);
+                        window._kikotoSmallShipGroup = smallShipGroup;
+                        window._kikotoSmallShipBasePos = smallShipBasePos;
+                        window._kikotoSmallShipBaseRot = smallShipBaseRot;
+                        createBoatRipple(smallShipGroup, 6.5, 15.0, 1.2, 1.1);
+                        updateEnvironmentLighting();
+                        registerDeckInteractiveElements();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Kishajó modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 13. Javítás alatti Hajó (javitotthajo.glb) betöltése a móló (defaultMaterial006: -23.2, 1.0, -28.4) mellé jobbról a vízre, parthoz közel, farral a part felé
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/javitotthajo.glb',
+                    function (repairGltf) {
+                        const repairModel = repairGltf.scene;
+                        repairModel.scale.set(0.65, 0.65, 0.65); // Mólóarányos nagyítás
+                        repairModel.rotation.set(0, 0, 0);
+                        repairModel.updateMatrixWorld(true);
+
+                        // Centerezés és tőkesúly merülés beállítása
+                        const sBox = new THREE.Box3().setFromObject(repairModel);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        repairModel.position.x = -sCenter.x;
+                        repairModel.position.z = -sCenter.z;
+                        repairModel.position.y = -sBox.min.y - 0.75; // Vízbemerülés a vízvonalhoz
+
+                        repairShipGroup = new THREE.Group();
+                        repairShipGroup.name = "TutorialRepairShipGroup";
+                        // A Hajoacsmuhely (-15.8, 1.0, -15.3) elemtől 5m-rel messzebb helyezve a vízre: (-35.7, -0.40, -27.9)
+                        repairShipGroup.position.set(-35.7, -0.40, -27.9);
+                        repairShipGroup.rotation.y = -Math.PI / 2 - THREE.MathUtils.degToRad(40);
+                        repairShipGroup.add(repairModel);
+
+                        repairModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        scene.add(repairShipGroup);
+                        repairShipBasePos.copy(repairShipGroup.position);
+                        repairShipBaseRot.copy(repairShipGroup.rotation);
+                        window._kikotoRepairShipGroup = repairShipGroup;
+                        window._kikotoRepairShipBasePos = repairShipBasePos;
+                        window._kikotoRepairShipBaseRot = repairShipBaseRot;
+                        createBoatRipple(repairShipGroup, 7.5, 18.0, 0.9, 1.1);
+                        updateEnvironmentLighting();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Javított hajó modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 14. Steampunk Csónak 02 (steampunk_csonak02.glb) betöltése a Híd (Bridge001_Bridge_0: -34.0, 3.5, 1.0) és az északi móló (defaultMaterial002: -33.3, 0.9, 14.4) közé a vízre
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/steampunk_csonak02.glb',
+                    function (boatGltf) {
+                        const boatModel = boatGltf.scene;
+                        boatModel.scale.set(5.2, 5.2, 5.2); // 2x nagyobb csónakméret
+                        boatModel.rotation.set(0, 0, 0);
+                        boatModel.updateMatrixWorld(true);
+
+                        // Centerezés és tőkesúly merülés beállítása
+                        const sBox = new THREE.Box3().setFromObject(boatModel);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        boatModel.position.x = -sCenter.x;
+                        boatModel.position.z = -sCenter.z;
+                        boatModel.position.y = -sBox.min.y - 0.25; // Természetes vízbemerülés
+
+                        steampunkBoat2Group = new THREE.Group();
+                        steampunkBoat2Group.name = "TutorialSteampunkBoat02Group";
+                        // A Híd és az északi móló közötti 2/3-os vízpozíció: (-33.5, 0.25, 10.4)
+                        steampunkBoat2Group.position.set(-33.5, 0.25, 10.4);
+                        steampunkBoat2Group.rotation.y = Math.PI; // CCW 90° fordulat (180°)
+                        steampunkBoat2Group.add(boatModel);
+
+                        boatModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        scene.add(steampunkBoat2Group);
+                        steampunkBoat2BasePos.copy(steampunkBoat2Group.position);
+                        steampunkBoat2BaseRot.copy(steampunkBoat2Group.rotation);
+                        window._kikotoSteampunkBoat2Group = steampunkBoat2Group;
+                        window._kikotoSteampunkBoat2BasePos = steampunkBoat2BasePos;
+                        window._kikotoSteampunkBoat2BaseRot = steampunkBoat2BaseRot;
+                        createBoatRipple(steampunkBoat2Group, 4.0, 8.0, 1.4, 1.0);
+                        updateEnvironmentLighting();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Steampunk csónak 02 modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 15. Steampunk Csónak 03 (steampunk_csonak03.glb) betöltése a Híd (Bridge001_Bridge_0: -34.0, 3.5, 1.0) és az északi móló (defaultMaterial002: -33.3, 0.9, 14.4) közé a vízre
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/steampunk_csonak03.glb',
+                    function (boatGltf) {
+                        const boatModel = boatGltf.scene;
+                        boatModel.scale.set(4.5, 4.5, 4.5); // 2.5x nagyobb csónakméret
+                        boatModel.rotation.set(0, 0, 0);
+                        boatModel.updateMatrixWorld(true);
+
+                        // Centerezés és tőkesúly merülés beállítása
+                        const sBox = new THREE.Box3().setFromObject(boatModel);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        boatModel.position.x = -sCenter.x;
+                        boatModel.position.z = -sCenter.z;
+                        boatModel.position.y = -sBox.min.y - 0.25; // Természetes vízbemerülés
+
+                        steampunkBoat3Group = new THREE.Group();
+                        steampunkBoat3Group.name = "TutorialSteampunkBoat03Group";
+                        // A Híd és az északi móló közötti 1/3-os vízpozíció: (-33.8, 0.25, 5.7)
+                        steampunkBoat3Group.position.set(-33.8, 0.25, 5.7);
+                        steampunkBoat3Group.rotation.y = Math.PI; // CCW 90° fordulat (180°)
+                        steampunkBoat3Group.add(boatModel);
+
+                        boatModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        scene.add(steampunkBoat3Group);
+                        steampunkBoat3BasePos.copy(steampunkBoat3Group.position);
+                        steampunkBoat3BaseRot.copy(steampunkBoat3Group.rotation);
+                        window._kikotoSteampunkBoat3Group = steampunkBoat3Group;
+                        window._kikotoSteampunkBoat3BasePos = steampunkBoat3BasePos;
+                        window._kikotoSteampunkBoat3BaseRot = steampunkBoat3BaseRot;
+                        createBoatRipple(steampunkBoat3Group, 4.0, 8.0, 1.35, 1.0);
+                        updateEnvironmentLighting();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Steampunk csónak 03 modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 16. Evezős Csónakok (evezoscsonak.glb) betöltése 2 külön példányban a kijelölt Object_70002 és defaultMaterial elemek elé a vízre
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/evezoscsonak.glb',
+                    function (boatGltf) {
+                        // 1. Nullázzuk a belső Blender 387 méteres ofszetet
+                        boatGltf.scene.traverse(node => {
+                            if (node.name && (node.name.includes("Hull") || node.name.includes("Attachments") || node.name.includes("Boat"))) {
+                                node.position.set(0, 0, 0);
+                            }
+                        });
+
+                        const boatModel1 = boatGltf.scene;
+                        boatModel1.scale.set(0.45, 0.45, 0.45); // Megduplázott méretarány (0.225 * 2 = 0.45)
+                        boatModel1.rotation.set(0, 0, 0);
+                        boatModel1.updateMatrixWorld(true);
+
+                        // Centerezés
+                        const sBox = new THREE.Box3().setFromObject(boatModel1);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        boatModel1.position.x = -sCenter.x;
+                        boatModel1.position.z = -sCenter.z;
+                        boatModel1.position.y = 0;
+
+                        boatModel1.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                child.frustumCulled = false;
+                                child.renderOrder = 10;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.depthTest = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        // 1. Példány: Object_70002 és SurfPatch (-204.4, 21.7, 5.4) felé közelebb a vízre: (-21.5, 0.00, 27.1)
+                        rowBoat1Group = new THREE.Group();
+                        rowBoat1Group.name = "TutorialRowBoat1Group";
+                        rowBoat1Group.renderOrder = 10;
+                        rowBoat1Group.position.set(-21.5, 0.00, 27.1);
+                        rowBoat1Group.rotation.y = Math.PI / 2;
+                        rowBoat1Group.add(boatModel1);
+
+                        scene.add(rowBoat1Group);
+                        rowBoat1BasePos.copy(rowBoat1Group.position);
+                        rowBoat1BaseRot.copy(rowBoat1Group.rotation);
+                        window._kikotoRowBoat1Group = rowBoat1Group;
+                        window._kikotoRowBoat1BasePos = rowBoat1BasePos;
+                        window._kikotoRowBoat1BaseRot = rowBoat1BaseRot;
+                        createBoatRipple(rowBoat1Group, 2.8, 5.2, 1.25, 0.9);
+
+                        // 2. Példány: defaultMaterial (-9.2, 1.0, -34.5) és SurfPatch (-204.4, 21.7, 5.4) felé közelebb a vízre: (-20.4, 0.00, -31.9)
+                        const boatModel2 = boatModel1.clone(true);
+                        rowBoat2Group = new THREE.Group();
+                        rowBoat2Group.name = "TutorialRowBoat2Group";
+                        rowBoat2Group.renderOrder = 10;
+                        rowBoat2Group.position.set(-20.4, 0.00, -31.9);
+                        rowBoat2Group.rotation.y = Math.PI / 2;
+                        rowBoat2Group.add(boatModel2);
+
+                        scene.add(rowBoat2Group);
+                        rowBoat2BasePos.copy(rowBoat2Group.position);
+                        rowBoat2BaseRot.copy(rowBoat2Group.rotation);
+                        window._kikotoRowBoat2Group = rowBoat2Group;
+                        window._kikotoRowBoat2BasePos = rowBoat2BasePos;
+                        window._kikotoRowBoat2BaseRot = rowBoat2BaseRot;
+                        createBoatRipple(rowBoat2Group, 2.8, 5.2, 1.25, 0.9);
+                        updateEnvironmentLighting();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Evezős csónak modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 17. Barna Csónakok (barna_csonak.glb) betöltése 2 példányban (defaultMaterial előtt és node_id4004 jobb oldalán a vízre)
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/barna_csonak.glb',
+                    function (brownGltf) {
+                        brownGltf.scene.traverse(node => {
+                            if (node.name && (node.name.includes("Hull") || node.name.includes("Attachments") || node.name.includes("Boat"))) {
+                                node.position.set(0, 0, 0);
+                            }
+                        });
+
+                        const brownBoatModel1 = brownGltf.scene;
+                        brownBoatModel1.scale.set(0.45, 0.45, 0.45); // Ugyanaz a méretarány, mint az evezőscsónak
+                        brownBoatModel1.rotation.set(0, 0, 0);
+                        brownBoatModel1.updateMatrixWorld(true);
+
+                        // Centerezés
+                        const sBox = new THREE.Box3().setFromObject(brownBoatModel1);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        brownBoatModel1.position.x = -sCenter.x;
+                        brownBoatModel1.position.z = -sCenter.z;
+                        brownBoatModel1.position.y = 0;
+
+                        brownBoatModel1.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                child.frustumCulled = false;
+                                child.renderOrder = 10;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.depthTest = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        // 1. Példány: defaultMaterial (-9.2, 1.0, -34.5) előtt a vízre: (-13.0, 0.00, -34.5)
+                        brownBoat1Group = new THREE.Group();
+                        brownBoat1Group.name = "TutorialBrownBoat1Group";
+                        brownBoat1Group.renderOrder = 10;
+                        brownBoat1Group.position.set(-13.0, 0.00, -34.5);
+                        brownBoat1Group.rotation.y = Math.PI / 4;
+                        brownBoat1Group.add(brownBoatModel1);
+
+                        scene.add(brownBoat1Group);
+                        brownBoat1BasePos.copy(brownBoat1Group.position);
+                        brownBoat1BaseRot.copy(brownBoat1Group.rotation);
+                        window._kikotoBrownBoat1Group = brownBoat1Group;
+                        window._kikotoBrownBoat1BasePos = brownBoat1BasePos;
+                        window._kikotoBrownBoat1BaseRot = brownBoat1BaseRot;
+                        window._kikotoBrownBoatGroup = brownBoat1Group;
+                        window._kikotoBrownBoatBasePos = brownBoat1BasePos;
+                        window._kikotoBrownBoatBaseRot = brownBoat1BaseRot;
+                        createBoatRipple(brownBoat1Group, 2.8, 5.2, 1.3, 0.9);
+
+                        // 2. Példány: node_id4004 (-27.9, -4.3, 17.2) másik oldalára a vízre: (-29.0, 0.00, 20.3)
+                        const brownBoatModel2 = brownBoatModel1.clone(true);
+                        brownBoat2Group = new THREE.Group();
+                        brownBoat2Group.name = "TutorialBrownBoat2Group";
+                        brownBoat2Group.renderOrder = 10;
+                        brownBoat2Group.position.set(-29.0, 0.00, 20.3);
+                        brownBoat2Group.rotation.y = Math.PI / 2 + THREE.MathUtils.degToRad(10);
+                        brownBoat2Group.add(brownBoatModel2);
+
+                        scene.add(brownBoat2Group);
+                        brownBoat2BasePos.copy(brownBoat2Group.position);
+                        brownBoat2BaseRot.copy(brownBoat2Group.rotation);
+                        window._kikotoBrownBoat2Group = brownBoat2Group;
+                        window._kikotoBrownBoat2BasePos = brownBoat2BasePos;
+                        window._kikotoBrownBoat2BaseRot = brownBoat2BaseRot;
+                        createBoatRipple(brownBoat2Group, 2.8, 5.2, 1.3, 0.9);
+                        updateEnvironmentLighting();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Barna csónak modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                // 18. Szürke Csónak (szurke_csonak.glb) betöltése Object_82002 (-11.1, 0.1, 30.6) elé a vízre
+                loader.load(
+                    'https://storage.googleapis.com/kalozsziget-assets/assets/models/szurke_csonak.glb',
+                    function (greyGltf) {
+                        greyGltf.scene.traverse(node => {
+                            if (node.name && (node.name.includes("Hull") || node.name.includes("Attachments") || node.name.includes("Boat"))) {
+                                node.position.set(0, 0, 0);
+                            }
+                        });
+
+                        const greyBoatModel = greyGltf.scene;
+                        greyBoatModel.scale.set(0.45, 0.45, 0.45);
+                        greyBoatModel.rotation.set(0, 0, 0);
+                        greyBoatModel.updateMatrixWorld(true);
+
+                        // Centerezés
+                        const sBox = new THREE.Box3().setFromObject(greyBoatModel);
+                        const sCenter = sBox.getCenter(new THREE.Vector3());
+                        greyBoatModel.position.x = -sCenter.x;
+                        greyBoatModel.position.z = -sCenter.z;
+                        greyBoatModel.position.y = 0;
+
+                        greyBoatModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                child.frustumCulled = false;
+                                child.renderOrder = 10;
+                                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                                mats.forEach(m => {
+                                    if (m) {
+                                        m.transparent = false;
+                                        m.depthWrite = true;
+                                        m.depthTest = true;
+                                        m.side = THREE.DoubleSide;
+                                        m.envMapIntensity = 1.0;
+                                        m.needsUpdate = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        greyBoatGroup = new THREE.Group();
+                        greyBoatGroup.name = "TutorialGreyBoatGroup";
+                        greyBoatGroup.renderOrder = 10;
+                        greyBoatGroup.position.set(-11.5, 0.00, 30.9);
+                        greyBoatGroup.rotation.y = Math.PI / 4;
+                        greyBoatGroup.add(greyBoatModel);
+
+                        scene.add(greyBoatGroup);
+                        greyBoatBasePos.copy(greyBoatGroup.position);
+                        greyBoatBaseRot.copy(greyBoatGroup.rotation);
+                        window._kikotoGreyBoatGroup = greyBoatGroup;
+                        window._kikotoGreyBoatBasePos = greyBoatBasePos;
+                        window._kikotoGreyBoatBaseRot = greyBoatBaseRot;
+                        createBoatRipple(greyBoatGroup, 2.8, 5.2, 1.32, 0.9);
+                        updateEnvironmentLighting();
+                    },
+                    undefined,
+                    function (err) {
+                        console.warn('Szürke csónak modell betöltési figyelmeztetés:', err);
+                    }
+                );
+
+                updateEnvironmentLighting();
+
+                // 4. Modell Fókusz és 45 fokos, 2x méretarányos Kamera Beállítás
+                setupCameraToModel(harborModel);
+
+                window._kikoto3DInitialized = true;
+                window._kikoto3DLoading = false;
+
+                // Betöltő képernyő sima átmenetes eltüntetése a 3D modell teljes felépülésekor
+                if (typeof hideUniversalLoading === 'function') {
+                    hideUniversalLoading('sot_harbor_loaded', 600, true);
+                }
+                const transOverlay = document.getElementById('scene-transition-overlay');
+                if (transOverlay) {
+                    transOverlay.classList.remove('active');
+                    transOverlay.style.opacity = '0';
+                    transOverlay.style.pointerEvents = 'none';
+                }
+
+                // Modell információk kiírása (ha van statsText elem)
+                if (statsText) {
+                    const box = new THREE.Box3().setFromObject(harborModel);
+                    const size = box.getSize(new THREE.Vector3());
+                    statsText.textContent = 'Kikötő Méret: ' + Math.round(size.x) + 'm × ' + Math.round(size.z) + 'm | 45° Kamera Fókusz Aktív';
+                }
+            },
+            function (xhr) {
+                if (xhr.total > 0) {
+                    const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
+                    loaderFill.style.width = percent + '%';
+                    const loadedMb = (xhr.loaded / 1048576).toFixed(1);
+                    const totalMb = (xhr.total / 1048576).toFixed(1);
+                    loaderStatus.textContent = '3D MODELL BETÖLTÉSE: ' + percent + '% (' + loadedMb + ' / ' + totalMb + ' MB)';
+                } else {
+                    const loadedMb = (xhr.loaded / 1048576).toFixed(1);
+                    loaderStatus.textContent = '3D MODELL BETÖLTÉSE: ' + loadedMb + ' MB...';
+                }
+            },
+            function (error) {
+                console.error('Hiba a 3D modell betöltése során:', error);
+                loaderStatus.textContent = 'HIBA A MODELL BETÖLTÉSEKOR: ' + error.message;
+                loaderStatus.style.color = '#ff4444';
+                setTimeout(function () {
+                    if (typeof hideUniversalLoading === 'function') hideUniversalLoading();
+                    var container2D = document.getElementById('kikoto-2d-container');
+                    if (container2D) container2D.style.display = 'block';
+                }, 1500);
+            }
+        );
+    }
+
+    /**
+     * Alapértelmezett Kikötő Kamera Beállítás
+     */
+    function setupCameraToModel(model) {
+        // A kiválasztott tökéletes kameraállás és fókuszpont
+        camera.position.set(-65.7, 10.9, 1.6);
+        controls.target.set(-23.3, 6.8, 1.0);
+
+        camera.near = 0.5;
+        camera.far = 4000;
+        camera.updateProjectionMatrix();
+
+        controls.update();
+
+        // Elmentjük a kezdőpozíciókat az alaphelyzetbe állításhoz
+        defaultCameraPos.copy(camera.position);
+        defaultTargetPos.copy(controls.target);
+    }
+
+    // Globális kamera visszaállító
+    window.resetPortCamera = function () {
+        if (controls && defaultCameraPos.length() > 0) {
+            camera.position.copy(defaultCameraPos);
+            controls.target.copy(defaultTargetPos);
+            controls.update();
+        }
+    };
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+    }
+
+    function animate() {
+        if (!kikoto3DRunning) return;
+        kikotoAnimFrameId = requestAnimationFrame(animate);
+
+        const delta = clock.getDelta();
+        const elapsedTime = clock.getElapsedTime();
+
+        // 1. Blender AnimationMixer frissítése (ha van beágyazott Blender akció)
+        if (animationMixer) {
+            animationMixer.update(delta);
         }
 
-        /**
-         * Alapértelmezett Kikötő Kamera Beállítás
-         */
-        function setupCameraToModel(model) {
-            // A kiválasztott tökéletes kameraállás és fókuszpont
-            camera.position.set(-65.7, 10.9, 1.6);
-            controls.target.set(-23.3, 6.8, 1.0);
-            
-            camera.near = 0.5;
-            camera.far = 4000;
-            camera.updateProjectionMatrix();
+        // 2. Realisztikus Vízfelület hullámmozgásának léptetése (megfelezve: 0.8 -> 0.4)
+        if (water && water.material && water.material.uniforms && water.material.uniforms['time']) {
+            water.material.uniforms['time'].value += delta * 0.4;
+        }
 
+        // 4. Darupad (SM_Prop_Crane_02001 / DarupadMesh) szélfútta, lassan imbolygó és forgó mozgása a felső fix pont körül
+        if (cranePadMesh && cranePadBaseRotation) {
+            // Természetes, aszimmetrikus szélmozgás (hosszanti lengés + keresztlengés + lassú pördülés)
+            const swayX = Math.sin(elapsedTime * 0.85) * 0.045 + Math.sin(elapsedTime * 1.4) * 0.02;
+            const swayZ = Math.cos(elapsedTime * 0.70) * 0.040 + Math.sin(elapsedTime * 1.15) * 0.015;
+            const twistY = Math.sin(elapsedTime * 0.35) * 0.05 + Math.sin(elapsedTime * 0.20) * 0.03;
+
+            cranePadMesh.rotation.x = cranePadBaseRotation.x + swayX;
+            cranePadMesh.rotation.y = cranePadBaseRotation.y + twistY;
+            cranePadMesh.rotation.z = cranePadBaseRotation.z + swayZ;
+        }
+
+        // 5. Pálmafák (SM_Env_PalmTree_...) enyhe, természetes szélfútta imbolygása az alsó gyökérpontjuk körül
+        if (palmTreesList && palmTreesList.length > 0) {
+            palmTreesList.forEach(item => {
+                const t = elapsedTime * item.speed + item.phase;
+                const swayX = Math.sin(t * 1.1) * item.amplitude + Math.sin(t * 0.6) * (item.amplitude * 0.5);
+                const swayZ = Math.cos(t * 0.95) * (item.amplitude * 0.8) + Math.sin(t * 1.5) * (item.amplitude * 0.4);
+
+                item.mesh.rotation.x = item.baseRot.x + swayX;
+                item.mesh.rotation.z = item.baseRot.z + swayZ;
+            });
+        }
+
+        // 6. Taverna Cégér (Taverna002 / CegerMesh) szélfútta lengése a felső fix felfüggesztés körül
+        if (cegerMesh && cegerBaseRotation) {
+            const cegerSwayZ = Math.sin(elapsedTime * 1.35) * 0.065 + Math.sin(elapsedTime * 0.75) * 0.025;
+            const cegerTwistY = Math.sin(elapsedTime * 0.5) * 0.025;
+
+            cegerMesh.rotation.z = cegerBaseRotation.z + cegerSwayZ;
+            cegerMesh.rotation.y = cegerBaseRotation.y + cegerTwistY;
+        }
+
+        // 7. Pálma Bokor (SM_Env_PalmTree_Tall_02002 / PalmabokorMesh) szélfútta kifordulása és finom mozgása az alsó fix gyökérpont körül
+        if (palmBokorMesh && palmBokorBaseRotation) {
+            // Kisebb billenési amplitúdó, de kifejezett szélirányú kifordulás (twist / yaw)
+            const bokorTwistY = Math.sin(elapsedTime * 0.85) * 0.045 + Math.sin(elapsedTime * 0.4) * 0.025;
+            const bokorLeanX = Math.sin(elapsedTime * 0.70) * 0.012 + Math.sin(elapsedTime * 1.2) * 0.005;
+            const bokorLeanZ = Math.cos(elapsedTime * 0.90) * 0.010;
+
+            palmBokorMesh.rotation.y = palmBokorBaseRotation.y + bokorTwistY;
+            palmBokorMesh.rotation.x = palmBokorBaseRotation.x + bokorLeanX;
+            palmBokorMesh.rotation.z = palmBokorBaseRotation.z + bokorLeanZ;
+        }
+
+        // 8. Csónak (TutorialBoat) lágy vízi ringatózása és lebegése a móló mellett
+        if (boatGroup) {
+            const t = elapsedTime;
+            // Függőleges hullámzó lebegés
+            boatGroup.position.y = boatBasePos.y + Math.sin(t * 1.5) * 0.045 + Math.sin(t * 0.8) * 0.02;
+            // Hosszirányú bólintás (pitch)
+            boatGroup.rotation.x = boatBaseRot.x + Math.sin(t * 1.2) * 0.025 + Math.sin(t * 0.7) * 0.012;
+            // Keresztirányú dülöngélés (roll)
+            boatGroup.rotation.z = boatBaseRot.z + Math.cos(t * 1.0) * 0.035 + Math.sin(t * 1.6) * 0.015;
+            // Enyhe hullámmozgásos tekeredés (yaw)
+            boatGroup.rotation.y = boatBaseRot.y + Math.sin(t * 0.45) * 0.018;
+        }
+
+        // 9. Kalózhajó (kalozhajo01.glb / TutorialPirateShipGroup) méltóságteljes vízi ringatózása a móló mellett
+        if (pirateShipGroup) {
+            const t = elapsedTime;
+            // Függőleges lassú lebegés
+            pirateShipGroup.position.y = pirateShipBasePos.y + Math.sin(t * 1.1) * 0.045 + Math.sin(t * 0.6) * 0.020;
+            // Hosszirányú bólintás (pitch)
+            pirateShipGroup.rotation.x = pirateShipBaseRot.x + Math.sin(t * 0.9) * 0.018 + Math.sin(t * 0.45) * 0.009;
+            // Keresztirányú dülöngélés (roll)
+            pirateShipGroup.rotation.z = pirateShipBaseRot.z + Math.cos(t * 0.75) * 0.025 + Math.sin(t * 1.3) * 0.010;
+            // Enyhe hullámsodródás (yaw)
+            pirateShipGroup.rotation.y = pirateShipBaseRot.y + Math.sin(t * 0.35) * 0.014;
+        }
+
+        // 10. Kishajó (kishajo.glb / TutorialSmallShipGroup) lágy vízi ringatózása a móló mellett
+        if (smallShipGroup) {
+            const t = elapsedTime;
+            // Függőleges hullámzó lebegés
+            smallShipGroup.position.y = smallShipBasePos.y + Math.sin(t * 1.3) * 0.040 + Math.sin(t * 0.75) * 0.018;
+            // Hosszirányú bólintás (pitch)
+            smallShipGroup.rotation.x = smallShipBaseRot.x + Math.sin(t * 1.05) * 0.020 + Math.sin(t * 0.55) * 0.010;
+            // Keresztirányú dülöngélés (roll)
+            smallShipGroup.rotation.z = smallShipBaseRot.z + Math.cos(t * 0.85) * 0.028 + Math.sin(t * 1.45) * 0.012;
+            // Enyhe hullámsodródás (yaw)
+            smallShipGroup.rotation.y = smallShipBaseRot.y + Math.sin(t * 0.40) * 0.015;
+        }
+
+        // 11. Javítás alatti Hajó (javitotthajo.glb / TutorialRepairShipGroup) lágy vízi ringatózása a móló és part mellett
+        if (repairShipGroup) {
+            const t = elapsedTime;
+            // Függőleges hullámzó lebegés
+            repairShipGroup.position.y = repairShipBasePos.y + Math.sin(t * 1.0) * 0.035 + Math.sin(t * 0.65) * 0.015;
+            // Hosszirányú bólintás (pitch)
+            repairShipGroup.rotation.x = repairShipBaseRot.x + Math.sin(t * 0.85) * 0.015 + Math.sin(t * 0.5) * 0.008;
+            // Keresztirányú dülöngélés (roll)
+            repairShipGroup.rotation.z = repairShipBaseRot.z + Math.cos(t * 0.70) * 0.022 + Math.sin(t * 1.2) * 0.008;
+            // Enyhe hullámsodródás (yaw)
+            repairShipGroup.rotation.y = repairShipBaseRot.y + Math.sin(t * 0.3) * 0.012;
+        }
+
+        // 12. Steampunk Csónak 02 (steampunk_csonak02.glb / TutorialSteampunkBoat02Group) lágy vízi ringatózása
+        if (steampunkBoat2Group) {
+            const t = elapsedTime;
+            steampunkBoat2Group.position.y = steampunkBoat2BasePos.y + Math.sin(t * 1.4 + 1.2) * 0.038 + Math.sin(t * 0.75) * 0.016;
+            steampunkBoat2Group.rotation.x = steampunkBoat2BaseRot.x + Math.sin(t * 1.1 + 0.8) * 0.020 + Math.sin(t * 0.6) * 0.010;
+            steampunkBoat2Group.rotation.z = steampunkBoat2BaseRot.z + Math.cos(t * 0.95 + 1.5) * 0.028 + Math.sin(t * 1.5) * 0.012;
+            steampunkBoat2Group.rotation.y = steampunkBoat2BaseRot.y + Math.sin(t * 0.42 + 0.5) * 0.015;
+        }
+
+        // 13. Steampunk Csónak 03 (steampunk_csonak03.glb / TutorialSteampunkBoat03Group) lágy vízi ringatózása
+        if (steampunkBoat3Group) {
+            const t = elapsedTime;
+            steampunkBoat3Group.position.y = steampunkBoat3BasePos.y + Math.sin(t * 1.35 + 2.5) * 0.040 + Math.sin(t * 0.70) * 0.018;
+            steampunkBoat3Group.rotation.x = steampunkBoat3BaseRot.x + Math.sin(t * 1.05 + 1.8) * 0.022 + Math.sin(t * 0.55) * 0.011;
+            steampunkBoat3Group.rotation.z = steampunkBoat3BaseRot.z + Math.cos(t * 0.90 + 2.1) * 0.030 + Math.sin(t * 1.4) * 0.014;
+            steampunkBoat3Group.rotation.y = steampunkBoat3BaseRot.y + Math.sin(t * 0.38 + 1.2) * 0.016;
+        }
+
+        // 14. Evezős Csónak 1 (Object_70002 előtt a vízre) lágy vízi ringatózása
+        if (rowBoat1Group) {
+            const t = elapsedTime;
+            rowBoat1Group.position.y = rowBoat1BasePos.y + Math.sin(t * 1.25 + 3.1) * 0.038 + Math.sin(t * 0.65) * 0.015;
+            rowBoat1Group.rotation.x = rowBoat1BaseRot.x + Math.sin(t * 0.95 + 2.0) * 0.020 + Math.sin(t * 0.5) * 0.010;
+            rowBoat1Group.rotation.z = rowBoat1BaseRot.z + Math.cos(t * 0.85 + 1.1) * 0.028 + Math.sin(t * 1.3) * 0.012;
+            rowBoat1Group.rotation.y = rowBoat1BaseRot.y + Math.sin(t * 0.35 + 2.4) * 0.015;
+        }
+
+        // 15. Evezős Csónak 2 (defaultMaterial előtt a vízre) lágy vízi ringatózása
+        if (rowBoat2Group) {
+            const t = elapsedTime;
+            rowBoat2Group.position.y = rowBoat2BasePos.y + Math.sin(t * 1.30 + 0.8) * 0.038 + Math.sin(t * 0.70) * 0.015;
+            rowBoat2Group.rotation.x = rowBoat2BaseRot.x + Math.sin(t * 1.00 + 1.5) * 0.020 + Math.sin(t * 0.55) * 0.010;
+            rowBoat2Group.rotation.z = rowBoat2BaseRot.z + Math.cos(t * 0.90 + 0.5) * 0.028 + Math.sin(t * 1.35) * 0.012;
+            rowBoat2Group.rotation.y = rowBoat2BaseRot.y + Math.sin(t * 0.38 + 1.1) * 0.015;
+        }
+
+        // 16. Barna Csónak 1 (defaultMaterial előtt a vízre) lágy vízi ringatózása
+        if (brownBoat1Group) {
+            const t = elapsedTime;
+            brownBoat1Group.position.y = brownBoat1BasePos.y + Math.sin(t * 1.35 + 1.8) * 0.038 + Math.sin(t * 0.75) * 0.015;
+            brownBoat1Group.rotation.x = brownBoat1BaseRot.x + Math.sin(t * 1.05 + 0.9) * 0.020 + Math.sin(t * 0.6) * 0.010;
+            brownBoat1Group.rotation.z = brownBoat1BaseRot.z + Math.cos(t * 0.95 + 2.2) * 0.028 + Math.sin(t * 1.4) * 0.012;
+            brownBoat1Group.rotation.y = brownBoat1BaseRot.y + Math.sin(t * 0.40 + 1.7) * 0.015;
+        }
+
+        // 17. Barna Csónak 2 (node_id4004 jobb oldalán a vízre) lágy vízi ringatózása
+        if (brownBoat2Group) {
+            const t = elapsedTime;
+            brownBoat2Group.position.y = brownBoat2BasePos.y + Math.sin(t * 1.28 + 0.4) * 0.038 + Math.sin(t * 0.70) * 0.015;
+            brownBoat2Group.rotation.x = brownBoat2BaseRot.x + Math.sin(t * 0.98 + 1.2) * 0.020 + Math.sin(t * 0.52) * 0.010;
+            brownBoat2Group.rotation.z = brownBoat2BaseRot.z + Math.cos(t * 0.88 + 1.6) * 0.028 + Math.sin(t * 1.32) * 0.012;
+            brownBoat2Group.rotation.y = brownBoat2BaseRot.y + Math.sin(t * 0.36 + 0.9) * 0.015;
+        }
+
+        // 18. Szürke Csónak (szurke_csonak.glb / Object_82002 előtt a vízre) lágy vízi ringatózása
+        if (greyBoatGroup) {
+            const t = elapsedTime;
+            greyBoatGroup.position.y = greyBoatBasePos.y + Math.sin(t * 1.32 + 2.7) * 0.038 + Math.sin(t * 0.68) * 0.015;
+            greyBoatGroup.rotation.x = greyBoatBaseRot.x + Math.sin(t * 1.02 + 1.9) * 0.020 + Math.sin(t * 0.58) * 0.010;
+            greyBoatGroup.rotation.z = greyBoatBaseRot.z + Math.cos(t * 0.92 + 0.7) * 0.028 + Math.sin(t * 1.38) * 0.012;
+            greyBoatGroup.rotation.y = greyBoatBaseRot.y + Math.sin(t * 0.37 + 2.1) * 0.015;
+        }
+
+        // 19. Hajótest, csónak, móló, híd és bázis hullámgyűrűk frissítése (Módszer 2: Dynamic Wave & Ripple System)
+        if (boatRipplesList && boatRipplesList.length > 0) {
+            const tempWPos = new THREE.Vector3();
+            boatRipplesList.forEach(item => {
+                if (item.mesh) {
+                    if (item.target && item.target.isObject3D) {
+                        item.target.getWorldPosition(tempWPos);
+                        item.mesh.position.x = tempWPos.x;
+                        item.mesh.position.z = tempWPos.z;
+                        if (item.target.rotation) {
+                            item.mesh.rotation.z = -item.target.rotation.y;
+                        }
+                    } else if (item.fixedPos) {
+                        item.mesh.position.x = item.fixedPos.x;
+                        item.mesh.position.z = item.fixedPos.z;
+                    }
+                    if (water) {
+                        item.mesh.position.y = water.position.y + 0.01;
+                    }
+                    if (item.material && item.material.uniforms && item.material.uniforms.uTime) {
+                        item.material.uniforms.uTime.value = elapsedTime;
+                    }
+                }
+            });
+        }
+
+        // 20. Filmes Kameraközelítés és Átmenet (Cinematic Building Zoom Transition)
+        if (isCinematicTransitioning) {
+            const now = clock.getElapsedTime();
+            const elapsed = now - cinematicStartTime;
+            const progress = Math.min(1.0, elapsed / cinematicDuration);
+
+            // Sima Ease-In-Out S-görbe a filmszerű finom ráközelítéshez
+            const ease = progress < 0.5
+                ? 2 * progress * progress
+                : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+            camera.position.lerpVectors(cinematicStartCamPos, cinematicEndCamPos, ease);
+
+            const currentLookAt = new THREE.Vector3().lerpVectors(cinematicStartLookAt, cinematicEndLookAt, ease);
+            camera.lookAt(currentLookAt);
+            if (controls) controls.target.copy(currentLookAt);
+        } else if (controls) {
+            // Először a controls.update() – ez alkalmazza a felhasználó bevitelét és a dampinget
             controls.update();
 
-            // Elmentjük a kezdőpozíciókat az alaphelyzetbe állításhoz
-            defaultCameraPos.copy(camera.position);
-            defaultTargetPos.copy(controls.target);
-        }
+            // CSAK EZUTÁN korrigálunk!
 
-        // Globális kamera visszaállító
-        window.resetPortCamera = function () {
-            if (controls && defaultCameraPos.length() > 0) {
-                camera.position.copy(defaultCameraPos);
-                controls.target.copy(defaultTargetPos);
-                controls.update();
-            }
-        };
+            // ─── HORIZONTÁLIS ÉS VERTIKÁLIS MOZGATÁSI KERETEK ───────────────────────────
+            // Alapértelmezett fókuszpont: (-23.3, 6.8, 1.0)
+            const baseTargetX = -23.3;
+            const baseTargetZ = 1.0;
 
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-
-        }
-
-        function animate() {
-            if (!kikoto3DRunning) return;
-            kikotoAnimFrameId = requestAnimationFrame(animate);
-
-            const delta = clock.getDelta();
-            const elapsedTime = clock.getElapsedTime();
-
-            // 1. Blender AnimationMixer frissítése (ha van beágyazott Blender akció)
-            if (animationMixer) {
-                animationMixer.update(delta);
+            // 1. Horizontális mozgathatóság: az alapállapottól mért ±10 egység (Z tengely mentén: -9.0 .. +11.0)
+            const clampedZ = THREE.MathUtils.clamp(controls.target.z, baseTargetZ - 10.0, baseTargetZ + 10.0);
+            const corrZ = controls.target.z - clampedZ;
+            if (Math.abs(corrZ) > 0.0001) {
+                controls.target.z = clampedZ;
+                camera.position.z -= corrZ;
             }
 
-            // 2. Realisztikus Vízfelület hullámmozgásának léptetése (megfelezve: 0.8 -> 0.4)
-            if (water && water.material && water.material.uniforms && water.material.uniforms['time']) {
-                water.material.uniforms['time'].value += delta * 0.4;
+            // 2. Mélységi / X mozgathatóság: az alapállapottól mért ±10 egység (-33.3 .. -13.3)
+            const clampedX = THREE.MathUtils.clamp(controls.target.x, baseTargetX - 10.0, baseTargetX + 10.0);
+            const corrX = controls.target.x - clampedX;
+            if (Math.abs(corrX) > 0.0001) {
+                controls.target.x = clampedX;
+                camera.position.x -= corrX;
             }
 
-            // 4. Darupad (SM_Prop_Crane_02001 / DarupadMesh) szélfútta, lassan imbolygó és forgó mozgása a felső fix pont körül
-            if (cranePadMesh && cranePadBaseRotation) {
-                // Természetes, aszimmetrikus szélmozgás (hosszanti lengés + keresztlengés + lassú pördülés)
-                const swayX = Math.sin(elapsedTime * 0.85) * 0.045 + Math.sin(elapsedTime * 1.4) * 0.02;
-                const swayZ = Math.cos(elapsedTime * 0.70) * 0.040 + Math.sin(elapsedTime * 1.15) * 0.015;
-                const twistY = Math.sin(elapsedTime * 0.35) * 0.05 + Math.sin(elapsedTime * 0.20) * 0.03;
-
-                cranePadMesh.rotation.x = cranePadBaseRotation.x + swayX;
-                cranePadMesh.rotation.y = cranePadBaseRotation.y + twistY;
-                cranePadMesh.rotation.z = cranePadBaseRotation.z + swayZ;
-            }
-
-            // 5. Pálmafák (SM_Env_PalmTree_...) enyhe, természetes szélfútta imbolygása az alsó gyökérpontjuk körül
-            if (palmTreesList && palmTreesList.length > 0) {
-                palmTreesList.forEach(item => {
-                    const t = elapsedTime * item.speed + item.phase;
-                    const swayX = Math.sin(t * 1.1) * item.amplitude + Math.sin(t * 0.6) * (item.amplitude * 0.5);
-                    const swayZ = Math.cos(t * 0.95) * (item.amplitude * 0.8) + Math.sin(t * 1.5) * (item.amplitude * 0.4);
-
-                    item.mesh.rotation.x = item.baseRot.x + swayX;
-                    item.mesh.rotation.z = item.baseRot.z + swayZ;
-                });
-            }
-
-            // 6. Taverna Cégér (Taverna002 / CegerMesh) szélfútta lengése a felső fix felfüggesztés körül
-            if (cegerMesh && cegerBaseRotation) {
-                const cegerSwayZ = Math.sin(elapsedTime * 1.35) * 0.065 + Math.sin(elapsedTime * 0.75) * 0.025;
-                const cegerTwistY = Math.sin(elapsedTime * 0.5) * 0.025;
-
-                cegerMesh.rotation.z = cegerBaseRotation.z + cegerSwayZ;
-                cegerMesh.rotation.y = cegerBaseRotation.y + cegerTwistY;
-            }
-
-            // 7. Pálma Bokor (SM_Env_PalmTree_Tall_02002 / PalmabokorMesh) szélfútta kifordulása és finom mozgása az alsó fix gyökérpont körül
-            if (palmBokorMesh && palmBokorBaseRotation) {
-                // Kisebb billenési amplitúdó, de kifejezett szélirányú kifordulás (twist / yaw)
-                const bokorTwistY = Math.sin(elapsedTime * 0.85) * 0.045 + Math.sin(elapsedTime * 0.4) * 0.025;
-                const bokorLeanX = Math.sin(elapsedTime * 0.70) * 0.012 + Math.sin(elapsedTime * 1.2) * 0.005;
-                const bokorLeanZ = Math.cos(elapsedTime * 0.90) * 0.010;
-
-                palmBokorMesh.rotation.y = palmBokorBaseRotation.y + bokorTwistY;
-                palmBokorMesh.rotation.x = palmBokorBaseRotation.x + bokorLeanX;
-                palmBokorMesh.rotation.z = palmBokorBaseRotation.z + bokorLeanZ;
-            }
-
-            // 8. Csónak (TutorialBoat) lágy vízi ringatózása és lebegése a móló mellett
-            if (boatGroup) {
-                const t = elapsedTime;
-                // Függőleges hullámzó lebegés
-                boatGroup.position.y = boatBasePos.y + Math.sin(t * 1.5) * 0.045 + Math.sin(t * 0.8) * 0.02;
-                // Hosszirányú bólintás (pitch)
-                boatGroup.rotation.x = boatBaseRot.x + Math.sin(t * 1.2) * 0.025 + Math.sin(t * 0.7) * 0.012;
-                // Keresztirányú dülöngélés (roll)
-                boatGroup.rotation.z = boatBaseRot.z + Math.cos(t * 1.0) * 0.035 + Math.sin(t * 1.6) * 0.015;
-                // Enyhe hullámmozgásos tekeredés (yaw)
-                boatGroup.rotation.y = boatBaseRot.y + Math.sin(t * 0.45) * 0.018;
-            }
-
-            // 9. Kalózhajó (kalozhajo01.glb / TutorialPirateShipGroup) méltóságteljes vízi ringatózása a móló mellett
-            if (pirateShipGroup) {
-                const t = elapsedTime;
-                // Függőleges lassú lebegés
-                pirateShipGroup.position.y = pirateShipBasePos.y + Math.sin(t * 1.1) * 0.045 + Math.sin(t * 0.6) * 0.020;
-                // Hosszirányú bólintás (pitch)
-                pirateShipGroup.rotation.x = pirateShipBaseRot.x + Math.sin(t * 0.9) * 0.018 + Math.sin(t * 0.45) * 0.009;
-                // Keresztirányú dülöngélés (roll)
-                pirateShipGroup.rotation.z = pirateShipBaseRot.z + Math.cos(t * 0.75) * 0.025 + Math.sin(t * 1.3) * 0.010;
-                // Enyhe hullámsodródás (yaw)
-                pirateShipGroup.rotation.y = pirateShipBaseRot.y + Math.sin(t * 0.35) * 0.014;
-            }
-
-            // 10. Kishajó (kishajo.glb / TutorialSmallShipGroup) lágy vízi ringatózása a móló mellett
-            if (smallShipGroup) {
-                const t = elapsedTime;
-                // Függőleges hullámzó lebegés
-                smallShipGroup.position.y = smallShipBasePos.y + Math.sin(t * 1.3) * 0.040 + Math.sin(t * 0.75) * 0.018;
-                // Hosszirányú bólintás (pitch)
-                smallShipGroup.rotation.x = smallShipBaseRot.x + Math.sin(t * 1.05) * 0.020 + Math.sin(t * 0.55) * 0.010;
-                // Keresztirányú dülöngélés (roll)
-                smallShipGroup.rotation.z = smallShipBaseRot.z + Math.cos(t * 0.85) * 0.028 + Math.sin(t * 1.45) * 0.012;
-                // Enyhe hullámsodródás (yaw)
-                smallShipGroup.rotation.y = smallShipBaseRot.y + Math.sin(t * 0.40) * 0.015;
-            }
-
-            // 11. Javítás alatti Hajó (javitotthajo.glb / TutorialRepairShipGroup) lágy vízi ringatózása a móló és part mellett
-            if (repairShipGroup) {
-                const t = elapsedTime;
-                // Függőleges hullámzó lebegés
-                repairShipGroup.position.y = repairShipBasePos.y + Math.sin(t * 1.0) * 0.035 + Math.sin(t * 0.65) * 0.015;
-                // Hosszirányú bólintás (pitch)
-                repairShipGroup.rotation.x = repairShipBaseRot.x + Math.sin(t * 0.85) * 0.015 + Math.sin(t * 0.5) * 0.008;
-                // Keresztirányú dülöngélés (roll)
-                repairShipGroup.rotation.z = repairShipBaseRot.z + Math.cos(t * 0.70) * 0.022 + Math.sin(t * 1.2) * 0.008;
-                // Enyhe hullámsodródás (yaw)
-                repairShipGroup.rotation.y = repairShipBaseRot.y + Math.sin(t * 0.3) * 0.012;
-            }
-
-            // 12. Steampunk Csónak 02 (steampunk_csonak02.glb / TutorialSteampunkBoat02Group) lágy vízi ringatózása
-            if (steampunkBoat2Group) {
-                const t = elapsedTime;
-                steampunkBoat2Group.position.y = steampunkBoat2BasePos.y + Math.sin(t * 1.4 + 1.2) * 0.038 + Math.sin(t * 0.75) * 0.016;
-                steampunkBoat2Group.rotation.x = steampunkBoat2BaseRot.x + Math.sin(t * 1.1 + 0.8) * 0.020 + Math.sin(t * 0.6) * 0.010;
-                steampunkBoat2Group.rotation.z = steampunkBoat2BaseRot.z + Math.cos(t * 0.95 + 1.5) * 0.028 + Math.sin(t * 1.5) * 0.012;
-                steampunkBoat2Group.rotation.y = steampunkBoat2BaseRot.y + Math.sin(t * 0.42 + 0.5) * 0.015;
-            }
-
-            // 13. Steampunk Csónak 03 (steampunk_csonak03.glb / TutorialSteampunkBoat03Group) lágy vízi ringatózása
-            if (steampunkBoat3Group) {
-                const t = elapsedTime;
-                steampunkBoat3Group.position.y = steampunkBoat3BasePos.y + Math.sin(t * 1.35 + 2.5) * 0.040 + Math.sin(t * 0.70) * 0.018;
-                steampunkBoat3Group.rotation.x = steampunkBoat3BaseRot.x + Math.sin(t * 1.05 + 1.8) * 0.022 + Math.sin(t * 0.55) * 0.011;
-                steampunkBoat3Group.rotation.z = steampunkBoat3BaseRot.z + Math.cos(t * 0.90 + 2.1) * 0.030 + Math.sin(t * 1.4) * 0.014;
-                steampunkBoat3Group.rotation.y = steampunkBoat3BaseRot.y + Math.sin(t * 0.38 + 1.2) * 0.016;
-            }
-
-            // 14. Evezős Csónak 1 (Object_70002 előtt a vízre) lágy vízi ringatózása
-            if (rowBoat1Group) {
-                const t = elapsedTime;
-                rowBoat1Group.position.y = rowBoat1BasePos.y + Math.sin(t * 1.25 + 3.1) * 0.038 + Math.sin(t * 0.65) * 0.015;
-                rowBoat1Group.rotation.x = rowBoat1BaseRot.x + Math.sin(t * 0.95 + 2.0) * 0.020 + Math.sin(t * 0.5) * 0.010;
-                rowBoat1Group.rotation.z = rowBoat1BaseRot.z + Math.cos(t * 0.85 + 1.1) * 0.028 + Math.sin(t * 1.3) * 0.012;
-                rowBoat1Group.rotation.y = rowBoat1BaseRot.y + Math.sin(t * 0.35 + 2.4) * 0.015;
-            }
-
-            // 15. Evezős Csónak 2 (defaultMaterial előtt a vízre) lágy vízi ringatózása
-            if (rowBoat2Group) {
-                const t = elapsedTime;
-                rowBoat2Group.position.y = rowBoat2BasePos.y + Math.sin(t * 1.30 + 0.8) * 0.038 + Math.sin(t * 0.70) * 0.015;
-                rowBoat2Group.rotation.x = rowBoat2BaseRot.x + Math.sin(t * 1.00 + 1.5) * 0.020 + Math.sin(t * 0.55) * 0.010;
-                rowBoat2Group.rotation.z = rowBoat2BaseRot.z + Math.cos(t * 0.90 + 0.5) * 0.028 + Math.sin(t * 1.35) * 0.012;
-                rowBoat2Group.rotation.y = rowBoat2BaseRot.y + Math.sin(t * 0.38 + 1.1) * 0.015;
-            }
-
-            // 16. Barna Csónak 1 (defaultMaterial előtt a vízre) lágy vízi ringatózása
-            if (brownBoat1Group) {
-                const t = elapsedTime;
-                brownBoat1Group.position.y = brownBoat1BasePos.y + Math.sin(t * 1.35 + 1.8) * 0.038 + Math.sin(t * 0.75) * 0.015;
-                brownBoat1Group.rotation.x = brownBoat1BaseRot.x + Math.sin(t * 1.05 + 0.9) * 0.020 + Math.sin(t * 0.6) * 0.010;
-                brownBoat1Group.rotation.z = brownBoat1BaseRot.z + Math.cos(t * 0.95 + 2.2) * 0.028 + Math.sin(t * 1.4) * 0.012;
-                brownBoat1Group.rotation.y = brownBoat1BaseRot.y + Math.sin(t * 0.40 + 1.7) * 0.015;
-            }
-
-            // 17. Barna Csónak 2 (node_id4004 jobb oldalán a vízre) lágy vízi ringatózása
-            if (brownBoat2Group) {
-                const t = elapsedTime;
-                brownBoat2Group.position.y = brownBoat2BasePos.y + Math.sin(t * 1.28 + 0.4) * 0.038 + Math.sin(t * 0.70) * 0.015;
-                brownBoat2Group.rotation.x = brownBoat2BaseRot.x + Math.sin(t * 0.98 + 1.2) * 0.020 + Math.sin(t * 0.52) * 0.010;
-                brownBoat2Group.rotation.z = brownBoat2BaseRot.z + Math.cos(t * 0.88 + 1.6) * 0.028 + Math.sin(t * 1.32) * 0.012;
-                brownBoat2Group.rotation.y = brownBoat2BaseRot.y + Math.sin(t * 0.36 + 0.9) * 0.015;
-            }
-
-            // 18. Szürke Csónak (szurke_csonak.glb / Object_82002 előtt a vízre) lágy vízi ringatózása
-            if (greyBoatGroup) {
-                const t = elapsedTime;
-                greyBoatGroup.position.y = greyBoatBasePos.y + Math.sin(t * 1.32 + 2.7) * 0.038 + Math.sin(t * 0.68) * 0.015;
-                greyBoatGroup.rotation.x = greyBoatBaseRot.x + Math.sin(t * 1.02 + 1.9) * 0.020 + Math.sin(t * 0.58) * 0.010;
-                greyBoatGroup.rotation.z = greyBoatBaseRot.z + Math.cos(t * 0.92 + 0.7) * 0.028 + Math.sin(t * 1.38) * 0.012;
-                greyBoatGroup.rotation.y = greyBoatBaseRot.y + Math.sin(t * 0.37 + 2.1) * 0.015;
-            }
-
-            // 19. Hajótest, csónak, móló, híd és bázis hullámgyűrűk frissítése (Módszer 2: Dynamic Wave & Ripple System)
-            if (boatRipplesList && boatRipplesList.length > 0) {
-                const tempWPos = new THREE.Vector3();
-                boatRipplesList.forEach(item => {
-                    if (item.mesh) {
-                        if (item.target && item.target.isObject3D) {
-                            item.target.getWorldPosition(tempWPos);
-                            item.mesh.position.x = tempWPos.x;
-                            item.mesh.position.z = tempWPos.z;
-                            if (item.target.rotation) {
-                                item.mesh.rotation.z = -item.target.rotation.y;
-                            }
-                        } else if (item.fixedPos) {
-                            item.mesh.position.x = item.fixedPos.x;
-                            item.mesh.position.z = item.fixedPos.z;
-                        }
-                        if (water) {
-                            item.mesh.position.y = water.position.y + 0.01;
-                        }
-                        if (item.material && item.material.uniforms && item.material.uniforms.uTime) {
-                            item.material.uniforms.uTime.value = elapsedTime;
-                        }
-                    }
-                });
-            }
-
-            // 20. Filmes Kameraközelítés és Átmenet (Cinematic Building Zoom Transition)
-            if (isCinematicTransitioning) {
-                const now = clock.getElapsedTime();
-                const elapsed = now - cinematicStartTime;
-                const progress = Math.min(1.0, elapsed / cinematicDuration);
-
-                // Sima Ease-In-Out S-görbe a filmszerű finom ráközelítéshez
-                const ease = progress < 0.5 
-                    ? 2 * progress * progress 
-                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-                camera.position.lerpVectors(cinematicStartCamPos, cinematicEndCamPos, ease);
-
-                const currentLookAt = new THREE.Vector3().lerpVectors(cinematicStartLookAt, cinematicEndLookAt, ease);
-                camera.lookAt(currentLookAt);
-                if (controls) controls.target.copy(currentLookAt);
-            } else if (controls) {
-                // Először a controls.update() – ez alkalmazza a felhasználó bevitelét és a dampinget
-                controls.update();
-
-                // CSAK EZUTÁN korrigálunk!
-
-                // ─── HORIZONTÁLIS ÉS VERTIKÁLIS MOZGATÁSI KERETEK ───────────────────────────
-                // Alapértelmezett fókuszpont: (-23.3, 6.8, 1.0)
-                const baseTargetX = -23.3;
-                const baseTargetZ = 1.0;
-
-                // 1. Horizontális mozgathatóság: az alapállapottól mért ±10 egység (Z tengely mentén: -9.0 .. +11.0)
-                const clampedZ = THREE.MathUtils.clamp(controls.target.z, baseTargetZ - 10.0, baseTargetZ + 10.0);
-                const corrZ = controls.target.z - clampedZ;
-                if (Math.abs(corrZ) > 0.0001) {
-                    controls.target.z = clampedZ;
-                    camera.position.z -= corrZ;
-                }
-
-                // 2. Mélységi / X mozgathatóság: az alapállapottól mért ±10 egység (-33.3 .. -13.3)
-                const clampedX = THREE.MathUtils.clamp(controls.target.x, baseTargetX - 10.0, baseTargetX + 10.0);
-                const corrX = controls.target.x - clampedX;
-                if (Math.abs(corrX) > 0.0001) {
-                    controls.target.x = clampedX;
-                    camera.position.x -= corrX;
-                }
-
-                // 3. Vertikális mozgási keret: Y tengely 2 és 42 között föl-le
-                const clampedY = THREE.MathUtils.clamp(controls.target.y, 2, 42);
-                const corrY = controls.target.y - clampedY;
-                if (Math.abs(corrY) > 0.0001) {
-                    controls.target.y = clampedY;
-                    camera.position.y -= corrY;
-                }
-            }
-
-            // Fő színtér renderelése a képernyőre
-            if (renderer && scene && camera) {
-                renderer.render(scene, camera);
+            // 3. Vertikális mozgási keret: Y tengely 2 és 42 között föl-le
+            const clampedY = THREE.MathUtils.clamp(controls.target.y, 2, 42);
+            const corrY = controls.target.y - clampedY;
+            if (Math.abs(corrY) > 0.0001) {
+                controls.target.y = clampedY;
+                camera.position.y -= corrY;
             }
         }
 
-        // Indítás
+        // Fő színtér renderelése a képernyőre
+        if (renderer && scene && camera) {
+            renderer.render(scene, camera);
+        }
+    }
+
+    // Indítás
 
     function resetKikotoViewport() {
         console.log("⚓ 3D Kikötő Viewport Állapot Visszaállítása (0 ms ébresztés)");
@@ -17089,7 +17688,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         onWindowResize();
 
         // 5. Esetlegesen nyitva maradt modálok bezárása
-        ['universal-npc-modal', 'toborzo-modal', 'fedelzet-modal'].forEach(function(mId) {
+        ['universal-npc-modal', 'toborzo-modal', 'fedelzet-modal'].forEach(function (mId) {
             var m = document.getElementById(mId);
             if (m) m.style.display = 'none';
         });
@@ -17101,16 +17700,16 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
     window._resetKikotoViewport = resetKikotoViewport;
 
     // Regisztráljuk a takarító callback-eket
-    kikotoCleanupCallbacks.push(function() {
+    kikotoCleanupCallbacks.push(function () {
         window.removeEventListener('resize', onWindowResize);
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointerdown', onPointerDown);
         window.removeEventListener('pointerup', onPointerUp);
         if (controls && typeof controls.dispose === 'function') {
-            try { controls.dispose(); } catch(e) {}
+            try { controls.dispose(); } catch (e) { }
         }
         if (renderer && typeof renderer.dispose === 'function') {
-            try { renderer.dispose(); } catch(e) {}
+            try { renderer.dispose(); } catch (e) { }
         }
     });
 }
@@ -17130,25 +17729,25 @@ function initAuthTerminal3D() {
         }
         return;
     }
-    
+
     var container = document.getElementById('auth-3d-container');
     if (!container) return;
-    
+
     authTerminal3DInitialized = true;
     console.log("🚀 Three.js 3D Beléptető Terminál modulok dinamikus betöltése...");
-    
+
     Promise.all([
         import('three'),
         import('three/addons/controls/OrbitControls.js'),
         import('three/addons/loaders/GLTFLoader.js')
-    ]).then(function(modules) {
+    ]).then(function (modules) {
         var THREE = modules[0];
         var OrbitControls = modules[1].OrbitControls;
         var GLTFLoader = modules[2].GLTFLoader;
-        
+
         window.THREE = THREE;
         runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader);
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.error("❌ Hiba a 3D Beléptető Terminál modulok betöltésekor:", err);
     });
 }
@@ -17157,1862 +17756,1863 @@ window.initAuthTerminal3D = initAuthTerminal3D;
 function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     if (authTerminal3DRunning) return;
     authTerminal3DRunning = true;
-    
-// --- GLOBÁLIS KONSTANSOK & ÁLLAPOTOK ---
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
-const SPHERE_RADIUS = 30;
 
-let currentMode = 'LOGIN'; // 'LOGIN' | 'REGISTER' | 'DEREGISTER' | 'INFO'
-let previousMode = 'LOGIN';
-let activeFieldIndex = 0;
+    // --- GLOBÁLIS KONSTANSOK & ÁLLAPOTOK ---
+    const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
+    const SPHERE_RADIUS = 30;
 
-// Mezők aktuális szöveges értékei (Kétirányú szinkron a 3D monitor és a modal között)
-const formValues = {
-    LOGIN: { username: '', password: '' },
-    REGISTER: { email: '', username: '' },
-    DEREGISTER: { username: '', email: '', reason: '' }
-};
+    let currentMode = 'LOGIN'; // 'LOGIN' | 'REGISTER' | 'DEREGISTER' | 'INFO'
+    let previousMode = 'LOGIN';
+    let activeFieldIndex = 0;
 
-let cursorVisible = true;
-let lastCursorBlink = 0;
-let currentStatusKey = 'status_ready';
-let currentStatusParam = '';
-let terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
-let isStatusError = false;
-let isPasswordVisible = false;
+    // Mezők aktuális szöveges értékei (Kétirányú szinkron a 3D monitor és a modal között)
+    const formValues = {
+        LOGIN: { username: '', password: '' },
+        REGISTER: { email: '', username: '' },
+        DEREGISTER: { username: '', email: '', reason: '' }
+    };
 
-let scene, camera, renderer, controls;
-let cosmosSphere, deviceModel, screenMaterial, screenTexture, infoMaterial, fokuszMaterial;
-const langMaterials = {};
-let meteorManager;
+    let cursorVisible = true;
+    let lastCursorBlink = 0;
+    let currentStatusKey = 'status_ready';
+    let currentStatusParam = '';
+    let terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
+    let isStatusError = false;
+    let isPasswordVisible = false;
 
-const screenCanvas = document.getElementById('screen-canvas');
-const ctx = screenCanvas ? screenCanvas.getContext('2d') : null;
-const virtualInput = document.getElementById('virtual-input-capturer');
+    let scene, camera, renderer, controls;
+    let cosmosSphere, deviceModel, screenMaterial, screenTexture, infoMaterial, fokuszMaterial;
+    const langMaterials = {};
+    let meteorManager;
 
-// Nyelvi szótár címkék a 3D monitorhoz
+    const screenCanvas = document.getElementById('screen-canvas');
+    const ctx = screenCanvas ? screenCanvas.getContext('2d') : null;
+    const virtualInput = document.getElementById('virtual-input-capturer');
+
+    // Nyelvi szótár címkék a 3D monitorhoz
 
 
-// Nyelvi címkék kiolvasása a központi web_fordito.js szótárból
-function getL() {
-    if (typeof window.getTerminalLabels === 'function') {
-        var activeLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : (localStorage.getItem('siteLang') || 'hu');
-        return window.getTerminalLabels(activeLang);
-    }
-    return {};
-}
-
-// --- JELSZÓ LÁTHATÓSÁG VÁLTÓ ---
-function togglePasswordVisibility() {
-    isPasswordVisible = !isPasswordVisible;
-    const modalPassInput = document.querySelector('#m-login-password');
-    const toggleModalPass = document.querySelector('#toggle-modal-password');
-
-    if (modalPassInput) modalPassInput.type = isPasswordVisible ? 'text' : 'password';
-
-    if (toggleModalPass) {
-        if (isPasswordVisible) {
-            toggleModalPass.classList.remove('fa-eye');
-            toggleModalPass.classList.add('fa-eye-slash');
-            toggleModalPass.style.color = '#ffdd00';
-        } else {
-            toggleModalPass.classList.remove('fa-eye-slash');
-            toggleModalPass.classList.add('fa-eye');
-            toggleModalPass.style.color = '#00ffcc';
+    // Nyelvi címkék kiolvasása a központi web_fordito.js szótárból
+    function getL() {
+        if (typeof window.getTerminalLabels === 'function') {
+            var activeLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : (localStorage.getItem('siteLang') || 'hu');
+            return window.getTerminalLabels(activeLang);
         }
+        return {};
     }
 
-    setTerminalStatus(isPasswordVisible ? 'status_pass_visible' : 'status_pass_masked', false);
-}
-window.togglePasswordVisibility = togglePasswordVisibility;
+    // --- JELSZÓ LÁTHATÓSÁG VÁLTÓ ---
+    function togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible;
+        const modalPassInput = document.querySelector('#m-login-password');
+        const toggleModalPass = document.querySelector('#toggle-modal-password');
 
-function setupPasswordToggle() {
-    const toggleModalPass = document.querySelector('#toggle-modal-password');
-    if (toggleModalPass) {
-        toggleModalPass.addEventListener('click', function (e) {
-            e.preventDefault();
-            togglePasswordVisibility();
-        });
+        if (modalPassInput) modalPassInput.type = isPasswordVisible ? 'text' : 'password';
+
+        if (toggleModalPass) {
+            if (isPasswordVisible) {
+                toggleModalPass.classList.remove('fa-eye');
+                toggleModalPass.classList.add('fa-eye-slash');
+                toggleModalPass.style.color = '#ffdd00';
+            } else {
+                toggleModalPass.classList.remove('fa-eye-slash');
+                toggleModalPass.classList.add('fa-eye');
+                toggleModalPass.style.color = '#00ffcc';
+            }
+        }
+
+        setTerminalStatus(isPasswordVisible ? 'status_pass_visible' : 'status_pass_masked', false);
     }
-}
+    window.togglePasswordVisibility = togglePasswordVisibility;
 
-// --- THREE.JS INICIALIZÁLÁS ---
-function initThree() {
-    const container = document.getElementById('webgl-container');
-    if (!container) return;
-
-    // 1. Jelenet
-    scene = new THREE.Scene();
-
-    // 2. Kamera
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0.35, 2.6);
-
-    // 3. Renderelő
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.domElement.tabIndex = 0;
-    renderer.domElement.style.outline = 'none';
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
-
-    // 4. Kamera Vezérlő
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.target.set(0, 0.15, 0);
-    controls.minDistance = 1.4;
-    controls.maxDistance = SPHERE_RADIUS - 1.5;
-    controls.maxPolarAngle = Math.PI * 0.95;
-    controls.minPolarAngle = Math.PI * 0.05;
-
-    // 5. Megvilágítás
-    const ambientLight = new THREE.AmbientLight(0xddeeff, 1.3);
-    scene.add(ambientLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0xffeedd, 1.6);
-    dirLight1.position.set(6, 12, 8);
-    scene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0x4488ff, 0.8);
-    dirLight2.position.set(-6, -5, -6);
-    scene.add(dirLight2);
-
-    const screenGlowLight = new THREE.PointLight(0x00ffcc, 1.2, 6);
-    screenGlowLight.position.set(0, 0.3, 0.8);
-    scene.add(screenGlowLight);
-
-    // 6. Kozmosz Gömb
-    initCosmosSphere();
-
-    // 7. Dinamikus Képernyő Textúra
-    initScreenCanvasTexture();
-
-    // 8. Meteor / Üstökös Rendszer
-    meteorManager = new MeteorManager(scene, SPHERE_RADIUS);
-
-    // 9. GLB Modell Betöltése
-    loadDeviceModel();
-
-    // Eseményfigyelők (Billentyűzet, Raycast & Modal szinkron)
-    window.addEventListener('resize', onWindowResize);
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', onVisualViewportResize);
-    }
-    setupDirectKeyboardAndRaycast();
-    setupModalInputSync();
-    setupPasswordToggle();
-
-    // Render loop indítása
-    animate(0);
-}
-
-// --- KOZMOSZ GÖMB ---
-function initCosmosSphere() {
-    const textureLoader = new THREE.TextureLoader();
-    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/images/galaxiskep_globusba.jpg';
-    const localPath = 'assets/images/galaxiskep_globusba.jpg';
-
-    const spaceTexture = textureLoader.load(
-        gcsUrl,
-        () => { console.info('Kozmosz panorámakép sikeresen betöltve (GCS).'); },
-        undefined,
-        () => {
-            console.warn('GCS kozmosz kép nem található, helyi fallback betöltése...');
-            textureLoader.load(localPath, (localTex) => {
-                spaceTexture.image = localTex.image;
-                spaceTexture.needsUpdate = true;
+    function setupPasswordToggle() {
+        const toggleModalPass = document.querySelector('#toggle-modal-password');
+        if (toggleModalPass) {
+            toggleModalPass.addEventListener('click', function (e) {
+                e.preventDefault();
+                togglePasswordVisibility();
             });
         }
-    );
-
-    spaceTexture.wrapS = THREE.MirroredRepeatWrapping;
-    spaceTexture.wrapT = THREE.ClampToEdgeWrapping;
-    spaceTexture.repeat.set(2, 1);
-    spaceTexture.colorSpace = THREE.SRGBColorSpace;
-
-    const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 32);
-    const sphereMat = new THREE.MeshBasicMaterial({
-        map: spaceTexture,
-        side: THREE.BackSide,
-        depthWrite: false
-    });
-
-    cosmosSphere = new THREE.Mesh(sphereGeo, sphereMat);
-    cosmosSphere.rotation.y = -Math.PI / 2;
-    scene.add(cosmosSphere);
-}
-
-// --- METEOR / ÜSTÖKÖS KEZELŐ ---
-class MeteorManager {
-    constructor(targetScene, radius) {
-        this.scene = targetScene;
-        this.radius = radius - 2;
-        this.activeMeteors = [];
-        this.scheduleNext();
     }
 
-    scheduleNext() {
-        const delay = 3500 + Math.random() * 6000;
-        setTimeout(() => {
-            this.spawn();
-            this.scheduleNext();
-        }, delay);
+    // --- THREE.JS INICIALIZÁLÁS ---
+    function initThree() {
+        const container = document.getElementById('webgl-container');
+        if (!container) return;
+
+        // 1. Jelenet
+        scene = new THREE.Scene();
+
+        // 2. Kamera
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0.35, 2.6);
+
+        // 3. Renderelő
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.domElement.tabIndex = 0;
+        renderer.domElement.style.outline = 'none';
+        container.innerHTML = '';
+        container.appendChild(renderer.domElement);
+
+        // 4. Kamera Vezérlő
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.target.set(0, 0.15, 0);
+        controls.minDistance = 1.4;
+        controls.maxDistance = SPHERE_RADIUS - 1.5;
+        controls.maxPolarAngle = Math.PI * 0.95;
+        controls.minPolarAngle = Math.PI * 0.05;
+
+        // 5. Megvilágítás
+        const ambientLight = new THREE.AmbientLight(0xddeeff, 1.3);
+        scene.add(ambientLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0xffeedd, 1.6);
+        dirLight1.position.set(6, 12, 8);
+        scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0x4488ff, 0.8);
+        dirLight2.position.set(-6, -5, -6);
+        scene.add(dirLight2);
+
+        const screenGlowLight = new THREE.PointLight(0x00ffcc, 1.2, 6);
+        screenGlowLight.position.set(0, 0.3, 0.8);
+        scene.add(screenGlowLight);
+
+        // 6. Kozmosz Gömb
+        initCosmosSphere();
+
+        // 7. Dinamikus Képernyő Textúra
+        initScreenCanvasTexture();
+
+        // 8. Meteor / Üstökös Rendszer
+        meteorManager = new MeteorManager(scene, SPHERE_RADIUS);
+
+        // 9. GLB Modell Betöltése
+        loadDeviceModel();
+
+        // Eseményfigyelők (Billentyűzet, Raycast & Modal szinkron)
+        window.addEventListener('resize', onWindowResize);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', onVisualViewportResize);
+        }
+        setupDirectKeyboardAndRaycast();
+        setupModalInputSync();
+        setupPasswordToggle();
+
+        // Render loop indítása
+        animate(0);
     }
 
-    spawn() {
-        const startPos = new THREE.Vector3(
-            (Math.random() - 0.5) * this.radius * 1.6,
-            (Math.random() * 0.6 + 0.2) * this.radius,
-            (Math.random() - 0.5) * this.radius * 1.6
+    // --- KOZMOSZ GÖMB ---
+    function initCosmosSphere() {
+        const textureLoader = new THREE.TextureLoader();
+        const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/images/galaxiskep_globusba.jpg';
+        const localPath = 'assets/images/galaxiskep_globusba.jpg';
+
+        const spaceTexture = textureLoader.load(
+            gcsUrl,
+            () => { console.info('Kozmosz panorámakép sikeresen betöltve (GCS).'); },
+            undefined,
+            () => {
+                console.warn('GCS kozmosz kép nem található, helyi fallback betöltése...');
+                textureLoader.load(localPath, (localTex) => {
+                    spaceTexture.image = localTex.image;
+                    spaceTexture.needsUpdate = true;
+                });
+            }
         );
 
-        const dir = new THREE.Vector3(-1.2 - Math.random() * 0.6, -0.6 - Math.random() * 0.4, -0.8 - Math.random() * 0.8).normalize();
-        const length = 5 + Math.random() * 6;
-        const speed = 0.5 + Math.random() * 0.4;
+        spaceTexture.wrapS = THREE.MirroredRepeatWrapping;
+        spaceTexture.wrapT = THREE.ClampToEdgeWrapping;
+        spaceTexture.repeat.set(2, 1);
+        spaceTexture.colorSpace = THREE.SRGBColorSpace;
 
-        const points = [startPos.clone(), startPos.clone().addScaledVector(dir, -length)];
-        const geo = new THREE.BufferGeometry().setFromPoints(points);
-        const mat = new THREE.LineBasicMaterial({
-            color: 0x66ffff,
-            transparent: true,
-            opacity: 0.85,
-            blending: THREE.AdditiveBlending
+        const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 32);
+        const sphereMat = new THREE.MeshBasicMaterial({
+            map: spaceTexture,
+            side: THREE.BackSide,
+            depthWrite: false
         });
 
-        const line = new THREE.Line(geo, mat);
-        this.scene.add(line);
-
-        this.activeMeteors.push({
-            mesh: line,
-            dir: dir,
-            speed: speed,
-            life: 1.0,
-            decay: 0.012 + Math.random() * 0.01
-        });
+        cosmosSphere = new THREE.Mesh(sphereGeo, sphereMat);
+        cosmosSphere.rotation.y = -Math.PI / 2;
+        scene.add(cosmosSphere);
     }
 
-    update() {
-        for (let i = this.activeMeteors.length - 1; i >= 0; i--) {
-            const m = this.activeMeteors[i];
-            m.mesh.position.addScaledVector(m.dir, m.speed);
-            m.life -= m.decay;
-            m.mesh.material.opacity = Math.max(0, m.life);
+    // --- METEOR / ÜSTÖKÖS KEZELŐ ---
+    class MeteorManager {
+        constructor(targetScene, radius) {
+            this.scene = targetScene;
+            this.radius = radius - 2;
+            this.activeMeteors = [];
+            this.scheduleNext();
+        }
 
-            if (m.life <= 0) {
-                this.scene.remove(m.mesh);
-                m.mesh.geometry.dispose();
-                m.mesh.material.dispose();
-                this.activeMeteors.splice(i, 1);
+        scheduleNext() {
+            const delay = 3500 + Math.random() * 6000;
+            setTimeout(() => {
+                this.spawn();
+                this.scheduleNext();
+            }, delay);
+        }
+
+        spawn() {
+            const startPos = new THREE.Vector3(
+                (Math.random() - 0.5) * this.radius * 1.6,
+                (Math.random() * 0.6 + 0.2) * this.radius,
+                (Math.random() - 0.5) * this.radius * 1.6
+            );
+
+            const dir = new THREE.Vector3(-1.2 - Math.random() * 0.6, -0.6 - Math.random() * 0.4, -0.8 - Math.random() * 0.8).normalize();
+            const length = 5 + Math.random() * 6;
+            const speed = 0.5 + Math.random() * 0.4;
+
+            const points = [startPos.clone(), startPos.clone().addScaledVector(dir, -length)];
+            const geo = new THREE.BufferGeometry().setFromPoints(points);
+            const mat = new THREE.LineBasicMaterial({
+                color: 0x66ffff,
+                transparent: true,
+                opacity: 0.85,
+                blending: THREE.AdditiveBlending
+            });
+
+            const line = new THREE.Line(geo, mat);
+            this.scene.add(line);
+
+            this.activeMeteors.push({
+                mesh: line,
+                dir: dir,
+                speed: speed,
+                life: 1.0,
+                decay: 0.012 + Math.random() * 0.01
+            });
+        }
+
+        update() {
+            for (let i = this.activeMeteors.length - 1; i >= 0; i--) {
+                const m = this.activeMeteors[i];
+                m.mesh.position.addScaledVector(m.dir, m.speed);
+                m.life -= m.decay;
+                m.mesh.material.opacity = Math.max(0, m.life);
+
+                if (m.life <= 0) {
+                    this.scene.remove(m.mesh);
+                    m.mesh.geometry.dispose();
+                    m.mesh.material.dispose();
+                    this.activeMeteors.splice(i, 1);
+                }
             }
         }
     }
-}
 
-// --- DINAMIKUS KIJELZŐ TEXTÚRA (CANVAS) ---
-function initScreenCanvasTexture() {
-    if (!screenCanvas) return;
-    screenTexture = new THREE.CanvasTexture(screenCanvas);
-    screenTexture.colorSpace = THREE.SRGBColorSpace;
-    screenTexture.minFilter = THREE.LinearFilter;
-    screenTexture.magFilter = THREE.LinearFilter;
+    // --- DINAMIKUS KIJELZŐ TEXTÚRA (CANVAS) ---
+    function initScreenCanvasTexture() {
+        if (!screenCanvas) return;
+        screenTexture = new THREE.CanvasTexture(screenCanvas);
+        screenTexture.colorSpace = THREE.SRGBColorSpace;
+        screenTexture.minFilter = THREE.LinearFilter;
+        screenTexture.magFilter = THREE.LinearFilter;
 
-    screenMaterial = new THREE.MeshBasicMaterial({
-        map: screenTexture,
-        toneMapped: false
-    });
+        screenMaterial = new THREE.MeshBasicMaterial({
+            map: screenTexture,
+            toneMapped: false
+        });
 
-    updateScreenDisplay();
-}
+        updateScreenDisplay();
+    }
 
-// --- 3D Képernyő Szem-ikon rajzoló ---
-function drawEyeIconOnCanvas(context, cx, cy, isVisible) {
-    context.save();
-    context.fillStyle = isVisible ? 'rgba(255, 221, 0, 0.25)' : 'rgba(0, 255, 204, 0.14)';
-    context.fillRect(cx - 28, cy - 20, 56, 40);
-    context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
-    context.lineWidth = 2;
-    context.strokeRect(cx - 28, cy - 20, 56, 40);
+    // --- 3D Képernyő Szem-ikon rajzoló ---
+    function drawEyeIconOnCanvas(context, cx, cy, isVisible) {
+        context.save();
+        context.fillStyle = isVisible ? 'rgba(255, 221, 0, 0.25)' : 'rgba(0, 255, 204, 0.14)';
+        context.fillRect(cx - 28, cy - 20, 56, 40);
+        context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
+        context.lineWidth = 2;
+        context.strokeRect(cx - 28, cy - 20, 56, 40);
 
-    context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
-    context.fillStyle = isVisible ? '#ffdd00' : '#00ffcc';
-    context.lineWidth = 2.5;
-    context.beginPath();
-    context.moveTo(cx - 16, cy);
-    context.quadraticCurveTo(cx, cy - 11, cx + 16, cy);
-    context.quadraticCurveTo(cx, cy + 11, cx - 16, cy);
-    context.stroke();
-
-    context.beginPath();
-    context.arc(cx, cy, 4.5, 0, Math.PI * 2);
-    context.fill();
-
-    if (isVisible) {
-        context.strokeStyle = '#ffdd00';
-        context.lineWidth = 2.8;
+        context.strokeStyle = isVisible ? '#ffdd00' : '#00ffcc';
+        context.fillStyle = isVisible ? '#ffdd00' : '#00ffcc';
+        context.lineWidth = 2.5;
         context.beginPath();
-        context.moveTo(cx - 16, cy - 12);
-        context.lineTo(cx + 16, cy + 12);
+        context.moveTo(cx - 16, cy);
+        context.quadraticCurveTo(cx, cy - 11, cx + 16, cy);
+        context.quadraticCurveTo(cx, cy + 11, cx - 16, cy);
         context.stroke();
-    }
-    context.restore();
-}
 
-// Képernyő újra-rajzolása többnyelvű feliratokkal (1.5x NÖVELT BETŰMÉRET & ÚJ TABSOR)
-function updateScreenDisplay() {
-    if (!screenCanvas || !ctx) return;
-    const w = screenCanvas.width;
-    const h = screenCanvas.height;
-    const L = getL();
+        context.beginPath();
+        context.arc(cx, cy, 4.5, 0, Math.PI * 2);
+        context.fill();
 
-    // 1. Háttér
-    ctx.fillStyle = '#040b12';
-    ctx.fillRect(0, 0, w, h);
-
-    // Háttér rácsháló
-    ctx.strokeStyle = 'rgba(0, 255, 204, 0.04)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < w; x += 32) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-    }
-    for (let y = 0; y < h; y += 32) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        if (isVisible) {
+            context.strokeStyle = '#ffdd00';
+            context.lineWidth = 2.8;
+            context.beginPath();
+            context.moveTo(cx - 16, cy - 12);
+            context.lineTo(cx + 16, cy + 12);
+            context.stroke();
+        }
+        context.restore();
     }
 
-    // 2. Kijelző díszítő keret
-    ctx.strokeStyle = '#00ffcc';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(16, 16, w - 32, h - 32);
+    // Képernyő újra-rajzolása többnyelvű feliratokkal (1.5x NÖVELT BETŰMÉRET & ÚJ TABSOR)
+    function updateScreenDisplay() {
+        if (!screenCanvas || !ctx) return;
+        const w = screenCanvas.width;
+        const h = screenCanvas.height;
+        const L = getL();
 
-    ctx.strokeStyle = 'rgba(0, 255, 204, 0.3)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(26, 26, w - 52, h - 52);
+        // 1. Háttér
+        ctx.fillStyle = '#040b12';
+        ctx.fillRect(0, 0, w, h);
 
-    // 3. I. SOR: Főcím (1.5x Növelt Orbitron cím)
-    ctx.fillStyle = '#00ffcc';
-    ctx.font = 'bold 24px "Orbitron", "Segoe UI", sans-serif';
-    ctx.fillText(currentMode === 'INFO' ? (L.guideTitle || 'eBookPirates // HASZNÁLATI ÚTMUTATÓ') : (L.title || 'eBookPirates // NEURÁLIS TERMINÁL v4.2'), 45, 52);
+        // Háttér rácsháló
+        ctx.strokeStyle = 'rgba(0, 255, 204, 0.04)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 32) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 32) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
 
-    // 4. II. SOR: Különálló, Nagyobb Fül-gombok (3 nagy tab a cím alatt)
-    drawTerminalTab(ctx, 45, 68, 298, 40, L.loginTab, currentMode === 'LOGIN');
-    drawTerminalTab(ctx, 359, 68, 298, 40, L.regTab, currentMode === 'REGISTER');
-    drawTerminalTab(ctx, 673, 68, 306, 40, L.delTab, currentMode === 'DEREGISTER');
+        // 2. Kijelző díszítő keret
+        ctx.strokeStyle = '#00ffcc';
+        ctx.lineWidth = 8;
+        ctx.strokeRect(16, 16, w - 32, h - 32);
 
-    ctx.strokeStyle = '#00ffcc';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(45, 118);
-    ctx.lineTo(w - 45, 118);
-    ctx.stroke();
+        ctx.strokeStyle = 'rgba(0, 255, 204, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(26, 26, w - 52, h - 52);
 
-    // 5. Tartalom kirajzolása mód szerint (1.5x Növelt Tipográfia)
-    const cursorChar = cursorVisible ? '█' : ' ';
-
-    if (currentMode === 'LOGIN') {
-        const u = formValues.LOGIN.username;
-        const p = isPasswordVisible ? formValues.LOGIN.password : '•'.repeat(formValues.LOGIN.password.length);
-
-        drawField(ctx, 45, 144, L.userLabel, u, activeFieldIndex === 0, cursorChar, 48, 20, 28);
-        drawField(ctx, 45, 228, L.passLabel, p, activeFieldIndex === 1, cursorChar, 48, 20, 28);
-        drawEyeIconOnCanvas(ctx, 940, 258, isPasswordVisible);
-
-        drawActionButton(ctx, 45, 318, w - 90, 58, L.loginBtn, false, 24);
-
-    } else if (currentMode === 'REGISTER') {
-        const em = formValues.REGISTER.email;
-        const un = formValues.REGISTER.username;
-
-        drawField(ctx, 45, 144, L.emailLabel, em, activeFieldIndex === 0, cursorChar, 48, 20, 26);
-        drawField(ctx, 45, 228, L.newNickLabel, un, activeFieldIndex === 1, cursorChar, 48, 20, 28);
-
-        drawActionButton(ctx, 45, 318, w - 90, 58, L.regBtn, false, 24);
-
-    } else if (currentMode === 'DEREGISTER') {
-        const un = formValues.DEREGISTER.username;
-        const em = formValues.DEREGISTER.email;
-        const rz = formValues.DEREGISTER.reason;
-
-        drawField(ctx, 45, 136, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 38, 16, 22);
-        drawField(ctx, 45, 200, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 38, 16, 22);
-        drawField(ctx, 45, 264, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 38, 16, 22);
-
-        drawActionButton(ctx, 45, 328, w - 90, 52, L.delBtn, true, 22);
-
-    } else if (currentMode === 'INFO') {
-        ctx.fillStyle = 'rgba(0, 30, 45, 0.75)';
-        ctx.fillRect(45, 126, w - 90, 192);
-        ctx.strokeStyle = 'rgba(0, 255, 204, 0.35)';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(45, 126, w - 90, 192);
-
+        // 3. I. SOR: Főcím (1.5x Növelt Orbitron cím)
         ctx.fillStyle = '#00ffcc';
-        ctx.font = 'bold 18px "Consolas", "Roboto Mono", "Segoe UI", monospace';
-        ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 156);
-        ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 192);
-        ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 228);
-        ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 264);
-        ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 300);
+        ctx.font = 'bold 24px "Orbitron", "Segoe UI", sans-serif';
+        ctx.fillText(currentMode === 'INFO' ? (L.guideTitle || 'eBookPirates // HASZNÁLATI ÚTMUTATÓ') : (L.title || 'eBookPirates // NEURÁLIS TERMINÁL v4.2'), 45, 52);
 
-        drawActionButton(ctx, 45, 328, w - 90, 52, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false, 22);
-    }
+        // 4. II. SOR: Különálló, Nagyobb Fül-gombok (3 nagy tab a cím alatt)
+        drawTerminalTab(ctx, 45, 68, 298, 40, L.loginTab, currentMode === 'LOGIN');
+        drawTerminalTab(ctx, 359, 68, 298, 40, L.regTab, currentMode === 'REGISTER');
+        drawTerminalTab(ctx, 673, 68, 306, 40, L.delTab, currentMode === 'DEREGISTER');
 
-    // 6. Alsó Rendszer Státuszsor (1.5x Növelt 20px Tipográfia)
-    let displayStatus = terminalStatusText;
-    if (currentStatusKey && L[currentStatusKey]) {
-        displayStatus = L[currentStatusKey];
-        if (currentStatusParam !== undefined && currentStatusParam !== '') {
-            displayStatus = displayStatus.replace('{0}', currentStatusParam);
-        }
-    } else if (!displayStatus) {
-        displayStatus = L.status_ready || L.readyStatus || 'SYSTEM READY // CLICK SCREEN TO TYPE';
-    }
+        ctx.strokeStyle = '#00ffcc';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(45, 118);
+        ctx.lineTo(w - 45, 118);
+        ctx.stroke();
 
-    ctx.fillStyle = isStatusError ? 'rgba(50, 10, 10, 0.95)' : 'rgba(0, 20, 30, 0.9)';
-    ctx.fillRect(45, h - 82, w - 90, 46);
-    ctx.strokeStyle = isStatusError ? '#ff4444' : 'rgba(0, 255, 204, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(45, h - 82, w - 90, 46);
+        // 5. Tartalom kirajzolása mód szerint (1.5x Növelt Tipográfia)
+        const cursorChar = cursorVisible ? '█' : ' ';
 
-    ctx.fillStyle = isStatusError ? '#ff6666' : '#00ffcc';
-    ctx.font = 'bold 20px "Orbitron", "Consolas", sans-serif';
-    ctx.fillText('> ' + displayStatus, 60, h - 52);
+        if (currentMode === 'LOGIN') {
+            const u = formValues.LOGIN.username;
+            const p = isPasswordVisible ? formValues.LOGIN.password : '•'.repeat(formValues.LOGIN.password.length);
 
-    if (screenTexture) screenTexture.needsUpdate = true;
-}
+            drawField(ctx, 45, 144, L.userLabel, u, activeFieldIndex === 0, cursorChar, 48, 20, 28);
+            drawField(ctx, 45, 228, L.passLabel, p, activeFieldIndex === 1, cursorChar, 48, 20, 28);
+            drawEyeIconOnCanvas(ctx, 940, 258, isPasswordVisible);
 
-function drawTerminalTab(context, x, y, w, h, text, isActive) {
-    context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.32)' : 'rgba(0, 255, 204, 0.06)';
-    context.fillRect(x, y, w, h);
-    context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.35)';
-    context.lineWidth = isActive ? 2.5 : 1;
-    context.strokeRect(x, y, w, h);
+            drawActionButton(ctx, 45, 318, w - 90, 58, L.loginBtn, false, 24);
 
-    context.fillStyle = isActive ? '#ffffff' : '#88c0b0';
-    context.font = 'bold 18px "Orbitron", "Segoe UI", sans-serif';
-    context.textAlign = 'center';
-    context.fillText(text || '', x + w / 2, y + 26);
-    context.textAlign = 'left';
-}
+        } else if (currentMode === 'REGISTER') {
+            const em = formValues.REGISTER.email;
+            const un = formValues.REGISTER.username;
 
-function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 48, labelSize = 20, valueSize = 28) {
-    context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.7)';
-    context.font = 'bold ' + labelSize + 'px "Orbitron", "Segoe UI", sans-serif';
-    context.fillText(label || '', x, y);
+            drawField(ctx, 45, 144, L.emailLabel, em, activeFieldIndex === 0, cursorChar, 48, 20, 26);
+            drawField(ctx, 45, 228, L.newNickLabel, un, activeFieldIndex === 1, cursorChar, 48, 20, 28);
 
-    context.fillStyle = isActive ? 'rgba(0, 50, 60, 0.88)' : 'rgba(0, 30, 40, 0.55)';
-    context.fillRect(x, y + 6, 934, boxHeight);
-    context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.3)';
-    context.lineWidth = isActive ? 2.5 : 1;
-    context.strokeRect(x, y + 6, 934, boxHeight);
+            drawActionButton(ctx, 45, 318, w - 90, 58, L.regBtn, false, 24);
 
-    context.fillStyle = '#ffffff';
-    context.font = 'bold ' + valueSize + 'px "Consolas", "Roboto Mono", "Courier New", monospace';
-    const displayText = (value || '') + (isActive ? cursor : '');
-    context.fillText(displayText, x + 16, y + 6 + (boxHeight * 0.68));
-}
+        } else if (currentMode === 'DEREGISTER') {
+            const un = formValues.DEREGISTER.username;
+            const em = formValues.DEREGISTER.email;
+            const rz = formValues.DEREGISTER.reason;
 
-function drawActionButton(context, x, y, w, h, text, isDanger = false, fontSize = 24) {
-    context.fillStyle = isDanger ? '#661111' : '#004d40';
-    context.fillRect(x, y, w, h);
-    context.strokeStyle = isDanger ? '#ff4444' : '#00ffcc';
-    context.lineWidth = 2.5;
-    context.strokeRect(x, y, w, h);
+            drawField(ctx, 45, 136, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 38, 16, 22);
+            drawField(ctx, 45, 200, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 38, 16, 22);
+            drawField(ctx, 45, 264, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 38, 16, 22);
 
-    context.fillStyle = '#ffffff';
-    context.font = 'bold ' + fontSize + 'px "Orbitron", "Segoe UI", sans-serif';
-    context.textAlign = 'center';
-    context.fillText(text || '', x + w / 2, y + h / 2 + 8);
-    context.textAlign = 'left';
-}
+            drawActionButton(ctx, 45, 328, w - 90, 52, L.delBtn, true, 22);
 
-// InfoMesh és ScreenMesh Anyag és UV kezelők
-function applyInfoMeshMaterial(mesh) {
-    if (!mesh || !mesh.geometry) return;
-    try {
-        const posAttr = mesh.geometry.attributes.position;
-        if (!posAttr) return;
+        } else if (currentMode === 'INFO') {
+            ctx.fillStyle = 'rgba(0, 30, 45, 0.75)';
+            ctx.fillRect(45, 126, w - 90, 192);
+            ctx.strokeStyle = 'rgba(0, 255, 204, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(45, 126, w - 90, 192);
 
-        let uvAttr = mesh.geometry.attributes.uv;
-        if (!uvAttr || uvAttr.count !== posAttr.count) {
-            uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
-            mesh.geometry.setAttribute('uv', uvAttr);
+            ctx.fillStyle = '#00ffcc';
+            ctx.font = 'bold 18px "Consolas", "Roboto Mono", "Segoe UI", monospace';
+            ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 156);
+            ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 192);
+            ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 228);
+            ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 264);
+            ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 300);
+
+            drawActionButton(ctx, 45, 328, w - 90, 52, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false, 22);
         }
 
-        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-        for (let i = 0; i < posAttr.count; i++) {
-            const px = posAttr.getX(i);
-            const py = posAttr.getY(i);
-            if (px < minX) minX = px;
-            if (px > maxX) maxX = px;
-            if (py < minY) minY = py;
-            if (py > maxY) maxY = py;
-        }
-        const rangeX = maxX - minX;
-        const rangeY = maxY - minY;
-        const centerX = (minX + maxX) / 2;
-        const centerY = (minY + maxY) / 2;
-        const maxSpan = Math.max(rangeX, rangeY);
-
-        if (maxSpan > 0.001) {
-            for (let i = 0; i < posAttr.count; i++) {
-                const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
-                const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
-                uvAttr.setXY(i, u, v);
+        // 6. Alsó Rendszer Státuszsor (1.5x Növelt 20px Tipográfia)
+        let displayStatus = terminalStatusText;
+        if (currentStatusKey && L[currentStatusKey]) {
+            displayStatus = L[currentStatusKey];
+            if (currentStatusParam !== undefined && currentStatusParam !== '') {
+                displayStatus = displayStatus.replace('{0}', currentStatusParam);
             }
-            uvAttr.needsUpdate = true;
+        } else if (!displayStatus) {
+            displayStatus = L.status_ready || L.readyStatus || 'SYSTEM READY // CLICK SCREEN TO TYPE';
         }
 
-        mesh.geometry.computeVertexNormals();
+        ctx.fillStyle = isStatusError ? 'rgba(50, 10, 10, 0.95)' : 'rgba(0, 20, 30, 0.9)';
+        ctx.fillRect(45, h - 82, w - 90, 46);
+        ctx.strokeStyle = isStatusError ? '#ff4444' : 'rgba(0, 255, 204, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(45, h - 82, w - 90, 46);
 
-        if (!infoMaterial) {
-            const texLoader = new THREE.TextureLoader();
-            const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
-            const localPath = 'assets/icons/info-r 1.png';
-            const infoTex = texLoader.load(
-                gcsUrl,
-                () => { 
-                    console.info('Info-gomb ikon sikeresen betöltve (GCS).'); 
-                    if (mesh && mesh.material) mesh.material.needsUpdate = true;
-                },
-                undefined,
-                () => {
-                    console.warn('GCS ikon nem található, helyi fallback...');
-                    texLoader.load(localPath, (localTex) => {
-                        if (infoMaterial) {
-                            infoMaterial.map = localTex;
-                            infoMaterial.needsUpdate = true;
-                        }
-                    });
+        ctx.fillStyle = isStatusError ? '#ff6666' : '#00ffcc';
+        ctx.font = 'bold 20px "Orbitron", "Consolas", sans-serif';
+        ctx.fillText('> ' + displayStatus, 60, h - 52);
+
+        if (screenTexture) screenTexture.needsUpdate = true;
+    }
+
+    function drawTerminalTab(context, x, y, w, h, text, isActive) {
+        context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.32)' : 'rgba(0, 255, 204, 0.06)';
+        context.fillRect(x, y, w, h);
+        context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.35)';
+        context.lineWidth = isActive ? 2.5 : 1;
+        context.strokeRect(x, y, w, h);
+
+        context.fillStyle = isActive ? '#ffffff' : '#88c0b0';
+        context.font = 'bold 18px "Orbitron", "Segoe UI", sans-serif';
+        context.textAlign = 'center';
+        context.fillText(text || '', x + w / 2, y + 26);
+        context.textAlign = 'left';
+    }
+
+    function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 48, labelSize = 20, valueSize = 28) {
+        context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.7)';
+        context.font = 'bold ' + labelSize + 'px "Orbitron", "Segoe UI", sans-serif';
+        context.fillText(label || '', x, y);
+
+        context.fillStyle = isActive ? 'rgba(0, 50, 60, 0.88)' : 'rgba(0, 30, 40, 0.55)';
+        context.fillRect(x, y + 6, 934, boxHeight);
+        context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.3)';
+        context.lineWidth = isActive ? 2.5 : 1;
+        context.strokeRect(x, y + 6, 934, boxHeight);
+
+        context.fillStyle = '#ffffff';
+        context.font = 'bold ' + valueSize + 'px "Consolas", "Roboto Mono", "Courier New", monospace';
+        const displayText = (value || '') + (isActive ? cursor : '');
+        context.fillText(displayText, x + 16, y + 6 + (boxHeight * 0.68));
+    }
+
+    function drawActionButton(context, x, y, w, h, text, isDanger = false, fontSize = 24) {
+        context.fillStyle = isDanger ? '#661111' : '#004d40';
+        context.fillRect(x, y, w, h);
+        context.strokeStyle = isDanger ? '#ff4444' : '#00ffcc';
+        context.lineWidth = 2.5;
+        context.strokeRect(x, y, w, h);
+
+        context.fillStyle = '#ffffff';
+        context.font = 'bold ' + fontSize + 'px "Orbitron", "Segoe UI", sans-serif';
+        context.textAlign = 'center';
+        context.fillText(text || '', x + w / 2, y + h / 2 + 8);
+        context.textAlign = 'left';
+    }
+
+    // InfoMesh és ScreenMesh Anyag és UV kezelők
+    function applyInfoMeshMaterial(mesh) {
+        if (!mesh || !mesh.geometry) return;
+        try {
+            const posAttr = mesh.geometry.attributes.position;
+            if (!posAttr) return;
+
+            let uvAttr = mesh.geometry.attributes.uv;
+            if (!uvAttr || uvAttr.count !== posAttr.count) {
+                uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                mesh.geometry.setAttribute('uv', uvAttr);
+            }
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (let i = 0; i < posAttr.count; i++) {
+                const px = posAttr.getX(i);
+                const py = posAttr.getY(i);
+                if (px < minX) minX = px;
+                if (px > maxX) maxX = px;
+                if (py < minY) minY = py;
+                if (py > maxY) maxY = py;
+            }
+            const rangeX = maxX - minX;
+            const rangeY = maxY - minY;
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+            const maxSpan = Math.max(rangeX, rangeY);
+
+            if (maxSpan > 0.001) {
+                for (let i = 0; i < posAttr.count; i++) {
+                    const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
+                    const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
+                    uvAttr.setXY(i, u, v);
                 }
-            );
-            infoTex.colorSpace = THREE.SRGBColorSpace;
-            infoTex.wrapS = THREE.ClampToEdgeWrapping;
-            infoTex.wrapT = THREE.ClampToEdgeWrapping;
-            infoMaterial = new THREE.MeshStandardMaterial({
-                map: infoTex,
-                roughness: 0.35,
-                metalness: 0.15,
-                transparent: true,
-                alphaTest: 0.05,
-                side: THREE.DoubleSide
-            });
-        }
-
-        mesh.material = infoMaterial;
-        mesh.material.needsUpdate = true;
-    } catch(e) {
-        console.warn('Hiba az InfoMesh anyag hozzárendelésekor:', e);
-    }
-}
-
-// Célkereszt ikon generálása FokuszMesh gombra
-function createCrosshairCanvas() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 512;
-    const c = canvas.getContext('2d');
-    const cx = 256, cy = 256;
-
-    const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 240);
-    bgGrad.addColorStop(0, '#04222a');
-    bgGrad.addColorStop(0.7, '#021218');
-    bgGrad.addColorStop(1, '#01090d');
-    c.fillStyle = bgGrad;
-    c.beginPath();
-    c.arc(cx, cy, 245, 0, Math.PI * 2);
-    c.fill();
-
-    c.strokeStyle = '#005544';
-    c.lineWidth = 4;
-    c.beginPath();
-    c.arc(cx, cy, 242, 0, Math.PI * 2);
-    c.stroke();
-
-    c.shadowColor = '#00ffff';
-    c.shadowBlur = 22;
-
-    c.strokeStyle = '#00ffcc';
-    c.lineWidth = 8;
-    c.beginPath();
-    c.arc(cx, cy, 180, 0, Math.PI * 2);
-    c.stroke();
-
-    c.strokeStyle = '#33ffff';
-    c.lineWidth = 4;
-    c.beginPath();
-    c.arc(cx, cy, 90, 0, Math.PI * 2);
-    c.stroke();
-
-    c.strokeStyle = '#ffffff';
-    c.lineWidth = 3;
-    c.beginPath();
-    c.arc(cx, cy, 28, 0, Math.PI * 2);
-    c.stroke();
-
-    c.fillStyle = '#ffffff';
-    c.beginPath();
-    c.arc(cx, cy, 7, 0, Math.PI * 2);
-    c.fill();
-
-    c.strokeStyle = '#00ffcc';
-    c.lineWidth = 6;
-    c.lineCap = 'round';
-    c.beginPath(); c.moveTo(cx, cy - 38); c.lineTo(cx, cy - 225); c.stroke();
-    c.beginPath(); c.moveTo(cx, cy + 38); c.lineTo(cx, cy + 225); c.stroke();
-    c.beginPath(); c.moveTo(cx - 38, cy); c.lineTo(cx - 225, cy); c.stroke();
-    c.beginPath(); c.moveTo(cx + 38, cy); c.lineTo(cx + 225, cy); c.stroke();
-
-    c.shadowBlur = 10;
-    c.lineWidth = 3;
-    [135, 180].forEach(r => {
-        c.beginPath(); c.moveTo(cx - r, cy - 12); c.lineTo(cx - r, cy + 12); c.stroke();
-        c.beginPath(); c.moveTo(cx + r, cy - 12); c.lineTo(cx + r, cy + 12); c.stroke();
-        c.beginPath(); c.moveTo(cx - 12, cy - r); c.lineTo(cx + 12, cy - r); c.stroke();
-        c.beginPath(); c.moveTo(cx - 12, cy + r); c.lineTo(cx + 12, cy + r); c.stroke();
-    });
-
-    c.strokeStyle = 'rgba(0, 255, 204, 0.7)';
-    c.lineWidth = 3;
-    const dist = 125;
-    [[-1,-1], [1,-1], [-1,1], [1,1]].forEach(([sx, sy]) => {
-        c.beginPath();
-        c.arc(cx + sx * dist, cy + sy * dist, 6, 0, Math.PI * 2);
-        c.stroke();
-    });
-
-    return canvas;
-}
-
-function applyFokuszMeshMaterial(mesh) {
-    if (!mesh || !mesh.geometry) return;
-    try {
-        const posAttr = mesh.geometry.attributes.position;
-        if (!posAttr) return;
-
-        let uvAttr = mesh.geometry.attributes.uv;
-        if (!uvAttr || uvAttr.count !== posAttr.count) {
-            uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
-            mesh.geometry.setAttribute('uv', uvAttr);
-        }
-
-        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-        for (let i = 0; i < posAttr.count; i++) {
-            const px = posAttr.getX(i);
-            const py = posAttr.getY(i);
-            if (px < minX) minX = px;
-            if (px > maxX) maxX = px;
-            if (py < minY) minY = py;
-            if (py > maxY) maxY = py;
-        }
-        const rangeX = maxX - minX;
-        const rangeY = maxY - minY;
-        const centerX = (minX + maxX) / 2;
-        const centerY = (minY + maxY) / 2;
-        const maxSpan = Math.max(rangeX, rangeY);
-
-        if (maxSpan > 0.001) {
-            for (let i = 0; i < posAttr.count; i++) {
-                const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
-                const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
-                uvAttr.setXY(i, u, v);
+                uvAttr.needsUpdate = true;
             }
-            uvAttr.needsUpdate = true;
-        }
 
-        mesh.geometry.computeVertexNormals();
+            mesh.geometry.computeVertexNormals();
 
-        if (!fokuszMaterial) {
-            const crosshairCanvas = createCrosshairCanvas();
-            const crosshairTex = new THREE.CanvasTexture(crosshairCanvas);
-            crosshairTex.colorSpace = THREE.SRGBColorSpace;
-            crosshairTex.minFilter = THREE.LinearFilter;
-            crosshairTex.magFilter = THREE.LinearFilter;
-
-            fokuszMaterial = new THREE.MeshStandardMaterial({
-                map: crosshairTex,
-                roughness: 0.25,
-                metalness: 0.3,
-                emissive: 0x00443a,
-                emissiveIntensity: 0.7,
-                side: THREE.DoubleSide
-            });
-        }
-
-        mesh.material = fokuszMaterial;
-        mesh.material.needsUpdate = true;
-    } catch(e) {
-        console.warn('Hiba a FokuszMesh anyag hozzárendelésekor:', e);
-    }
-}
-
-// Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője
-function applyLangMeshMaterial(mesh, lang) {
-    if (!mesh || !mesh.geometry) return;
-    try {
-        const posAttr = mesh.geometry.attributes.position;
-        if (!posAttr) return;
-
-        let uvAttr = mesh.geometry.attributes.uv;
-        if (!uvAttr || uvAttr.count !== posAttr.count) {
-            uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
-            mesh.geometry.setAttribute('uv', uvAttr);
-        }
-
-        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-        for (let i = 0; i < posAttr.count; i++) {
-            const px = posAttr.getX(i);
-            const py = posAttr.getY(i);
-            if (px < minX) minX = px;
-            if (px > maxX) maxX = px;
-            if (py < minY) minY = py;
-            if (py > maxY) maxY = py;
-        }
-        const rangeX = maxX - minX;
-        const rangeY = maxY - minY;
-        const centerX = (minX + maxX) / 2;
-        const centerY = (minY + maxY) / 2;
-        const maxSpan = Math.max(rangeX, rangeY);
-
-        if (maxSpan > 0.001) {
-            for (let i = 0; i < posAttr.count; i++) {
-                const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
-                const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
-                uvAttr.setXY(i, u, v);
-            }
-            uvAttr.needsUpdate = true;
-        }
-
-        mesh.geometry.computeVertexNormals();
-
-        if (!langMaterials[lang]) {
-            const texLoader = new THREE.TextureLoader();
-            const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
-            const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
-            const langTex = texLoader.load(
-                gcsUrl,
-                () => { 
-                    console.info('Nyelv zászló textúra sikeresen betöltve (GCS):', lang); 
-                    if (mesh && mesh.material) mesh.material.needsUpdate = true;
-                },
-                undefined,
-                () => {
-                    console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
-                    texLoader.load(localPath, (localTex) => {
-                        if (langMaterials[lang]) {
-                            langMaterials[lang].map = localTex;
-                            langMaterials[lang].needsUpdate = true;
-                        }
-                    });
-                }
-            );
-            langTex.colorSpace = THREE.SRGBColorSpace;
-            langTex.wrapS = THREE.ClampToEdgeWrapping;
-            langTex.wrapT = THREE.ClampToEdgeWrapping;
-            langMaterials[lang] = new THREE.MeshStandardMaterial({
-                map: langTex,
-                roughness: 0.35,
-                metalness: 0.2,
-                transparent: true,
-                alphaTest: 0.05,
-                side: THREE.DoubleSide
-            });
-        }
-
-        mesh.material = langMaterials[lang];
-        mesh.material.needsUpdate = true;
-        mesh.userData.lang = lang;
-    } catch(e) {
-        console.warn('Hiba a nyelvválasztó material hozzárendelésekor (' + lang + '):', e);
-    }
-}
-
-// --- GLB MODELL BETÖLTÉSE ---
-function loadDeviceModel() {
-    const gltfLoader = new GLTFLoader();
-    const modelPaths = [
-        'assets/models/belepo_kozmosz_kutyu.glb',
-        'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb',
-        'assets/models/belepooldal_kozmosz_kutyu.glb',
-        'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb'
-    ];
-
-    function tryLoad(index) {
-        if (index >= modelPaths.length) {
-            console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
-            createFallbackDevice();
-            const ls = document.getElementById('loading-screen');
-            if (ls) {
-                ls.style.opacity = '0';
-                setTimeout(() => ls.style.display = 'none', 600);
-            }
-            openInfoModalAuto();
-            return;
-        }
-
-        gltfLoader.load(
-            modelPaths[index],
-            (gltf) => {
-                console.info('GLB modell sikeresen betöltve:', modelPaths[index]);
-                deviceModel = gltf.scene;
-
-                deviceModel.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-
-                        const meshName = (child.name || '').toLowerCase();
-                        const parentName = (child.parent && child.parent.name) ? child.parent.name.toLowerCase() : '';
-                        const matName = (child.material && child.material.name) ? child.material.name.toLowerCase() : '';
-
-                        if (meshName.includes('screen') || parentName.includes('screen') || 
-                            meshName === 'mesh_0.001' || matName.includes('screen') || 
-                            matName.includes('kijelzo') || matName.includes('monitor')) {
-                            child.material = screenMaterial;
-
-                            if (child.geometry && child.geometry.attributes && child.geometry.attributes.uv) {
-                                const uvAttr = child.geometry.attributes.uv;
-                                let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-                                for (let i = 0; i < uvAttr.count; i++) {
-                                    const u = uvAttr.getX(i);
-                                    const v = uvAttr.getY(i);
-                                    if (u < minU) minU = u;
-                                    if (u > maxU) maxU = u;
-                                    if (v < minV) minV = v;
-                                    if (v > maxV) maxV = v;
-                                }
-                                const rangeU = maxU - minU;
-                                const rangeV = maxV - minV;
-                                if (rangeU > 0.01 && rangeV > 0.01) {
-                                    for (let i = 0; i < uvAttr.count; i++) {
-                                        const normU = 1.0 - ((uvAttr.getX(i) - minU) / rangeU);
-                                        const normV = (uvAttr.getY(i) - minV) / rangeV;
-                                        uvAttr.setXY(i, normU, normV);
-                                    }
-                                    uvAttr.needsUpdate = true;
-                                }
+            if (!infoMaterial) {
+                const texLoader = new THREE.TextureLoader();
+                const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
+                const localPath = 'assets/icons/info-r 1.png';
+                const infoTex = texLoader.load(
+                    gcsUrl,
+                    () => {
+                        console.info('Info-gomb ikon sikeresen betöltve (GCS).');
+                        if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                    },
+                    undefined,
+                    () => {
+                        console.warn('GCS ikon nem található, helyi fallback...');
+                        texLoader.load(localPath, (localTex) => {
+                            if (infoMaterial) {
+                                infoMaterial.map = localTex;
+                                infoMaterial.needsUpdate = true;
                             }
-                        }
-                        else if (meshName.includes('info') || parentName.includes('info') || meshName === 'mesh_0.009') {
-                            applyInfoMeshMaterial(child);
-                        }
-                        else if (meshName.includes('fokusz') || parentName.includes('fokusz') || meshName === 'mesh_0.010') {
-                            applyFokuszMeshMaterial(child);
-                        }
-                        else if (meshName.includes('magyar') || parentName.includes('magyar') || meshName === 'mesh_0.002') {
-                            applyLangMeshMaterial(child, 'hu');
-                        }
-                        else if (meshName.includes('angol') || parentName.includes('angol') || meshName === 'mesh_0.003') {
-                            applyLangMeshMaterial(child, 'en');
-                        }
-                        else if (meshName.includes('nemet') || parentName.includes('nemet') || meshName === 'mesh_0.004') {
-                            applyLangMeshMaterial(child, 'de');
-                        }
-                        else if (meshName.includes('francia') || parentName.includes('francia') || meshName === 'mesh_0.005') {
-                            applyLangMeshMaterial(child, 'fr');
-                        }
-                        else if (meshName.includes('spanyol') || parentName.includes('spanyol') || meshName === 'mesh_0.006') {
-                            applyLangMeshMaterial(child, 'es');
-                        }
-                        else if (meshName.includes('lengyel') || parentName.includes('lengyel') || meshName === 'mesh_0.007') {
-                            applyLangMeshMaterial(child, 'pl');
-                        }
-                        else if (meshName.includes('orosz') || parentName.includes('orosz') || meshName === 'mesh_0.008') {
-                            applyLangMeshMaterial(child, 'ru');
-                        }
+                        });
                     }
+                );
+                infoTex.colorSpace = THREE.SRGBColorSpace;
+                infoTex.wrapS = THREE.ClampToEdgeWrapping;
+                infoTex.wrapT = THREE.ClampToEdgeWrapping;
+                infoMaterial = new THREE.MeshStandardMaterial({
+                    map: infoTex,
+                    roughness: 0.35,
+                    metalness: 0.15,
+                    transparent: true,
+                    alphaTest: 0.05,
+                    side: THREE.DoubleSide
                 });
+            }
 
-                const box = new THREE.Box3().setFromObject(deviceModel);
-                const center = box.getCenter(new THREE.Vector3());
+            mesh.material = infoMaterial;
+            mesh.material.needsUpdate = true;
+        } catch (e) {
+            console.warn('Hiba az InfoMesh anyag hozzárendelésekor:', e);
+        }
+    }
 
-                deviceModel.position.x += (deviceModel.position.x - center.x);
-                deviceModel.position.y += (deviceModel.position.y - center.y);
-                deviceModel.position.z += (deviceModel.position.z - center.z);
+    // Célkereszt ikon generálása FokuszMesh gombra
+    function createCrosshairCanvas() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const c = canvas.getContext('2d');
+        const cx = 256, cy = 256;
 
-                scene.add(deviceModel);
+        const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 240);
+        bgGrad.addColorStop(0, '#04222a');
+        bgGrad.addColorStop(0.7, '#021218');
+        bgGrad.addColorStop(1, '#01090d');
+        c.fillStyle = bgGrad;
+        c.beginPath();
+        c.arc(cx, cy, 245, 0, Math.PI * 2);
+        c.fill();
 
+        c.strokeStyle = '#005544';
+        c.lineWidth = 4;
+        c.beginPath();
+        c.arc(cx, cy, 242, 0, Math.PI * 2);
+        c.stroke();
+
+        c.shadowColor = '#00ffff';
+        c.shadowBlur = 22;
+
+        c.strokeStyle = '#00ffcc';
+        c.lineWidth = 8;
+        c.beginPath();
+        c.arc(cx, cy, 180, 0, Math.PI * 2);
+        c.stroke();
+
+        c.strokeStyle = '#33ffff';
+        c.lineWidth = 4;
+        c.beginPath();
+        c.arc(cx, cy, 90, 0, Math.PI * 2);
+        c.stroke();
+
+        c.strokeStyle = '#ffffff';
+        c.lineWidth = 3;
+        c.beginPath();
+        c.arc(cx, cy, 28, 0, Math.PI * 2);
+        c.stroke();
+
+        c.fillStyle = '#ffffff';
+        c.beginPath();
+        c.arc(cx, cy, 7, 0, Math.PI * 2);
+        c.fill();
+
+        c.strokeStyle = '#00ffcc';
+        c.lineWidth = 6;
+        c.lineCap = 'round';
+        c.beginPath(); c.moveTo(cx, cy - 38); c.lineTo(cx, cy - 225); c.stroke();
+        c.beginPath(); c.moveTo(cx, cy + 38); c.lineTo(cx, cy + 225); c.stroke();
+        c.beginPath(); c.moveTo(cx - 38, cy); c.lineTo(cx - 225, cy); c.stroke();
+        c.beginPath(); c.moveTo(cx + 38, cy); c.lineTo(cx + 225, cy); c.stroke();
+
+        c.shadowBlur = 10;
+        c.lineWidth = 3;
+        [135, 180].forEach(r => {
+            c.beginPath(); c.moveTo(cx - r, cy - 12); c.lineTo(cx - r, cy + 12); c.stroke();
+            c.beginPath(); c.moveTo(cx + r, cy - 12); c.lineTo(cx + r, cy + 12); c.stroke();
+            c.beginPath(); c.moveTo(cx - 12, cy - r); c.lineTo(cx + 12, cy - r); c.stroke();
+            c.beginPath(); c.moveTo(cx - 12, cy + r); c.lineTo(cx + 12, cy + r); c.stroke();
+        });
+
+        c.strokeStyle = 'rgba(0, 255, 204, 0.7)';
+        c.lineWidth = 3;
+        const dist = 125;
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => {
+            c.beginPath();
+            c.arc(cx + sx * dist, cy + sy * dist, 6, 0, Math.PI * 2);
+            c.stroke();
+        });
+
+        return canvas;
+    }
+
+    function applyFokuszMeshMaterial(mesh) {
+        if (!mesh || !mesh.geometry) return;
+        try {
+            const posAttr = mesh.geometry.attributes.position;
+            if (!posAttr) return;
+
+            let uvAttr = mesh.geometry.attributes.uv;
+            if (!uvAttr || uvAttr.count !== posAttr.count) {
+                uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                mesh.geometry.setAttribute('uv', uvAttr);
+            }
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (let i = 0; i < posAttr.count; i++) {
+                const px = posAttr.getX(i);
+                const py = posAttr.getY(i);
+                if (px < minX) minX = px;
+                if (px > maxX) maxX = px;
+                if (py < minY) minY = py;
+                if (py > maxY) maxY = py;
+            }
+            const rangeX = maxX - minX;
+            const rangeY = maxY - minY;
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+            const maxSpan = Math.max(rangeX, rangeY);
+
+            if (maxSpan > 0.001) {
+                for (let i = 0; i < posAttr.count; i++) {
+                    const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
+                    const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
+                    uvAttr.setXY(i, u, v);
+                }
+                uvAttr.needsUpdate = true;
+            }
+
+            mesh.geometry.computeVertexNormals();
+
+            if (!fokuszMaterial) {
+                const crosshairCanvas = createCrosshairCanvas();
+                const crosshairTex = new THREE.CanvasTexture(crosshairCanvas);
+                crosshairTex.colorSpace = THREE.SRGBColorSpace;
+                crosshairTex.minFilter = THREE.LinearFilter;
+                crosshairTex.magFilter = THREE.LinearFilter;
+
+                fokuszMaterial = new THREE.MeshStandardMaterial({
+                    map: crosshairTex,
+                    roughness: 0.25,
+                    metalness: 0.3,
+                    emissive: 0x00443a,
+                    emissiveIntensity: 0.7,
+                    side: THREE.DoubleSide
+                });
+            }
+
+            mesh.material = fokuszMaterial;
+            mesh.material.needsUpdate = true;
+        } catch (e) {
+            console.warn('Hiba a FokuszMesh anyag hozzárendelésekor:', e);
+        }
+    }
+
+    // Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője
+    function applyLangMeshMaterial(mesh, lang) {
+        if (!mesh || !mesh.geometry) return;
+        try {
+            const posAttr = mesh.geometry.attributes.position;
+            if (!posAttr) return;
+
+            let uvAttr = mesh.geometry.attributes.uv;
+            if (!uvAttr || uvAttr.count !== posAttr.count) {
+                uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                mesh.geometry.setAttribute('uv', uvAttr);
+            }
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (let i = 0; i < posAttr.count; i++) {
+                const px = posAttr.getX(i);
+                const py = posAttr.getY(i);
+                if (px < minX) minX = px;
+                if (px > maxX) maxX = px;
+                if (py < minY) minY = py;
+                if (py > maxY) maxY = py;
+            }
+            const rangeX = maxX - minX;
+            const rangeY = maxY - minY;
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+            const maxSpan = Math.max(rangeX, rangeY);
+
+            if (maxSpan > 0.001) {
+                for (let i = 0; i < posAttr.count; i++) {
+                    const u = (posAttr.getX(i) - (centerX - maxSpan / 2)) / maxSpan;
+                    const v = (posAttr.getY(i) - (centerY - maxSpan / 2)) / maxSpan;
+                    uvAttr.setXY(i, u, v);
+                }
+                uvAttr.needsUpdate = true;
+            }
+
+            mesh.geometry.computeVertexNormals();
+
+            if (!langMaterials[lang]) {
+                const texLoader = new THREE.TextureLoader();
+                const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                const langTex = texLoader.load(
+                    gcsUrl,
+                    () => {
+                        console.info('Nyelv zászló textúra sikeresen betöltve (GCS):', lang);
+                        if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                    },
+                    undefined,
+                    () => {
+                        console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
+                        texLoader.load(localPath, (localTex) => {
+                            if (langMaterials[lang]) {
+                                langMaterials[lang].map = localTex;
+                                langMaterials[lang].needsUpdate = true;
+                            }
+                        });
+                    }
+                );
+                langTex.colorSpace = THREE.SRGBColorSpace;
+                langTex.wrapS = THREE.ClampToEdgeWrapping;
+                langTex.wrapT = THREE.ClampToEdgeWrapping;
+                langMaterials[lang] = new THREE.MeshStandardMaterial({
+                    map: langTex,
+                    roughness: 0.35,
+                    metalness: 0.2,
+                    transparent: true,
+                    alphaTest: 0.05,
+                    side: THREE.DoubleSide
+                });
+            }
+
+            mesh.material = langMaterials[lang];
+            mesh.material.needsUpdate = true;
+            mesh.userData.lang = lang;
+        } catch (e) {
+            console.warn('Hiba a nyelvválasztó material hozzárendelésekor (' + lang + '):', e);
+        }
+    }
+
+    // --- GLB MODELL BETÖLTÉSE ---
+    function loadDeviceModel() {
+        const gltfLoader = new GLTFLoader();
+        const modelPaths = [
+            'assets/models/belepo_kozmosz_kutyu.glb',
+            'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb',
+            'assets/models/belepooldal_kozmosz_kutyu.glb',
+            'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb'
+        ];
+
+        function tryLoad(index) {
+            if (index >= modelPaths.length) {
+                console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
+                createFallbackDevice();
                 const ls = document.getElementById('loading-screen');
                 if (ls) {
                     ls.style.opacity = '0';
                     setTimeout(() => ls.style.display = 'none', 600);
                 }
-            },
-            undefined,
-            (err) => {
-                console.warn('Hiba a modell betöltésekor (' + modelPaths[index] + '), következő próba...');
-                tryLoad(index + 1);
+                openInfoModalAuto();
+                return;
             }
-        );
+
+            gltfLoader.load(
+                modelPaths[index],
+                (gltf) => {
+                    console.info('GLB modell sikeresen betöltve:', modelPaths[index]);
+                    deviceModel = gltf.scene;
+
+                    deviceModel.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+
+                            const meshName = (child.name || '').toLowerCase();
+                            const parentName = (child.parent && child.parent.name) ? child.parent.name.toLowerCase() : '';
+                            const matName = (child.material && child.material.name) ? child.material.name.toLowerCase() : '';
+
+                            if (meshName.includes('screen') || parentName.includes('screen') ||
+                                meshName === 'mesh_0.001' || matName.includes('screen') ||
+                                matName.includes('kijelzo') || matName.includes('monitor')) {
+                                child.material = screenMaterial;
+
+                                if (child.geometry && child.geometry.attributes && child.geometry.attributes.uv) {
+                                    const uvAttr = child.geometry.attributes.uv;
+                                    let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
+                                    for (let i = 0; i < uvAttr.count; i++) {
+                                        const u = uvAttr.getX(i);
+                                        const v = uvAttr.getY(i);
+                                        if (u < minU) minU = u;
+                                        if (u > maxU) maxU = u;
+                                        if (v < minV) minV = v;
+                                        if (v > maxV) maxV = v;
+                                    }
+                                    const rangeU = maxU - minU;
+                                    const rangeV = maxV - minV;
+                                    if (rangeU > 0.01 && rangeV > 0.01) {
+                                        for (let i = 0; i < uvAttr.count; i++) {
+                                            const normU = 1.0 - ((uvAttr.getX(i) - minU) / rangeU);
+                                            const normV = (uvAttr.getY(i) - minV) / rangeV;
+                                            uvAttr.setXY(i, normU, normV);
+                                        }
+                                        uvAttr.needsUpdate = true;
+                                    }
+                                }
+                            }
+                            else if (meshName.includes('info') || parentName.includes('info') || meshName === 'mesh_0.009') {
+                                applyInfoMeshMaterial(child);
+                            }
+                            else if (meshName.includes('fokusz') || parentName.includes('fokusz') || meshName === 'mesh_0.010') {
+                                applyFokuszMeshMaterial(child);
+                            }
+                            else if (meshName.includes('magyar') || parentName.includes('magyar') || meshName === 'mesh_0.002') {
+                                applyLangMeshMaterial(child, 'hu');
+                            }
+                            else if (meshName.includes('angol') || parentName.includes('angol') || meshName === 'mesh_0.003') {
+                                applyLangMeshMaterial(child, 'en');
+                            }
+                            else if (meshName.includes('nemet') || parentName.includes('nemet') || meshName === 'mesh_0.004') {
+                                applyLangMeshMaterial(child, 'de');
+                            }
+                            else if (meshName.includes('francia') || parentName.includes('francia') || meshName === 'mesh_0.005') {
+                                applyLangMeshMaterial(child, 'fr');
+                            }
+                            else if (meshName.includes('spanyol') || parentName.includes('spanyol') || meshName === 'mesh_0.006') {
+                                applyLangMeshMaterial(child, 'es');
+                            }
+                            else if (meshName.includes('lengyel') || parentName.includes('lengyel') || meshName === 'mesh_0.007') {
+                                applyLangMeshMaterial(child, 'pl');
+                            }
+                            else if (meshName.includes('orosz') || parentName.includes('orosz') || meshName === 'mesh_0.008') {
+                                applyLangMeshMaterial(child, 'ru');
+                            }
+                        }
+                    });
+
+                    const box = new THREE.Box3().setFromObject(deviceModel);
+                    const center = box.getCenter(new THREE.Vector3());
+
+                    deviceModel.position.x += (deviceModel.position.x - center.x);
+                    deviceModel.position.y += (deviceModel.position.y - center.y);
+                    deviceModel.position.z += (deviceModel.position.z - center.z);
+
+                    scene.add(deviceModel);
+
+                    const ls = document.getElementById('loading-screen');
+                    if (ls) {
+                        ls.style.opacity = '0';
+                        setTimeout(() => ls.style.display = 'none', 600);
+                    }
+                },
+                undefined,
+                (err) => {
+                    console.warn('Hiba a modell betöltésekor (' + modelPaths[index] + '), következő próba...');
+                    tryLoad(index + 1);
+                }
+            );
+        }
+
+        tryLoad(0);
     }
 
-    tryLoad(0);
-}
+    function createFallbackDevice() {
+        const group = new THREE.Group();
+        const bodyGeo = new THREE.BoxGeometry(2.8, 1.8, 1.2);
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x182028, metalness: 0.85, roughness: 0.25 });
+        const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+        group.add(bodyMesh);
 
-function createFallbackDevice() {
-    const group = new THREE.Group();
-    const bodyGeo = new THREE.BoxGeometry(2.8, 1.8, 1.2);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x182028, metalness: 0.85, roughness: 0.25 });
-    const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-    group.add(bodyMesh);
+        const screenGeo = new THREE.PlaneGeometry(2.4, 1.2);
+        const screenMesh = new THREE.Mesh(screenGeo, screenMaterial);
+        screenMesh.position.set(0, 0, 0.61);
+        group.add(screenMesh);
 
-    const screenGeo = new THREE.PlaneGeometry(2.4, 1.2);
-    const screenMesh = new THREE.Mesh(screenGeo, screenMaterial);
-    screenMesh.position.set(0, 0, 0.61);
-    group.add(screenMesh);
+        group.position.set(0, 0, 0);
+        scene.add(group);
+        deviceModel = group;
+    }
 
-    group.position.set(0, 0, 0);
-    scene.add(group);
-    deviceModel = group;
-}
+    // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
+    function setupDirectKeyboardAndRaycast() {
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let pointerDownPos = { x: 0, y: 0, time: 0 };
 
-// --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
-function setupDirectKeyboardAndRaycast() {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    let pointerDownPos = { x: 0, y: 0, time: 0 };
-
-    window.addEventListener('pointerdown', (event) => {
-        pointerDownPos.x = event.clientX;
-        pointerDownPos.y = event.clientY;
-        pointerDownPos.time = Date.now();
-    });
-
-    window.addEventListener('pointerup', (event) => {
-        if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
-            return;
-        }
-
-        const dist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
-        const elapsed = Date.now() - pointerDownPos.time;
-        // Érintőképernyőkhöz optimalizált küszöbértékek (mikromozgás és koppintási idő rugalmas kezelése)
-        if (dist > 30 || elapsed > 1200) {
-            return;
-        }
-
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(scene.children, true);
-
-        for (let hit of intersects) {
-            const objName = (hit.object.name || '').toLowerCase();
-            const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
-
-            if (objName.includes('info') || parentName.includes('info') || hit.object.material === infoMaterial) {
-                blurVirtualInput();
-                toggle3DInfoMode();
-                break;
-            }
-
-            if (objName.includes('fokusz') || parentName.includes('fokusz') || hit.object.material === fokuszMaterial || objName === 'mesh_0.010') {
-                blurVirtualInput();
-                focusOnScreen();
-                setTerminalStatus("status_cam_focused", false);
-                break;
-            }
-
-            if (hit.object.userData && hit.object.userData.lang) {
-                blurVirtualInput();
-                handleLangSwitch(hit.object.userData.lang);
-                break;
-            }
-            if (objName.includes('magyar') || parentName.includes('magyar') || objName === 'mesh_0.002') { blurVirtualInput(); handleLangSwitch('hu'); break; }
-            if (objName.includes('angol') || parentName.includes('angol') || objName === 'mesh_0.003') { blurVirtualInput(); handleLangSwitch('en'); break; }
-            if (objName.includes('nemet') || parentName.includes('nemet') || objName === 'mesh_0.004') { blurVirtualInput(); handleLangSwitch('de'); break; }
-            if (objName.includes('francia') || parentName.includes('francia') || objName === 'mesh_0.005') { blurVirtualInput(); handleLangSwitch('fr'); break; }
-            if (objName.includes('spanyol') || parentName.includes('spanyol') || objName === 'mesh_0.006') { blurVirtualInput(); handleLangSwitch('es'); break; }
-            if (objName.includes('lengyel') || parentName.includes('lengyel') || objName === 'mesh_0.007') { blurVirtualInput(); handleLangSwitch('pl'); break; }
-            if (objName.includes('orosz') || parentName.includes('orosz') || objName === 'mesh_0.008') { blurVirtualInput(); handleLangSwitch('ru'); break; }
-
-            if (hit.object.material === screenMaterial || objName.includes('screen') || parentName.includes('screen') || objName.includes('mesh_0.001')) {
-                if (event.cancelable) {
-                    event.preventDefault();
-                }
-                if (hit.uv) {
-                    handleScreenUVClick(hit.uv, event.clientX, event.clientY);
-                } else {
-                    focusVirtualInput(event.clientX, event.clientY);
-                }
-                break;
-            }
-        }
-    });
-
-    window.addEventListener('pointermove', (event) => {
-        if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
-            return;
-        }
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(scene.children, true);
-        let isHovering = false;
-
-        for (let hit of intersects) {
-            const objName = (hit.object.name || '').toLowerCase();
-            const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
-            if (objName.includes('info') || objName.includes('screen') || objName.includes('fokusz') ||
-                objName === 'mesh_0.010' || objName === 'mesh_0.009' || objName === 'mesh_0.001' ||
-                objName === 'mesh_0.002' || objName === 'mesh_0.003' || objName === 'mesh_0.004' ||
-                objName === 'mesh_0.005' || objName === 'mesh_0.006' || objName === 'mesh_0.007' ||
-                objName === 'mesh_0.008' ||
-                objName.includes('magyar') || objName.includes('angol') || objName.includes('nemet') ||
-                objName.includes('francia') || objName.includes('spanyol') || objName.includes('lengyel') ||
-                objName.includes('orosz') || hit.object.material === screenMaterial || 
-                hit.object.material === infoMaterial || hit.object.material === fokuszMaterial ||
-                (hit.object.userData && hit.object.userData.lang)) {
-                isHovering = true;
-                break;
-            }
-        }
-        document.body.style.cursor = isHovering ? 'pointer' : 'default';
-    });
-
-    // Globális billentyűzet figyelő (ha a capturer nincs fókuszban)
-    window.addEventListener('keydown', (event) => {
-        const infoModal = document.getElementById('info-modal');
-        if (infoModal && infoModal.style.display === 'flex') {
-            return;
-        }
-        if (event.target && (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA')) {
-            return;
-        }
-        handleDirectKeyInput(event);
-    });
-
-    // Virtuális input capturer eseménykezelők (Mobilos virtuális billentyűzet fókuszhoz)
-    if (virtualInput) {
-        virtualInput.addEventListener('input', () => {
-            syncVirtualInput(virtualInput.value);
+        window.addEventListener('pointerdown', (event) => {
+            pointerDownPos.x = event.clientX;
+            pointerDownPos.y = event.clientY;
+            pointerDownPos.time = Date.now();
         });
 
-        virtualInput.addEventListener('compositionend', () => {
-            syncVirtualInput(virtualInput.value);
+        window.addEventListener('pointerup', (event) => {
+            if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
+                return;
+            }
+
+            const dist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
+            const elapsed = Date.now() - pointerDownPos.time;
+            // Érintőképernyőkhöz optimalizált küszöbértékek (mikromozgás és koppintási idő rugalmas kezelése)
+            if (dist > 30 || elapsed > 1200) {
+                return;
+            }
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+
+            for (let hit of intersects) {
+                const objName = (hit.object.name || '').toLowerCase();
+                const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
+
+                if (objName.includes('info') || parentName.includes('info') || hit.object.material === infoMaterial) {
+                    blurVirtualInput();
+                    toggle3DInfoMode();
+                    break;
+                }
+
+                if (objName.includes('fokusz') || parentName.includes('fokusz') || hit.object.material === fokuszMaterial || objName === 'mesh_0.010') {
+                    blurVirtualInput();
+                    focusOnScreen();
+                    setTerminalStatus("status_cam_focused", false);
+                    break;
+                }
+
+                if (hit.object.userData && hit.object.userData.lang) {
+                    blurVirtualInput();
+                    handleLangSwitch(hit.object.userData.lang);
+                    break;
+                }
+                if (objName.includes('magyar') || parentName.includes('magyar') || objName === 'mesh_0.002') { blurVirtualInput(); handleLangSwitch('hu'); break; }
+                if (objName.includes('angol') || parentName.includes('angol') || objName === 'mesh_0.003') { blurVirtualInput(); handleLangSwitch('en'); break; }
+                if (objName.includes('nemet') || parentName.includes('nemet') || objName === 'mesh_0.004') { blurVirtualInput(); handleLangSwitch('de'); break; }
+                if (objName.includes('francia') || parentName.includes('francia') || objName === 'mesh_0.005') { blurVirtualInput(); handleLangSwitch('fr'); break; }
+                if (objName.includes('spanyol') || parentName.includes('spanyol') || objName === 'mesh_0.006') { blurVirtualInput(); handleLangSwitch('es'); break; }
+                if (objName.includes('lengyel') || parentName.includes('lengyel') || objName === 'mesh_0.007') { blurVirtualInput(); handleLangSwitch('pl'); break; }
+                if (objName.includes('orosz') || parentName.includes('orosz') || objName === 'mesh_0.008') { blurVirtualInput(); handleLangSwitch('ru'); break; }
+
+                if (hit.object.material === screenMaterial || objName.includes('screen') || parentName.includes('screen') || objName.includes('mesh_0.001')) {
+                    if (event.cancelable) {
+                        event.preventDefault();
+                    }
+                    if (hit.uv) {
+                        handleScreenUVClick(hit.uv, event.clientX, event.clientY);
+                    } else {
+                        focusVirtualInput(event.clientX, event.clientY);
+                    }
+                    break;
+                }
+            }
         });
 
-        virtualInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
-                if (activeFieldIndex < maxFields - 1) {
-                    activeFieldIndex++;
+        window.addEventListener('pointermove', (event) => {
+            if (event.target.closest('#info-modal') || event.target.closest('#info-toggle-btn')) {
+                return;
+            }
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+            let isHovering = false;
+
+            for (let hit of intersects) {
+                const objName = (hit.object.name || '').toLowerCase();
+                const parentName = (hit.object.parent && hit.object.parent.name) ? hit.object.parent.name.toLowerCase() : '';
+                if (objName.includes('info') || objName.includes('screen') || objName.includes('fokusz') ||
+                    objName === 'mesh_0.010' || objName === 'mesh_0.009' || objName === 'mesh_0.001' ||
+                    objName === 'mesh_0.002' || objName === 'mesh_0.003' || objName === 'mesh_0.004' ||
+                    objName === 'mesh_0.005' || objName === 'mesh_0.006' || objName === 'mesh_0.007' ||
+                    objName === 'mesh_0.008' ||
+                    objName.includes('magyar') || objName.includes('angol') || objName.includes('nemet') ||
+                    objName.includes('francia') || objName.includes('spanyol') || objName.includes('lengyel') ||
+                    objName.includes('orosz') || hit.object.material === screenMaterial ||
+                    hit.object.material === infoMaterial || hit.object.material === fokuszMaterial ||
+                    (hit.object.userData && hit.object.userData.lang)) {
+                    isHovering = true;
+                    break;
+                }
+            }
+            document.body.style.cursor = isHovering ? 'pointer' : 'default';
+        });
+
+        // Globális billentyűzet figyelő (ha a capturer nincs fókuszban)
+        window.addEventListener('keydown', (event) => {
+            const infoModal = document.getElementById('info-modal');
+            if (infoModal && infoModal.style.display === 'flex') {
+                return;
+            }
+            if (event.target && (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA')) {
+                return;
+            }
+            handleDirectKeyInput(event);
+        });
+
+        // Virtuális input capturer eseménykezelők (Mobilos virtuális billentyűzet fókuszhoz)
+        if (virtualInput) {
+            virtualInput.addEventListener('input', () => {
+                syncVirtualInput(virtualInput.value);
+            });
+
+            virtualInput.addEventListener('compositionend', () => {
+                syncVirtualInput(virtualInput.value);
+            });
+
+            virtualInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
+                    if (activeFieldIndex < maxFields - 1) {
+                        activeFieldIndex++;
+                        setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
+                        focusVirtualInput();
+                    } else {
+                        blurVirtualInput();
+                        executeCurrentMode();
+                    }
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
+                    activeFieldIndex = (activeFieldIndex + 1) % maxFields;
                     setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
                     focusVirtualInput();
-                } else {
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
                     blurVirtualInput();
-                    executeCurrentMode();
                 }
-            } else if (e.key === 'Tab') {
-                e.preventDefault();
-                const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
-                activeFieldIndex = (activeFieldIndex + 1) % maxFields;
-                setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
-                focusVirtualInput();
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
+            });
+
+            virtualInput.addEventListener('focus', () => {
+                cursorVisible = true;
+                updateScreenDisplay();
+            });
+
+            virtualInput.addEventListener('blur', () => {
+                cursorVisible = false;
+                updateScreenDisplay();
+                if (renderer && renderer.domElement) {
+                    try { renderer.domElement.focus(); } catch (e) { }
+                }
+            });
+        }
+    }
+
+    function onVisualViewportResize() {
+        if (!renderer || !camera) return;
+        const vv = window.visualViewport;
+        if (vv) {
+            camera.aspect = vv.width / vv.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(vv.width, vv.height);
+        }
+    }
+
+    function setupModalInputSync() {
+        const bindInput = (id, mode, key) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', () => {
+                formValues[mode][key] = el.value;
+                syncModalInputsFrom3D();
+                updateScreenDisplay();
+            });
+        };
+
+        bindInput('m-login-username', 'LOGIN', 'username');
+        bindInput('m-login-password', 'LOGIN', 'password');
+        bindInput('m-reg-email', 'REGISTER', 'email');
+        bindInput('m-reg-username', 'REGISTER', 'username');
+        bindInput('m-del-username', 'DEREGISTER', 'username');
+        bindInput('m-del-email', 'DEREGISTER', 'email');
+        bindInput('m-del-reason', 'DEREGISTER', 'reason');
+    }
+
+    function syncModalInputsFrom3D() {
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && el.value !== val) el.value = val || '';
+        };
+
+        setVal('m-login-username', formValues.LOGIN.username);
+        setVal('m-login-password', formValues.LOGIN.password);
+        setVal('m-reg-email', formValues.REGISTER.email);
+        setVal('m-reg-username', formValues.REGISTER.username);
+        setVal('m-del-username', formValues.DEREGISTER.username);
+        setVal('m-del-email', formValues.DEREGISTER.email);
+        setVal('m-del-reason', formValues.DEREGISTER.reason);
+    }
+
+    function handleScreenUVClick(uv, clickX, clickY) {
+        const pxX = uv.x * 1024;
+        const pxY = (1 - uv.y) * 512;
+
+        // Felső Dedikált Tab-sor kattintása (Y: 60 - 116)
+        if (pxY >= 55 && pxY <= 116) {
+            blurVirtualInput();
+            if (pxX >= 45 && pxX < 350) {
+                switchMode('LOGIN');
+                return;
+            } else if (pxX >= 350 && pxX < 665) {
+                switchMode('REGISTER');
+                return;
+            } else if (pxX >= 665 && pxX <= 985) {
+                switchMode('DEREGISTER');
+                return;
+            }
+        }
+
+        // Info mód bezáró gomb
+        if (currentMode === 'INFO') {
+            if (pxY >= 320 && pxY <= 395 && pxX >= 45 && pxX <= 979) {
                 blurVirtualInput();
+                switchMode(previousMode || 'LOGIN');
+                return;
             }
-        });
+        }
 
-        virtualInput.addEventListener('focus', () => {
-            cursorVisible = true;
-            updateScreenDisplay();
-        });
-
-        virtualInput.addEventListener('blur', () => {
-            cursorVisible = false;
-            updateScreenDisplay();
-            if (renderer && renderer.domElement) {
-                try { renderer.domElement.focus(); } catch(e) {}
+        // Mezők és Szem-ikon kiválasztása
+        if (currentMode === 'LOGIN') {
+            if (pxY >= 225 && pxY <= 295 && pxX >= 890 && pxX <= 985) {
+                togglePasswordVisibility();
+                return;
             }
-        });
-    }
-}
 
-function onVisualViewportResize() {
-    if (!renderer || !camera) return;
-    const vv = window.visualViewport;
-    if (vv) {
-        camera.aspect = vv.width / vv.height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(vv.width, vv.height);
-    }
-}
+            if (pxY >= 125 && pxY <= 215) {
+                activeFieldIndex = 0;
+                setTerminalStatus("status_field_selected", false, 1);
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY > 215 && pxY <= 305) {
+                activeFieldIndex = 1;
+                setTerminalStatus("status_field_selected", false, 2);
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY >= 310 && pxY <= 390) {
+                blurVirtualInput();
+                executeCurrentMode();
+            } else {
+                focusVirtualInput(clickX, clickY);
+            }
+        } else if (currentMode === 'REGISTER') {
+            if (pxY >= 125 && pxY <= 215) {
+                activeFieldIndex = 0;
+                setTerminalStatus("status_field_selected", false, 1);
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY > 215 && pxY <= 305) {
+                activeFieldIndex = 1;
+                setTerminalStatus("status_field_selected", false, 2);
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY >= 310 && pxY <= 390) {
+                blurVirtualInput();
+                executeCurrentMode();
+            } else {
+                focusVirtualInput(clickX, clickY);
+            }
+        } else if (currentMode === 'DEREGISTER') {
+            if (pxY >= 120 && pxY <= 188) {
+                activeFieldIndex = 0;
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY > 188 && pxY <= 252) {
+                activeFieldIndex = 1;
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY > 252 && pxY <= 316) {
+                activeFieldIndex = 2;
+                focusVirtualInput(clickX, clickY);
+            } else if (pxY >= 320 && pxY <= 395) {
+                blurVirtualInput();
+                executeCurrentMode();
+            } else {
+                focusVirtualInput(clickX, clickY);
+            }
+        }
 
-function setupModalInputSync() {
-    const bindInput = (id, mode, key) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('input', () => {
-            formValues[mode][key] = el.value;
+        updateScreenDisplay();
+    }
+
+    function blurVirtualInput() {
+        if (!virtualInput) return;
+        try {
+            virtualInput.blur();
+        } catch (e) { }
+        cursorVisible = false;
+        updateScreenDisplay();
+        if (renderer && renderer.domElement) {
+            try {
+                renderer.domElement.focus();
+            } catch (e) { }
+        }
+    }
+
+    function focusVirtualInput(touchX, touchY) {
+        if (!virtualInput) return;
+        const targetFieldKey = getActiveFieldKey();
+        if (targetFieldKey && formValues[currentMode]) {
+            const val = formValues[currentMode][targetFieldKey] || '';
+            if (virtualInput.value !== val) {
+                virtualInput.value = val;
+            }
+        }
+
+        if (typeof touchX === 'number' && typeof touchY === 'number') {
+            virtualInput.style.left = Math.max(0, Math.min(window.innerWidth - 30, touchX - 10)) + 'px';
+            virtualInput.style.top = Math.max(0, Math.min(window.innerHeight - 30, touchY - 10)) + 'px';
+        }
+
+        if (targetFieldKey === 'email') {
+            virtualInput.type = 'email';
+            virtualInput.inputMode = 'email';
+        } else {
+            virtualInput.type = 'text';
+            virtualInput.inputMode = 'text';
+        }
+
+        const doFocus = () => {
+            try {
+                virtualInput.focus({ preventScroll: true });
+                if (typeof virtualInput.setSelectionRange === 'function') {
+                    const len = (virtualInput.value || '').length;
+                    virtualInput.setSelectionRange(len, len);
+                }
+            } catch (e) {
+                try { virtualInput.focus(); } catch (err) { }
+            }
+        };
+
+        doFocus();
+        setTimeout(doFocus, 30);
+        setTimeout(doFocus, 100);
+    }
+
+    function handleDirectKeyInput(event) {
+        if (!event || typeof event.key === 'undefined' || event.key === null) return;
+        const key = event.key;
+        if (typeof key !== 'string' || !key) return;
+
+        if (key === 'Tab') {
+            event.preventDefault();
+            const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
+            activeFieldIndex = (activeFieldIndex + 1) % maxFields;
+            setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
+            focusVirtualInput();
+            return;
+        }
+
+        if (currentMode === 'INFO') {
+            if (key === 'Enter' || key === 'Escape' || key === ' ') {
+                event.preventDefault();
+                switchMode(previousMode || 'LOGIN');
+                return;
+            }
+        }
+
+        if (key === 'Enter') {
+            event.preventDefault();
+            executeCurrentMode();
+            return;
+        }
+
+        let targetFieldKey = getActiveFieldKey();
+        if (!targetFieldKey) return;
+
+        if (!formValues[currentMode]) {
+            formValues[currentMode] = {};
+        }
+        let currentVal = formValues[currentMode][targetFieldKey] || '';
+
+        if (key === 'Backspace') {
+            event.preventDefault();
+            formValues[currentMode][targetFieldKey] = currentVal.slice(0, -1);
+            if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
             syncModalInputsFrom3D();
             updateScreenDisplay();
-        });
-    };
-
-    bindInput('m-login-username', 'LOGIN', 'username');
-    bindInput('m-login-password', 'LOGIN', 'password');
-    bindInput('m-reg-email', 'REGISTER', 'email');
-    bindInput('m-reg-username', 'REGISTER', 'username');
-    bindInput('m-del-username', 'DEREGISTER', 'username');
-    bindInput('m-del-email', 'DEREGISTER', 'email');
-    bindInput('m-del-reason', 'DEREGISTER', 'reason');
-}
-
-function syncModalInputsFrom3D() {
-    const setVal = (id, val) => {
-        const el = document.getElementById(id);
-        if (el && el.value !== val) el.value = val || '';
-    };
-
-    setVal('m-login-username', formValues.LOGIN.username);
-    setVal('m-login-password', formValues.LOGIN.password);
-    setVal('m-reg-email', formValues.REGISTER.email);
-    setVal('m-reg-username', formValues.REGISTER.username);
-    setVal('m-del-username', formValues.DEREGISTER.username);
-    setVal('m-del-email', formValues.DEREGISTER.email);
-    setVal('m-del-reason', formValues.DEREGISTER.reason);
-}
-
-function handleScreenUVClick(uv, clickX, clickY) {
-    const pxX = uv.x * 1024;
-    const pxY = (1 - uv.y) * 512;
-
-    // Felső Dedikált Tab-sor kattintása (Y: 60 - 116)
-    if (pxY >= 55 && pxY <= 116) {
-        blurVirtualInput();
-        if (pxX >= 45 && pxX < 350) {
-            switchMode('LOGIN');
-            return;
-        } else if (pxX >= 350 && pxX < 665) {
-            switchMode('REGISTER');
-            return;
-        } else if (pxX >= 665 && pxX <= 985) {
-            switchMode('DEREGISTER');
-            return;
-        }
-    }
-
-    // Info mód bezáró gomb
-    if (currentMode === 'INFO') {
-        if (pxY >= 320 && pxY <= 395 && pxX >= 45 && pxX <= 979) {
-            blurVirtualInput();
-            switchMode(previousMode || 'LOGIN');
-            return;
-        }
-    }
-
-    // Mezők és Szem-ikon kiválasztása
-    if (currentMode === 'LOGIN') {
-        if (pxY >= 225 && pxY <= 295 && pxX >= 890 && pxX <= 985) {
-            togglePasswordVisibility();
             return;
         }
 
-        if (pxY >= 125 && pxY <= 215) {
-            activeFieldIndex = 0;
-            setTerminalStatus("status_field_selected", false, 1);
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY > 215 && pxY <= 305) {
-            activeFieldIndex = 1;
-            setTerminalStatus("status_field_selected", false, 2);
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY >= 310 && pxY <= 390) {
-            blurVirtualInput();
-            executeCurrentMode();
-        } else {
-            focusVirtualInput(clickX, clickY);
-        }
-    } else if (currentMode === 'REGISTER') {
-        if (pxY >= 125 && pxY <= 215) {
-            activeFieldIndex = 0;
-            setTerminalStatus("status_field_selected", false, 1);
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY > 215 && pxY <= 305) {
-            activeFieldIndex = 1;
-            setTerminalStatus("status_field_selected", false, 2);
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY >= 310 && pxY <= 390) {
-            blurVirtualInput();
-            executeCurrentMode();
-        } else {
-            focusVirtualInput(clickX, clickY);
-        }
-    } else if (currentMode === 'DEREGISTER') {
-        if (pxY >= 120 && pxY <= 188) {
-            activeFieldIndex = 0;
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY > 188 && pxY <= 252) {
-            activeFieldIndex = 1;
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY > 252 && pxY <= 316) {
-            activeFieldIndex = 2;
-            focusVirtualInput(clickX, clickY);
-        } else if (pxY >= 320 && pxY <= 395) {
-            blurVirtualInput();
-            executeCurrentMode();
-        } else {
-            focusVirtualInput(clickX, clickY);
+        if (key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
+            formValues[currentMode][targetFieldKey] = currentVal + key;
+            if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
+            var L = getL();
+            terminalStatusText = (L.status_editing || "EDITING // ") + targetFieldKey.toUpperCase();
+            currentStatusKey = null;
+            isStatusError = false;
+            syncModalInputsFrom3D();
+            updateScreenDisplay();
         }
     }
 
-    updateScreenDisplay();
-}
-
-function blurVirtualInput() {
-    if (!virtualInput) return;
-    try {
-        virtualInput.blur();
-    } catch(e) {}
-    cursorVisible = false;
-    updateScreenDisplay();
-    if (renderer && renderer.domElement) {
-        try {
-            renderer.domElement.focus();
-        } catch(e) {}
-    }
-}
-
-function focusVirtualInput(touchX, touchY) {
-    if (!virtualInput) return;
-    const targetFieldKey = getActiveFieldKey();
-    if (targetFieldKey && formValues[currentMode]) {
-        const val = formValues[currentMode][targetFieldKey] || '';
-        if (virtualInput.value !== val) {
-            virtualInput.value = val;
-        }
-    }
-
-    if (typeof touchX === 'number' && typeof touchY === 'number') {
-        virtualInput.style.left = Math.max(0, Math.min(window.innerWidth - 30, touchX - 10)) + 'px';
-        virtualInput.style.top = Math.max(0, Math.min(window.innerHeight - 30, touchY - 10)) + 'px';
-    }
-
-    if (targetFieldKey === 'email') {
-        virtualInput.type = 'email';
-        virtualInput.inputMode = 'email';
-    } else {
-        virtualInput.type = 'text';
-        virtualInput.inputMode = 'text';
-    }
-
-    const doFocus = () => {
-        try {
-            virtualInput.focus({ preventScroll: true });
-            if (typeof virtualInput.setSelectionRange === 'function') {
-                const len = (virtualInput.value || '').length;
-                virtualInput.setSelectionRange(len, len);
-            }
-        } catch(e) {
-            try { virtualInput.focus(); } catch(err) {}
-        }
-    };
-
-    doFocus();
-    setTimeout(doFocus, 30);
-    setTimeout(doFocus, 100);
-}
-
-function handleDirectKeyInput(event) {
-    if (!event || typeof event.key === 'undefined' || event.key === null) return;
-    const key = event.key;
-    if (typeof key !== 'string' || !key) return;
-
-    if (key === 'Tab') {
-        event.preventDefault();
-        const maxFields = (currentMode === 'DEREGISTER') ? 3 : 2;
-        activeFieldIndex = (activeFieldIndex + 1) % maxFields;
-        setTerminalStatus("status_field_switched", false, activeFieldIndex + 1);
-        focusVirtualInput();
-        return;
-    }
-
-    if (currentMode === 'INFO') {
-        if (key === 'Enter' || key === 'Escape' || key === ' ') {
-            event.preventDefault();
-            switchMode(previousMode || 'LOGIN');
-            return;
-        }
-    }
-
-    if (key === 'Enter') {
-        event.preventDefault();
-        executeCurrentMode();
-        return;
-    }
-
-    let targetFieldKey = getActiveFieldKey();
-    if (!targetFieldKey) return;
-
-    if (!formValues[currentMode]) {
-        formValues[currentMode] = {};
-    }
-    let currentVal = formValues[currentMode][targetFieldKey] || '';
-
-    if (key === 'Backspace') {
-        event.preventDefault();
-        formValues[currentMode][targetFieldKey] = currentVal.slice(0, -1);
-        if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
+    function syncVirtualInput(val) {
+        let targetFieldKey = getActiveFieldKey();
+        if (!targetFieldKey) return;
+        if (!formValues[currentMode]) formValues[currentMode] = {};
+        formValues[currentMode][targetFieldKey] = val || '';
         syncModalInputsFrom3D();
         updateScreenDisplay();
-        return;
     }
 
-    if (key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
-        formValues[currentMode][targetFieldKey] = currentVal + key;
-        if (virtualInput) virtualInput.value = formValues[currentMode][targetFieldKey];
-        var L = getL();
-        terminalStatusText = (L.status_editing || "EDITING // ") + targetFieldKey.toUpperCase();
-        currentStatusKey = null;
+    function getActiveFieldKey() {
+        if (currentMode === 'LOGIN') {
+            return (activeFieldIndex === 0) ? 'username' : 'password';
+        } else if (currentMode === 'REGISTER') {
+            return (activeFieldIndex === 0) ? 'email' : 'username';
+        } else if (currentMode === 'DEREGISTER') {
+            if (activeFieldIndex === 0) return 'username';
+            if (activeFieldIndex === 1) return 'email';
+            return 'reason';
+        }
+        return null;
+    }
+
+    // --- MÓDVÁLTÁS ---
+    function switchMode(mode) {
+        if (currentMode !== 'INFO' && mode !== 'INFO') {
+            previousMode = currentMode;
+        }
+        currentMode = mode;
+        activeFieldIndex = 0;
         isStatusError = false;
+
+        document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.modal-form-view').forEach(f => f.style.display = 'none');
+
+        if (mode === 'LOGIN') {
+            const b = document.getElementById('modal-tab-login');
+            if (b) b.classList.add('active');
+            const f = document.getElementById('modal-form-login');
+            if (f) f.style.display = 'block';
+            setTerminalStatus("status_login_mode", false);
+        } else if (mode === 'REGISTER') {
+            const b = document.getElementById('modal-tab-register');
+            if (b) b.classList.add('active');
+            const f = document.getElementById('modal-form-register');
+            if (f) f.style.display = 'block';
+            setTerminalStatus("status_reg_mode", false);
+        } else if (mode === 'DEREGISTER') {
+            const b = document.getElementById('modal-tab-deregister');
+            if (b) b.classList.add('active');
+            const f = document.getElementById('modal-form-deregister');
+            if (f) f.style.display = 'block';
+            setTerminalStatus("status_del_mode", false);
+        } else if (mode === 'INFO') {
+            setTerminalStatus("status_info_mode", false);
+        }
+
         syncModalInputsFrom3D();
         updateScreenDisplay();
     }
-}
 
-function syncVirtualInput(val) {
-    let targetFieldKey = getActiveFieldKey();
-    if (!targetFieldKey) return;
-    if (!formValues[currentMode]) formValues[currentMode] = {};
-    formValues[currentMode][targetFieldKey] = val || '';
-    syncModalInputsFrom3D();
-    updateScreenDisplay();
-}
-
-function getActiveFieldKey() {
-    if (currentMode === 'LOGIN') {
-        return (activeFieldIndex === 0) ? 'username' : 'password';
-    } else if (currentMode === 'REGISTER') {
-        return (activeFieldIndex === 0) ? 'email' : 'username';
-    } else if (currentMode === 'DEREGISTER') {
-        if (activeFieldIndex === 0) return 'username';
-        if (activeFieldIndex === 1) return 'email';
-        return 'reason';
-    }
-    return null;
-}
-
-// --- MÓDVÁLTÁS ---
-function switchMode(mode) {
-    if (currentMode !== 'INFO' && mode !== 'INFO') {
-        previousMode = currentMode;
-    }
-    currentMode = mode;
-    activeFieldIndex = 0;
-    isStatusError = false;
-
-    document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.modal-form-view').forEach(f => f.style.display = 'none');
-
-    if (mode === 'LOGIN') {
-        const b = document.getElementById('modal-tab-login');
-        if (b) b.classList.add('active');
-        const f = document.getElementById('modal-form-login');
-        if (f) f.style.display = 'block';
-        setTerminalStatus("status_login_mode", false);
-    } else if (mode === 'REGISTER') {
-        const b = document.getElementById('modal-tab-register');
-        if (b) b.classList.add('active');
-        const f = document.getElementById('modal-form-register');
-        if (f) f.style.display = 'block';
-        setTerminalStatus("status_reg_mode", false);
-    } else if (mode === 'DEREGISTER') {
-        const b = document.getElementById('modal-tab-deregister');
-        if (b) b.classList.add('active');
-        const f = document.getElementById('modal-form-deregister');
-        if (f) f.style.display = 'block';
-        setTerminalStatus("status_del_mode", false);
-    } else if (mode === 'INFO') {
-        setTerminalStatus("status_info_mode", false);
-    }
-
-    syncModalInputsFrom3D();
-    updateScreenDisplay();
-}
-
-function toggle3DInfoMode() {
-    if (currentMode === 'INFO') {
-        switchMode(previousMode || 'LOGIN');
-    } else {
-        previousMode = currentMode;
-        switchMode('INFO');
-    }
-}
-
-function executeCurrentMode() {
-    if (currentMode === 'LOGIN') executeLogin();
-    else if (currentMode === 'REGISTER') executeRegister();
-    else if (currentMode === 'DEREGISTER') executeDeregister();
-}
-
-// --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
-function handleLangSwitch(lang) {
-    window.currentLang = lang;
-    if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('siteLang', lang);
-    }
-    if (typeof window.switchLanguage === 'function') {
-        window.switchLanguage(lang);
-    } else if (typeof switchLanguage === 'function') {
-        switchLanguage(lang);
-    }
-    if (typeof window.updateLanguageUI === 'function') {
-        window.updateLanguageUI();
-    }
-    updateActiveLangButtonsInModal();
-    updateScreenDisplay();
-}
-
-function updateActiveLangButtonsInModal() {
-    const lang = window.currentLang || localStorage.getItem('siteLang') || 'hu';
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        const btnLang = btn.getAttribute('data-lang');
-        btn.classList.toggle('active', btnLang === lang);
-    });
-}
-
-// --- KAMERA GYORSPOZÍCIÓK ---
-function focusOnScreen() {
-    if (!controls) return;
-    camera.position.set(0, 0.25, 2.2);
-    controls.target.set(0, 0.15, 0);
-    controls.update();
-}
-
-function resetCamera() {
-    if (!controls) return;
-    camera.position.set(0, 0.35, 2.6);
-    controls.target.set(0, 0.15, 0);
-    controls.update();
-}
-
-// --- INFÓ MODAL KEZELŐ ---
-function toggleInfoModal() {
-    const modal = document.getElementById('info-modal');
-    if (!modal) return;
-    if (modal.style.display === 'flex') {
-        modal.style.display = 'none';
-    } else {
-        modal.style.display = 'flex';
-        syncModalInputsFrom3D();
-        updateActiveLangButtonsInModal();
-    }
-}
-
-function openInfoModalAuto() {
-    const modal = document.getElementById('info-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-        syncModalInputsFrom3D();
-        updateActiveLangButtonsInModal();
-    }
-}
-
-function onModalBackdropClick(e) {
-    if (e.target.id === 'info-modal') {
-        toggleInfoModal();
-    }
-}
-
-// --- BACKEND MŰVELETEK ---
-// --- ROBUSZTUS BACKEND KOMMUNIKÁCIÓ & JSON ÉRTELMEZŐ ---
-function parseJsonSafe(text) {
-    if (!text) return null;
-    try {
-        return JSON.parse(text);
-    } catch (e) {}
-
-    var start = -1;
-    var depth = 0;
-    var inString = false;
-    var escaped = false;
-
-    for (var i = 0; i < text.length; i++) {
-        var ch = text.charAt(i);
-        if (inString) {
-            if (escaped) { escaped = false; continue; }
-            if (ch === '\\') { escaped = true; continue; }
-            if (ch === '"') { inString = false; }
-            continue;
+    function toggle3DInfoMode() {
+        if (currentMode === 'INFO') {
+            switchMode(previousMode || 'LOGIN');
+        } else {
+            previousMode = currentMode;
+            switchMode('INFO');
         }
-        if (ch === '"') { inString = true; continue; }
-        if (ch === '{') {
-            if (depth === 0) start = i;
-            depth++;
-            continue;
+    }
+
+    function executeCurrentMode() {
+        if (currentMode === 'LOGIN') executeLogin();
+        else if (currentMode === 'REGISTER') executeRegister();
+        else if (currentMode === 'DEREGISTER') executeDeregister();
+    }
+
+    // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
+    function handleLangSwitch(lang) {
+        window.currentLang = lang;
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('siteLang', lang);
         }
-        if (ch === '}') {
-            if (depth > 0) {
-                depth--;
-                if (depth === 0 && start !== -1) {
-                    var candidate = text.substring(start, i + 1);
-                    try {
-                        return JSON.parse(candidate);
-                    } catch (err2) {
-                        start = -1;
+        if (typeof window.switchLanguage === 'function') {
+            window.switchLanguage(lang);
+        } else if (typeof switchLanguage === 'function') {
+            switchLanguage(lang);
+        }
+        if (typeof window.updateLanguageUI === 'function') {
+            window.updateLanguageUI();
+        }
+        updateActiveLangButtonsInModal();
+        updateScreenDisplay();
+    }
+
+    function updateActiveLangButtonsInModal() {
+        const lang = window.currentLang || localStorage.getItem('siteLang') || 'hu';
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            const btnLang = btn.getAttribute('data-lang');
+            btn.classList.toggle('active', btnLang === lang);
+        });
+    }
+
+    // --- KAMERA GYORSPOZÍCIÓK ---
+    function focusOnScreen() {
+        if (!controls) return;
+        camera.position.set(0, 0.25, 2.2);
+        controls.target.set(0, 0.15, 0);
+        controls.update();
+    }
+
+    function resetCamera() {
+        if (!controls) return;
+        camera.position.set(0, 0.35, 2.6);
+        controls.target.set(0, 0.15, 0);
+        controls.update();
+    }
+
+    // --- INFÓ MODAL KEZELŐ ---
+    function toggleInfoModal() {
+        const modal = document.getElementById('info-modal');
+        if (!modal) return;
+        if (modal.style.display === 'flex') {
+            modal.style.display = 'none';
+        } else {
+            modal.style.display = 'flex';
+            syncModalInputsFrom3D();
+            updateActiveLangButtonsInModal();
+        }
+    }
+
+    function openInfoModalAuto() {
+        const modal = document.getElementById('info-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            syncModalInputsFrom3D();
+            updateActiveLangButtonsInModal();
+        }
+    }
+
+    function onModalBackdropClick(e) {
+        if (e.target.id === 'info-modal') {
+            toggleInfoModal();
+        }
+    }
+
+    // --- BACKEND MŰVELETEK ---
+    // --- ROBUSZTUS BACKEND KOMMUNIKÁCIÓ & JSON ÉRTELMEZŐ ---
+    function parseJsonSafe(text) {
+        if (!text) return null;
+        try {
+            return JSON.parse(text);
+        } catch (e) { }
+
+        var start = -1;
+        var depth = 0;
+        var inString = false;
+        var escaped = false;
+
+        for (var i = 0; i < text.length; i++) {
+            var ch = text.charAt(i);
+            if (inString) {
+                if (escaped) { escaped = false; continue; }
+                if (ch === '\\') { escaped = true; continue; }
+                if (ch === '"') { inString = false; }
+                continue;
+            }
+            if (ch === '"') { inString = true; continue; }
+            if (ch === '{') {
+                if (depth === 0) start = i;
+                depth++;
+                continue;
+            }
+            if (ch === '}') {
+                if (depth > 0) {
+                    depth--;
+                    if (depth === 0 && start !== -1) {
+                        var candidate = text.substring(start, i + 1);
+                        try {
+                            return JSON.parse(candidate);
+                        } catch (err2) {
+                            start = -1;
+                        }
                     }
                 }
             }
         }
-    }
-    return null;
-}
-
-function callBackendApi(action, dataObj, onSuccess, onFailure) {
-    const payload = {
-        action: action,
-        data: Array.isArray(dataObj) ? dataObj : [dataObj],
-        token: localStorage.getItem('ebookPiratesToken') || ''
-    };
-
-    fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.text())
-    .then(rawText => {
-        const parsed = parseJsonSafe(rawText);
-        if (!parsed) {
-            if (rawText && rawText.includes('<title>')) {
-                const titleMatch = rawText.match(/<title>(.*?)<\/title>/i);
-                const titleText = titleMatch ? titleMatch[1] : "Szerverhiba";
-                throw new Error(titleText);
-            }
-            throw new Error("A szerver válasza nem értelmezhető adat.");
-        }
-        if (onSuccess) onSuccess(parsed);
-    })
-    .catch(err => {
-        if (onFailure) onFailure(err);
-    });
-}
-
-function setTerminalStatus(keyOrText, isError = false, param = '') {
-    isStatusError = isError;
-    if (typeof keyOrText === 'string' && keyOrText.startsWith('status_')) {
-        currentStatusKey = keyOrText;
-        currentStatusParam = param;
-    } else {
-        currentStatusKey = null;
-        terminalStatusText = keyOrText;
-    }
-    updateScreenDisplay();
-}
-
-function executeLogin() {
-    const u = formValues.LOGIN.username.trim();
-    const p = formValues.LOGIN.password.trim();
-
-    if (!u || !p) {
-        setTerminalStatus("status_err_login_empty", true);
-        return;
+        return null;
     }
 
-    setTerminalStatus("status_auth_checking", false);
+    function callBackendApi(action, dataObj, onSuccess, onFailure) {
+        const payload = {
+            action: action,
+            data: Array.isArray(dataObj) ? dataObj : [dataObj],
+            token: localStorage.getItem('ebookPiratesToken') || ''
+        };
 
-    callBackendApi('performLogin', { name: u, jelszo: p }, (data) => {
-        if (data && data.success) {
-            const user = data.user || {};
-            const startPage = user.startPage || (user.tutorialCompleted ? 'kikoto_oldal' : 'tutorial_oldal');
-            const isTutorial = (startPage.indexOf('tutorial') !== -1);
-            setTerminalStatus("status_login_success", false);
-
-            try {
-                if (data.token) {
-                    localStorage.setItem('ebookPiratesToken', data.token);
-                    sessionStorage.setItem('ebookPiratesToken', data.token);
+        fetch(BACKEND_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.text())
+            .then(rawText => {
+                const parsed = parseJsonSafe(rawText);
+                if (!parsed) {
+                    if (rawText && rawText.includes('<title>')) {
+                        const titleMatch = rawText.match(/<title>(.*?)<\/title>/i);
+                        const titleText = titleMatch ? titleMatch[1] : "Szerverhiba";
+                        throw new Error(titleText);
+                    }
+                    throw new Error("A szerver válasza nem értelmezhető adat.");
                 }
-                localStorage.setItem('ebook_pirates_username', user.name || u);
-                if (user.email) localStorage.setItem('ebook_pirates_user_email', user.email);
-                if (user.activeShipId) localStorage.setItem('ebook_pirates_active_ship_id', user.activeShipId);
-                sessionStorage.setItem('ebook_is_logged_in', 'true');
-                sessionStorage.setItem('ebookPiratesLoginName', user.name || u);
-                sessionStorage.setItem('ebookPiratesLoginPass', p);
-                sessionStorage.setItem('cached_user_data', JSON.stringify(user));
-            } catch(e) {}
-
-            // Háttérbeli előtöltés az animáció 3-4 másodperce alatt
-            try {
-                const targetHtml = (startPage.indexOf('.html') === -1) ? (startPage + '.html') : startPage;
-                fetch(targetHtml).catch(() => {});
-            } catch(e) {}
-
-            // 🚀 Dinamikus űrhajó kamera-mozgás indítása a gömbpalást bolygója felé
-            startHyperspaceCinematic(() => {
-                const auth3d = document.getElementById('auth-3d-container');
-                if (auth3d) auth3d.style.display = 'none';
-
-                if (typeof window.initializeApp === 'function') {
-                    window.initializeApp(user);
-                } else if (typeof initializeApp === 'function') {
-                    initializeApp(user);
-                } else {
-                    window.location.href = 'index.html';
-                }
+                if (onSuccess) onSuccess(parsed);
+            })
+            .catch(err => {
+                if (onFailure) onFailure(err);
             });
+    }
+
+    function setTerminalStatus(keyOrText, isError = false, param = '') {
+        isStatusError = isError;
+        if (typeof keyOrText === 'string' && keyOrText.startsWith('status_')) {
+            currentStatusKey = keyOrText;
+            currentStatusParam = param;
         } else {
-            const msg = (data && (data.message || data.error)) ? (data.message || data.error) : "Érvénytelen kalóznév vagy jelszó!";
-            var L = getL(); setTerminalStatus((L.status_rejected || "ELUTASÍTVA // ") + msg.toUpperCase(), true);
+            currentStatusKey = null;
+            terminalStatusText = keyOrText;
         }
-    }, (err) => {
-        var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
-    });
-}
-
-function executeRegister() {
-    const em = formValues.REGISTER.email.trim();
-    const un = formValues.REGISTER.username.trim();
-
-    if (!em || !un) {
-        setTerminalStatus("status_err_reg_empty", true);
-        return;
-    }
-
-    setTerminalStatus("status_reg_progress", false);
-
-    callBackendApi('submitRegistrationRequest', { email: em, name: un }, (data) => {
-        if (data && data.success) {
-            setTerminalStatus("status_reg_success", false);
-        } else {
-            setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen regisztráció!"), true);
-        }
-    }, (err) => {
-        var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
-    });
-}
-
-function executeDeregister() {
-    const un = formValues.DEREGISTER.username.trim();
-    const em = formValues.DEREGISTER.email.trim();
-    const rz = formValues.DEREGISTER.reason.trim();
-
-    if (!un || !em || !rz) {
-        setTerminalStatus("status_err_del_empty", true);
-        return;
-    }
-
-    setTerminalStatus("status_del_progress", false);
-
-    callBackendApi('submitDeletionRequest', { name: un, email: em, reason: rz }, (data) => {
-        if (data && data.success) {
-            setTerminalStatus("status_del_success", false);
-        } else {
-            setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen leléptetés!"), true);
-        }
-    }, (err) => {
-        var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
-    });
-}
-
-// --- 🚀 HIPERUGRÁS & KAMERA-ANIMÁCIÓS MOTOR ---
-let isCinematicFlight = false;
-let flightStartTime = 0;
-let flightDuration = 3800; // 3.8 mp dinamikus űrhajó gyorsulás
-let flightPathCurve = null;
-let flightStartTarget = null;
-let flightFinalTarget = null;
-let flightOnComplete = null;
-let initialCameraFov = 50;
-
-function startHyperspaceCinematic(onComplete) {
-    if (typeof preloadAllSubpages === 'function') preloadAllSubpages();
-    if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
-    if (!camera || !scene) {
-        if (onComplete) onComplete();
-        return;
-    }
-
-    if (controls) controls.enabled = false;
-    blurVirtualInput();
-
-    const infoModal = document.getElementById('info-modal');
-    if (infoModal) infoModal.style.display = 'none';
-
-    initialCameraFov = camera.fov || 50;
-
-    // 1. Aktuális kamera- és fókuszpozíció rögzítése a validálás pillanatában
-    const currentPos = camera.position.clone();
-    const currentTarget = (controls && controls.target) ? controls.target.clone() : new THREE.Vector3(0, 0.15, 0);
-    const centerObstacle = new THREE.Vector3(0, 0.15, 0);
-
-    // 2. Pontos célpont kijelölése a köpeny forgásának pillanatnyi állása alapján (EGYSZER, a validálás után)
-    const planetLocalPos = new THREE.Vector3(1.0, 2.3, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
-    const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, 2.3, 1.0);
-
-    flightStartTarget = currentTarget.clone();
-    flightFinalTarget = targetWorldPos.clone();
-
-    // 3. Irányvektorok meghatározása a sima kikerülő ívhez
-    const dirToTarget = targetWorldPos.clone().sub(centerObstacle).normalize();
-    let dirFromCenter = currentPos.clone().sub(centerObstacle);
-    if (dirFromCenter.lengthSq() < 0.01) {
-        dirFromCenter.set(0, 0, 1);
-    }
-    dirFromCenter.normalize();
-
-    // Kitérési oldalirány a konzol bal széle mellé
-    const up = new THREE.Vector3(0, 1, 0);
-    let sideDir = new THREE.Vector3().crossVectors(up, dirFromCenter).normalize();
-    if (sideDir.lengthSq() < 0.001) {
-        sideDir.set(-1, 0, 0);
-    }
-
-    // 4. Egyetlen, szép, folytonos ívű kikerülő röppálya kiszámítása (Centripetal Catmull-Rom spline)
-    const p0 = currentPos.clone();
-    const p1 = currentPos.clone()
-        .add(dirFromCenter.clone().multiplyScalar(1.5))
-        .add(new THREE.Vector3(0, 0.8, 0))
-        .add(sideDir.clone().multiplyScalar(1.4));
-    
-    const flankDir = dirFromCenter.clone().multiplyScalar(0.25).add(sideDir.clone().multiplyScalar(0.95)).normalize();
-    const p2 = centerObstacle.clone()
-        .add(flankDir.clone().multiplyScalar(4.8))
-        .add(new THREE.Vector3(0, 1.6, 0));
-
-    const alignDir = flankDir.clone().multiplyScalar(0.35).add(dirToTarget.clone().multiplyScalar(0.65)).normalize();
-    const p3 = centerObstacle.clone()
-        .add(alignDir.clone().multiplyScalar(11.0))
-        .add(new THREE.Vector3(0, 2.2, 0));
-
-    const p4 = centerObstacle.clone()
-        .add(dirToTarget.clone().multiplyScalar(19.5))
-        .add(new THREE.Vector3(0, 2.2, 0));
-
-    const p5 = targetWorldPos.clone().multiplyScalar(26.2 / SPHERE_RADIUS);
-
-    // Centripetális spline: kizárja a szaggatást, hirtelen ugrásokat és túllendüléseket
-    flightPathCurve = new THREE.CatmullRomCurve3([p0, p1, p2, p3, p4, p5], false, 'centripetal');
-
-    isCinematicFlight = true;
-    flightStartTime = performance.now();
-    flightDuration = 3800; // ~3.8 mp
-    flightOnComplete = onComplete;
-}
-function reset3DTerminalState() {
-    isCinematicFlight = false;
-    if (camera) {
-        camera.position.set(0, 0.35, 2.6);
-        camera.fov = 45;
-        camera.updateProjectionMatrix();
-    }
-    if (controls) {
-        controls.enabled = true;
-        controls.target.set(0, 0.15, 0);
-        controls.update();
-    }
-    if (renderer && renderer.domElement) {
-        renderer.domElement.style.filter = 'none';
-    }
-    terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
-    isStatusError = false;
-    switchMode('LOGIN');
-    updateScreenDisplay();
-}
-
-// --- RENDER & ANIMÁCIÓS CIKLUS ---
-function onWindowResize() {
-    if (!camera || !renderer) return;
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function animate(timestamp) {
-    requestAnimationFrame(animate);
-
-    // 1. Kozmosz háttér lassú forgása (csak a normál nézetben, a hiperugrás alatt rögzítve marad a kijelölt célhoz)
-    if (cosmosSphere && !isCinematicFlight) {
-        cosmosSphere.rotation.y += 0.0002;
-        cosmosSphere.rotation.x += 0.00004;
-    }
-
-    if (meteorManager) {
-        meteorManager.update();
-    }
-
-    if (timestamp - lastCursorBlink > 500) {
-        cursorVisible = !cursorVisible;
-        lastCursorBlink = timestamp;
         updateScreenDisplay();
     }
 
-    // 🚀 Dinamikus Űrhajó Kamera Hiperhajtómű Animáció
-    if (isCinematicFlight && flightPathCurve && flightStartTarget && flightFinalTarget) {
-        const elapsed = timestamp - flightStartTime;
-        let progress = Math.min(1.0, elapsed / flightDuration);
+    function executeLogin() {
+        const u = formValues.LOGIN.username.trim();
+        const p = formValues.LOGIN.password.trim();
 
-        // Kétfázisú sima gyorsulási görbe (Cubic Ease In-Out)
-        const easeProgress = progress < 0.5
-            ? 4 * Math.pow(progress, 3)
-            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        const clampedT = Math.max(0, Math.min(1, easeProgress));
-
-        const newPos = flightPathCurve.getPoint(clampedT);
-        camera.position.copy(newPos);
-
-        // Sima, elegáns fókuszpont átmenet: a konzolról folyamatosan átfordul a fix kijelölt bolygóra
-        const smoothLookT = Math.min(1.0, Math.pow(clampedT, 1.25));
-        const currentLookTarget = new THREE.Vector3().lerpVectors(flightStartTarget, flightFinalTarget, smoothLookT);
-        camera.lookAt(currentLookTarget);
-        if (controls) controls.target.copy(currentLookTarget);
-
-        // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 74 -> 50)
-        if (progress > 0.2) {
-            const fovFactor = Math.sin((progress - 0.2) / 0.8 * Math.PI);
-            camera.fov = initialCameraFov + fovFactor * 24;
-            camera.updateProjectionMatrix();
+        if (!u || !p) {
+            setTerminalStatus("status_err_login_empty", true);
+            return;
         }
 
-        // Kiszürkülés (Grayscale) és finom sötétülés mielőtt eléri a gömbpalástot (progress > 0.58)
-        if (renderer && renderer.domElement) {
-            if (progress > 0.58) {
-                const grayProgress = (progress - 0.58) / 0.42; // 0.0 -> 1.0
-                const grayVal = Math.min(100, Math.floor(grayProgress * 100));
-                const brightVal = (1.0 - grayProgress * 0.40).toFixed(2);
-                renderer.domElement.style.filter = 'grayscale(' + grayVal + '%) brightness(' + brightVal + ')';
-            }
-        }
+        setTerminalStatus("status_auth_checking", false);
 
-        if (progress >= 1.0) {
-            isCinematicFlight = false;
-            if (renderer && renderer.domElement) {
-                renderer.domElement.style.filter = 'none';
+        callBackendApi('performLogin', { name: u, jelszo: p }, (data) => {
+            if (data && data.success) {
+                const user = data.user || {};
+                const startPage = user.startPage || (user.tutorialCompleted ? 'kikoto_oldal' : 'tutorial_oldal');
+                const isTutorial = (startPage.indexOf('tutorial') !== -1);
+                setTerminalStatus("status_login_success", false);
+
+                try {
+                    if (data.token) {
+                        localStorage.setItem('ebookPiratesToken', data.token);
+                        sessionStorage.setItem('ebookPiratesToken', data.token);
+                    }
+                    localStorage.setItem('ebook_pirates_username', user.name || u);
+                    if (user.email) localStorage.setItem('ebook_pirates_user_email', user.email);
+                    if (user.activeShipId) localStorage.setItem('ebook_pirates_active_ship_id', user.activeShipId);
+                    sessionStorage.setItem('ebook_is_logged_in', 'true');
+                    sessionStorage.setItem('ebookPiratesLoginName', user.name || u);
+                    sessionStorage.setItem('ebookPiratesLoginPass', p);
+                    sessionStorage.setItem('cached_user_data', JSON.stringify(user));
+                } catch (e) { }
+
+                // Háttérbeli előtöltés az animáció 3-4 másodperce alatt
+                try {
+                    const targetHtml = (startPage.indexOf('.html') === -1) ? (startPage + '.html') : startPage;
+                    fetch(targetHtml).catch(() => { });
+                } catch (e) { }
+
+                // 🚀 Dinamikus űrhajó kamera-mozgás indítása a gömbpalást bolygója felé
+                startHyperspaceCinematic(() => {
+                    const auth3d = document.getElementById('auth-3d-container');
+                    if (auth3d) auth3d.style.display = 'none';
+
+                    if (typeof window.initializeApp === 'function') {
+                        window.initializeApp(user);
+                    } else if (typeof initializeApp === 'function') {
+                        initializeApp(user);
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                });
+            } else {
+                const msg = (data && (data.message || data.error)) ? (data.message || data.error) : "Érvénytelen kalóznév vagy jelszó!";
+                var L = getL(); setTerminalStatus((L.status_rejected || "ELUTASÍTVA // ") + msg.toUpperCase(), true);
             }
-            if (typeof flightOnComplete === 'function') {
-                const cb = flightOnComplete;
-                flightOnComplete = null;
-                cb();
-            }
-        }
-    } else {
-        if (controls) controls.update();
+        }, (err) => {
+            var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
+        });
     }
 
-    if (renderer && scene && camera) renderer.render(scene, camera);
-}
+    function executeRegister() {
+        const em = formValues.REGISTER.email.trim();
+        const un = formValues.REGISTER.username.trim();
 
-// Window exportok
-window.switchMode = switchMode;
-window.executeCurrentMode = executeCurrentMode;
-window.focusOnScreen = focusOnScreen;
-window.resetCamera = resetCamera;
-window.toggleInfoModal = toggleInfoModal;
-window.toggle3DInfoMode = toggle3DInfoMode;
-window.onModalBackdropClick = onModalBackdropClick;
-window.handleLangSwitch = handleLangSwitch;
-window.initThreeTerminal = initThree;
-window.setTerminalStatus = setTerminalStatus;
-window.blurVirtualInput = blurVirtualInput;
-window.focusVirtualInput = focusVirtualInput;
-window.startHyperspaceCinematic = startHyperspaceCinematic;
-window.reset3DTerminalState = reset3DTerminalState;
+        if (!em || !un) {
+            setTerminalStatus("status_err_reg_empty", true);
+            return;
+        }
+
+        setTerminalStatus("status_reg_progress", false);
+
+        callBackendApi('submitRegistrationRequest', { email: em, name: un }, (data) => {
+            if (data && data.success) {
+                setTerminalStatus("status_reg_success", false);
+            } else {
+                setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen regisztráció!"), true);
+            }
+        }, (err) => {
+            var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
+        });
+    }
+
+    function executeDeregister() {
+        const un = formValues.DEREGISTER.username.trim();
+        const em = formValues.DEREGISTER.email.trim();
+        const rz = formValues.DEREGISTER.reason.trim();
+
+        if (!un || !em || !rz) {
+            setTerminalStatus("status_err_del_empty", true);
+            return;
+        }
+
+        setTerminalStatus("status_del_progress", false);
+
+        callBackendApi('submitDeletionRequest', { name: un, email: em, reason: rz }, (data) => {
+            if (data && data.success) {
+                setTerminalStatus("status_del_success", false);
+            } else {
+                setTerminalStatus("HIBA: " + (data.message || data.error || "Sikertelen leléptetés!"), true);
+            }
+        }, (err) => {
+            var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
+        });
+    }
+
+    // --- 🚀 HIPERUGRÁS & KAMERA-ANIMÁCIÓS MOTOR ---
+    let isCinematicFlight = false;
+    let flightStartTime = 0;
+    let flightDuration = 3800; // 3.8 mp dinamikus űrhajó gyorsulás
+    let flightPathCurve = null;
+    let flightStartTarget = null;
+    let flightFinalTarget = null;
+    let flightOnComplete = null;
+    let initialCameraFov = 50;
+
+    function startHyperspaceCinematic(onComplete) {
+        if (typeof preloadAllSubpages === 'function') preloadAllSubpages();
+        if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
+        if (typeof preloadUserBaseData === 'function') preloadUserBaseData(window.currentUser);
+        if (!camera || !scene) {
+            if (onComplete) onComplete();
+            return;
+        }
+
+        if (controls) controls.enabled = false;
+        blurVirtualInput();
+
+        const infoModal = document.getElementById('info-modal');
+        if (infoModal) infoModal.style.display = 'none';
+
+        initialCameraFov = camera.fov || 50;
+
+        // 1. Aktuális kamera- és fókuszpozíció rögzítése a validálás pillanatában
+        const currentPos = camera.position.clone();
+        const currentTarget = (controls && controls.target) ? controls.target.clone() : new THREE.Vector3(0, 0.15, 0);
+        const centerObstacle = new THREE.Vector3(0, 0.15, 0);
+
+        // 2. Pontos célpont kijelölése a köpeny forgásának pillanatnyi állása alapján (EGYSZER, a validálás után)
+        const planetLocalPos = new THREE.Vector3(1.0, 2.3, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
+        const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, 2.3, 1.0);
+
+        flightStartTarget = currentTarget.clone();
+        flightFinalTarget = targetWorldPos.clone();
+
+        // 3. Irányvektorok meghatározása a sima kikerülő ívhez
+        const dirToTarget = targetWorldPos.clone().sub(centerObstacle).normalize();
+        let dirFromCenter = currentPos.clone().sub(centerObstacle);
+        if (dirFromCenter.lengthSq() < 0.01) {
+            dirFromCenter.set(0, 0, 1);
+        }
+        dirFromCenter.normalize();
+
+        // Kitérési oldalirány a konzol bal széle mellé
+        const up = new THREE.Vector3(0, 1, 0);
+        let sideDir = new THREE.Vector3().crossVectors(up, dirFromCenter).normalize();
+        if (sideDir.lengthSq() < 0.001) {
+            sideDir.set(-1, 0, 0);
+        }
+
+        // 4. Egyetlen, szép, folytonos ívű kikerülő röppálya kiszámítása (Centripetal Catmull-Rom spline)
+        const p0 = currentPos.clone();
+        const p1 = currentPos.clone()
+            .add(dirFromCenter.clone().multiplyScalar(1.5))
+            .add(new THREE.Vector3(0, 0.8, 0))
+            .add(sideDir.clone().multiplyScalar(1.4));
+
+        const flankDir = dirFromCenter.clone().multiplyScalar(0.25).add(sideDir.clone().multiplyScalar(0.95)).normalize();
+        const p2 = centerObstacle.clone()
+            .add(flankDir.clone().multiplyScalar(4.8))
+            .add(new THREE.Vector3(0, 1.6, 0));
+
+        const alignDir = flankDir.clone().multiplyScalar(0.35).add(dirToTarget.clone().multiplyScalar(0.65)).normalize();
+        const p3 = centerObstacle.clone()
+            .add(alignDir.clone().multiplyScalar(11.0))
+            .add(new THREE.Vector3(0, 2.2, 0));
+
+        const p4 = centerObstacle.clone()
+            .add(dirToTarget.clone().multiplyScalar(19.5))
+            .add(new THREE.Vector3(0, 2.2, 0));
+
+        const p5 = targetWorldPos.clone().multiplyScalar(26.2 / SPHERE_RADIUS);
+
+        // Centripetális spline: kizárja a szaggatást, hirtelen ugrásokat és túllendüléseket
+        flightPathCurve = new THREE.CatmullRomCurve3([p0, p1, p2, p3, p4, p5], false, 'centripetal');
+
+        isCinematicFlight = true;
+        flightStartTime = performance.now();
+        flightDuration = 3800; // ~3.8 mp
+        flightOnComplete = onComplete;
+    }
+    function reset3DTerminalState() {
+        isCinematicFlight = false;
+        if (camera) {
+            camera.position.set(0, 0.35, 2.6);
+            camera.fov = 45;
+            camera.updateProjectionMatrix();
+        }
+        if (controls) {
+            controls.enabled = true;
+            controls.target.set(0, 0.15, 0);
+            controls.update();
+        }
+        if (renderer && renderer.domElement) {
+            renderer.domElement.style.filter = 'none';
+        }
+        terminalStatusText = "SYSTEM READY // CLICK SCREEN TO TYPE";
+        isStatusError = false;
+        switchMode('LOGIN');
+        updateScreenDisplay();
+    }
+
+    // --- RENDER & ANIMÁCIÓS CIKLUS ---
+    function onWindowResize() {
+        if (!camera || !renderer) return;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate(timestamp) {
+        requestAnimationFrame(animate);
+
+        // 1. Kozmosz háttér lassú forgása (csak a normál nézetben, a hiperugrás alatt rögzítve marad a kijelölt célhoz)
+        if (cosmosSphere && !isCinematicFlight) {
+            cosmosSphere.rotation.y += 0.0002;
+            cosmosSphere.rotation.x += 0.00004;
+        }
+
+        if (meteorManager) {
+            meteorManager.update();
+        }
+
+        if (timestamp - lastCursorBlink > 500) {
+            cursorVisible = !cursorVisible;
+            lastCursorBlink = timestamp;
+            updateScreenDisplay();
+        }
+
+        // 🚀 Dinamikus Űrhajó Kamera Hiperhajtómű Animáció
+        if (isCinematicFlight && flightPathCurve && flightStartTarget && flightFinalTarget) {
+            const elapsed = timestamp - flightStartTime;
+            let progress = Math.min(1.0, elapsed / flightDuration);
+
+            // Kétfázisú sima gyorsulási görbe (Cubic Ease In-Out)
+            const easeProgress = progress < 0.5
+                ? 4 * Math.pow(progress, 3)
+                : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+            const clampedT = Math.max(0, Math.min(1, easeProgress));
+
+            const newPos = flightPathCurve.getPoint(clampedT);
+            camera.position.copy(newPos);
+
+            // Sima, elegáns fókuszpont átmenet: a konzolról folyamatosan átfordul a fix kijelölt bolygóra
+            const smoothLookT = Math.min(1.0, Math.pow(clampedT, 1.25));
+            const currentLookTarget = new THREE.Vector3().lerpVectors(flightStartTarget, flightFinalTarget, smoothLookT);
+            camera.lookAt(currentLookTarget);
+            if (controls) controls.target.copy(currentLookTarget);
+
+            // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 74 -> 50)
+            if (progress > 0.2) {
+                const fovFactor = Math.sin((progress - 0.2) / 0.8 * Math.PI);
+                camera.fov = initialCameraFov + fovFactor * 24;
+                camera.updateProjectionMatrix();
+            }
+
+            // Kiszürkülés (Grayscale) és finom sötétülés mielőtt eléri a gömbpalástot (progress > 0.58)
+            if (renderer && renderer.domElement) {
+                if (progress > 0.58) {
+                    const grayProgress = (progress - 0.58) / 0.42; // 0.0 -> 1.0
+                    const grayVal = Math.min(100, Math.floor(grayProgress * 100));
+                    const brightVal = (1.0 - grayProgress * 0.40).toFixed(2);
+                    renderer.domElement.style.filter = 'grayscale(' + grayVal + '%) brightness(' + brightVal + ')';
+                }
+            }
+
+            if (progress >= 1.0) {
+                isCinematicFlight = false;
+                if (renderer && renderer.domElement) {
+                    renderer.domElement.style.filter = 'none';
+                }
+                if (typeof flightOnComplete === 'function') {
+                    const cb = flightOnComplete;
+                    flightOnComplete = null;
+                    cb();
+                }
+            }
+        } else {
+            if (controls) controls.update();
+        }
+
+        if (renderer && scene && camera) renderer.render(scene, camera);
+    }
+
+    // Window exportok
+    window.switchMode = switchMode;
+    window.executeCurrentMode = executeCurrentMode;
+    window.focusOnScreen = focusOnScreen;
+    window.resetCamera = resetCamera;
+    window.toggleInfoModal = toggleInfoModal;
+    window.toggle3DInfoMode = toggle3DInfoMode;
+    window.onModalBackdropClick = onModalBackdropClick;
+    window.handleLangSwitch = handleLangSwitch;
+    window.initThreeTerminal = initThree;
+    window.setTerminalStatus = setTerminalStatus;
+    window.blurVirtualInput = blurVirtualInput;
+    window.focusVirtualInput = focusVirtualInput;
+    window.startHyperspaceCinematic = startHyperspaceCinematic;
+    window.reset3DTerminalState = reset3DTerminalState;
     // Inicializálás elindítása a modulon belül
     initThree();
 }

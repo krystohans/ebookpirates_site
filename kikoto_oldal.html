@@ -354,104 +354,23 @@
         </div>
     </div>
 
-    <!-- Fedélzet Modal (fedelzet-modal) -->
+    <!-- Fedélzet Modal (fedelzet-modal) -> Opálos háttér előtt nyílik meg, behúzva a fedelzet_oldal.html Dokkoló Konzolját -->
     <div id="fedelzet-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;" onclick="if(event.target===this) closeFedelzetModal(event)">
-        <div id="fedelzet-portrait-panel" class="npc-portrait-closed">
-            <img id="fedelzet-portrait-image" src="https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg" alt="Barba Negra" style="display: none;">
-            <video id="fedelzet-portrait-video" playsinline muted poster="https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg" src="https://storage.googleapis.com/kalozsziget-assets/assets/videos/Barba_Negra_greeting_on_dock.mp4" style="display: block;"></video>
-            <button id="fedelzet-portrait-audio-btn" type="button" class="portrait-audio-btn" title="Hang némítása / bekapcsolása" onclick="toggleVideoAudio('fedelzet-portrait-video', 'fedelzet-portrait-audio-btn')">
-                <i class="fas fa-volume-mute"></i>
-            </button>
-        </div>
-        <div class="gamemode-modal-content" style="width: 90%; max-width: 650px; max-height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-paper, #fdfbf7); border-radius: 8px; border: 2px solid var(--color-gold, #d4af37); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
-            
-            <div style="background: var(--color-primary, #1b263b); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--color-gold, #d4af37);">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.5em; color: var(--color-gold, #d4af37);">🚢</span>
-                    <div>
-                        <h3 style="margin: 0; font-family: var(--font-serif, 'Pirata One', cursive); font-size: 1.5em; color: white;" data-lang="deck_welcome_title">Üdv a fedélzeten!</h3>
-                        <small id="fedelzet-modal-subtitle" style="color: #bdc3c7;">Hajó lajstromozása és kihajózás...</small>
-                    </div>
-                </div>
-                <button onclick="closeFedelzetModal(event)" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+        <div class="fedelzet-modal-assembly">
+            <!-- 1. OLDALSÓ PORTRÉ FIÓK (Barba Negra animáció + némító gomb) -->
+            <div id="fedelzet-portrait-panel" class="npc-portrait-closed">
+                <img id="fedelzet-portrait-image" src="https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg" alt="Barba Negra" style="display: none;">
+                <video id="fedelzet-portrait-video" playsinline muted poster="https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg" src="https://storage.googleapis.com/kalozsziget-assets/assets/videos/Barba_Negra_greeting_on_dock.mp4" style="display: block;"></video>
+                <button id="fedelzet-portrait-audio-btn" type="button" class="portrait-audio-btn" title="Hang némítása / bekapcsolása" onclick="toggleVideoAudio('fedelzet-portrait-video', 'fedelzet-portrait-audio-btn')">
+                    <i class="fas fa-volume-mute"></i>
+                </button>
             </div>
 
-            <div style="padding: 20px; overflow-y: auto; flex: 1; position: relative; color: #222;">
-                <!-- Loading Indicator -->
-                <div id="fedelzet-loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); display: none; align-items: center; justify-content: center; z-index: 10; flex-direction: column;">
-                    <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--color-gold, #d4af37);"></i>
-                    <p style="margin-top: 15px; font-weight: bold; font-family: var(--font-serif, 'Pirata One', cursive);">Hajók betöltése a táblázatból...</p>
+            <!-- 2. FŐ KONTÉNER (Behúzza a fedelzet_oldal.html Dokkoló Konzolját) -->
+            <div class="fedelzet-modal-content">
+                <div id="fedelzet-modal-body" style="width: 100%; position: relative;">
+                    <!-- Ide töltődik be a fedelzet_oldal.html -->
                 </div>
-
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h2 id="fedelzet-active-ship-name" style="color: var(--color-accent, #8b5a2b); font-family: var(--font-serif, 'Pirata One', cursive); font-size: 1.6em; margin: 0 0 10px 0;">Rakodás alatt...</h2>
-                    
-                    <!-- HAJÓ VÁLASZTÓ -->
-                    <div id="fedelzet-ship-selector-container" style="display: none; margin-bottom: 15px;">
-                        <select id="fedelzet-ship-selector" class="form-control" onchange="fedelzetSelectShip(this.value)" style="width: 100%; max-width: 350px; margin: 0 auto; padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 1.05em; font-weight: bold; background: white; color: #222;"></select>
-                    </div>
-                </div>
-
-                <!-- KIHAJÓZÁS VEZÉRLŐK -->
-                <div id="fedelzet-kihajozunk-container" style="background: rgba(0,0,0,0.04); border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid #ddd;">
-                    <h4 style="margin-top: 0; margin-bottom: 5px; color: var(--color-accent, #8b5a2b); font-family: var(--font-serif, 'Pirata One', cursive);">Kihajózunk!</h4>
-                    <p style="font-size: 0.85em; color: #666; margin: 0 0 12px 0;">Válassz küldetést és add meg a célt!</p>
-                    
-                    <input type="text" id="fedelzet-departure-target" class="form-control" placeholder="Mi a cél? (Kaland neve vagy Zsánersziget)" style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 10px; border: 1px solid #aaa; border-radius: 4px; display: none;">
-                    <input type="text" id="fedelzet-departure-book-target" class="form-control" placeholder="Keresett Könyv címe" style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 15px; border: 1px solid #aaa; border-radius: 4px; display: none;">
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
-                        <button class="btn" style="background-color: var(--color-gold, #d4af37); color: #222; padding: 12px 8px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;" onclick="fedelzetPrepareDeparture('Hártyahalászat')">
-                            <i class="fas fa-fish"></i> Hártyahalászat
-                        </button>
-                        <button class="btn" style="background-color: #8b0000; color: white; padding: 12px 8px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;" onclick="fedelzetPrepareDeparture('Kalandjáték')">
-                            <i class="fas fa-skull-crossbones"></i> Kalandjáték
-                        </button>
-                        <button class="btn" style="background-color: #2e7d32; color: white; padding: 12px 8px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;" onclick="fedelzetPrepareDeparture('Könyvexpedíció')">
-                            <i class="fas fa-book"></i> Könyvexpedíció
-                        </button>
-                    </div>
-                    
-                    <button id="fedelzet-confirm-departure-btn" class="btn" style="background-color: #ff9800; color: white; width: 100%; padding: 12px; font-size: 1.1em; font-weight: bold; margin-top: 15px; border-radius: 4px; border: none; cursor: pointer; display: none;" onclick="fedelzetExecuteDeparture()">
-                        INDULÁS!
-                    </button>
-                </div>
-
-                <!-- FEDÉLZETI CHAT -->
-                <div style="background: #eceff1; border-radius: 8px; border: 1px solid #ccc; overflow: hidden; display: flex; flex-direction: column; height: 260px; margin-bottom: 15px;">
-                    <div style="background: #37474f; color: white; padding: 8px 12px; font-weight: bold; font-size: 0.9em; display: flex; align-items: center; justify-content: space-between;">
-                        <span><i class="fas fa-comments"></i> Fedélzeti Megbeszélés</span>
-                        <small style="color: #b0bec5; font-size: 0.8em;">Kikötőmester & Legénységi csatorna</small>
-                    </div>
-                    <div id="fedelzet-deck-chat-history" style="flex: 1; padding: 10px; overflow-y: auto; text-align: left; font-size: 0.85em; background: #fff; display: flex; flex-direction: column; gap: 6px;">
-                        <p style="color: #888; margin: 0; font-style: italic;">A hajódeszkák csendesen nyikorognak a lábad alatt. A kikötőmester és a legénység készen áll...</p>
-                    </div>
-                    <div style="display: flex; padding: 5px; background: #ddd; border-top: 1px solid #ccc; width: 100%; box-sizing: border-box;">
-                        <input type="text" id="fedelzet-deck-chat-input" placeholder="Szólj a legénységhez..." style="width: 75%; padding: 8px; border: 1px solid #aaa; border-radius: 4px; flex-grow: 4; font-size: 0.95em;" onkeydown="if(event.key==='Enter') fedelzetSendDeckChat()">
-                        <button class="btn" onclick="fedelzetSendDeckChat()" style="width: 25%; margin-left: 5px; padding: 8px 15px; flex-grow: 1; white-space: nowrap; background: var(--color-primary, #1b263b); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Mond</button>
-                    </div>
-                </div>
-
-                <!-- UGRÁS A MENTETT ÁLLÁSHOZ -->
-                <div style="text-align: center; margin-bottom: 15px;">
-                    <button id="fedelzet-jump-to-save-btn" class="btn" style="background-color: var(--color-secondary, #37474f); color: white; padding: 10px 20px; border-radius: 4px; border: none; cursor: pointer; display: none;" onclick="fedelzetJumpToSavedState()" data-lang="deck_resume_button">
-                        <i class="fas fa-anchor"></i> Ugrás a mentett álláshoz
-                    </button>
-                </div>
-
-                <!-- NAVIGÁCIÓ (TUDNIVALÓK ÉS HAJÓNAPLÓ) -->
-                <div style="border-top: 1px solid #eee; padding-top: 15px; text-align: center;">
-                    <h4 style="margin: 0 0 10px 0; color: #555; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;" data-lang="deck_nav_title">Navigáció</h4>
-                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
-                        <button class="btn btn-secondary" style="background: #37474f; color: white; padding: 10px 20px; font-weight: bold; border-radius: 4px; border: 1px solid #555; cursor: pointer; display: flex; align-items: center; gap: 8px;" onclick="closeFedelzetModal(); if(window.parent&&window.parent.loadPage) window.parent.loadPage('tutorial_oldal'); else if(typeof window.loadPage==='function') window.loadPage('tutorial_oldal'); else window.location.href='tutorial_oldal.html';" data-lang="deck_nav_tutorial">
-                            <i class="fas fa-book-open"></i> Tudnivalók
-                        </button>
-                        <button class="btn btn-secondary" style="background: var(--color-gold, #d4af37); color: #1b263b; padding: 10px 20px; font-weight: bold; border-radius: 4px; border: 1px solid #b89728; cursor: pointer; display: flex; align-items: center; gap: 8px;" onclick="closeFedelzetModal(); if(window.parent&&window.parent.checkRankAndOpenLogModal) window.parent.checkRankAndOpenLogModal(); else if(typeof checkRankAndOpenLogModal==='function') checkRankAndOpenLogModal(); else if(window.parent&&window.parent.openLogEntryModal) window.parent.openLogEntryModal(); else alert('Hajónapló szerkesztés csak bejelentkezett tiszti ranggal érhető el!');" data-lang="deck_nav_logbook">
-                            <i class="fas fa-feather-alt"></i> Hajónapló
-                        </button>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>

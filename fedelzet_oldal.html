@@ -6,108 +6,184 @@
     <button class="btn" onclick="markPageAsSeen('fedelzet_oldal')" data-lang="deck_splash_ack_button">Értettem, mehet!</button>
 </div>
 
-<div id="fedelzet_oldal-content" style="display: none; position: relative;">
-    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
-        <i class="fas fa-info-circle" onclick="showSplash('fedelzet_oldal')"></i>
-    </div>
+<div id="fedelzet_oldal-content" style="display: none; position: relative; width: 100%; margin: 0 auto; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;">
 
-    <div class="page-container">
-        <div class="page-section" style="text-align: center;">
-            <h1 id="active-ship-name" style="color: var(--color-accent); font-family: var(--font-serif); margin-bottom: 15px;">Rakodás alatt...</h1>
+    <!-- A. DOKKOLÓ SZÍNPAD (16:9 ARÁNY, HÁTTÉRVIDEÓ + SVG + KIBER KONZOL) -->
+    <div id="fedelzet-stage-container" class="fedelzet-stage-container" style="position: relative; width: 100%; aspect-ratio: 338.66666 / 190.5; background-color: #020408; overflow: hidden; border-radius: 8px; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.35), 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.9); box-sizing: border-box;">
+        
+        <!-- 1. HÁTTÉRVIDEÓ (SZIGORÚAN NÉMÍTOTT, NEM KONTROLLÁLT HANGSÁV NÉLKÜL) -->
+        <video id="fedelzet-video-player" class="toborzo-video-bg" autoplay muted="muted" loop playsinline poster="https://storage.googleapis.com/kalozsziget-assets/assets/images/harbormaster_plattemasine.jpg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+            <source src="https://storage.googleapis.com/kalozsziget-assets/assets/videos/harbormaster_plattemasine.mp4" type="video/mp4">
+        </video>
 
-            <!-- HAJÓ VÁLASZTÓ -->
-            <div id="ship-selector-container" style="display: none; margin-bottom: 20px;">
-                <select id="ship-selector" class="input-field" onchange="selectShip(this.value)" style="padding: 10px; font-size: 1.1em; max-width: 350px; margin: 0 auto;"></select>
-            </div>
-
-            
-            <!-- VÁRÓTEREM ÉS RIADÓ UI -->
-            <div id="waiting-room-container" style="display: none; background: rgba(0,0,0,0.05); border-radius: 8px; padding: 20px; max-width: 500px; margin: 0 auto 20px auto; border: 1px solid #ccc; position: relative;">
-                <h3 style="margin-top: 0; color: #555;">Kint a nyílt tengeren...</h3>
-                <p style="font-size: 0.9em; color: #555;">A hajó lehorgonyzott, és az expedíció célpontját kémleli. Addig is, amíg várakozunk...</p>
+        <!-- 2. INTERAKTÍV RÉTEGELT SVG (ZÉRÓ TOOLTIP / TITLE ATTRIBÚTUMOK NÉLKÜL) -->
+        <svg id="fedelzet-interactive-svg" viewBox="0 0 338.66666 190.5" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: auto;">
+            <g id="fedelzet-svg-layer">
+                <!-- Képernyő Kattintható Terület (Hajónapló) -->
+                <path id="kepernyo" class="deck-screen-path" onclick="handleDeckElementClick('kepernyo')" onmouseenter="handleDeckElementHover('kepernyo')" onmouseleave="handleDeckElementLeave()" d="m 130.92731,55.960197 c -2.43158,3.126317 -2.43158,3.473686 -2.43158,3.473686 v 75.031577 l 2.43158,3.12632 98.99999,-0.34737 3.47369,-2.77895 -0.34737,-76.768419 -3.12632,-2.431579 z"></path>
                 
-                <div id="waiting-room-fishing-btn" style="display: none; margin-top: 15px;">
-                    <button class="btn" style="background-color: var(--color-gold); color: #333; padding: 15px; font-size: 1.1em; width: 100%;" onclick="startFishingMiniGame()">
-                        <i class="fas fa-fish"></i> Hártyahalászat indítása
-                    </button>
-                </div>
-
-                <!-- KALÓZRIADÓ OVERLAY -->
-                <div id="pvp-alarm-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(139, 0, 0, 0.9); color: white; border-radius: 8px; flex-direction: column; justify-content: center; align-items: center; z-index: 10; animation: flashAlarm 1s infinite alternate;">
-                    <i class="fas fa-skull-crossbones" style="font-size: 3em; margin-bottom: 10px;"></i>
-                    <h2 style="margin: 0;">KALÓZTÁMADÁS!</h2>
-                    <p>Az ellenség a láthatáron!</p>
-                    <button class="btn" style="background-color: black; color: white; border: 2px solid white; padding: 10px 20px; font-size: 1.1em;" onclick="joinPvpDefense()">Harcosok a fedélzetre!</button>
-                </div>
-                <style>
-                    @keyframes flashAlarm {
-                        0% { background: rgba(139, 0, 0, 0.9); }
-                        100% { background: rgba(255, 0, 0, 0.95); }
-                    }
-                </style>
-            </div>
-
-            <!-- KIHAJÓZÁS VEZÉRLŐK -->
-            <div id="kihajozunk-container" style="background: rgba(0,0,0,0.05); border-radius: 8px; padding: 20px; max-width: 500px; margin: 0 auto 20px auto; border: 1px solid #ccc;">
-                <h3 style="margin-top: 0;">Kihajózunk!</h3>
-                <p style="font-size: 0.9em; color: #555;">Válassz küldetést és add meg a célt!</p>
+                <!-- Tekerő Gomb (Hajóválasztó) -->
+                <path id="tekero_gomb" class="deck-screen-path" onclick="handleDeckElementClick('tekero_gomb')" onmouseenter="handleDeckElementHover('tekero_gomb')" onmouseleave="handleDeckElementLeave()" d="m 269.87467,14.970725 -3.47369,1.389474 -2.43157,3.126316 -0.34737,3.821052 0.69474,2.431579 2.43157,3.473684 3.12632,0.694736 5.21054,-0.694736 2.43158,-4.863158 v -4.515789 l -1.73686,-3.473684 -2.77894,-1.389474 z"></path>
                 
-                <input type="text" id="departure-target" class="input-field" placeholder="Mi a cél? (Kaland neve vagy Zsánersziget)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #999; border-radius: 4px; display: none;">
-                <input type="text" id="departure-book-target" class="input-field" placeholder="Keresett Könyv címe" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #999; border-radius: 4px; display: none;">
+                <!-- Auto Gomb (Tutorial) -->
+                <path id="auto_gomb" class="deck-screen-path" onclick="handleDeckElementClick('auto_gomb')" onmouseenter="handleDeckElementHover('auto_gomb')" onmouseleave="handleDeckElementLeave()" d="m 295.95789,17.715789 4.16843,-0.694736 2.43157,1.736841 1.73683,3.126316 -0.69472,3.821053 -2.77894,1.736841 h -2.77895 l -3.12631,-1.389473 -0.69474,-2.431579 -1.04212,-3.126315 z"></path>
                 
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="btn" style="background-color: var(--color-gold); color: #333; padding: 15px; font-size: 1.1em;" onclick="prepareDeparture('Hártyahalászat')">
-                        <i class="fas fa-fish"></i> Hártyahalászat
-                    </button>
-                    <button class="btn" style="background-color: #8b0000; padding: 15px; font-size: 1.1em;" onclick="prepareDeparture('Kalandjáték')">
-                        <i class="fas fa-skull-crossbones"></i> Kalandjáték
-                    </button>
-                    <button class="btn" style="background-color: #2e7d32; padding: 15px; font-size: 1.1em;" onclick="prepareDeparture('Könyvexpedíció')">
-                        <i class="fas fa-book"></i> Könyvexpedíció
-                    </button>
-                </div>
+                <!-- Sector Gomb (Hártyahalászat) -->
+                <path id="sector_gomb" class="deck-screen-path" onclick="handleDeckElementClick('sector_gomb')" onmouseenter="handleDeckElementHover('sector_gomb')" onmouseleave="handleDeckElementLeave()" d="m 295.57994,52.486515 3.82104,0 3.47369,2.431577 1.38948,3.821053 -1.04211,4.168421 -2.77895,2.08421 -4.16843,0.347369 -3.47369,-2.431579 -2.77894,-4.51579 1.38948,-4.16842 z"></path>
                 
-                <button id="confirm-departure-btn" class="btn" style="background-color: #ff9800; width: 100%; padding: 15px; font-size: 1.2em; margin-top: 15px; display: none;" onclick="executeDeparture()">
-                    INDULÁS!
-                </button>
-            </div>
+                <!-- Comms Gomb (Kalandjáték) -->
+                <path id="comms_gomb" class="deck-screen-path" onclick="handleDeckElementClick('comms_gomb')" onmouseenter="handleDeckElementHover('comms_gomb')" onmouseleave="handleDeckElementLeave()" d="m 292.801,90.349673 5.90526,-2.084212 3.82104,3.126316 1.73685,4.515788 -0.69474,4.168425 -3.47369,2.77894 h -4.16843 l -2.77894,-2.08421 -1.73684,-2.778945 -0.69474,-3.126314 z"></path>
+                
+                <!-- Log Gomb (Könyvexpedíció) -->
+                <path id="log_gomb" class="deck-screen-path" onclick="handleDeckElementClick('log_gomb')" onmouseenter="handleDeckElementHover('log_gomb')" onmouseleave="handleDeckElementLeave()" d="m 293.14835,128.5602 2.77894,-1.73685 4.16843,0.69474 3.47369,2.08421 0.69474,4.86316 -0.34737,3.12632 -4.16843,2.77894 h -4.1684 l -2.77898,-1.73684 -2.0842,-3.47368 v -4.16842 z"></path>
+                
+                <!-- Emergency Gomb (Kilépés) -->
+                <path id="emergency_gomb" class="deck-screen-path" onclick="handleDeckElementClick('emergency_gomb')" onmouseenter="handleDeckElementHover('emergency_gomb')" onmouseleave="handleDeckElementLeave()" d="m 297.31677,164.33914 4.86315,1.73685 2.4316,4.51579 0.34735,4.16842 -2.43157,2.43158 -4.16841,2.08421 -4.5158,-1.38948 -2.0842,-2.77894 -2.08422,-3.82106 1.38948,-3.47368 2.0842,-2.08421 z"></path>
+                
+                <!-- Master Gomb (Legénységi Üzenetküldő / Küldés) -->
+                <path id="master_gomb" class="deck-screen-path" onclick="handleDeckElementClick('master_gomb')" onmouseenter="handleDeckElementHover('master_gomb')" onmouseleave="handleDeckElementLeave()" d="m 59.36941,161.21283 -5.210527,4.86316 v 4.86315 l 2.778948,3.12632 3.473686,1.04211 4.16842,-3.12632 1.389473,-4.86316 -2.431579,-4.86316 z"></path>
+            </g>
+        </svg>
 
-            <!-- FEDÉLZETI CHAT ÉS PORTRÉ -->
-            <div style="display: flex; justify-content: center; align-items: flex-end; gap: 15px; max-width: 820px; margin: 0 auto;">
-                <div id="fedelzet-subpage-portrait-panel" style="width: 260px; max-width: 35vw; height: 300px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border-radius: 8px; position: relative;">
-                    <img id="fedelzet-subpage-portrait-image" src="https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg" alt="Barba Negra" style="display: none; height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.5)); border-radius: 6px;">
-                    <video id="fedelzet-subpage-portrait-video" playsinline muted poster="https://storage.googleapis.com/kalozsziget-assets/assets/images/Barba_Negra_greeting_on_dock.jpg" src="https://storage.googleapis.com/kalozsziget-assets/assets/videos/Barba_Negra_greeting_on_dock.mp4" style="height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.5)); border-radius: 6px;"></video>
-                    <button id="fedelzet-subpage-portrait-audio-btn" type="button" class="portrait-audio-btn" title="Hang némítása / bekapcsolása" onclick="toggleVideoAudio('fedelzet-subpage-portrait-video', 'fedelzet-subpage-portrait-audio-btn')">
-                        <i class="fas fa-volume-mute"></i>
-                    </button>
-                </div>
-
-                <div style="background: #eceff1; border-radius: 8px; border: 1px solid #ccc; width: 100%; max-width: 500px; overflow: hidden; display: flex; flex-direction: column; height: 300px;">
-                    <div style="background: #37474f; color: white; padding: 10px; font-weight: bold;">
-                        Fedélzeti Megbeszélés
-                    </div>
-                    <div id="deck-chat-history" style="flex: 1; padding: 10px; overflow-y: auto; text-align: left; font-size: 0.9em; background: #fff;">
-                        <p style="color: #888;"><i>Csend van a fedélzeten. A legénység a parancsaidra vár...</i></p>
-                    </div>
-                    <div style="display: flex; padding: 5px; background: #ddd; border-top: 1px solid #ccc; width: 100%; box-sizing: border-box;">
-                        <input type="text" id="deck-chat-input" placeholder="Szólj a legénységhez..." style="width: 75%; padding: 8px; border: 1px solid #aaa; border-radius: 4px; flex-grow: 4;">
-                        <button class="btn" onclick="sendDeckChat()" style="width: 25%; margin-left: 5px; padding: 8px 15px; flex-grow: 1; white-space: nowrap;">Mond</button>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <button id="jump-to-save-btn" class="btn" style="background-color: var(--color-secondary); padding: 10px;" onclick="jumpToSavedState()" data-lang="deck_resume_button">
-                    <i class="fas fa-anchor"></i> Ugrás a mentett álláshoz
-                </button>
+        <!-- 3. KÉPERNYŐ OVERLAY (path#kepernyo területe: Left 37.5%, Top 28.5%, Width 31.5%, Height 43.5%) -->
+        <!-- Nyugalmi állapotban teljesen tiszta, keret nélküli átlátszó szövegkonténer -->
+        <div id="deck-screen-overlay" class="deck-screen-overlay">
+            <div id="deck-screen-body">
+                <div id="deck-screen-text"></div>
             </div>
         </div>
 
-        <div class="page-section" style="text-align: center; background-color: #fff;">
-            <h3 data-lang="deck_nav_title">Navigáció</h3>
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
-                <button class="btn btn-secondary" onclick="loadPage('tutorial_oldal')" data-lang="deck_nav_tutorial"><i class="fas fa-book-open"></i> Tudnivalók</button>
-                <button class="btn btn-secondary" style="background: var(--color-gold); color: #1b263b; font-weight: bold;" onclick="checkRankAndOpenLogModal()" data-lang="deck_nav_logbook"><i class="fas fa-feather-alt"></i> Hajónapló</button>
+        <!-- 4. KINAGYÍTOTT KIBER KONZOL PANEL (A képernyőből kinyílva az SVG színpad méretét tölti ki) -->
+        <div id="deck-console-panel" class="toborzo-cyber-console crt-screen" style="display: none;">
+            <div class="crt-scanlines"></div>
+            <div class="cyber-console-header">
+                <div id="deck-console-title" class="cyber-console-title">
+                    <i class="fas fa-terminal" style="color: #00ffcc;"></i> [ DOKKOLÓ KONZOL ] <span class="crt-cursor">_</span>
+                </div>
+                <button type="button" class="cyber-close-btn" onclick="closeDeckConsole()">&times;</button>
+            </div>
+
+            <div class="cyber-console-body">
+                <!-- I. HAJÓVÁLASZTÓ KONZOL -->
+                <div id="deck-console-ships" class="deck-subconsole" style="display: none;">
+                    <p class="cyber-hint-text">
+                        // VÁLASSZ HAJÓT ÉS LEGÉNYSÉGET! Az alábbi lajstromban láthatóak a kikötőben horgonyzó hajóid adatai.
+                    </p>
+                    <div id="deck-ship-cards-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+                        <!-- Dinamikus hajókártyák (Élettartam, Típus, Legénység) -->
+                    </div>
+                </div>
+
+                <!-- II. HÁRTYAHALÁSZAT KONZOL -->
+                <div id="deck-console-fishing" class="deck-subconsole" style="display: none;">
+                    <p class="cyber-hint-text">
+                        // HÁRTYAHALÁSZAT INDÍTÁSA: Átevezhetsz a zátonyok közé, ahol a vízfelszínről lehalászhatod a mai let-hártya termést.
+                    </p>
+                    <div style="background: rgba(0,255,204,0.06); border: 1px solid rgba(0,255,204,0.3); padding: 15px; border-radius: 6px; text-align: center;">
+                        <h3 style="color: #ffe680; margin-top: 0; font-family: 'Orbitron', sans-serif;">🌊 Zátonyos Öböl Hártyahalászat</h3>
+                        <p style="color: #ccc; font-size: 0.9em;">A halászathoz a dinge és a kishajók a legalkalmasabbak. A let-hártyák értékes tudást rejtenek!</p>
+                        <button class="btn" style="background-color: #d4af37; color: #111; font-weight: bold; font-size: 1.1em; padding: 12px 25px; margin-top: 10px;" onclick="executeDeckDeparture('Hártyahalászat')">
+                            <i class="fas fa-fish"></i> HÁRTYAHALÁSZAT INDÍTÁSA
+                        </button>
+                    </div>
+                </div>
+
+                <!-- III. KALANDJÁTÉK KONZOL -->
+                <div id="deck-console-adventure" class="deck-subconsole" style="display: none;">
+                    <p class="cyber-hint-text">
+                        // KALANDJÁTÉK INDÍTÁSA: Add meg a célbavett kaland pontos nevét az expedíció elindításához.
+                    </p>
+                    <div class="cyber-form-group">
+                        <label class="cyber-label">KALAND NEVE:</label>
+                        <input type="text" id="deck-adventure-name-input" class="cyber-input" placeholder="Pl. Az Elveszett Flotta Kincse...">
+                    </div>
+                    <button class="btn" style="background-color: #8b0000; color: white; font-weight: bold; font-size: 1.1em; padding: 12px 25px; margin-top: 15px;" onclick="executeDeckDeparture('Kalandjáték')">
+                        <i class="fas fa-skull-crossbones"></i> KALAND INDÍTÁSA
+                    </button>
+                </div>
+
+                <!-- IV. KÖNYVEXPEDÍCIÓ KONZOL -->
+                <div id="deck-console-expedition" class="deck-subconsole" style="display: none;">
+                    <p class="cyber-hint-text">
+                        // KÖNYVEXPEDÍCIÓ: Add meg a Zsánersziget nevét VAGY a keresett könyv pontos címét.
+                    </p>
+                    <div class="cyber-form-group">
+                        <label class="cyber-label">ZSÁNERSZIGET NEVE (OPCIONÁLIS):</label>
+                        <input type="text" id="deck-expedition-island-input" class="cyber-input" placeholder="Pl. Sci-Fi Sziget, Kaland-öböl...">
+                    </div>
+                    <div class="cyber-form-group">
+                        <label class="cyber-label">KERESETT KÖNYV CÍME (OPCIONÁLIS):</label>
+                        <input type="text" id="deck-expedition-book-input" class="cyber-input" placeholder="Pl. Kincses Sziget...">
+                    </div>
+                    <button class="btn" style="background-color: #2e7d32; color: white; font-weight: bold; font-size: 1.1em; padding: 12px 25px; margin-top: 15px;" onclick="executeDeckDeparture('Könyvexpedíció')">
+                        <i class="fas fa-book"></i> EXPEDÍCIÓ INDÍTÁSA
+                    </button>
+                </div>
+
+                <!-- V. LEGÉNYSÉGI ÜZENETKÜLDŐ KONZOL -->
+                <div id="deck-console-crew-msg" class="deck-subconsole" style="display: none;">
+                    <p class="cyber-hint-text">
+                        // LEGÉNYSÉGI ÜZENET: A címzettek a Taverna postagalamb-rendszerén keresztül azonnali felugró (monk-pin stílusú) üzenetként kapják meg a parancsaidat belépéskor!
+                    </p>
+                    <div class="cyber-form-group">
+                        <label class="cyber-label">CÍMZETT:</label>
+                        <select id="deck-msg-recipient-select" class="cyber-select">
+                            <option value="ALL">👥 TELJES LEGÉNYSÉG (Mindenki)</option>
+                        </select>
+                    </div>
+                    <div class="cyber-form-group">
+                        <label class="cyber-label">ÜZENET TÁRGYA:</label>
+                        <select id="deck-msg-subject-select" class="cyber-select">
+                            <option value="Indulás">🚀 Indulás</option>
+                            <option value="Beszerzés">📦 Beszerzés</option>
+                            <option value="Változás">⚠️ Változás</option>
+                            <option value="Üdvözlés">⚓ Üdvözlés</option>
+                        </select>
+                    </div>
+                    <div class="cyber-form-group">
+                        <label class="cyber-label">ÜZENET SZÖVEGE:</label>
+                        <textarea id="deck-msg-body-textarea" class="cyber-input" rows="3" placeholder="Írd ide a legénységnek szóló parancsot..."></textarea>
+                    </div>
+                    <button class="btn" style="background-color: #d2691e; color: white; font-weight: bold; font-size: 1.1em; padding: 12px 25px; margin-top: 10px;" onclick="executeDeckCrewMessageSend()">
+                        <i class="fas fa-paper-plane"></i> ÜZENET KIKÜLDÉSE A LEGÉNYSÉGNEK
+                    </button>
+                </div>
+
+                <!-- VI. HAJÓNAPLÓ KONZOL -->
+                <div id="deck-console-logbook" class="deck-subconsole" style="display: none;">
+                    <div id="deck-logbook-denied" style="display: none; background: rgba(139,0,0,0.3); border: 1px solid #ff4444; padding: 15px; border-radius: 6px; text-align: center;">
+                        <h3 style="color: #ff6666; margin-top: 0; font-family: 'Orbitron', sans-serif;">⛔ HOZZÁFÉRÉS MEGTAGADVA</h3>
+                        <p style="color: #ffcccc; font-size: 0.95em;">Hajónapló bejegyzést kizárólag a hajó <b>Tulajdonosa</b> vagy megbízott <b>Kapitánya</b> vezethet!</p>
+                    </div>
+                    <div id="deck-logbook-form" style="display: none;">
+                        <p class="cyber-hint-text">
+                            // HAJÓNAPLÓ BEJEGYZÉS SZERKESZTÉSE: Rögzítsd az expedíció fontos eseményeit és döntéseit.
+                        </p>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">BEJEGYZÉS CÍME:</label>
+                            <input type="text" id="deck-log-title-input" class="cyber-input" placeholder="Pl. Vihar a Paideia-öbölben...">
+                        </div>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">HAJÓNAPLÓ SZÖVEGE:</label>
+                            <textarea id="deck-log-body-textarea" class="cyber-input" rows="4" placeholder="A naplóbejegyzés részletei..."></textarea>
+                        </div>
+                        <button class="btn" style="background-color: #d4af37; color: #111; font-weight: bold; font-size: 1.1em; padding: 12px 25px; margin-top: 10px;" onclick="executeDeckSaveLogEntry()">
+                            <i class="fas fa-feather-alt"></i> BEJEGYZÉS MENTÉSE A HAJÓNAPLÓBA
+                        </button>
+                    </div>
+                </div>
+
+        </div>
+
+    </div>
+
+    <!-- Járművek / Hajó Adatlap Modal -->
+    <div id="vehicle-modal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px);">
+        <div class="modal-content" style="background-color: rgba(14, 20, 27, 0.98); margin: 4% auto; padding: 22px; border: 2px solid #d4af37; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); width: 90%; max-width: 650px; border-radius: 8px; color: #f0f0f0; font-family: 'Share Tech Mono', monospace;">
+            <span class="close" onclick="closeVehicleModal()" style="color: #ff4444; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            <h2 id="vehicle-modal-title" style="color: #ffe680; font-family: 'Orbitron', sans-serif; border-bottom: 1px solid #d4af37; padding-bottom: 10px; margin-top: 0;">Hajó Adatlap</h2>
+            <div id="vehicle-modal-body" style="margin-top: 15px;">
+                <!-- Dinamikus tartalom a showVehicleDetails(index) által -->
             </div>
         </div>
     </div>

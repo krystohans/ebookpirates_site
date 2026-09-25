@@ -9902,6 +9902,15 @@ window.toggleVideoAudio = toggleVideoAudio;
 var ACTIVE_NPC_CONFIG = {};
 
 function openUniversalNPC(npcId, config) {
+    if (npcId === 'harbormaster') {
+        if (typeof openHarbormasterModal === 'function') {
+            openHarbormasterModal();
+            return;
+        } else if (typeof window.openHarbormasterModal === 'function') {
+            window.openHarbormasterModal();
+            return;
+        }
+    }
     var modal = document.getElementById('universal-npc-modal');
     if (!modal) return;
     var modalContent = modal.querySelector('.gamemode-modal-content');
@@ -11204,6 +11213,746 @@ function removeRole(shipId, roleToClear, specificEmail) {
         }
     );
 }
+
+
+// =========================================================================
+// === KIKÖTŐMESTER / BARBA NEGRA MULTIMÉDIÁS ÉS SVG VEZÉRLŐ LOGIKA ===
+// =========================================================================
+
+function openHarbormasterModal() {
+    var modal = document.getElementById('harbormaster-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    if (typeof isModalOpen !== 'undefined') isModalOpen = true;
+
+    // 1. Háttérvideó indítása
+    var bgVid = document.getElementById('harbormaster-video-player');
+    if (bgVid) {
+        try {
+            bgVid.currentTime = 0;
+            var p1 = bgVid.play();
+            if (p1 && p1.catch) p1.catch(function () { });
+        } catch (e) { }
+    }
+
+    // 2. Portré fiók kinyitása és portrévideó indítása audiókezeléssel és loop-pal
+    var portPanel = document.getElementById('harbormaster-portrait-panel');
+    var portVid = document.getElementById('harbormaster-portrait-video');
+    var portImg = document.getElementById('harbormaster-portrait-image');
+    var audioBtn = document.getElementById('harbormaster-portrait-audio-btn');
+
+    if (portPanel) {
+        if (!audioBtn) {
+            audioBtn = document.createElement('button');
+            audioBtn.id = 'harbormaster-portrait-audio-btn';
+            audioBtn.type = 'button';
+            audioBtn.className = 'portrait-audio-btn';
+            audioBtn.title = 'Hang némítása / bekapcsolása';
+            audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            audioBtn.onclick = function (e) {
+                if (e) { e.stopPropagation(); e.preventDefault(); }
+                toggleVideoAudio('harbormaster-portrait-video', 'harbormaster-portrait-audio-btn');
+            };
+            portPanel.appendChild(audioBtn);
+        }
+
+        portPanel.className = 'npc-portrait-closed';
+        if (portVid) {
+            portVid.style.display = 'block';
+            if (portImg) portImg.style.display = 'none';
+            portVid.currentTime = 0;
+            portVid.loop = true;
+            portVid.muted = false;
+            portVid.volume = 1.0;
+            var playProm = portVid.play();
+            if (playProm !== undefined) {
+                playProm.then(function () {
+                    if (audioBtn) {
+                        audioBtn.style.display = 'flex';
+                        audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                        audioBtn.title = 'Némítás';
+                    }
+                }).catch(function (e) {
+                    console.log('Harbormaster videó autoplay fallback muted:', e);
+                    portVid.muted = true;
+                    portVid.play().catch(function () { });
+                    if (audioBtn) {
+                        audioBtn.style.display = 'flex';
+                        audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                        audioBtn.title = 'Hang bekapcsolása';
+                    }
+                });
+            } else {
+                if (audioBtn) {
+                    audioBtn.style.display = 'flex';
+                    audioBtn.innerHTML = portVid.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+                }
+            }
+        }
+
+        setTimeout(function () {
+            portPanel.className = 'npc-portrait-open';
+        }, 100);
+    }
+
+    // 3. Konzol panel elrejtése kezdéskor
+    closeHarbormasterConsole();
+
+    // 4. Tooltip események regisztrálása
+    setupHarbormasterTooltips();
+
+    // 5. Enter billentyű figyelő a chat inputhoz
+    var chatInput = document.getElementById('harbormaster-chat-input');
+    if (chatInput && !chatInput._boundHarbormasterEnter) {
+        chatInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendHarbormasterMessage();
+        });
+        chatInput._boundHarbormasterEnter = true;
+    }
+    if (chatInput) chatInput.focus();
+
+    // 6. Üdvözlés betöltése (INIT)
+    var chatArea = document.getElementById('harbormaster-chat-area');
+    if (chatArea && chatArea.children.length === 0) {
+        addBubbleToHarbormaster('Rendszer', 'Kapcsolódás a Kikötőmesterhez...', 'system');
+        if (typeof callBackend === 'function') {
+            callBackend('handleNPCInteraction', ['harbormaster', '', 'INIT'],
+                function (response) {
+                    if (chatArea.children.length === 1 && chatArea.children[0].classList.contains('harbormaster-bubble-system')) {
+                        chatArea.innerHTML = '';
+                    }
+                    if (response && response.text) {
+                        addBubbleToHarbormaster('Barba Negra', response.text, 'incoming', response.buttons);
+                    } else {
+                        addBubbleToHarbormaster('Barba Negra', 'Harr! Üdvözöllek a fedélzeten, kalóz! Miben segíthetek a kikötőben?', 'incoming');
+                    }
+                },
+                function (err) {
+                    addBubbleToHarbormaster('Barba Negra', 'Harr! Üdv a kikötőben! Válassz a monitorok közül vagy kérdezz bátran!', 'incoming');
+                }
+            );
+        } else {
+            addBubbleToHarbormaster('Barba Negra', 'Harr! Üdv a kikötőben! Válassz a monitorok közül vagy kérdezz bátran!', 'incoming');
+        }
+    }
+}
+window.openHarbormasterModal = openHarbormasterModal;
+
+function closeHarbormasterModal(e) {
+    if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+    }
+    var modal = document.getElementById('harbormaster-modal');
+    if (modal) modal.style.display = 'none';
+
+    // Videók leállítása
+    var bgVid = document.getElementById('harbormaster-video-player');
+    if (bgVid) {
+        try { bgVid.pause(); } catch (err) { }
+    }
+    var portVid = document.getElementById('harbormaster-portrait-video');
+    if (portVid) {
+        try { portVid.pause(); } catch (err) { }
+    }
+    var audioBtn = document.getElementById('harbormaster-portrait-audio-btn');
+    if (audioBtn) audioBtn.style.display = 'none';
+
+    // Portré fiók visszahúzása
+    var portPanel = document.getElementById('harbormaster-portrait-panel');
+    if (portPanel) {
+        portPanel.className = 'npc-portrait-closed';
+    }
+
+    closeHarbormasterConsole();
+
+    // 3D Színtér állapot visszaállítása
+    var overlay = document.getElementById('scene-transition-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        overlay.style.display = 'none';
+        overlay.style.opacity = '0';
+    }
+    if (typeof defaultCameraPos !== 'undefined' && typeof defaultTargetPos !== 'undefined' && typeof camera !== 'undefined' && camera && defaultCameraPos && defaultCameraPos.length && defaultCameraPos.length() > 0) {
+        camera.position.copy(defaultCameraPos);
+        if (typeof controls !== 'undefined' && controls) {
+            controls.target.copy(defaultTargetPos);
+            controls.update();
+            controls.enabled = true;
+        }
+    } else if (typeof controls !== 'undefined' && controls) {
+        controls.enabled = true;
+        controls.update();
+    }
+
+    var tooltipEl = document.getElementById('interactive-tooltip');
+    if (tooltipEl) tooltipEl.classList.remove('visible');
+    if (typeof interactiveLocations !== 'undefined' && interactiveLocations) {
+        interactiveLocations.forEach(function (loc) {
+            if (typeof removeHighlight === 'function') removeHighlight(loc.meshes);
+        });
+    }
+    document.body.style.cursor = 'default';
+    if (typeof pointerDownTime !== 'undefined') pointerDownTime = 0;
+    if (typeof currentHoveredLocation !== 'undefined') currentHoveredLocation = null;
+    if (typeof isModalOpen !== 'undefined') isModalOpen = false;
+    if (typeof isCinematicTransitioning !== 'undefined') isCinematicTransitioning = false;
+}
+window.closeHarbormasterModal = closeHarbormasterModal;
+
+function setupHarbormasterTooltips() {
+    var svg = document.getElementById('harbormaster-interactive-svg');
+    var tooltip = document.getElementById('harbormaster-tooltip');
+    var tooltipText = document.getElementById('harbormaster-tooltip-text');
+    var stage = document.getElementById('harbormaster-stage-container');
+    if (!svg || !tooltip || !tooltipText || !stage) return;
+
+    var titles = {
+        'balfelso_monitor': '📦 Hajóbérlés',
+        'balalso_monitor': '🗺️ Térképbolt',
+        'jobbfelso_monitor': '⚓ Hajó visszavétel',
+        'jobbkozep_monitor': '📜 Hivatalos ügyek',
+        'jobbalso_monitor': '📖 Könyvmustra'
+    };
+
+    var paths = svg.querySelectorAll('.harbormaster-monitor-path');
+    paths.forEach(function (path) {
+        if (path._hasHarborTooltip) return;
+        path._hasHarborTooltip = true;
+
+        path.addEventListener('mouseenter', function (e) {
+            var text = titles[path.id] || 'Monitor';
+            tooltipText.textContent = text;
+            tooltip.style.display = 'block';
+        });
+
+        path.addEventListener('mousemove', function (e) {
+            var rect = stage.getBoundingClientRect();
+            var x = e.clientX - rect.left + 15;
+            var y = e.clientY - rect.top + 15;
+            tooltip.style.left = x + 'px';
+            tooltip.style.top = y + 'px';
+        });
+
+        path.addEventListener('mouseleave', function () {
+            tooltip.style.display = 'none';
+        });
+    });
+}
+window.setupHarbormasterTooltips = setupHarbormasterTooltips;
+
+function addBubbleToHarbormaster(sender, text, type, buttons) {
+    var chatArea = document.getElementById('harbormaster-chat-area');
+    if (!chatArea) return;
+
+    var bubble = document.createElement('div');
+    bubble.className = 'harbormaster-bubble harbormaster-bubble-' + (type || 'incoming');
+
+    var content = '';
+    if (sender && type !== 'system') {
+        content += '<div style="font-weight: bold; font-size: 0.72rem; color: #d4af37; margin-bottom: 2px;">' + sender + '</div>';
+    }
+    var formattedText = String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+    content += '<div>' + formattedText + '</div>';
+    bubble.innerHTML = content;
+
+    // Gyorsválasz gombok (Quick Chips) a buborék alján a párbeszédhez (pl. Könyvmustra)
+    if (buttons && buttons.length > 0) {
+        var chipsContainer = document.createElement('div');
+        chipsContainer.className = 'harbormaster-quick-reply-container';
+
+        buttons.forEach(function (btn) {
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'harbormaster-quick-chip';
+            chip.innerHTML = btn.text || 'Opció';
+            chip.onclick = function () {
+                chipsContainer.remove();
+                handleHarbormasterChipClick(btn);
+            };
+            chipsContainer.appendChild(chip);
+        });
+
+        bubble.appendChild(chipsContainer);
+    }
+
+    chatArea.appendChild(bubble);
+    setTimeout(function () {
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }, 50);
+}
+window.addBubbleToHarbormaster = addBubbleToHarbormaster;
+
+function handleHarbormasterChipClick(btn) {
+    var replyText = btn.reply || btn.payload || btn.text;
+    addBubbleToHarbormaster('Te', replyText, 'outgoing');
+
+    if (btn.action === 'CHAT') {
+        sendHarbormasterMessageText(btn.payload || btn.text);
+        return;
+    }
+
+    if (btn.action && btn.action.indexOf('CLIENT_REQ_PIN') === 0) {
+        var parts = btn.action.split('|');
+        var funcName = parts[1];
+        var modalTitle = parts[2] || 'Biztonsági PIN Kód';
+        var params = parts.slice(3);
+
+        requestPin(function (pinCode) {
+            var loaderId = 'hb-load-' + Date.now();
+            addHarbormasterLoader(loaderId, 'PIN hitelesítés...');
+            callBackend('handleNPCInteraction', ['harbormaster', pinCode, 'EXECUTE_PIN_ACTION', { func: funcName, args: params }],
+                function (response) {
+                    removeHarbormasterLoader(loaderId);
+                    if (response && response.text) {
+                        addBubbleToHarbormaster('Barba Negra', response.text, 'incoming', response.buttons);
+                    }
+                },
+                function (err) {
+                    removeHarbormasterLoader(loaderId);
+                    addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+                }
+            );
+        }, '<strong>' + modalTitle + '</strong>');
+        return;
+    }
+
+    if (btn.action === 'RUN_FUNCTION' || (btn.action && btn.action.indexOf('RUN_FUNCTION|') === 0)) {
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Kikötőmester számol...');
+        callBackend('handleNPCInteraction', ['harbormaster', '', btn.action, btn.payload],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming', response.buttons);
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+        return;
+    }
+
+    sendHarbormasterMessageText(replyText);
+}
+
+function addHarbormasterLoader(loaderId, text) {
+    var chatArea = document.getElementById('harbormaster-chat-area');
+    if (!chatArea) return;
+    var loader = document.createElement('div');
+    loader.id = loaderId;
+    loader.className = 'harbormaster-bubble harbormaster-bubble-system';
+    loader.innerHTML = '<i class="fas fa-anchor fa-spin" style="color:#00ffcc; margin-right:6px;"></i> <i>' + (text || 'Gondolkodik...') + '</i>';
+    chatArea.appendChild(loader);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function removeHarbormasterLoader(loaderId) {
+    var l = document.getElementById(loaderId);
+    if (l) l.remove();
+}
+
+function sendHarbormasterMessage() {
+    var input = document.getElementById('harbormaster-chat-input');
+    if (!input) return;
+    var msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    sendHarbormasterMessageText(msg);
+}
+window.sendHarbormasterMessage = sendHarbormasterMessage;
+
+function sendHarbormasterMessageText(msg) {
+    addBubbleToHarbormaster('Te', msg, 'outgoing');
+
+    var loaderId = 'hb-load-' + Date.now();
+    addHarbormasterLoader(loaderId, 'Barba Negra válaszol...');
+
+    callBackend('handleNPCInteraction', ['harbormaster', msg, 'CHAT'],
+        function (response) {
+            removeHarbormasterLoader(loaderId);
+            if (response && response.text) {
+                addBubbleToHarbormaster('Barba Negra', response.text, 'incoming', response.buttons);
+            } else {
+                addBubbleToHarbormaster('Barba Negra', 'Harr! Nem egészen értem, mit mondasz, cimbora.', 'incoming');
+            }
+        },
+        function (err) {
+            removeHarbormasterLoader(loaderId);
+            addBubbleToHarbormaster('Rendszer', 'Hálózati hiba: ' + err.message, 'system');
+        }
+    );
+}
+window.sendHarbormasterMessageText = sendHarbormasterMessageText;
+
+function openHarbormasterConsole(title, contentHtml) {
+    var consolePanel = document.getElementById('harbormaster-console-panel');
+    var titleEl = document.getElementById('harbormaster-console-title');
+    var bodyEl = document.getElementById('harbormaster-console-body');
+    if (!consolePanel || !titleEl || !bodyEl) return;
+
+    titleEl.innerHTML = '<i class="fas fa-terminal" style="color: #00ffcc;"></i> [ ' + (title || 'KIKÖTŐMESTER KONZOL') + ' ] <span class="crt-cursor">_</span>';
+    bodyEl.innerHTML = contentHtml || '';
+    consolePanel.style.display = 'flex';
+}
+window.openHarbormasterConsole = openHarbormasterConsole;
+
+function closeHarbormasterConsole() {
+    var consolePanel = document.getElementById('harbormaster-console-panel');
+    if (consolePanel) consolePanel.style.display = 'none';
+}
+window.closeHarbormasterConsole = closeHarbormasterConsole;
+
+function triggerHarbormasterAction(monitorId) {
+    // 1. Hajóbérlés (balfelso_monitor)
+    if (monitorId === 'balfelso_monitor') {
+        addBubbleToHarbormaster('Te', 'Van bérelhető ladik?', 'outgoing');
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra a hajónaplót bújja...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', '', 'RUN_FUNCTION', 'BN_listRentals'],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+                if (response && response.buttons && response.buttons.length > 0) {
+                    var rentalButtons = response.buttons.filter(function (b) { return b.action && b.action.indexOf('CLIENT_REQ_PIN') === 0; });
+                    if (rentalButtons.length > 0) {
+                        renderRentalsConsole(rentalButtons);
+                    }
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+        return;
+    }
+
+    // 2. Térképbolt (balalso_monitor)
+    if (monitorId === 'balalso_monitor') {
+        addBubbleToHarbormaster('Te', 'Kellene egy térkép a környékről!', 'outgoing');
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra a térképeket válogatja...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', '', 'RUN_FUNCTION', 'BN_listMaps'],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+                if (response && response.buttons && response.buttons.length > 0) {
+                    var mapButtons = response.buttons.filter(function (b) { return b.action && b.action.indexOf('CLIENT_REQ_PIN') === 0; });
+                    if (mapButtons.length > 0) {
+                        renderMapsConsole(mapButtons);
+                    }
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+        return;
+    }
+
+    // 3. Hajó visszavétel (jobbfelso_monitor)
+    if (monitorId === 'jobbfelso_monitor') {
+        addBubbleToHarbormaster('Te', 'Meghoztam a járgányt!', 'outgoing');
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra ellenőrzi a kikötői dokkot...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', '', 'RUN_FUNCTION', 'BN_returnRental'],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+                if (response && response.buttons && response.buttons.length > 0) {
+                    var returnButtons = response.buttons.filter(function (b) { return b.action && b.action.indexOf('CLIENT_REQ_PIN') === 0; });
+                    if (returnButtons.length > 0) {
+                        renderReturnRentalConsole(returnButtons);
+                    }
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+        return;
+    }
+
+    // 4. Hivatalos ügyek (jobbkozep_monitor)
+    if (monitorId === 'jobbkozep_monitor') {
+        addBubbleToHarbormaster('Te', 'Átírnál nekem valamit a Hajóskönyvben?', 'outgoing');
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra előkotorja a tintát és pergament...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', '', 'RUN_FUNCTION', 'BN_adminMenu'],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+                renderAdminConsole();
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+        return;
+    }
+
+    // 5. Könyvmustra (jobbalso_monitor) - TISZTÁN PÁRBESZÉDALAPÚ A BESZÉDPANELEN!
+    if (monitorId === 'jobbalso_monitor') {
+        closeHarbormasterConsole();
+        addBubbleToHarbormaster('Te', 'Na és miért érdekel annyira a könyvem?', 'outgoing');
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra a könyvekről mesél...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', '', 'START_MARKETING'],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming', response.buttons);
+                } else {
+                    addBubbleToHarbormaster('Barba Negra', 'Harr! A könyvekben rejtőzik az igazi kincs, nem az aranyban!', 'incoming');
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+        return;
+    }
+}
+window.triggerHarbormasterAction = triggerHarbormasterAction;
+
+function renderRentalsConsole(buttons) {
+    var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
+    buttons.forEach(function (btn) {
+        var parts = btn.action.split('|');
+        var shipId = parts[3] || '';
+        var fee = parts[2] || '';
+        var imgSrc = btn.tooltipImage || 'https://storage.googleapis.com/kalozsziget-assets/assets/images/harbor_office.jpg';
+        var desc = btn.tooltip || 'Megbízható kikötői ladik.';
+
+        html += '<div class="harbormaster-card">';
+        html += '<img class="harbormaster-card-img" src="' + imgSrc + '" alt="Hajó">';
+        html += '<div class="harbormaster-card-title"><i class="fas fa-ship" style="color: #00ffcc;"></i> ' + btn.text + '</div>';
+        html += '<div class="harbormaster-card-desc">' + desc + '</div>';
+        html += '<div class="harbormaster-card-footer">';
+        html += '<span style="color: #ffe680; font-size: 0.8rem; font-weight: bold;">' + fee + '</span>';
+        html += '<button type="button" class="harbormaster-card-btn" onclick="executeRentFromConsole(\'' + shipId + '\', \'' + fee + '\')">BÉRLÉS</button>';
+        html += '</div></div>';
+    });
+    html += '</div></div>';
+    openHarbormasterConsole('BÉRELHETŐ HAJÓK ÉS LADIKOK', html);
+}
+window.renderRentalsConsole = renderRentalsConsole;
+
+function executeRentFromConsole(shipId, fee) {
+    requestPin(function (pinCode) {
+        // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
+        closeHarbormasterConsole();
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Kikötőmester hitelesíti a bérlést...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', pinCode, 'EXECUTE_PIN_ACTION', { func: 'BN_executeRent', args: [shipId] }],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba a bérlés során: ' + err.message, 'system');
+            }
+        );
+    }, '<strong>Hajóbérlés Jóváhagyása (' + fee + ')</strong>');
+}
+window.executeRentFromConsole = executeRentFromConsole;
+
+function renderMapsConsole(buttons) {
+    var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
+    buttons.forEach(function (btn) {
+        var parts = btn.action.split('|');
+        var mapRowIndex = parts[3] || '';
+        var fee = parts[2] || '30 Kr';
+
+        html += '<div class="harbormaster-card">';
+        html += '<div class="harbormaster-card-title"><i class="fas fa-map-marked-alt" style="color: #00ffcc;"></i> ' + btn.text + '</div>';
+        html += '<div class="harbormaster-card-desc">Részletes tengeri navigációs térkép Barba Negra gyűjteményéből.</div>';
+        html += '<div class="harbormaster-card-footer">';
+        html += '<span style="color: #ffe680; font-size: 0.8rem; font-weight: bold;">Ár: ' + fee + '</span>';
+        html += '<button type="button" class="harbormaster-card-btn" onclick="executeMapBuyFromConsole(\'' + mapRowIndex + '\')">VÁSÁRLÁS</button>';
+        html += '</div></div>';
+    });
+    html += '</div></div>';
+    openHarbormasterConsole('TÉRKÉPRAKTÁR (30 Kr / db)', html);
+}
+window.renderMapsConsole = renderMapsConsole;
+
+function executeMapBuyFromConsole(mapRowIndex) {
+    requestPin(function (pinCode) {
+        // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
+        closeHarbormasterConsole();
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Térkép másolása és levonás...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', pinCode, 'EXECUTE_PIN_ACTION', { func: 'BN_executeMapBuy', args: [mapRowIndex] }],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba a vásárlás során: ' + err.message, 'system');
+            }
+        );
+    }, '<strong>Térkép vásárlás (30 Kr)</strong>');
+}
+window.executeMapBuyFromConsole = executeMapBuyFromConsole;
+
+function renderReturnRentalConsole(buttons) {
+    var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
+    buttons.forEach(function (btn) {
+        var parts = btn.action.split('|');
+        var shipId = parts[3] || '';
+
+        html += '<div class="harbormaster-card">';
+        html += '<div class="harbormaster-card-title"><i class="fas fa-anchor" style="color: #00ffcc;"></i> ' + btn.text + '</div>';
+        html += '<div class="harbormaster-card-desc">Bérelt vízi jármű visszaszolgáltatása és a kaució elszámolása a hajónapló alapján.</div>';
+        html += '<div class="harbormaster-card-footer">';
+        html += '<button type="button" class="harbormaster-card-btn" onclick="executeReturnFromConsole(\'' + shipId + '\')">VISSZAADÁS</button>';
+        html += '</div></div>';
+    });
+    html += '</div></div>';
+    openHarbormasterConsole('BÉRELT HAJÓK VISSZAVÉTELE', html);
+}
+window.renderReturnRentalConsole = renderReturnRentalConsole;
+
+function executeReturnFromConsole(shipId) {
+    requestPin(function (pinCode) {
+        // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
+        closeHarbormasterConsole();
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra elszámolja a kauciót...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', pinCode, 'EXECUTE_PIN_ACTION', { func: 'BN_calculateReturn', args: [shipId] }],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba a visszavétel során: ' + err.message, 'system');
+            }
+        );
+    }, '<strong>Hajó Visszaadás és Kaució Elszámolás</strong>');
+}
+window.executeReturnFromConsole = executeReturnFromConsole;
+
+function renderAdminConsole() {
+    var html = '<div class="harbormaster-console-body-scroll">';
+    html += '<div class="harbormaster-form-group">';
+    html += '<h4 style="color:#d4af37; margin: 0 0 10px 0; font-family: \'Orbitron\', sans-serif;"><i class="fas fa-file-signature"></i> Hivatalos ügyintézés (50 Kr)</h4>';
+    html += '<p style="color:#b0bec5; font-size:0.8rem; margin:0 0 15px 0;">Válaszd ki a módosítani kívánt adatot. A jóváhagyáshoz PIN kód szükséges.</p>';
+
+    html += '<div style="display:flex; gap:10px; margin-bottom:15px;">';
+    html += '<button type="button" class="harbormaster-card-btn" style="flex:1;" onclick="showAdminForm(\'NAME\')"><i class="fas fa-user-edit"></i> Új Kalóznév</button>';
+    html += '<button type="button" class="harbormaster-card-btn" style="flex:1;" onclick="showAdminForm(\'PASS\')"><i class="fas fa-key"></i> Új Jelszó</button>';
+    html += '</div>';
+
+    html += '<div id="harbormaster-admin-form-container" style="display:none; flex-direction:column; gap:10px;">';
+    html += '<label id="harbormaster-admin-label" style="color:#00ffcc; font-size:0.8rem;"></label>';
+    html += '<input type="text" id="harbormaster-admin-input" class="harbormaster-input" style="border:1px solid #00ffcc; padding:8px; border-radius:4px; color:#ffffff;">';
+    html += '<button type="button" class="harbormaster-card-btn" onclick="submitAdminForm()"><i class="fas fa-check"></i> Mentés (PIN kérés)</button>';
+    html += '</div>';
+
+    html += '</div></div>';
+    openHarbormasterConsole('HIVATALOS ÜGYEK (50 Kr)', html);
+}
+window.renderAdminConsole = renderAdminConsole;
+
+var _currentAdminType = null;
+function showAdminForm(type) {
+    _currentAdminType = type;
+    var container = document.getElementById('harbormaster-admin-form-container');
+    var label = document.getElementById('harbormaster-admin-label');
+    var input = document.getElementById('harbormaster-admin-input');
+    if (!container || !label || !input) return;
+
+    container.style.display = 'flex';
+    if (type === 'NAME') {
+        label.textContent = 'Írd be az új kalózneved (min. 3 karakter):';
+        input.type = 'text';
+        input.placeholder = 'Új kalóznév...';
+    } else {
+        label.textContent = 'Írd be az új jelszavad (min. 4 karakter):';
+        input.type = 'password';
+        input.placeholder = 'Új jelszó...';
+    }
+    input.value = '';
+    input.focus();
+}
+window.showAdminForm = showAdminForm;
+
+function submitAdminForm() {
+    var input = document.getElementById('harbormaster-admin-input');
+    if (!input || !input.value.trim()) {
+        if (typeof uiAlert === 'function') uiAlert('Kérlek töltsd ki a mezőt!');
+        return;
+    }
+    var val = input.value.trim();
+    if (_currentAdminType === 'NAME' && val.length < 3) {
+        if (typeof uiAlert === 'function') uiAlert('A névnek legalább 3 karakternek kell lennie!');
+        return;
+    }
+    if (_currentAdminType === 'PASS' && val.length < 4) {
+        if (typeof uiAlert === 'function') uiAlert('A jelszónak legalább 4 karakternek kell lennie!');
+        return;
+    }
+
+    requestPin(function (pinCode) {
+        // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
+        closeHarbormasterConsole();
+        var loaderId = 'hb-load-' + Date.now();
+        addHarbormasterLoader(loaderId, 'Barba Negra pecsételi a módosítást...');
+
+        callBackend('handleNPCInteraction', ['harbormaster', pinCode, 'EXECUTE_PIN_ACTION', { func: 'BN_step2_Finalize', args: [_currentAdminType, val] }],
+            function (response) {
+                removeHarbormasterLoader(loaderId);
+                if (response && response.text) {
+                    addBubbleToHarbormaster('Barba Negra', response.text, 'incoming');
+                }
+            },
+            function (err) {
+                removeHarbormasterLoader(loaderId);
+                addBubbleToHarbormaster('Rendszer', 'Hiba történt: ' + err.message, 'system');
+            }
+        );
+    }, '<strong>Hivatalos Ügy Jóváhagyása (50 Kr)</strong>');
+}
+window.submitAdminForm = submitAdminForm;
 
 
 function tryGoToDeck() {
@@ -13544,7 +14293,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
      * Dinamikus Modál Állapot Vizsgálat (Garantálja, hogy nyitott felugró ablak esetén ne kattintsunk a színtérre)
      */
     function isAnyModalOpen() {
-        const modalEls = document.querySelectorAll('#universal-npc-modal, #toborzo-modal, #fedelzet-modal, #info-modal, #monk-pin-modal, #system-message-modal, #log-entry-modal, .gamemode-modal');
+        const modalEls = document.querySelectorAll('#universal-npc-modal, #toborzo-modal, #harbormaster-modal, #fedelzet-modal, #info-modal, #monk-pin-modal, #system-message-modal, #log-entry-modal, .gamemode-modal');
         let openFound = false;
         for (let i = 0; i < modalEls.length; i++) {
             const m = modalEls[i];
@@ -13694,7 +14443,30 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
      */
     function navigateToSubpage(target) {
         const pageId = (typeof target === 'object' && target.id) ? target.id : target;
-        console.log("⚓ 3D Kikötő: Cél aloldal / funkció meghívása ->", pageId);
+        // 0. Kikötőmester / Barba Negra egyedi multimédiás SVG modál megnyitása
+        if (pageId === 'openHarbormasterNPC' || (typeof target === 'object' && target.npcId === 'harbormaster')) {
+            isModalOpen = true;
+            if (defaultCameraPos && defaultTargetPos) {
+                camera.position.copy(defaultCameraPos);
+                if (controls) {
+                    controls.target.copy(defaultTargetPos);
+                    controls.update();
+                    controls.enabled = true;
+                }
+            }
+
+            if (window.parent && window.parent !== window && typeof window.parent.openHarbormasterModal === 'function') {
+                window.parent.openHarbormasterModal();
+            } else if (typeof window.openHarbormasterModal === 'function') {
+                window.openHarbormasterModal();
+            } else if (typeof openHarbormasterModal === 'function') {
+                openHarbormasterModal();
+            }
+            const overlay = document.getElementById('scene-transition-overlay');
+            if (overlay) overlay.classList.remove('active');
+            isCinematicTransitioning = false;
+            return;
+        }
 
         // 1. Univerzális NPC modal megnyitása felöltöztetett konfigurációval
         if (typeof target === 'object' && target.npcId && target.npcConfig) {

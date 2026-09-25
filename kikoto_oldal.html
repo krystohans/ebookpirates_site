@@ -59,6 +59,92 @@
         </div>
     </div>
 
+    <!-- Kikötőiroda / Kikötőmester Modal (Interaktív SVG/MP4 + Beszédpanel + Kiterjedő Konzol) -->
+    <div id="harbormaster-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;" onclick="if(event.target===this) closeHarbormasterModal(event)">
+        <div class="harbormaster-modal-assembly">
+            <!-- 1. OLDALSÓ PORTRÉ FIÓK (Barba Negra animáció + némító gomb) -->
+            <div id="harbormaster-portrait-panel" class="npc-portrait-closed">
+                <img id="harbormaster-portrait-image" src="https://storage.googleapis.com/kalozsziget-assets/assets/images/Pirate_sitting_in_pilot_chair.jpg" alt="Barba Negra" style="display: none;">
+                <video id="harbormaster-portrait-video" playsinline loop muted poster="https://storage.googleapis.com/kalozsziget-assets/assets/images/Pirate_sitting_in_pilot_chair.jpg" src="https://storage.googleapis.com/kalozsziget-assets/assets/videos/Pirate_sitting_in_pilot_chair.mp4" style="display: block;"></video>
+                <button id="harbormaster-portrait-audio-btn" type="button" class="portrait-audio-btn" title="Hang némítása / bekapcsolása" onclick="toggleVideoAudio('harbormaster-portrait-video', 'harbormaster-portrait-audio-btn')">
+                    <i class="fas fa-volume-mute"></i>
+                </button>
+            </div>
+
+            <!-- 2. FŐ KONTÉNER (Színpad + Interaktív SVG/MP4 + Beszédpanel + Konzol) -->
+            <div class="gamemode-modal-content harbormaster-modal-content">
+
+            <!-- SZÍNPAD / VIDEÓ + SVG + BESZÉDPANEL + KONZOL KONTÉNER (Fejléc nélkül, arany kerettel) -->
+            <div id="harbormaster-stage-container" class="harbormaster-stage-container" style="position: relative; width: 100%; aspect-ratio: 338.66666 / 190.5; max-height: calc(94vh - 20px); background: #020408; overflow: hidden; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.35), 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0,0,0,0.9); box-sizing: border-box;">
+
+                <!-- 1. HÁTTÉRVIDEÓ -->
+                <video id="harbormaster-video-player" class="harbormaster-video-bg" autoplay muted loop playsinline poster="https://storage.googleapis.com/kalozsziget-assets/assets/images/harbor_office.jpg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+                    <source src="https://storage.googleapis.com/kalozsziget-assets/assets/videos/Harbor_office.mp4" type="video/mp4">
+                </video>
+
+                <!-- 2. RÉTEGELT INTERAKTÍV SVG (Mind az 5 monitor aktív) -->
+                <svg id="harbormaster-interactive-svg" viewBox="0 0 338.66666 190.5" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: auto;">
+                    <g id="harbormaster-svg-layer">
+                        <!-- Bal Felső Monitor -> 📦 Hajóbérlés -->
+                        <path id="balfelso_monitor" class="harbormaster-monitor-path" onclick="triggerHarbormasterAction('balfelso_monitor')" d="M 65.999999,50.368422 88.578946,53.147367 87.189473,75.726316 65.305262,75.378947 Z"></path>
+                        <!-- Bal Alsó Monitor -> 🗺️ Térképbolt -->
+                        <path id="balalso_monitor" class="harbormaster-monitor-path" onclick="triggerHarbormasterAction('balalso_monitor')" d="m 51.757894,94.48421 23.968422,-1.389475 9.031578,30.915785 -25.010525,3.12632 z"></path>
+                        <!-- Jobb Felső Monitor -> ⚓ Hajó visszavétel -->
+                        <path id="jobbfelso_monitor" class="harbormaster-monitor-path" onclick="triggerHarbormasterAction('jobbfelso_monitor')" d="m 201.47368,58.357894 17.36842,0.347368 -0.34737,15.978947 -17.36842,-1.389473 z"></path>
+                        <!-- Jobb Közép Monitor -> 📜 Hivatalos ügyek -->
+                        <path id="jobbkozep_monitor" class="harbormaster-monitor-path" onclick="triggerHarbormasterAction('jobbkozep_monitor')" d="m 227.17894,85.452632 18.06316,0.694735 0.69474,13.54737 -18.41053,0.347363 z"></path>
+                        <!-- Jobb Alsó Monitor -> 📖 Könyvmustra -->
+                        <path id="jobbalso_monitor" class="harbormaster-monitor-path" onclick="triggerHarbormasterAction('jobbalso_monitor')" d="m 297,89.273683 h 12.50527 l -3.47369,17.368427 -13.89475,-1.38948 z"></path>
+                        <!-- Beszédpanel terület háttér alakzat -->
+                        <path id="beszedpanel" class="harbormaster-beszedpanel-path" d="m 111.15789,161.87368 v 27.78947 l 225.09474,-1.0421 0.34737,-77.81052 -227.87368,1.73684 0.69473,36.12631 L 39.947368,127.13684 0.69473682,69.821051 34.736841,132 Z"></path>
+                    </g>
+                </svg>
+
+                <!-- 3. BEZÁRÓ GOMB (Jobb felső sarokban diszkréten, fejlécnélküli dizájnhoz) -->
+                <button type="button" class="harbormaster-close-btn" onclick="closeHarbormasterModal(event)" title="Bezárás">&times;</button>
+
+                <!-- 4. LEBEGŐ TOOLTIP -->
+                <div id="harbormaster-tooltip" class="harbormaster-tooltip" style="display: none; position: absolute; z-index: 15; pointer-events: none;">
+                    <span id="harbormaster-tooltip-text">📦 Hajóbérlés</span>
+                </div>
+
+                <!-- 5. BESZÉDPANEL RÉTEG (path#beszedpanel felületére igazítva) -->
+                <div id="harbormaster-speech-container" class="harbormaster-speech-container">
+                    <div id="harbormaster-chat-area" class="harbormaster-chat-area">
+                        <!-- Dinamikus szövegbuborékok (Barba Negra üdvözlés, játékos üzenet, AI válaszok) -->
+                    </div>
+                    <div id="harbormaster-chat-input-bar" class="harbormaster-chat-input-bar">
+                        <input type="text" id="harbormaster-chat-input" class="harbormaster-input" placeholder="Beszélj a Kikötőmesterrel... (Enter: küldés)">
+                        <button type="button" id="harbormaster-chat-send" class="harbormaster-send-btn" onclick="sendHarbormasterMessage()" title="Üzenet küldése">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 6. KITERJEDŐ MENÜKONZOL (Csak a gépi beállításokhoz/listákhoz, utána azonnal bezáródik) -->
+                <div id="harbormaster-console-panel" class="harbormaster-cyber-console crt-screen" style="display: none;">
+                    <div class="crt-scanlines"></div>
+                    <div class="cyber-console-header">
+                        <div id="harbormaster-console-title" class="cyber-console-title">
+                            <i class="fas fa-terminal" style="color: #00ffcc;"></i> [ KIKÖTŐMESTER KONZOL ] <span class="crt-cursor">_</span>
+                        </div>
+                        <button type="button" class="cyber-close-btn" onclick="closeHarbormasterConsole()" title="Vissza a párbeszédhez">&times;</button>
+                    </div>
+                    <div id="harbormaster-console-body" class="cyber-console-body">
+                        <!-- Dinamikusan betöltött gépi űrlapok (Hajóbérlés kártyák, Térkép vásárlás, Hivatalos ügyek) -->
+                    </div>
+                </div>
+
+                <!-- 7. TÖLTÉSJELZŐ (SPINNER) -->
+                <div id="harbormaster-loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 4, 8, 0.85); display: none; align-items: center; justify-content: center; z-index: 30; flex-direction: column; backdrop-filter: blur(4px);">
+                    <div class="loader-spinner" style="border-top-color: #00ffcc; border-right-color: #d4af37;"></div>
+                    <p style="margin-top: 15px; font-weight: bold; font-family: 'Orbitron', sans-serif; color: #00ffcc; letter-spacing: 2px;">KIKÖTŐMESTER SZÁMOL...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- Toborzóbarakk Modal (Zozo Monolog Frame + Steampunk Brass Nametag + Interaktív SVG/MP4) -->
     <div id="toborzo-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;" onclick="if(event.target===this) closeToborzoModal(event)">
         <div class="gamemode-modal-content toborzo-modal-content" style="width: 95%; max-width: 960px; max-height: 94vh; padding: 0; margin: 0; display: flex; flex-direction: column; overflow: visible; background: transparent; border: none; box-shadow: none; position: relative; border-radius: 12px; box-sizing: border-box;">
@@ -389,38 +475,7 @@
                 <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;"
                     data-lang="harbor_title">Kikötő</h2>
 
-                <div onclick="openUniversalNPC('harbormaster', {
-                      name: 'Barba Negra',
-                      role: 'Kikötőmester',
-                      icon: '<i class=\'fas fa-anchor\'></i>', 
-                      headerColor: '#37474f',
-                      portrait: 'https://storage.googleapis.com/kalozsziget-assets/assets/images/Pirate_sitting_in_pilot_chair.jpg', 
-                      video: 'https://storage.googleapis.com/kalozsziget-assets/assets/videos/Pirate_sitting_in_pilot_chair.mp4',
-                      videoLoop: true, 
-                      msgIcon: '<i class=\'fas fa-anchor\' style=\'color:#d4af37; margin-right:5px;\'></i>',
-                      loaderHTML: '<i class=\'fas fa-anchor fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Kikötőmester számol...</i>',
-                      styles: {
-                          modal: {
-                              justifyContent: 'flex-end', 
-                              alignItems: 'stretch',
-                              background: '',
-                              padding: '0'
-                          },
-                          content: {
-                              width: '350px',             
-                              height: '100vh',            
-                              maxWidth: '85vw',           
-                              margin: '0',                
-                              borderRadius: '2',          
-                              border: 'none',
-                              borderLeft: '5px solid #d4af37', 
-                              backgroundColor: '#1f0901',
-                              color: '#241512',
-                              backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-                              boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-                          }
-                      }
-                  })" title="Kikötőmester"
+                <div onclick="openHarbormasterModal()" title="Kikötőmester"
                     style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
 
                     <div style="position: relative;">

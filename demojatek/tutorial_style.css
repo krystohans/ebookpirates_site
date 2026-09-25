@@ -27,20 +27,62 @@ body,
 html {
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  background: #050a12;
+  background: radial-gradient(ellipse at center, #2c3848 0%, #1a222e 60%, #0d1219 100%) !important;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Courier New', Courier, monospace;
 }
 
+body {
+  padding: 12px;
+  box-sizing: border-box;
+}
+
 #game-wrapper {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   overflow: hidden;
-  background: #1a2a3a;
+  background: #000000;
+  border: 3px solid #3b4754;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:fullscreen body,
+:-webkit-full-screen body,
+:-moz-full-screen body,
+:ms-fullscreen body,
+body.is-fullscreen {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #000000 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+:fullscreen #game-wrapper,
+:-webkit-full-screen #game-wrapper,
+:-moz-full-screen #game-wrapper,
+:ms-fullscreen #game-wrapper,
+body.is-fullscreen #game-wrapper {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 canvas {
@@ -226,6 +268,22 @@ canvas {
   justify-content: space-between;
 }
 
+#welcome-space-hint,
+.welcome-mode #welcome-space-hint,
+.welcome-mode.step-0 #welcome-space-hint {
+  position: absolute !important;
+  bottom: 40px !important;
+  right: 200px !important;
+  font-family: 'Briskb', 'Courier New', monospace !important;
+  font-size: 20px !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  opacity: 1.00 !important;
+  pointer-events: none !important;
+  z-index: 99 !important;
+}
+
+
 /* ─── PONTOS NAMEPLATE BEÁLLÍTÁS ─── */
 #zozo-nameplate,
 .zozo-nameplate-std {
@@ -252,10 +310,13 @@ canvas {
 
 #zozo-dialogue-text {
   font-size: 24px;
-  line-height: 1.3;
+  line-height: 1.25;
   color: #000000;
   text-align: center;
-  min-height: 80px;
+  min-height: 0;
+  max-height: 78px;
+  overflow: hidden;
+  box-sizing: border-box;
   font-family: 'Briskb', 'Courier New', monospace;
   font-weight: bold;
   white-space: pre-wrap;
@@ -298,6 +359,9 @@ canvas {
   text-align: center;
   width: 100%;
   min-height: 0;
+  max-height: 80px;
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -311,6 +375,9 @@ canvas {
   text-align: center;
   width: 100%;
   min-height: 0;
+  max-height: 80px;
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -350,6 +417,9 @@ canvas {
   text-align: center;
   width: 100%;
   min-height: 0;
+  max-height: 80px;
+  overflow: hidden;
+  box-sizing: border-box;
   font-family: 'Briskb', 'Courier New', monospace;
   font-weight: bold;
   white-space: pre-wrap;
@@ -576,4 +646,28 @@ canvas {
     left: 50% !important;
     transform: translateX(-50%) scale(1.0, 0.7) !important;
   }
+}
+
+
+/* ─── PONTOS PADDING ÉS MARGÓ BEÁLLÍTÁSOK A SZÖVEG KILÓGÁS MEGELŐZÉSÉRE ─── */
+.zozo-monolog-box-std {
+  padding: 50px 145px 32px 145px !important;
+  box-sizing: border-box !important;
+}
+
+#zozo-dialogue-text,
+#popup-toast-text,
+#ingame-dialogue-text,
+#eog-dialog-text,
+.zozo-dialogue-text-std {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
 }

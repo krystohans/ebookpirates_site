@@ -1,4 +1,4 @@
-{
+﻿{
   "welcomeTexts": [
     "Na, te vagy az új jövevény? \nEgy Szárazföldi Patkány?",
     "Olvasnivalót akarsz a Könyvtárba? Hát, barátom, \nitt nem a kész könyvek lebegnek ám a vízben!",
@@ -35,12 +35,13 @@
     "28": "Minél több könyved van, annál\nnagyobb emberré válsz itt. Még akár kapitány is lehet belőled!",
     "29": "Viszont, ha ellopod valamelyik könyvet, vagy hagyod, hogy\njátékon kívüliek is olvassák, akkor súlyos lesz a büntetésed!",
     "30": "Nem húznak ugyan át a hajógerinc alatt, de kikerül\n a neved a szégyenfalra, hogy mindenki lássa, mit tettél.",
-    "31": "És hiába szenteltetted felszentelted a könyvet, az\nelveszti az értékét a játékban, vagyis Könyvbörtönbe kerül.",
+    "31": "És hiába szenteltetted fel a könyvet, az\nelveszti az értékét a játékban, vagyis Könyvbörtönbe kerül.",
     "32": "Én megéheztem, úgyhogy innentől egyedül folytatod.\nHozz nekem még több Hártyát. És vigyázz a hajómra!",
     "33": "És, ha te is írtál valamit, amit behoznál a játékba,\nakkor a monkokhoz kell elmenned.",
     "34": "Fent élnek a Felhőkolostorban, a Szentély felett.\nŐk felügyelik a betűt.",
     "controls": "A W,A,S,D vagy az iránynyíl gombokkal tudod irányítani a hajót. A kamerát akkor tudod forgatni, ha lenyomva tartod akár a jobb, akár a bal gombot az egéren. Az információs ablakokat a space lenyomásával tudod léptetni / bezárni.",
-    "wind": "Figyelj a szélirányra, úgy forgasd a vitorlát!"
+    "wind": "Figyelj a szélirányra, úgy forgasd a vitorlát!",
+    "airship_bad_empty": "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket."
   },
   "popups": {
     "new_membrane": "Újabb hártyát gyűjtöttél be! \nNyomás vissza a kikötőbe!",
@@ -48,12 +49,17 @@
     "airship_bad": "Ezek most kiraboltak. \nMost mehetünk ki tovább halászni.",
     "membrane_good": "Ezt felszedtük",
     "membrane_bad": "Ez a hártya most elúszott!",
-    "beach": "A partra nem kéne felfutni",
+    "beach": "A partra nem kéne felfutni!",
     "out_of_range": "Ezzel a ronccsal nem mehetünk ki a nyílt tengerre.",
     "homepoint": "Kipakoltam, mehetünk.",
     "empty_boat": "Üres csónakkal tértél vissza",
     "eog_empty_water": "Gyanúsan üres a víz, gyere, nézzünk szét az öböl bejáratánál!",
-    "airship_catch": "UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, \nde ha hibázol, elveszik a hártyáinkat."
+    "airship_catch": "UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, \nde ha hibázol, elveszik a hártyáinkat.",
+    "boat_crash": "Óvatosan! Összetöröd a csónakot!",
+    "boat_fixing": "Ezt most megjavítottam, de vigyázz jobban!",
+    "boat_lowHP": "Még egy ütközést nem élünk túl.\nVidd vissza a csónakot!",
+    "boat_totalcar": "Elsüllyedtél. Belőled nem lesz hajós.",
+    "airship_bad_empty": "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket."
   },
   "eogMonologues": {
     "pointA": "Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet az öböl szájánál!",

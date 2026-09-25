@@ -1,7 +1,7 @@
-﻿<style>
+<style>
   @font-face {
     font-family: 'BriskB';
-    src: url("assets/fonts/Briskb.otf") format('opentype');
+    src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
     font-weight: bold;
     font-style: normal;
   }
@@ -70,7 +70,7 @@
       <span id="tb-durability-count">10</span>
     </div>
     <div class="counter-box" title="Szállított hártyák">
-      <img src="assets/images/hordo_hartya_2-removebg-preview.png" class="counter-icon" title="Szállított hártyák">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hordo_hartya_2-removebg-preview.png" class="counter-icon" title="Szállított hártyák">
       <span id="tb-carried-count">0</span>
     </div>
     <div class="counter-box" title="Bázison tárolt hártyák">
@@ -104,7 +104,7 @@
       </div>
     </div>
 
-    <img src="assets/images/pause.png" id="btn-tb-pause" class="topbar-btn" title="Szünet" onclick="window.togglePauseGame()">
+    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/pause.png" id="btn-tb-pause" class="topbar-btn" title="Szünet" onclick="window.togglePauseGame()">
     <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/menu-r.png" id="btn-tb-menu" class="topbar-btn" title="STOP">
     <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r 1.png" id="btn-tb-exit" class="topbar-btn" title="Kilépés">
   </div>
@@ -112,7 +112,7 @@
 
 <!-- 🌍 NYELVVÁLASZTÓ PERGAMENTÉRKÉP POPUP -->
 <div id="language-map-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center;">
-  <div style="position: relative; width: 900px; max-width: 95vw; height: 800px; max-height: 90vh; background: transparent url('language_choose.jpg') no-repeat center / contain; filter: drop-shadow(0 15px 40px rgba(0,0,0,0.9));">
+  <div style="position: relative; width: 900px; max-width: 95vw; height: 800px; max-height: 90vh; background: transparent url('https://storage.googleapis.com/kalozsziget-assets/tutorial/language_choose.jpg') no-repeat center / contain; filter: drop-shadow(0 15px 40px rgba(0,0,0,0.9));">
     
     <!-- Bezáró gomb (Jobb felső sarok) -->
     <div id="btn-close-language-map" style="position: absolute; top: 25px; right: 35px; width: 45px; height: 45px; cursor: pointer; background: rgba(0,0,0,0.4); border: 2px solid #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffea00; font-weight: bold; font-size: 22px; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1.0)'" title="Bezárás">✕</div>
@@ -343,7 +343,12 @@ A Szentelés után a Könyv ebook formában letölthetővé válik, és az a já
   </button>
 </div>
 
-<script>
+
+  <script>
+    window.INFO_SCROLL_EN = "You landlubber! Didn't you come here to read?! Or is paying attention to me some kind of luxury?!\nIt's because of people like you that I keep this piece of junk on me.\nHere, take it, everything you need to know is written right down here.\n\nGoal of the Game:\n• You must collect 30 glowing Membranes floating on the water and bring them back to the port. The storm lantern marks the way back.\n• Your ship has 10 durability points. You lose one point each time you hit a rock. When this value drops to one, you will receive a warning. If the boat's durability drops to zero, the ship breaks and sinks; you will have to restart the game from the main menu, and all membranes collected up to that point will be lost.\n• During your collection run, quiz questions regarding the rules of the game will pop up from time to time. If you answer correctly, you scoop up the membrane; if you answer incorrectly, you do not.\n\nControls:\n• You steer the sailing boat using the W, A, S, D and arrow keys.\n• The camera can be rotated with the mouse. As long as you hold down the left mouse button, your ship will turn in the direction the camera is facing.\n• The main menu can be accessed via the Menu icon (top menu bar, the icon next to the skull).\n• You can advance through text bubbles by pressing Space.\n• The info scroll can be closed by clicking on the skull (bottom right corner).\n• In the Settings menu, you can adjust the sounds, music, fullscreen mode, and game language.\n• After picking up the third membrane, an airship takes off, which will be anchored at the mouth of the bay until then. From that point on, it follows you throughout the tutorial. If it catches up to you, it will ask you a question. If you answer correctly, you can move on; if you answer incorrectly, you lose the membranes currently on your ship (membranes already delivered to the port remain safe). If you had no membranes on your ship, the tutorial restarts from the port.\n\nThe World:\nThe Pirate Port is called Hebok. This is where you can find the Market, the Book Shrine, and the Tavern, where you can accept quests.\nYou can rent or buy a ship there, or you can even join the crew of other ships. Or join the pirates.\nThe more Books you have, the higher your rank will be.\n\nCurrencies:\nWe use Pirate Credits and Talent in the game.\n• You can earn Pirate Credits through adventures; plus, the system automatically credits you with one point every day upon logging in. You can also sell your items for Pirate Credits, except for Books.\n• You can obtain Talent by supporting our work via PayPal or Patreon, or if you are lucky enough to find a Let-crystal and sell it at the Shrine.\n• You can exchange Talent for Pirate Credits at the Bank, but not the other way around.\n\nMembrane\n• The raw material for Scrolls; it cannot be read on its own.\n\nScroll\n• Scrolls can be crafted from Membranes. You can read your Scrolls, Copies, and Books in the Library.\n• The Scrollmaster crafts one Scroll from 30 Membranes for 11 Pirate Credits.\n• You can buy and sell Scrolls at the Scrollmaster or on the Market.\n\nCopy\n• To craft a Copy, you need all the Scrolls of a book, but you can also receive Copies from other players or purchase them on the Market. If you are lucky.\n\nBook\nConsecration\n• In the Book Shrine, a Copy is consecrated into a Book upon paying Talent.\n• After Consecration, the Book becomes downloadable as an ebook, and the player to whom the Book is registered receives 10 Copies to do with as they please.\n• If any player illegally shares the downloaded ebook, the Book will lose its value in the game despite having been consecrated, meaning it goes into Book Prison, and the culprit's name will be put up on the Wall of Shame.";
+  </script>
+
+  <script>
   (function() {
     const btnInfo = document.getElementById('btn-tb-info');
     const overlay = document.getElementById('info-scroll-overlay');
@@ -351,6 +356,12 @@ A Szentelés után a Könyv ebook formában letölthetővé válik, és az a já
 
     if (btnInfo) {
       btnInfo.addEventListener('click', function() {
+        const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
+        const content = document.getElementById('info-scroll-content');
+        if (content) {
+          content.innerText = (lang === 'en' && window.INFO_SCROLL_EN) ? window.INFO_SCROLL_EN : (window.INFO_SCROLL_HU || content.innerText);
+        }
+        if (overlay) overlay.style.display = 'flex';
         if (editor) editor.style.display = 'block';
       });
     }

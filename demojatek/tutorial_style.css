@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'Briskb';
-  src: url("assets/fonts/Briskb.otf") format('opentype');
+  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
   font-weight: bold;
 }
 
@@ -310,10 +310,13 @@ canvas {
 
 #zozo-dialogue-text {
   font-size: 24px;
-  line-height: 1.3;
+  line-height: 1.25;
   color: #000000;
   text-align: center;
-  min-height: 80px;
+  min-height: 0;
+  max-height: 78px;
+  overflow: hidden;
+  box-sizing: border-box;
   font-family: 'Briskb', 'Courier New', monospace;
   font-weight: bold;
   white-space: pre-wrap;
@@ -356,6 +359,9 @@ canvas {
   text-align: center;
   width: 100%;
   min-height: 0;
+  max-height: 80px;
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -369,6 +375,9 @@ canvas {
   text-align: center;
   width: 100%;
   min-height: 0;
+  max-height: 80px;
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -408,6 +417,9 @@ canvas {
   text-align: center;
   width: 100%;
   min-height: 0;
+  max-height: 80px;
+  overflow: hidden;
+  box-sizing: border-box;
   font-family: 'Briskb', 'Courier New', monospace;
   font-weight: bold;
   white-space: pre-wrap;
@@ -634,4 +646,28 @@ canvas {
     left: 50% !important;
     transform: translateX(-50%) scale(1.0, 0.7) !important;
   }
+}
+
+
+/* ─── PONTOS PADDING ÉS MARGÓ BEÁLLÍTÁSOK A SZÖVEG KILÓGÁS MEGELŐZÉSÉRE ─── */
+.zozo-monolog-box-std {
+  padding: 50px 145px 32px 145px !important;
+  box-sizing: border-box !important;
+}
+
+#zozo-dialogue-text,
+#popup-toast-text,
+#ingame-dialogue-text,
+#eog-dialog-text,
+.zozo-dialogue-text-std {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
 }

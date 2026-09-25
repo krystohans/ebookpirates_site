@@ -636,3 +636,27 @@ body.mobile-hud #zozo-ingame-monolog-container {
   touch-action: manipulation;
 }
 
+
+
+/* ─── PONTOS PADDING ÉS MARGÓ BEÁLLÍTÁSOK A SZÖVEG KILÓGÁS MEGELŐZÉSÉRE ─── */
+.zozo-monolog-box-std {
+  padding: 50px 145px 32px 145px !important;
+  box-sizing: border-box !important;
+}
+
+#zozo-dialogue-text,
+#popup-toast-text,
+#ingame-dialogue-text,
+#eog-dialog-text,
+.zozo-dialogue-text-std {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
+}

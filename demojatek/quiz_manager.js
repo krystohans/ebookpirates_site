@@ -1,4 +1,4 @@
-﻿window.QuizConfig = {
+window.QuizConfig = {
                 TUTORZEP: {
     panelWidth: 831,
     panelHeight: 768,
@@ -107,8 +107,14 @@ class QuizManager {
   }
 
   async loadQuestions() {
+    const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
+    const jsonFile = (lang === 'en') ? 'quiz_questions_en.json' : 'quiz_questions.json';
+
     try {
-      const res = await fetch('quiz_questions.json?t=' + Date.now());
+      let res = await fetch(jsonFile + '?t=' + Date.now());
+      if (!res.ok && lang === 'en') {
+        res = await fetch('quiz_questions.json?t=' + Date.now());
+      }
       if (res.ok) {
         this.questions = await res.json();
       }
@@ -116,16 +122,22 @@ class QuizManager {
       console.error("Hiba a kvízkérdések betöltésekor:", e);
     }
 
-    // Irodalmi kérdések betöltése a Google Sheets backendből
+    // Irodalmi kérdések betöltése a Google Sheets backendből (kvizkerdesek vagy kvíz_ENG munkalap)
     if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
       const self = this;
-      window.parent.callBackend('getQuizQuestions', [], function (backendQuestions) {
+      const functionName = (lang === 'en') ? 'getQuizQuestionsEn' : 'getQuizQuestions';
+      window.parent.callBackend(functionName, [], function (backendQuestions) {
         if (Array.isArray(backendQuestions) && backendQuestions.length > 0) {
           self.literatureQuestions = backendQuestions;
-          console.log("📚 " + backendQuestions.length + " db irodalmi kvízkérdés betöltve a backendből!");
+          console.log("📚 " + backendQuestions.length + " db irodalmi kvízkérdés betöltve a backendből (" + lang + ")!");
         }
       }, function (err) {
-        console.warn("Backend kérdésbetöltési figyelmeztetés:", err);
+        // Fallback standard getQuizQuestions
+        window.parent.callBackend('getQuizQuestions', [], function (backendQuestions) {
+          if (Array.isArray(backendQuestions) && backendQuestions.length > 0) {
+            self.literatureQuestions = backendQuestions;
+          }
+        });
       });
     }
 
@@ -543,6 +555,10 @@ class QuizManager {
 
   // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ (AGENTS.md Felhasználói Szabály) ───
   initVisualEditor() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('edit') !== '1' && params.get('editor') !== '1') {
+      return;
+    }
     let editor = document.getElementById('quiz-visual-editor');
     if (editor) return;
 

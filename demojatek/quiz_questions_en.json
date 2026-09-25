@@ -1,0 +1,782 @@
+[
+  {
+    "id": 2,
+    "category": "SAVE",
+    "question": "What is the title of Zsolt Bukros' anthology published in 2024?",
+    "answers": [
+      "Vodka and blood",
+      "Mirror and blood",
+      "Fire and blood",
+      "Water and blood"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 3,
+    "category": "SAVE",
+    "question": "Whose pen name is Raymond Darieni?",
+    "answers": [
+      "István Nemere",
+      "István Nemes",
+      "László L. Lőrincz",
+      "Szigeti Sándor"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 4,
+    "category": "SAVE",
+    "question": "Whose pen name is Jessica J. Brutal?",
+    "answers": [
+      "István Nemes",
+      "István Nemere",
+      "Sándor Szélesi",
+      "Szántó Tibor"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 5,
+    "category": "SAVE",
+    "question": "Which pen name belongs to Sándor Szélesi?",
+    "answers": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 6,
+    "category": "SAVE",
+    "question": "Which series does \"Midnight Horizon\" belong to?",
+    "answers": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 7,
+    "category": "SAVE",
+    "question": "Which of the following is NOT a work by Sheila Martens?",
+    "answers": [
+      "Honey-sweet happiness",
+      "Desert shoot",
+      "Go with the flow",
+      "Golden cage"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 8,
+    "category": "SAVE",
+    "question": "When is the Budapest International Book Festival held?",
+    "answers": [
+      "In October",
+      "In September",
+      "In June",
+      "In May"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 9,
+    "category": "SAVE",
+    "question": "What nationality was Selma Lagerlöf?",
+    "answers": [
+      "Swedish",
+      "Danish",
+      "Finn",
+      "Norwegian"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 12,
+    "category": "TUTORZEP",
+    "question": "Who is the main character of the fantasy novel \"Wolf Brothers\"?",
+    "answers": [
+      "Olmud of the Dragon Helm",
+      "Lizard-headed Hessgeron",
+      "Dream-drunk Kvazel",
+      "Cugell the Sly"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 14,
+    "category": "TUTOR_GameInfo",
+    "question": "What is the name of the Pirate Port on the Letter Sea?",
+    "answers": [
+      "Hebok",
+      "Pirate Island",
+      "Black Rock",
+      "Skull Island"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 15,
+    "category": "TUTOR_GameInfo",
+    "question": "How can you keep your acquired membranes safe while on a raid?",
+    "answers": [
+      "You return to the port Base",
+      "You hide it from the airship",
+      "You throw it into the sea",
+      "You lock it away in the bottom of the boat"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 16,
+    "category": "TUTOR_GameInfo",
+    "question": "Which control keys do you use to navigate your boat?",
+    "answers": [
+      "With W, A, S, D keys",
+      "Only with the mouse click",
+      "With Space and Enter keys",
+      "With F1 and F2 keys"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 17,
+    "category": "TUTORZEP",
+    "question": "What happens if the boat's durability drops below 2?",
+    "answers": [
+      "The boat sinks, you lose.",
+      "The game restarts without losing membranes",
+      "The boat repairs itself",
+      "The main menu pops up"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 18,
+    "category": "TUTORZEP",
+    "question": "How many membranes do you need to collect for the Battleship to disappear from the strait?",
+    "answers": [
+      "After 30 membranes",
+      "After 10 membranes",
+      "After 50 membranes",
+      "It never disappears"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 19,
+    "category": "SAVE",
+    "question": "What must you do to escape when the Airship catches you?",
+    "answers": [
+      "You must answer the Quiz question correctly",
+      "You must row faster",
+      "You must shoot down the airship",
+      "You must jump into the water"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 20,
+    "category": "TUTORZEP",
+    "question": "How can you claim the membranes earned during the demo game?",
+    "answers": [
+      "By successfully completing the tutorial after registration",
+      "Immediately on the main page",
+      "Only with payment",
+      "They cannot be claimed"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 21,
+    "category": "TUTORZEP",
+    "question": "How can I read the rules of the demo game?",
+    "answers": [
+      "By opening the info panel",
+      "By opening the main page",
+      "By visiting the Patreon page",
+      "On the Facebook page"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 22,
+    "category": "TUTORZEP",
+    "question": "Who is the fearsome pirate leader in the novel \"Treasure Island\"?",
+    "answers": [
+      "Long John Silver",
+      "Captain Flint",
+      "Captain Hook",
+      "Jack Sparrow"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 23,
+    "category": "SAVE",
+    "question": "Who commands the whaling ship Pequod against Moby Dick?",
+    "answers": [
+      "Captain Ahab",
+      "Captain Nemo",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 24,
+    "category": "SAVE",
+    "question": "Which Jules Verne novel is about a group of schoolboys?",
+    "answers": [
+      "Two Years' Vacation",
+      "The Mysterious Island",
+      "Captain Nemo",
+      "In Search of the Castaways"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 25,
+    "category": "TUTORZEP",
+    "question": "What is the name of Robinson Crusoe's native companion?",
+    "answers": [
+      "Friday",
+      "Saturday",
+      "Thursday",
+      "Jim"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 26,
+    "category": "SAVE",
+    "question": "Who is Peter Pan's sworn enemy?",
+    "answers": [
+      "Captain Hook",
+      "Blackbeard",
+      "Captain Morgan",
+      "Captain Barbossa"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 27,
+    "category": "TUTORZEP",
+    "question": "From the song of which sea creatures does Odysseus plug his ears with wax?",
+    "answers": [
+      "None of them",
+      "Sirens",
+      "Harpies",
+      "Mermaids"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 28,
+    "category": "TUTORZEP",
+    "question": "What kind of creatures inhabit the island in Jonathan Swift's satire?",
+    "answers": [
+      "Lilliputians",
+      "Giants",
+      "Yahoos",
+      "Houyhnhnms"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 29,
+    "category": "TUTORZEP",
+    "question": "Who is the young nobleman who becomes the fourth to join the King's Musketeers?",
+    "answers": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 30,
+    "category": "TUTORZEP",
+    "question": "What everyday structures does Don Quixote mistake for evil giants?",
+    "answers": [
+      "Windmills",
+      "Lighthouses",
+      "Monasteries",
+      "Lookouts"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 31,
+    "category": "SAVE",
+    "question": "Who is R. A. Salvatore's main hero?",
+    "answers": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 32,
+    "category": "TUTORZEP",
+    "question": "Which novel features Skandar Graun as the main protagonist?",
+    "answers": [
+      "The Word of Chaos",
+      "Battle for the Stone of Night",
+      "The Crystal Shard",
+      "The Neverending Story"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 33,
+    "category": "SAVE",
+    "question": "Lord Vetinari is the hero of which writer?",
+    "answers": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 34,
+    "category": "TUTORZEP",
+    "question": "Which hero was played by Arnold Schwarzenegger?",
+    "answers": [
+      "Conan the Barbarian",
+      "Druss the Legend",
+      "Dark Mersant",
+      "Tom Bombadil"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 35,
+    "category": "TUTORZEP",
+    "question": "Leon Silver is the hero of which world?",
+    "answers": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerunia"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 36,
+    "category": "SAVE",
+    "question": "Who did not practice magic on Earth?",
+    "answers": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledore",
+      "Panoramix"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 37,
+    "category": "SAVE",
+    "question": "In how many days did Willy Fogg travel around the world?",
+    "answers": [
+      "Seventy-nine",
+      "Eighty",
+      "Eighty-one",
+      "In the end, he failed"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 38,
+    "category": "SAVE",
+    "question": "Brandon Sanderson wrote about the wheel of what?",
+    "answers": [
+      "Time",
+      "Fate",
+      "The wagon",
+      "Luck"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 39,
+    "category": "SAVE",
+    "question": "Which house did Leigh Bardugo write about?",
+    "answers": [
+      "Ninth",
+      "Tenth",
+      "Seventh",
+      "First"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 40,
+    "category": "TUTORZEP",
+    "question": "The book \"The Princess's Necklace\" begins with a quote from whom?",
+    "answers": [
+      "Béla Hamvas",
+      "Alexandre Dumas",
+      "Sándor Weöres",
+      "Laozi"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 41,
+    "category": "TUTORZEP",
+    "question": "How many arms does happiness have according to Shelby Van Pelt?",
+    "answers": [
+      "Eight",
+      "Four",
+      "Three and a half",
+      "Two"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 42,
+    "category": "TUTOR_GameInfo",
+    "question": "How can I read the rules of the tutorial game?",
+    "answers": [
+      "By opening the info panel",
+      "By opening the main page",
+      "By visiting the Patreon page",
+      "On the Facebook page"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 43,
+    "category": "TUTORZEP",
+    "question": "Where did Agatha Christie write a significant portion of her famous detective novels?",
+    "answers": [
+      "Sitting in her bathtub",
+      "In her publisher's office",
+      "In a London coffee shop",
+      "In his study"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 44,
+    "category": "TUTORZEP",
+    "question": "Why did J.K. Rowling write the first Harry Potter book in a coffee shop?",
+    "answers": [
+      "Because she was cold at home",
+      "She loved background noise",
+      "She modeled the characters after the guests",
+      "She got free coffee and cake"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 45,
+    "category": "TUTORZEP",
+    "question": "Which of his books does Stephen King not remember writing due to drugs?",
+    "answers": [
+      "Cujo",
+      "The Shining",
+      "It",
+      "Pet Sematary"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 46,
+    "category": "TUTORZEP",
+    "question": "Which rock musician wanted to play the role of Gollum in the Lord of the Rings film adaptation?",
+    "answers": [
+      "John Lennon",
+      "Bon Jovi",
+      "Axl Rose",
+      "Ozzy Osbourne"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 47,
+    "category": "TUTORZEP",
+    "question": "What inspired Frank Herbert to write Dune?",
+    "answers": [
+      "A government project",
+      "A NASA report on the surface of Mars",
+      "A desert vacation in Oregon",
+      "A nightmare"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 48,
+    "category": "TUTORZEP",
+    "question": "What did Edgar Rice Burroughs trademark?",
+    "answers": [
+      "Tarzan's yell",
+      "The gorilla language",
+      "The name Tarzan",
+      "The title \"Lord of the Jungle\""
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 49,
+    "category": "TUTORZEP",
+    "question": "What does Pinocchio do to the cricket in the original book?",
+    "answers": [
+      "Flattens it with a hammer",
+      "Locks it in a dark matchbox",
+      "Sells it to a traveling circus",
+      "Throws it out the window"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 50,
+    "category": "TUTORZEP",
+    "question": "Which book inspired Batman?",
+    "answers": [
+      "Count Dracula",
+      "Frankenstein",
+      "The Invisible Man",
+      "Dr. Jekyll and Mr. Hyde"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 51,
+    "category": "TUTORZEP",
+    "question": "Where does the iconic green digital code of The Matrix come from?",
+    "answers": [
+      "From the designer's wife's Japanese cookbook",
+      "From a Russian physics textbook",
+      "From an old Swedish furniture factory catalog",
+      "From an ancient Egyptian papyrus"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 52,
+    "category": "TUTORZEP",
+    "question": "What real-world event inspired the \"Red Wedding\" in Game of Thrones?",
+    "answers": [
+      "A medieval Scottish massacre, the Black Dinner",
+      "The revenge wedding of Princess Olga of Kyiv",
+      "The St. Bartholomew's Day massacre in France",
+      "The scandalous wedding dinner of King Edward II of England"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 53,
+    "category": "TUTOR_GameInfo",
+    "question": "What kinds of currency exist in the game?",
+    "answers": [
+      "Pirate Credit and Talent",
+      "Gold and Silver",
+      "Farthing and Kreuzer",
+      "Fabatka and tallér"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 54,
+    "category": "TUTOR_GameInfo",
+    "question": "What is required for book consecration in the Book Shrine besides the Copy?",
+    "answers": [
+      "Talent",
+      "Prayer",
+      "200 Pirate Credits",
+      "Sacrifice"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 55,
+    "category": "TUTOR_GameInfo",
+    "question": "How can you support the eBookPirates game?",
+    "answers": [
+      "Patreon, PayPal",
+      "With praise",
+      "By watching advertisements",
+      "With a blood sacrifice"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 56,
+    "category": "TUTOR_GameInfo",
+    "question": "How many membranes are needed for a scroll?",
+    "answers": [
+      "Thirty",
+      "Fifty",
+      "One per paragraph",
+      "Twelve"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 57,
+    "category": "TUTOR_GameInfo",
+    "question": "How many scrolls are needed for a copy?",
+    "answers": [
+      "All the scrolls of the book",
+      "Thirty",
+      "Twelve",
+      "Fifty"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 58,
+    "category": "TUTOR_GameInfo",
+    "question": "Where can you obtain quests?",
+    "answers": [
+      "In the Tavern",
+      "At the Harbor Master",
+      "In the Book Shrine",
+      "In the Library"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 59,
+    "category": "TUTOR_GameInfo",
+    "question": "Where can you read your scrolls?",
+    "answers": [
+      "In the Library",
+      "In the Tavern",
+      "At the Harbor Master",
+      "In the Book Shrine"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 60,
+    "category": "TUTOR_GameInfo",
+    "question": "What is the result of consecration?",
+    "answers": [
+      "Downloadable .ePub + 10 copies",
+      "Afterward, the book can be sold",
+      "The player levels up",
+      "1000 Pirate Credits"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 61,
+    "category": "TUTOR_GameInfo",
+    "question": "What is the punishment for book thieves?",
+    "answers": [
+      "Book Prison, wall of shame",
+      "Keelhauling",
+      "Immediate ban",
+      "A monetary fine"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 62,
+    "category": "TUTORZEP",
+    "question": "Which fake fact from The Da Vinci Code was officially debunked by the Louvre?",
+    "answers": [
+      "That the glass pyramid consists of 666 glass panes",
+      "That an alien is visible behind the Mona Lisa",
+      "That Jesus' real tomb is under the museum",
+      "That the museum's director was the grand master of a medieval knightly order"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 63,
+    "category": "TUTORZEP",
+    "question": "Who or what gave William Steig the idea for Shrek's name?",
+    "answers": [
+      "The Yiddish word \"Schreck\"",
+      "A Scottish swamp named Skriech",
+      "A medieval German mercenary named Shreck",
+      "His neighbor, who was named Shreck"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 64,
+    "category": "TUTORZEP",
+    "question": "Who did Ian Fleming model Q from the James Bond stories after?",
+    "answers": [
+      "A World War II bomb expert",
+      "About a London watchmaker",
+      "Albert Einstein's assistant",
+      "After himself"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 65,
+    "category": "TUTORZEP",
+    "question": "Who was Count Dracula in real life?",
+    "answers": [
+      "Prince Vlad Țepeș",
+      "A mad Bavarian king",
+      "A Spanish inquisitor",
+      "A London serial killer"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 66,
+    "category": "TUTORZEP",
+    "question": "Which of his phobias inspired Stan Lee to create Spider-Man?",
+    "answers": [
+      "He hated flies",
+      "He had a fear of heights",
+      "He had a phobia of spiders",
+      "He hated masks"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 67,
+    "category": "TUTORZEP",
+    "question": "What gave Michael Crichton the idea to write Jurassic Park?",
+    "answers": [
+      "He was interested in gene cloning",
+      "He wanted to invent the most expensive meat",
+      "A dinosaur nightmare",
+      "His little girl's school project"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 68,
+    "category": "TUTORZEP",
+    "question": "Which famous literary character was inspired by a real-life, chubby little boy?",
+    "answers": [
+      "Christopher Robin from Winnie-the-Pooh",
+      "Neville Longbottom from Harry Potter",
+      "Augustus Gloop from Charlie and the Chocolate Factory",
+      "Artúr Gombóc from the Pom Pom tales"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": 69,
+    "category": "TUTORZEP",
+    "question": "What was closed out of respect upon Victor Hugo's death? ",
+    "answers": [
+      "All the brothels of Paris",
+      "Hir favorite coffee shop",
+      "The racetrack",
+      "His favorite pubs"
+    ],
+    "correctIndex": 0
+  }
+]

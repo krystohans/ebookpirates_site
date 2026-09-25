@@ -11891,35 +11891,61 @@ function handleDeckElementClick(elemId) {
     } else if (elemId === 'master_gomb') {
         openDeckConsole('crew-msg', 'LEGÉNYSÉGI ÜZENETKÜLDŐ');
     } else if (elemId === 'kepernyo') {
-        // Hajónapló jogosultság ellenőrzés (Tulajdonos vagy Kapitány G, H oszlop)
-        var ship = selectedShipForDeparture;
+        // Hajónapló jogosultság ellenőrzés (backend checkLogWritePermission és hajó adatok alapján)
+        var ship = selectedShipForDeparture || (window.userShips && window.userShips[0]) || {};
         var myEmail = (window.currentUserEmail || localStorage.getItem('ebook_pirates_useremail') || '').toLowerCase().trim();
         var myNick = (window.currentUserNick || localStorage.getItem('ebook_pirates_username') || '').toLowerCase().trim();
 
         var isOwner = ship.isOwner || (ship.owner && (ship.owner.toLowerCase().includes(myEmail) || ship.owner.toLowerCase().includes(myNick)));
         var isCaptain = ship.isCaptain || (ship.captain && (ship.captain.toLowerCase().includes(myEmail) || ship.captain.toLowerCase().includes(myNick)));
 
-        // Ha a user rangja engedi vagy tulajdonos/kapitány
-        if (isOwner || isCaptain || ship.canEditLog !== false) {
-            var form = document.getElementById('deck-logbook-form');
-            var denied = document.getElementById('deck-logbook-denied');
-            if (form) form.style.display = 'block';
-            if (denied) denied.style.display = 'none';
-            openDeckConsole('logbook', 'HAJÓNAPLÓ BEJEGYZÉS SZERKESZTŐ');
-        } else {
-            var form2 = document.getElementById('deck-logbook-form');
-            var denied2 = document.getElementById('deck-logbook-denied');
-            if (form2) form2.style.display = 'none';
-            if (denied2) denied2.style.display = 'block';
-            openDeckConsole('logbook', 'HAJÓNAPLÓ // HOZZÁFÉRÉS MEGTAGADVA');
-            var htmlDenied = '<div style="font-family: \'Orbitron\', sans-serif; font-size: clamp(11px, 1.25vw, 15px); color: #ff4444; font-weight: bold; margin-bottom: 4px;">' +
-                '⛔ HOZZÁFÉRÉS MEGTAGADVA' +
-                '</div>' +
-                '<div style="font-family: \'Share Tech Mono\', monospace; font-size: clamp(9px, 1.05vw, 12px); color: #ffcccc;">' +
-                '(Csak a hajó Tulajdonosa vagy Kapitánya vezethet hajónaplót!)' +
-                '</div>';
-            setDeckScreenText(htmlDenied);
-        }
+        setDeckScreenText('Hajónapló hozzáférési jogosultság ellenőrzése... <span class=\"crt-cursor\">▋</span>');
+        callBackend('checkLogWritePermission', [], function (logId) {
+            if (logId && typeof logId === 'string') {
+                var form = document.getElementById('deck-logbook-form');
+                var denied = document.getElementById('deck-logbook-denied');
+                if (form) form.style.display = 'block';
+                if (denied) denied.style.display = 'none';
+                openDeckConsole('logbook', 'HAJÓNAPLÓ BEJEGYZÉS SZERKESZTŐ');
+                setupDeckLogImagePreview();
+                loadDeckLogEntry('last');
+                setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló Eszköztár megnyitva.</b> (Napló ID: ' + logId + ')');
+            } else if (isOwner || isCaptain || ship.canEditLog !== false) {
+                var form2 = document.getElementById('deck-logbook-form');
+                var denied2 = document.getElementById('deck-logbook-denied');
+                if (form2) form2.style.display = 'block';
+                if (denied2) denied2.style.display = 'none';
+                openDeckConsole('logbook', 'HAJÓNAPLÓ BEJEGYZÉS SZERKESZTŐ');
+                setupDeckLogImagePreview();
+                loadDeckLogEntry('new');
+                setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló Eszköztár megnyitva.</b>');
+            } else {
+                var form3 = document.getElementById('deck-logbook-form');
+                var denied3 = document.getElementById('deck-logbook-denied');
+                if (form3) form3.style.display = 'none';
+                if (denied3) denied3.style.display = 'block';
+                openDeckConsole('logbook', 'HAJÓNAPLÓ // HOZZÁFÉRÉS MEGTAGADVA');
+                var htmlDenied = '<div style=\"font-family: \'Orbitron\', sans-serif; font-size: clamp(11px, 1.25vw, 15px); color: #ff4444; font-weight: bold; margin-bottom: 4px;\">' +
+                    '⛔ HOZZÁFÉRÉS MEGTAGADVA' +
+                    '</div>' +
+                    '<div style=\"font-family: \'Share Tech Mono\', monospace; font-size: clamp(9px, 1.05vw, 12px); color: #ffcccc;\">' +
+                    '(Csak a hajó Tulajdonosa vagy Kapitánya vezethet hajónaplót!)' +
+                    '</div>';
+                setDeckScreenText(htmlDenied);
+            }
+        }, function (err) {
+            if (isOwner || isCaptain) {
+                var form4 = document.getElementById('deck-logbook-form');
+                var denied4 = document.getElementById('deck-logbook-denied');
+                if (form4) form4.style.display = 'block';
+                if (denied4) denied4.style.display = 'none';
+                openDeckConsole('logbook', 'HAJÓNAPLÓ BEJEGYZÉS SZERKESZTŐ');
+                setupDeckLogImagePreview();
+                loadDeckLogEntry('new');
+            } else {
+                setDeckScreenText('❌ <span style=\"color:#ff6666;\">Hiba: Nem sikerült a jogosultság ellenőrzése.</span>');
+            }
+        });
     }
 }
 
@@ -11960,165 +11986,389 @@ function closeDeckConsole() {
     }
 }
 
-function executeDeckDeparture(gameType) {
-    if (!selectedShipForDeparture) {
-        setDeckScreenText('<span style=\"color:#ff4444;\">Hiba: Nincs kiválasztva hajó!</span>');
-        return;
-    }
+function setupDeckLogImagePreview() {
+    var imageInput = document.getElementById('deck-log-image');
+    var imagePreview = document.getElementById('deck-log-image-preview');
+    if (!imageInput || imageInput.dataset.previewBound) return;
+    imageInput.dataset.previewBound = "true";
 
-    var targetParam = '';
-
-    if (gameType === 'Kalandjáték') {
-        var advInp = document.getElementById('deck-adventure-name-input');
-        targetParam = advInp ? advInp.value.trim() : '';
-        if (!targetParam || targetParam.length < 2) {
-            setDeckScreenText('<span style=\"color:#ff4444;\">Add meg a Kaland nevét az indításhoz!</span>');
-            return;
-        }
-    } else if (gameType === 'Könyvexpedíció') {
-        var islInp = document.getElementById('deck-expedition-island-input');
-        var bkInp = document.getElementById('deck-expedition-book-input');
-        var targetIsland = islInp ? islInp.value.trim() : '';
-        var targetBook = bkInp ? bkInp.value.trim() : '';
-        if (!targetIsland || !targetBook) {
-            setDeckScreenText('<span style=\"color:#ff4444;\">Add meg a Zsánersziget nevét ÉS a könyv címét!</span>');
-            return;
-        }
-        targetParam = targetIsland + '|||' + targetBook;
-    }
-
-    closeDeckConsole();
-    setDeckScreenText('Kihajózási engedély és legénység ellenőrzése... <span class=\"crt-cursor\">▋</span>');
-
-    // Valós kifutási ellenőrző backend rutin (requestDeparture a Hajók táblázat alapján)
-    callBackend('requestDeparture', [selectedShipForDeparture.id, gameType, targetParam], function (res) {
-        if (res && res.success) {
-            if (gameType === 'Hártyahalászat') {
-                setDeckScreenText('✅ <b style=\"color:#00ffcc;\">Kifutási engedély megadva!</b> Irány a Zátonyos Öböl!');
-                if (typeof startFishingMiniGame === 'function') {
-                    startFishingMiniGame();
-                }
+    imageInput.onchange = function (event) {
+        var file = event.target.files[0];
+        if (!imagePreview) return;
+        imagePreview.innerHTML = '';
+        if (file && file.type === "image/png") {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '140px';
+                img.style.borderRadius = '4px';
+                img.style.border = '1px solid #00ffcc';
+                imagePreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        } else if (file) {
+            if (typeof uiAlert === 'function') {
+                uiAlert('Csak PNG formátumú kép csatolható a hajónaplóhoz!', 'Figyelmeztetés');
             } else {
-                setDeckScreenText('✅ <b style=\"color:#00ffcc;\">Sikeres kifutás!</b> ' + (res.message || 'Jó szelet!'));
-                if (typeof showSystemModal === 'function') {
-                    showSystemModal("Kihajózás Engedélyezve!", "A(z) " + selectedShipForDeparture.name + " legénysége készen áll és kifutott a tengerre! (" + gameType + ")", "fas fa-ship", [
-                        { text: "Rendben", color: "#2e8b57", textColor: "white", callback: function () { loadPage('kikoto_oldal'); } }
-                    ]);
+                alert('Csak PNG formátumú kép csatolható a hajónaplóhoz!');
+            }
+            imageInput.value = '';
+        }
+    };
+}
+
+function onDeckLogDateChange(dateValue) {
+    if (!dateValue || typeof dateValue !== 'string') return;
+    dateValue = dateValue.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+        if (window.currentDeckLogEntry && window.currentDeckLogEntry.date === dateValue && window.currentDeckLogEntry.id) {
+            return;
+        }
+        loadDeckLogEntry(dateValue);
+    }
+}
+window.onDeckLogDateChange = onDeckLogDateChange;
+
+function getDeckLogGeoLocation(silent) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                var latEl = document.getElementById('deck-log-lat');
+                var lonEl = document.getElementById('deck-log-lon');
+                if (latEl) latEl.value = position.coords.latitude.toFixed(4);
+                if (lonEl) lonEl.value = position.coords.longitude.toFixed(4);
+            },
+            function (error) {
+                var message = 'GPS bemérési hiba: ' + error.message;
+                console.warn(message);
+                if (!silent) {
+                    var status = document.getElementById('deck-log-status');
+                    if (status) status.textContent = message + ' (Kérjük, add meg manuálisan a koordinátákat!)';
+                }
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+        );
+    } else {
+        console.warn('Geolocation nem támogatott');
+        if (!silent) {
+            var status2 = document.getElementById('deck-log-status');
+            if (status2) status2.textContent = 'A böngésző nem támogatja a geolokációt.';
+        }
+    }
+}
+
+function loadDeckLogEntry(entryId) {
+    var entryIdInput = document.getElementById('deck-log-entry-id');
+    var dateInput = document.getElementById('deck-log-date');
+    var timeInput = document.getElementById('deck-log-time');
+    var windSelect = document.getElementById('deck-log-wind');
+    var weatherSelect = document.getElementById('deck-log-weather');
+    var latInput = document.getElementById('deck-log-lat');
+    var lonInput = document.getElementById('deck-log-lon');
+    var reportText = document.getElementById('deck-log-report');
+    var imageInput = document.getElementById('deck-log-image');
+    var imagePreview = document.getElementById('deck-log-image-preview');
+    var statusDiv = document.getElementById('deck-log-status');
+    var statusTag = document.getElementById('deck-log-entry-status-tag');
+    var prevBtn = document.getElementById('deck-log-prev-btn');
+    var nextBtn = document.getElementById('deck-log-next-btn');
+
+    if (imagePreview) imagePreview.innerHTML = '';
+    if (statusDiv) statusDiv.textContent = '';
+    if (imageInput) imageInput.value = '';
+
+    // Alapértelmezett állapot
+    if (prevBtn) {
+        prevBtn.disabled = true;
+        prevBtn.style.opacity = '0.35';
+        prevBtn.style.cursor = 'not-allowed';
+        prevBtn.innerHTML = '<i class="fas fa-book"></i> <i class="fas fa-chevron-left"></i> Előző bejegyzés';
+        prevBtn.onclick = null;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.style.opacity = '0.35';
+        nextBtn.style.cursor = 'not-allowed';
+        nextBtn.innerHTML = 'Következő <i class="fas fa-chevron-right"></i> <i class="fas fa-book"></i>';
+        nextBtn.onclick = null;
+    }
+
+    callBackend('checkLogWritePermission', [], function (currentLogId) {
+        if (!currentLogId || typeof currentLogId !== 'string') {
+            if (statusDiv) statusDiv.textContent = 'Nem található írható hajónapló azonosító.';
+            return;
+        }
+
+        if (entryId === 'new' || entryId === null) {
+            // === ÚJ BEJEGYZÉS ===
+            if (statusTag) statusTag.innerHTML = '📜 [ ÚJ BEJEGYZÉS ]';
+            if (entryIdInput) entryIdInput.value = '';
+
+            var now = new Date();
+            var y = now.getFullYear();
+            var m = ("0" + (now.getMonth() + 1)).slice(-2);
+            var d = ("0" + now.getDate()).slice(-2);
+            var hh = ("0" + now.getHours()).slice(-2);
+            var mm = ("0" + now.getMinutes()).slice(-2);
+
+            if (dateInput) dateInput.value = y + '-' + m + '-' + d;
+            if (timeInput) timeInput.value = hh + ':' + mm;
+            if (windSelect) windSelect.value = '';
+            if (weatherSelect) weatherSelect.value = '';
+            if (latInput) latInput.value = '';
+            if (lonInput) lonInput.value = '';
+            if (reportText) reportText.value = '';
+            getDeckLogGeoLocation(true);
+
+            if (window.currentDeckLogEntry && window.currentDeckLogEntry.id) {
+                if (prevBtn) {
+                    prevBtn.disabled = false;
+                    prevBtn.style.opacity = '1';
+                    prevBtn.style.cursor = 'pointer';
+                    prevBtn.innerHTML = '<i class="fas fa-book"></i> <i class="fas fa-chevron-left"></i> Előző bejegyzés';
+                    prevBtn.onclick = function () { loadDeckLogEntry(window.currentDeckLogEntry.id); };
                 }
             }
+            if (nextBtn) {
+                nextBtn.disabled = true;
+                nextBtn.style.opacity = '0.35';
+                nextBtn.style.cursor = 'not-allowed';
+                nextBtn.innerHTML = '+ Új bejegyzés <i class="fas fa-book-open"></i>';
+            }
         } else {
-            var errMsg = (res && res.error) ? res.error : 'A kifutási engedély megtagadva!';
-            setDeckScreenText('❌ <span style=\"color:#ff6666;\">' + errMsg + '</span>');
+            // === BEJEGYZÉS BETÖLTÉSE (ID, dátum vagy 'last') ===
+            callBackend('getLogEntry', [currentLogId, entryId || 'last'], function (entry) {
+                if (!entry || entry.error) {
+                    if (statusDiv) statusDiv.textContent = 'Hiba a bejegyzés betöltésekor: ' + (entry ? entry.error : 'Ismeretlen hiba');
+                    return;
+                }
+
+                window.currentDeckLogEntry = entry;
+
+                if (entry.isNewForDate) {
+                    // Adott dátumhoz még nincs bejegyzés -> tiszta űrlap arra a dátumra
+                    if (statusTag) statusTag.innerHTML = '📜 [ ÚJ BEJEGYZÉS: ' + entry.date + ' ]';
+                    if (entryIdInput) entryIdInput.value = '';
+                    if (dateInput) dateInput.value = entry.date;
+                    var nowD = new Date();
+                    var hhD = ("0" + nowD.getHours()).slice(-2);
+                    var mmD = ("0" + nowD.getMinutes()).slice(-2);
+                    if (timeInput) timeInput.value = hhD + ':' + mmD;
+                    if (windSelect) windSelect.value = '';
+                    if (weatherSelect) weatherSelect.value = '';
+                    if (latInput) latInput.value = '';
+                    if (lonInput) lonInput.value = '';
+                    if (reportText) reportText.value = '';
+                    getDeckLogGeoLocation(true);
+
+                    if (entry.prevId && prevBtn) {
+                        prevBtn.disabled = false;
+                        prevBtn.style.opacity = '1';
+                        prevBtn.style.cursor = 'pointer';
+                        prevBtn.innerHTML = '<i class="fas fa-book"></i> <i class="fas fa-chevron-left"></i> Előző bejegyzés';
+                        prevBtn.onclick = function () { loadDeckLogEntry(entry.prevId); };
+                    }
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.35';
+                        nextBtn.style.cursor = 'not-allowed';
+                        nextBtn.innerHTML = '+ Új bejegyzés <i class="fas fa-book-open"></i>';
+                    }
+                } else if (entry.id === null) {
+                    // Üres napló
+                    if (statusTag) statusTag.innerHTML = '📜 [ ÚJ BEJEGYZÉS ]';
+                    if (entryIdInput) entryIdInput.value = '';
+                    var now2 = new Date();
+                    var y2 = now2.getFullYear();
+                    var m2 = ("0" + (now2.getMonth() + 1)).slice(-2);
+                    var d2 = ("0" + now2.getDate()).slice(-2);
+                    var hh2 = ("0" + now2.getHours()).slice(-2);
+                    var mm2 = ("0" + now2.getMinutes()).slice(-2);
+
+                    if (dateInput) dateInput.value = y2 + '-' + m2 + '-' + d2;
+                    if (timeInput) timeInput.value = hh2 + ':' + mm2;
+                    if (windSelect) windSelect.value = '';
+                    if (weatherSelect) weatherSelect.value = '';
+                    if (latInput) latInput.value = '';
+                    if (lonInput) lonInput.value = '';
+                    if (reportText) reportText.value = '';
+                    getDeckLogGeoLocation(true);
+                } else {
+                    // Meglévő bejegyzés betöltve
+                    var entryDateStr = (entry.date || '') + (entry.time ? (' ' + entry.time) : '');
+                    if (statusTag) statusTag.innerHTML = '📜 [ BEJEGYZÉS: ' + entryDateStr + ' ]';
+                    if (entryIdInput) entryIdInput.value = entry.id || '';
+                    if (dateInput) dateInput.value = entry.date || '';
+                    if (timeInput) timeInput.value = entry.time || '';
+                    if (windSelect) windSelect.value = entry.wind || '';
+                    if (weatherSelect) weatherSelect.value = entry.weather || '';
+                    if (latInput) latInput.value = entry.latitude || '';
+                    if (lonInput) lonInput.value = entry.longitude || '';
+                    if (reportText) reportText.value = entry.report || '';
+
+                    if (entry.imageId && imagePreview) {
+                        imagePreview.innerHTML = '<p style=\"margin: 4px 0; color: #00ffcc; font-size: 0.85em;\"><i class=\"fas fa-image\"></i> Csatolt kép a bejegyzéshez. Új kép feltöltése felülírja.</p>';
+                    }
+
+                    if (entry.prevId) {
+                        if (prevBtn) {
+                            prevBtn.disabled = false;
+                            prevBtn.style.opacity = '1';
+                            prevBtn.style.cursor = 'pointer';
+                            prevBtn.innerHTML = '<i class="fas fa-book"></i> <i class="fas fa-chevron-left"></i> Előző bejegyzés';
+                            prevBtn.onclick = function () { loadDeckLogEntry(entry.prevId); };
+                        }
+                    } else {
+                        if (prevBtn) {
+                            prevBtn.disabled = true;
+                            prevBtn.style.opacity = '0.35';
+                            prevBtn.style.cursor = 'not-allowed';
+                            prevBtn.innerHTML = '<i class="fas fa-book"></i> <i class="fas fa-chevron-left"></i> Előző bejegyzés';
+                        }
+                    }
+
+                    if (entry.nextId) {
+                        if (nextBtn) {
+                            nextBtn.disabled = false;
+                            nextBtn.style.opacity = '1';
+                            nextBtn.style.cursor = 'pointer';
+                            nextBtn.innerHTML = 'Következő <i class=\"fas fa-chevron-right\"></i> <i class=\"fas fa-book\"></i>';
+                            nextBtn.onclick = function () { loadDeckLogEntry(entry.nextId); };
+                        }
+                    } else {
+                        if (nextBtn) {
+                            nextBtn.disabled = false;
+                            nextBtn.style.opacity = '1';
+                            nextBtn.style.cursor = 'pointer';
+                            nextBtn.innerHTML = '+ Új bejegyzés <i class=\"fas fa-book-open\"></i>';
+                            nextBtn.onclick = function () { loadDeckLogEntry('new'); };
+                        }
+                    }
+                }
+            }, function (err) {
+                if (statusDiv) statusDiv.textContent = 'Hálózati hiba: ' + err.message;
+            });
         }
     }, function (err) {
-        setDeckScreenText('❌ <span style=\"color:#ff6666;\">Hálózati hiba: ' + (err ? err.message : 'Szerverhiba') + '</span>');
+        if (statusDiv) statusDiv.textContent = 'Jogosultság lekérdezési hiba: ' + err.message;
     });
 }
 
-function executeDeckChatSubmit() {
-    var input = document.getElementById('deck-chat-input');
-    if (!input) return;
-    var msg = input.value.trim();
-    if (!msg) return;
-
-    input.value = '';
-    setDeckScreenText('<b>Te mondtad:</b> \"' + msg + '\"<br><i>A Kikötőmester válaszol...</i>');
-
-    var lower = msg.toLowerCase();
-    setTimeout(function () {
-        if (lower.includes('hártya') || lower.includes('halász')) {
-            openDeckConsole('fishing', 'HÁRTYAHALÁSZAT VEZÉRLŐ');
-            setDeckScreenText('⚓ Kikötőmester: A Hártyahalászati konzol megnyitva! Készen állsz a merítésre?');
-        } else if (lower.includes('kaland')) {
-            openDeckConsole('adventure', 'KALANDJÁTÉK INDÍTÓ');
-            setDeckScreenText('⚓ Kikötőmester: Kalandjáték előkészítve. Add meg a kaland nevét a konzolon!');
-        } else if (lower.includes('könyv') || lower.includes('expedíció') || lower.includes('expedicio')) {
-            openDeckConsole('expedition', 'KÖNYVEXPEDÍCIÓ INDÍTÓ');
-            setDeckScreenText('⚓ Kikötőmester: Könyvexpedíció konzol megnyitva. Melyik Zsánerszigetre vagy könyvért indultok?');
-        } else if (lower.includes('hajó') || lower.includes('lajstrom')) {
-            openDeckConsole('ships', 'HAJÓVÁLASZTÓ // KIKÖTŐI LAJSTROM');
+function navigateDeckLogEntry(direction) {
+    if (!window.currentDeckLogEntry) return;
+    if (direction === 'prev' && window.currentDeckLogEntry.prevId) {
+        loadDeckLogEntry(window.currentDeckLogEntry.prevId);
+    } else if (direction === 'next') {
+        if (window.currentDeckLogEntry.nextId) {
+            loadDeckLogEntry(window.currentDeckLogEntry.nextId);
         } else {
-            var responses = [
-                "Értettem, Kapitány! A legénység készen áll a kifutásra!",
-                "Mindenki a fedélzeten, a vitorlák felkötve!",
-                "A parancsaidat továbbítom a legénységnek. Jó szelet kívánok!",
-                "A hajó raktára feltöltve, indulhatunk, amint parancsolod!"
-            ];
-            var reply = responses[Math.floor(Math.random() * responses.length)];
-            setDeckScreenText('⚓ <b>Kikötőmester:</b> \"' + reply + '\"');
+            loadDeckLogEntry('new');
         }
-    }, 400);
-}
-
-function executeDeckCrewMessageSend() {
-    var select = document.getElementById('deck-msg-recipient-select');
-    var subj = document.getElementById('deck-msg-subject-select');
-    var textEl = document.getElementById('deck-msg-body-textarea');
-
-    var recipient = select ? select.value : 'ALL';
-    var subject = subj ? subj.value : 'Indulás';
-    var msg = textEl ? textEl.value.trim() : '';
-
-    if (!msg) {
-        setDeckScreenText('<span style=\"color:#ff4444;\">Hiba: Írd be az üzenet szövegét!</span>');
-        return;
-    }
-
-    var senderName = window.currentUserNick || localStorage.getItem('ebook_pirates_username') || 'Kapitány';
-    var fullMessage = '[' + subject.toUpperCase() + '] ' + msg;
-
-    closeDeckConsole();
-    setDeckScreenText('Üzenet kiküldése a legénységnek folyamatban... <span class=\"crt-cursor\">▋</span>');
-
-    // Taverna üzenetküldő backend rutin használata
-    if (recipient === 'ALL' && selectedShipForDeparture && Array.isArray(selectedShipForDeparture.crewMembers) && selectedShipForDeparture.crewMembers.length > 0) {
-        var sentCount = 0;
-        var totalToSend = selectedShipForDeparture.crewMembers.length;
-        selectedShipForDeparture.crewMembers.forEach(function (member) {
-            var memberName = member.name || member.email || member;
-            callBackend('sendTavernaMessage', [senderName, memberName, fullMessage], function (res) {
-                sentCount++;
-                if (sentCount >= totalToSend) {
-                    setDeckScreenText('✉️ <b style=\"color:#00ffcc;\">Üzenet sikeresen elküldve a teljes legénységnek (' + totalToSend + ' fő)!</b><br>Minden matróz belépéskor felugró üzenetként kapja meg.');
-                    if (textEl) textEl.value = '';
-                }
-            });
-        });
-    } else {
-        callBackend('sendTavernaMessage', [senderName, recipient, fullMessage], function (res) {
-            setDeckScreenText('✉️ <b style=\"color:#00ffcc;\">Üzenet sikeresen elküldve!</b><br>A címzett (' + recipient + ') belépéskor felugró üzenetként kapja meg.');
-            if (textEl) textEl.value = '';
-        }, function (err) {
-            setDeckScreenText('✉️ <b style=\"color:#00ffcc;\">Üzenet rögzítve a fedélzeti naplóba!</b>');
-            if (textEl) textEl.value = '';
-        });
     }
 }
 
-function executeDeckSaveLogEntry() {
-    var titleEl = document.getElementById('deck-log-title-input');
-    var textEl = document.getElementById('deck-log-body-textarea');
-    var logTitle = titleEl ? titleEl.value.trim() : '';
-    var logBody = textEl ? textEl.value.trim() : '';
+async function executeDeckSaveLogEntry() {
+    var dateEl = document.getElementById('deck-log-date');
+    var timeEl = document.getElementById('deck-log-time');
+    var windEl = document.getElementById('deck-log-wind');
+    var weatherEl = document.getElementById('deck-log-weather');
+    var latEl = document.getElementById('deck-log-lat');
+    var lonEl = document.getElementById('deck-log-lon');
+    var reportEl = document.getElementById('deck-log-report');
+    var entryIdEl = document.getElementById('deck-log-entry-id');
+    var imageEl = document.getElementById('deck-log-image');
+    var statusEl = document.getElementById('deck-log-status');
+    var saveBtn = document.getElementById('deck-log-save-btn');
 
-    if (!logTitle || !logBody) {
-        setDeckScreenText('<span style=\"color:#ff4444;\">Hiba: A napló címét és szövegét is meg kell adnod!</span>');
+    if (statusEl) statusEl.textContent = '';
+
+    var dateVal = dateEl ? dateEl.value.trim() : '';
+    var timeVal = timeEl ? timeEl.value.trim() : '';
+    var reportVal = reportEl ? reportEl.value.trim() : '';
+
+    if (!dateVal || !timeVal) {
+        if (statusEl) {
+            statusEl.style.color = '#ff6666';
+            statusEl.textContent = 'A dátum és az időpont megadása kötelező!';
+        }
+        return;
+    }
+    if (!reportVal) {
+        if (statusEl) {
+            statusEl.style.color = '#ff6666';
+            statusEl.textContent = 'A napi jelentés szövegének kitöltése kötelező!';
+        }
         return;
     }
 
-    closeDeckConsole();
+    var entryData = {
+        date: dateVal,
+        time: timeVal,
+        wind: windEl ? windEl.value : '',
+        weather: weatherEl ? weatherEl.value : '',
+        latitude: latEl ? latEl.value.trim() : '',
+        longitude: lonEl ? lonEl.value.trim() : '',
+        report: reportVal,
+        imageBase64: null,
+        id: entryIdEl && entryIdEl.value ? entryIdEl.value.trim() : null
+    };
+
+    if (saveBtn) saveBtn.disabled = true;
     setDeckScreenText('Hajónapló bejegyzés mentése folyamatban... <span class=\"crt-cursor\">▋</span>');
 
-    var shipId = selectedShipForDeparture ? selectedShipForDeparture.id : (window.activeShipId || '');
-    callBackend('saveShipLogEntry', [shipId, logTitle, logBody], function (res) {
-        setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló bejegyzés sikeresen elmentve!</b>');
-        if (titleEl) titleEl.value = '';
-        if (textEl) textEl.value = '';
-    }, function (err) {
-        setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló bejegyzés rögzítve!</b>');
-        if (titleEl) titleEl.value = '';
-        if (textEl) textEl.value = '';
-    });
+    try {
+        var file = imageEl && imageEl.files ? imageEl.files[0] : null;
+        if (file) {
+            var fileReader = new FileReader();
+            var dataUrl = await new Promise(function (resolve, reject) {
+                fileReader.onload = function (e) { resolve(e.target.result); };
+                fileReader.onerror = function (e) { reject(new Error("Hiba a képfájl olvasása közben.")); };
+                fileReader.readAsDataURL(file);
+            });
+            if (typeof convertToPngDataUrl === 'function') {
+                var pngDataUrl = await convertToPngDataUrl(dataUrl);
+                entryData.imageBase64 = pngDataUrl.split(',')[1];
+            } else {
+                entryData.imageBase64 = dataUrl.split(',')[1];
+            }
+        }
+
+        callBackend('saveLogEntry', [entryData], function (response) {
+            if (saveBtn) saveBtn.disabled = false;
+            if (response && response.success) {
+                setDeckScreenText('📜 <b style=\"color:#00ffcc;\">Hajónapló bejegyzés sikeresen elmentve!</b> (' + dateVal + ' ' + timeVal + ')');
+                if (statusEl) {
+                    statusEl.style.color = '#00ffcc';
+                    statusEl.textContent = '✅ Bejegyzés sikeresen elmentve!';
+                }
+                loadDeckLogEntry('last');
+            } else {
+                var errText = (response && response.error) ? response.error : 'Ismeretlen mentési hiba';
+                setDeckScreenText('❌ <span style=\"color:#ff6666;\">Hajónapló mentési hiba: ' + errText + '</span>');
+                if (statusEl) {
+                    statusEl.style.color = '#ff6666';
+                    statusEl.textContent = 'Hiba: ' + errText;
+                }
+            }
+        }, function (err) {
+            if (saveBtn) saveBtn.disabled = false;
+            setDeckScreenText('❌ <span style=\"color:#ff6666;\">Szerverhiba mentéskor: ' + err.message + '</span>');
+            if (statusEl) {
+                statusEl.style.color = '#ff6666';
+                statusEl.textContent = 'Szerverhiba: ' + err.message;
+            }
+        });
+
+    } catch (err) {
+        if (saveBtn) saveBtn.disabled = false;
+        setDeckScreenText('❌ <span style=\"color:#ff6666;\">Képfeldolgozási hiba: ' + err.message + '</span>');
+        if (statusEl) {
+            statusEl.style.color = '#ff6666';
+            statusEl.textContent = 'Képfeldolgozási hiba: ' + err.message;
+        }
+    }
 }
 
 function loadCompletableScrolls() {

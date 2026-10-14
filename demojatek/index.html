@@ -45,62 +45,127 @@
             pointer-events: auto;
         }
 
-        #top-bar {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 650px;
-            height: 122px;
-            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/AUS_button_1--r.png');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            box-sizing: border-box;
-            padding: 0 15%;
-            pointer-events: auto;
-            z-index: 15;
-            border: none;
-            box-shadow: none;
-            background-color: transparent;
+        @font-face {
+            font-family: 'BriskB';
+            src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+            font-weight: bold;
+            font-style: normal;
         }
 
-        #top-bar h1 {
-            margin: 0;
+        #top-bar {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1350px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 0 35px;
+            pointer-events: auto;
+            z-index: 15;
+            font-family: 'BriskB', 'Georgia', serif;
+        }
+
+        #top-bar::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            bottom: -8px;
+            left: -12px;
+            right: -12px;
+            z-index: -1;
+            border-style: solid;
+            border-width: 44px 58px 46px 58px;
+            border-image: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") 105 150 115 150 fill stretch;
+            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.7));
+        }
+
+        #top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+        }
+
+        #top-bar-left .guest-badge {
             font-size: 22px;
-            color: #4a2c0f;
-            text-transform: uppercase;
-            letter-spacing: 0px;
+            font-weight: bold;
+            color: #2c1a08;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #top-bar-left .guest-tag {
+            background: rgba(139, 90, 43, 0.2);
+            border: 1px solid #8b5a2b;
+            color: #5c3a21;
+            font-size: 13px;
+            padding: 2px 8px;
+            border-radius: 6px;
             font-family: 'Georgia', serif;
-            text-shadow: none;
+            font-weight: bold;
         }
 
         #score-board {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            gap: 32px;
             font-size: 24px;
             font-weight: bold;
-            color: #4a2c0f;
-            font-family: 'Georgia', serif;
+            color: #2c1a08;
+            font-family: 'BriskB', 'Georgia', serif;
         }
 
         .score-item {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 90, 43, 0.3);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .score-icon {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
         }
 
-        /* Tooltip stílusok */
+        #top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tb-btn {
+            width: 44px;
+            height: 44px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, filter 0.15s ease;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+            pointer-events: auto;
+        }
+
+        .tb-btn:hover {
+            transform: scale(1.12);
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.9));
+        }
+
+        /* Tooltip stílusok (Aranykeretes prémium megjelenés) */
         [data-tooltip] {
             position: relative;
         }
@@ -108,24 +173,24 @@
         [data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            top: 100%;
+            top: 110%;
             left: 50%;
             transform: translateX(-50%);
-            background: #4a2c0f;
+            background: rgba(26, 15, 5, 0.96);
             border: 2px solid #d4af37;
-            color: #fffbcc;
-            padding: 6px 12px;
-            border-radius: 6px;
+            color: #ffea00;
+            padding: 6px 14px;
+            border-radius: 8px;
             white-space: nowrap;
-            font-family: 'Georgia', serif;
-            font-size: 16px;
-            z-index: 100;
-            margin-top: 10px;
+            font-family: 'BriskB', 'Georgia', serif;
+            font-size: 15px;
+            z-index: 1000;
+            margin-top: 6px;
             pointer-events: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-            text-shadow: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
             text-transform: none;
-            font-weight: normal;
+            font-weight: bold;
         }
 
         /* Kvíz Overlay (Unity stílus) */
@@ -334,25 +399,160 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: #4a2c0f;
-            font-weight: bold;
-            text-align: center;
-            background: url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
-            background-size: 100% 100%;
-            padding: 120px 120px 100px 120px;
-            width: 750px;
-            min-height: 250px;
+            width: 90vw;
+            max-width: 740px;
+            padding: 40px 65px 35px 65px;
             box-sizing: border-box;
             z-index: 25;
-            font-family: 'Georgia', serif;
+            font-family: 'BriskB', 'Georgia', serif;
             text-shadow: none;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            pointer-events: auto;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            background: transparent;
+        }
+
+        #start-instruction::before {
+            content: "";
+            position: absolute;
+            top: -24%;
+            bottom: -28%;
+            left: -21%;
+            right: -21%;
+            background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png') no-repeat center center;
+            background-size: 100% 100%;
+            z-index: -1;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9));
+        }
+
+        #start-instruction .hero-portrait-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        #start-instruction .hero-portrait-badge img {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            border: 2px solid #8b5a2b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            object-fit: cover;
+        }
+
+        #start-instruction .hero-title {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2c1a08;
+            margin: 0;
+            letter-spacing: 1px;
+            text-align: center;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
+        }
+
+        #start-instruction .hero-desc {
+            font-size: 16px;
+            line-height: 1.45;
+            color: #3d240d;
+            text-align: center;
+            margin: 8px 0 12px 0;
+            font-family: 'Georgia', serif;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+        }
+
+        #start-instruction .hero-loot-box {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background: rgba(139, 90, 43, 0.12);
+            border: 1px solid rgba(139, 90, 43, 0.35);
+            border-radius: 8px;
+            padding: 8px 6px;
+            margin-bottom: 14px;
+            box-sizing: border-box;
+            gap: 6px;
+        }
+
+        #start-instruction .hero-loot-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #2c1a08;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #start-instruction .hero-loot-item span {
+            font-size: 14px;
+            color: #8b5a2b;
+            font-family: 'BriskB', 'Georgia', serif;
+        }
+
+        #start-instruction .hero-btn-start {
+            background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center;
+            background-size: 100% 100%;
+            border: none;
+            color: #fffbcc;
+            padding: 12px 34px;
+            font-size: 21px;
+            font-family: 'BriskB', 'Georgia', serif;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.85);
+            transition: transform 0.15s ease, filter 0.15s ease;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+        }
+
+        #start-instruction .hero-btn-start:hover {
+            transform: scale(1.06);
+            filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.85)) brightness(1.1);
+        }
+
+        @media (max-width: 600px) {
+            #start-instruction {
+                width: 95vw;
+                padding: 24px 36px 20px 36px;
+            }
+            #start-instruction::before {
+                top: -16%;
+                bottom: -20%;
+                left: -14%;
+                right: -14%;
+            }
+            #start-instruction .hero-portrait-badge img {
+                width: 46px;
+                height: 46px;
+            }
+            #start-instruction .hero-title {
+                font-size: 18px;
+            }
+            #start-instruction .hero-desc {
+                font-size: 13px;
+                line-height: 1.35;
+                margin: 6px 0 8px 0;
+            }
+            #start-instruction .hero-loot-box {
+                padding: 6px 4px;
+                margin-bottom: 10px;
+                gap: 4px;
+            }
+            #start-instruction .hero-loot-item {
+                font-size: 11px;
+            }
+            #start-instruction .hero-loot-item span {
+                font-size: 12px;
+            }
+            #start-instruction .hero-btn-start {
+                padding: 9px 22px;
+                font-size: 16px;
+            }
         }
 
         #info-scroll-container::-webkit-scrollbar {
@@ -367,6 +567,15 @@
         /* ========================================= */
         /* === Mobil HUD egyszerűsített fejléc === */
         /* ========================================= */
+        .mobile-hud #top-bar::before {
+            display: none !important;
+        }
+
+        .mobile-hud #top-bar-left,
+        .mobile-hud #top-bar-right {
+            display: none !important;
+        }
+
         .mobile-hud #top-bar {
             top: 10px !important;
             left: 50% !important;
@@ -641,43 +850,40 @@
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"
     style="margin: 0; overflow: hidden; background-color: #000; touch-action: none; user-select: none;">
     <audio id="bg-music" loop>
-        <source src="../assets/music/A Kincsek Szelleme.mp3" type="audio/mpeg">
+        <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3" type="audio/mpeg">
     </audio>
     <audio id="ambient-sound" loop>
-        <source src="../assets/music/waves-and-seagulls.wav" type="audio/wav">
+        <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/waves-and-seagulls.wav" type="audio/wav">
     </audio>
 
     <div id="game-container"></div>
 
     <div id="ui-layer">
         <div id="top-bar">
-            <h1>Hártyavadász</h1>
+            <div id="top-bar-left">
+                <span class="guest-badge">⚓ VENDÉG KALÓZ</span>
+                <span class="guest-tag">Próbajáték</span>
+            </div>
             <div id="score-board">
-                <div class="score-item" data-tooltip="Csónak élettartama">
-                    <img src="../assets/icons/full_screen-r.png" class="score-icon" alt="Élettartam">
-                    <span id="durability-display">10</span>
+                <div class="score-item" data-tooltip="Csónak életereje (HP)">
+                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hajo_r.PNG" class="score-icon" alt="Életerő">
+                    <span id="durability-display" style="color: #8b0000;">10</span>
                 </div>
                 <div class="score-item" data-tooltip="Hártyák a csónakon">
-                    <img src="../assets/icons/hajo_r.PNG" class="score-icon" alt="Csónak">
-                    <span id="boat-score-display">0</span>
+                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png" class="score-icon" alt="Csónak hártya">
+                    <span id="boat-score-display" style="color: #2c1a08;">0</span>
                 </div>
-                <div class="score-item" data-tooltip="Hártyák a bázison">
-                    <img src="../assets/icons/lada-r.png" class="score-icon" alt="Bázis">
-                    <span id="base-score-display">0</span>
+                <div class="score-item" data-tooltip="Biztonságba helyezett hártyák a bázison">
+                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada-r.png" class="score-icon" alt="Bázis hártya">
+                    <span id="base-score-display" style="color: #0d4a14;">0</span>
                 </div>
             </div>
-        </div>
-
-        <div id="ambient-toggle" data-tooltip="Háttérzaj"
-            style="position: absolute; top: 20px; left: 100px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
-        </div>
-
-        <div id="music-toggle" data-tooltip="Zene"
-            style="position: absolute; top: 25px; right: 100px; width: 50px; height: 50px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
-        </div>
-
-        <div id="info-toggle" data-tooltip="Információ"
-            style="position: absolute; top: 20px; left: 20px; width: 60px; height: 60px; cursor: pointer; pointer-events: auto; z-index: 15; background-image: url('https://storage.googleapis.com/kalozsziget-assets/icons/info-r 1.png'); background-size: contain; background-repeat: no-repeat; transition: transform 0.2s;">
+            <div id="top-bar-right">
+                <div id="ambient-toggle" class="tb-btn" data-tooltip="Tengerzúgás ki/be" style="background-image: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound_mute-r.png');"></div>
+                <div id="music-toggle" class="tb-btn" data-tooltip="Kalózzene ki/be" style="background-image: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music_mute-r.png');"></div>
+                <div id="info-toggle" class="tb-btn" data-tooltip="Irányítás & Játékszabályok" style="background-image: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/info-r%201.png');"></div>
+                <div id="fullscreen-toggle" class="tb-btn" data-tooltip="Teljes képernyő" style="background-image: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png');" onclick="toggleFullscreen()"></div>
+            </div>
         </div>
 
         <div id="joystick-area">
@@ -685,11 +891,36 @@
         </div>
 
         <div id="game-message" onclick="this.style.display='none';">Játék Vége!</div>
-        <button id="base-exit-btn" onclick="openDemoSubscriptionModal('Mentsd el a hártyáidat!', 'Gratulálunk a sikeres portyázáshoz! A demójáték során gyűjtött hártyáidat elmentheted az e-mail címed megadásával. A későbbi regisztrációd és a tutorial elvégzése után ezek automatikusan jóváíródnak a profilodon!')">Befejezés & Hártyák Elmentése</button>
-        <div id="start-instruction" onclick="startGameFromInstruction()" style="cursor: pointer; z-index: 110; pointer-events: auto;">
-            Nyomd meg a W-A-S-D gombokat (vagy kattints ide) az induláshoz!<br>
-            <span style="font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;">(Szedj össze hártyákat, és
-                kerüld el a léghajót!)</span>
+        <button id="base-exit-btn" onclick="openDemoSubscriptionModal('Mentsd el a hártyáidat!', 'Gratulálunk a sikeres portyázáshoz! A demójáték során gyűjtött hártyáidat elmentheted az e-mail címed megadásával. A későbbi regisztrációd és a tutorial elvégzése után ezek automatikusan jóváíródnak a profilodon!')">⚓ Kincsek Mentése & Befejezés</button>
+        
+        <!-- ZOZÓ HERO ONBOARDING KÁRTYA -->
+        <div id="start-instruction">
+            <div class="hero-portrait-badge">
+                <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png" alt="Zozó Kalóz">
+                <h2 class="hero-title">HÁRTYAVADÁSZ 3D – PRÓBAJÁTÉK</h2>
+            </div>
+            <div class="hero-desc">
+                Üdv a fedélzeten, Kalózjelölt! Próbáld ki a vitorlázást a Hártyák Tengerén!<br>
+                Gyűjtsd be a lebegő hártyákat, válaszolj a kvízkérdésekre, menekülj a Léghajó elől, és vidd vissza zsákmányodat a szigetre!
+            </div>
+            <div class="hero-loot-box">
+                <div class="hero-loot-item">
+                    <span>🎯 5 Hártya</span>
+                    Kezdő Matróz Csomag
+                </div>
+                <div class="hero-loot-item">
+                    <span>🛡️ 15 Hártya</span>
+                    Dingi Csónak Tervrajz
+                </div>
+                <div class="hero-loot-item">
+                    <span>🏆 30 Hártya</span>
+                    Szoros Nyitás & Győzelem!
+                </div>
+            </div>
+            <button class="hero-btn-start" onclick="startGameFromInstruction()">⛵ VITORLÁT BONTS! (INDÍTÁS)</button>
+            <div style="font-size: 13px; color: #5c3a21; margin-top: 8px; font-family: 'Georgia', serif;">
+                Irányítás: <strong>W, A, S, D</strong> gombok vagy képernyőérintés mobilon
+            </div>
         </div>
     </div>
 
@@ -2124,14 +2355,14 @@
             if (isMusicPlaying) {
                 bgMusic.pause();
                 isMusicPlaying = false;
-                const muteImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
-                musicToggleBtn.style.backgroundImage = muteImg;
+                const muteImg = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music_mute-r.png')";
+                if (musicToggleBtn) musicToggleBtn.style.backgroundImage = muteImg;
                 if (infoMusicBtn) infoMusicBtn.style.backgroundImage = muteImg;
             } else {
                 bgMusic.play().catch(e => console.log("Zene lejátszása blokkolva:", e));
                 isMusicPlaying = true;
-                const onImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')";
-                musicToggleBtn.style.backgroundImage = onImg;
+                const onImg = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music-r.png')";
+                if (musicToggleBtn) musicToggleBtn.style.backgroundImage = onImg;
                 if (infoMusicBtn) infoMusicBtn.style.backgroundImage = onImg;
             }
         }
@@ -2155,14 +2386,14 @@
             if (isAmbientPlaying) {
                 ambientSound.pause();
                 isAmbientPlaying = false;
-                const muteImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
-                ambientToggleBtn.style.backgroundImage = muteImg;
+                const muteImg = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound_mute-r.png')";
+                if (ambientToggleBtn) ambientToggleBtn.style.backgroundImage = muteImg;
                 if (infoAmbientBtn) infoAmbientBtn.style.backgroundImage = muteImg;
             } else {
                 ambientSound.play().catch(e => console.log("Háttérzaj lejátszása blokkolva:", e));
                 isAmbientPlaying = true;
-                const onImg = "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')";
-                ambientToggleBtn.style.backgroundImage = onImg;
+                const onImg = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound-r.png')";
+                if (ambientToggleBtn) ambientToggleBtn.style.backgroundImage = onImg;
                 if (infoAmbientBtn) infoAmbientBtn.style.backgroundImage = onImg;
             }
         }
@@ -2176,6 +2407,16 @@
             ambientToggleBtn.addEventListener('mouseleave', () => ambientToggleBtn.style.transform = 'scale(1)');
         }
 
+        // ---- TELJES KÉPERNYŐ VEZÉRLÉS ----
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.log("Teljes képernyő hiba:", err));
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+        window.toggleFullscreen = toggleFullscreen;
+
         // ---- INFÓ PANEL VEZÉRLÉS ----
         const infoOverlay = document.getElementById('info-overlay');
         const infoToggleBtn = document.getElementById('info-toggle');
@@ -2188,10 +2429,10 @@
         // Segédfüggvény az infó panelen belüli ikonok aktuális állapotának szinkronizálására
         function syncInfoSoundIcons() {
             if (infoMusicBtn) {
-                infoMusicBtn.style.backgroundImage = isMusicPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/music-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/music_mute_2-r.png')";
+                infoMusicBtn.style.backgroundImage = isMusicPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music_mute-r.png')";
             }
             if (infoAmbientBtn) {
-                infoAmbientBtn.style.backgroundImage = isAmbientPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/icons/sound_mute-r.png')";
+                infoAmbientBtn.style.backgroundImage = isAmbientPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound_mute-r.png')";
             }
         }
 
@@ -3179,7 +3420,6 @@
             }
         }, { once: true });
     </script>
-    </script>
 
     <!-- DEMÓ FELIRATKOZÁSI MODAL -->
     <div id="demo-subscription-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 50; pointer-events: auto; backdrop-filter: blur(5px);">
@@ -3212,7 +3452,7 @@
                 <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; margin-top: 10px; width: 100%;">
                     <button onclick="window.location.reload();" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Új játékot indítok</button>
                     <button onclick="window.open('https://www.patreon.com/cw/u65968802', '_blank');" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">eBookPirates Patreon oldal</button>
-                    <button onclick="window.location.href='https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Behajózás Hebok kikötőbe</button>
+                    <button onclick="window.location.href='../index.html';" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Behajózás Hebok kikötőbe</button>
                 </div>
             </div>
         </div>

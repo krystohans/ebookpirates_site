@@ -193,49 +193,6 @@
             font-weight: bold;
         }
 
-        /* Fejléc pontszám buborék (Tap Tooltip 2 másodperces időzítővel) */
-        .score-bubble {
-            position: absolute;
-            top: calc(100% + 9px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(22, 12, 6, 0.96);
-            border: 2px solid #d4af37;
-            color: #ffffff;
-            font-family: 'Georgia', serif;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 5px 13px;
-            border-radius: 8px;
-            white-space: nowrap;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            pointer-events: none;
-            animation: scoreBubblePop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
-        }
-
-        .score-bubble::before {
-            content: "";
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent transparent #d4af37 transparent;
-        }
-
-        @keyframes scoreBubblePop {
-            0% {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-5px) scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0) scale(1);
-            }
-        }
 
         .score-item {
             position: relative;
@@ -529,7 +486,7 @@
             }
         }
 
-        /* STÍLUSOS PROJEKT ÉRTESÍTÉSI ÉS KVÍZ EREDMÉNY MODAL (Zozo monológ pergamen stílus & Kétujjas Zoom) */
+        /* STÍLUSOS PROJEKT ÉRTESÍTÉSI ÉS KVÍZ EREDMÉNY MODAL (Zozo monológ pergamen stílus) */
         #game-dialog-overlay {
             position: fixed;
             top: 0;
@@ -545,71 +502,15 @@
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             overflow: hidden;
-            touch-action: none;
+            touch-action: none !important;
         }
 
-        #game-dialog-zoom-bar {
-            position: absolute;
-            top: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(27, 15, 5, 0.88);
-            border: 1.5px solid #8b5a2b;
-            border-radius: 20px;
-            padding: 6px 14px;
-            color: #fffbcc;
-            font-family: 'Georgia', serif;
-            font-size: 13px;
-            z-index: 225;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        #game-dialog-zoom-level {
-            font-weight: bold;
-            color: #ffd700;
-            min-width: 55px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .dialog-zoom-btn {
-            background: #3d240d;
-            border: 1px solid #d4af37;
-            color: #ffffff;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-            transition: transform 0.1s ease, background-color 0.1s ease;
-        }
-
-        .dialog-zoom-btn:active {
-            transform: scale(0.9);
-            background-color: #5c3a21;
-        }
-
-        .dialog-zoom-hint {
-            font-size: 11px;
-            color: #e0d0b8;
-            opacity: 0.85;
-            margin-left: 4px;
-        }
 
         .game-dialog-panel {
             position: relative;
             width: 90vw;
-            max-width: 640px;
+            max-width: 720px;
+            min-height: 360px;
             box-sizing: border-box;
             font-family: 'BriskB', 'Georgia', serif;
             color: #1a0f05;
@@ -620,12 +521,13 @@
             text-align: center;
             text-shadow: none;
             background: transparent;
-            padding: 45px 55px 40px 55px;
+            padding: 55px 70px 45px 70px;
             transition: transform 0.12s ease-out;
             transform-origin: center center;
             user-select: none;
             -webkit-user-select: none;
             pointer-events: auto;
+            touch-action: none !important;
         }
 
         .game-dialog-panel::before {
@@ -633,8 +535,8 @@
             position: absolute;
             top: -24%;
             bottom: -28%;
-            left: -20%;
-            right: -20%;
+            left: -21%;
+            right: -21%;
             background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png') no-repeat center center;
             background-size: 100% 100%;
             z-index: -1;
@@ -642,14 +544,33 @@
             filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9));
         }
 
+        .game-dialog-panel .hero-portrait-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            touch-action: none;
+        }
+
+        .game-dialog-panel .hero-portrait-badge img {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2px solid #8b5a2b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            object-fit: cover;
+            pointer-events: none;
+        }
+
         .game-dialog-title {
-            font-size: 25px;
+            font-size: 24px;
             font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 14px;
-            line-height: 1.35;
-            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+            color: #2c1a08;
+            margin: 0;
             letter-spacing: 0.5px;
+            text-align: center;
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
+            touch-action: none;
         }
 
         .game-dialog-text {
@@ -657,46 +578,70 @@
             font-size: 16px;
             color: #2c1a08;
             font-weight: normal;
-            line-height: 1.5;
-            margin: 8px 12px 22px 12px;
+            line-height: 1.55;
+            margin: 10px 15px 20px 15px;
             text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.35);
+            touch-action: none;
+        }
+
+        .game-dialog-action-btn {
+            background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center;
+            background-size: 100% 100%;
+            border: none;
+            color: #fffbcc;
+            padding: 12px 34px;
+            font-size: 19px;
+            font-family: 'BriskB', 'Georgia', serif;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.85);
+            transition: transform 0.15s ease, filter 0.15s ease;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+            margin-top: 6px;
+            margin-bottom: 6px;
+            touch-action: manipulation;
+        }
+
+        .game-dialog-action-btn:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.85)) brightness(1.1);
+        }
+
+        .game-dialog-action-btn:active {
+            transform: scale(0.96);
         }
 
         @media (max-width: 600px) {
-            #game-dialog-zoom-bar {
-                top: 10px;
-                padding: 4px 10px;
-                gap: 6px;
-                font-size: 12px;
-            }
-            .dialog-zoom-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 17px;
-            }
-            .dialog-zoom-hint {
-                display: none;
-            }
             .game-dialog-panel {
-                width: 88vw;
+                width: 95vw;
                 max-width: 440px;
-                padding: 32px 28px 28px 28px;
+                min-height: 310px;
+                /* BŐSÉGES alsó-felső margó és padding mobilon, hogy a szöveg NE csússzon ki a háttérkép pereméig! */
+                padding: 50px 36px 44px 36px;
             }
             .game-dialog-panel::before {
-                top: -18%;
-                bottom: -22%;
-                left: -15%;
-                right: -15%;
+                top: -16%;
+                bottom: -20%;
+                left: -14%;
+                right: -14%;
+            }
+            .game-dialog-panel .hero-portrait-badge img {
+                width: 44px;
+                height: 44px;
             }
             .game-dialog-title {
-                font-size: 20px;
-                margin-top: 6px;
-                margin-bottom: 10px;
+                font-size: 18px;
             }
             .game-dialog-text {
-                font-size: 15px;
-                line-height: 1.45;
-                margin: 6px 6px 18px 6px;
+                font-size: 14px;
+                line-height: 1.4;
+                margin: 6px 4px 14px 4px;
+            }
+            .game-dialog-action-btn {
+                padding: 9px 24px;
+                font-size: 16px;
+                margin-top: 4px;
+                margin-bottom: 4px;
             }
         }
 
@@ -1426,13 +1371,13 @@
                         <div class="info-row">
                             <span class="info-icon-badge">⌨️</span>
                             <div>
-                                <strong>W, A, S, D vagy Nyilak:</strong> Csónak vezetése és gázadása.
+                                <strong>W, A, S, D vagy Nyilak:</strong> Csónak vezetése (W: előre, S: hátra, A: balra, D: jobbra).
                             </div>
                         </div>
                         <div class="info-row">
                             <span class="info-icon-badge">🖱️</span>
                             <div>
-                                <strong>Bal egérgomb (kattintás / húzás):</strong> Kattintva tartás / megállítás = Hajó halad az egér felé | Egér húzása = Kamera svenkelése.
+                                <strong>Egér bal gomb + húzás:</strong> Kamera forgatása (Orbit forgatás a hajó körül). Az egérkurzor a hajót nem mozgatja.
                             </div>
                         </div>
                         <div class="info-row">
@@ -1465,14 +1410,14 @@
                             <span class="info-icon-badge">❤️</span>
                             <div>
                                 <strong>Életerőpontok (HP):</strong>
-                                <p>Ügyelj a csónakod épségére! A határoló szikláknak és zátonyoknak való ütközés, vagy az ellenséges léghajó ágyútüze kárt tesz a hajóban (-1 HP). Ha a HP elfogy, a hajó elsüllyed és a csónakon lévő hártyák elvesznek!</p>
+                                <p>Ügyelj a csónakod épségére! A határoló szikláknak és zátonyoknak való ütközés, vagy az öbölkijáratot őrző csatahajó ágyútüze kárt tesz a hajóban (-1 HP). Ha a HP elfogy, a hajó elsüllyed és a csónakon lévő hártyák elvesznek!</p>
                             </div>
                         </div>
                         <div class="info-row">
                             <span class="info-icon-badge">🏰</span>
                             <div>
                                 <strong>Mentés a Bázison (Lementett hártya a depóban):</strong>
-                                <p>Hajózz be a zöld fényoszloppal megjelölt központi bázis kikötőjébe! Itt a csónakon lévő összes hártyád automatikusan biztonságba kerül a depóban, és a csónakod életereje is maximálisra javul.</p>
+                                <p>Hajózz be a zöldellő félsziget bármelyik mólójához! Itt a csónakon lévő összes hártyád automatikusan biztonságba kerül a depóban.</p>
                             </div>
                         </div>
                         <div class="info-row">
@@ -1542,126 +1487,6 @@
         }
 
         // ==========================================
-        // PROJEKT MODAL KÉTÚJJAS ZOOM ÉS PÁNZÁS VEZÉRLŐ
-        // ==========================================
-        let dialogCurrentScale = 1.0;
-        let dialogPanX = 0;
-        let dialogPanY = 0;
-        let isDialogPinching = false;
-        let dialogPinchStartDist = 0;
-        let dialogPinchStartScale = 1.0;
-        let isDialogPanning = false;
-        let lastDialogPanTouch = { x: 0, y: 0 };
-
-        function updateDialogZoomTransform() {
-            const panel = document.querySelector('.game-dialog-panel');
-            const levelEl = document.getElementById('game-dialog-zoom-level');
-            if (panel) {
-                panel.style.transform = "translate(" + dialogPanX + "px, " + dialogPanY + "px) scale(" + dialogCurrentScale + ")";
-            }
-            if (levelEl) {
-                levelEl.innerText = "🔍 " + Math.round(dialogCurrentScale * 100) + "%";
-            }
-        }
-
-        function setDialogZoom(newScale, smooth) {
-            dialogCurrentScale = Math.min(2.5, Math.max(1.0, Math.round(newScale * 100) / 100));
-            if (dialogCurrentScale <= 1.02) {
-                dialogCurrentScale = 1.0;
-                dialogPanX = 0;
-                dialogPanY = 0;
-            } else {
-                const maxPanX = (dialogCurrentScale - 1) * (window.innerWidth * 0.35);
-                const maxPanY = (dialogCurrentScale - 1) * (window.innerHeight * 0.35);
-                dialogPanX = Math.max(-maxPanX, Math.min(maxPanX, dialogPanX));
-                dialogPanY = Math.max(-maxPanY, Math.min(maxPanY, dialogPanY));
-            }
-            const panel = document.querySelector('.game-dialog-panel');
-            if (panel) {
-                panel.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
-            }
-            updateDialogZoomTransform();
-        }
-
-        function resetDialogZoom() {
-            dialogPanX = 0;
-            dialogPanY = 0;
-            setDialogZoom(1.0, true);
-        }
-
-        function initDialogZoomControls() {
-            const overlay = document.getElementById('game-dialog-overlay');
-            const panel = document.querySelector('.game-dialog-panel');
-            if (!overlay || !panel) return;
-
-            const inBtn = document.getElementById('dialog-zoom-in-btn');
-            const outBtn = document.getElementById('dialog-zoom-out-btn');
-            const resetBtn = document.getElementById('dialog-zoom-reset-btn');
-            const levelEl = document.getElementById('game-dialog-zoom-level');
-
-            if (inBtn) inBtn.onclick = function(e) { e.stopPropagation(); setDialogZoom(dialogCurrentScale + 0.25, true); };
-            if (outBtn) outBtn.onclick = function(e) { e.stopPropagation(); setDialogZoom(dialogCurrentScale - 0.25, true); };
-            if (resetBtn) resetBtn.onclick = function(e) { e.stopPropagation(); resetDialogZoom(); };
-            if (levelEl) levelEl.onclick = function(e) { e.stopPropagation(); resetDialogZoom(); };
-
-            overlay.addEventListener('touchstart', function(e) {
-                if (e.target && (e.target.tagName === 'BUTTON' || e.target.closest('button'))) return;
-
-                if (e.touches.length === 2) {
-                    isDialogPinching = true;
-                    isDialogPanning = false;
-                    dialogPinchStartDist = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    dialogPinchStartScale = dialogCurrentScale;
-                    if (panel) panel.style.transition = 'none';
-                    if (e.cancelable) e.preventDefault();
-                } else if (e.touches.length === 1 && dialogCurrentScale > 1.05) {
-                    isDialogPanning = true;
-                    lastDialogPanTouch.x = e.touches[0].clientX;
-                    lastDialogPanTouch.y = e.touches[0].clientY;
-                    if (panel) panel.style.transition = 'none';
-                }
-            }, { passive: false });
-
-            overlay.addEventListener('touchmove', function(e) {
-                if (isDialogPinching && e.touches.length === 2) {
-                    const currentDist = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    if (dialogPinchStartDist > 0) {
-                        const scaleFactor = currentDist / dialogPinchStartDist;
-                        setDialogZoom(dialogPinchStartScale * scaleFactor, false);
-                    }
-                    if (e.cancelable) e.preventDefault();
-                } else if (isDialogPanning && e.touches.length === 1 && dialogCurrentScale > 1.05) {
-                    const dx = e.touches[0].clientX - lastDialogPanTouch.x;
-                    const dy = e.touches[0].clientY - lastDialogPanTouch.y;
-                    dialogPanX += dx;
-                    dialogPanY += dy;
-                    lastDialogPanTouch.x = e.touches[0].clientX;
-                    lastDialogPanTouch.y = e.touches[0].clientY;
-                    setDialogZoom(dialogCurrentScale, false);
-                    if (e.cancelable) e.preventDefault();
-                }
-            }, { passive: false });
-
-            const endPinchOrPan = function(e) {
-                if (e.touches.length < 2) isDialogPinching = false;
-                if (e.touches.length === 0) isDialogPanning = false;
-            };
-            overlay.addEventListener('touchend', endPinchOrPan);
-            overlay.addEventListener('touchcancel', endPinchOrPan);
-
-            overlay.addEventListener('wheel', function(e) {
-                if (e.cancelable) e.preventDefault();
-                const delta = -Math.sign(e.deltaY) * 0.15;
-                setDialogZoom(dialogCurrentScale + delta, true);
-            }, { passive: false });
-        }
-
         // ==========================================
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
         // ==========================================
@@ -1672,20 +1497,20 @@
             const btnEl = document.getElementById('game-dialog-btn');
             if (!overlay || !titleEl || !textEl || !btnEl) return;
 
-            resetDialogZoom();
-
             titleEl.innerHTML = title;
-            titleEl.style.color = isSuccess ? '#1b5e20' : '#4a0000';
+            titleEl.style.color = isSuccess ? '#2c1a08' : '#5c0606';
             textEl.innerHTML = text;
             btnEl.innerText = btnText || '⚓ TOVÁBB';
 
+            let dialogClosed = false;
             const handleClose = function(e) {
+                if (dialogClosed) return;
+                dialogClosed = true;
                 if (e) {
                     e.stopPropagation();
                     if (e.cancelable) e.preventDefault();
                 }
                 overlay.style.display = 'none';
-                resetDialogZoom();
                 if (typeof callback === 'function') {
                     callback();
                 }
@@ -1905,8 +1730,12 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Water.js"></script>
 
     <script>
-        // Mobil/Android érzékelés legfelül (hogy a buildScene és a renderer is lássa a beállításokat)
-        const isAndroid = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 0) || window.location.hash === '#mobile';
+        // Határozott platform elválasztás: Érintőképernyős / Mobil vs. Asztali PC
+        // (A maxTouchPoints > 0 kivéve, mert az érintőképernyős/tollas PC laptopokat tévesen mobilnak azonosította!)
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                               window.location.search.includes('mobile=1') || 
+                               window.location.hash === '#mobile';
+        const isAndroid = isMobileDevice; // Kompatibilitási alias
         let mobileMode = 'boat'; // 'boat' vagy 'camera'
 
         // ==========================================
@@ -2402,16 +2231,15 @@
                         }
                     });
 
-                    // 2. SUGÁR JAVÍTÁSA: Ha a szikla nagyon hosszúkás (pl. 100x20), a Math.max miatt egy hatalmas, 100-as sugarú kört húzna, ami tele lenne "üres" ütközőzónával.
-                    // Ezért az X és Z kiterjedés ÁTLAGÁT vesszük alapul, és azt szorozzuk 0.8-cal, hogy a hosszúkás sziklák se csináljanak láthatatlan falakat.
+                    // 2. SUGÁR PONTOSÍTÁSA: A vízfelszíni geometriához igazított átmérő (a túlméretezett láthatatlan ütközési zóna ellen)
                     let avgDiameter = (size.x + size.z) / 2;
-                    model.userData = { autoRadius: (avgDiameter / 2) * 0.8 };
+                    model.userData = { autoRadius: (avgDiameter / 2) * 0.45 };
 
                     resolve(model);
                 }, undefined, err => {
                     console.error("Hiba a szikla betöltésekor:", path, err);
                     let emptyGroup = new THREE.Group();
-                    emptyGroup.userData = { autoRadius: 10 }; // Biztonsági alapérték
+                    emptyGroup.userData = { autoRadius: 6 }; // Biztonsági alapérték
                     resolve(emptyGroup);
                 });
             }));
@@ -2453,8 +2281,8 @@
                 rock.rotation.z = (rng.next() - 0.5) * 0.4;
                 rock.rotation.y = rng.next() * 2 * Math.PI; // Visszakerült a random forgatás!
                 
-                let rawRadius = (rock.userData && rock.userData.autoRadius) ? rock.userData.autoRadius : 14;
-                rock.boundingRadius = (rawRadius > 3 && !isNaN(rawRadius)) ? rawRadius : 14;
+                let rawRadius = (rock.userData && rock.userData.autoRadius) ? rock.userData.autoRadius : 7.0;
+                rock.boundingRadius = Math.max(3.5, Math.min(8.5, rawRadius));
                 rock.isRock = true;
                 rock.userData.modelType = colorIndex;
                 rock.matrixAutoUpdate = false;
@@ -2492,8 +2320,8 @@
                 rock.position.set(x, y, z);
                 rock.rotation.y = rng.next() * 2 * Math.PI;
 
-                let baseRadius = (rock.userData && rock.userData.autoRadius) ? (rock.userData.autoRadius / 50.0) : 0.35;
-                rock.boundingRadius = Math.max(14, baseRadius * s);
+                let baseRadius = (rock.userData && rock.userData.autoRadius) ? (rock.userData.autoRadius / 50.0) : 0.14;
+                rock.boundingRadius = Math.max(6.0, Math.min(10.5, baseRadius * s));
                 rock.isRock = true;
                 rock.userData.modelType = colorIndex;
                 rock.matrixAutoUpdate = false;
@@ -2520,12 +2348,9 @@
                         let b = beachModel.clone();
                         b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
                         b.rotation.y = -theta - Math.PI / 2;
-                        b.isBeach = true;
-                        b.boundingRadius = 150;
                         b.matrixAutoUpdate = false;
                         b.updateMatrix();
                         scene.add(b);
-                        obstacles.push(b);
                     }
                 } else {
                     // Első sor a sziklák mögött (R=400)
@@ -2534,10 +2359,7 @@
                         let b = beachModel.clone();
                         b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
                         b.rotation.y = -theta - Math.PI / 2;
-                        b.isBeach = true;
-                        b.boundingRadius = 150;
                         scene.add(b);
-                        obstacles.push(b);
                     }
 
                     // Középső (összekötő) sor a hézag megszüntetésére
@@ -2546,10 +2368,7 @@
                         let b = beachModel.clone();
                         b.position.set(500 * Math.cos(theta), 1.5, 500 * Math.sin(theta));
                         b.rotation.y = -theta - Math.PI / 2;
-                        b.isBeach = true;
-                        b.boundingRadius = 300;
                         scene.add(b);
-                        obstacles.push(b);
                     }
 
                     // Harmadik (külső) sor, ami a hegyek lábát követi (R=650)
@@ -2558,10 +2377,7 @@
                         let b = beachModel.clone();
                         b.position.set(650 * Math.cos(theta), 3, 650 * Math.sin(theta));
                         b.rotation.y = -theta - Math.PI / 2;
-                        b.isBeach = true;
-                        b.boundingRadius = 350;
                         scene.add(b);
-                        obstacles.push(b);
                     }
                 }
             });
@@ -2620,10 +2436,9 @@
                     rock.updateMatrixWorld(true);
 
                     scene.add(rock);
-                    obstacles.push(rock);
                 }
 
-                // 6.4 PLUSZ SZIKLÁK A HATÁRVONALRA (Szigorúan csak a 360 - 400 sávba!)
+                // 6.4 PLUSZ SZIKLÁK A HATÁRVONALRA (Szigorúan csak a 360 - 400 sávba - kizárólag látványelem!)
                 for (let i = 0; i < 300; i++) {
                     let theta = (Math.PI / 4) + rng.next() * Math.PI;
                     let r = 360 + rng.next() * 40;
@@ -2644,14 +2459,10 @@
                     rock.rotation.z = (rng.next() - 0.5) * Math.PI;
                     rock.rotation.y = rng.next() * Math.PI * 2;
 
-                    let baseRadius2 = (rock.userData && rock.userData.autoRadius) ? (rock.userData.autoRadius / 50.0) : 0.35;
-                    rock.boundingRadius = Math.max(12, baseRadius2 * s);
-                    rock.isRock = true;
                     rock.userData.modelType = colorIndex;
                     rock.updateMatrixWorld(true);
 
                     scene.add(rock);
-                    obstacles.push(rock);
                 }
             }
 
@@ -3013,7 +2824,14 @@
                             
                             collisionPoint.position.set(px, 0.0, pz);
                             chainGroup.add(collisionPoint);
-                            
+
+                            // Valós világkoordináta a BASE_POS és rotationOffset alapján (kiszűri a téves lokális koordinátás ütközést a nyílt vízen)
+                            let cosR = Math.cos(rotationOffset);
+                            let sinR = Math.sin(rotationOffset);
+                            let wx = BASE_POS.x + (px * cosR + pz * sinR);
+                            let wz = BASE_POS.z + (-px * sinR + pz * cosR);
+                            collisionPoint.worldPos = new THREE.Vector3(wx, 0.0, wz);
+
                             collisionPoint.isDockChain = true;
                             collisionPoint.boundingRadius = 2.0;
                             obstacles.push(collisionPoint);
@@ -3236,59 +3054,6 @@
         }
         window.toggleFullscreen = toggleFullscreen;
 
-        // ---- FEJLÉC PONTSZÁM BUBORÉKOK (2 MÁSODPERCES AUTO-ELTŰNÉSSEL) ----
-        let scoreBubbleTimeout = null;
-
-        function showScoreBubble(targetItem, text) {
-            if (scoreBubbleTimeout) {
-                clearTimeout(scoreBubbleTimeout);
-                scoreBubbleTimeout = null;
-            }
-            document.querySelectorAll('.score-bubble').forEach(el => el.remove());
-
-            if (!targetItem) return;
-
-            const bubble = document.createElement('div');
-            bubble.className = 'score-bubble';
-            bubble.innerText = text;
-            targetItem.appendChild(bubble);
-
-            scoreBubbleTimeout = setTimeout(() => {
-                bubble.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-                bubble.style.opacity = '0';
-                bubble.style.transform = 'translateX(-50%) translateY(-5px) scale(0.92)';
-                setTimeout(() => bubble.remove(), 250);
-                scoreBubbleTimeout = null;
-            }, 2000);
-        }
-
-        function attachScoreItemTap(item, text) {
-            if (!item) return;
-            item.style.cursor = 'pointer';
-            let touchStartedHere = false;
-            item.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
-                touchStartedHere = true;
-            }, { passive: true });
-            item.addEventListener('touchend', (e) => {
-                if (touchStartedHere) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    showScoreBubble(item, text);
-                    touchStartedHere = false;
-                }
-            });
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showScoreBubble(item, text);
-            });
-        }
-
-        function initScoreBubbles() {
-            attachScoreItemTap(document.getElementById('score-item-hp'), 'Életerőpont');
-            attachScoreItemTap(document.getElementById('score-item-boat'), 'Begyűjtött hártya');
-            attachScoreItemTap(document.getElementById('score-item-base'), 'Lementett hártya');
-        }
 
         // ---- INFÓ PANEL VEZÉRLÉS ----
         const infoOverlay = document.getElementById('info-overlay');
@@ -3375,8 +3140,6 @@
             });
         }
 
-        // Fejléc buborékok inicializálása
-        initScoreBubbles();
 
         window.addEventListener('keydown', e => {
             let k = e.key.toLowerCase();
@@ -3402,15 +3165,10 @@
         let currentTouchScreenPos = { x: 0, y: 0 };
         let lastTouchMoveTime = 0;
 
-        // Asztali böngészős egér (Live Server tesztelés) állapotok
-        let isMouseActive = false;
-        let isMouseDraggingCamera = false;
-        let mouseStartAnchorPos = { x: 0, y: 0 };
-        let lastMousePos = { x: 0, y: 0 };
-        let currentMouseScreenPos = { x: 0, y: 0 };
-        let lastMouseMoveTime = 0;
+        // PC-s 3D Mesh Raycaster az akadályokhoz (GC mentes, frame-enként újrafelhasznált)
+        const pcRaycaster = new THREE.Raycaster();
 
-        // Egér görgő (Zoom)
+        // Egér görgő (Zoom minden platformon)
         window.addEventListener('wheel', (e) => {
             cameraDistance += e.deltaY * 0.05;
             if (cameraDistance < 10) cameraDistance = 10;
@@ -3459,27 +3217,19 @@
             if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
             if (!isAndroid) scene.updateMatrixWorld(true);
 
-            // ---- ÉRINTŐKÉPERNYŐS & EGÉR ÁLLÓ UJJ (STATIONARY) ÉRZÉKELŐ ----
-            // Ha az ujj/egér megáll a képernyőn (nincs svenk legalább 120ms-ig),
+            // ---- ÉRINTŐKÉPERNYŐS ÁLLÓ UJJ (STATIONARY) ÉRZÉKELŐ (KIZÁRÓLAG MOBILON) ----
+            // Ha az ujj megáll a képernyőn (nincs svenk legalább 100ms-ig),
             // a rendszer automatikusan kameramozgásból (svenk) átvált hajómozgássá!
+            // PC-n az egérkurzor SOHA nem mozgatja a hajót!
             const now = performance.now();
             if (isTouchActive && !isPinchZooming) {
-                if (now - lastTouchMoveTime > 120) {
+                if (now - lastTouchMoveTime > 100) {
                     if (isDraggingCamera) {
                         isDraggingCamera = false;
                         touchStartAnchorPos.x = currentTouchScreenPos.x;
                         touchStartAnchorPos.y = currentTouchScreenPos.y;
                     }
                     steerShipToScreenPoint(currentTouchScreenPos.x, currentTouchScreenPos.y);
-                }
-            } else if (isMouseActive) {
-                if (now - lastMouseMoveTime > 120) {
-                    if (isMouseDraggingCamera) {
-                        isMouseDraggingCamera = false;
-                        mouseStartAnchorPos.x = currentMouseScreenPos.x;
-                        mouseStartAnchorPos.y = currentMouseScreenPos.y;
-                    }
-                    steerShipToScreenPoint(currentMouseScreenPos.x, currentMouseScreenPos.y);
                 }
             }
 
@@ -3633,19 +3383,19 @@
             let hitCollisionLimit = 0;
 
             for (let r of obstacles) {
-                // Tereptárgyak vízszintes (X, Z) pozíciója
-                let rx = r.position.x;
-                let rz = r.position.z;
+                // Tereptárgyak vízszintes (X, Z) pozíciója (worldPos ha összetett csoportban van, pl. mólóelemek)
+                let rx = r.worldPos ? r.worldPos.x : r.position.x;
+                let rz = r.worldPos ? r.worldPos.z : r.position.z;
 
                 let dist2D = Math.hypot(boatCenter.x - rx, boatCenter.z - rz);
 
                 // Broad-phase: Csak azt a sziklát/akadályt vizsgáljuk, ami a közvetlen közelben van
-                let broadRadius = (r.boundingRadius || 25) + 15;
+                let broadRadius = (r.boundingRadius || 15) + 10;
                 if (dist2D < broadRadius) {
 
                     if (r === baseHarbor) {
                         // Kikötő hengeres matematikai ütközés
-                        let limit = r.boundingRadius + 3;
+                        let limit = r.boundingRadius + 2.5;
                         if (dist2D < limit) {
                             hasCollision = true;
                             hitRock = r;
@@ -3654,7 +3404,7 @@
                         }
                     } else if (r.isDockChain) {
                         // Rámpa segédpontok: 2D vízszintes távolságvizsgálat
-                        let limit = 2.5;
+                        let limit = 2.0;
                         if (dist2D < limit) {
                             hasCollision = true;
                             hitRock = r;
@@ -3687,11 +3437,10 @@
                             hitCollisionLimit = 25;
                             break;
                         }
-                    } else {
-                        // MINDEN SZIKLA: Egységes, megbízható 2D kör alapú ütközésvizsgálat (PC és Mobil)
-                        // A szikla boundingRadius-a (min. 12) + a csónak fizikai sugara (~2.5)
-                        let rockRadius = (r.boundingRadius && !isNaN(r.boundingRadius) && r.boundingRadius > 3) ? r.boundingRadius : 14;
-                        let boatRadius = 2.5;
+                    } else if (isAndroid) {
+                        // KÖNNYŰ MOBIL ÜTKÖZÉSVIZSGÁLAT: Az egyszerűsített pálya 45 sziklájához méretezve
+                        let rockRadius = (r.boundingRadius && !isNaN(r.boundingRadius) && r.boundingRadius > 1) ? r.boundingRadius : 6.0;
+                        let boatRadius = 2.0;
                         let limit = rockRadius + boatRadius;
 
                         if (dist2D < limit) {
@@ -3700,6 +3449,27 @@
                             hitCollisionLimit = limit;
                             break;
                         }
+                    } else {
+                        // PC BONYOLULT PÁLYA ÜTKÖZÉSVIZSGÁLAT: Precíz 3D Mesh Raycasting
+                        // A 350 szikla között a csónak közvetlenül a látható sziklák pereméig manőverezhet,
+                        // nem ütközik az egyszerűsített pálya túlméretezett 2D köreibe!
+                        const directions = [
+                            new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
+                            new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1),
+                            new THREE.Vector3(0.707, 0, 0.707), new THREE.Vector3(-0.707, 0, 0.707),
+                            new THREE.Vector3(0.707, 0, -0.707), new THREE.Vector3(-0.707, 0, -0.707)
+                        ];
+                        for (let dir of directions) {
+                            pcRaycaster.set(boatCenter, dir);
+                            let intersects = pcRaycaster.intersectObject(r, true);
+                            if (intersects.length > 0 && intersects[0].distance < 3.2) {
+                                hasCollision = true;
+                                hitRock = r;
+                                hitCollisionLimit = 3.2;
+                                break;
+                            }
+                        }
+                        if (hasCollision) break;
                     }
                 }
             }
@@ -3717,7 +3487,7 @@
 
             if (hasCollision) {
                 // 1. FIZIKAI ÜTKÖZÉS ÉS KITOLÁS (MINDIG lefut, hogy a hajó sose hatolhasson át az akadályokon)
-                let hitPos = (hitRock.position) ? new THREE.Vector3(hitRock.position.x, 0, hitRock.position.z) : new THREE.Vector3(0, 0, 0);
+                let hitPos = (hitRock.worldPos) ? hitRock.worldPos.clone() : ((hitRock.position) ? new THREE.Vector3(hitRock.position.x, 0, hitRock.position.z) : new THREE.Vector3(0, 0, 0));
 
                 if (hitRock.isWorldBoundary) {
                     // Ha a világperemen túlra ment, visszahúzzuk a 360-as körre
@@ -3731,7 +3501,7 @@
                     if (currentDist < 0.001) { normal.set(1, 0, 0); currentDist = 0.001; }
                     normal.normalize();
 
-                    let limit = hitCollisionLimit || ((hitRock === baseHarbor) ? (baseHarbor.boundingRadius + 3) : (hitRock.isBeach ? 14.0 : 2.5));
+                    let limit = hitCollisionLimit || ((hitRock === baseHarbor) ? (baseHarbor.boundingRadius + 2.5) : (hitRock.isBeach ? 14.0 : 2.0));
                     let penetration = limit - currentDist;
 
                     if (penetration > 0) {
@@ -3756,11 +3526,15 @@
                     if (currentDist < 0.001) { normal.set(1, 0, 0); currentDist = 0.001; }
                     normal.normalize();
 
-                    let limit = hitCollisionLimit || ((hitRock.boundingRadius || 14) + 2.5);
-                    let penetration = limit - currentDist;
-
-                    if (penetration > 0) {
-                        playerBoat.position.add(normal.clone().multiplyScalar(penetration));
+                    if (isAndroid) {
+                        let limit = hitCollisionLimit || ((hitRock.boundingRadius || 6.0) + 2.0);
+                        let penetration = limit - currentDist;
+                        if (penetration > 0) {
+                            playerBoat.position.add(normal.clone().multiplyScalar(penetration));
+                        }
+                    } else {
+                        // PC-n a látható 3D mesh ütközésből finoman visszatoljuk a hajót
+                        playerBoat.position.add(normal.clone().multiplyScalar(0.45));
                     }
 
                     let dot = moveVec.dot(normal);
@@ -3778,8 +3552,8 @@
                     }
                 }
 
-                // 2. SEBZŐDÉS (Csak ha nincs sérthetetlenség, és nem a bázisnak, nem a láncolatoknak és nem a homokpartnak mentünk neki)
-                if (hitRock !== baseHarbor && !hitRock.isDockChain && !hitRock.isBeach && !isInvulnerable) {
+                // 2. SEBZŐDÉS (Csak ha nincs sérthetetlenség, és nem a bázisnak, nem a láncolatoknak, nem a homokpartnak és nem a peremnek mentünk neki)
+                if (hitRock !== baseHarbor && !hitRock.isDockChain && !hitRock.isBeach && !hitRock.isWorldBoundary && !isInvulnerable) {
                     isInvulnerable = true;
                     setTimeout(() => { isInvulnerable = false; }, 1000); // 1 mp sérthetetlenség
 
@@ -4270,16 +4044,23 @@
                         isDraggingCamera = true;
                         isTouchSteerActive = false; // Svenkelés alatt nem a hajó mozog
 
-                        const deltaX = t.clientX - lastTouchPos.x;
-                        cameraAngle -= deltaX * 0.008; // Horizontális kamerakörbeforgatás
-
-                        if (stepDist > 0.5) {
+                        // Csak valós, határozott mozgásra forgatunk (1.8px felett), a nyugalmi remegést kiszűrjük
+                        if (stepDist >= 1.8) {
+                            const deltaX = t.clientX - lastTouchPos.x;
+                            cameraAngle -= deltaX * 0.008; // Horizontális kamerakörbeforgatás
                             lastTouchMoveTime = performance.now();
+                            lastTouchPos.x = t.clientX;
+                            lastTouchPos.y = t.clientY;
+                        }
+                    } else {
+                        // Ha az ujj még nem érte el a svenk küszöböt (álló/követő ujj mód):
+                        if (stepDist >= 1.8) {
+                            steerShipToScreenPoint(t.clientX, t.clientY);
+                            lastTouchPos.x = t.clientX;
+                            lastTouchPos.y = t.clientY;
                         }
                     }
 
-                    lastTouchPos.x = t.clientX;
-                    lastTouchPos.y = t.clientY;
                     e.preventDefault();
                 }
             }, { passive: false });
@@ -4310,54 +4091,30 @@
             window.addEventListener('touchend', handleTouchEnd);
             window.addEventListener('touchcancel', handleTouchEnd);
 
-            // Asztali böngészős Live Server tesztelés támogatása egérrel (1:1 megegyező logika)
+            // ========================================================
+            // 2. ASZTALI PC EGÉR VEZÉRLÉS: KIZÁRÓLAG KAMERA ORBIT!
+            //    (A kurzor / egér SOHA nem mozgatja a hajót!)
+            // ========================================================
+            let isMouseOrbitActive = false;
+            let lastMouseX = 0;
+
             window.addEventListener('mousedown', (e) => {
                 if (isInteractiveElement(e.target)) return;
                 if (e.button !== 0) return; // Csak bal egérgomb
-
-                isMouseActive = true;
-                isMouseDraggingCamera = false;
-                mouseStartAnchorPos.x = e.clientX;
-                mouseStartAnchorPos.y = e.clientY;
-                lastMousePos.x = e.clientX;
-                lastMousePos.y = e.clientY;
-                currentMouseScreenPos.x = e.clientX;
-                currentMouseScreenPos.y = e.clientY;
-                lastMouseMoveTime = performance.now();
-
-                steerShipToScreenPoint(e.clientX, e.clientY);
+                isMouseOrbitActive = true;
+                lastMouseX = e.clientX;
             });
 
             window.addEventListener('mousemove', (e) => {
-                if (!isMouseActive) return;
-
-                currentMouseScreenPos.x = e.clientX;
-                currentMouseScreenPos.y = e.clientY;
-
-                const stepDist = Math.hypot(e.clientX - lastMousePos.x, e.clientY - lastMousePos.y);
-                const distFromAnchor = Math.hypot(e.clientX - mouseStartAnchorPos.x, e.clientY - mouseStartAnchorPos.y);
-
-                if (isMouseDraggingCamera || distFromAnchor > 12) {
-                    isMouseDraggingCamera = true;
-                    isTouchSteerActive = false;
-
-                    const deltaX = e.clientX - lastMousePos.x;
-                    cameraAngle -= deltaX * 0.008;
-
-                    if (stepDist > 0.5) {
-                        lastMouseMoveTime = performance.now();
-                    }
-                }
-
-                lastMousePos.x = e.clientX;
-                lastMousePos.y = e.clientY;
+                if (!isMouseOrbitActive) return;
+                const deltaX = e.clientX - lastMouseX;
+                cameraAngle -= deltaX * 0.008; // Bal egérgomb húzása csakis a kamerát forgatja körbe
+                lastMouseX = e.clientX;
             });
 
             function handleMouseUp(e) {
                 if (e && e.button !== undefined && e.button !== 0) return;
-                isMouseActive = false;
-                isMouseDraggingCamera = false;
-                isTouchSteerActive = false;
+                isMouseOrbitActive = false;
             }
 
             window.addEventListener('mouseup', handleMouseUp);
@@ -4365,16 +4122,22 @@
 
         // Automatikus indítás mobilon és asztali böngészőben (Live Server teszteléshez)
         function initAppControls() {
-            initScoreBubbles();
             setupMobileControls();
-            initDialogZoomControls();
             if (isAndroid) {
                 document.body.classList.add('mobile-hud');
                 
-                // Zozó Hero onboarding kártya tippjének frissítése
+                // Zozó Hero onboarding kártya tippjének frissítése mobilon
                 const hintText = document.getElementById('control-hint-text');
                 if (hintText) {
                     hintText.innerHTML = "📱 <strong>Mobil irányítás:</strong> Ujj csúsztatása (svenk) = Kamera forgatása | Ujj megállítása = Hajó halad az ujj felé | Két ujj = Zoom";
+                }
+            } else {
+                document.body.classList.remove('mobile-hud');
+                
+                // Zozó Hero onboarding kártya tippjének frissítése PC-n
+                const hintText = document.getElementById('control-hint-text');
+                if (hintText) {
+                    hintText.innerHTML = "💻 <strong>PC irányítás:</strong> [W][A][S][D] vagy Nyilak = Hajó vezetése | Egér bal gomb + húzás = Kamera forgatása | Egérgörgő = Zoom";
                 }
             }
         }
@@ -4436,18 +4199,13 @@
 
     <!-- DEMÓ STÍLUSOS ÉRTESÍTÉSI / KVÍZ EREDMÉNY MODAL -->
     <div id="game-dialog-overlay">
-        <!-- Zoom vezérlő sáv mobilon és asztalon -->
-        <div id="game-dialog-zoom-bar">
-            <span id="game-dialog-zoom-level" title="Kattints a visszaállításhoz">🔍 100%</span>
-            <button id="dialog-zoom-out-btn" class="dialog-zoom-btn" title="Kicsinyítés">−</button>
-            <button id="dialog-zoom-in-btn" class="dialog-zoom-btn" title="Nagyítás">+</button>
-            <button id="dialog-zoom-reset-btn" class="dialog-zoom-btn" title="Alaphelyzet">↺</button>
-            <span class="dialog-zoom-hint">Kétujjas zoom támogatva</span>
-        </div>
         <div class="game-dialog-panel">
-            <div id="game-dialog-title" class="game-dialog-title">🎉 HELYES VÁLASZ!</div>
+            <div class="hero-portrait-badge" id="game-dialog-badge">
+                <img id="game-dialog-avatar" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png" alt="Zozó Kalóz">
+                <h2 id="game-dialog-title" class="game-dialog-title">🎉 HELYES VÁLASZ!</h2>
+            </div>
             <div id="game-dialog-text" class="game-dialog-text">Megmenekültél a léghajótól! A csónakod visszatért a Kikötőbe.</div>
-            <button id="game-dialog-btn" class="game-over-restart-btn">⚓ VISSZATÉRÉS A KIKÖTŐBE</button>
+            <button id="game-dialog-btn" class="game-dialog-action-btn">⚓ VISSZATÉRÉS A KIKÖTŐBE</button>
         </div>
     </div>
 

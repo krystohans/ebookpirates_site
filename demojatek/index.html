@@ -408,14 +408,10 @@
             font-weight: bold;
             display: none;
             text-align: center;
-            background: #fdf5e6 url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
-            background-size: 100% 100%;
-            padding: 75px 55px 65px 55px;
+            background: transparent;
+            padding: 45px 55px 40px 55px;
             width: 90vw;
             max-width: 620px;
-            max-height: 85vh;
-            border-radius: 16px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85);
             box-sizing: border-box;
             z-index: 200;
             font-family: 'BriskB', 'Georgia', serif;
@@ -425,7 +421,20 @@
             justify-content: center;
             pointer-events: auto;
             cursor: pointer;
-            overflow-y: auto;
+        }
+
+        #game-message::before {
+            content: "";
+            position: absolute;
+            top: -24%;
+            bottom: -28%;
+            left: -20%;
+            right: -20%;
+            background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png') no-repeat center center;
+            background-size: 100% 100%;
+            z-index: -1;
+            pointer-events: none;
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9));
         }
 
         .game-over-title {
@@ -492,13 +501,20 @@
 
         @media (max-width: 600px) {
             #game-message {
-                width: 94vw;
-                max-width: 94vw;
-                padding: 45px 22px 40px 22px;
+                width: 88vw;
+                max-width: 440px;
+                padding: 32px 28px 28px 28px;
                 font-size: 17px;
+            }
+            #game-message::before {
+                top: -18%;
+                bottom: -22%;
+                left: -15%;
+                right: -15%;
             }
             .game-over-title {
                 font-size: 20px;
+                margin-top: 6px;
                 margin-bottom: 10px;
             }
             .game-over-hint {
@@ -513,9 +529,9 @@
             }
         }
 
-        /* STÍLUSOS PROJEKT ÉRTESÍTÉSI ÉS KVÍZ EREDMÉNY MODAL (Zozo monológ pergamen stílus) */
+        /* STÍLUSOS PROJEKT ÉRTESÍTÉSI ÉS KVÍZ EREDMÉNY MODAL (Zozo monológ pergamen stílus & Kétujjas Zoom) */
         #game-dialog-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -528,18 +544,72 @@
             pointer-events: auto;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #game-dialog-zoom-bar {
+            position: absolute;
+            top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(27, 15, 5, 0.88);
+            border: 1.5px solid #8b5a2b;
+            border-radius: 20px;
+            padding: 6px 14px;
+            color: #fffbcc;
+            font-family: 'Georgia', serif;
+            font-size: 13px;
+            z-index: 225;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #game-dialog-zoom-level {
+            font-weight: bold;
+            color: #ffd700;
+            min-width: 55px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .dialog-zoom-btn {
+            background: #3d240d;
+            border: 1px solid #d4af37;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: transform 0.1s ease, background-color 0.1s ease;
+        }
+
+        .dialog-zoom-btn:active {
+            transform: scale(0.9);
+            background-color: #5c3a21;
+        }
+
+        .dialog-zoom-hint {
+            font-size: 11px;
+            color: #e0d0b8;
+            opacity: 0.85;
+            margin-left: 4px;
         }
 
         .game-dialog-panel {
             position: relative;
             width: 90vw;
-            max-width: 620px;
-            max-height: 85vh;
-            background: #fdf5e6 url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
-            background-size: 100% 100%;
-            padding: 75px 55px 65px 55px;
-            border-radius: 16px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85);
+            max-width: 640px;
             box-sizing: border-box;
             font-family: 'BriskB', 'Georgia', serif;
             color: #1a0f05;
@@ -548,40 +618,85 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            overflow-y: auto;
             text-shadow: none;
+            background: transparent;
+            padding: 45px 55px 40px 55px;
+            transition: transform 0.12s ease-out;
+            transform-origin: center center;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+        }
+
+        .game-dialog-panel::before {
+            content: "";
+            position: absolute;
+            top: -24%;
+            bottom: -28%;
+            left: -20%;
+            right: -20%;
+            background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png') no-repeat center center;
+            background-size: 100% 100%;
+            z-index: -1;
+            pointer-events: none;
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9));
         }
 
         .game-dialog-title {
-            font-size: 24px;
+            font-size: 25px;
             font-weight: bold;
+            margin-top: 10px;
             margin-bottom: 14px;
             line-height: 1.35;
-            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.5px;
         }
 
         .game-dialog-text {
             font-family: 'Georgia', serif;
             font-size: 16px;
-            color: #1a0f05;
+            color: #2c1a08;
             font-weight: normal;
-            line-height: 1.45;
-            margin-bottom: 22px;
+            line-height: 1.5;
+            margin: 8px 12px 22px 12px;
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.35);
         }
 
         @media (max-width: 600px) {
+            #game-dialog-zoom-bar {
+                top: 10px;
+                padding: 4px 10px;
+                gap: 6px;
+                font-size: 12px;
+            }
+            .dialog-zoom-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 17px;
+            }
+            .dialog-zoom-hint {
+                display: none;
+            }
             .game-dialog-panel {
-                width: 94vw;
-                max-width: 94vw;
-                padding: 45px 22px 35px 22px;
+                width: 88vw;
+                max-width: 440px;
+                padding: 32px 28px 28px 28px;
+            }
+            .game-dialog-panel::before {
+                top: -18%;
+                bottom: -22%;
+                left: -15%;
+                right: -15%;
             }
             .game-dialog-title {
                 font-size: 20px;
+                margin-top: 6px;
                 margin-bottom: 10px;
             }
             .game-dialog-text {
-                font-size: 14px;
-                margin-bottom: 16px;
+                font-size: 15px;
+                line-height: 1.45;
+                margin: 6px 6px 18px 6px;
             }
         }
 
@@ -1427,6 +1542,127 @@
         }
 
         // ==========================================
+        // PROJEKT MODAL KÉTÚJJAS ZOOM ÉS PÁNZÁS VEZÉRLŐ
+        // ==========================================
+        let dialogCurrentScale = 1.0;
+        let dialogPanX = 0;
+        let dialogPanY = 0;
+        let isDialogPinching = false;
+        let dialogPinchStartDist = 0;
+        let dialogPinchStartScale = 1.0;
+        let isDialogPanning = false;
+        let lastDialogPanTouch = { x: 0, y: 0 };
+
+        function updateDialogZoomTransform() {
+            const panel = document.querySelector('.game-dialog-panel');
+            const levelEl = document.getElementById('game-dialog-zoom-level');
+            if (panel) {
+                panel.style.transform = "translate(" + dialogPanX + "px, " + dialogPanY + "px) scale(" + dialogCurrentScale + ")";
+            }
+            if (levelEl) {
+                levelEl.innerText = "🔍 " + Math.round(dialogCurrentScale * 100) + "%";
+            }
+        }
+
+        function setDialogZoom(newScale, smooth) {
+            dialogCurrentScale = Math.min(2.5, Math.max(1.0, Math.round(newScale * 100) / 100));
+            if (dialogCurrentScale <= 1.02) {
+                dialogCurrentScale = 1.0;
+                dialogPanX = 0;
+                dialogPanY = 0;
+            } else {
+                const maxPanX = (dialogCurrentScale - 1) * (window.innerWidth * 0.35);
+                const maxPanY = (dialogCurrentScale - 1) * (window.innerHeight * 0.35);
+                dialogPanX = Math.max(-maxPanX, Math.min(maxPanX, dialogPanX));
+                dialogPanY = Math.max(-maxPanY, Math.min(maxPanY, dialogPanY));
+            }
+            const panel = document.querySelector('.game-dialog-panel');
+            if (panel) {
+                panel.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            }
+            updateDialogZoomTransform();
+        }
+
+        function resetDialogZoom() {
+            dialogPanX = 0;
+            dialogPanY = 0;
+            setDialogZoom(1.0, true);
+        }
+
+        function initDialogZoomControls() {
+            const overlay = document.getElementById('game-dialog-overlay');
+            const panel = document.querySelector('.game-dialog-panel');
+            if (!overlay || !panel) return;
+
+            const inBtn = document.getElementById('dialog-zoom-in-btn');
+            const outBtn = document.getElementById('dialog-zoom-out-btn');
+            const resetBtn = document.getElementById('dialog-zoom-reset-btn');
+            const levelEl = document.getElementById('game-dialog-zoom-level');
+
+            if (inBtn) inBtn.onclick = function(e) { e.stopPropagation(); setDialogZoom(dialogCurrentScale + 0.25, true); };
+            if (outBtn) outBtn.onclick = function(e) { e.stopPropagation(); setDialogZoom(dialogCurrentScale - 0.25, true); };
+            if (resetBtn) resetBtn.onclick = function(e) { e.stopPropagation(); resetDialogZoom(); };
+            if (levelEl) levelEl.onclick = function(e) { e.stopPropagation(); resetDialogZoom(); };
+
+            overlay.addEventListener('touchstart', function(e) {
+                if (e.target && (e.target.tagName === 'BUTTON' || e.target.closest('button'))) return;
+
+                if (e.touches.length === 2) {
+                    isDialogPinching = true;
+                    isDialogPanning = false;
+                    dialogPinchStartDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    dialogPinchStartScale = dialogCurrentScale;
+                    if (panel) panel.style.transition = 'none';
+                    if (e.cancelable) e.preventDefault();
+                } else if (e.touches.length === 1 && dialogCurrentScale > 1.05) {
+                    isDialogPanning = true;
+                    lastDialogPanTouch.x = e.touches[0].clientX;
+                    lastDialogPanTouch.y = e.touches[0].clientY;
+                    if (panel) panel.style.transition = 'none';
+                }
+            }, { passive: false });
+
+            overlay.addEventListener('touchmove', function(e) {
+                if (isDialogPinching && e.touches.length === 2) {
+                    const currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    if (dialogPinchStartDist > 0) {
+                        const scaleFactor = currentDist / dialogPinchStartDist;
+                        setDialogZoom(dialogPinchStartScale * scaleFactor, false);
+                    }
+                    if (e.cancelable) e.preventDefault();
+                } else if (isDialogPanning && e.touches.length === 1 && dialogCurrentScale > 1.05) {
+                    const dx = e.touches[0].clientX - lastDialogPanTouch.x;
+                    const dy = e.touches[0].clientY - lastDialogPanTouch.y;
+                    dialogPanX += dx;
+                    dialogPanY += dy;
+                    lastDialogPanTouch.x = e.touches[0].clientX;
+                    lastDialogPanTouch.y = e.touches[0].clientY;
+                    setDialogZoom(dialogCurrentScale, false);
+                    if (e.cancelable) e.preventDefault();
+                }
+            }, { passive: false });
+
+            const endPinchOrPan = function(e) {
+                if (e.touches.length < 2) isDialogPinching = false;
+                if (e.touches.length === 0) isDialogPanning = false;
+            };
+            overlay.addEventListener('touchend', endPinchOrPan);
+            overlay.addEventListener('touchcancel', endPinchOrPan);
+
+            overlay.addEventListener('wheel', function(e) {
+                if (e.cancelable) e.preventDefault();
+                const delta = -Math.sign(e.deltaY) * 0.15;
+                setDialogZoom(dialogCurrentScale + delta, true);
+            }, { passive: false });
+        }
+
+        // ==========================================
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
         // ==========================================
         function showProjectDialog(title, text, btnText, isSuccess, callback) {
@@ -1435,6 +1671,8 @@
             const textEl = document.getElementById('game-dialog-text');
             const btnEl = document.getElementById('game-dialog-btn');
             if (!overlay || !titleEl || !textEl || !btnEl) return;
+
+            resetDialogZoom();
 
             titleEl.innerHTML = title;
             titleEl.style.color = isSuccess ? '#1b5e20' : '#4a0000';
@@ -1447,6 +1685,7 @@
                     if (e.cancelable) e.preventDefault();
                 }
                 overlay.style.display = 'none';
+                resetDialogZoom();
                 if (typeof callback === 'function') {
                     callback();
                 }
@@ -4128,6 +4367,7 @@
         function initAppControls() {
             initScoreBubbles();
             setupMobileControls();
+            initDialogZoomControls();
             if (isAndroid) {
                 document.body.classList.add('mobile-hud');
                 
@@ -4196,10 +4436,18 @@
 
     <!-- DEMÓ STÍLUSOS ÉRTESÍTÉSI / KVÍZ EREDMÉNY MODAL -->
     <div id="game-dialog-overlay">
+        <!-- Zoom vezérlő sáv mobilon és asztalon -->
+        <div id="game-dialog-zoom-bar">
+            <span id="game-dialog-zoom-level" title="Kattints a visszaállításhoz">🔍 100%</span>
+            <button id="dialog-zoom-out-btn" class="dialog-zoom-btn" title="Kicsinyítés">−</button>
+            <button id="dialog-zoom-in-btn" class="dialog-zoom-btn" title="Nagyítás">+</button>
+            <button id="dialog-zoom-reset-btn" class="dialog-zoom-btn" title="Alaphelyzet">↺</button>
+            <span class="dialog-zoom-hint">Kétujjas zoom támogatva</span>
+        </div>
         <div class="game-dialog-panel">
             <div id="game-dialog-title" class="game-dialog-title">🎉 HELYES VÁLASZ!</div>
             <div id="game-dialog-text" class="game-dialog-text">Megmenekültél a léghajótól! A csónakod visszatért a Kikötőbe.</div>
-            <button id="game-dialog-btn" class="game-over-restart-btn" style="margin-bottom: 0;">⚓ VISSZATÉRÉS A KIKÖTŐBE</button>
+            <button id="game-dialog-btn" class="game-over-restart-btn">⚓ VISSZATÉRÉS A KIKÖTŐBE</button>
         </div>
     </div>
 

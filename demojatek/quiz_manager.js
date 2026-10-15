@@ -87,16 +87,11 @@ class QuizManager {
     this.uiReady = false;
     this.literatureQuestions = [];
 
-    this.userScale = 1.0;
-    this.panX = 0;
-    this.panY = 0;
-    this.baseScale = 1.0;
-
     this.loadQuestions();
     if (document.getElementById("quiz-overlay")) { this.uiReady = true; this.bindEvents(); this.initVisualEditor(); } else { this.loadUI(); }
   }
 
-  updateScale(withTransition) {
+  updateScale() {
     const panel = document.getElementById('quiz-panel-box');
     if (!panel) return;
     const isZep = this.currentMode === 'TUTORZEP';
@@ -105,30 +100,10 @@ class QuizManager {
 
     const availW = window.innerWidth * 0.95;
     const availH = window.innerHeight * 0.95;
-    this.baseScale = Math.min(1.0, availW / baseW, availH / baseH);
+    const scale = Math.min(1.0, availW / baseW, availH / baseH);
 
-    this.applyTransform(withTransition);
-  }
-
-  applyTransform(withTransition) {
-    const panel = document.getElementById('quiz-panel-box');
-    if (!panel) return;
-    if (withTransition) {
-      panel.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
-      setTimeout(() => { panel.style.transition = ''; }, 240);
-    } else {
-      panel.style.transition = 'none';
-    }
-    const effectiveScale = (this.baseScale || 1.0) * (this.userScale || 1.0);
-    panel.style.transform = `translate(${this.panX || 0}px, ${this.panY || 0}px) scale(${effectiveScale})`;
+    panel.style.transform = `scale(${scale})`;
     panel.style.transformOrigin = 'center center';
-  }
-
-  resetZoom(withTransition) {
-    this.userScale = 1.0;
-    this.panX = 0;
-    this.panY = 0;
-    this.updateScale(withTransition);
   }
 
   async loadQuestions() {
@@ -198,9 +173,6 @@ class QuizManager {
     window.addEventListener('resize', () => {
       if (this.uiReady) this.updateScale();
     });
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => { if (this.uiReady) this.updateScale(); }, 250);
-    });
     const container = document.getElementById('quiz-answers-container');
     if (container) {
       container.addEventListener('click', (e) => {
@@ -210,118 +182,6 @@ class QuizManager {
           this.handleAnswer(selectedIdx);
         }
       });
-    }
-
-    const overlay = document.getElementById('quiz-overlay');
-    if (overlay && !this._pinchBound) {
-      this._pinchBound = true;
-      let isPinching = false;
-      let isPanning = false;
-      let initialDist = null;
-      let startScale = 1.0;
-      let startPanX = 0;
-      let startPanY = 0;
-      let startMidX = 0;
-      let startMidY = 0;
-      let singleStart = { x: 0, y: 0 };
-      let lastTap = 0;
-
-      overlay.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-          isPinching = true;
-          isPanning = false;
-          initialDist = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-          startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-          startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-          startScale = this.userScale || 1.0;
-          startPanX = this.panX || 0;
-          startPanY = this.panY || 0;
-          e.stopPropagation();
-          if (e.cancelable) e.preventDefault();
-        } else if (e.touches.length === 1) {
-          singleStart.x = e.touches[0].clientX;
-          singleStart.y = e.touches[0].clientY;
-          if (this.userScale > 1.05) {
-            isPanning = true;
-            startPanX = this.panX || 0;
-            startPanY = this.panY || 0;
-          } else {
-            isPanning = false;
-          }
-        }
-      }, { passive: false });
-
-      overlay.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2 && isPinching && initialDist) {
-          const currentDist = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-          const factor = currentDist / initialDist;
-          this.userScale = Math.min(Math.max(startScale * factor, 1.0), 2.6);
-          const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-          const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-          this.panX = startPanX + (midX - startMidX);
-          this.panY = startPanY + (midY - startMidY);
-          this.applyTransform(false);
-          e.stopPropagation();
-          if (e.cancelable) e.preventDefault();
-        } else if (e.touches.length === 1 && isPanning && this.userScale > 1.05) {
-          const dx = e.touches[0].clientX - singleStart.x;
-          const dy = e.touches[0].clientY - singleStart.y;
-          const maxPanX = Math.max(60, (window.innerWidth * (this.userScale - 1)) / 1.5);
-          const maxPanY = Math.max(60, (window.innerHeight * (this.userScale - 1)) / 1.5);
-          this.panX = Math.min(Math.max(startPanX + dx, -maxPanX), maxPanX);
-          this.panY = Math.min(Math.max(startPanY + dy, -maxPanY), maxPanY);
-          this.applyTransform(false);
-          if (Math.hypot(dx, dy) > 8) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-          }
-        }
-      }, { passive: false });
-
-      const handleTouchEnd = (e) => {
-        if (e.touches.length < 2) {
-          isPinching = false;
-          initialDist = null;
-        }
-        if (e.touches.length === 0) {
-          isPanning = false;
-          if (this.userScale < 1.05) {
-            this.resetZoom(true);
-          }
-        }
-      };
-      overlay.addEventListener('touchend', handleTouchEnd);
-      overlay.addEventListener('touchcancel', handleTouchEnd);
-
-      // Dupla koppintás = zoom visszaállítása
-      overlay.addEventListener('touchend', (e) => {
-        if (e.touches.length === 0) {
-          const now = Date.now();
-          if (now - lastTap < 300) {
-            this.resetZoom(true);
-            e.preventDefault();
-          }
-          lastTap = now;
-        }
-      });
-
-      // Egérgörgő zoom PC-s teszteléshez
-      overlay.addEventListener('wheel', (e) => {
-        const delta = e.deltaY < 0 ? 0.15 : -0.15;
-        this.userScale = Math.min(Math.max((this.userScale || 1.0) + delta, 1.0), 2.6);
-        if (this.userScale <= 1.05) {
-          this.panX = 0;
-          this.panY = 0;
-        }
-        this.applyTransform(false);
-        e.preventDefault();
-      }, { passive: false });
     }
   }
 
@@ -361,7 +221,6 @@ class QuizManager {
 
     this.currentMode = category;
     this.onCompleteCallback = onComplete || null;
-    this.resetZoom(false);
 
     let available = [];
     const allQ = this.questions || [];
@@ -616,7 +475,6 @@ class QuizManager {
     const overlay = document.getElementById('quiz-overlay');
     if (overlay) overlay.style.display = 'none';
     window.isCutscenePlaying = false;
-    this.resetZoom(false);
   }
 
   handleAnswer(selectedIdx) {
@@ -625,7 +483,6 @@ class QuizManager {
 
     overlay.style.display = 'none';
     window.isCutscenePlaying = false;
-    this.resetZoom(false);
 
     const qId = this.getQuestionId(this.currentQuestion);
     if (isCorrect) {

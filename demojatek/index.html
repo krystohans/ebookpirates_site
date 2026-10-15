@@ -341,36 +341,6 @@
             filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.8)) brightness(1.1) !important;
         }
 
-        /* === MOBIL ÉRINTŐ VEZÉRLÉS: DINAMIKUS UJJ-KÖVETÉS INDIKÁTOR (GOMBOK NÉLKÜL) === */
-        #steer-touch-indicator {
-            display: none;
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            margin-left: -40px;
-            margin-top: -40px;
-            border-radius: 50%;
-            border: 2px dashed rgba(212, 175, 55, 0.7);
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, rgba(35, 20, 10, 0) 70%);
-            pointer-events: none;
-            z-index: 105;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-
-        #steer-touch-knob {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 26px;
-            height: 26px;
-            margin-left: -13px;
-            margin-top: -13px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #fff8eb 0%, #d4af37 70%, #8b5a2b 100%);
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.95);
-            pointer-events: none;
-        }
-
         #game-message {
             position: absolute;
             top: 50%;
@@ -2624,17 +2594,22 @@
 
             // ---- HAJÓ IRÁNYÍTÁS (Tank controls PC billentyűzettel / Ujj követése mobilon) ----
             if (isTouchSteerActive) {
-                boatSpeed += 0.02; // Dinamikus elindulás és gyorsulás
+                // Dinamikus megindulás az érintett pont felé
+                boatSpeed = Math.min(MAX_SPEED, boatSpeed + 0.05);
                 if (!gameStarted) {
                     gameStarted = true;
                     if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
                     if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
                 }
 
-                // Kormányzás: az egy ujj követése technika (hajó forgatása a célirányba)
+                // Éles fordulás az ujj iránya felé (nincs hátramenet, csak éles fordulás)
                 let angleDiff = targetSteerAngle - playerBoat.rotation.y;
                 angleDiff = Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff)); // -PI..+PI normalizálás
-                playerBoat.rotation.y += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), TURN_SPEED * 1.5);
+                if (Math.abs(angleDiff) > 0.04) {
+                    playerBoat.rotation.y += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), 0.22);
+                } else {
+                    playerBoat.rotation.y = targetSteerAngle;
+                }
             } else if (keys.w) {
                 boatSpeed += 0.02;
                 if (!gameStarted) {
@@ -3292,40 +3267,36 @@
         document.addEventListener('click', () => { window.focus(); });
         window.addEventListener('contextmenu', e => e.preventDefault());
 
-        // ---- EGYSZERŰSÍTETT ÉRINTŐKÉPERNYŐS VEZÉRLÉS (GOMBOK NÉLKÜL) ----
+        // ---- KÖZVETLEN ÉRINTŐKÉPERNYŐS VEZÉRLÉS (KONZOL ÉS GOMBOK NÉLKÜL) ----
+        function steerShipToScreenPoint(screenX, screenY) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const dx = screenX - centerX;
+            const dy = screenY - centerY;
+
+            // Képernyő sík szög: 0 = fel (kamera előre), PI/2 = jobb, -PI/2 = bal, PI = le/vissza
+            const screenAngle = Math.atan2(dx, -dy);
+            targetSteerAngle = cameraAngle + Math.PI - screenAngle;
+            isTouchSteerActive = true;
+
+            if (!gameStarted) {
+                gameStarted = true;
+                if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
+                if (!isMusicPlaying && typeof toggleMusic === 'function') toggleMusic();
+                const startInst = document.getElementById('start-instruction');
+                if (startInst) startInst.style.display = 'none';
+            }
+        }
+
         function setupMobileControls() {
             const overlay = document.getElementById('mobile-overlay');
             if (overlay) overlay.style.display = 'block';
 
-            const indicator = document.getElementById('steer-touch-indicator');
-            const knob = document.getElementById('steer-touch-knob');
-
-            function showIndicator(x, y) {
-                if (!indicator) return;
-                indicator.style.left = x + 'px';
-                indicator.style.top = y + 'px';
-                indicator.style.display = 'block';
-                if (knob) knob.style.transform = 'translate(0px, 0px)';
-            }
-
-            function updateKnob(dx, dy, dist) {
-                if (!knob) return;
-                const maxRadius = 32;
-                const clampedDist = Math.min(dist, maxRadius);
-                const ratio = dist > 0 ? (clampedDist / dist) : 0;
-                knob.style.transform = `translate(${dx * ratio}px, ${dy * ratio}px)`;
-            }
-
-            function hideIndicator() {
-                if (indicator) indicator.style.display = 'none';
-            }
-
-            let steerTouchId = null;
-            let steerOrigin = { x: 0, y: 0 };
-            let cameraTouchId = null;
-            let prevCameraTouchX = 0;
-            let isPinching = false;
+            let isPinchZooming = false;
             let lastPinchDist = null;
+            let isDraggingCamera = false;
+            let touchStartPos = { x: 0, y: 0 };
+            let lastTouchPos = { x: 0, y: 0 };
 
             function isInteractiveElement(target) {
                 if (!target) return false;
@@ -3341,13 +3312,11 @@
             window.addEventListener('touchstart', (e) => {
                 if (isInteractiveElement(e.target)) return;
 
-                // 1. KIZÁRÓLAG KÉT UJJ EGYIDEJŰ HASZNÁLATA: ZOOM
+                // 1. ZOOM: KIZÁRÓLAG két ujj egyidejű használata
                 if (e.touches.length === 2) {
-                    isPinching = true;
+                    isPinchZooming = true;
                     isTouchSteerActive = false;
-                    steerTouchId = null;
-                    cameraTouchId = null;
-                    hideIndicator();
+                    isDraggingCamera = false;
                     lastPinchDist = Math.hypot(
                         e.touches[0].clientX - e.touches[1].clientX,
                         e.touches[0].clientY - e.touches[1].clientY
@@ -3356,30 +3325,23 @@
                     return;
                 }
 
-                // Ha több mint 2 ujj van a kijelzőn, figyelmen kívül hagyjuk
-                if (e.touches.length > 2) return;
+                // 2. EGY UJJ: Ha az ujj pontot érint, a hajó azonnal ebbe az irányba fordulva megindul!
+                if (e.touches.length === 1) {
+                    isPinchZooming = false;
+                    isDraggingCamera = false;
+                    const t = e.touches[0];
+                    touchStartPos = { x: t.clientX, y: t.clientY };
+                    lastTouchPos = { x: t.clientX, y: t.clientY };
 
-                // 2. EGY UJJAS VEZÉRLÉS: Bal oldal = Kormányzás követéssel, Jobb oldal = Kamera svenkelés
-                const midX = window.innerWidth / 2;
-                for (let i = 0; i < e.touches.length; i++) {
-                    const t = e.touches[i];
-                    if (t.clientX < midX && steerTouchId === null) {
-                        steerTouchId = t.identifier;
-                        steerOrigin = { x: t.clientX, y: t.clientY };
-                        isTouchSteerActive = false;
-                        showIndicator(t.clientX, t.clientY);
-                    } else if (t.clientX >= midX && cameraTouchId === null) {
-                        cameraTouchId = t.identifier;
-                        prevCameraTouchX = t.clientX;
-                    }
+                    steerShipToScreenPoint(t.clientX, t.clientY);
+                    e.preventDefault();
                 }
-                e.preventDefault();
             }, { passive: false });
 
             window.addEventListener('touchmove', (e) => {
                 if (isInteractiveElement(e.target)) return;
 
-                // 1. ZOOMOLÁS KIZÁRÓLAG KÉT UJJAL
+                // 1. ZOOMOLÁS KÉT UJJAL (széthúzás: közelítés, összehúzás: távolítás)
                 if (e.touches.length === 2) {
                     const currentDist = Math.hypot(
                         e.touches[0].clientX - e.touches[1].clientX,
@@ -3387,8 +3349,6 @@
                     );
                     if (lastPinchDist !== null) {
                         const delta = currentDist - lastPinchDist;
-                        // Két ujj távolítása (delta > 0): közelítés zoom
-                        // Két ujj közelítése (delta < 0): távolítás zoom
                         cameraDistance -= delta * 0.12;
                         if (cameraDistance < 10) cameraDistance = 10;
                         if (cameraDistance > 100) cameraDistance = 100;
@@ -3398,59 +3358,36 @@
                     return;
                 }
 
-                if (isPinching) return;
+                // 2. EGY UJJAS KEZELÉS: Svenkelés (kamera mozog) vs. Pont érintés (hajó mozog)
+                if (e.touches.length === 1 && !isPinchZooming) {
+                    const t = e.touches[0];
+                    const totalMoveDist = Math.hypot(t.clientX - touchStartPos.x, t.clientY - touchStartPos.y);
 
-                // 2. EGY UJJAS KORMÁNYZÁS ÉS KAMERASVENKELÉS
-                for (let i = 0; i < e.touches.length; i++) {
-                    const t = e.touches[i];
+                    // Ha az ujj svenkel a képernyőn (elcsúszik a kezdőponttól), a kamera forog oldalirányban
+                    if (isDraggingCamera || totalMoveDist > 25) {
+                        isDraggingCamera = true;
+                        isTouchSteerActive = false; // Svenkelés közben nem kormányzunk
 
-                    // Kormányzás: az egy ujj követése technika (dinamikus indítás & megállás)
-                    if (t.identifier === steerTouchId) {
-                        const dx = t.clientX - steerOrigin.x;
-                        const dy = t.clientY - steerOrigin.y;
-                        const dist = Math.hypot(dx, dy);
-
-                        if (dist > 8) {
-                            isTouchSteerActive = true;
-                            // 0 = fel (kamera előre), PI/2 = jobb, -PI/2 = bal, PI = le
-                            const screenAngle = Math.atan2(dx, -dy);
-                            targetSteerAngle = cameraAngle + Math.PI - screenAngle;
-                            updateKnob(dx, dy, dist);
-                        } else {
-                            isTouchSteerActive = false;
-                            updateKnob(0, 0, 0);
-                        }
+                        const deltaX = t.clientX - lastTouchPos.x;
+                        cameraAngle -= deltaX * 0.008; // Csakis horizontális oldalirányú forgatás (kötött 45 fok látószög)
+                    } else {
+                        // Ha az ujj pontot érint és tart, a hajó az ujj felé halad
+                        steerShipToScreenPoint(t.clientX, t.clientY);
                     }
 
-                    // Kameramozgás: KIZÁRÓLAG az egy ujj csúsztatása (kötött 45 fok, csakis oldalirányú forgatás)
-                    if (t.identifier === cameraTouchId) {
-                        const deltaX = t.clientX - prevCameraTouchX;
-                        cameraAngle -= deltaX * 0.008; // Csakis horizontális szögfordulás
-                        prevCameraTouchX = t.clientX;
-                    }
+                    lastTouchPos = { x: t.clientX, y: t.clientY };
+                    e.preventDefault();
                 }
-                e.preventDefault();
             }, { passive: false });
 
             function handleTouchEnd(e) {
                 if (e.touches.length < 2) {
-                    isPinching = false;
+                    isPinchZooming = false;
                     lastPinchDist = null;
                 }
-
-                const remainingIds = new Set();
-                for (let i = 0; i < e.touches.length; i++) {
-                    remainingIds.add(e.touches[i].identifier);
-                }
-
-                if (steerTouchId !== null && !remainingIds.has(steerTouchId)) {
-                    steerTouchId = null;
+                if (e.touches.length === 0) {
                     isTouchSteerActive = false;
-                    hideIndicator();
-                }
-
-                if (cameraTouchId !== null && !remainingIds.has(cameraTouchId)) {
-                    cameraTouchId = null;
+                    isDraggingCamera = false;
                 }
             }
 
@@ -3458,42 +3395,39 @@
             window.addEventListener('touchcancel', handleTouchEnd);
 
             // Asztali böngészős Live Server tesztelés támogatása egérrel
-            let isMouseSteering = false;
-            let mouseSteerOrigin = { x: 0, y: 0 };
+            let isMouseDownOnGame = false;
+            let mouseStartPos = { x: 0, y: 0 };
+            let lastMousePos = { x: 0, y: 0 };
+            let isMouseDraggingCamera = false;
 
             window.addEventListener('mousedown', (e) => {
                 if (isInteractiveElement(e.target)) return;
-                const midX = window.innerWidth / 2;
-                if (e.clientX < midX) {
-                    isMouseSteering = true;
-                    mouseSteerOrigin = { x: e.clientX, y: e.clientY };
-                    showIndicator(e.clientX, e.clientY);
-                }
+                isMouseDownOnGame = true;
+                isMouseDraggingCamera = false;
+                mouseStartPos = { x: e.clientX, y: e.clientY };
+                lastMousePos = { x: e.clientX, y: e.clientY };
+
+                steerShipToScreenPoint(e.clientX, e.clientY);
             });
 
             window.addEventListener('mousemove', (e) => {
-                if (isMouseSteering) {
-                    const dx = e.clientX - mouseSteerOrigin.x;
-                    const dy = e.clientY - mouseSteerOrigin.y;
-                    const dist = Math.hypot(dx, dy);
-                    if (dist > 8) {
-                        isTouchSteerActive = true;
-                        const screenAngle = Math.atan2(dx, -dy);
-                        targetSteerAngle = cameraAngle + Math.PI - screenAngle;
-                        updateKnob(dx, dy, dist);
-                    } else {
-                        isTouchSteerActive = false;
-                        updateKnob(0, 0, 0);
-                    }
+                if (!isMouseDownOnGame) return;
+                const totalDist = Math.hypot(e.clientX - mouseStartPos.x, e.clientY - mouseStartPos.y);
+                if (isMouseDraggingCamera || totalDist > 25) {
+                    isMouseDraggingCamera = true;
+                    isTouchSteerActive = false;
+                    const deltaX = e.clientX - lastMousePos.x;
+                    cameraAngle -= deltaX * 0.008;
+                } else {
+                    steerShipToScreenPoint(e.clientX, e.clientY);
                 }
+                lastMousePos = { x: e.clientX, y: e.clientY };
             });
 
             window.addEventListener('mouseup', () => {
-                if (isMouseSteering) {
-                    isMouseSteering = false;
-                    isTouchSteerActive = false;
-                    hideIndicator();
-                }
+                isMouseDownOnGame = false;
+                isMouseDraggingCamera = false;
+                isTouchSteerActive = false;
             });
         }
 
@@ -3503,31 +3437,31 @@
                 document.body.classList.add('mobile-hud');
                 setupMobileControls();
                 
-                // Zozó Hero onboarding kártya tippjének frissítése az egyszerűsített gesztusvezérlésre
+                // Zozó Hero onboarding kártya tippjének frissítése
                 const hintText = document.getElementById('control-hint-text');
                 if (hintText) {
-                    hintText.innerHTML = "📱 <strong>Mobil irányítás:</strong> Bal kéz = Kormányzás (egy ujj követése) | Jobb kéz = Kamera (egy ujj csúsztatása) | Két ujj = Zoom (széthúzás / összehúzás)";
+                    hintText.innerHTML = "📱 <strong>Mobil irányítás:</strong> Érintsd meg a képernyőt egy ponton = Hajó a pont felé halad | Ujj csúsztatása = Kamera forgatása | Két ujj = Zoom";
                 }
 
-                // Információs szöveg frissítése mobilra (kétkezes gesztusvezérlés leírása)
+                // Információs szöveg frissítése mobilra
                 const infoContainer = document.getElementById('info-scroll-container');
                 if (infoContainer) {
                     infoContainer.innerHTML = `
                         <p style="color: #8b0000; font-weight: bold; font-size: 22px; text-align: center; border-bottom: 2px solid #8b5a2b; padding-bottom: 8px; margin-top: 0;">
                              Mobil verzió (Egyszerűsített Érintőképernyős Mód)
                         </p>
-                        <p>Ez a játék a teljes asztali élmény egy optimalizált, mobilbarát verziója letisztult gesztusvezérléssel és csökkentett hardverterheléssel. <strong>A teljes, maximális grafikai látványért próbáld ki asztali (PC) böngészőben is!</strong></p>
+                        <p>Ez a játék a teljes asztali élmény egy optimalizált, mobilbarát verziója letisztult vezérléssel és csökkentett hardverterheléssel. <strong>A teljes, maximális grafikai látványért próbáld ki asztali (PC) böngészőben is!</strong></p>
                         
-                        <p><strong>Érintőképernyős gesztusok:</strong></p>
+                        <p><strong>Irányítási szabályok:</strong></p>
                         <ul>
-                            <li><strong>🧭 Bal képernyőfél – Kormányzás (egy ujj követése):</strong>
-                                <p>Helyezd a bal hüvelykujjad a képernyőre és húzd az ujjad a kívánt irányba! A csónak dinamikusan elindul és a mutatott irányba fordul. Ha felengeded az ujjad, a hajó azonnal, magától lefékez és megáll.</p>
+                            <li><strong>🧭 Ha az ujj pontot érint – Hajó mozgás:</strong>
+                                <p>Érintsd meg a képernyőt bárhol: a csónak élesen az érintett pont felé fordul és dinamikusan megindul előre! Nincs hátramenet, a hajó azonnal a mutatott irányba kanyarodik. Ha felengeded az ujjad, a hajó magától lefékez és megáll.</p>
                             </li>
-                            <li><strong>🎥 Jobb képernyőfél – Kameramozgás (egy ujj csúsztatása):</strong>
-                                <p>Csúsztasd a jobb hüvelykujjad vízszintesen a képernyő jobb oldalán a kamera oldalirányú körbeforgatásához (a kötött 45 fokos rálátási szöggel). A kamera magától nem forog, kizárólag a te kezed irányítja!</p>
+                            <li><strong>🎥 Ha az ujj svenkel a képernyőn – Kameramozgás:</strong>
+                                <p>Csúsztasd végig az ujjad vízszintesen a képernyőn a kamera oldalirányú forgatásához (a kötött 45 fokos rálátási szögben). A kamera magától sosem forog el!</p>
                             </li>
                             <li><strong>🔍 Két ujj egyidejű használata – Zoomolás:</strong>
-                                <p>Húzd szét a két ujjad a képernyőn a <strong>közelítéshez</strong> (Zoom In), vagy zárd össze a két ujjad a <strong>távolításhoz</strong> (Zoom Out).</p>
+                                <p>Két ujj széthúzása = <strong>Közelítés</strong> (Zoom In), két ujj összehúzása = <strong>Távolítás</strong> (Zoom Out).</p>
                             </li>
                         </ul>
                         
@@ -3586,13 +3520,8 @@
         </div>
     </div>
 
-    <!-- MOBIL ÉRINTŐ VEZÉRLÉSI RÉTEG (GOMBOK NÉLKÜL: KÉTKEZES KÉPERNYŐFELOSZTÁS) -->
-    <div id="mobile-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100;">
-        <!-- Kormányzáskor megjelenő dinamikus vizuális gyűrű az ujj alatt -->
-        <div id="steer-touch-indicator">
-            <div id="steer-touch-knob"></div>
-        </div>
-    </div>
+    <!-- MOBIL ÉRINTŐ VEZÉRLÉSI RÉTEG (GOMBOK ÉS KONZOL NÉLKÜL: TISZTA KÉPERNYŐ) -->
+    <div id="mobile-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100;"></div>
 </body>
 
 

@@ -341,31 +341,94 @@
             filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.8)) brightness(1.1) !important;
         }
 
-        /* Érintő Joystick */
-        #joystick-area {
+        /* === KÉTKEZES MOBIL ÉRINTŐ VEZÉRLŐK (STEAMPUNK BRASS) === */
+        #mobile-steer-zone {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            display: none;
+            bottom: 22px;
+            left: 18px;
+            display: flex;
+            gap: 14px;
             pointer-events: auto;
-            touch-action: none;
+            z-index: 110;
         }
 
-        #joystick-knob {
+        #mobile-thrust-zone {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px;
-            height: 60px;
-            background: rgba(212, 175, 55, 0.6);
+            bottom: 22px;
+            right: 18px;
+            display: flex;
+            gap: 14px;
+            pointer-events: auto;
+            z-index: 110;
+        }
+
+        .mobile-touch-btn {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            background: rgba(35, 20, 10, 0.72);
+            border: 2.5px solid #d4af37;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.75), inset 0 0 10px rgba(212, 175, 55, 0.25);
+            color: #fffbcc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            touch-action: none;
+            transition: transform 0.08s ease, background 0.08s ease, box-shadow 0.08s ease;
+        }
+
+        .mobile-touch-btn .btn-arrow {
+            font-size: 26px;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .mobile-touch-btn .btn-subtext {
+            font-size: 9px;
+            font-family: 'BriskB', 'Georgia', serif;
+            letter-spacing: 0.5px;
+            color: #d4af37;
+            margin-top: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+        }
+
+        .mobile-touch-btn:active,
+        .mobile-touch-btn.active-touch {
+            transform: scale(0.92);
+            background: rgba(212, 175, 55, 0.5) !important;
+            border-color: #fff8eb !important;
+            box-shadow: 0 0 22px rgba(255, 215, 0, 0.9), inset 0 0 15px rgba(255, 215, 0, 0.6) !important;
+        }
+
+        .mobile-touch-btn.btn-fwd {
+            border-color: #4caf50;
+        }
+        .mobile-touch-btn.btn-fwd .btn-arrow {
+            color: #bbf7d0;
+        }
+        .mobile-touch-btn.btn-fwd .btn-subtext {
+            color: #86efac;
+        }
+        .mobile-touch-btn.btn-fwd:active,
+        .mobile-touch-btn.btn-fwd.active-touch {
+            background: rgba(76, 175, 80, 0.55) !important;
+            box-shadow: 0 0 22px rgba(76, 175, 80, 0.9) !important;
+        }
+
+        .mobile-touch-btn.btn-rev {
+            border-color: #ff9800;
+        }
+        .mobile-touch-btn.btn-rev .btn-arrow {
+            color: #fed7aa;
+        }
+        .mobile-touch-btn.btn-rev .btn-subtext {
+            color: #fdba74;
         }
 
         #game-message {
@@ -918,7 +981,7 @@
                 </div>
             </div>
             <button class="hero-btn-start" onclick="startGameFromInstruction()">⛵ VITORLÁT BONTS! (INDÍTÁS)</button>
-            <div style="font-size: 13px; color: #5c3a21; margin-top: 8px; font-family: 'Georgia', serif;">
+            <div id="control-hint-text" style="font-size: 13px; color: #5c3a21; margin-top: 8px; font-family: 'Georgia', serif;">
                 Irányítás: <strong>W, A, S, D</strong> gombok vagy képernyőérintés mobilon
             </div>
         </div>
@@ -1445,6 +1508,63 @@
         const diamonds = [];
         let cloudModelSource = null;
 
+        // ---- ÚJRAHASZNOSÍTOTT HABCSÍK SPRITE-SOR (OBJECT POOL - 0 GC ALLOKÁCIÓ) ----
+        const WAKE_POOL_SIZE = 14;
+        const wakePool = [];
+        const sharedWakeGeo = new THREE.CircleGeometry(0.75, 6);
+        const sharedWakeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false });
+
+        for (let i = 0; i < WAKE_POOL_SIZE; i++) {
+            const wake = new THREE.Mesh(sharedWakeGeo, sharedWakeMat.clone());
+            wake.rotation.x = -Math.PI / 2;
+            wake.visible = false;
+            scene.add(wake);
+            wakePool.push({
+                mesh: wake,
+                active: false,
+                life: 0,
+                scale: 0.6
+            });
+        }
+        let wakePoolIndex = 0;
+        let lastWakeSpawnTime = 0;
+
+        function spawnPooledWake(pos, rot) {
+            const now = Date.now();
+            if (now - lastWakeSpawnTime < 110) return;
+            lastWakeSpawnTime = now;
+
+            const item = wakePool[wakePoolIndex];
+            wakePoolIndex = (wakePoolIndex + 1) % WAKE_POOL_SIZE;
+
+            let offset = new THREE.Vector3(0, 0, 1.2).applyEuler(rot);
+            item.mesh.position.copy(pos).add(offset);
+            item.mesh.position.y = 0.04;
+            item.mesh.position.x += (Math.random() - 0.5) * 0.15;
+            item.mesh.position.z += (Math.random() - 0.5) * 0.15;
+            item.scale = 0.6;
+            item.life = 1.0;
+            item.active = true;
+            item.mesh.visible = true;
+            item.mesh.scale.set(0.6, 0.6, 0.6);
+            item.mesh.material.opacity = 0.4;
+        }
+
+        function updatePooledWakes() {
+            for (let i = 0; i < WAKE_POOL_SIZE; i++) {
+                const item = wakePool[i];
+                if (!item.active) continue;
+                item.life -= 0.018;
+                item.scale += 0.007;
+                item.mesh.scale.set(item.scale, item.scale, item.scale);
+                item.mesh.material.opacity = Math.max(0, item.life * 0.4);
+                if (item.life <= 0) {
+                    item.active = false;
+                    item.mesh.visible = false;
+                }
+            }
+        }
+
         const MAP_RADIUS = 300;
         // Bázis a jobb felső sarokban (X+, Z-). Eredetileg (150, 0, -150) volt, kivezetve 100 egységgel az origótól!
         const BASE_POS = new THREE.Vector3(220.7, 0, -220.7);
@@ -1646,7 +1766,8 @@
             console.log("Minden sziklamodell és hártya felhőmodell betöltve, pálya generálása indul!");
 
             // Ezután azonnal legeneráljuk a pályát, DE már eleve a letöltött modellt rakjuk le!
-            const totalRocks = 350;
+            // Mobilon 45 jól elhelyezett szikla bőségesen elég a játékmenethez a 350 helyett!
+            const totalRocks = isAndroid ? 45 : 350;
 
             for (let i = 0; i < totalRocks; i++) {
                 // Gauss eloszlás a bázis távolságára
@@ -1676,13 +1797,17 @@
                 rock.rotation.y = rng.next() * 2 * Math.PI; // Visszakerült a random forgatás!
                 rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár!
                 rock.userData.modelType = colorIndex;
+                rock.matrixAutoUpdate = false;
+                rock.updateMatrix();
 
                 scene.add(rock);
                 obstacles.push(rock);
             }
 
             // Áthatolhatatlan zátonygyűrű a pálya szélén (Origótól R=350)
-            for (let theta = 0; theta < Math.PI * 2; theta += 0.05) {
+            // Mobilon ritkább lépésköz (0.35), mert a matematikai határ védi a pályát
+            const ringStep = isAndroid ? 0.35 : 0.05;
+            for (let theta = 0; theta < Math.PI * 2; theta += ringStep) {
                 let x = 350 * Math.cos(theta);
                 let z = 350 * Math.sin(theta);
 
@@ -1696,6 +1821,8 @@
                 rock.rotation.y = rng.next() * 2 * Math.PI;
                 rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár a peremnél is!
                 rock.userData.modelType = colorIndex;
+                rock.matrixAutoUpdate = false;
+                rock.updateMatrix();
 
                 scene.add(rock);
                 obstacles.push(rock);
@@ -1710,63 +1837,74 @@
                 // Sziluett árnyékolás engedélyezése az alap modellen
                 beachModel.traverse(node => { if (node.isMesh) node.receiveShadow = true; });
 
-                // Első sor a sziklák mögött (R=400)
-                beachModel.scale.set(150, 150, 150);
-                for (let theta = -Math.PI / 4 - 1.4; theta < -Math.PI / 4 + 1.4; theta += 0.15) {
-                    let b = beachModel.clone();
-                    b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
-                    b.rotation.y = -theta - Math.PI / 2;
-                    b.isBeach = true;
-                    b.boundingRadius = 150; // Széles detektálási sugár a hatalmas mérete miatt!
-                    scene.add(b);
-                    obstacles.push(b);
-                }
+                if (isAndroid) {
+                    // Mobilon 1 soros könnyített partmodell a bázis mögé a GPU tehermentesítésére
+                    beachModel.scale.set(150, 150, 150);
+                    for (let theta = -Math.PI / 4 - 1.2; theta < -Math.PI / 4 + 1.2; theta += 0.3) {
+                        let b = beachModel.clone();
+                        b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
+                        b.rotation.y = -theta - Math.PI / 2;
+                        b.isBeach = true;
+                        b.boundingRadius = 150;
+                        b.matrixAutoUpdate = false;
+                        b.updateMatrix();
+                        scene.add(b);
+                        obstacles.push(b);
+                    }
+                } else {
+                    // Első sor a sziklák mögött (R=400)
+                    beachModel.scale.set(150, 150, 150);
+                    for (let theta = -Math.PI / 4 - 1.4; theta < -Math.PI / 4 + 1.4; theta += 0.15) {
+                        let b = beachModel.clone();
+                        b.position.set(400 * Math.cos(theta), 2, 400 * Math.sin(theta));
+                        b.rotation.y = -theta - Math.PI / 2;
+                        b.isBeach = true;
+                        b.boundingRadius = 150;
+                        scene.add(b);
+                        obstacles.push(b);
+                    }
 
-                // Középső (összekötő) sor a hézag megszüntetésére
-                beachModel.scale.set(300, 300, 300); // Nagyobbra véve, hogy biztosan összeérjenek!
-                for (let theta = -Math.PI / 4 - 1.5; theta < -Math.PI / 4 + 1.5; theta += 0.15) {
-                    let b = beachModel.clone();
-                    b.position.set(500 * Math.cos(theta), 1.5, 500 * Math.sin(theta)); // Közelebb húzva az első sorhoz (R=500)
-                    b.rotation.y = -theta - Math.PI / 2;
-                    b.isBeach = true;
-                    b.boundingRadius = 300; // Még szélesebb detektálási sugár
-                    scene.add(b);
-                    obstacles.push(b);
-                }
+                    // Középső (összekötő) sor a hézag megszüntetésére
+                    beachModel.scale.set(300, 300, 300);
+                    for (let theta = -Math.PI / 4 - 1.5; theta < -Math.PI / 4 + 1.5; theta += 0.15) {
+                        let b = beachModel.clone();
+                        b.position.set(500 * Math.cos(theta), 1.5, 500 * Math.sin(theta));
+                        b.rotation.y = -theta - Math.PI / 2;
+                        b.isBeach = true;
+                        b.boundingRadius = 300;
+                        scene.add(b);
+                        obstacles.push(b);
+                    }
 
-                // Harmadik (külső) sor, ami a hegyek lábát követi (R=650)
-                beachModel.scale.set(350, 350, 350); // Még nagyobb, hogy teljesen fedjen
-                for (let theta = -Math.PI / 4 - 1.6; theta < -Math.PI / 4 + 1.6; theta += 0.15) {
-                    let b = beachModel.clone();
-                    b.position.set(650 * Math.cos(theta), 3, 650 * Math.sin(theta)); // Feljebb emelve (Y=3)
-                    b.rotation.y = -theta - Math.PI / 2; // NEM forgatjuk el 180 fokkal, mert a hátlapja láthatatlan (backface culling)!
-                    b.isBeach = true;
-                    b.boundingRadius = 350; // Hatalmas modell
-                    scene.add(b);
-                    obstacles.push(b);
+                    // Harmadik (külső) sor, ami a hegyek lábát követi (R=650)
+                    beachModel.scale.set(350, 350, 350);
+                    for (let theta = -Math.PI / 4 - 1.6; theta < -Math.PI / 4 + 1.6; theta += 0.15) {
+                        let b = beachModel.clone();
+                        b.position.set(650 * Math.cos(theta), 3, 650 * Math.sin(theta));
+                        b.rotation.y = -theta - Math.PI / 2;
+                        b.isBeach = true;
+                        b.boundingRadius = 350;
+                        scene.add(b);
+                        obstacles.push(b);
+                    }
                 }
             });
 
             loader.load('https://storage.googleapis.com/kalozsziget-assets/models/SM_Env_Background_Hills_01.glb', gltf => {
                 let hillsModel = gltf.scene;
                 let s = 900; // 900-szoros méret
-                let dTheta = 0.35; // Nagyjából 10% átfedéshez szükséges szögtávolság
+                let dTheta = isAndroid ? 0.7 : 0.35; // Mobilon kevesebb hegy is elég
 
-                // 1 eredeti (középen) + 3 balra + 3 jobbra = összesen 7 hegy (vagyis 6-szoros ismétlés)
-                for (let i = -3; i <= 3; i++) {
-                    let theta = -Math.PI / 4 + i * dTheta;
+                let hillStep = isAndroid ? 2 : 1;
+                for (let i = -3; i <= 3; i += hillStep) {
+                    let theta = -Math.PI / 4 + i * (isAndroid ? 0.45 : dTheta);
                     let m = hillsModel.clone();
 
-                    // Minden hegyet stabilan 1000 méteres sugarú körre rakunk
                     let r = 1000;
-
                     m.scale.set(s, s, s);
                     m.position.set(r * Math.cos(theta), -5, r * Math.sin(theta));
-
-                    // A hegy mindig az origó felé néz, és azon felül be van forgatva 60 fokkal (PI/3) óramutató járása szerint (további 30 fok)
                     m.rotation.y = -theta - Math.PI / 3;
 
-                    // Ha mégis benne lennénk a hegyben, akkor is lássuk a belsejét!
                     m.traverse(node => {
                         if (node.isMesh) {
                             node.material.side = THREE.DoubleSide;
@@ -1776,65 +1914,63 @@
                     scene.add(m);
                 }
 
-                // Direkt konzol üzenet, hogy lásd a betöltést!
-                console.log("⛰️ Hegyvonulat (7 db) generálva az origótól 1000 sugarú távolságra a bázis oldalán!");
+                console.log("⛰️ Hegyvonulat generálva az origótól 1000 sugarú távolságra a bázis oldalán!");
             });
 
             // 6.2 (KIVÉVE) A szigeteket eltávolítottuk, mert nincs rájuk szükség.
 
-            // 6.3 Sűrűbb, apró zátonyok a csatahajó oldalán a rések kitöltésére (Eredeti terep visszaállítva!)
-            for (let theta = Math.PI / 4; theta < Math.PI * 1.25; theta += 0.04) { // Nagyon sűrű lépésköz!
-                let x = 345 * Math.cos(theta);
-                let z = 345 * Math.sin(theta);
+            // 6.3 és 6.4: További dekorációs sziklák kizárólag asztali gépre (mobilon a matematikai határ véd!)
+            if (!isAndroid) {
+                // 6.3 Sűrűbb, apró zátonyok a csatahajó oldalán a rések kitöltésére (Eredeti terep visszaállítva!)
+                for (let theta = Math.PI / 4; theta < Math.PI * 1.25; theta += 0.04) {
+                    let x = 345 * Math.cos(theta);
+                    let z = 345 * Math.sin(theta);
 
-                // Ne rakjuk az átjáróba! (70-es sugarú lyuk a csatahajónál)
-                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 70) continue;
+                    if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 70) continue;
 
-                let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
-                let rock = globalLoadedRockModels[colorIndex].clone();
-                let s = 10 + rng.next() * 30; // Változatos méretű (10-40) törmeléksziklák
-                rock.scale.set(s, s, s);
-                rock.position.set(x + (rng.next() - 0.5) * 30, -5, z + (rng.next() - 0.5) * 30); // Jobban szórjuk szét őket a térben
-                rock.rotation.x = (rng.next() - 0.5) * 1.2;
-                rock.rotation.z = (rng.next() - 0.5) * 1.2;
-                rock.rotation.y = rng.next() * Math.PI * 2;
+                    let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
+                    let rock = globalLoadedRockModels[colorIndex].clone();
+                    let s = 10 + rng.next() * 30;
+                    rock.scale.set(s, s, s);
+                    rock.position.set(x + (rng.next() - 0.5) * 30, -5, z + (rng.next() - 0.5) * 30);
+                    rock.rotation.x = (rng.next() - 0.5) * 1.2;
+                    rock.rotation.z = (rng.next() - 0.5) * 1.2;
+                    rock.rotation.y = rng.next() * Math.PI * 2;
 
-                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
-                rock.userData.modelType = colorIndex;
+                    rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
+                    rock.userData.modelType = colorIndex;
 
-                scene.add(rock);
-                obstacles.push(rock);
-            }
+                    scene.add(rock);
+                    obstacles.push(rock);
+                }
 
-            // 6.4 PLUSZ SZIKLÁK A HATÁRVONALRA (Szigorúan csak a 360 - 400 sávba!)
-            for (let i = 0; i < 300; i++) {
-                let theta = (Math.PI / 4) + rng.next() * Math.PI;
+                // 6.4 PLUSZ SZIKLÁK A HATÁRVONALRA (Szigorúan csak a 360 - 400 sávba!)
+                for (let i = 0; i < 300; i++) {
+                    let theta = (Math.PI / 4) + rng.next() * Math.PI;
+                    let r = 360 + rng.next() * 40;
 
-                // Szigorúan a határvonalon kívüli sáv: 360-tól 400-ig
-                let r = 360 + rng.next() * 40;
+                    let x = r * Math.cos(theta);
+                    let z = r * Math.sin(theta);
 
-                let x = r * Math.cos(theta);
-                let z = r * Math.sin(theta);
+                    if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 90) continue;
 
-                // Szigorú védelem: ne tegyünk sziklát a csatahajó átjárójába! (90-es sugarú tiszta zóna)
-                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 90) continue;
+                    let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
+                    let rock = globalLoadedRockModels[colorIndex].clone();
 
-                let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
-                let rock = globalLoadedRockModels[colorIndex].clone();
+                    let s = 15 + rng.next() * 45;
+                    rock.scale.set(s, s, s);
 
-                let s = 15 + rng.next() * 45; // 15-től 60-ig
-                rock.scale.set(s, s, s);
+                    rock.position.set(x, (rng.next() - 0.5) * 10 - 2, z);
+                    rock.rotation.x = (rng.next() - 0.5) * Math.PI;
+                    rock.rotation.z = (rng.next() - 0.5) * Math.PI;
+                    rock.rotation.y = rng.next() * Math.PI * 2;
 
-                rock.position.set(x, (rng.next() - 0.5) * 10 - 2, z);
-                rock.rotation.x = (rng.next() - 0.5) * Math.PI;
-                rock.rotation.z = (rng.next() - 0.5) * Math.PI;
-                rock.rotation.y = rng.next() * Math.PI * 2;
+                    rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
+                    rock.userData.modelType = colorIndex;
 
-                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
-                rock.userData.modelType = colorIndex;
-
-                scene.add(rock);
-                obstacles.push(rock);
+                    scene.add(rock);
+                    obstacles.push(rock);
+                }
             }
 
             // Hártyák kezdeti feltöltése (mindig 21 darab)
@@ -2265,10 +2401,12 @@
             const scrollZone = new THREE.Object3D();
             scrollZone.position.set(x, 0, z);
 
-            // A PointLight a felhő belsejébe kerül (Y = -1.0), erős meleg gyertya fénnyel
-            const pointLight = new THREE.PointLight(0xffaa33, 3.5, 25);
-            pointLight.position.set(0, -1.0, 0);
-            scrollZone.add(pointLight);
+            // A PointLight csak asztali gépen adódik hozzá, mobilon a ragyogó felhőanyag világít (GPU kímélés)
+            if (!isAndroid) {
+                const pointLight = new THREE.PointLight(0xffaa33, 3.5, 25);
+                pointLight.position.set(0, -1.0, 0);
+                scrollZone.add(pointLight);
+            }
 
             let hártyaMesh = null;
             if (cloudModelSource) {
@@ -2540,7 +2678,7 @@
 
         function updatePhysics() {
             if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
-            scene.updateMatrixWorld(true);
+            if (!isAndroid) scene.updateMatrixWorld(true);
 
             // ---- HAJÓ IRÁNYÍTÁS (Tank controls) ----
             if (keys.w) {
@@ -2576,29 +2714,9 @@
                 }
             }
 
-            // ---- HAJÓ HABCSÍKJA (WAKE TRAIL) ----
+            // ---- HAJÓ HABCSÍKJA (ÚJRAHASZNOSÍTOTT SPRITE POOL - 0 GC ALLOKÁCIÓ) ----
             if (Math.abs(boatSpeed) > 0.05) {
-                // Csak akkor spanyolunk habot, ha elég gyors
-                // Sűrűbb megjelenés (60% esély képkockánként, ami egy sokkal összefüggőbb vonalat ad)
-                if (Math.random() < 0.6) {
-                    let wakeGeo = new THREE.CircleGeometry(0.6 + Math.random() * 0.4, 6);
-                    let wakeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
-                    let wake = new THREE.Mesh(wakeGeo, wakeMat);
-                    wake.rotation.x = -Math.PI / 2;
-
-                    // Kicsit hátrébb húzva az orrtól (2.0 helyett 1.2)
-                    let offset = new THREE.Vector3(0, 0, 1.2).applyEuler(playerBoat.rotation);
-                    wake.position.copy(playerBoat.position).add(offset);
-                    wake.position.y = 0.05;
-
-                    // Sokkal kisebb szórás (0.5 helyett 0.2), így sűrű, egybefüggő csíkot alkot
-                    wake.position.x += (Math.random() - 0.5) * 0.2;
-                    wake.position.z += (Math.random() - 0.5) * 0.2;
-
-                    scene.add(wake);
-                    if (!window.boatWakes) window.boatWakes = [];
-                    window.boatWakes.push(wake);
-                }
+                spawnPooledWake(playerBoat.position, playerBoat.rotation);
             }
 
             // Sebesség limit (hátra 0.8x)
@@ -2659,12 +2777,12 @@
             if (cameraDistance < 10) cameraDistance = 10;
             if (cameraDistance > 100) cameraDistance = 100;
 
-            // Mobil eszközön automatikusan lekövetjük a hajó forgását, ha hajóirányítás módban vagyunk
-            if (isAndroid && mobileMode === 'boat') {
+            // Mobil eszközön automatikusan lekövetjük a hajó forgását (Intelligens Chase Cam)
+            if (isAndroid) {
                 const targetAngle = playerBoat.rotation.y + Math.PI;
                 let diff = targetAngle - cameraAngle;
                 diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-                cameraAngle += diff * 0.05; // Finom lerp forgás a hajó mögé
+                cameraAngle += diff * 0.06; // Finom lerp forgás a hajó mögé
             }
 
             // Kamera pozícionálása a csónak körül
@@ -2698,7 +2816,7 @@
             let boatCenter = playerBoat.position.clone();
             boatCenter.y = 1;
 
-            let raycaster = new THREE.Raycaster();
+            let raycaster = !isAndroid ? new THREE.Raycaster() : null;
             let hasCollision = false;
             let hitRock = null;
 
@@ -2753,8 +2871,16 @@
                             hitRock = r;
                             break;
                         }
+                    } else if (isAndroid) {
+                        // KÖNNYŰ MOBIL ÜTKÖZÉS: Nincs 3D raycasting, azonnali 2D sugaras kör-távolság!
+                        const safeRadius = (r.boundingRadius || 12) * 0.75 + 1.5;
+                        if (dist2D < safeRadius) {
+                            hasCollision = true;
+                            hitRock = r;
+                            break;
+                        }
                     } else {
-                        // Pontos 3D Mesh vizsgálat: Sziklák és homokpadok
+                        // Asztali gépen marad a precíz 3D mesh raycasting
                         const directions = [
                             new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
                             new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1)
@@ -3162,21 +3288,8 @@
                 }
             }
 
-            // ---- HABCSÍK (WAKE) ANIMÁLÁSA ÉS ELTÜNTETÉSE ----
-            if (window.boatWakes) {
-                for (let i = window.boatWakes.length - 1; i >= 0; i--) {
-                    let w = window.boatWakes[i];
-                    w.scale.x += 0.005; // Lassabb szélesedés, hogy ne nőjön túl nagyra
-                    w.scale.y += 0.005;
-                    w.material.opacity -= 0.01; // Gyorsabb elhalványulás (hogy ne legyen kilométeres csík)
-                    if (w.material.opacity <= 0) {
-                        scene.remove(w);
-                        w.geometry.dispose();
-                        w.material.dispose();
-                        window.boatWakes.splice(i, 1);
-                    }
-                }
-            }
+            // ---- ÚJRAHASZNOSÍTOTT HABCSÍKOK ANIMÁLÁSA (0 GC ALLOKÁCIÓ) ----
+            updatePooledWakes();
 
             // ---- HÁRTYÁK ANIMÁLÁSA (LEBEGÉS ÉS PULZÁLÁS) ----
             let t = Date.now() * 0.002;
@@ -3233,135 +3346,142 @@
         document.addEventListener('click', () => { window.focus(); });
         window.addEventListener('contextmenu', e => e.preventDefault());
 
-        // ---- MOBIL IRÁNYÍTÁS BEÁLLÍTÁSA ----
+        // ---- KÉTKEZES MOBIL IRÁNYÍTÁS BEÁLLÍTÁSA ----
         function setupMobileControls() {
             const overlay = document.getElementById('mobile-overlay');
-            const modeBtn = document.getElementById('mobile-mode-btn');
-            
-            overlay.style.display = 'block';
+            if (overlay) overlay.style.display = 'block';
 
-            modeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                if (mobileMode === 'boat') {
-                    mobileMode = 'camera';
-                    modeBtn.innerHTML = '☸️'; // Hajókormány ikon (visszaváltáshoz)
-                    modeBtn.style.backgroundColor = '#2e7d32'; // Zöld szín a kamera állításhoz
-                } else {
-                    mobileMode = 'boat';
-                    modeBtn.innerHTML = '📷'; // Kamera ikon (visszaváltáshoz)
-                    modeBtn.style.backgroundColor = '#8b5a2b'; // Barna szín a hajóhoz
+            const btnSteerLeft = document.getElementById('btn-steer-left');
+            const btnSteerRight = document.getElementById('btn-steer-right');
+            const btnThrustFwd = document.getElementById('btn-thrust-fwd');
+            const btnThrustRev = document.getElementById('btn-thrust-rev');
+
+            function bindTouchBtn(btn, primaryKey, altKey) {
+                if (!btn) return;
+
+                const startHandler = (e) => {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    keys[primaryKey] = true;
+                    if (altKey) keys[altKey] = true;
+                    btn.classList.add('active-touch');
+                };
+
+                const endHandler = (e) => {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    keys[primaryKey] = false;
+                    if (altKey) keys[altKey] = false;
+                    btn.classList.remove('active-touch');
+                };
+
+                // Érintőképernyős események (multi-touch: mindkét kéz egyidejűleg működik)
+                btn.addEventListener('touchstart', startHandler, { passive: false });
+                btn.addEventListener('touchend', endHandler, { passive: false });
+                btn.addEventListener('touchcancel', endHandler, { passive: false });
+
+                // Asztali böngészős Live Server teszteléshez egéresemények
+                btn.addEventListener('mousedown', startHandler);
+                btn.addEventListener('mouseup', endHandler);
+                btn.addEventListener('mouseleave', endHandler);
+            }
+
+            // Gombok kétkezes felprogramozása (Bal kéz: Kormányzás, Jobb kéz: Gáz/Hátramenet)
+            bindTouchBtn(btnSteerLeft, 'a', 'arrowleft');
+            bindTouchBtn(btnSteerRight, 'd', 'arrowright');
+            bindTouchBtn(btnThrustFwd, 'w', 'arrowup');
+            bindTouchBtn(btnThrustRev, 's', 'arrowdown');
+
+            // Képernyőfelület érintésének fallback kezelése (ha a játékos a gombok mellé nyúlna)
+            function processScreenTouches(touches) {
+                let hasSteerLeft = false;
+                let hasSteerRight = false;
+                let hasThrustFwd = false;
+                let hasThrustRev = false;
+
+                const midX = window.innerWidth / 2;
+                const midY = window.innerHeight / 2;
+
+                for (let i = 0; i < touches.length; i++) {
+                    const t = touches[i];
+                    // Bal képernyőfél: Kormányzás
+                    if (t.clientX < midX) {
+                        const steerMid = midX / 2;
+                        if (t.clientX < steerMid) {
+                            hasSteerLeft = true;
+                        } else {
+                            hasSteerRight = true;
+                        }
+                    } else {
+                        // Jobb képernyőfél: Meghajtás
+                        if (t.clientY < midY) {
+                            hasThrustFwd = true;
+                        } else {
+                            hasThrustRev = true;
+                        }
+                    }
                 }
-                clearMobileKeys();
-            });
 
-            // Gomb touch start meggátolása, hogy ne kormányozzon közben a játékos
-            modeBtn.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
-            });
-
-            let activeTouchId = null;
-            let touchQuadrant = null;
-
-            function getTouchQuadrant(touchX, touchY) {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                const L1 = touchY * width - touchX * height;
-                const L2 = touchY * width - (width - touchX) * height;
-                
-                if (L1 < 0 && L2 < 0) return 'top';
-                if (L1 > 0 && L2 > 0) return 'bottom';
-                if (L1 > 0 && L2 < 0) return 'left';
-                return 'right';
-            }
-
-            function clearMobileKeys() {
-                keys.w = false;
-                keys.s = false;
-                keys.a = false;
-                keys.d = false;
-                keys.arrowup = false;
-                keys.arrowdown = false;
-                keys.arrowleft = false;
-                keys.arrowright = false;
-            }
-
-            function updateMobileControls() {
-                clearMobileKeys();
-                if (!touchQuadrant) return;
-
-                if (mobileMode === 'boat') {
-                    if (touchQuadrant === 'top') keys.w = true;
-                    if (touchQuadrant === 'bottom') keys.s = true;
-                    if (touchQuadrant === 'left') keys.a = true;
-                    if (touchQuadrant === 'right') keys.d = true;
-                } else {
-                    if (touchQuadrant === 'top') keys.arrowup = true;
-                    if (touchQuadrant === 'bottom') keys.arrowdown = true;
-                    if (touchQuadrant === 'left') keys.arrowleft = true;
-                    if (touchQuadrant === 'right') keys.arrowright = true;
+                // Csak akkor állítjuk be a billentyűt, ha az adott gomb nincs fizikailag benyomva
+                if (!btnSteerLeft || !btnSteerLeft.classList.contains('active-touch')) {
+                    keys.a = hasSteerLeft;
+                    keys.arrowleft = hasSteerLeft;
+                }
+                if (!btnSteerRight || !btnSteerRight.classList.contains('active-touch')) {
+                    keys.d = hasSteerRight;
+                    keys.arrowright = hasSteerRight;
+                }
+                if (!btnThrustFwd || !btnThrustFwd.classList.contains('active-touch')) {
+                    keys.w = hasThrustFwd;
+                    keys.arrowup = hasThrustFwd;
+                }
+                if (!btnThrustRev || !btnThrustRev.classList.contains('active-touch')) {
+                    keys.s = hasThrustRev;
+                    keys.arrowdown = hasThrustRev;
                 }
             }
 
             window.addEventListener('touchstart', (e) => {
-                // UI elemeken (gombok, inputok, modalok, indító tábla, info gombok) ne tiltsuk le az alapértelmezett kattintásokat
+                // UI elemeken (gombok, modálok, kérdéspanel) ne zavarjuk a koppintást
                 if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || 
                     e.target.closest('button') || e.target.closest('input') || 
-                    e.target.id === 'start-instruction' || e.target.closest('#start-instruction') ||
-                    e.target.id === 'info-toggle' || e.target.closest('#info-toggle') ||
-                    e.target.id === 'close-info-btn' || e.target.closest('#close-info-btn') ||
-                    e.target.id === 'info-music-toggle' || e.target.closest('#info-music-toggle') ||
-                    e.target.id === 'info-ambient-toggle' || e.target.closest('#info-ambient-toggle')) {
+                    e.target.closest('#mobile-steer-zone') || e.target.closest('#mobile-thrust-zone') ||
+                    e.target.closest('#start-instruction') || e.target.closest('#info-toggle') || 
+                    e.target.closest('#info-panel') || e.target.closest('#quiz-panel') || 
+                    e.target.closest('#demo-subscription-overlay')) {
                     return;
                 }
-                
-                // Meggátoljuk a képernyő zoomolást és görgetést irányítás közben
-                e.preventDefault();
 
-                if (e.touches.length > 0) {
-                    const touch = e.touches[0];
-                    activeTouchId = touch.identifier;
-                    touchQuadrant = getTouchQuadrant(touch.clientX, touch.clientY);
-                    updateMobileControls();
-                }
+                e.preventDefault();
+                processScreenTouches(e.touches);
             }, { passive: false });
 
             window.addEventListener('touchmove', (e) => {
-                if (activeTouchId !== null) {
-                    // Meggátoljuk a képernyő elmozdulását
-                    e.preventDefault();
-                    
-                    for (let touch of e.touches) {
-                        if (touch.identifier === activeTouchId) {
-                            touchQuadrant = getTouchQuadrant(touch.clientX, touch.clientY);
-                            updateMobileControls();
-                            break;
-                        }
-                    }
+                if (e.target.closest('#mobile-steer-zone') || e.target.closest('#mobile-thrust-zone') ||
+                    e.target.closest('#info-panel') || e.target.closest('#quiz-panel') ||
+                    e.target.closest('#demo-subscription-overlay')) {
+                    return;
                 }
+                e.preventDefault();
+                processScreenTouches(e.touches);
             }, { passive: false });
 
             window.addEventListener('touchend', (e) => {
-                if (activeTouchId !== null) {
-                    let activeStillPresent = false;
-                    for (let touch of e.touches) {
-                        if (touch.identifier === activeTouchId) {
-                            activeStillPresent = true;
-                            break;
-                        }
-                    }
-                    if (!activeStillPresent) {
-                        activeTouchId = null;
-                        touchQuadrant = null;
-                        clearMobileKeys();
-                    }
+                if (e.target.closest('#mobile-steer-zone') || e.target.closest('#mobile-thrust-zone')) {
+                    return;
                 }
+                processScreenTouches(e.touches);
             });
 
-            window.addEventListener('touchcancel', () => {
-                activeTouchId = null;
-                touchQuadrant = null;
-                clearMobileKeys();
+            window.addEventListener('touchcancel', (e) => {
+                if (e.target.closest('#mobile-steer-zone') || e.target.closest('#mobile-thrust-zone')) {
+                    return;
+                }
+                processScreenTouches(e.touches);
             });
         }
 
@@ -3371,39 +3491,39 @@
                 document.body.classList.add('mobile-hud');
                 setupMobileControls();
                 
-                // Szöveg frissítése érintőképernyős irányításhoz
-                const startInst = document.getElementById('start-instruction');
-                if (startInst) {
-                    startInst.innerHTML = "Koppints erre a táblára az induláshoz!<br><span style='font-size: 18px; color: #5c3a21; margin-top: 10px; display: block;'>(Szedj össze hártyákat, és kerüld el a léghajót!)</span>";
+                // Zozó Hero onboarding kártya tippjének frissítése kétkezes érintőképernyős irányításra
+                const hintText = document.getElementById('control-hint-text');
+                if (hintText) {
+                    hintText.innerHTML = "📱 <strong>Kétkezes mobil irányítás:</strong> Bal kéz = Kormányzás (◀ ▶) | Jobb kéz = Gáz / Hátramenet (▲ ▼)";
                 }
 
-                // Információs szöveg frissítése mobilra (kedvcsináló és érintőképernyős irányítás)
+                // Információs szöveg frissítése mobilra (kétkezes vezérlés & optimalizáció leírása)
                 const infoContainer = document.getElementById('info-scroll-container');
                 if (infoContainer) {
                     infoContainer.innerHTML = `
                         <p style="color: #8b0000; font-weight: bold; font-size: 22px; text-align: center; border-bottom: 2px solid #8b5a2b; padding-bottom: 8px; margin-top: 0;">
-                            📱 Mobil verzió (Kedvcsináló)
+                            📱 Mobil verzió (Egyszerűsített Kétkezes Mód)
                         </p>
-                        <p>Ez a játék a teljes asztali élmény egy egyszerűsített, mobilos kedvcsinálója. <strong>A teljes, sokkal látványosabb és zökkenőmentesebb verzióért próbáld ki a játékot asztali (PC) böngészőben!</strong></p>
+                        <p>Ez a játék a teljes asztali élmény egy optimalizált, mobilbarát verziója csökkentett hardverterheléssel. <strong>A teljes, maximális grafikai látványért próbáld ki asztali (PC) böngészőben is!</strong></p>
                         
-                        <p><strong>Mobil irányítás (X-felosztás):</strong></p>
+                        <p><strong>Kétkezes mobil irányítás:</strong></p>
                         <ul>
-                            <li><strong>Hajó irányítás módban (📷 gomb aktív):</strong> Érintsd meg a képernyőt a haladáshoz és kormányzáshoz!
+                            <li><strong>Bal kéz (Kormányzás):</strong>
                                 <ul>
-                                    <li><strong>Fent:</strong> Előrehaladás</li>
-                                    <li><strong>Lent:</strong> Hátramenet</li>
-                                    <li><strong>Balra / Jobbra:</strong> Kormányzás</li>
+                                    <li><strong>◀ BALRA:</strong> Kanyarodás balra</li>
+                                    <li><strong>▶ JOBBRA:</strong> Kanyarodás jobbra</li>
                                 </ul>
                             </li>
-                            <li><strong>Kamera módban (☸️ gomb aktív):</strong>
+                            <li><strong>Jobb kéz (Meghajtás):</strong>
                                 <ul>
-                                    <li><strong>Fent / Lent:</strong> Közelítés / Távolítás</li>
-                                    <li><strong>Balra / Jobbra:</strong> Kamera forgatása</li>
+                                    <li><strong>▲ ELŐRE (zöld):</strong> Gázadás, előrehaladás</li>
+                                    <li><strong>▼ HÁTRA (narancs):</strong> Tolatás, lassítás</li>
                                 </ul>
                             </li>
+                            <li><em>Tipp: Egyszerre nyomhatod a gázt és a kormányzást a gördülékeny vitorlázáshoz! A kamera automatikusan követi a hajót.</em></li>
                         </ul>
                         
-                        <p><strong>Cél:</strong> Gyűjts össze minél több hártyát a tengeren a kérdések helyes megválaszolásával, és kerüld el a közeledő ellenséges léghajót! Vidd vissza a hártyákat a bázisra (zöld henger) a pontok mentéséhez!</p>
+                        <p><strong>Küldetés:</strong> Gyűjts össze minél több hártyát a tengeren a kérdések helyes megválaszolásával, és menekülj a közeledő ellenséges léghajó elől! Vidd vissza a megszerzett kincseket a zöld fénnyel jelzett bázisra a pontok biztonságba helyezéséhez!</p>
                     `;
                 }
             }
@@ -3458,18 +3578,31 @@
         </div>
     </div>
 
-    <!-- MOBIL IRÁNYÍTÁSI ÉS MÓDVÁLTÓ RÉTEG (ANDROIDRA ÉS TESZTELÉSRE) -->
+    <!-- KÉTKEZES MOBIL IRÁNYÍTÁSI RÉTEG (BAL: KORMÁNYZÁS, JOBB: GÁZ/HÁTRAMENET) -->
     <div id="mobile-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100;">
-        <!-- Vizuális X segédvonalak (átlók) a képernyő felosztásához -->
-        <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.12; pointer-events: none;">
-            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#fffbcc" stroke-width="2" stroke-dasharray="6,6" />
-            <line x1="0" y1="100%" x2="100%" y2="0" stroke="#fffbcc" stroke-width="2" stroke-dasharray="6,6" />
-        </svg>
-        
-        <!-- Lebegő Módváltó Gomb (📷 = kamera mód váltásához, ☸️ = hajó irányításhoz) -->
-        <button id="mobile-mode-btn" style="position: absolute; bottom: 25px; right: 25px; width: 64px; height: 64px; border-radius: 50%; background: #8b5a2b; border: 3px solid #fffbcc; box-shadow: 0 5px 12px rgba(0,0,0,0.6); pointer-events: auto; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; transition: transform 0.15s ease, background-color 0.2s; -webkit-tap-highlight-color: transparent; outline: none; z-index: 105;">
-            📷
-        </button>
+        <!-- BAL OLDAL: KORMÁNYZÓ GOMBOK (◀ BALRA | JOBBRA ▶) -->
+        <div id="mobile-steer-zone">
+            <button id="btn-steer-left" class="mobile-touch-btn" aria-label="Balra">
+                <span class="btn-arrow">◀</span>
+                <span class="btn-subtext">BALRA</span>
+            </button>
+            <button id="btn-steer-right" class="mobile-touch-btn" aria-label="Jobbra">
+                <span class="btn-arrow">▶</span>
+                <span class="btn-subtext">JOBBRA</span>
+            </button>
+        </div>
+
+        <!-- JOBB OLDAL: GÁZADÁS / TOLATÁS (▲ ELŐRE | HÁTRA ▼) -->
+        <div id="mobile-thrust-zone">
+            <button id="btn-thrust-fwd" class="mobile-touch-btn btn-fwd" aria-label="Előre">
+                <span class="btn-arrow">▲</span>
+                <span class="btn-subtext">ELŐRE</span>
+            </button>
+            <button id="btn-thrust-rev" class="mobile-touch-btn btn-rev" aria-label="Hátra">
+                <span class="btn-arrow">▼</span>
+                <span class="btn-subtext">HÁTRA</span>
+            </button>
+        </div>
     </div>
 </body>
 

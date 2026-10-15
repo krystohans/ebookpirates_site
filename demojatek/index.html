@@ -225,15 +225,18 @@
 
         #quiz-panel {
             position: relative;
-            width: 80vw;
-            max-width: 800px;
-            min-height: 600px;
-            padding-top: 40px;
-            padding-left: 10%;
-            padding-right: 10%;
+            width: 780px;
+            height: 580px;
+            max-width: none;
+            max-height: none;
+            flex-shrink: 0;
+            padding: 30px 10% 25px 10%;
             box-sizing: border-box;
             text-align: center;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/Quiz_window_new_2-r.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
@@ -241,29 +244,38 @@
             border: none;
             box-shadow: none;
             backdrop-filter: none;
+            transform-origin: center center;
         }
 
         #quiz-question {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: bold;
             color: #fffbcc;
-            line-height: 1.6;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+            line-height: 1.4;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9);
             border-bottom: 1px solid rgba(212, 175, 55, 0.4);
-            padding-bottom: 20px;
-            margin: 70px 0 0 0;
+            padding-bottom: 12px;
+            margin: 25px 0 15px 0;
+            width: 100%;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            white-space: pre-wrap;
         }
 
         #timer-bar-container {
             width: 100%;
-            height: 12px;
+            height: 10px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid rgba(212, 175, 55, 0.5);
             box-shadow: inset 0 0 5px #000;
             margin-top: 0;
-            margin-bottom: 0px;
+            margin-bottom: 5px;
+            flex-shrink: 0;
         }
 
         #timer-bar {
@@ -274,38 +286,48 @@
         }
 
         .answer-buttons {
-            position: absolute;
-            top: 50%;
-            left: 12.5%;
-            right: 12.5%;
-            display: block;
-            text-align: center;
-            margin-top: -33.6px;
+            position: static;
+            margin-top: 0;
+            width: 100%;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 18px;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 0 15px 0;
+            box-sizing: border-box;
         }
 
         .answer-btn {
-            background: transparent;
-            border: none;
+            background: rgba(28, 16, 8, 0.82);
+            border: 2px solid #8b5a2b;
+            border-radius: 8px;
             color: #fffbcc;
-            padding: 0;
-            font-size: 24px;
+            padding: 12px 14px;
+            font-size: 17px;
             cursor: pointer;
-            transition: transform 0.2s, color 0.2s, text-shadow 0.2s;
-            font-family: 'Georgia', serif;
+            transition: transform 0.15s, background-color 0.15s, border-color 0.15s, color 0.15s;
+            font-family: 'BriskB', 'Georgia', serif;
             font-weight: bold;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
-            display: block;
-            width: 100%;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             pointer-events: auto;
-            line-height: 1.4;
-            margin-bottom: 8px;
+            line-height: 1.3;
+            box-sizing: border-box;
         }
 
         .answer-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
+            background: rgba(65, 35, 15, 0.95);
+            border-color: #ffd700;
             color: #ffffff;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 1);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.85);
         }
 
         .bet-btn-yes {
@@ -318,14 +340,15 @@
         }
 
         #betting-area {
-            position: absolute;
-            top: 50%;
-            left: 12.5%;
-            right: 12.5%;
+            position: static;
+            width: 100%;
             display: none;
-            text-align: center;
-            margin-top: -33.6px;
-            padding-top: 45px;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            box-sizing: border-box;
         }
 
         #base-exit-btn {
@@ -1112,83 +1135,93 @@
         }
 
         .mobile-hud #quiz-panel {
-            background-image: none !important;
-            background-color: #fdf5e6 !important; /* Monokróm, tiszta háttér */
-            border: 4px solid #8b5a2b !important;
-            border-radius: 16px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
-            width: 95vw !important;
-            height: 90vh !important;
-            max-height: 90vh !important;
-            padding: 20px !important;
+            background-image: url('https://storage.googleapis.com/kalozsziget-assets/images/Quiz_window_new_2-r.png') !important;
+            background-size: 100% 100% !important;
+            background-repeat: no-repeat !important;
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            width: 780px !important;
+            height: 580px !important;
+            max-width: none !important;
+            max-height: none !important;
+            flex-shrink: 0 !important;
+            transform-origin: center center !important;
+            padding: 25px 8% 20px 8% !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
+            justify-content: flex-start !important;
             align-items: center !important;
         }
 
         /* Timer-bar sáv helyzete és szélessége */
         .mobile-hud #timer-bar-container {
             margin-top: 0 !important;
-            margin-bottom: 10px !important;
+            margin-bottom: 6px !important;
             flex-shrink: 0 !important;
+            width: 100% !important;
+            height: 10px !important;
         }
 
         /* Mobil Kérdés szövegének beállítása */
         .mobile-hud #quiz-question {
-            font-family: 'Georgia', serif !important;
-            color: #1a0f05 !important; /* Sötétbarna kontrasztos szín */
-            font-size: 20px !important;
+            font-family: 'BriskB', 'Georgia', serif !important;
+            color: #fffbcc !important;
+            font-size: 19px !important;
             font-weight: bold !important;
-            text-shadow: none !important;
-            border-bottom: 2px solid #8b5a2b !important;
-            padding-bottom: 10px !important;
-            margin: 10px 0 !important;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.9) !important;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.4) !important;
+            padding-bottom: 8px !important;
+            margin: 15px 0 10px 0 !important;
             text-align: center !important;
             width: 100% !important;
             flex-shrink: 0 !important;
-            line-height: 1.4 !important;
+            min-height: 50px !important;
+            line-height: 1.35 !important;
         }
 
-        /* Válasz gombok konténere mobilon flexbox-szal */
+        /* Válasz gombok konténere mobilon 2 oszlopos grid-del */
         .mobile-hud .answer-buttons {
-            position: static !important; /* Kiszabadítjuk az abszolút pozícióból */
+            position: static !important;
             margin-top: 0 !important;
             width: 100% !important;
             flex: 1 !important;
-            display: flex; /* Nincs !important, hogy a JS le tudja tiltani! */
-            flex-direction: column !important;
-            justify-content: center !important;
-            gap: 12px !important;
-            padding: 5px 0 !important;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px 14px !important;
+            padding: 5px 0 10px 0 !important;
             box-sizing: border-box !important;
         }
 
-        /* Egyedi válasz gombok stílusa (Monokróm és kontrasztos) */
+        /* Egyedi válasz gombok stílusa */
         .mobile-hud .answer-btn {
-            background-color: #8b5a2b !important; /* Szép barna gomb */
-            color: #ffffff !important;
-            border: 2px solid #5c3a21 !important;
-            border-radius: 10px !important;
-            padding: 12px 10px !important;
-            font-size: 16px !important;
+            background: rgba(28, 16, 8, 0.85) !important;
+            color: #fffbcc !important;
+            border: 2px solid #8b5a2b !important;
+            border-radius: 8px !important;
+            padding: 10px 8px !important;
+            font-size: 15px !important;
             font-weight: bold !important;
-            font-family: 'Georgia', serif !important;
-            text-shadow: none !important;
+            font-family: 'BriskB', 'Georgia', serif !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9) !important;
             width: 100% !important;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
             box-sizing: border-box !important;
-            transition: background-color 0.2s, transform 0.1s !important;
-            display: block !important;
+            transition: background-color 0.15s, transform 0.1s !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             text-align: center !important;
             line-height: 1.3 !important;
             margin-bottom: 0 !important;
+            min-height: 48px !important;
         }
 
         /* Hover helyett aktív/koppintás állapot */
         .mobile-hud .answer-btn:active {
-            background-color: #5c3a21 !important;
+            background: rgba(65, 35, 15, 0.95) !important;
+            border-color: #ffd700 !important;
             transform: scale(0.98) !important;
         }
 
@@ -1299,7 +1332,8 @@
         }
 
         /* Álló (portrait) mobilkijelzőn automatikusan megjelenik */
-        @media screen and (orientation: portrait) and (max-width: 1024px) {
+        @media screen and (orientation: portrait) and (max-width: 1100px),
+               screen and (max-aspect-ratio: 13/12) and (max-width: 1100px) {
             #orientation-guard {
                 display: flex !important;
             }
@@ -1334,7 +1368,7 @@
     style="margin: 0; overflow: hidden; background-color: #000; touch-action: none; user-select: none;">
 
     <!-- ─── KÖTELEZŐ FEKVŐ TÁJOLÁS KIKÉNYSZERÍTŐ RÉTEG ─── -->
-    <div id="orientation-guard">
+    <div id="orientation-guard" onclick="requestLandscapeMode()" ontouchstart="requestLandscapeMode()">
         <svg class="rotate-phone-anim" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
             <line x1="12" y1="18" x2="12.01" y2="18"></line>
@@ -1621,6 +1655,8 @@
             var totalSingleMoveDist = 0;
             var lastTapTime = 0;
 
+            var getBaseScale = options.getBaseScale || function() { return 1.0; };
+
             function applyTransform(withTransition) {
                 if (withTransition) {
                     contentEl.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
@@ -1629,10 +1665,11 @@
                     contentEl.style.transition = 'none';
                 }
                 contentEl.style.transformOrigin = 'center center';
+                var effectiveScale = getBaseScale() * currentScale;
                 if (hasCenteringTranslate) {
-                    contentEl.style.transform = 'translate(calc(-50% + ' + currentPanX + 'px), calc(-50% + ' + currentPanY + 'px)) scale(' + currentScale + ')';
+                    contentEl.style.transform = 'translate(calc(-50% + ' + currentPanX + 'px), calc(-50% + ' + currentPanY + 'px)) scale(' + effectiveScale + ')';
                 } else {
-                    contentEl.style.transform = 'translate(' + currentPanX + 'px, ' + currentPanY + 'px) scale(' + currentScale + ')';
+                    contentEl.style.transform = 'translate(' + currentPanX + 'px, ' + currentPanY + 'px) scale(' + effectiveScale + ')';
                 }
             }
 
@@ -1747,6 +1784,7 @@
 
             return {
                 resetZoom: resetZoom,
+                applyTransform: applyTransform,
                 getScale: function() { return currentScale; }
             };
         }
@@ -1758,11 +1796,27 @@
         var gameMsgPinchController = null;
         var demoSubPinchController = null;
 
+        function updateQuizPanelScale() {
+            var panel = document.getElementById('quiz-panel');
+            if (!panel) return 1.0;
+            var baseW = 780;
+            var baseH = 580;
+            var availW = window.innerWidth * 0.94;
+            var availH = window.innerHeight * 0.92;
+            return Math.min(1.0, availW / baseW, availH / baseH);
+        }
+
         function initModalPinchZoom() {
             var quizOverlay = document.getElementById('quiz-overlay');
             var quizPanel = document.getElementById('quiz-panel');
             if (quizOverlay && quizPanel && !quizPinchController) {
-                quizPinchController = makePinchZoomable(quizOverlay, quizPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
+                quizPinchController = makePinchZoomable(quizOverlay, quizPanel, {
+                    minScale: 1.0,
+                    maxScale: 2.6,
+                    hasCenteringTranslate: false,
+                    getBaseScale: updateQuizPanelScale
+                });
+                if (quizPinchController) quizPinchController.resetZoom(false);
             }
 
             var gameDialogOverlay = document.getElementById('game-dialog-overlay');
@@ -1793,6 +1847,7 @@
                 demoSubPinchController = makePinchZoomable(demoSubOverlay, demoSubPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
             }
         }
+        initModalPinchZoom();
 
         // ==========================================
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
@@ -1975,7 +2030,7 @@
             const timerContainer = document.getElementById('timer-bar-container');
             if (timerContainer) timerContainer.style.display = 'none';
             if (btnsEl) {
-                btnsEl.style.display = isAndroid ? 'flex' : 'grid';
+                btnsEl.style.display = 'grid';
                 btnsEl.innerHTML = '';
             }
             // Rövidebb szöveg a kifutás megelőzésére
@@ -3281,6 +3336,9 @@
 
         // Indítás gomb/tábla funkciója (mobilon és asztalin is működik)
         function startGameFromInstruction() {
+            if (typeof requestLandscapeMode === 'function') {
+                requestLandscapeMode();
+            }
             if (!gameStarted) {
                 gameStarted = true;
                 if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();
@@ -4030,7 +4088,7 @@
 
             let btnContainer = document.getElementById('answer-buttons');
             btnContainer.innerHTML = '';
-            btnContainer.style.display = isAndroid ? 'flex' : 'grid';
+            btnContainer.style.display = 'grid';
 
             currentAnswers.forEach(ans => {
                 let btn = document.createElement('button');
@@ -4227,6 +4285,22 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Tájolás ellenőrzése mobilon és tableten (Orientation Guard)
+            const isPortrait = (window.innerHeight > window.innerWidth) || (screen.orientation && screen.orientation.type && screen.orientation.type.startsWith('portrait'));
+            const isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
+            const guard = document.getElementById('orientation-guard');
+            if (guard) {
+                guard.style.display = (isPortrait && (window.innerWidth <= 1100 || isMobileOrTablet)) ? 'flex' : 'none';
+            }
+
+            if (quizPinchController) {
+                if (quizPinchController.getScale() <= 1.05) {
+                    quizPinchController.resetZoom(false);
+                } else {
+                    quizPinchController.applyTransform(false);
+                }
+            }
         }
         window.addEventListener('resize', handleResize);
         window.addEventListener('orientationchange', () => {
@@ -4235,17 +4309,25 @@
 
         window.requestLandscapeMode = function() {
             try {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen().then(() => {
-                        if (screen.orientation && screen.orientation.lock) {
-                            screen.orientation.lock('landscape').catch(() => {});
-                        }
-                    }).catch(() => {});
+                const el = document.documentElement;
+                const requestFs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+                if (requestFs) {
+                    const promise = requestFs.call(el);
+                    if (promise && promise.then) {
+                        promise.then(() => {
+                            if (screen.orientation && screen.orientation.lock) {
+                                screen.orientation.lock('landscape').catch(() => {});
+                            }
+                        }).catch(() => {});
+                    } else if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(() => {});
+                    }
                 } else if (screen.orientation && screen.orientation.lock) {
                     screen.orientation.lock('landscape').catch(() => {});
                 }
             } catch(e) {}
         };
+        handleResize();
 
         animate();
 
@@ -4453,6 +4535,12 @@
         // Automatikus indítás mobilon és asztali böngészőben (Live Server teszteléshez)
         function initAppControls() {
             setupMobileControls();
+            if (typeof initModalPinchZoom === 'function') {
+                initModalPinchZoom();
+            }
+            if (typeof handleResize === 'function') {
+                handleResize();
+            }
             if (isAndroid) {
                 document.body.classList.add('mobile-hud');
                 

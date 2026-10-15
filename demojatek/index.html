@@ -1233,11 +1233,118 @@
             width: 100% !important;
             box-sizing: border-box !important;
         }
+
+        /* ─── KÖTELEZŐ FEKVŐ TÁJOLÁS (ORIENTATION GUARD) ─── */
+        #orientation-guard {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(15, 25, 45, 0.98) 0%, rgba(5, 10, 18, 1) 100%);
+            z-index: 99999999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            box-sizing: border-box;
+            color: #ffd700;
+            font-family: 'BriskB', 'Georgia', serif;
+            pointer-events: auto;
+        }
+
+        .rotate-phone-anim {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 25px;
+            animation: rotatePhone 2.2s ease-in-out infinite;
+        }
+
+        @keyframes rotatePhone {
+            0% { transform: rotate(0deg) scale(1); }
+            35% { transform: rotate(90deg) scale(1.1); }
+            70% { transform: rotate(90deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        .orientation-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffea00;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+        }
+
+        .orientation-desc {
+            font-size: 15px;
+            color: #eaddb5;
+            max-width: 360px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .force-landscape-btn {
+            background: linear-gradient(180deg, #d4af37 0%, #aa8010 100%);
+            color: #1a1005;
+            font-weight: bold;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+        }
+
+        /* Álló (portrait) mobilkijelzőn automatikusan megjelenik */
+        @media screen and (orientation: portrait) and (max-width: 1024px) {
+            #orientation-guard {
+                display: flex !important;
+            }
+        }
+
+        /* ─── KÉTUJJAS CSÍPÉS-ZOOM TÁMOGATÁS A SZÖVEG- ÉS KVÍZDOBOZOKRA ─── */
+        #quiz-overlay,
+        #quiz-panel,
+        #game-dialog-overlay,
+        .game-dialog-panel,
+        #start-instruction,
+        #game-message,
+        #demo-subscription-overlay,
+        #demo-subscription-overlay .glass-panel {
+            touch-action: none !important;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #info-panel {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #info-scroll-container {
+            touch-action: pan-y;
+        }
     </style>
 </head>
 
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;"
     style="margin: 0; overflow: hidden; background-color: #000; touch-action: none; user-select: none;">
+
+    <!-- ─── KÖTELEZŐ FEKVŐ TÁJOLÁS KIKÉNYSZERÍTŐ RÉTEG ─── -->
+    <div id="orientation-guard">
+        <svg class="rotate-phone-anim" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            <path d="M17 8l3-3-3-3"></path>
+            <path d="M20 5h-4"></path>
+        </svg>
+        <div class="orientation-title">⚓ VITORLABONTÁS FEKVŐ MÓDBAN!</div>
+        <div class="orientation-desc">A tengeri hajózás és a 3D kaland fekvő képernyőre lett tervezve.<br><strong>Kérlek, fordítsd el a telefonodat oldalra!</strong></div>
+        <button class="force-landscape-btn" onclick="requestLandscapeMode()">🔄 Fekvő mód kényszerítése</button>
+    </div>
     <audio id="bg-music" loop>
         <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3" type="audio/mpeg">
     </audio>
@@ -1465,6 +1572,7 @@
                     "<div class='game-over-hint'>A kaland itt véget ért, de a tenger visszavár!</div>" +
                     "<button id='restart-game-btn' class='game-over-restart-btn'>⚓ ÚJ JÁTÉK INDÍTÁSA</button>" +
                     "<div class='game-over-subtext'>Kattints ide vagy a fenti gombra az újrakezdéshez!</div>";
+                if (gameMsgPinchController) gameMsgPinchController.resetZoom(false);
                 msgEl.style.display = 'flex';
 
                 const restartAction = function(e) {
@@ -1486,11 +1594,211 @@
             }
         }
 
-        // ==========================================
+        // =========================================================================
+        // UNIVERZÁLIS KÉTUJJAS CSÍPÉS-ZOOM ÉS PÁSZTÁZÓ MOTOR (SZÖVEG- ÉS KVÍZDOBOZOK)
+        // =========================================================================
+        function makePinchZoomable(containerEl, contentEl, options) {
+            if (!containerEl || !contentEl) return null;
+
+            options = options || {};
+            var minScale = options.minScale || 1.0;
+            var maxScale = options.maxScale || 2.6;
+            var hasCenteringTranslate = !!options.hasCenteringTranslate;
+
+            var currentScale = 1.0;
+            var currentPanX = 0;
+            var currentPanY = 0;
+
+            var isPinching = false;
+            var isPanning = false;
+            var initialPinchDist = null;
+            var startScale = 1.0;
+            var startPanX = 0;
+            var startPanY = 0;
+            var startMidX = 0;
+            var startMidY = 0;
+            var singleTouchStart = { x: 0, y: 0 };
+            var totalSingleMoveDist = 0;
+            var lastTapTime = 0;
+
+            function applyTransform(withTransition) {
+                if (withTransition) {
+                    contentEl.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
+                    setTimeout(function() { contentEl.style.transition = ''; }, 240);
+                } else {
+                    contentEl.style.transition = 'none';
+                }
+                contentEl.style.transformOrigin = 'center center';
+                if (hasCenteringTranslate) {
+                    contentEl.style.transform = 'translate(calc(-50% + ' + currentPanX + 'px), calc(-50% + ' + currentPanY + 'px)) scale(' + currentScale + ')';
+                } else {
+                    contentEl.style.transform = 'translate(' + currentPanX + 'px, ' + currentPanY + 'px) scale(' + currentScale + ')';
+                }
+            }
+
+            function resetZoom(animated) {
+                currentScale = 1.0;
+                currentPanX = 0;
+                currentPanY = 0;
+                applyTransform(animated !== false);
+            }
+
+            containerEl.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    isPinching = true;
+                    isPanning = false;
+                    initialPinchDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                    startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                    startScale = currentScale;
+                    startPanX = currentPanX;
+                    startPanY = currentPanY;
+                    e.stopPropagation();
+                    if (e.cancelable) e.preventDefault();
+                } else if (e.touches.length === 1) {
+                    singleTouchStart.x = e.touches[0].clientX;
+                    singleTouchStart.y = e.touches[0].clientY;
+                    totalSingleMoveDist = 0;
+                    if (currentScale > 1.05) {
+                        isPanning = true;
+                        startPanX = currentPanX;
+                        startPanY = currentPanY;
+                    } else {
+                        isPanning = false;
+                    }
+                }
+            }, { passive: false });
+
+            containerEl.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2 && isPinching) {
+                    var currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    if (initialPinchDist && initialPinchDist > 0) {
+                        var factor = currentDist / initialPinchDist;
+                        currentScale = Math.min(Math.max(startScale * factor, minScale), maxScale);
+                        var midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                        var midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                        currentPanX = startPanX + (midX - startMidX);
+                        currentPanY = startPanY + (midY - startMidY);
+                        applyTransform(false);
+                    }
+                    e.stopPropagation();
+                    if (e.cancelable) e.preventDefault();
+                } else if (e.touches.length === 1 && isPanning && currentScale > 1.05) {
+                    var dx = e.touches[0].clientX - singleTouchStart.x;
+                    var dy = e.touches[0].clientY - singleTouchStart.y;
+                    totalSingleMoveDist = Math.hypot(dx, dy);
+
+                    var maxPanX = Math.max(60, (window.innerWidth * (currentScale - 1)) / 1.5);
+                    var maxPanY = Math.max(60, (window.innerHeight * (currentScale - 1)) / 1.5);
+                    currentPanX = Math.min(Math.max(startPanX + dx, -maxPanX), maxPanX);
+                    currentPanY = Math.min(Math.max(startPanY + dy, -maxPanY), maxPanY);
+                    applyTransform(false);
+
+                    if (totalSingleMoveDist > 8) {
+                        e.stopPropagation();
+                        if (e.cancelable) e.preventDefault();
+                    }
+                }
+            }, { passive: false });
+
+            function handleTouchEnd(e) {
+                if (e.touches.length < 2) {
+                    isPinching = false;
+                    initialPinchDist = null;
+                }
+                if (e.touches.length === 0) {
+                    isPanning = false;
+                    if (currentScale < 1.08) {
+                        resetZoom(true);
+                    } else {
+                        var now = performance.now();
+                        if (now - lastTapTime < 320 && totalSingleMoveDist < 8) {
+                            resetZoom(true);
+                        }
+                        lastTapTime = now;
+                    }
+                }
+            }
+
+            containerEl.addEventListener('touchend', handleTouchEnd);
+            containerEl.addEventListener('touchcancel', handleTouchEnd);
+
+            // Asztali PC Live Server egérgörgős tesztelhetőség
+            containerEl.addEventListener('wheel', function(e) {
+                if (contentEl.id === 'info-panel' && currentScale <= 1.05 && e.target.closest('#info-scroll-container')) {
+                    return;
+                }
+                var delta = e.deltaY < 0 ? 0.15 : -0.15;
+                currentScale = Math.min(Math.max(currentScale + delta, minScale), maxScale);
+                if (currentScale <= 1.06) {
+                    resetZoom(false);
+                } else {
+                    applyTransform(false);
+                }
+                e.stopPropagation();
+                if (e.cancelable) e.preventDefault();
+            }, { passive: false });
+
+            return {
+                resetZoom: resetZoom,
+                getScale: function() { return currentScale; }
+            };
+        }
+
+        var quizPinchController = null;
+        var gameDialogPinchController = null;
+        var startInstPinchController = null;
+        var infoPanelPinchController = null;
+        var gameMsgPinchController = null;
+        var demoSubPinchController = null;
+
+        function initModalPinchZoom() {
+            var quizOverlay = document.getElementById('quiz-overlay');
+            var quizPanel = document.getElementById('quiz-panel');
+            if (quizOverlay && quizPanel && !quizPinchController) {
+                quizPinchController = makePinchZoomable(quizOverlay, quizPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
+            }
+
+            var gameDialogOverlay = document.getElementById('game-dialog-overlay');
+            var gameDialogPanel = document.querySelector('.game-dialog-panel');
+            if (gameDialogOverlay && gameDialogPanel && !gameDialogPinchController) {
+                gameDialogPinchController = makePinchZoomable(gameDialogOverlay, gameDialogPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
+            }
+
+            var startInst = document.getElementById('start-instruction');
+            if (startInst && !startInstPinchController) {
+                startInstPinchController = makePinchZoomable(startInst, startInst, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: true });
+            }
+
+            var infoOverlay = document.getElementById('info-overlay');
+            var infoPanel = document.getElementById('info-panel');
+            if (infoOverlay && infoPanel && !infoPanelPinchController) {
+                infoPanelPinchController = makePinchZoomable(infoOverlay, infoPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
+            }
+
+            var gameMessage = document.getElementById('game-message');
+            if (gameMessage && !gameMsgPinchController) {
+                gameMsgPinchController = makePinchZoomable(gameMessage, gameMessage, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: true });
+            }
+
+            var demoSubOverlay = document.getElementById('demo-subscription-overlay');
+            var demoSubPanel = demoSubOverlay ? demoSubOverlay.querySelector('div') : null;
+            if (demoSubOverlay && demoSubPanel && !demoSubPinchController) {
+                demoSubPinchController = makePinchZoomable(demoSubOverlay, demoSubPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
+            }
+        }
+
         // ==========================================
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
         // ==========================================
         function showProjectDialog(title, text, btnText, isSuccess, callback) {
+            if (gameDialogPinchController) gameDialogPinchController.resetZoom(false);
             const overlay = document.getElementById('game-dialog-overlay');
             const titleEl = document.getElementById('game-dialog-title');
             const textEl = document.getElementById('game-dialog-text');
@@ -1652,6 +1960,7 @@
         }
 
         function showAirshipQuizModal(qData) {
+            if (quizPinchController) quizPinchController.resetZoom(false);
             console.log("DEBUG: showAirshipQuizModal indítása, kérdés:", qData.question);
             const overlay = document.getElementById('quiz-overlay');
             if (!overlay) {
@@ -3077,6 +3386,7 @@
 
         function openInfoPanel() {
             syncInfoSoundIcons();
+            if (infoPanelPinchController) infoPanelPinchController.resetZoom(false);
             if (infoOverlay) infoOverlay.style.display = 'flex';
         }
 
@@ -3696,6 +4006,7 @@
                 showAnswerButtons();
             }
 
+            if (quizPinchController) quizPinchController.resetZoom(false);
             document.getElementById('quiz-overlay').style.display = 'flex';
             const timerContainer = document.getElementById('timer-bar-container');
             if (timerContainer) timerContainer.style.display = 'block';
@@ -3816,6 +4127,7 @@
             isGameOver = true;
             let msgDiv = document.getElementById('game-message');
             if (msgDiv) {
+                if (gameMsgPinchController) gameMsgPinchController.resetZoom(false);
                 msgDiv.innerText = msg;
                 msgDiv.style.display = 'flex';
             }
@@ -3911,11 +4223,29 @@
             renderer.render(scene, camera);
         }
 
-        window.addEventListener('resize', () => {
+        function handleResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(handleResize, 250);
         });
+
+        window.requestLandscapeMode = function() {
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().then(() => {
+                        if (screen.orientation && screen.orientation.lock) {
+                            screen.orientation.lock('landscape').catch(() => {});
+                        }
+                    }).catch(() => {});
+                } else if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(() => {});
+                }
+            } catch(e) {}
+        };
 
         animate();
 

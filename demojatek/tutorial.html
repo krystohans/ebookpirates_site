@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>eBookPirates – Kalózsziget 3D Tutorial</title>
   <script>
     window.onerror = function(message, source, lineno, colno, error) {
@@ -48,7 +48,10 @@
       background: #050a12;
       display: flex;
       justify-content: center;
-      align-items: center
+      align-items: center;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     #game-wrapper {
@@ -58,13 +61,85 @@
       max-height: 100vh;
       max-width: 177.78vh;
       overflow: hidden;
-      background: #1a2a3a
+      background: #1a2a3a;
+      touch-action: none;
     }
 
     canvas {
       display: block;
       width: 100%;
-      height: 100%
+      height: 100%;
+      touch-action: none;
+    }
+
+    /* ─── KÖTELEZŐ FEKVŐ TÁJOLÁS (ORIENTATION GUARD) ─── */
+    #orientation-guard {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(15, 25, 45, 0.98) 0%, rgba(5, 10, 18, 1) 100%);
+      z-index: 99999999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      box-sizing: border-box;
+      color: #ffd700;
+      font-family: 'Briskb', 'Courier New', monospace;
+    }
+
+    .rotate-phone-anim {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 25px;
+      animation: rotatePhone 2.2s ease-in-out infinite;
+    }
+
+    @keyframes rotatePhone {
+      0% { transform: rotate(0deg) scale(1); }
+      35% { transform: rotate(90deg) scale(1.1); }
+      70% { transform: rotate(90deg) scale(1.1); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    .orientation-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffea00;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      letter-spacing: 1px;
+    }
+
+    .orientation-desc {
+      font-size: 15px;
+      color: #e0d0b0;
+      max-width: 360px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .force-landscape-btn {
+      background: linear-gradient(180deg, #d4af37 0%, #aa8010 100%);
+      color: #1a1005;
+      font-weight: bold;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+    }
+
+    /* Álló (portrait) mobilkijelzőn automatikusan megjelenik */
+    @media screen and (orientation: portrait) and (max-width: 1024px) {
+      #orientation-guard {
+        display: flex !important;
+      }
     }
 
     #topbar {
@@ -352,6 +427,19 @@
 </head>
 
 <body>
+  <!-- ─── KÖTELEZŐ FEKVŐ TÁJOLÁS KIKÉNYSZERÍTŐ RÉTEG ─── -->
+  <div id="orientation-guard">
+    <svg class="rotate-phone-anim" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+      <line x1="12" y1="18" x2="12.01" y2="18"></line>
+      <path d="M17 8l3-3-3-3"></path>
+      <path d="M20 5h-4"></path>
+    </svg>
+    <div class="orientation-title">⚓ VITORLABONTÁS FEKVŐ MÓDBAN!</div>
+    <div class="orientation-desc">A tengeri hajózás és a 3D Kalózvizsga fekvő képernyőre lett tervezve.<br><strong>Kérlek, fordítsd el a telefonodat oldalra!</strong></div>
+    <button class="force-landscape-btn" onclick="requestLandscapeMode()">🔄 Fekvő mód kényszerítése</button>
+  </div>
+
   <div id="game-wrapper">
     <canvas id="c"></canvas>
     <!-- ─── EREDETI PARANCSNOKI HÍD / FEJLÉC (TOPBAR) ─── -->
@@ -497,6 +585,23 @@
       cam.aspect = w / h; cam.updateProjectionMatrix();
     }
     addEventListener('resize', resize);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(resize, 250);
+    });
+
+    window.requestLandscapeMode = function() {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock('landscape').catch(() => {});
+            }
+          }).catch(() => {});
+        } else if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(() => {});
+        }
+      } catch(e) {}
+    };
 
     // ─── Scene ───
     const scene = new THREE.Scene();
@@ -1156,28 +1261,218 @@
 
     // ─── Keyboard state ───
     const keys = {};
-    addEventListener('keydown', e => { keys[e.code] = true; });
+    addEventListener('keydown', e => {
+      keys[e.code] = true;
+      if (e.code === 'KeyW' || e.code === 'KeyA' || e.code === 'KeyS' || e.code === 'KeyD' ||
+          e.code === 'ArrowUp' || e.code === 'ArrowDown' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+        isTouchSteerActive = false; // Billentyű lenyomásakor azonnal átváltunk manuális vezérlésre
+      }
+      if (e.code === 'Space') {
+        const mc = document.getElementById('zozo-ingame-monolog-container');
+        if (mc && mc.style.display !== 'none') {
+          e.preventDefault();
+          if (typeof window.advanceInGameMonolog === 'function') window.advanceInGameMonolog();
+        }
+      }
+    });
     addEventListener('keyup', e => { keys[e.code] = false; });
 
-    // ─── Mouse orbit ───
-    let mDown = false, mx = 0, my = 0;
-    canvas.addEventListener('mousedown', e => { mDown = true; mx = e.clientX; my = e.clientY; canvas.style.cursor = 'grabbing'; });
-    addEventListener('mouseup', () => { mDown = false; canvas.style.cursor = 'grab'; });
-    addEventListener('mousemove', e => {
-      if (!mDown) return;
-      const deltaX = (e.clientX - mx) * ORB_SENS_H * (Math.PI / 180);
-      if (typeof boat !== 'undefined' && boat && boat.rotation) {
-        boat.rotation.y -= deltaX;
+    // ─── Gesztus- és Érintőképernyős Vezérlő Motor ───
+    let isTouchActive = false;
+    let isDraggingCamera = false;
+    let isTouchSteerActive = false;
+    let isPinchZooming = false;
+    let lastPinchDist = null;
+    let touchStartAnchorPos = { x: 0, y: 0 };
+    let lastTouchPos = { x: 0, y: 0 };
+    let currentTouchScreenPos = { x: 0, y: 0 };
+    let lastTouchMoveTime = 0;
+    let targetSteerAngle = 0;
+
+    function isInteractiveElement(target) {
+      if (!target) return false;
+      return target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'A' ||
+             target.closest('button') || target.closest('input') || target.closest('a') ||
+             target.closest('#topbar') || target.closest('.topbar-btn') ||
+             target.closest('#orientation-guard') ||
+             target.closest('#zozo-welcome-overlay') ||
+             target.closest('#zozo-dialogue-box') ||
+             target.closest('#zozo-ingame-monolog-container') ||
+             target.closest('#eog-compact-dialog') ||
+             target.closest('#debug-ui') || target.closest('#debug-coords') ||
+             target.closest('#popup-overlay') || target.closest('#quiz-overlay');
+    }
+
+    function steerShipToScreenPoint(screenX, screenY) {
+      if (window.isCutscenePlaying || typeof boat === 'undefined' || !boat) return;
+      const rect = canvas.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dx = screenX - centerX;
+      const dy = screenY - centerY;
+
+      if (Math.hypot(dx, dy) >= 20) {
+        const screenAngle = Math.atan2(dx, -dy);
+        const camWorldAngle = boat.rotation.y + (orbH * Math.PI / 180);
+        targetSteerAngle = camWorldAngle - screenAngle;
       }
-      orbH = 0.0;
-      orbV = THREE.MathUtils.clamp(orbV + (e.clientY - my) * ORB_SENS_V, ORB_MIN_V, ORB_MAX_V);
-      mx = e.clientX; my = e.clientY;
+      isTouchSteerActive = true;
+    }
+
+    // Érintőképernyős események (Mobil / Tablet)
+    window.addEventListener('touchstart', (e) => {
+      if (isInteractiveElement(e.target)) return;
+
+      // 1. Kétujjas Pinch Zoom
+      if (e.touches.length === 2) {
+        isPinchZooming = true;
+        isTouchActive = false;
+        isTouchSteerActive = false;
+        isDraggingCamera = false;
+        lastPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        e.preventDefault();
+        return;
+      }
+
+      // 2. Egyujjas érintés indítása
+      if (e.touches.length === 1) {
+        isPinchZooming = false;
+        isTouchActive = true;
+        isDraggingCamera = false;
+        const t = e.touches[0];
+        touchStartAnchorPos.x = t.clientX;
+        touchStartAnchorPos.y = t.clientY;
+        lastTouchPos.x = t.clientX;
+        lastTouchPos.y = t.clientY;
+        currentTouchScreenPos.x = t.clientX;
+        currentTouchScreenPos.y = t.clientY;
+        lastTouchMoveTime = performance.now();
+
+        steerShipToScreenPoint(t.clientX, t.clientY);
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    window.addEventListener('touchmove', (e) => {
+      if (isInteractiveElement(e.target)) return;
+
+      // 1. Pinch Zoom
+      if (e.touches.length === 2) {
+        const currentDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        if (lastPinchDist !== null) {
+          const delta = currentDist - lastPinchDist;
+          orbDist = THREE.MathUtils.clamp(orbDist - delta * 0.12, ORB_MIN_D, ORB_MAX_D);
+        }
+        lastPinchDist = currentDist;
+        e.preventDefault();
+        return;
+      }
+
+      // 2. Egy ujj: Svenk vs. Álló ujj
+      if (e.touches.length === 1 && !isPinchZooming) {
+        const t = e.touches[0];
+        currentTouchScreenPos.x = t.clientX;
+        currentTouchScreenPos.y = t.clientY;
+
+        const stepDist = Math.hypot(t.clientX - lastTouchPos.x, t.clientY - lastTouchPos.y);
+        const distFromAnchor = Math.hypot(t.clientX - touchStartAnchorPos.x, t.clientY - touchStartAnchorPos.y);
+
+        if (isDraggingCamera || distFromAnchor > 12) {
+          isDraggingCamera = true;
+          isTouchSteerActive = false; // Svenkelés alatt a hajó nem kanyarodik
+
+          if (stepDist >= 1.8) {
+            const deltaX = t.clientX - lastTouchPos.x;
+            orbH = (orbH - deltaX * ORB_SENS_H * 1.5);
+            lastTouchMoveTime = performance.now();
+            lastTouchPos.x = t.clientX;
+            lastTouchPos.y = t.clientY;
+          }
+        } else {
+          if (stepDist >= 1.8) {
+            steerShipToScreenPoint(t.clientX, t.clientY);
+            lastTouchPos.x = t.clientX;
+            lastTouchPos.y = t.clientY;
+          }
+        }
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    function handleTouchEnd(e) {
+      if (e.touches.length < 2) {
+        isPinchZooming = false;
+        lastPinchDist = null;
+      }
+      if (e.touches.length === 0) {
+        isTouchActive = false;
+        isTouchSteerActive = false;
+        isDraggingCamera = false;
+      } else if (e.touches.length === 1) {
+        const t = e.touches[0];
+        currentTouchScreenPos.x = t.clientX;
+        currentTouchScreenPos.y = t.clientY;
+        lastTouchPos.x = t.clientX;
+        lastTouchPos.y = t.clientY;
+        touchStartAnchorPos.x = t.clientX;
+        touchStartAnchorPos.y = t.clientY;
+        lastTouchMoveTime = performance.now();
+        isTouchActive = true;
+        isDraggingCamera = false;
+      }
+    }
+
+    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchcancel', handleTouchEnd);
+
+    // ─── PC Mouse orbit (KIZÁRÓLAG Kamera Orbit, kurzor SOHA nem mozgatja a hajót!) ───
+    let mDown = false, mx = 0, my = 0;
+    canvas.addEventListener('mousedown', e => {
+      if (isInteractiveElement(e.target)) return;
+      if (e.button !== 0) return; // Csak bal egérgomb
+      mDown = true;
+      mx = e.clientX;
+      my = e.clientY;
+      canvas.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mouseup', () => {
+      mDown = false;
+      canvas.style.cursor = 'grab';
+    });
+    window.addEventListener('mousemove', e => {
+      if (!mDown) return;
+      const deltaX = e.clientX - mx;
+      const deltaY = e.clientY - my;
+      orbH = (orbH - deltaX * ORB_SENS_H);
+      orbV = THREE.MathUtils.clamp(orbV + deltaY * ORB_SENS_V, ORB_MIN_V, ORB_MAX_V);
+      mx = e.clientX;
+      my = e.clientY;
     });
     canvas.addEventListener('wheel', e => {
       e.preventDefault();
-      orbDist = THREE.MathUtils.clamp(orbDist + e.deltaY * 0.015, ORB_MIN_D, ORB_MAX_D);
+      orbDist = THREE.MathUtils.clamp(orbDist + e.deltaY * 0.02, ORB_MIN_D, ORB_MAX_D);
     }, { passive: false });
     canvas.style.cursor = 'grab';
+
+    // In-Game monológ léptetés kattintásra / érintésre
+    const monologBoxEl = document.getElementById('zozo-ingame-monolog-container');
+    if (monologBoxEl) {
+      monologBoxEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof window.advanceInGameMonolog === 'function') window.advanceInGameMonolog();
+      });
+      monologBoxEl.addEventListener('touchend', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (typeof window.advanceInGameMonolog === 'function') window.advanceInGameMonolog();
+      });
+    }
 
     // ─── Crash handling & Zozó Warning eltávolítva ───
     // A felhasználó kérésére az ütközés mostantól csak fizikai megállást okoz,
@@ -1522,6 +1817,19 @@
       const dt = Math.min(clock.getDelta(), 0.05);
       const t = clock.getElapsedTime();
 
+      // ─── ÉRINTŐKÉPERNYŐS ÁLLÓ UJJ (STATIONARY) ÉRZÉKELŐ ───
+      const now = performance.now();
+      if (isTouchActive && !isPinchZooming) {
+        if (now - lastTouchMoveTime > 100) {
+          if (isDraggingCamera) {
+            isDraggingCamera = false;
+            touchStartAnchorPos.x = currentTouchScreenPos.x;
+            touchStartAnchorPos.y = currentTouchScreenPos.y;
+          }
+          steerShipToScreenPoint(currentTouchScreenPos.x, currentTouchScreenPos.y);
+        }
+      }
+
       // ─── PARANCSNOKI HÍD FEJLÉC (TOPBAR) ÉLŐ FRISSÍTÉSE ───
       const tbCarried = document.getElementById('tb-carried-count');
       if (tbCarried) tbCarried.innerText = window.carriedMembranes || 0;
@@ -1826,10 +2134,21 @@
       const SPEED = 50, TURN = 75;
       let targetMv = 0, tr = 0;
       if (!window.isCutscenePlaying) { // Csak akkor irányítható a csónak, ha nem fut az átvezető!
-        if (keys.KeyW || keys.ArrowUp) targetMv = 1;
-        if (keys.KeyS || keys.ArrowDown) targetMv = -1;
-        if (keys.KeyA || keys.ArrowLeft) tr = -1;
-        if (keys.KeyD || keys.ArrowRight) tr = 1;
+        if (isTouchSteerActive) {
+          targetMv = 1;
+          let angleDiff = targetSteerAngle - boat.rotation.y;
+          angleDiff = Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff)); // -PI..+PI normalizálás
+          if (Math.abs(angleDiff) > 0.04) {
+            boat.rotation.y += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), (TURN * Math.PI / 180) * dt * 2.5);
+          } else {
+            boat.rotation.y = targetSteerAngle;
+          }
+        } else {
+          if (keys.KeyW || keys.ArrowUp) targetMv = 1;
+          if (keys.KeyS || keys.ArrowDown) targetMv = -1;
+          if (keys.KeyA || keys.ArrowLeft) tr = -1;
+          if (keys.KeyD || keys.ArrowRight) tr = 1;
+        }
       }
 
       window.currentMv = window.currentMv || 0;
@@ -1852,7 +2171,9 @@
 
       if (Math.abs(mv) > 0.01) {
         const dir = mv < 0 ? -1 : 1;
-        boat.rotation.y -= tr * dir * (TURN * Math.PI / 180) * dt;
+        if (!isTouchSteerActive) {
+          boat.rotation.y -= tr * dir * (TURN * Math.PI / 180) * dt;
+        }
         let spd = SPEED;
         if (mv < 0) spd = 30.0;
         _fwd.set(0, 0, -1).applyQuaternion(boat.quaternion);
@@ -1860,7 +2181,6 @@
         boat.position.add(_step);
       } else if (Math.abs(tr) > 0.01) {
         boat.rotation.y -= tr * (TURN * Math.PI / 180) * dt;
-        orbH = 0.0;
       }
 
       let collisionDetected = false;

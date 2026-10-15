@@ -337,7 +337,93 @@
       50% { opacity: 0.75; transform: scale(1.03); }
       100% { opacity: 1; }
     }
+
+    /* ─── KÖTELEZŐ FEKVŐ TÁJOLÁS (ORIENTATION GUARD) ─── */
+    #orientation-guard {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(15, 25, 45, 0.98) 0%, rgba(5, 10, 18, 1) 100%);
+      z-index: 99999999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      box-sizing: border-box;
+      color: #ffd700;
+      font-family: 'BriskB', 'Courier New', monospace;
+      pointer-events: auto;
+    }
+
+    .rotate-phone-anim {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 25px;
+      animation: rotatePhone 2.2s ease-in-out infinite;
+    }
+
+    @keyframes rotatePhone {
+      0% { transform: rotate(0deg) scale(1); }
+      35% { transform: rotate(90deg) scale(1.1); }
+      70% { transform: rotate(90deg) scale(1.1); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    .orientation-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffea00;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      letter-spacing: 1px;
+    }
+
+    .orientation-desc {
+      font-size: 15px;
+      color: #eaddb5;
+      max-width: 360px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .force-landscape-btn {
+      background: linear-gradient(180deg, #d4af37 0%, #aa8010 100%);
+      color: #1a1005;
+      font-weight: bold;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+    }
+
+    @media screen and (orientation: portrait) and (max-width: 1024px) {
+      #orientation-guard {
+        display: flex !important;
+      }
+    }
   </style>
+
+  <script>
+    window.requestLandscapeMode = function() {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock('landscape').catch(() => {});
+            }
+          }).catch(() => {});
+        } else if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(() => {});
+        }
+      } catch(e) {}
+    };
+  </script>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -843,6 +929,19 @@
   </script>
 </head>
 <body>
+  <!-- ─── KÖTELEZŐ FEKVŐ TÁJOLÁS KIKÉNYSZERÍTŐ RÉTEG ─── -->
+  <div id="orientation-guard">
+    <svg class="rotate-phone-anim" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+      <line x1="12" y1="18" x2="12.01" y2="18"></line>
+      <path d="M17 8l3-3-3-3"></path>
+      <path d="M20 5h-4"></path>
+    </svg>
+    <div class="orientation-title">⚓ VITORLABONTÁS FEKVŐ MÓDBAN!</div>
+    <div class="orientation-desc">A kalóz bázis és a 3D kaland fekvő képernyőre lett tervezve.<br><strong>Kérlek, fordítsd el a telefonodat oldalra!</strong></div>
+    <button class="force-landscape-btn" onclick="requestLandscapeMode()">🔄 Fekvő mód kényszerítése</button>
+  </div>
+
   <video id="bg-video" autoplay loop muted playsinline preload="auto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none;">
     <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
     <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Zeppelin%20forog%20(1).mp4" type="video/mp4">

@@ -513,6 +513,78 @@
             }
         }
 
+        /* STÍLUSOS PROJEKT ÉRTESÍTÉSI ÉS KVÍZ EREDMÉNY MODAL (Zozo monológ pergamen stílus) */
+        #game-dialog-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.78);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 220;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .game-dialog-panel {
+            position: relative;
+            width: 90vw;
+            max-width: 620px;
+            max-height: 85vh;
+            background: #fdf5e6 url('https://storage.googleapis.com/kalozsziget-assets/images/Zozo_monolog_window_1.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            padding: 75px 55px 65px 55px;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85);
+            box-sizing: border-box;
+            font-family: 'BriskB', 'Georgia', serif;
+            color: #1a0f05;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto;
+            text-shadow: none;
+        }
+
+        .game-dialog-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            line-height: 1.35;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+
+        .game-dialog-text {
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            color: #1a0f05;
+            font-weight: normal;
+            line-height: 1.45;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 600px) {
+            .game-dialog-panel {
+                width: 94vw;
+                max-width: 94vw;
+                padding: 45px 22px 35px 22px;
+            }
+            .game-dialog-title {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            .game-dialog-text {
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+        }
+
         #start-instruction {
             position: absolute;
             top: 50%;
@@ -1219,7 +1291,7 @@
                             <span class="info-icon-badge">🖐️</span>
                             <div>
                                 <strong>Ujj csúsztatása – Kameramozgás (Svenkelés):</strong>
-                                <p>Csúsztasd végig az ujjad vízszintesen a képernyőn a kamera körbeforgatásához (a kötött 45°-os rálátási szögben). A kamera magától sosem forog el, mindig a te kezedben van az irányítás!</p>
+                                <p>Csúsztasd végig az ujjad vízszintesen a képernyőn a kamera körbeforgatásához (a kötött 45°-os rálátási szögben). Ha megállítod az ujjad a képernyőn (anélkül, hogy felemelnéd), a rendszer automatikusan átvált kameramozgásból hajómozgássá, és a csónak azonnal megindul a kiválasztott pont felé!</p>
                             </div>
                         </div>
                         <div class="info-row">
@@ -1245,7 +1317,7 @@
                         <div class="info-row">
                             <span class="info-icon-badge">🖱️</span>
                             <div>
-                                <strong>Bal egérgomb nyomva tartva:</strong> Kamera forgatása a csónak körül.
+                                <strong>Bal egérgomb (kattintás / húzás):</strong> Kattintva tartás / megállítás = Hajó halad az egér felé | Egér húzása = Kamera svenkelése.
                             </div>
                         </div>
                         <div class="info-row">
@@ -1354,10 +1426,54 @@
             }
         }
 
+        // ==========================================
+        // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
+        // ==========================================
+        function showProjectDialog(title, text, btnText, isSuccess, callback) {
+            const overlay = document.getElementById('game-dialog-overlay');
+            const titleEl = document.getElementById('game-dialog-title');
+            const textEl = document.getElementById('game-dialog-text');
+            const btnEl = document.getElementById('game-dialog-btn');
+            if (!overlay || !titleEl || !textEl || !btnEl) return;
+
+            titleEl.innerHTML = title;
+            titleEl.style.color = isSuccess ? '#1b5e20' : '#4a0000';
+            textEl.innerHTML = text;
+            btnEl.innerText = btnText || '⚓ TOVÁBB';
+
+            const handleClose = function(e) {
+                if (e) {
+                    e.stopPropagation();
+                    if (e.cancelable) e.preventDefault();
+                }
+                overlay.style.display = 'none';
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            };
+
+            btnEl.onclick = handleClose;
+            btnEl.ontouchend = handleClose;
+            overlay.style.display = 'flex';
+        }
+
+        window.uiAlert = function(msg, title) {
+            showProjectDialog(title || "Értesítés", msg, "⚓ ÉRTEM", true, null);
+        };
+        window.alert = function(msg) {
+            showProjectDialog("Értesítés", msg, "⚓ ÉRTEM", true, null);
+        };
+
         function openDemoSubscriptionModal(titleText, bodyText) {
             const totalHartya = scoreOnBoat + baseHarborScore;
             if (totalHartya <= 0) {
-                alert("Nincs menthető hártyád! Gyűjts össze legalább 1 hártyát a tengeren.");
+                showProjectDialog(
+                    "⚠️ FIGYELEM!",
+                    "Nincs menthető hártyád! Gyűjts össze legalább 1 hártyát a tengeren a mentéshez.",
+                    "⚓ ÉRTEM",
+                    false,
+                    null
+                );
                 return;
             }
             const overlay = document.getElementById('demo-subscription-overlay');
@@ -1508,20 +1624,35 @@
                 btn.onclick = function() {
                     overlay.style.display = 'none';
                     if (ans === qData.correctAnswer) {
-                        alert("HELYES VÁLASZ! Megmenekültél a léghajótól! A csónakod visszatért a Kikötőbe.");
-                        if (enemyShip) {
-                            enemyShip.position.set(-200, 20, 200);
-                        }
-                        if (playerBoat && typeof BASE_POS !== 'undefined') {
-                            // Korrekció: a kiindulási helyre rakjuk vissza a csónakot az eredeti rámpa utolsó eleme mellé jobbra
-                            playerBoat.position.set(BASE_POS.x - 45, 0, BASE_POS.z + 62);
-                        }
-                        isCaughtByAirship = false;
-                        isGameOver = false;
-                        airshipQuizActive = false;
-                        gameStarted = true;
+                        showProjectDialog(
+                            "🎉 HELYES VÁLASZ!",
+                            "Megmenekültél a léghajótól! A csónakod épségben visszatért a Kikötőbe.",
+                            "⚓ VISSZATÉRÉS A KIKÖTŐBE",
+                            true,
+                            function() {
+                                if (enemyShip) {
+                                    enemyShip.position.set(-200, 20, 200);
+                                }
+                                if (playerBoat && typeof BASE_POS !== 'undefined') {
+                                    // Korrekció: a kiindulási helyre rakjuk vissza a csónakot az eredeti rámpa utolsó eleme mellé jobbra
+                                    playerBoat.position.set(BASE_POS.x - 45, 0, BASE_POS.z + 62);
+                                }
+                                isCaughtByAirship = false;
+                                isGameOver = false;
+                                airshipQuizActive = false;
+                                gameStarted = true;
+                            }
+                        );
                     } else {
-                        triggerGameOver("HIBÁS VÁLASZ! A Léghajó elkobozta a hártyáidat.");
+                        showProjectDialog(
+                            "☠️ HIBÁS VÁLASZ!",
+                            "A Léghajó elkobozta a hártyáidat!<br><span style='font-size:14px; color:#2b1807;'>A kaland itt véget ért, de a tenger visszavár!</span>",
+                            "⚓ ÚJ JÁTÉK INDÍTÁSA",
+                            false,
+                            function() {
+                                window.location.reload();
+                            }
+                        );
                     }
                 };
                 btnsEl.appendChild(btn);
@@ -3011,29 +3142,34 @@
         window.addEventListener('keydown', e => {
             let k = e.key.toLowerCase();
             if (k === 'm') { toggleMusic(); return; }
-            if (keys.hasOwnProperty(k)) keys[k] = true;
+            if (keys.hasOwnProperty(k)) {
+                keys[k] = true;
+                isTouchSteerActive = false; // Billentyű lenyomásakor a hajó átvált billentyűs vezérlésre
+            }
         });
         window.addEventListener('keyup', e => {
             let k = e.key.toLowerCase();
             if (keys.hasOwnProperty(k)) keys[k] = false;
         });
 
-        // Egér svenkelés (Orbit)
-        let isDragging = false;
-        let previousMousePosition = { x: 0, y: 0 };
+        // ---- GESZTUS- ÉS VEZÉRLŐ MOTOR GLOBÁLIS ÁLLAPOTAI ----
+        // Érintőképernyő (Mobil / Tablet) állapotok
+        let isTouchActive = false;
+        let isDraggingCamera = false;
+        let isPinchZooming = false;
+        let lastPinchDist = null;
+        let touchStartAnchorPos = { x: 0, y: 0 };
+        let lastTouchPos = { x: 0, y: 0 };
+        let currentTouchScreenPos = { x: 0, y: 0 };
+        let lastTouchMoveTime = 0;
 
-        window.addEventListener('mousedown', (e) => {
-            if (isAndroid && e.clientX < window.innerWidth / 2) return;
-            isDragging = true;
-        });
-        window.addEventListener('mouseup', () => isDragging = false);
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                let deltaX = e.clientX - previousMousePosition.x;
-                cameraAngle -= deltaX * 0.01; // Jobbra-balra húzás = Orbit forgás
-            }
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
+        // Asztali böngészős egér (Live Server tesztelés) állapotok
+        let isMouseActive = false;
+        let isMouseDraggingCamera = false;
+        let mouseStartAnchorPos = { x: 0, y: 0 };
+        let lastMousePos = { x: 0, y: 0 };
+        let currentMouseScreenPos = { x: 0, y: 0 };
+        let lastMouseMoveTime = 0;
 
         // Egér görgő (Zoom)
         window.addEventListener('wheel', (e) => {
@@ -3083,6 +3219,30 @@
         function updatePhysics() {
             if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
             if (!isAndroid) scene.updateMatrixWorld(true);
+
+            // ---- ÉRINTŐKÉPERNYŐS & EGÉR ÁLLÓ UJJ (STATIONARY) ÉRZÉKELŐ ----
+            // Ha az ujj/egér megáll a képernyőn (nincs svenk legalább 120ms-ig),
+            // a rendszer automatikusan kameramozgásból (svenk) átvált hajómozgássá!
+            const now = performance.now();
+            if (isTouchActive && !isPinchZooming) {
+                if (now - lastTouchMoveTime > 120) {
+                    if (isDraggingCamera) {
+                        isDraggingCamera = false;
+                        touchStartAnchorPos.x = currentTouchScreenPos.x;
+                        touchStartAnchorPos.y = currentTouchScreenPos.y;
+                    }
+                    steerShipToScreenPoint(currentTouchScreenPos.x, currentTouchScreenPos.y);
+                }
+            } else if (isMouseActive) {
+                if (now - lastMouseMoveTime > 120) {
+                    if (isMouseDraggingCamera) {
+                        isMouseDraggingCamera = false;
+                        mouseStartAnchorPos.x = currentMouseScreenPos.x;
+                        mouseStartAnchorPos.y = currentMouseScreenPos.y;
+                    }
+                    steerShipToScreenPoint(currentMouseScreenPos.x, currentMouseScreenPos.y);
+                }
+            }
 
             // ---- HAJÓ IRÁNYÍTÁS (Tank controls PC billentyűzettel / Ujj követése mobilon) ----
             if (isTouchSteerActive) {
@@ -3766,8 +3926,11 @@
             const dy = screenY - centerY;
 
             // Képernyő sík szög: 0 = fel (kamera előre), PI/2 = jobb, -PI/2 = bal, PI = le/vissza
-            const screenAngle = Math.atan2(dx, -dy);
-            targetSteerAngle = cameraAngle + Math.PI - screenAngle;
+            // Holtzóna: Ha nem a hajó közvetlen 20px-es középpontjában van az érintés
+            if (Math.hypot(dx, dy) >= 20) {
+                const screenAngle = Math.atan2(dx, -dy);
+                targetSteerAngle = cameraAngle + Math.PI - screenAngle;
+            }
             isTouchSteerActive = true;
 
             if (!gameStarted) {
@@ -3781,13 +3944,7 @@
 
         function setupMobileControls() {
             const overlay = document.getElementById('mobile-overlay');
-            if (overlay) overlay.style.display = 'block';
-
-            let isPinchZooming = false;
-            let lastPinchDist = null;
-            let isDraggingCamera = false;
-            let touchStartPos = { x: 0, y: 0 };
-            let lastTouchPos = { x: 0, y: 0 };
+            if (overlay && isAndroid) overlay.style.display = 'block';
 
             function isInteractiveElement(target) {
                 if (!target) return false;
@@ -3798,7 +3955,8 @@
                        target.closest('#quiz-panel') || target.closest('#quiz-overlay') ||
                        target.closest('#game-message') ||
                        target.closest('#start-instruction') || target.closest('#base-exit-btn') ||
-                       target.closest('#demo-subscription-overlay') || target.closest('#demo-exit-overlay');
+                       target.closest('#demo-subscription-overlay') || target.closest('#demo-exit-overlay') ||
+                       target.closest('#game-dialog-overlay') || target.closest('.game-dialog-panel');
             }
 
             // ÉRINTŐKÉPERNYŐS ESEMÉNYEK
@@ -3808,6 +3966,7 @@
                 // 1. ZOOM: KIZÁRÓLAG két ujj egyidejű használata
                 if (e.touches.length === 2) {
                     isPinchZooming = true;
+                    isTouchActive = false;
                     isTouchSteerActive = false;
                     isDraggingCamera = false;
                     lastPinchDist = Math.hypot(
@@ -3818,14 +3977,21 @@
                     return;
                 }
 
-                // 2. EGY UJJ: Ha az ujj pontot érint, a hajó azonnal ebbe az irányba fordulva megindul!
+                // 2. EGY UJJ: Érintés indítása
                 if (e.touches.length === 1) {
                     isPinchZooming = false;
+                    isTouchActive = true;
                     isDraggingCamera = false;
                     const t = e.touches[0];
-                    touchStartPos = { x: t.clientX, y: t.clientY };
-                    lastTouchPos = { x: t.clientX, y: t.clientY };
+                    touchStartAnchorPos.x = t.clientX;
+                    touchStartAnchorPos.y = t.clientY;
+                    lastTouchPos.x = t.clientX;
+                    lastTouchPos.y = t.clientY;
+                    currentTouchScreenPos.x = t.clientX;
+                    currentTouchScreenPos.y = t.clientY;
+                    lastTouchMoveTime = performance.now();
 
+                    // Kezdeti érintésre a hajó már megkapja a célirányt
                     steerShipToScreenPoint(t.clientX, t.clientY);
                     e.preventDefault();
                 }
@@ -3851,24 +4017,30 @@
                     return;
                 }
 
-                // 2. EGY UJJAS KEZELÉS: Svenkelés (kamera mozog) vs. Pont érintés (hajó mozog)
+                // 2. EGY UJJAS KEZELÉS: Svenkelés (kamera mozog) vs. Álló ujj (hajó mozog)
                 if (e.touches.length === 1 && !isPinchZooming) {
                     const t = e.touches[0];
-                    const totalMoveDist = Math.hypot(t.clientX - touchStartPos.x, t.clientY - touchStartPos.y);
+                    currentTouchScreenPos.x = t.clientX;
+                    currentTouchScreenPos.y = t.clientY;
 
-                    // Ha az ujj svenkel a képernyőn (elcsúszik a kezdőponttól), a kamera forog oldalirányban
-                    if (isDraggingCamera || totalMoveDist > 25) {
+                    const stepDist = Math.hypot(t.clientX - lastTouchPos.x, t.clientY - lastTouchPos.y);
+                    const distFromAnchor = Math.hypot(t.clientX - touchStartAnchorPos.x, t.clientY - touchStartAnchorPos.y);
+
+                    // Ha a horgonytól kimozdult az ujj (> 12px) vagy már svenk módban vagyunk:
+                    if (isDraggingCamera || distFromAnchor > 12) {
                         isDraggingCamera = true;
-                        isTouchSteerActive = false; // Svenkelés közben nem kormányzunk
+                        isTouchSteerActive = false; // Svenkelés alatt nem a hajó mozog
 
                         const deltaX = t.clientX - lastTouchPos.x;
-                        cameraAngle -= deltaX * 0.008; // Csakis horizontális oldalirányú forgatás (kötött 45 fok látószög)
-                    } else {
-                        // Ha az ujj pontot érint és tart, a hajó az ujj felé halad
-                        steerShipToScreenPoint(t.clientX, t.clientY);
+                        cameraAngle -= deltaX * 0.008; // Horizontális kamerakörbeforgatás
+
+                        if (stepDist > 0.5) {
+                            lastTouchMoveTime = performance.now();
+                        }
                     }
 
-                    lastTouchPos = { x: t.clientX, y: t.clientY };
+                    lastTouchPos.x = t.clientX;
+                    lastTouchPos.y = t.clientY;
                     e.preventDefault();
                 }
             }, { passive: false });
@@ -3879,7 +4051,19 @@
                     lastPinchDist = null;
                 }
                 if (e.touches.length === 0) {
+                    isTouchActive = false;
                     isTouchSteerActive = false;
+                    isDraggingCamera = false;
+                } else if (e.touches.length === 1) {
+                    const t = e.touches[0];
+                    currentTouchScreenPos.x = t.clientX;
+                    currentTouchScreenPos.y = t.clientY;
+                    lastTouchPos.x = t.clientX;
+                    lastTouchPos.y = t.clientY;
+                    touchStartAnchorPos.x = t.clientX;
+                    touchStartAnchorPos.y = t.clientY;
+                    lastTouchMoveTime = performance.now();
+                    isTouchActive = true;
                     isDraggingCamera = false;
                 }
             }
@@ -3887,57 +4071,79 @@
             window.addEventListener('touchend', handleTouchEnd);
             window.addEventListener('touchcancel', handleTouchEnd);
 
-            // Asztali böngészős Live Server tesztelés támogatása egérrel
-            let isMouseDownOnGame = false;
-            let mouseStartPos = { x: 0, y: 0 };
-            let lastMousePos = { x: 0, y: 0 };
-            let isMouseDraggingCamera = false;
-
+            // Asztali böngészős Live Server tesztelés támogatása egérrel (1:1 megegyező logika)
             window.addEventListener('mousedown', (e) => {
                 if (isInteractiveElement(e.target)) return;
-                isMouseDownOnGame = true;
+                if (e.button !== 0) return; // Csak bal egérgomb
+
+                isMouseActive = true;
                 isMouseDraggingCamera = false;
-                mouseStartPos = { x: e.clientX, y: e.clientY };
-                lastMousePos = { x: e.clientX, y: e.clientY };
+                mouseStartAnchorPos.x = e.clientX;
+                mouseStartAnchorPos.y = e.clientY;
+                lastMousePos.x = e.clientX;
+                lastMousePos.y = e.clientY;
+                currentMouseScreenPos.x = e.clientX;
+                currentMouseScreenPos.y = e.clientY;
+                lastMouseMoveTime = performance.now();
 
                 steerShipToScreenPoint(e.clientX, e.clientY);
             });
 
             window.addEventListener('mousemove', (e) => {
-                if (!isMouseDownOnGame) return;
-                const totalDist = Math.hypot(e.clientX - mouseStartPos.x, e.clientY - mouseStartPos.y);
-                if (isMouseDraggingCamera || totalDist > 25) {
+                if (!isMouseActive) return;
+
+                currentMouseScreenPos.x = e.clientX;
+                currentMouseScreenPos.y = e.clientY;
+
+                const stepDist = Math.hypot(e.clientX - lastMousePos.x, e.clientY - lastMousePos.y);
+                const distFromAnchor = Math.hypot(e.clientX - mouseStartAnchorPos.x, e.clientY - mouseStartAnchorPos.y);
+
+                if (isMouseDraggingCamera || distFromAnchor > 12) {
                     isMouseDraggingCamera = true;
                     isTouchSteerActive = false;
+
                     const deltaX = e.clientX - lastMousePos.x;
                     cameraAngle -= deltaX * 0.008;
-                } else {
-                    steerShipToScreenPoint(e.clientX, e.clientY);
+
+                    if (stepDist > 0.5) {
+                        lastMouseMoveTime = performance.now();
+                    }
                 }
-                lastMousePos = { x: e.clientX, y: e.clientY };
+
+                lastMousePos.x = e.clientX;
+                lastMousePos.y = e.clientY;
             });
 
-            window.addEventListener('mouseup', () => {
-                isMouseDownOnGame = false;
+            function handleMouseUp(e) {
+                if (e && e.button !== undefined && e.button !== 0) return;
+                isMouseActive = false;
                 isMouseDraggingCamera = false;
                 isTouchSteerActive = false;
-            });
+            }
+
+            window.addEventListener('mouseup', handleMouseUp);
         }
 
-        // Automatikus indítás mobilon és érintőképernyős eszközökön
-        window.addEventListener('DOMContentLoaded', () => {
+        // Automatikus indítás mobilon és asztali böngészőben (Live Server teszteléshez)
+        function initAppControls() {
             initScoreBubbles();
+            setupMobileControls();
             if (isAndroid) {
                 document.body.classList.add('mobile-hud');
-                setupMobileControls();
                 
                 // Zozó Hero onboarding kártya tippjének frissítése
                 const hintText = document.getElementById('control-hint-text');
                 if (hintText) {
-                    hintText.innerHTML = "📱 <strong>Mobil irányítás:</strong> Érintsd meg a képernyőt egy ponton = Hajó a pont felé halad | Ujj csúsztatása = Kamera forgatása | Két ujj = Zoom";
+                    hintText.innerHTML = "📱 <strong>Mobil irányítás:</strong> Ujj csúsztatása (svenk) = Kamera forgatása | Ujj megállítása = Hajó halad az ujj felé | Két ujj = Zoom";
                 }
             }
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initAppControls);
+        } else {
+            initAppControls();
+        }
 
         // Biztonsági tartalék képernyőkoppintásra való indításhoz (minden mobil/érintős eszközhöz)
         window.addEventListener('touchstart', () => {
@@ -3985,6 +4191,15 @@
                     <button onclick="window.location.href='../index.html';" style="width: 85%; max-width: 400px; background: url('https://storage.googleapis.com/kalozsziget-assets/icons/ovalis_gomb-rw.png') no-repeat center center; background-size: 100% 100%; border: none; color: #fffbcc; padding: 12px 24px; font-size: 18px; font-family: 'Georgia', serif; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);">Behajózás Hebok kikötőbe</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- DEMÓ STÍLUSOS ÉRTESÍTÉSI / KVÍZ EREDMÉNY MODAL -->
+    <div id="game-dialog-overlay">
+        <div class="game-dialog-panel">
+            <div id="game-dialog-title" class="game-dialog-title">🎉 HELYES VÁLASZ!</div>
+            <div id="game-dialog-text" class="game-dialog-text">Megmenekültél a léghajótól! A csónakod visszatért a Kikötőbe.</div>
+            <button id="game-dialog-btn" class="game-over-restart-btn" style="margin-bottom: 0;">⚓ VISSZATÉRÉS A KIKÖTŐBE</button>
         </div>
     </div>
 

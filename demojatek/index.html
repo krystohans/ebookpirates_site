@@ -1714,22 +1714,34 @@
                 obstacles.push(rock);
             }
 
-            // Áthatolhatatlan zátonygyűrű a pálya szélén (Origótól R=350)
-            // Mobilon ritkább lépésköz (0.35), mert a matematikai határ védi a pályát
-            const ringStep = isAndroid ? 0.35 : 0.05;
+            // ---- PÁLYÁT HATÁROLÓ EGYBEFÜGGŐ SZIKLAZÁTONY GYŰRŰ (VÍZFELÜLETI LÁTHATÓ AKADÁLY) ----
+            // A pálya teljes kerületét (R = 340-356) rések nélkül feltöltjük masszív sziklákkal
+            const ringStep = 0.032; // ~196 szikla a teljes 360 fokos kör mentén, többszörös átfedéssel
             for (let theta = 0; theta < Math.PI * 2; theta += ringStep) {
-                let x = 350 * Math.cos(theta);
-                let z = 350 * Math.sin(theta);
+                // Enyhe sugaras variáció a természetes, organikus zátonyfal érdekében (338 és 354 között)
+                let r = 346 + (rng.next() - 0.5) * 16;
+                let x = r * Math.cos(theta);
+                let z = r * Math.sin(theta);
 
-                // Ha a csatahajó közelében van, oda nem teszünk sziklát
-                if (Math.sqrt(Math.pow(x - battleship.position.x, 2) + Math.pow(z - battleship.position.z, 2)) < 60) continue;
+                // Ha a csatahajó (titkos kijárat) közelében van, oda nem teszünk sziklát (a csatahajó teste zárja el az utat)
+                if (Math.hypot(x - battleship.position.x, z - battleship.position.z) < 60) continue;
+
+                // Ha közvetlenül a bázis kikötőmedencéjének belső terébe esne
+                if (Math.hypot(x - BASE_POS.x, z - BASE_POS.z) < 45) continue;
 
                 let colorIndex = Math.floor(rng.next() * globalLoadedRockModels.length);
                 let rock = globalLoadedRockModels[colorIndex].clone();
 
-                rock.position.set(x, 0, z);
+                // Változatos, tekintélyes méret (48x - 68x) a masszív látható akadályhatáshoz
+                let s = 48 + rng.next() * 20;
+                rock.scale.set(s, s, s);
+
+                // Magassági és forgatási variáció a vízfelületből kimagasodó zátonyokhoz
+                let y = (rng.next() - 0.5) * 4;
+                rock.position.set(x, y, z);
                 rock.rotation.y = rng.next() * 2 * Math.PI;
-                rock.boundingRadius = rock.userData.autoRadius; // Pontos, lemért sugár a peremnél is!
+
+                rock.boundingRadius = (rock.userData.autoRadius / 50.0) * s;
                 rock.userData.modelType = colorIndex;
                 rock.matrixAutoUpdate = false;
                 rock.updateMatrix();

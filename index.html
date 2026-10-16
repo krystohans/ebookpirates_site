@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=20260925_harbor2">
+    <link rel="stylesheet" href="styles.css?v=20261016_piller2">
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:,">
 
     <script>
@@ -190,6 +191,16 @@
                         <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="header-icon-img" onerror="this.src='assets/images/horgony_removebg.png'">
                     </div>
 
+                    <!-- 2. Pillér: Teljes képernyő ki/be váltó gomb -->
+                    <div class="header-action-btn" id="header-fullscreen-btn" title="Teljes képernyő" data-lang-title="header_fullscreen" onclick="toggleFullscreen()">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png" alt="Teljes képernyő" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png'">
+                    </div>
+
+                    <!-- 2. Pillér: PWA Telepítés gomb (Böngészői installprompt eseményre aktiválódik) -->
+                    <div class="header-action-btn" id="header-install-btn" title="Alkalmazás telepítése" data-lang-title="header_install" onclick="triggerPwaInstall()" style="display: none;">
+                        <svg class="header-icon-img" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 4px #ffd700); width: 28px; height: 28px; margin: auto;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </div>
+
                     <!-- Földgömb + Nyelvválasztó lenyíló panel -->
                     <div class="header-lang-wrapper">
                         <div class="header-action-btn" id="header-lang-globe-btn" title="Nyelvválasztás" data-lang-title="header_lang_select" onclick="toggleHeaderLangDropdown(event)">
@@ -221,6 +232,16 @@
                         <div class="mobile-menu-item" onclick="loadPage('kikoto_oldal'); toggleHeaderMobileSettings(event, false);">
                             <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="menu-item-icon" onerror="this.src='assets/images/horgony_removebg.png'">
                             <span data-lang="header_back_to_port">Kikötő</span>
+                        </div>
+                        <!-- 2. Pillér: Teljes képernyő mobil menüpont -->
+                        <div class="mobile-menu-item" id="mobile-menu-fullscreen" onclick="toggleFullscreen(); toggleHeaderMobileSettings(event, false);">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png" alt="Teljes képernyő" class="menu-item-icon" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png'">
+                            <span data-lang="header_fullscreen">Teljes képernyő</span>
+                        </div>
+                        <!-- 2. Pillér: PWA Telepítés mobil menüpont -->
+                        <div class="mobile-menu-item" id="mobile-menu-install" onclick="triggerPwaInstall(); toggleHeaderMobileSettings(event, false);" style="display: none;">
+                            <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span data-lang="header_install">Alkalmazás telepítése</span>
                         </div>
                         <div class="mobile-menu-divider"></div>
                         <div class="mobile-lang-grid">
@@ -268,6 +289,14 @@
                 <div id="loader-fill" class="loader-bar-fill"></div>
             </div>
             <div id="loader-status" class="loader-text" data-lang="sot_init_clockwork">3D ÓRAMŰ INICIALIZÁLÁSA...</div>
+        </div>
+
+        <!-- 2. Pillér: Fekvő Tájolás & Teljes Képernyő Tájékoztató Betöltés Alatt -->
+        <div id="loading-orientation-hint" class="loading-orientation-hint" onclick="if(typeof requestLandscapeAndFullscreen==='function')requestLandscapeAndFullscreen()">
+            <div class="orientation-anim-phone">
+                <div class="phone-screen-glow"></div>
+            </div>
+            <div class="orientation-hint-text" data-lang="loading_switch_landscape">⚓ VÁLTÁS TELJES KÉPERNYŐS FEKVŐ MÓDRA...</div>
         </div>
     </div>
 
@@ -637,7 +666,7 @@
 
 </div>
 
-    <script src="web_fordito.js?v=20260923_sot1"></script>
-    <script src="app.js?v=20260925_harbor2"></script>
+    <script src="web_fordito.js?v=20261016_piller2"></script>
+    <script src="app.js?v=20261016_piller2"></script>
 </body>
 </html>

@@ -46,6 +46,9 @@ window.preloadPageTemplate = preloadPageTemplate;
 var _universalLoadingWatchdog = null;
 
 function showUniversalLoading(statusText, customPhrases) {
+    if (typeof requestLandscapeAndFullscreen === 'function') {
+        requestLandscapeAndFullscreen();
+    }
     var overlay = document.getElementById('kikoto-3d-loading-overlay') || document.getElementById('loading-overlay');
     if (overlay) {
         overlay.style.display = 'flex';
@@ -1062,6 +1065,9 @@ function parseJsonFromText(text) {
 }
 
 function login() {
+    if (typeof requestLandscapeAndFullscreen === 'function') {
+        requestLandscapeAndFullscreen();
+    }
     // 1. UI Előkészítése
     document.getElementById('login-status').innerText = t('login_status_checking');
     const registerButtonContainer = document.getElementById('registerButtonContainer');
@@ -1394,6 +1400,193 @@ if (typeof document !== 'undefined' && !window._headerDropdownListenerBound) {
         }
     });
 }
+
+// =======================================================
+// === 2. PILLÉR: FEKVŐ TÁJOLÁS ÉS TELJES KÉPERNYŐ MOTOR ===
+// =======================================================
+
+function requestLandscapeAndFullscreen() {
+    try {
+        var el = document.documentElement;
+        var rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (rfs && !document.fullscreenElement && !document.webkitFullscreenElement) {
+            var promise = rfs.call(el);
+            if (promise && promise.catch) {
+                promise.catch(function (err) {
+                    console.log("Fullscreen kérés figyelmen kívül hagyva:", err);
+                });
+            }
+        }
+        if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+            window.screen.orientation.lock('landscape').catch(function (err) {
+                console.log("Képernyő tájolás zárolás nem támogatott vagy elutasítva:", err);
+            });
+        }
+    } catch (e) {
+        console.warn("requestLandscapeAndFullscreen figyelmeztetés:", e);
+    }
+    updateLoadingOrientationUI();
+}
+window.requestLandscapeAndFullscreen = requestLandscapeAndFullscreen;
+
+function updateLoadingOrientationUI() {
+    var hint = document.getElementById('loading-orientation-hint');
+    if (!hint) return;
+    var isLandscape = (window.innerWidth > window.innerHeight);
+    var textEl = hint.querySelector('.orientation-hint-text');
+    var animPhone = hint.querySelector('.orientation-anim-phone');
+    if (isLandscape) {
+        if (animPhone) animPhone.style.display = 'none';
+        if (textEl) {
+            textEl.textContent = (typeof t === 'function') ? t('loading_switch_landscape') : "⚓ VÁLTÁS TELJES KÉPERNYŐS FEKVŐ MÓDRA...";
+        }
+    } else {
+        if (animPhone) animPhone.style.display = 'block';
+        if (textEl) {
+            textEl.textContent = (typeof t === 'function') ? t('loading_switch_landscape') : "⚓ KÉRLEK FORDÍTSD EL A KÉSZÜLÉKET FEKVŐ MÓDBA!";
+        }
+    }
+}
+
+window.addEventListener('resize', updateLoadingOrientationUI);
+window.addEventListener('orientationchange', function () {
+    setTimeout(updateLoadingOrientationUI, 200);
+});
+
+function toggleFullscreen() {
+    try {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            var el = document.documentElement;
+            var rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+            if (rfs) {
+                rfs.call(el).catch(function (err) { console.log("Teljes képernyő hiba:", err); });
+            }
+        } else {
+            var efs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+            if (efs) {
+                efs.call(document).catch(function (err) { console.log("Kilépés teljes képernyőből hiba:", err); });
+            }
+        }
+    } catch (e) {
+        console.warn("toggleFullscreen hiba:", e);
+    }
+}
+window.toggleFullscreen = toggleFullscreen;
+
+function handleFullscreenChange() {
+    var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    var fsBtn = document.getElementById('header-fullscreen-btn');
+    if (fsBtn) {
+        var img = fsBtn.querySelector('img');
+        if (img) {
+            img.style.filter = isFs ? 'drop-shadow(0 0 6px #00ffcc)' : 'none';
+        }
+    }
+}
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+// =======================================================
+// === PWA Telepítési Rendszer & Háttérbeli Telepítettség-Vizsgálat ===
+// =======================================================
+var deferredPwaPrompt = null;
+
+async function isPwaAlreadyInstalled() {
+    // 1. Standalone / Fullscreen módban fut-e épp a felület (PWA ablakban / iOS home screenről indítva)?
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+        return true;
+    }
+    if (window.navigator && window.navigator.standalone === true) {
+        return true;
+    }
+    // 2. Mentett korábbi telepítés a böngésző tárolójában ezen az eszközön
+    try {
+        if (localStorage.getItem('ebp_pwa_installed') === 'true') {
+            return true;
+        }
+    } catch (e) { }
+    // 3. Natív operációs rendszer szintű vizsgálat (Chrome, Edge, Android W3C API)
+    if (navigator && 'getInstalledRelatedApps' in navigator) {
+        try {
+            var relatedApps = await navigator.getInstalledRelatedApps();
+            if (relatedApps && relatedApps.length > 0) {
+                return true;
+            }
+        } catch (err) {
+            console.log("getInstalledRelatedApps lekérdezés:", err);
+        }
+    }
+    return false;
+}
+window.isPwaAlreadyInstalled = isPwaAlreadyInstalled;
+
+window.addEventListener('beforeinstallprompt', async function (e) {
+    e.preventDefault();
+    deferredPwaPrompt = e;
+
+    // Háttérbeli vizsgálat: fel van-e már telepítve az alkalmazás a készülékre?
+    var alreadyInstalled = await isPwaAlreadyInstalled();
+    if (alreadyInstalled) {
+        console.log("eBookPirates PWA már telepítve van, telepítő gomb elrejtve.");
+        var installBtn = document.getElementById('header-install-btn');
+        if (installBtn) installBtn.style.display = 'none';
+        var mobInstall = document.getElementById('mobile-menu-install');
+        if (mobInstall) mobInstall.style.display = 'none';
+        return;
+    }
+
+    var installBtn = document.getElementById('header-install-btn');
+    if (installBtn) installBtn.style.display = 'flex';
+    var mobInstall = document.getElementById('mobile-menu-install');
+    if (mobInstall) mobInstall.style.display = 'flex';
+});
+
+window.addEventListener('appinstalled', function () {
+    deferredPwaPrompt = null;
+    try {
+        localStorage.setItem('ebp_pwa_installed', 'true');
+    } catch (e) { }
+    var installBtn = document.getElementById('header-install-btn');
+    if (installBtn) installBtn.style.display = 'none';
+    var mobInstall = document.getElementById('mobile-menu-install');
+    if (mobInstall) mobInstall.style.display = 'none';
+    console.log("eBookPirates PWA sikeresen telepítve.");
+});
+
+// Azonnali csendes ellenőrzés betöltéskor
+if (typeof window !== 'undefined') {
+    isPwaAlreadyInstalled().then(function (installed) {
+        if (installed) {
+            var installBtn = document.getElementById('header-install-btn');
+            if (installBtn) installBtn.style.display = 'none';
+            var mobInstall = document.getElementById('mobile-menu-install');
+            if (mobInstall) mobInstall.style.display = 'none';
+        }
+    }).catch(function () { });
+}
+
+function triggerPwaInstall() {
+    if (deferredPwaPrompt) {
+        deferredPwaPrompt.prompt();
+        deferredPwaPrompt.userChoice.then(function (choiceResult) {
+            if (choiceResult && choiceResult.outcome === 'accepted') {
+                console.log('Felhasználó elfogadta a PWA telepítést');
+                try {
+                    localStorage.setItem('ebp_pwa_installed', 'true');
+                } catch (e) { }
+            }
+            deferredPwaPrompt = null;
+            var installBtn = document.getElementById('header-install-btn');
+            if (installBtn) installBtn.style.display = 'none';
+            var mobInstall = document.getElementById('mobile-menu-install');
+            if (mobInstall) mobInstall.style.display = 'none';
+        });
+    } else {
+        var msg = (typeof t === 'function') ? t('pwa_already_installed_or_manual') : "Az alkalmazás hozzáadásához koppints a böngésző megosztás / menü gombjára, majd válaszd a 'Főképernyőhöz adás' opciót!";
+        alert(msg);
+    }
+}
+window.triggerPwaInstall = triggerPwaInstall;
 
 /**
  * Returns information about the client's operating system and capabilities.
@@ -20198,6 +20391,9 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     }
 
     function executeCurrentMode() {
+        if (typeof requestLandscapeAndFullscreen === 'function') {
+            requestLandscapeAndFullscreen();
+        }
         if (currentMode === 'LOGIN') executeLogin();
         else if (currentMode === 'REGISTER') executeRegister();
         else if (currentMode === 'DEREGISTER') executeDeregister();

@@ -350,6 +350,85 @@ html {
     }
 }
 
+/* ==========================================================
+   === 2. PILLÉR: ÖSSZEVONT PREMIÚM FEJLÉC (LANDSCAPE) ===
+   ========================================================== */
+
+/* Fekvő telefonok és kompakt fekvő képernyők (szélesvásznú mobil nézet) */
+@media (orientation: landscape) and (max-height: 500px) {
+    #header {
+        height: 44px !important;
+        padding: 0 16px 0 18px !important;
+        background-size: 100% 100% !important;
+    }
+    #content {
+        height: calc(100vh - 44px) !important;
+    }
+    .header-nameplate {
+        padding: 0 10px !important;
+        height: 32px !important;
+    }
+    .header-username-text {
+        font-size: 14px !important;
+        max-width: 120px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    #header-main-actions {
+        gap: 6px !important;
+    }
+    .header-action-btn {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    .credit-btn {
+        padding: 1px 6px 1px 4px !important;
+        height: 30px !important;
+    }
+    .credit-btn .header-icon-img {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    #creditValue {
+        font-size: 14px !important;
+    }
+    .header-icon-img {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    /* Fekvő módban az asztali vezérlők közvetlenül megjelennek */
+    .header-desktop-controls {
+        display: flex !important;
+        align-items: center;
+        gap: 6px !important;
+    }
+    .header-mobile-settings-wrapper {
+        display: none !important;
+    }
+}
+
+/* 2. Pillér: Fullscreen & Install gomb mikro-animációk és effektek */
+#header-fullscreen-btn,
+#header-install-btn {
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+#header-fullscreen-btn:hover,
+#header-install-btn:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+}
+
+#header-install-btn {
+    animation: installPulse 3s ease-in-out infinite;
+}
+
+@keyframes installPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.5)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9)); }
+}
+
 /* ========================================= */
 /* === 3. TARTALOM (Görgethető) === */
 /* ========================================= */
@@ -2449,6 +2528,103 @@ html.ebp-authenticated #app-view {
     letter-spacing: 1.5px;
     text-shadow: 0 0 8px rgba(0, 255, 204, 0.7);
     text-align: center;
+}
+
+/* ==========================================================
+   === 2. PILLÉR: FEKVŐ TÁJOLÁS & FULLSCREEN ÉRTESÍTŐ ===
+   ========================================================== */
+
+.loading-orientation-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 18px;
+    z-index: 10;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.orientation-hint-text {
+    font-family: 'Share Tech Mono', 'Orbitron', monospace;
+    font-size: 0.82rem;
+    color: #ffd700;
+    letter-spacing: 1.2px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    margin-top: 8px;
+    text-transform: uppercase;
+}
+
+.orientation-anim-phone {
+    width: 24px;
+    height: 42px;
+    border: 2px solid #ffd700;
+    border-radius: 6px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    animation: phoneRotateAnim 2.8s ease-in-out infinite;
+}
+
+.orientation-anim-phone::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 2px;
+    background: #ffd700;
+    border-radius: 1px;
+}
+
+.orientation-anim-phone::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #ffd700;
+    border-radius: 50%;
+}
+
+.phone-screen-glow {
+    position: absolute;
+    top: 7px;
+    left: 2px;
+    right: 2px;
+    bottom: 9px;
+    background: rgba(0, 255, 204, 0.25);
+    border-radius: 2px;
+    box-shadow: inset 0 0 6px rgba(0, 255, 204, 0.5);
+}
+
+@keyframes phoneRotateAnim {
+    0%, 15% {
+        transform: rotate(0deg);
+    }
+    45%, 75% {
+        transform: rotate(-90deg);
+    }
+    90%, 100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* Ha a készülék már fekvő tájolásban van, finomabban, megerősítésként jelenik meg */
+@media (orientation: landscape) {
+    .orientation-anim-phone {
+        display: none;
+    }
+    .orientation-hint-text {
+        font-size: 0.75rem;
+        color: #00ffcc;
+        text-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+    }
 }
 
 /* Interaktív Épület / Célpont Lebegő Szövegbuborék */

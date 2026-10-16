@@ -136,6 +136,11 @@ const translations = {
         'header_credits_tooltip': 'Kreditegyenleg frissítése',
         'header_back_to_port': 'Vissza a kikötőbe',
         'header_logout': 'Hebok elhagyása',
+        'header_fullscreen': 'Teljes képernyő',
+        'header_install': 'Alkalmazás telepítése',
+        'loading_switch_landscape': '⚓ Váltás teljes képernyős fekvő módra...',
+        'pwa_already_installed_or_manual': 'Az alkalmazás hozzáadásához koppints a böngésző megosztás / menü gombjára, majd válaszd a \'Főképernyőhöz adás\' opciót!',
+
 
         // --- Kikoto ---
         'harbor_title': 'Kikötő',
@@ -1431,6 +1436,11 @@ const translations = {
         'header_credits_tooltip': 'Refresh credit balance',
         'header_back_to_port': 'Back to the harbor',
         'header_logout': 'Leaving Hebok',
+        'header_fullscreen': 'Fullscreen',
+        'header_install': 'Install App',
+        'loading_switch_landscape': '⚓ Switching to fullscreen landscape...',
+        'pwa_already_installed_or_manual': 'To install the app, tap your browser share/menu button and select \'Add to Home Screen\'!',
+
 
         // --- Harbor ---
         'harbor_title': 'Harbor',
@@ -2727,6 +2737,11 @@ const translations = {
         'header_credits_tooltip': 'Guthaben aktualisieren',
         'header_back_to_port': 'Zurück zum Hafen',
         'header_logout': 'Hebok verlassen',
+        'header_fullscreen': 'Vollbild',
+        'header_install': 'App installieren',
+        'loading_switch_landscape': '⚓ Wechsel zu Vollbild-Querformat...',
+        'pwa_already_installed_or_manual': 'Um die App zu installieren, tippe auf das Browser-Menü und wähle \'Zum Startbildschirm hinzufügen\'!',
+
 
         // --- Hafen ---
         'harbor_title': 'Hafen',
@@ -4008,6 +4023,11 @@ const translations = {
         'header_credits_tooltip': 'Actualiser le solde',
         'header_back_to_port': 'Retour au port',
         'header_logout': 'Quitter Hebok',
+        'header_fullscreen': 'Plein écran',
+        'header_install': 'Installer l\'application',
+        'loading_switch_landscape': '⚓ Basculer en mode paysage plein écran...',
+        'pwa_already_installed_or_manual': 'Pour installer l\'application, appuyez sur le menu du navigateur et sélectionnez \'Ajouter à l\'écran d\'accueil\' !',
+
 
         // --- Port ---
         'harbor_title': 'Port',
@@ -5297,6 +5317,11 @@ const translations = {
         'header_credits_tooltip': 'Actualizar saldo',
         'header_back_to_port': 'Volver al puerto',
         'header_logout': 'Abandonar Hebok',
+        'header_fullscreen': 'Pantalla completa',
+        'header_install': 'Instalar aplicación',
+        'loading_switch_landscape': '⚓ Cambiando a modo horizontal de pantalla completa...',
+        'pwa_already_installed_or_manual': 'Para instalar la aplicación, toca el menú del navegador y selecciona \'Añadir a la pantalla de inicio\'!',
+
 
         // --- Puerto ---
         'harbor_title': 'Puerto',
@@ -6577,6 +6602,11 @@ const translations = {
         'header_credits_tooltip': 'Odśwież saldo',
         'header_back_to_port': 'Powrót do portu',
         'header_logout': 'Opuszczenie Hebok',
+        'header_fullscreen': 'Pełny ekran',
+        'header_install': 'Zainstaluj aplikację',
+        'loading_switch_landscape': '⚓ Przełączanie na pełnoekranowy tryb poziomy...',
+        'pwa_already_installed_or_manual': 'Aby zainstalować aplikację, dotknij menu przeglądarki i wybierz \'Dodaj do ekranu głównego\'!',
+
 
         // --- Port ---
         'harbor_title': 'Port',
@@ -7857,6 +7887,11 @@ const translations = {
         'header_credits_tooltip': 'Обновить баланс',
         'header_back_to_port': 'Назад в порт',
         'header_logout': 'Покинуть Hebok',
+        'header_fullscreen': 'Полноэкранный режим',
+        'header_install': 'Установить приложение',
+        'loading_switch_landscape': '⚓ Переключение в полноэкранный альбомный режим...',
+        'pwa_already_installed_or_manual': 'Чтобы установить приложение, нажмите меню браузера и выберите \'На главный экран\'!',
+
 
         // --- Порт ---
         'harbor_title': 'Порт',

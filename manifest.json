@@ -1,0 +1,31 @@
+{
+  "name": "eBookPirates Kalózsziget",
+  "short_name": "eBookPirates",
+  "description": "eBookPirates Interaktív Kalóz Portál és 3D Tengeri Kaland",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#020408",
+  "theme_color": "#1a0f05",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "manifest.json"
+    }
+  ],
+  "icons": [
+    {
+      "src": "https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

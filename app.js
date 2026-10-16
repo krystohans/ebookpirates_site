@@ -21083,3 +21083,36 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
     window.checkAndApplyModalScrollLock = checkAndApplyScrollLock;
     window.handleVisualViewportResize = handleVisualViewportResize;
 })();
+
+// ==========================================================================
+// 5. PILLÉR: PWA SERVICE WORKER REGISZTRÁCIÓ & ÉLETCIKLUS-KEZELŐ
+// ==========================================================================
+
+function registerPwaServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js')
+                .then(function (registration) {
+                    console.log('⚓ eBookPirates PWA Service Worker regisztrálva:', registration.scope);
+
+                    // Automatikus háttér-frissítés érzékelése
+                    registration.addEventListener('updatefound', function () {
+                        var newWorker = registration.installing;
+                        if (newWorker) {
+                            newWorker.addEventListener('statechange', function () {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('⚓ Új eBookPirates verzió érhető el a háttérben!');
+                                }
+                            });
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.warn('eBookPirates PWA Service Worker regisztrációs figyelmeztetés:', error);
+                });
+        });
+    }
+}
+registerPwaServiceWorker();
+window.registerPwaServiceWorker = registerPwaServiceWorker;
+

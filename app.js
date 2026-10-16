@@ -1184,6 +1184,14 @@ function initializeApp(user) {
 
 var isSessionChecked = false;
 
+function openInfoModalAuto() {
+    var modal = document.getElementById('info-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+window.openInfoModalAuto = openInfoModalAuto;
+
 function checkSession() {
     if (isSessionChecked) return;
     const token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken');
@@ -1195,8 +1203,31 @@ function checkSession() {
         var auth3d = document.getElementById('auth-3d-container');
         if (auth3d) auth3d.style.display = 'block';
         var mobDock = document.getElementById('mobile-input-dock');
-        var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(max-width: 820px)').matches;
-        if (mobDock) mobDock.style.display = isTouch ? 'block' : 'none';
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                       (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || 
+                       window.innerWidth <= 820;
+        if (mobDock) mobDock.style.display = isMobile ? 'block' : 'none';
+
+        // 1. PILLÉR: Mobilon automatikusan felugró akadálymentesített beléptető és párhuzamos főoldal előtöltés
+        if (isMobile) {
+            console.log("📱 [1. Pillér] Mobiltelefonos belépés észlelve: Akadálymentesített belépő panel azonnali megnyitása...");
+            setTimeout(function() {
+                if (typeof window.openInfoModalAuto === 'function') {
+                    window.openInfoModalAuto();
+                } else {
+                    var modal = document.getElementById('info-modal');
+                    if (modal) modal.style.display = 'flex';
+                }
+            }, 60);
+
+            // Főoldal és aloldal sablonok párhuzamos előtöltése a háttérben
+            if (typeof preloadPageTemplate === 'function') {
+                preloadPageTemplate('kikoto_oldal');
+                preloadPageTemplate('konyvtar');
+                preloadPageTemplate('kincsek');
+            }
+        }
+
         if (typeof initAuthTerminal3D === 'function') {
             initAuthTerminal3D();
         }
@@ -20626,6 +20657,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     window.focusOnScreen = focusOnScreen;
     window.resetCamera = resetCamera;
     window.toggleInfoModal = toggleInfoModal;
+    window.openInfoModalAuto = openInfoModalAuto;
     window.toggle3DInfoMode = toggle3DInfoMode;
     window.onModalBackdropClick = onModalBackdropClick;
     window.handleLangSwitch = handleLangSwitch;

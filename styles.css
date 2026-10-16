@@ -2015,6 +2015,85 @@ html.ebp-authenticated #app-view {
     border-color: #00ffcc;
 }
 
+/* --- MOBIL ADAPTÍV BELÉPTETŐ STÍLUSOK (1. PILLÉR) --- */
+.switch-to-3d-btn {
+    display: none;
+}
+
+@media (max-width: 600px), screen and (max-height: 550px) {
+    #info-modal {
+        padding: 10px !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .info-modal-content {
+        max-width: 95vw !important;
+        padding: 18px 14px 14px 14px !important;
+        border-radius: 14px !important;
+        max-height: 94vh !important;
+    }
+
+    .modal-title {
+        font-size: 22px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .modal-lang-switch {
+        padding: 4px 8px !important;
+        margin-bottom: 12px !important;
+        gap: 6px !important;
+    }
+
+    .guide-section {
+        display: none !important;
+    }
+
+    .camera-actions-grid,
+    h4[data-lang="auth_cam_header"] {
+        display: none !important;
+    }
+
+    .switch-to-3d-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+        background: rgba(0, 255, 204, 0.08) !important;
+        border: 1px dashed rgba(0, 255, 204, 0.45) !important;
+        border-radius: 8px !important;
+        color: #00ffcc !important;
+        font-family: 'Orbitron', sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        padding: 9px 12px !important;
+        margin-top: 10px !important;
+        cursor: pointer !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        transition: all 0.2s ease !important;
+        box-sizing: border-box !important;
+    }
+
+    .switch-to-3d-btn:active,
+    .switch-to-3d-btn:hover {
+        background: rgba(0, 255, 204, 0.2) !important;
+        border-color: #00ffcc !important;
+        transform: scale(0.99) !important;
+    }
+
+    .modal-input {
+        font-size: 16px !important; /* iOS / Android automatikus zoom megakadályozása fókuszkor */
+        padding: 10px 12px !important;
+    }
+
+    .modal-tab-btn {
+        font-size: 10px !important;
+        padding: 8px 4px !important;
+    }
+}
+
 #loading-screen {
     position: absolute;
     top: 0;

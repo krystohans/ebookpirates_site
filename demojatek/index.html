@@ -1109,62 +1109,68 @@
         /* ========================================= */
         .mobile-hud #quiz-overlay {
             z-index: 130 !important; /* A legfelső rétegen legyen, még az infó panel felett is, ha kvíz van! */
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            padding: 6px !important;
+            box-sizing: border-box !important;
         }
 
         .mobile-hud #quiz-panel {
             background-image: none !important;
             background-color: #fdf5e6 !important; /* Korábbi egyszerűsített pergamen háttér */
-            border: 4px solid #8b5a2b !important;
-            border-radius: 16px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
-            width: 90vw !important;
-            max-width: 680px !important;
+            border: 3px solid #8b5a2b !important;
+            border-radius: 14px !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+            width: 92vw !important;
+            max-width: 640px !important;
             height: auto !important;
-            max-height: 90vh !important;
-            padding: 12px 18px !important;
+            min-height: 0 !important;
+            max-height: 94vh !important;
+            padding: 8px 14px !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: flex-start !important;
             align-items: center !important;
+            margin: auto !important;
             transform-origin: center center !important;
         }
 
         /* Timer-bar sáv helyzete és szélessége */
         .mobile-hud #timer-bar-container {
             margin-top: 0 !important;
-            margin-bottom: 6px !important;
+            margin-bottom: 4px !important;
             flex-shrink: 0 !important;
             width: 100% !important;
-            height: 10px !important;
+            height: 6px !important;
         }
 
         /* Mobil Kérdés szövegének beállítása */
         .mobile-hud #quiz-question {
             font-family: 'Georgia', serif !important;
             color: #1a0f05 !important; /* Sötétbarna kontrasztos szín */
-            font-size: 18px !important;
+            font-size: 15px !important;
             font-weight: bold !important;
             text-shadow: none !important;
             border-bottom: 2px solid #8b5a2b !important;
-            padding-bottom: 6px !important;
-            margin: 4px 0 8px 0 !important;
+            padding-bottom: 4px !important;
+            margin: 2px 0 6px 0 !important;
             text-align: center !important;
             width: 100% !important;
             flex-shrink: 0 !important;
-            line-height: 1.35 !important;
+            line-height: 1.25 !important;
         }
 
-        /* Válasz gombok konténere mobilon flexbox/grid-del a fekvő nézethez, hogy a teteje sose lógjon ki */
+        /* Válasz gombok konténere mobilon: CSAK akkora, amekkora a gomboknak kell, NEM nyújtja túl a képernyőt */
         .mobile-hud .answer-buttons {
             position: static !important;
             margin-top: 0 !important;
             width: 100% !important;
-            flex: 1 !important;
+            flex: 0 0 auto !important; /* BIZTOSAN NEM flex: 1, hogy a válaszok ne töltsék ki az egész magasságot! */
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 8px 12px !important;
-            padding: 4px 0 !important;
+            gap: 6px 10px !important;
+            padding: 2px 0 0 0 !important;
             box-sizing: border-box !important;
         }
 
@@ -1174,22 +1180,22 @@
             color: #ffffff !important;
             border: 2px solid #5c3a21 !important;
             border-radius: 8px !important;
-            padding: 8px 10px !important;
-            font-size: 15px !important;
+            padding: 6px 8px !important;
+            font-size: 14px !important;
             font-weight: bold !important;
             font-family: 'Georgia', serif !important;
             text-shadow: none !important;
             width: 100% !important;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
             box-sizing: border-box !important;
             transition: background-color 0.2s, transform 0.1s !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             text-align: center !important;
-            line-height: 1.25 !important;
+            line-height: 1.2 !important;
             margin-bottom: 0 !important;
-            min-height: 42px !important;
+            min-height: 38px !important;
         }
 
         /* Hover helyett aktív/koppintás állapot */
@@ -1214,6 +1220,93 @@
             background-color: #708090 !important; /* Szürke a sima kérdéshez */
             color: #ffffff !important;
             border-color: #4f5d6a !important;
+        }
+
+        /* Általános fekvő nézetű mobil fallback szabályok */
+        @media screen and (max-height: 550px) and (orientation: landscape) {
+            #quiz-overlay {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding: 6px !important;
+                box-sizing: border-box !important;
+            }
+            #quiz-panel {
+                background-image: none !important;
+                background-color: #fdf5e6 !important;
+                border: 3px solid #8b5a2b !important;
+                border-radius: 14px !important;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+                width: 92vw !important;
+                max-width: 640px !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: 94vh !important;
+                padding: 8px 14px !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+                align-items: center !important;
+                margin: auto !important;
+                transform-origin: center center !important;
+            }
+            #timer-bar-container {
+                margin-top: 0 !important;
+                margin-bottom: 4px !important;
+                flex-shrink: 0 !important;
+                width: 100% !important;
+                height: 6px !important;
+            }
+            #quiz-question {
+                font-family: 'Georgia', serif !important;
+                color: #1a0f05 !important;
+                font-size: 15px !important;
+                font-weight: bold !important;
+                text-shadow: none !important;
+                border-bottom: 2px solid #8b5a2b !important;
+                padding-bottom: 4px !important;
+                margin: 2px 0 6px 0 !important;
+                text-align: center !important;
+                width: 100% !important;
+                flex-shrink: 0 !important;
+                line-height: 1.25 !important;
+            }
+            .answer-buttons {
+                position: static !important;
+                margin-top: 0 !important;
+                width: 100% !important;
+                flex: 0 0 auto !important;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 6px 10px !important;
+                padding: 2px 0 0 0 !important;
+                box-sizing: border-box !important;
+            }
+            .answer-btn {
+                background-color: #8b5a2b !important;
+                color: #ffffff !important;
+                border: 2px solid #5c3a21 !important;
+                border-radius: 8px !important;
+                padding: 6px 8px !important;
+                font-size: 14px !important;
+                font-weight: bold !important;
+                font-family: 'Georgia', serif !important;
+                text-shadow: none !important;
+                width: 100% !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+                box-sizing: border-box !important;
+                transition: background-color 0.2s, transform 0.1s !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                line-height: 1.2 !important;
+                margin-bottom: 0 !important;
+                min-height: 38px !important;
+            }
+            #betting-area {
+                display: none !important;
+            }
         }
 
         /* Mobil Játék Vége Tábla (Csónak elsüllyedt panel) */
@@ -1773,10 +1866,10 @@
             if (!isAndroid) return 1.0;
             var panel = document.getElementById('quiz-panel');
             if (!panel) return 1.0;
-            var baseW = 680;
-            var baseH = 260;
+            var baseW = 640;
+            var baseH = panel.offsetHeight || 150;
             var availW = window.innerWidth * 0.94;
-            var availH = window.innerHeight * 0.92;
+            var availH = window.innerHeight * 0.94;
             return Math.min(1.0, availW / baseW, availH / baseH);
         }
 
@@ -2071,6 +2164,7 @@
         // Határozott platform elválasztás: Érintőképernyős / Mobil vs. Asztali PC
         // (A maxTouchPoints > 0 kivéve, mert az érintőképernyős/tollas PC laptopokat tévesen mobilnak azonosította!)
         const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                               (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) ||
                                window.location.search.includes('mobile=1') || 
                                window.location.hash === '#mobile';
         const isAndroid = isMobileDevice; // Kompatibilitási alias
@@ -4276,11 +4370,6 @@
                 }
             }
         }
-        window.addEventListener('resize', handleResize);
-        window.addEventListener('orientationchange', () => {
-            setTimeout(handleResize, 250);
-        });
-
         window.requestLandscapeMode = function() {
             try {
                 const el = document.documentElement;
@@ -4301,6 +4390,34 @@
                 }
             } catch(e) {}
         };
+
+        function tryEnsureTouchFullscreen() {
+            if (!isAndroid) return;
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                requestLandscapeMode();
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', () => {
+            if (isAndroid) {
+                requestLandscapeMode();
+            }
+            setTimeout(handleResize, 250);
+        });
+        if (window.screen && window.screen.orientation) {
+            window.screen.orientation.addEventListener('change', () => {
+                if (isAndroid) {
+                    requestLandscapeMode();
+                }
+                setTimeout(handleResize, 250);
+            });
+        }
+
+        window.addEventListener('touchstart', tryEnsureTouchFullscreen, { passive: true });
+        window.addEventListener('touchend', tryEnsureTouchFullscreen, { passive: true });
+        window.addEventListener('click', tryEnsureTouchFullscreen, { passive: true });
+
         handleResize();
 
         animate();
@@ -4542,6 +4659,9 @@
 
         // Biztonsági tartalék képernyőkoppintásra való indításhoz (minden mobil/érintős eszközhöz)
         window.addEventListener('touchstart', () => {
+            if (isAndroid && typeof requestLandscapeMode === 'function') {
+                requestLandscapeMode();
+            }
             if (!gameStarted) {
                 gameStarted = true;
                 if (!isAmbientPlaying && typeof toggleAmbient === 'function') toggleAmbient();

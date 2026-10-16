@@ -320,8 +320,8 @@
         </form>
     </div>
 
-    <div id="author-dashboard-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 100;">
-        <div class="gamemode-modal-content" style="position: relative; margin-top: 5vh; max-width: 900px; width: 95%;">
+    <div id="author-dashboard-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 100;" onclick="if(event.target===this) this.style.display='none'">
+        <div class="gamemode-modal-content" style="position: relative; margin-top: min(5vh, 25px); max-width: 900px; width: 95%;">
             
             <div class="gamemode-header" style="position: relative;">
                 <span id="dashboard-book-title" class="header-title" data-lang="dashboard_title">Könyv Statisztika</span>
@@ -467,7 +467,7 @@
                 <i class="fas fa-volume-mute"></i>
             </button>
         </div>
-        <div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
+        <div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: min(80vh, 80dvh, 600px); max-height: calc(100dvh - 20px); padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
         
         <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -476,13 +476,13 @@
                     <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
                 </div>
             </div>
-            <button onclick="closeUniversalNPCModal(event)" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+            <button class="npc-close-btn modal-close-btn" onclick="closeUniversalNPCModal(event)" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;" aria-label="Bezárás">&times;</button>
         </div>
 
         <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
             </div>
 
-        <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
+        <div id="universal-chat-input-container" style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
             <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
             <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
                 <i class="fas fa-paper-plane"></i>
@@ -493,8 +493,8 @@
     </div>
 </div>
 
-    <div id="log-entry-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;">
-        <div class="gamemode-modal-content" style="margin-top: 5vh; max-width: 700px;">
+    <div id="log-entry-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) closeLogEntryModal()">
+        <div class="gamemode-modal-content" style="margin-top: min(5vh, 25px); max-width: 700px;">
             <span class="close-btn" onclick="closeLogEntryModal()">&times;</span>
             <h4 id="log-modal-title" data-lang="log_entry_title">Új Hajónapló Bejegyzés</h4> 
             <div style="margin-bottom: 15px; text-align: right;">
@@ -584,7 +584,7 @@
         </div>
     </div>
 
-    <div id="monk-pin-modal" class="gamemode-modal" style="display: none; align-items: center; z-index: 3100;">
+    <div id="monk-pin-modal" class="gamemode-modal" style="display: none; align-items: center; z-index: 3100;" onclick="if(event.target===this) closeMonkPinModal()">
         <div class="gamemode-modal-content" style="max-width: 400px; text-align: center;">
             <h3 style="margin-top: 0;" data-lang="monk_pin_title">Biztonsági Ellenőrzés</h3>
             <p data-lang-html="monk_pin_intro">A művelet díja 10 Tálentum.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!</p>
@@ -604,8 +604,8 @@
         </div>
     </div>
 
-    <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 105;">
-        <div class="gamemode-modal-content" style="position: relative; margin-top: 5vh; max-width: 700px; width: 95%;">
+    <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 105;" onclick="if(event.target===this) closePapatReportModal()">
+        <div class="gamemode-modal-content" style="position: relative; margin-top: min(5vh, 25px); max-width: 700px; width: 95%;">
             <div class="gamemode-header">
                 <span class="header-title"><i class="fas fa-robot"></i> Papát AI - Értékelő Jelentés</span>
                 <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closePapatReportModal()">X</button>
@@ -619,7 +619,7 @@
         </div>
     </div>
     <!-- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK -->
-    <div id="quiz-book-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 200;">
+    <div id="quiz-book-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 200;" onclick="if(event.target===this) closeQuizBookModal()">
         <div class="gamemode-modal-content" style="max-width: 550px; position: relative;">
             <button class="close-btn" onclick="closeQuizBookModal()">&times;</button>
             <h3 style="text-align: center;"><i class="fas fa-book"></i> Kvízkérdések Könyve</h3>
@@ -648,7 +648,7 @@
         </div>
     </div>
 
-    <div id="system-message-modal" class="gamemode-modal" style="display: none; z-index: 2000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
+    <div id="system-message-modal" class="gamemode-modal" style="display: none; z-index: 2000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;" onclick="if(event.target===this) this.style.display='none'">
         <div class="gamemode-modal-content" style="max-width: 400px; width: 90%; text-align: center;">
             
             <div style="margin-bottom: 15px;">

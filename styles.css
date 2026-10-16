@@ -478,14 +478,18 @@ html {
     left: 0;
     top: 0;
     width: 100%;
+    width: 100vw;
     height: 100%;
+    height: 100vh;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.85);
     /* Sötét háttér */
     justify-content: center;
     align-items: flex-start;
     /* Fent kezdődik a tartalom */
     overflow-y: auto;
-    padding: 40px 0;
+    padding: max(20px, env(safe-area-inset-top, 20px)) max(10px, env(safe-area-inset-right, 10px)) max(20px, env(safe-area-inset-bottom, 20px)) max(10px, env(safe-area-inset-left, 10px));
+    box-sizing: border-box;
     backdrop-filter: blur(3px);
     /* Modern elmosás */
 }
@@ -500,9 +504,13 @@ html {
     padding: 25px;
     width: 90%;
     max-width: 700px;
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     color: var(--color-main);
+    box-sizing: border-box;
 }
 
 /* Modal fejlécek egységesítése */
@@ -1837,18 +1845,19 @@ html.ebp-authenticated #app-view {
 }
 
 #info-modal {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background: rgba(2, 6, 12, 0.85);
     z-index: 50;
     display: none;
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(10px);
-    padding: 20px;
+    padding: max(20px, env(safe-area-inset-top, 20px)) max(10px, env(safe-area-inset-right, 10px)) max(20px, env(safe-area-inset-bottom, 20px)) max(10px, env(safe-area-inset-left, 10px));
     box-sizing: border-box;
 }
 
@@ -1863,6 +1872,7 @@ html.ebp-authenticated #app-view {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 204, 0.2);
     color: #e0f8f2;
     max-height: 90vh;
+    max-height: calc(100dvh - 20px);
     overflow-y: auto;
     box-sizing: border-box;
 }
@@ -4020,4 +4030,118 @@ path:not(#kepernyo).deck-screen-path {
     border-radius: 8px;
     padding: 16px;
 }
+
+/* ==========================================================================
+   3. PILLÉR: INTELLIGENS MODÁLIS ABLAKOK, SCROLL-LOCK & VIRTUÁLIS BILLENTYŰZET
+   ========================================================================== */
+
+/* 1. Body Scroll-Lock (Háttér lefagyasztás megnyitott modál esetén) */
+body.modal-open {
+    overflow: hidden !important;
+    touch-action: none !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* 2. Érintésbarát bezáró gombok (Touch Targets >= 44x44px) */
+.btn-close,
+.close-btn,
+.reader-close-btn,
+.modal-close-btn,
+.harbormaster-close-btn,
+.npc-close-btn,
+button.btn-close {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* 3. Fekvő Tájolás & Kis Képernyőmagasság Dinamikus Kezelése */
+@media (max-height: 550px) {
+    .gamemode-modal {
+        padding: max(4px, env(safe-area-inset-top, 4px)) max(8px, env(safe-area-inset-right, 8px)) max(4px, env(safe-area-inset-bottom, 4px)) max(8px, env(safe-area-inset-left, 8px)) !important;
+        align-items: flex-start !important;
+    }
+
+    .gamemode-modal-content {
+        margin-top: 0 !important;
+        max-height: calc(100dvh - 12px) !important;
+        padding: 14px !important;
+    }
+
+    #universal-npc-modal {
+        align-items: flex-start !important;
+        padding-top: max(4px, env(safe-area-inset-top, 4px)) !important;
+    }
+
+    #universal-npc-modal .gamemode-modal-content {
+        height: calc(100dvh - 12px) !important;
+        max-height: calc(100dvh - 12px) !important;
+        margin-top: 0 !important;
+    }
+
+    #universal-npc-modal #npc-header {
+        padding: 6px 12px !important;
+    }
+
+    #universal-npc-modal #npc-name {
+        font-size: 1.1em !important;
+    }
+
+    #universal-npc-modal #universal-chat-area {
+        padding: 8px 10px !important;
+        gap: 6px !important;
+        max-height: calc(100dvh - 110px) !important;
+    }
+
+    #universal-npc-modal div[style*="border-top: 1px solid #ccc"] {
+        padding: 6px !important;
+    }
+
+    #universal-npc-modal input#universal-chat-input {
+        padding: 6px 10px !important;
+        font-size: 14px !important;
+    }
+
+    .harbormaster-modal-content {
+        max-height: calc(100dvh - 10px) !important;
+    }
+
+    .harbormaster-stage-container {
+        max-height: calc(100dvh - 20px) !important;
+    }
+}
+
+/* 4. Virtuális Billentyűzet Felugrásakor (Keyboard Open) */
+body.keyboard-open .gamemode-modal {
+    align-items: flex-start !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+body.keyboard-open .gamemode-modal-content {
+    margin-top: 0 !important;
+    max-height: var(--visual-viewport-h, calc(100dvh - 10px)) !important;
+}
+
+body.keyboard-open #universal-npc-modal .gamemode-modal-content {
+    height: var(--visual-viewport-h, calc(100dvh - 8px)) !important;
+    max-height: var(--visual-viewport-h, calc(100dvh - 8px)) !important;
+}
+
+body.keyboard-open #universal-npc-modal #universal-chat-area {
+    max-height: calc(var(--visual-viewport-h, 200px) - 95px) !important;
+}
+
+body.keyboard-open #info-modal .info-modal-content {
+    max-height: var(--visual-viewport-h, calc(100dvh - 8px)) !important;
+    padding: 12px 14px !important;
+}
+
 

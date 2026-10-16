@@ -10164,7 +10164,8 @@ function openUniversalNPC(npcId, config) {
     if (iconEl) iconEl.innerHTML = icon;
     if (headerEl) headerEl.style.backgroundColor = headerColor;
 
-    modal.style.cssText = "display: flex; z-index: 1000; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5);";
+    modal.style.cssText = "display: flex; z-index: 1000; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background: rgba(0,0,0,0.5);";
+    if (typeof window.checkAndApplyModalScrollLock === 'function') window.checkAndApplyModalScrollLock();
     if (modalContent) {
         modalContent.style.cssText = "";
         modalContent.className = "gamemode-modal-content";
@@ -20867,3 +20868,181 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     initThree();
 }
 window.runAuthTerminal3DModule = runAuthTerminal3DModule;
+
+// ==========================================================================
+// 3. PILLÉR: INTELLIGENS MODÁLIS ABLAKOK & VIRTUÁLIS BILLENTYŰZET-KEZELÉS
+// (Dynamic Viewport Height, Safe Area, Body Scroll-Lock & visualViewport API)
+// ==========================================================================
+
+(function initPillarThreeModalAndKeyboardManager() {
+    var savedScrollY = 0;
+    var isScrollLocked = false;
+
+    // 1. Háttér Lefagyasztás (Scroll-Lock / Body Freeze)
+    function checkAndApplyScrollLock() {
+        var modalSelectors = [
+            '.gamemode-modal',
+            '#info-modal',
+            '#harbormaster-modal',
+            '#reader-modal',
+            '#upload-map-modal',
+            '#map-viewer-modal',
+            '#author-dashboard-modal',
+            '#log-entry-modal',
+            '#monk-pin-modal',
+            '#papat-report-modal',
+            '#quiz-book-modal',
+            '#system-message-modal'
+        ];
+
+        var modals = document.querySelectorAll(modalSelectors.join(', '));
+        var hasVisibleModal = false;
+
+        for (var i = 0; i < modals.length; i++) {
+            var m = modals[i];
+            var style = window.getComputedStyle(m);
+            if (style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0') {
+                hasVisibleModal = true;
+                break;
+            }
+        }
+
+        if (hasVisibleModal && !isScrollLocked) {
+            savedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            document.body.classList.add('modal-open');
+            document.body.style.top = '-' + savedScrollY + 'px';
+            isScrollLocked = true;
+        } else if (!hasVisibleModal && isScrollLocked) {
+            document.body.classList.remove('modal-open');
+            document.body.style.top = '';
+            window.scrollTo(0, savedScrollY);
+            isScrollLocked = false;
+        }
+    }
+
+    // 2. Virtuális Billentyűzet és VisualViewport Kezelő
+    function handleVisualViewportResize() {
+        if (!window.visualViewport) return;
+
+        var vHeight = window.visualViewport.height;
+        var winHeight = window.innerHeight;
+        var heightDiff = winHeight - vHeight;
+
+        // Ha a magasságkülönbség meghaladja a 120px-t, a virtuális billentyűzet meg van nyitva
+        var isKeyboardActive = heightDiff > 120;
+
+        if (isKeyboardActive) {
+            document.body.classList.add('keyboard-open');
+            document.documentElement.style.setProperty('--visual-viewport-h', Math.floor(vHeight) + 'px');
+            document.documentElement.style.setProperty('--keyboard-offset', Math.floor(heightDiff) + 'px');
+
+            // Fókuszált mező láthatóságának biztosítása
+            var activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                setTimeout(function () {
+                    if (typeof activeEl.scrollIntoView === 'function') {
+                        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }, 60);
+            }
+
+            // Chat üzenetek görgetése a legfrissebb bejegyzésre
+            var chatArea = document.getElementById('universal-chat-area');
+            if (chatArea && chatArea.offsetParent !== null) {
+                setTimeout(function () {
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                }, 80);
+            }
+        } else {
+            document.body.classList.remove('keyboard-open');
+            document.documentElement.style.removeProperty('--visual-viewport-h');
+            document.documentElement.style.removeProperty('--keyboard-offset');
+        }
+    }
+
+    // 3. Billentyűzetes ESC Bezárás Kezelő
+    function handleEscKey(e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            var openModals = document.querySelectorAll(
+                '.gamemode-modal[style*="display: flex"], .gamemode-modal[style*="display: block"], #info-modal[style*="display: flex"], #info-modal[style*="display: block"]'
+            );
+            if (openModals && openModals.length > 0) {
+                var topModal = openModals[openModals.length - 1];
+                if (topModal.id === 'universal-npc-modal' && typeof window.closeUniversalNPCModal === 'function') {
+                    window.closeUniversalNPCModal(e);
+                } else if (topModal.id === 'harbormaster-modal' && typeof window.closeHarbormasterModal === 'function') {
+                    window.closeHarbormasterModal(e);
+                } else if (topModal.id === 'info-modal' && typeof window.toggleInfoModal === 'function') {
+                    window.toggleInfoModal();
+                } else if (topModal.id === 'log-entry-modal' && typeof window.closeLogEntryModal === 'function') {
+                    window.closeLogEntryModal();
+                } else if (topModal.id === 'quiz-book-modal' && typeof window.closeQuizBookModal === 'function') {
+                    window.closeQuizBookModal();
+                } else if (topModal.id === 'monk-pin-modal' && typeof window.closeMonkPinModal === 'function') {
+                    window.closeMonkPinModal();
+                } else if (topModal.id === 'papat-report-modal' && typeof window.closePapatReportModal === 'function') {
+                    window.closePapatReportModal();
+                } else {
+                    topModal.style.display = 'none';
+                }
+                checkAndApplyScrollLock();
+            }
+        }
+    }
+
+    // 4. Eseménykezelők és Megfigyelők Inicializálása
+    function setupListeners() {
+        // Visual Viewport figyelése
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleVisualViewportResize);
+            window.visualViewport.addEventListener('scroll', handleVisualViewportResize);
+        }
+
+        // Fókusz események (mobil billentyűzet nyitás/zárás szinkron)
+        document.addEventListener('focusin', function (e) {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+                setTimeout(handleVisualViewportResize, 80);
+            }
+        });
+
+        document.addEventListener('focusout', function (e) {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+                setTimeout(handleVisualViewportResize, 150);
+            }
+        });
+
+        // ESC gomb figyelése
+        document.addEventListener('keydown', handleEscKey);
+
+        // MutationObserver a modális ablakok láthatósági állapotának követésére
+        if (window.MutationObserver) {
+            var observer = new MutationObserver(function () {
+                checkAndApplyScrollLock();
+            });
+
+            var modalTargets = document.querySelectorAll(
+                '.gamemode-modal, #info-modal, #harbormaster-modal, #reader-modal, #upload-map-modal, #map-viewer-modal'
+            );
+            modalTargets.forEach(function (el) {
+                observer.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+            });
+
+            if (document.body) {
+                observer.observe(document.body, { childList: true, subtree: false });
+            }
+        }
+
+        // Kezdeti állapot ellenőrzése
+        checkAndApplyScrollLock();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupListeners);
+    } else {
+        setupListeners();
+    }
+
+    // Globális API exportok
+    window.checkAndApplyModalScrollLock = checkAndApplyScrollLock;
+    window.handleVisualViewportResize = handleVisualViewportResize;
+})();

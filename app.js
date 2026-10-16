@@ -1896,8 +1896,45 @@ function loadPage(pageName) {
     }
     if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
+    function makeSubpageContentResponsive(container) {
+        if (!container) return;
+        try {
+            // 1. Táblázatok automatikus beburkolása .table-responsive konténerbe
+            var tables = container.querySelectorAll('table');
+            for (var i = 0; i < tables.length; i++) {
+                var tbl = tables[i];
+                if (!tbl.parentElement || !tbl.parentElement.classList.contains('table-responsive')) {
+                    var wrapper = document.createElement('div');
+                    wrapper.className = 'table-responsive';
+                    tbl.parentNode.insertBefore(wrapper, tbl);
+                    wrapper.appendChild(tbl);
+                }
+            }
+
+            // 2. Széles, fix pixel szélességű inline elemek max-width korlátozása
+            var elementsWithStyle = container.querySelectorAll('[style*="width"]');
+            for (var j = 0; j < elementsWithStyle.length; j++) {
+                var el = elementsWithStyle[j];
+                var w = el.style.width;
+                if (w && w.indexOf('px') !== -1) {
+                    var pxVal = parseInt(w, 10);
+                    if (pxVal > 300) {
+                        el.style.maxWidth = '100%';
+                        el.style.boxSizing = 'border-box';
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('makeSubpageContentResponsive figyelmeztetés:', err);
+        }
+    }
+    window.makeSubpageContentResponsive = makeSubpageContentResponsive;
+
     function renderAndInitPage(htmlText) {
-        if (contentDiv) contentDiv.innerHTML = htmlText;
+        if (contentDiv) {
+            contentDiv.innerHTML = htmlText;
+            makeSubpageContentResponsive(contentDiv);
+        }
 
         if (typeof updateLanguageUI === 'function') {
             updateLanguageUI();

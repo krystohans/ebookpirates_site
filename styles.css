@@ -1975,7 +1975,7 @@ html.ebp-authenticated #app-view {
 
 .modal-mode-tabs {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1.4fr 1fr;
     gap: 8px;
     margin-bottom: 14px;
 }
@@ -1985,15 +1985,16 @@ html.ebp-authenticated #app-view {
     border: 1px solid rgba(0, 255, 204, 0.3);
     color: #88c0b0;
     font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 10px 6px;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 13px 4px;
     border-radius: 8px;
     cursor: pointer;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     transition: all 0.2s ease;
     text-align: center;
+    white-space: nowrap;
 }
 
 .modal-tab-btn:hover {
@@ -2023,11 +2024,12 @@ html.ebp-authenticated #app-view {
 
 .modal-form-group label {
     display: block;
-    font-size: 11px;
+    font-size: 13px;
     color: #00ffcc;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-weight: 700;
 }
 
 .modal-input {
@@ -2036,10 +2038,10 @@ html.ebp-authenticated #app-view {
     background-color: #1e222b !important;
     border: 1px solid rgba(0, 229, 255, 0.4);
     border-radius: 6px;
-    padding: 9px 12px;
+    padding: 12px 14px;
     color: #ffffff !important;
     font-family: 'Consolas', 'Orbitron', monospace;
-    font-size: 14px;
+    font-size: 16px;
     outline: none;
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -2071,15 +2073,15 @@ html.ebp-authenticated #app-view {
     background: linear-gradient(135deg, #008877 0%, #00ffcc 100%);
     border: none;
     border-radius: 8px;
-    padding: 11px;
+    padding: 14px 16px;
     color: #021210;
     font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
     cursor: pointer;
-    margin-top: 6px;
+    margin-top: 8px;
     transition: all 0.25s ease;
     box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
 }
@@ -2192,8 +2194,10 @@ html.ebp-authenticated #app-view {
     }
 
     .modal-tab-btn {
-        font-size: 10px !important;
-        padding: 8px 4px !important;
+        font-size: 13.5px !important;
+        padding: 11px 2px !important;
+        font-weight: 800;
+        letter-spacing: 0px !important;
     }
 }
 

@@ -95,7 +95,7 @@ const translations = {
         'auth_modes_header': 'Üzemmód & Akadálymentes Adatbevitel',
         'auth_tab_login': 'Belépés',
         'auth_tab_register': 'Regisztráció',
-        'auth_tab_deregister': 'Leléptetés',
+        'auth_tab_deregister': 'Lelépés',
         'auth_login_name_label': 'Kalóznév',
         'auth_login_name_placeholder': 'Add meg a kalózneved...',
         'auth_login_pass_label': 'Jelszó / Kedvenc étel',

@@ -1,9 +1,9 @@
 // ==========================================================================
 // eBookPirates - PWA Service Worker (5. Pillér)
-// Version: 20261016_v1
+// Version: 20261016_v2
 // ==========================================================================
 
-const CACHE_NAME = 'ebp-cache-v20261016';
+const CACHE_NAME = 'ebp-cache-v20261016_v2';
 
 // Előre gyorstárazandó statikus alapfájlok (Core App Shell)
 const PRECACHE_ASSETS = [
@@ -64,6 +64,14 @@ self.addEventListener('fetch', (event) => {
 
     // C: Chrome Extensions és nem-http protokollok kizárása
     if (!url.startsWith('http')) {
+        return;
+    }
+
+    // D: Fejlesztői környezet (localhost / 127.0.0.1): Mindig friss hálózati kérés (Network First) a gyors Live Server teszteléshez
+    if (url.includes('localhost') || url.includes('127.0.0.1')) {
+        event.respondWith(
+            fetch(request).catch(() => caches.match(request))
+        );
         return;
     }
 

@@ -19375,15 +19375,15 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         ctx.lineWidth = 2;
         ctx.strokeRect(26, 26, w - 52, h - 52);
 
-        // 3. I. SOR: Főcím (1.5x Növelt Orbitron cím)
+        // 3. I. SOR: Főcím (Növelt Orbitron cím)
         ctx.fillStyle = '#00ffcc';
-        ctx.font = 'bold 24px "Orbitron", "Segoe UI", sans-serif';
+        ctx.font = 'bold 30px "Orbitron", "Segoe UI", sans-serif';
         ctx.fillText(currentMode === 'INFO' ? (L.guideTitle || 'eBookPirates // HASZNÁLATI ÚTMUTATÓ') : (L.title || 'eBookPirates // NEURÁLIS TERMINÁL v4.2'), 45, 52);
 
-        // 4. II. SOR: Különálló, Nagyobb Fül-gombok (3 nagy tab a cím alatt)
-        drawTerminalTab(ctx, 45, 68, 298, 40, L.loginTab, currentMode === 'LOGIN');
-        drawTerminalTab(ctx, 359, 68, 298, 40, L.regTab, currentMode === 'REGISTER');
-        drawTerminalTab(ctx, 673, 68, 306, 40, L.delTab, currentMode === 'DEREGISTER');
+        // 4. II. SOR: Különálló, Nagyobb Fül-gombok (középső Regisztráció gomb szélesebb)
+        drawTerminalTab(ctx, 45, 65, 265, 46, L.loginTab, currentMode === 'LOGIN', 24);
+        drawTerminalTab(ctx, 325, 65, 374, 46, L.regTab, currentMode === 'REGISTER', 27);
+        drawTerminalTab(ctx, 714, 65, 265, 46, L.delTab, currentMode === 'DEREGISTER', 24);
 
         ctx.strokeStyle = '#00ffcc';
         ctx.lineWidth = 2.5;
@@ -19392,58 +19392,64 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         ctx.lineTo(w - 45, 118);
         ctx.stroke();
 
-        // 5. Tartalom kirajzolása mód szerint (1.5x Növelt Tipográfia)
+        // 5. Tartalom kirajzolása mód szerint (Kiemelt, Jól Olvasható Tipográfia)
         const cursorChar = cursorVisible ? '█' : ' ';
 
         if (currentMode === 'LOGIN') {
             const u = formValues.LOGIN.username;
             const p = isPasswordVisible ? formValues.LOGIN.password : '•'.repeat(formValues.LOGIN.password.length);
 
-            drawField(ctx, 45, 144, L.userLabel, u, activeFieldIndex === 0, cursorChar, 48, 20, 28);
-            drawField(ctx, 45, 228, L.passLabel, p, activeFieldIndex === 1, cursorChar, 48, 20, 28);
-            drawEyeIconOnCanvas(ctx, 940, 258, isPasswordVisible);
+            drawField(ctx, 45, 140, L.userLabel, u, activeFieldIndex === 0, cursorChar, 54, 22, 34);
+            drawField(ctx, 45, 222, L.passLabel, p, activeFieldIndex === 1, cursorChar, 54, 22, 34);
+            drawEyeIconOnCanvas(ctx, 940, 255, isPasswordVisible);
 
-            drawActionButton(ctx, 45, 318, w - 90, 58, L.loginBtn, false, 24);
+            drawActionButton(ctx, 45, 308, w - 90, 72, L.loginBtn, false, 36);
 
         } else if (currentMode === 'REGISTER') {
             const em = formValues.REGISTER.email;
             const un = formValues.REGISTER.username;
 
-            drawField(ctx, 45, 144, L.emailLabel, em, activeFieldIndex === 0, cursorChar, 48, 20, 26);
-            drawField(ctx, 45, 228, L.newNickLabel, un, activeFieldIndex === 1, cursorChar, 48, 20, 28);
+            drawField(ctx, 45, 140, L.emailLabel, em, activeFieldIndex === 0, cursorChar, 54, 22, 32);
+            drawField(ctx, 45, 222, L.newNickLabel, un, activeFieldIndex === 1, cursorChar, 54, 22, 34);
 
-            drawActionButton(ctx, 45, 318, w - 90, 58, L.regBtn, false, 24);
+            drawActionButton(ctx, 45, 308, w - 90, 72, L.regBtn, false, 36);
 
         } else if (currentMode === 'DEREGISTER') {
             const un = formValues.DEREGISTER.username;
             const em = formValues.DEREGISTER.email;
             const rz = formValues.DEREGISTER.reason;
 
-            drawField(ctx, 45, 136, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 38, 16, 22);
-            drawField(ctx, 45, 200, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 38, 16, 22);
-            drawField(ctx, 45, 264, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 38, 16, 22);
+            // 1. Mező: Játékbeli Kalóznév (Tiszta, szellős vertikális elrendezés)
+            drawField(ctx, 45, 136, L.delNickLabel, un, activeFieldIndex === 0, cursorChar, 36, 16, 22, 5);
 
-            drawActionButton(ctx, 45, 328, w - 90, 52, L.delBtn, true, 22);
+            // 2. Mező: Regisztrált E-mail (20px elválasztó térköz a megelőző doboztól)
+            drawField(ctx, 45, 196, L.delEmailLabel, em, activeFieldIndex === 1, cursorChar, 36, 16, 22, 5);
+
+            // 3. Mező: Kilépés Oka (20px elválasztó térköz a megelőző doboztól)
+            drawField(ctx, 45, 256, L.delReasonLabel, rz, activeFieldIndex === 2, cursorChar, 36, 16, 22, 5);
+
+            // 4. Leléptetés Küldése Gomb (Szellős távolság az utolsó mező alatt)
+            drawActionButton(ctx, 45, 318, w - 90, 56, L.delBtn, true, 24);
 
         } else if (currentMode === 'INFO') {
             ctx.fillStyle = 'rgba(0, 30, 45, 0.75)';
-            ctx.fillRect(45, 126, w - 90, 192);
+            ctx.fillRect(45, 124, w - 90, 186);
             ctx.strokeStyle = 'rgba(0, 255, 204, 0.35)';
             ctx.lineWidth = 1.5;
-            ctx.strokeRect(45, 126, w - 90, 192);
+            ctx.strokeRect(45, 124, w - 90, 186);
 
             ctx.fillStyle = '#00ffcc';
-            ctx.font = 'bold 18px "Consolas", "Roboto Mono", "Segoe UI", monospace';
-            ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 156);
-            ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 192);
-            ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 228);
-            ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 264);
-            ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 300);
+            ctx.font = 'bold 21px "Consolas", "Roboto Mono", "Segoe UI", monospace';
+            ctx.fillText('> ' + (L.guideLine1 || '1. 3D GÉPELÉS: Kattints a monitorra a gépeléshez!'), 65, 154);
+            ctx.fillText('> ' + (L.guideLine2 || '2. MEZŐVÁLTÁS: [TAB] billentyűvel válthatsz mezőt.'), 65, 190);
+            ctx.fillText('> ' + (L.guideLine3 || '3. BEKÜLDÉS: Nyomj [ENTER]-t vagy kattints a Küldés gombra.'), 65, 226);
+            ctx.fillText('> ' + (L.guideLine4 || '4. KAMERA: Bal egérgomb forgat, görgő nagyít.'), 65, 262);
+            ctx.fillText('> ' + (L.guideLine5 || '5. INFÓ GOMB: A 3D gomb megnyomásával bármikor visszahívható.'), 65, 298);
 
-            drawActionButton(ctx, 45, 328, w - 90, 52, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false, 22);
+            drawActionButton(ctx, 45, 320, w - 90, 64, L.guideCloseBtn || '✖ VISSZA A TERMINÁLHOZ [ENTER]', false, 28);
         }
 
-        // 6. Alsó Rendszer Státuszsor (1.5x Növelt 20px Tipográfia)
+        // 6. Alsó Rendszer Státuszsor (Növelt 23px Tipográfia)
         let displayStatus = terminalStatusText;
         if (currentStatusKey && L[currentStatusKey]) {
             displayStatus = L[currentStatusKey];
@@ -19455,19 +19461,19 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         }
 
         ctx.fillStyle = isStatusError ? 'rgba(50, 10, 10, 0.95)' : 'rgba(0, 20, 30, 0.9)';
-        ctx.fillRect(45, h - 82, w - 90, 46);
+        ctx.fillRect(45, h - 84, w - 90, 50);
         ctx.strokeStyle = isStatusError ? '#ff4444' : 'rgba(0, 255, 204, 0.4)';
         ctx.lineWidth = 1.5;
-        ctx.strokeRect(45, h - 82, w - 90, 46);
+        ctx.strokeRect(45, h - 84, w - 90, 50);
 
         ctx.fillStyle = isStatusError ? '#ff6666' : '#00ffcc';
-        ctx.font = 'bold 20px "Orbitron", "Consolas", sans-serif';
-        ctx.fillText('> ' + displayStatus, 60, h - 52);
+        ctx.font = 'bold 23px "Orbitron", "Consolas", sans-serif';
+        ctx.fillText('> ' + displayStatus, 60, h - 51);
 
         if (screenTexture) screenTexture.needsUpdate = true;
     }
 
-    function drawTerminalTab(context, x, y, w, h, text, isActive) {
+    function drawTerminalTab(context, x, y, w, h, text, isActive, fontSize = 24) {
         context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.32)' : 'rgba(0, 255, 204, 0.06)';
         context.fillRect(x, y, w, h);
         context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.35)';
@@ -19475,30 +19481,31 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         context.strokeRect(x, y, w, h);
 
         context.fillStyle = isActive ? '#ffffff' : '#88c0b0';
-        context.font = 'bold 18px "Orbitron", "Segoe UI", sans-serif';
+        context.font = 'bold ' + fontSize + 'px "Orbitron", "Segoe UI", sans-serif';
         context.textAlign = 'center';
-        context.fillText(text || '', x + w / 2, y + 26);
+        context.fillText(text || '', x + w / 2, y + (h / 2) + 8);
         context.textAlign = 'left';
     }
 
-    function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 48, labelSize = 20, valueSize = 28) {
+    function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 54, labelSize = 22, valueSize = 34, boxOffset = 6) {
         context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.7)';
         context.font = 'bold ' + labelSize + 'px "Orbitron", "Segoe UI", sans-serif';
         context.fillText(label || '', x, y);
 
+        const boxY = y + boxOffset;
         context.fillStyle = isActive ? 'rgba(0, 50, 60, 0.88)' : 'rgba(0, 30, 40, 0.55)';
-        context.fillRect(x, y + 6, 934, boxHeight);
+        context.fillRect(x, boxY, 934, boxHeight);
         context.strokeStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.3)';
         context.lineWidth = isActive ? 2.5 : 1;
-        context.strokeRect(x, y + 6, 934, boxHeight);
+        context.strokeRect(x, boxY, 934, boxHeight);
 
         context.fillStyle = '#ffffff';
         context.font = 'bold ' + valueSize + 'px "Consolas", "Roboto Mono", "Courier New", monospace';
         const displayText = (value || '') + (isActive ? cursor : '');
-        context.fillText(displayText, x + 16, y + 6 + (boxHeight * 0.68));
+        context.fillText(displayText, x + 16, boxY + (boxHeight / 2) + (valueSize * 0.35));
     }
 
-    function drawActionButton(context, x, y, w, h, text, isDanger = false, fontSize = 24) {
+    function drawActionButton(context, x, y, w, h, text, isDanger = false, fontSize = 36) {
         context.fillStyle = isDanger ? '#661111' : '#004d40';
         context.fillRect(x, y, w, h);
         context.strokeStyle = isDanger ? '#ff4444' : '#00ffcc';
@@ -19508,7 +19515,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         context.fillStyle = '#ffffff';
         context.font = 'bold ' + fontSize + 'px "Orbitron", "Segoe UI", sans-serif';
         context.textAlign = 'center';
-        context.fillText(text || '', x + w / 2, y + h / 2 + 8);
+        context.fillText(text || '', x + w / 2, y + (h / 2) + (fontSize * 0.35));
         context.textAlign = 'left';
     }
 
@@ -20167,16 +20174,16 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         const pxX = uv.x * 1024;
         const pxY = (1 - uv.y) * 512;
 
-        // Felső Dedikált Tab-sor kattintása (Y: 60 - 116)
+        // Felső Dedikált Tab-sor kattintása (Y: 55 - 116)
         if (pxY >= 55 && pxY <= 116) {
             blurVirtualInput();
-            if (pxX >= 45 && pxX < 350) {
+            if (pxX >= 45 && pxX < 318) {
                 switchMode('LOGIN');
                 return;
-            } else if (pxX >= 350 && pxX < 665) {
+            } else if (pxX >= 318 && pxX < 707) {
                 switchMode('REGISTER');
                 return;
-            } else if (pxX >= 665 && pxX <= 985) {
+            } else if (pxX >= 707 && pxX <= 985) {
                 switchMode('DEREGISTER');
                 return;
             }
@@ -20228,16 +20235,16 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 focusVirtualInput(clickX, clickY);
             }
         } else if (currentMode === 'DEREGISTER') {
-            if (pxY >= 120 && pxY <= 188) {
+            if (pxY >= 120 && pxY <= 186) {
                 activeFieldIndex = 0;
                 focusVirtualInput(clickX, clickY);
-            } else if (pxY > 188 && pxY <= 252) {
+            } else if (pxY > 186 && pxY <= 246) {
                 activeFieldIndex = 1;
                 focusVirtualInput(clickX, clickY);
-            } else if (pxY > 252 && pxY <= 316) {
+            } else if (pxY > 246 && pxY <= 308) {
                 activeFieldIndex = 2;
                 focusVirtualInput(clickX, clickY);
-            } else if (pxY >= 320 && pxY <= 395) {
+            } else if (pxY > 308 && pxY <= 395) {
                 blurVirtualInput();
                 executeCurrentMode();
             } else {

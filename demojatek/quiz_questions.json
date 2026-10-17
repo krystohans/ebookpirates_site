@@ -9,7 +9,14 @@
       "Garas és Krajcár",
       "Fabatka és tallér"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "What currencies exist in the game?",
+    "answers_en": [
+      "Pirate Credit and Talent",
+      "Gold and Silver",
+      "Groat and Farthing",
+      "Pennies and Thalers"
+    ]
   },
   {
     "id": 2,
@@ -21,7 +28,14 @@
       "200 kalózkredit",
       "Áldozat"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "What is required for book consecration at the Book Shrine besides the Copy?",
+    "answers_en": [
+      "Talent",
+      "Prayer",
+      "200 pirate credits",
+      "Sacrifice"
+    ]
   },
   {
     "id": 3,
@@ -33,7 +47,14 @@
       "Reklámok megnézésével",
       "Véráldozattal"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "How can you support the eBookPirates game?",
+    "answers_en": [
+      "Patreon, PayPal",
+      "With praise",
+      "By watching ads",
+      "With a blood sacrifice"
+    ]
   },
   {
     "id": 4,
@@ -45,7 +66,14 @@
       "Bekezdésenként egy",
       "Tizenkettő"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "How many membranes are needed for a scroll?",
+    "answers_en": [
+      "Thirty",
+      "Fifty",
+      "One per paragraph",
+      "Twelve"
+    ]
   },
   {
     "id": 5,
@@ -57,7 +85,14 @@
       "Tizenkettő",
       "Ötven"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "How many scrolls are needed for a copy?",
+    "answers_en": [
+      "All scrolls of the book",
+      "Thirty",
+      "Twelve",
+      "Fifty"
+    ]
   },
   {
     "id": 6,
@@ -69,7 +104,14 @@
       "A Könyvszentélyben",
       "A Könyvtárban"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "Where can you obtain quests?",
+    "answers_en": [
+      "At the Tavern",
+      "At the Harbormaster",
+      "At the Book Shrine",
+      "At the Library"
+    ]
   },
   {
     "id": 7,
@@ -81,7 +123,14 @@
       "A Kikötőmesternél",
       "A Könyvszentélyben"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "Where can you read your scrolls?",
+    "answers_en": [
+      "In the Library",
+      "In the Tavern",
+      "At the Harbormaster",
+      "In the Book Shrine"
+    ]
   },
   {
     "id": 8,
@@ -93,7 +142,14 @@
       "A játékos szintet lép",
       "1000 kalózkreditet"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "What is the result of consecration?",
+    "answers_en": [
+      "Downloadable .ePub + 10 copies",
+      "The book can be sold afterwards",
+      "The player levels up",
+      "1,000 pirate credits"
+    ]
   },
   {
     "id": 9,
@@ -105,7 +161,14 @@
       "Azonnali letiltás",
       "Pénzbüntetés"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "What is the punishment for book thieves?",
+    "answers_en": [
+      "Book Prison, Wall of Shame",
+      "Keelhauling",
+      "Immediate ban",
+      "A fine"
+    ]
   },
   {
     "id": 10,
@@ -117,7 +180,14 @@
       "Fekete Szikla",
       "Koponya Sziget"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "What is the name of the Pirate Port on the Letter Sea?",
+    "answers_en": [
+      "Hebok",
+      "Pirate Island",
+      "Black Rock",
+      "Skull Island"
+    ]
   },
   {
     "id": 11,
@@ -129,7 +199,14 @@
       "Kidobod a tengerbe",
       "Elzárod a csónak aljában"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "How can you keep your acquired membranes safe while on a raid?",
+    "answers_en": [
+      "You return to the port Base",
+      "You hide it from the airship",
+      "You throw it into the sea",
+      "You lock it away in the bottom of the boat"
+    ]
   },
   {
     "id": 12,
@@ -141,7 +218,14 @@
       "Szóköz és Enter gombbal",
       "F1 és F2 billentyűkkel"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "Which control keys do you use to navigate your boat?",
+    "answers_en": [
+      "With W, A, S, D keys",
+      "Only with mouse clicks",
+      "With Space and Enter keys",
+      "With F1 and F2 keys"
+    ]
   },
   {
     "id": 13,
@@ -153,7 +237,14 @@
       "Le kell lőnöd a léghajót",
       "Be kell ugranod a vízbe"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "What must you do to escape when the Airship catches you?",
+    "answers_en": [
+      "You must answer the Quiz question correctly",
+      "You must row faster",
+      "You must shoot down the airship",
+      "You must jump into the water"
+    ]
   },
   {
     "id": 14,
@@ -165,7 +256,14 @@
       "A Patreon oldalra ellátogatva",
       "A Facebook oldalon"
     ],
-    "correctIndex": 0
+    "correctIndex": 0,
+    "question_en": "How can I read the rules of the tutorial game?",
+    "answers_en": [
+      "By opening the info panel",
+      "By opening the main page",
+      "By visiting the Patreon page",
+      "On the Facebook page"
+    ]
   },
   {
     "id": 15,

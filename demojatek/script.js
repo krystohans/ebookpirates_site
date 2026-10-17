@@ -265,6 +265,8 @@ function setupTopBarEvents() {
 
   document.querySelectorAll('.lang-item-btn, .lang-option-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
+      btn.classList.add('flag-pop-anim');
+      setTimeout(() => btn.classList.remove('flag-pop-anim'), 450);
       const selectedLang = btn.getAttribute('data-lang');
       window.currentLanguage = selectedLang;
       localStorage.setItem('siteLang', selectedLang);

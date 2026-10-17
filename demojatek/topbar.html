@@ -62,6 +62,29 @@
     line-height: 1;
     white-space: nowrap;
   }
+
+  /* ─── NYELVVÁLASZTÓ GOMBOK KATTINTÁS ANIMÁCIÓ ─── */
+  .lang-item-btn {
+    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
+    cursor: pointer;
+  }
+  .lang-item-btn:hover {
+    transform: scale(1.16) !important;
+    filter: drop-shadow(0 0 10px #ffd700) !important;
+  }
+  .lang-item-btn:active {
+    transform: scale(0.9) !important;
+  }
+  @keyframes flagPop {
+    0% { transform: scale(1) rotate(0deg); }
+    35% { transform: scale(1.28) rotate(12deg); filter: brightness(1.35) drop-shadow(0 0 14px #ffd700); }
+    70% { transform: scale(0.95) rotate(-6deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .flag-pop-anim {
+    animation: flagPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+  }
+
 </style>
 
 <div id="topbar-custom-tooltip">

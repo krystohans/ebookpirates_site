@@ -345,7 +345,8 @@
       50% { opacity: 0.75; transform: scale(1.03); }
       100% { opacity: 1; }
     }
-  </style>
+  
+    </style>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -376,6 +377,11 @@
         langTitle: "Language"
       }
     };
+
+    function openSettingsWithLang() {
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'SettingsMenu.html?langSelector=true&lang=' + curLang + '&v=' + Date.now();
+    }
 
     function applyMenuLanguage(lang) {
       const t = MENU_TRANSLATIONS[lang] || MENU_TRANSLATIONS.hu;
@@ -1002,7 +1008,8 @@
     </div>
 
     <!-- Nyelvi Ikon -->
-    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="openLanguageMap()" title="Nyelv / Language">
+    <!-- Nyelvi Ikon (Mutatja az aktuális nyelvet, kattintásra megnyitja a Beállítások nyelvválasztóját) -->
+    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="openSettingsWithLang()" title="Beállítások: Nyelvválasztás / Settings: Language">
       <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
     </div>
 
@@ -1235,19 +1242,5 @@
   </div>
 
 
-  <!-- 🌍 NYELVVÁLASZTÓ PERGAMENTÉRKÉP POPUP -->
-  <div id="language-map-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center;">
-    <div style="position: relative; width: 900px; max-width: 95vw; height: 800px; max-height: 90vh; background: transparent url('https://storage.googleapis.com/kalozsziget-assets/tutorial/language_choose.jpg') no-repeat center / contain; filter: drop-shadow(0 15px 40px rgba(0,0,0,0.9));">
-      <div id="btn-close-language-map" style="position: absolute; top: 25px; right: 35px; width: 45px; height: 45px; cursor: pointer; background: rgba(0,0,0,0.4); border: 2px solid #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffea00; font-weight: bold; font-size: 22px; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1.0)'" onclick="closeLanguageMap()" title="Bezárás / Close">✕</div>
-      <div class="lang-option-btn" data-lang="hu" style="position: absolute; top: 7%; left: 3.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('hu')" title="Magyar"></div>
-      <div class="lang-option-btn" data-lang="en" style="position: absolute; top: 7%; left: 27.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('en')" title="English"></div>
-      <div class="lang-option-btn" data-lang="de" style="position: absolute; top: 7%; left: 51.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('de')" title="Deutsch"></div>
-      <div class="lang-option-btn" data-lang="es" style="position: absolute; top: 7%; left: 75.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('es')" title="Español"></div>
-      <div class="lang-option-btn" data-lang="ru" style="position: absolute; top: 51%; left: 10.5%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('ru')" title="Русский"></div>
-      <div class="lang-option-btn" data-lang="pl" style="position: absolute; top: 51%; left: 38%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('pl')" title="Polski"></div>
-      <div class="lang-option-btn" data-lang="fr" style="position: absolute; top: 51%; left: 66%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('fr')" title="Français"></div>
-    </div>
-  </div>
-
-</body>
+  </body>
 </html>

@@ -99,6 +99,13 @@
       pointer-events: none !important;
     }
 
+    #btn-acc-tutorial {
+      font-size: 19px !important;
+      padding: 0 45px !important;
+      box-sizing: border-box !important;
+      white-space: nowrap !important;
+    }
+
     /* ─── AKADÁLYMENTES TUTORIAL OVERLAY & INFOPANEL (ATKINSON HYPERLEGIBLE TYPOGRAPHY) ─── */
     #acc-tutorial-overlay,
     #acc-tutorial-overlay * {
@@ -354,12 +361,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       // Lekérjük a beállított nyelvet, alapértelmezett a magyar
-      let savedLang = localStorage.getItem('ebook_pirates_language') || 'hu';
-      // URL paraméterből is felülírható, ha a weboldal adta át
-      if (urlParams.has('lang')) {
-        savedLang = urlParams.get('lang');
-        localStorage.setItem('ebook_pirates_language', savedLang);
-      }
+      let savedLang = urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('ebp_language') || 'hu';
+      localStorage.setItem('ebook_pirates_language', savedLang);
+      localStorage.setItem('siteLang', savedLang);
       
       const flagImg = document.getElementById('current-language-flag');
       if (flagImg) {
@@ -384,7 +388,8 @@
       localStorage.removeItem('saved_boat_transform');
       localStorage.removeItem('ebp_tutorial_save');
       document.cookie = "ebook_pirates_game_state=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      window.location.href = 'tutorial_fixed.html';
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'tutorial_fixed.html?lang=' + curLang;
     }
 
     function continueGame() {
@@ -393,7 +398,8 @@
                            localStorage.getItem('saved_boat_transform') ||
                            document.cookie.includes('ebook_pirates_game_state=true');
       if (hasSaveState) {
-        window.location.href = 'tutorial_fixed.html?load=1';
+        const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+        window.location.href = 'tutorial_fixed.html?load=1&lang=' + curLang;
       }
     }
 
@@ -844,9 +850,9 @@
 </head>
 <body>
   <video id="bg-video" autoplay loop muted playsinline preload="auto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none;">
-    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
+    <source src="assets/videos/Zeppelin%20forog%20(1).mp4" type="video/mp4">
+    <source src="assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
     <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Zeppelin%20forog%20(1).mp4" type="video/mp4">
-    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/eBookPirates%20%E2%80%93%20Kal%C3%B3zsziget%203D%20Tutorial_2.mp4" type="video/mp4">
   </video>
   <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: 1; pointer-events: none;"></div>
 
@@ -940,7 +946,7 @@
     <div class="menu-button" onclick="startNewGame()">Új Játék</div>
     <div id="btn-continue-game" class="menu-button" onclick="continueGame()">Játék Folytatása</div>
     <div class="menu-button" onclick="window.location.href='SettingsMenu.html?v=' + Date.now();">Beállítások</div>
-    <div class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
+    <div id="btn-acc-tutorial" class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
 
   </div>
 

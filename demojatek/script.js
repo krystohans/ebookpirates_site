@@ -21,6 +21,13 @@ window.getAssetUrl = function (path) {
   if (!path) return '';
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
   const clean = path.replace(/^\.?\//, '');
+  const isLocal = window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1' || 
+                  window.location.hostname.startsWith('192.168.') || 
+                  window.location.protocol === 'file:';
+  if (isLocal || window.location.hostname.includes('krystahans.github.io')) {
+    return clean;
+  }
   return GCS_ASSET_BASE + clean;
 };
 
@@ -31,7 +38,9 @@ window.eogMonologues = {};
 
 async function loadDialogues() {
   try {
-    const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = window.currentLanguage || urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || 'hu';
+    window.currentLanguage = lang;
     const filename = (lang === 'en') ? 'dialogues_en.json' : 'dialogues.json';
     const res = await fetch(filename + '?t=' + Date.now());
     if (res.ok) {
@@ -53,7 +62,7 @@ async function loadDialogues() {
 }
 loadDialogues();
 
-window.fitDialogueText = function (el, defaultMaxFs = 23, minFs = 16) {
+window.fitDialogueText = function (el, defaultMaxFs = 23, minFs = 16, customMaxH = null) {
   if (!el) return;
   const isEn = (window.currentLanguage || localStorage.getItem('siteLang') || localStorage.getItem('ebp_language')) === 'en';
   let maxCap = (defaultMaxFs >= 28) ? 22 : 20;
@@ -61,12 +70,21 @@ window.fitDialogueText = function (el, defaultMaxFs = 23, minFs = 16) {
   el.style.fontSize = currentFs + 'px';
   el.style.lineHeight = '1.25';
   
-  // Csak valódi túlcsordulás esetén csökkentünk, nem engedve 16px alá esni
-  const targetMaxH = 84;
+  let targetMaxH = customMaxH;
+  if (!targetMaxH) {
+    if (el.parentElement) {
+      const parentH = el.parentElement.clientHeight;
+      if (parentH > 50) {
+        targetMaxH = parentH * 0.75;
+      }
+    }
+  }
+  if (!targetMaxH || targetMaxH < 95) targetMaxH = 105;
+
   let iterations = 0;
   while (currentFs > minFs && iterations < 8) {
     iterations++;
-    const isOverflowingY = el.scrollHeight > targetMaxH + 2;
+    const isOverflowingY = el.scrollHeight > targetMaxH + 4;
     const isOverflowingX = el.scrollWidth > el.clientWidth + 4;
     if (isOverflowingY || isOverflowingX) {
       currentFs -= 1;
@@ -250,7 +268,16 @@ function setupTopBarEvents() {
       const selectedLang = btn.getAttribute('data-lang');
       window.currentLanguage = selectedLang;
       localStorage.setItem('siteLang', selectedLang);
+      localStorage.setItem('ebook_pirates_language', selectedLang);
+      localStorage.setItem('ebp_language', selectedLang);
       console.log('🌐 Kiválasztott nyelv:', selectedLang);
+
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', selectedLang);
+        window.history.replaceState({}, '', url.toString());
+      } catch (err) { }
+
       await loadDialogues();
       if (typeof window.applyLanguageToUI === 'function') {
         window.applyLanguageToUI(selectedLang);
@@ -1723,20 +1750,44 @@ let hartyaTemplate = null;
 window.membranePool = [];
 const MEMBRANE_POOL_SIZE = 25;
 
+function applyHartyaTemplateToMesh(group) {
+  if (!hartyaTemplate || !group) return;
+  if (group.userData && group.userData.hasModel && group.getObjectByName('membraneModel')) return;
+
+  // Eltávolítjuk az ideiglenes fallback gömböt
+  const toRemove = [];
+  group.children.forEach(child => {
+    if (child.name === 'membranePlaceholder' || (child.isMesh && child.name !== 'membraneModel')) {
+      toRemove.push(child);
+    }
+  });
+  toRemove.forEach(child => group.remove(child));
+
+  const hartyaModel = hartyaTemplate.clone(true);
+  hartyaModel.name = 'membraneModel';
+  hartyaModel.position.set(0, 0.5, 0);
+  group.add(hartyaModel);
+  group.userData.hasModel = true;
+}
+
 function createMembraneMesh(x, y, z) {
   const group = new THREE.Group();
   group.position.set(x, y, z);
 
   if (hartyaTemplate) {
     const hartyaModel = hartyaTemplate.clone(true);
+    hartyaModel.name = 'membraneModel';
     hartyaModel.position.set(0, 0.5, 0);
     group.add(hartyaModel);
+    group.userData.hasModel = true;
   } else {
     const coreGeo = new THREE.SphereGeometry(0.7, 16, 16);
     const coreMat = new THREE.MeshBasicMaterial({ color: 0xffc800, transparent: true, opacity: 0.40, depthWrite: false });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    coreMesh.name = 'membranePlaceholder';
     coreMesh.position.y = 0.5;
     group.add(coreMesh);
+    group.userData.hasModel = false;
   }
 
   // Szórt fény (diffuse light): felülről sugárzó, lágy esésű arany fényforrás
@@ -1745,6 +1796,7 @@ function createMembraneMesh(x, y, z) {
   group.add(candleLight);
 
   group.userData = {
+    ...group.userData,
     isMembrane: true,
     collected: true,
     inUse: false,
@@ -1756,8 +1808,15 @@ function createMembraneMesh(x, y, z) {
 }
 
 window.initMembranePool = function () {
-  if (window.membranePool && window.membranePool.length >= MEMBRANE_POOL_SIZE) return;
   window.membranePool = window.membranePool || [];
+
+  // Ha a hartyaTemplate már elérhető, az összes korábbi pool elemet és aktív hártyát azonnal frissítjük az arany 3D modellre!
+  if (hartyaTemplate) {
+    window.membranePool.forEach(m => applyHartyaTemplateToMesh(m));
+    if (window.activeMembranes && window.activeMembranes.length > 0) {
+      window.activeMembranes.forEach(m => applyHartyaTemplateToMesh(m));
+    }
+  }
 
   while (window.membranePool.length < MEMBRANE_POOL_SIZE) {
     const m = createMembraneMesh(0, -999, 0);
@@ -1773,6 +1832,9 @@ function getPooledMembrane() {
   for (let i = 0; i < window.membranePool.length; i++) {
     const m = window.membranePool[i];
     if (!m.userData.inUse) {
+      if (hartyaTemplate && !m.userData.hasModel) {
+        applyHartyaTemplateToMesh(m);
+      }
       return m;
     }
   }
@@ -1804,6 +1866,13 @@ function loadMembraneModel() {
       }
     });
 
+    // Frissítjük a poolt és az aktív hártyákat is a valódi 3D arany modellel!
+    if (window.membranePool) {
+      window.membranePool.forEach(m => applyHartyaTemplateToMesh(m));
+    }
+    if (window.activeMembranes) {
+      window.activeMembranes.forEach(m => applyHartyaTemplateToMesh(m));
+    }
     window.initMembranePool();
 
     const isLoadMode = window.location.search.includes('load=1');
@@ -1821,6 +1890,12 @@ function loadMembraneModel() {
     new GLTFLoader().load(window.getAssetUrl('models/hartya.glb'), function (fallbackGltf) {
       hartyaTemplate = fallbackGltf.scene;
       hartyaTemplate.scale.set(3.0, 3.0, 3.0);
+      if (window.membranePool) {
+        window.membranePool.forEach(m => applyHartyaTemplateToMesh(m));
+      }
+      if (window.activeMembranes) {
+        window.activeMembranes.forEach(m => applyHartyaTemplateToMesh(m));
+      }
       window.initMembranePool();
     });
   });
@@ -2330,10 +2405,10 @@ window.showPopUp = function (msg, onCompleteCb) {
 
     if (txt) {
       txt.innerText = msg;
-      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(txt, 19, 14);
+      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(txt, 23, 16);
     } else {
       p.innerText = msg;
-      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(p, 19, 14);
+      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(p, 23, 16);
     }
 
     window.isTimedPopupActive = true;
@@ -2393,7 +2468,11 @@ addEventListener('click', (e) => {
     if (typeof window.saveFullGameState === 'function') {
       window.saveFullGameState();
     }
-    window.location.href = 'MainMenuTutorial.html';
+    const currentLang = window.currentLanguage || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || 'hu';
+    localStorage.setItem('siteLang', currentLang);
+    localStorage.setItem('ebook_pirates_language', currentLang);
+    localStorage.setItem('ebp_language', currentLang);
+    window.location.href = 'MainMenuTutorial.html?lang=' + currentLang;
     return;
   }
 
@@ -4236,6 +4315,7 @@ window.loadFullGameState = function () {
     if (s.membranes && Array.isArray(s.membranes.activePositions) && s.membranes.activePositions.length > 0) {
       s.membranes.activePositions.forEach(pos => {
         const mMesh = getPooledMembrane();
+        if (typeof applyHartyaTemplateToMesh === 'function') applyHartyaTemplateToMesh(mMesh);
         mMesh.position.set(pos.x, 0.1, pos.z);
         mMesh.userData.baseY = 0.1;
         mMesh.userData.collected = false;
@@ -4991,7 +5071,7 @@ window.UI_TRANSLATIONS = {
     musicTitle: "Music",
     fullscreenTitle: "Fullscreen",
     pauseTitle: "Pause",
-    stopTitle: "STOP",
+    stopTitle: "Main Menu",
     saveTitle: "Save",
     exitTitle: "Exit",
     baseExitBtn: "⚓ Finish Fishing & Save",

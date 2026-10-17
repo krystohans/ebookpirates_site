@@ -1,6 +1,27 @@
 @font-face {
   font-family: 'Briskb';
-  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+}
+
+@font-face {
+  font-family: 'Briskb';
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'BriskB';
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+}
+
+@font-face {
+  font-family: 'BriskB';
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  font-weight: bold;
 }
 
 * {
@@ -109,11 +130,6 @@ canvas {
   text-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
 }
 
-@font-face {
-  font-family: 'Briskb';
-  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
-  font-weight: bold;
-}
 
 /* ─── ZOZÓ WELCOME OVERLAY & PÁRBESZÉD UI ─── */
 #zozo-welcome-overlay {
@@ -404,11 +420,11 @@ canvas {
   --ctrl-p-right: 5%;
   --ctrl-p-width: 600px;
   --ctrl-p-min-height: 400px;
-  --ctrl-p-padding-t: 95px;
-  --ctrl-p-padding-r: 110px;
-  --ctrl-p-padding-b: 100px;
-  --ctrl-p-padding-l: 110px;
-  --ctrl-p-font-size: 23px;
+  --ctrl-p-padding-t: 80px;
+  --ctrl-p-padding-r: 95px;
+  --ctrl-p-padding-b: 80px;
+  --ctrl-p-padding-l: 95px;
+  --ctrl-p-font-size: 21px;
 }
 
 #ingame-popup-toast.controls-popup-mode,
@@ -426,6 +442,7 @@ canvas {
 #ingame-popup-toast.controls-popup-mode #popup-toast-text,
 #zozo-ingame-monolog-container.controls-popup-mode #ingame-dialogue-text {
   font-size: var(--ctrl-p-font-size) !important;
+  line-height: 1.35 !important;
 }
 
 #ingame-popup-toast .zozo-nameplate-std,

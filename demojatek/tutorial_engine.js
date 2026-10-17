@@ -72,13 +72,18 @@ let clock = new THREE.Clock();
 // ============================================================================
 // 2. BETÖLTÉS ÉS PRELOADER
 // ============================================================================
+// === [#HEX:D.01.59.00] START | name: updatePreloader | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:D.01.5C.00], [#HEX:D.01.5D.00], [#HEX:D.01.5E.00]
 function updatePreloader(percent, text) {
   const bar = document.getElementById('preloader-bar');
   const txt = document.getElementById('preloader-text');
   if (bar) bar.style.width = percent + '%';
   if (txt) txt.innerText = text + ' (' + Math.round(percent) + '%)';
 }
+// === [#HEX:D.01.59.00] END ===
 
+// === [#HEX:D.01.5A.00] START | name: hidePreloader | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:D.01.5D.00]
 function hidePreloader() {
   const overlay = document.getElementById('preloader-overlay');
   if (overlay) {
@@ -86,7 +91,18 @@ function hidePreloader() {
     setTimeout(() => { overlay.style.display = 'none'; }, 600);
   }
 }
+// === [#HEX:D.01.5A.00] END ===
 
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
 async function loadDataFiles() {
   try {
     const dRes = await fetch('dialogues.json');
@@ -102,10 +118,17 @@ async function loadDataFiles() {
     console.warn('quiz_questions.json betöltési figyelmeztetés:', e);
   }
 }
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
 
 // ============================================================================
 // 3. THREE.JS JELENET ÉS MEGVILÁGÍTÁS (Unity_Tutorial_ThreeJS)
 // ============================================================================
+// === [#HEX:D.01.5C.00] START | name: initEngine | lines: 79 ===
+// @calls: [#HEX:D.01.5D.00], [#HEX:D.01.59.00] | @calledBy: none
 async function initEngine() {
   updatePreloader(10, 'Jelenet és fények inicializálása...');
 
@@ -185,13 +208,18 @@ async function initEngine() {
   // 3D Modellek Betöltése
   await load3DModels();
 }
+// === [#HEX:D.01.5C.00] END ===
 
 // ============================================================================
 // 4. 3D MODELLEK ÉS PÁLYA BETÖLTÉSE (Unity_Tutorial_ThreeJS)
 // ============================================================================
+// === [#HEX:D.01.5D.00] START | name: load3DModels | lines: 157 ===
+// @calls: [#HEX:D.01.59.00], [#HEX:D.01.5A.00], [#HEX:D.03.0F.00], [#HEX:D.01.5F.00], [#HEX:D.01.5E.00] | @calledBy: [#HEX:D.01.5C.00]
 async function load3DModels() {
   const loader = new GLTFLoader();
 
+// === [#HEX:D.01.5E.00] START | name: loadGLTF | lines: 15 ===
+// @calls: [#HEX:D.01.59.00] | @calledBy: [#HEX:D.01.5D.00]
   const loadGLTF = (url, progressWeight, startP, name) => {
     return new Promise((resolve) => {
       loader.load(url, (gltf) => {
@@ -207,6 +235,7 @@ async function load3DModels() {
       });
     });
   };
+// === [#HEX:D.01.5E.00] END ===
 
   // 1. Pálya modell (FullTrack_Small.glb)
   updatePreloader(35, 'Öböl és sziget betöltése...');
@@ -346,10 +375,13 @@ async function load3DModels() {
     checkSavedStateOrStart();
   }, 400);
 }
+// === [#HEX:D.01.5D.00] END ===
 
 // ============================================================================
 // 5. SZIKLÁK, LÁMPÁSOK ÉS COLLIDEREK (Unity_Tutorial_ThreeJS)
 // ============================================================================
+// === [#HEX:D.02.01.00] START | name: setupLanternsAndRockOffsets | lines: 28 ===
+// @calls: none | @calledBy: [#HEX:D.01.5D.00]
 function setupLanternsAndRockOffsets() {
   // Sziklalámpás
   mainRockLanternLight = new THREE.PointLight(0xffaa22, 3500.0, 550.0, 2.0);
@@ -378,7 +410,10 @@ function setupLanternsAndRockOffsets() {
   scene.add(sh2);
   shantyLights.push(sh2);
 }
+// === [#HEX:D.02.01.00] END ===
 
+// === [#HEX:D.01.5F.00] START | name: setupMangroveColliders | lines: 25 ===
+// @calls: none | @calledBy: [#HEX:D.01.5D.00]
 function setupMangroveColliders() {
   const collidersData = [
     { id: 0, posX: -17.0, posY: 2.0, posZ: -120.0, sizeX: 19.5, sizeY: 4.0, sizeZ: 9.0, rotY: -42 },
@@ -404,10 +439,15 @@ function setupMangroveColliders() {
     mangroveColliders.push(mesh);
   });
 }
+// === [#HEX:D.01.5F.00] END ===
 
+// === [#HEX:D.01.60.00] START | name: setupBoundaryWalls | lines: 26 ===
+// @calls: [#HEX:D.01.61.00] | @calledBy: [#HEX:D.01.5D.00]
 function setupBoundaryWalls() {
   const wallMat = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
 
+// === [#HEX:D.01.61.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: [#HEX:D.01.60.00]
   const buildSegment = (x1, z1, x2, z2) => {
     const p1 = new THREE.Vector2(x1, z1);
     const p2 = new THREE.Vector2(x2, z2);
@@ -427,14 +467,18 @@ function setupBoundaryWalls() {
     scene.add(wallMesh);
     borderMeshes.push(wallMesh);
   };
+// === [#HEX:D.01.61.00] END ===
 
   buildSegment(-180.6, 1356.4, -482.0, 1290.0);
   buildSegment(-482.0, 1290.0, -707.8, 1199.1);
 }
+// === [#HEX:D.01.60.00] END ===
 
 // ============================================================================
 // 6. HÁRTYÁK (MEMBRANES) LOGIKA
 // ============================================================================
+// === [#HEX:D.03.0E.00] START | name: createMembraneMesh | lines: 23 ===
+// @calls: none | @calledBy: [#HEX:D.03.03.00], [#HEX:D.03.04.00], [#HEX:D.03.0F.00], [#HEX:D.03.10.00]
 function createMembraneMesh(x, y, z) {
   const group = new THREE.Group();
   group.position.set(x, y, z);
@@ -458,7 +502,10 @@ function createMembraneMesh(x, y, z) {
   group.userData = { isMembrane: true, collected: false, baseY: y };
   return group;
 }
+// === [#HEX:D.03.0E.00] END ===
 
+// === [#HEX:D.03.0F.00] START | name: spawnZeroPointMembrane | lines: 10 ===
+// @calls: [#HEX:D.03.0E.00] | @calledBy: [#HEX:D.03.05.00], [#HEX:D.06.00.00], [#HEX:D.01.3C.00], [#HEX:D.01.5D.00]
 function spawnZeroPointMembrane() {
   activeMembranes.forEach(m => scene.remove(m));
   activeMembranes = [];
@@ -469,7 +516,10 @@ function spawnZeroPointMembrane() {
   activeMembranes.push(firstM);
   totalSpawnedCount = 1;
 }
+// === [#HEX:D.03.0F.00] END ===
 
+// === [#HEX:D.03.10.00] START | name: spawnHartyaWave | lines: 13 ===
+// @calls: [#HEX:D.03.0E.00] | @calledBy: [#HEX:D.03.06.00], [#HEX:D.01.24.00], [#HEX:D.01.3C.00], [#HEX:D.01.66.00]
 function spawnHartyaWave(count) {
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
@@ -483,10 +533,13 @@ function spawnHartyaWave(count) {
     totalSpawnedCount++;
   }
 }
+// === [#HEX:D.03.10.00] END ===
 
 // ============================================================================
 // 7. FIZIKA ÉS IRÁNYVEKTOROS ÜTKÖZÉSVIZSGÁLAT (Demójáték Engine)
 // ============================================================================
+// === [#HEX:D.01.62.00] START | name: updatePhysics | lines: 47 ===
+// @calls: [#HEX:D.01.66.00], [#HEX:D.03.11.00], [#HEX:D.01.63.00], [#HEX:D.04.0B.00], [#HEX:D.01.64.00] | @calledBy: none
 function updatePhysics(dt) {
   if (!playerBoat || isQuizActive || !gameStarted) return;
 
@@ -534,7 +587,10 @@ function updatePhysics(dt) {
   // Kamera követése
   updateCamera();
 }
+// === [#HEX:D.01.62.00] END ===
 
+// === [#HEX:D.01.63.00] START | name: checkBoatCollisions | lines: 47 ===
+// @calls: [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.62.00]
 function checkBoatCollisions(prevPos, mv) {
   const boatPos = playerBoat.position;
   let collisionBlocked = false;
@@ -582,10 +638,13 @@ function checkBoatCollisions(prevPos, mv) {
     }
   }
 }
+// === [#HEX:D.01.63.00] END ===
 
 // ============================================================================
 // 8. KAMERA KÖVETÉS & EGÉR/ÉRINTÉS ORBIT (Unity_Tutorial_ThreeJS)
 // ============================================================================
+// === [#HEX:D.01.64.00] START | name: updateCamera | lines: 18 ===
+// @calls: none | @calledBy: [#HEX:D.01.62.00]
 function updateCamera() {
   if (!playerBoat) return;
 
@@ -604,8 +663,19 @@ function updateCamera() {
   camera.position.set(cx, cy, cz);
   camera.lookAt(playerBoat.position.x, playerBoat.position.y + LOOK_OFFSET_Y, playerBoat.position.z);
 }
+// === [#HEX:D.01.64.00] END ===
 
 // Egér és érintéses Orbit kameravezérlés
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
 function setupCameraControls() {
   const canvas = document.getElementById('c');
   let mDown = false, mx = 0, my = 0;
@@ -630,10 +700,17 @@ function setupCameraControls() {
     my = e.clientY;
   });
 }
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
 
 // ============================================================================
 // 9. HÁRTYAGYŰJTÉS ÉS MÓLÓ LEADÁS
 // ============================================================================
+// === [#HEX:D.03.11.00] START | name: checkMembranesPickup | lines: 21 ===
+// @calls: [#HEX:D.01.68.00], [#HEX:D.01.67.00], [#HEX:D.06.09.00], [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.62.00]
 function checkMembranesPickup() {
   for (let i = activeMembranes.length - 1; i >= 0; i--) {
     const m = activeMembranes[i];
@@ -655,7 +732,10 @@ function checkMembranesPickup() {
     }
   }
 }
+// === [#HEX:D.03.11.00] END ===
 
+// === [#HEX:D.01.66.00] START | name: checkDockArrival | lines: 22 ===
+// @calls: [#HEX:D.03.10.00], [#HEX:D.01.67.00], [#HEX:D.01.68.00], [#HEX:D.06.09.00], [#HEX:D.01.6D.00] | @calledBy: [#HEX:D.01.62.00]
 function checkDockArrival() {
   const dist = playerBoat.position.distanceTo(HOME_POS);
   if (dist < 14.0 && carriedMembranes > 0) {
@@ -678,17 +758,23 @@ function checkDockArrival() {
     saveTutorialState(true);
   }
 }
+// === [#HEX:D.01.66.00] END ===
 
+// === [#HEX:D.01.67.00] START | name: updateTopBar | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.04.0C.00], [#HEX:D.01.6C.00]
 function updateTopBar() {
   const cEl = document.getElementById('tb-carried-count');
   const sEl = document.getElementById('tb-stored-count');
   if (cEl) cEl.innerText = carriedMembranes;
   if (sEl) sEl.innerText = storedMembranes;
 }
+// === [#HEX:D.01.67.00] END ===
 
 // ============================================================================
 // 10. LÉGHAJÓ (AIRSHIP) AI ÉS KVÍZ
 // ============================================================================
+// === [#HEX:D.04.0B.00] START | name: updateAirship | lines: 50 ===
+// @calls: [#HEX:D.04.0C.00] | @calledBy: [#HEX:D.01.62.00]
 function updateAirship(dt) {
   if (!enemyZeppelin || airshipState === 'SLEEP') return;
 
@@ -739,7 +825,10 @@ function updateAirship(dt) {
     }
   }
 }
+// === [#HEX:D.04.0B.00] END ===
 
+// === [#HEX:D.04.0C.00] START | name: triggerAirshipQuiz | lines: 42 ===
+// @calls: [#HEX:D.06.09.00], [#HEX:D.01.67.00], [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.04.0B.00]
 function triggerAirshipQuiz() {
   isQuizActive = true;
 
@@ -782,10 +871,13 @@ function triggerAirshipQuiz() {
 
   overlay.style.display = 'flex';
 }
+// === [#HEX:D.04.0C.00] END ===
 
 // ============================================================================
 // 11. ZOZÓ DIALÓGUSOK ÉS SZÖVEGDOBOZOK (Space / Kattintás / Vissza-nyíl)
 // ============================================================================
+// === [#HEX:D.06.06.00] START | name: showWelcomeStep | lines: 21 ===
+// @calls: none | @calledBy: [#HEX:D.06.07.00], [#HEX:D.06.08.00], [#HEX:D.01.6C.00]
 function showWelcomeStep(step) {
   currentWelcomeStep = step;
   const overlay = document.getElementById('zozo-welcome-overlay');
@@ -807,7 +899,10 @@ function showWelcomeStep(step) {
   if (backBtn) backBtn.style.display = step > 0 ? 'flex' : 'none';
   overlay.style.display = 'flex';
 }
+// === [#HEX:D.06.06.00] END ===
 
+// === [#HEX:D.06.07.00] START | name: nextWelcomeStep | lines: 12 ===
+// @calls: [#HEX:D.06.06.00], [#HEX:D.01.68.00] | @calledBy: [#HEX:D.01.6B.00]
 function nextWelcomeStep() {
   const texts = dialoguesData.welcomeTexts || [0, 1, 2, 3];
   if (currentWelcomeStep < texts.length - 1) {
@@ -820,13 +915,19 @@ function nextWelcomeStep() {
     showInGameMonolog(1);
   }
 }
+// === [#HEX:D.06.07.00] END ===
 
+// === [#HEX:D.06.08.00] START | name: prevWelcomeStep | lines: 5 ===
+// @calls: [#HEX:D.06.06.00] | @calledBy: [#HEX:D.01.6B.00]
 function prevWelcomeStep() {
   if (currentWelcomeStep > 0) {
     showWelcomeStep(currentWelcomeStep - 1);
   }
 }
+// === [#HEX:D.06.08.00] END ===
 
+// === [#HEX:D.01.68.00] START | name: showInGameMonolog | lines: 17 ===
+// @calls: [#HEX:D.06.09.00] | @calledBy: [#HEX:D.06.00.00], [#HEX:D.01.21.00], [#HEX:D.01.24.00], [#HEX:D.03.0A.00], [#HEX:D.01.25.00]
 function showInGameMonolog(index) {
   activeInGameMonologIndex = index;
   if (!hasSeenMonologs.includes(index)) hasSeenMonologs.push(index);
@@ -844,12 +945,18 @@ function showInGameMonolog(index) {
 
   saveTutorialState();
 }
+// === [#HEX:D.01.68.00] END ===
 
+// === [#HEX:D.01.69.00] START | name: closeInGameMonolog | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:D.01.1D.00], [#HEX:D.01.1F.00], [#HEX:D.01.6B.00]
 function closeInGameMonolog() {
   const container = document.getElementById('zozo-ingame-monolog-container');
   if (container) container.style.display = 'none';
 }
+// === [#HEX:D.01.69.00] END ===
 
+// === [#HEX:D.01.6A.00] START | name: showPopupToast | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:D.01.63.00], [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.04.0C.00], [#HEX:D.01.6C.00]
 function showPopupToast(text) {
   const toast = document.getElementById('ingame-popup-toast');
   const txt = document.getElementById('popup-toast-text');
@@ -859,7 +966,10 @@ function showPopupToast(text) {
   toast.style.display = 'flex';
   setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
+// === [#HEX:D.01.6A.00] END ===
 
+// === [#HEX:D.01.6B.00] START | name: setupDialogueEvents | lines: 48 ===
+// @calls: [#HEX:D.06.08.00], [#HEX:D.01.68.00], [#HEX:D.06.07.00], [#HEX:D.01.69.00] | @calledBy: none
 function setupDialogueEvents() {
   const welcomeBox = document.getElementById('zozo-dialogue-box');
   const welcomeBack = document.getElementById('welcome-back-btn');
@@ -908,10 +1018,13 @@ function setupDialogueEvents() {
     }
   });
 }
+// === [#HEX:D.01.6B.00] END ===
 
 // ============================================================================
 // 12. ÁLLAPOTMENTÉS ÉS VISSZATÖLTÉS
 // ============================================================================
+// === [#HEX:D.06.09.00] START | name: saveTutorialState | lines: 26 | action: 'saveTutorialState' ===
+// @calls: none | @calledBy: [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.04.0C.00], [#HEX:D.01.68.00], [#HEX:D.01.6E.00]
 function saveTutorialState(syncBackend = false) {
   const state = {
     storedMembranes,
@@ -938,7 +1051,10 @@ function saveTutorialState(syncBackend = false) {
     }, '*');
   }
 }
+// === [#HEX:D.06.09.00] END ===
 
+// === [#HEX:D.01.6C.00] START | name: checkSavedStateOrStart | lines: 29 ===
+// @calls: [#HEX:D.01.67.00], [#HEX:D.06.06.00], [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.5D.00]
 function checkSavedStateOrStart() {
   const urlParams = new URLSearchParams(window.location.search);
   const isLoad = urlParams.get('load') === '1';
@@ -968,10 +1084,13 @@ function checkSavedStateOrStart() {
 
   showWelcomeStep(0);
 }
+// === [#HEX:D.01.6C.00] END ===
 
 // ============================================================================
 // 13. END OF GAME (EOG) CEREMÓNIA
 // ============================================================================
+// === [#HEX:D.01.6D.00] START | name: triggerEndOfGame | lines: 28 | action: 'tutorial_completed' ===
+// @calls: [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.66.00]
 function triggerEndOfGame() {
   isGameOver = true;
 
@@ -1000,10 +1119,13 @@ function triggerEndOfGame() {
     };
   }
 }
+// === [#HEX:D.01.6D.00] END ===
 
 // ============================================================================
 // 14. IRÁNYÍTÁS BEÁLLÍTÁSA
 // ============================================================================
+// === [#HEX:D.01.6E.00] START | name: setupControls | lines: 109 | action: 'exit_tutorial' ===
+// @calls: [#HEX:D.06.09.00], [#HEX:D.01.6F.00], [#HEX:D.05.03.00] | @calledBy: none
 function setupControls() {
   window.addEventListener('keydown', (e) => {
     const k = e.key.toLowerCase();
@@ -1047,12 +1169,15 @@ function setupControls() {
 
     if (joystickZone && joystickKnob) {
       let touchId = null;
+// === [#HEX:D.01.6F.00] START | name: zoneRect | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:D.01.6E.00]
       const zoneRect = () => joystickZone.getBoundingClientRect();
 
       joystickZone.addEventListener('touchstart', (e) => {
         e.preventDefault();
         touchId = e.changedTouches[0].identifier;
       });
+// === [#HEX:D.01.6F.00] END ===
 
       window.addEventListener('touchmove', (e) => {
         if (touchId === null) return;
@@ -1079,11 +1204,14 @@ function setupControls() {
         }
       }, { passive: false });
 
+// === [#HEX:D.05.03.00] START | name: endTouch | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:D.01.6E.00]
       const endTouch = () => {
         touchId = null;
         joystickKnob.style.transform = 'translate(-50%, -50%)';
         keys.w = keys.s = keys.a = keys.d = false;
       };
+// === [#HEX:D.05.03.00] END ===
 
       window.addEventListener('touchend', endTouch);
       window.addEventListener('touchcancel', endTouch);
@@ -1113,10 +1241,13 @@ function setupControls() {
     };
   }
 }
+// === [#HEX:D.01.6E.00] END ===
 
 // ============================================================================
 // 15. RENDER LOOP ÉS INDÍTÁS
 // ============================================================================
+// === [#HEX:D.01.70.00] START | name: animate | lines: 19 ===
+// @calls: [#HEX:D.01.8A.00] | @calledBy: none
 function animate() {
   requestAnimationFrame(animate);
 
@@ -1136,6 +1267,7 @@ function animate() {
   updatePhysics(dt);
   renderer.render(scene, camera);
 }
+// === [#HEX:D.01.70.00] END ===
 
 window.addEventListener('resize', () => {
   if (!camera || !renderer) return;

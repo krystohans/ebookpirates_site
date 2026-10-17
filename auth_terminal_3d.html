@@ -629,6 +629,8 @@
         let isStatusError = false;
         let isPasswordVisible = false;
 
+// === [#HEX:F.09.0B.00] START | name: togglePasswordVisibility | lines: 20 ===
+// @calls: [#HEX:F.01.00.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.09.07.00], [#HEX:F.04.16C.00], [#HEX:F.09.0C.00], [#HEX:F.04.1DB.00]
         function togglePasswordVisibility() {
             isPasswordVisible = !isPasswordVisible;
             const modalPassInput = document.querySelector('#m-login-password');
@@ -649,8 +651,11 @@
             }
             setTerminalStatus(isPasswordVisible ? "status_pass_visible" : "status_pass_masked", false);
         }
+// === [#HEX:F.09.0B.00] END ===
         window.togglePasswordVisibility = togglePasswordVisibility;
 
+// === [#HEX:F.09.0C.00] START | name: setupPasswordToggle | lines: 9 ===
+// @calls: [#HEX:F.09.0B.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.1CA.00]
         function setupPasswordToggle() {
             const toggleModalPass = document.querySelector('#toggle-modal-password');
             if (toggleModalPass) {
@@ -660,6 +665,7 @@
                 });
             }
         }
+// === [#HEX:F.09.0C.00] END ===
 
         let scene, camera, renderer, controls;
         let cosmosSphere, deviceModel, screenMaterial, screenTexture, infoMaterial, fokuszMaterial;
@@ -849,6 +855,8 @@
             }
         };
 
+// === [#HEX:F.04.1C9.00] START | name: getL | lines: 13 ===
+// @calls: [#HEX:F.04.181.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00], [#HEX:F.04.170.00], [#HEX:F.01.0C.00], [#HEX:F.01.0D.00]
         function getL() {
             const lang = (window.currentLang && (typeof translations !== 'undefined' && translations[window.currentLang]))
                 ? window.currentLang
@@ -862,8 +870,11 @@
             }
             return localizedLabels[lang] || localizedLabels.hu;
         }
+// === [#HEX:F.04.1C9.00] END ===
 
         // --- THREE.JS INICIALIZÁLÁS ---
+// === [#HEX:F.04.1CA.00] START | name: initThree | lines: 68 ===
+// @calls: [#HEX:F.04.1D0.00], [#HEX:F.05.37.00], [#HEX:F.04.1CB.00], [#HEX:F.09.0C.00], [#HEX:F.04.1E9.00] | @calledBy: [#HEX:F.01.0B.00]
         function initThree() {
             const container = document.getElementById('webgl-container');
 
@@ -932,8 +943,11 @@
             // Render loop indítása
             animate(0);
         }
+// === [#HEX:F.04.1CA.00] END ===
 
         // --- KOZMOSZ GÖMB ---
+// === [#HEX:F.04.1CB.00] START | name: initCosmosSphere | lines: 38 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.1CA.00]
         function initCosmosSphere() {
             const textureLoader = new THREE.TextureLoader();
             const localPath = 'assets/images/galaxiskep_globusba.jpg';
@@ -972,16 +986,22 @@
             cosmosSphere.rotation.y = -Math.PI / 2;
             scene.add(cosmosSphere);
         }
+// === [#HEX:F.04.1CB.00] END ===
 
         // --- METEOR / ÜSTÖKÖS KEZELŐ ---
         class MeteorManager {
+// === [#HEX:F.04.1CC.00] START | name: constructor | lines: 6 ===
+// @calls: [#HEX:F.04.1CD.00] | @calledBy: none
             constructor(targetScene, radius) {
                 this.scene = targetScene;
                 this.radius = radius - 2;
                 this.activeMeteors = [];
                 this.scheduleNext();
             }
+// === [#HEX:F.04.1CC.00] END ===
 
+// === [#HEX:F.04.1CD.00] START | name: scheduleNext | lines: 7 ===
+// @calls: [#HEX:F.04.1CE.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15D.00], [#HEX:F.04.1CC.00]
             scheduleNext() {
                 const delay = 3500 + Math.random() * 6000;
                 setTimeout(() => {
@@ -989,7 +1009,10 @@
                     this.scheduleNext();
                 }, delay);
             }
+// === [#HEX:F.04.1CD.00] END ===
 
+// === [#HEX:F.04.1CE.00] START | name: spawn | lines: 31 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15E.00], [#HEX:F.04.1CD.00]
             spawn() {
                 const startPos = new THREE.Vector3(
                     (Math.random() - 0.5) * this.radius * 1.6,
@@ -1021,7 +1044,10 @@
                     decay: 0.012 + Math.random() * 0.01
                 });
             }
+// === [#HEX:F.04.1CE.00] END ===
 
+// === [#HEX:F.04.1CF.00] START | name: update | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.05.14.00], [#HEX:F.02.00.00], [#HEX:F.04.13B.00], [#HEX:F.05.19.00], [#HEX:F.05.1A.00]
             update() {
                 for (let i = this.activeMeteors.length - 1; i >= 0; i--) {
                     const m = this.activeMeteors[i];
@@ -1037,9 +1063,12 @@
                     }
                 }
             }
+// === [#HEX:F.04.1CF.00] END ===
         }
 
         // --- DINAMIKUS KIJELZŐ TEXTÚRA (CANVAS) ---
+// === [#HEX:F.04.1D0.00] START | name: initScreenCanvasTexture | lines: 13 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.1CA.00]
         function initScreenCanvasTexture() {
             screenTexture = new THREE.CanvasTexture(screenCanvas);
             screenTexture.colorSpace = THREE.SRGBColorSpace;
@@ -1053,9 +1082,12 @@
 
             updateScreenDisplay();
         }
+// === [#HEX:F.04.1D0.00] END ===
 
         
         // --- 3D Képernyő Szem-ikon rajzoló (Tökéletes szinkronban a fa-eye / fa-eye-slash logikával) ---
+// === [#HEX:F.04.1D1.00] START | name: drawEyeIconOnCanvas | lines: 35 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00], [#HEX:F.07.17.00]
         function drawEyeIconOnCanvas(context, cx, cy, isVisible) {
             context.save();
             // Gomb háttér és keret: Rejtett módban cián (nyitott szem), Látható módban arany (áthúzott szem)
@@ -1091,8 +1123,11 @@
             }
             context.restore();
         }
+// === [#HEX:F.04.1D1.00] END ===
 
         // Képernyő újra-rajzolása többnyelvű feliratokkal
+// === [#HEX:F.07.17.00] START | name: updateScreenDisplay | lines: 121 ===
+// @calls: [#HEX:F.04.1C9.00], [#HEX:F.04.1D2.00], [#HEX:F.04.1D1.00], [#HEX:F.04.1D4.00], [#HEX:F.04.1D3.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.161.00], [#HEX:F.05.21.00], [#HEX:F.05.23.00], [#HEX:F.04.16A.00]
         function updateScreenDisplay() {
             const w = screenCanvas.width;
             const h = screenCanvas.height;
@@ -1214,7 +1249,10 @@
             // Frissítés értesítése Three.js felé
             screenTexture.needsUpdate = true;
         }
+// === [#HEX:F.07.17.00] END ===
 
+// === [#HEX:F.04.1D2.00] START | name: drawTerminalTab | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00], [#HEX:F.07.17.00]
         function drawTerminalTab(context, x, y, w, h, text, isActive) {
             context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.3)' : 'rgba(0, 255, 204, 0.05)';
             context.fillRect(x, y, w, h);
@@ -1228,7 +1266,10 @@
             context.fillText(text, x + w / 2, y + 21);
             context.textAlign = 'left';
         }
+// === [#HEX:F.04.1D2.00] END ===
 
+// === [#HEX:F.04.1D3.00] START | name: drawField | lines: 18 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00], [#HEX:F.07.17.00]
         function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 44) {
             context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.6)';
             context.font = 'bold 16px "Orbitron", "Segoe UI", sans-serif';
@@ -1247,7 +1288,10 @@
             const displayText = (value || '') + (isActive ? cursor : '');
             context.fillText(displayText, x + 14, y + 6 + (boxHeight * 0.68));
         }
+// === [#HEX:F.04.1D3.00] END ===
 
+// === [#HEX:F.04.1D4.00] START | name: drawActionButton | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00], [#HEX:F.07.17.00]
         function drawActionButton(context, x, y, w, h, text, isDanger = false) {
             context.fillStyle = isDanger ? '#661111' : '#004d40';
             context.fillRect(x, y, w, h);
@@ -1261,8 +1305,11 @@
             context.fillText(text, x + w / 2, y + h / 2 + 7);
             context.textAlign = 'left';
         }
+// === [#HEX:F.04.1D4.00] END ===
 
         // InfoMesh és ScreenMesh Anyag és UV kezelők
+// === [#HEX:F.03.15.00] START | name: applyInfoMeshMaterial | lines: 79 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function applyInfoMeshMaterial(mesh) {
             if (!mesh || !mesh.geometry) return;
             try {
@@ -1342,8 +1389,11 @@
                 console.warn('Hiba az InfoMesh anyag hozzárendelésekor:', e);
             }
         }
+// === [#HEX:F.03.15.00] END ===
 
         // Cián színben ragyogó célkereszt ikon generálása FokuszMesh gombra
+// === [#HEX:F.04.1D5.00] START | name: createCrosshairCanvas | lines: 92 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0C.00], [#HEX:F.03.16.00]
         function createCrosshairCanvas() {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
@@ -1436,8 +1486,11 @@
 
             return canvas;
         }
+// === [#HEX:F.04.1D5.00] END ===
 
         // FokuszMesh Anyag és UV kezelő (Kamerafókusz célkereszt gomb)
+// === [#HEX:F.03.16.00] START | name: applyFokuszMeshMaterial | lines: 62 ===
+// @calls: [#HEX:F.04.1D5.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function applyFokuszMeshMaterial(mesh) {
             if (!mesh || !mesh.geometry) return;
             try {
@@ -1500,8 +1553,11 @@
                 console.warn('Hiba a FokuszMesh anyag hozzárendelésekor:', e);
             }
         }
+// === [#HEX:F.03.16.00] END ===
 
         // Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője (Hártyahalász stílusú pergamen/arany zászlók)
+// === [#HEX:F.03.17.00] START | name: applyLangMeshMaterial | lines: 81 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function applyLangMeshMaterial(mesh, lang) {
             if (!mesh || !mesh.geometry) return;
             try {
@@ -1583,8 +1639,11 @@
                 console.warn('Hiba a nyelvválasztó material hozzárendelésekor (' + lang + '):', e);
             }
         }
+// === [#HEX:F.03.17.00] END ===
 
         // --- GLB MODELL BETÖLTÉSE ---
+// === [#HEX:F.04.1D6.00] START | name: loadDeviceModel | lines: 124 ===
+// @calls: [#HEX:F.05.3B.00], [#HEX:F.04.1D7.00], [#HEX:F.03.15.00], [#HEX:F.04.1D8.00], [#HEX:F.03.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.1CA.00]
         function loadDeviceModel() {
             const gltfLoader = new GLTFLoader();
             const modelPaths = [
@@ -1594,6 +1653,8 @@
                 'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb'
             ];
 
+// === [#HEX:F.04.1D7.00] START | name: tryLoad | lines: 112 ===
+// @calls: [#HEX:F.05.3B.00], [#HEX:F.03.15.00], [#HEX:F.04.1D8.00], [#HEX:F.03.17.00], [#HEX:F.03.16.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.1D6.00]
             function tryLoad(index) {
                 if (index >= modelPaths.length) {
                     console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
@@ -1706,10 +1767,14 @@
                     }
                 );
             }
+// === [#HEX:F.04.1D7.00] END ===
 
             tryLoad(0);
         }
+// === [#HEX:F.04.1D6.00] END ===
 
+// === [#HEX:F.04.1D8.00] START | name: createFallbackDevice | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function createFallbackDevice() {
             const group = new THREE.Group();
             const bodyGeo = new THREE.BoxGeometry(2.8, 1.8, 1.2);
@@ -1726,8 +1791,11 @@
             scene.add(group);
             deviceModel = group;
         }
+// === [#HEX:F.04.1D8.00] END ===
 
         // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
+// === [#HEX:F.05.36.00] START | name: setupDirectKeyboardAndRaycast | lines: 168 ===
+// @calls: [#HEX:F.04.1DD.00], [#HEX:F.07.17.00], [#HEX:F.04.1DC.00], [#HEX:F.04.1E4.00], [#HEX:F.04.1DB.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.1CA.00]
         function setupDirectKeyboardAndRaycast() {
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
@@ -1896,9 +1964,14 @@
                 }
             });
         }
+// === [#HEX:F.05.36.00] END ===
 
         // Modal Mezők Élő Szinkronizálása a 3D Képernyővel
+// === [#HEX:F.05.37.00] START | name: setupModalInputSync | lines: 18 ===
+// @calls: [#HEX:F.01.00.00], [#HEX:F.04.1D9.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.1CA.00]
         function setupModalInputSync() {
+// === [#HEX:F.04.1D9.00] START | name: bindInput | lines: 8 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.23.00], [#HEX:F.05.37.00]
             const bindInput = (id, mode, key) => {
                 const el = document.getElementById(id);
                 if (!el) return;
@@ -1907,6 +1980,7 @@
                     updateScreenDisplay();
                 });
             };
+// === [#HEX:F.04.1D9.00] END ===
 
             bindInput('m-login-username', 'LOGIN', 'username');
             bindInput('m-login-password', 'LOGIN', 'password');
@@ -1916,12 +1990,21 @@
             bindInput('m-del-email', 'DEREGISTER', 'email');
             bindInput('m-del-reason', 'DEREGISTER', 'reason');
         }
+// === [#HEX:F.05.37.00] END ===
 
+// === [#HEX:F.05.38.00] START | name: syncModalInputsFrom3D | lines: 14 ===
+// @calls: [#HEX:F.01.00.00], [#HEX:D.01.57.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.23.00], [#HEX:F.04.16A.00], [#HEX:F.04.170.00], [#HEX:F.04.171.00]
         function syncModalInputsFrom3D() {
+// === [#HEX:F.04.1DA.00] START | name: setVal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1DA.00] START | name: setVal | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.05.38.00]
             const setVal = (id, val) => {
                 const el = document.getElementById(id);
                 if (el) el.value = val || '';
             };
+// === [#HEX:F.04.1DA.00] END ===
+// === [#HEX:F.04.1DA.00] END ===
 
             setVal('m-login-username', formValues.LOGIN.username);
             setVal('m-login-password', formValues.LOGIN.password);
@@ -1931,7 +2014,10 @@
             setVal('m-del-email', formValues.DEREGISTER.email);
             setVal('m-del-reason', formValues.DEREGISTER.reason);
         }
+// === [#HEX:F.05.38.00] END ===
 
+// === [#HEX:F.04.1DB.00] START | name: handleScreenUVClick | lines: 90 ===
+// @calls: [#HEX:F.04.1DD.00], [#HEX:F.07.17.00], [#HEX:F.04.1DC.00], [#HEX:F.09.0D.00], [#HEX:F.09.0B.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.05.36.00]
         function handleScreenUVClick(uv, clickX, clickY) {
             const pxX = uv.x * 1024;
             const pxY = (1 - uv.y) * 512;
@@ -2022,7 +2108,10 @@
 
             updateScreenDisplay();
         }
+// === [#HEX:F.04.1DB.00] END ===
 
+// === [#HEX:F.04.1DC.00] START | name: blurVirtualInput | lines: 13 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.178.00], [#HEX:F.05.36.00]
         function blurVirtualInput() {
             if (!virtualInput) return;
             try {
@@ -2036,7 +2125,10 @@
                 } catch(e) {}
             }
         }
+// === [#HEX:F.04.1DC.00] END ===
 
+// === [#HEX:F.04.1DD.00] START | name: focusVirtualInput | lines: 41 ===
+// @calls: [#HEX:F.04.1DE.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00], [#HEX:F.05.36.00]
         function focusVirtualInput(touchX, touchY) {
             if (!virtualInput) return;
             const targetFieldKey = (currentMode === 'LOGIN') ? ((activeFieldIndex === 0) ? 'username' : 'password') :
@@ -2062,6 +2154,8 @@
                 virtualInput.inputMode = 'text';
             }
 
+// === [#HEX:F.04.1DE.00] START | name: doFocus | lines: 11 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.16E.00], [#HEX:F.04.1DD.00]
             const doFocus = () => {
                 try {
                     virtualInput.focus({ preventScroll: true });
@@ -2073,12 +2167,16 @@
                     try { virtualInput.focus(); } catch(err) {}
                 }
             };
+// === [#HEX:F.04.1DE.00] END ===
 
             doFocus();
             setTimeout(doFocus, 30);
             setTimeout(doFocus, 100);
         }
+// === [#HEX:F.04.1DD.00] END ===
 
+// === [#HEX:F.04.1DF.00] START | name: handleDirectKeyInput | lines: 53 ===
+// @calls: [#HEX:F.07.17.00], [#HEX:F.09.0D.00], [#HEX:F.05.38.00], [#HEX:F.04.1E1.00], [#HEX:F.04.1E3.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.05.36.00]
         function handleDirectKeyInput(event) {
             if (!event || typeof event.key === 'undefined' || event.key === null) return;
             const key = event.key;
@@ -2132,7 +2230,10 @@
                 updateScreenDisplay();
             }
         }
+// === [#HEX:F.04.1DF.00] END ===
 
+// === [#HEX:F.04.1E0.00] START | name: syncVirtualInput | lines: 8 ===
+// @calls: [#HEX:F.05.38.00], [#HEX:F.07.17.00], [#HEX:F.04.1E1.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.05.36.00]
         function syncVirtualInput(val) {
             let targetFieldKey = getActiveFieldKey();
             if (!targetFieldKey) return;
@@ -2141,7 +2242,10 @@
             syncModalInputsFrom3D();
             updateScreenDisplay();
         }
+// === [#HEX:F.04.1E0.00] END ===
 
+// === [#HEX:F.04.1E1.00] START | name: getActiveFieldKey | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.16E.00], [#HEX:F.04.170.00], [#HEX:F.04.171.00], [#HEX:F.04.1DF.00]
         function getActiveFieldKey() {
             if (currentMode === 'LOGIN') {
                 return (activeFieldIndex === 0) ? 'username' : 'password';
@@ -2154,8 +2258,11 @@
             }
             return null;
         }
+// === [#HEX:F.04.1E1.00] END ===
 
         // --- MÓDVÁLTÁS ---
+// === [#HEX:F.09.0D.00] START | name: switchMode | lines: 36 ===
+// @calls: [#HEX:F.01.00.00], [#HEX:F.05.38.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00], [#HEX:F.04.173.00], [#HEX:F.04.179.00]
         function switchMode(mode) {
             if (currentMode !== 'INFO' && mode !== 'INFO') {
                 previousMode = currentMode;
@@ -2192,7 +2299,10 @@
             syncModalInputsFrom3D();
             updateScreenDisplay();
         }
+// === [#HEX:F.09.0D.00] END ===
 
+// === [#HEX:F.04.1E2.00] START | name: toggle3DInfoMode | lines: 8 ===
+// @calls: [#HEX:F.09.0D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.05.36.00]
         function toggle3DInfoMode() {
             if (currentMode === 'INFO') {
                 switchMode(previousMode || 'LOGIN');
@@ -2201,14 +2311,20 @@
                 switchMode('INFO');
             }
         }
+// === [#HEX:F.04.1E2.00] END ===
 
+// === [#HEX:F.04.1E3.00] START | name: executeCurrentMode | lines: 5 ===
+// @calls: [#HEX:F.01.11.00], [#HEX:F.01.13.00], [#HEX:F.01.12.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00], [#HEX:F.05.36.00]
         function executeCurrentMode() {
             if (currentMode === 'LOGIN') executeLogin();
             else if (currentMode === 'REGISTER') executeRegister();
             else if (currentMode === 'DEREGISTER') executeDeregister();
         }
+// === [#HEX:F.04.1E3.00] END ===
 
         // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
+// === [#HEX:F.08.0B.00] START | name: handleLangSwitch | lines: 16 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.08.0A.00], [#HEX:F.07.17.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.08.0A.00], [#HEX:F.05.36.00]
         function handleLangSwitch(lang) {
             window.currentLang = lang;
             if (typeof localStorage !== 'undefined') {
@@ -2225,7 +2341,10 @@
             updateActiveLangButtonsInModal();
             updateScreenDisplay();
         }
+// === [#HEX:F.08.0B.00] END ===
 
+// === [#HEX:F.05.39.00] START | name: updateActiveLangButtonsInModal | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.05.26.00], [#HEX:F.05.27.00], [#HEX:F.08.0B.00]
         function updateActiveLangButtonsInModal() {
             const lang = window.currentLang || localStorage.getItem('siteLang') || 'hu';
             document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -2233,23 +2352,32 @@
                 btn.classList.toggle('active', btnLang === lang);
             });
         }
+// === [#HEX:F.05.39.00] END ===
 
         // --- KAMERA GYORSPOZÍCIÓK ---
+// === [#HEX:F.04.1E4.00] START | name: focusOnScreen | lines: 6 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.05.36.00]
         function focusOnScreen() {
             if (!controls) return;
             camera.position.set(0, 0.25, 2.2);
             controls.target.set(0, 0.15, 0);
             controls.update();
         }
+// === [#HEX:F.04.1E4.00] END ===
 
+// === [#HEX:F.02.0E.00] START | name: resetCamera | lines: 6 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: [#HEX:F.01.0B.00]
         function resetCamera() {
             if (!controls) return;
             camera.position.set(0, 0.35, 2.6);
             controls.target.set(0, 0.15, 0);
             controls.update();
         }
+// === [#HEX:F.02.0E.00] END ===
 
         // --- INFÓ MODAL KEZELŐ ---
+// === [#HEX:F.05.3A.00] START | name: toggleInfoModal | lines: 10 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.28.00], [#HEX:F.05.29.00], [#HEX:F.04.17C.00], [#HEX:F.05.3C.00]
         function toggleInfoModal() {
             const modal = document.getElementById('info-modal');
             if (modal.style.display === 'flex') {
@@ -2260,21 +2388,30 @@
                 updateActiveLangButtonsInModal();
             }
         }
+// === [#HEX:F.05.3A.00] END ===
 
+// === [#HEX:F.05.3B.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.01.01.00], [#HEX:F.01.02.00], [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00]
         function openInfoModalAuto() {
             const modal = document.getElementById('info-modal');
             modal.style.display = 'flex';
             syncModalInputsFrom3D();
             updateActiveLangButtonsInModal();
         }
+// === [#HEX:F.05.3B.00] END ===
 
+// === [#HEX:F.05.3C.00] START | name: onModalBackdropClick | lines: 5 ===
+// @calls: [#HEX:F.05.3A.00] | @calledBy: [#HEX:F.01.0B.00]
         function onModalBackdropClick(e) {
             if (e.target.id === 'info-modal') {
                 toggleInfoModal();
             }
         }
+// === [#HEX:F.05.3C.00] END ===
 
         // --- BACKEND MŰVELETEK & ROBUSZTUS HÁLÓZATI RÉTEG ---
+// === [#HEX:F.04.1E5.00] START | name: setTerminalStatus | lines: 11 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.09.06.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00]
         function setTerminalStatus(keyOrText, isError = false, param = '') {
             isStatusError = isError;
             if (typeof keyOrText === 'string' && keyOrText.startsWith('status_')) {
@@ -2286,8 +2423,11 @@
             }
             updateScreenDisplay();
         }
+// === [#HEX:F.04.1E5.00] END ===
 
         // Robusztus JSON kinyerő (Google Apps Script HTML/szöveges hiba-válaszok tolerálására)
+// === [#HEX:F.04.1E6.00] START | name: parseJsonSafe | lines: 17 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.06.48.00], [#HEX:F.06.55.00]
         function parseJsonSafe(text) {
             if (!text || typeof text !== 'string') return null;
             try {
@@ -2305,7 +2445,10 @@
                 return null;
             }
         }
+// === [#HEX:F.04.1E6.00] END ===
 
+// === [#HEX:F.06.55.00] START | name: callBackendApi | lines: 31 ===
+// @calls: [#HEX:F.04.1E6.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.0C.00], [#HEX:F.01.0D.00], [#HEX:F.01.0E.00], [#HEX:F.01.11.00]
         function callBackendApi(action, dataObj, onSuccess, onFailure) {
             fetch(BACKEND_URL, {
                 method: 'POST',
@@ -2337,7 +2480,10 @@
                 onFailure(err && err.message ? err.message : "Hálózati csatlakozási hiba!");
             });
         }
+// === [#HEX:F.06.55.00] END ===
 
+// === [#HEX:F.01.11.00] START | name: executeLogin | lines: 50 ===
+// @calls: [#HEX:F.04.1E5.00], [#HEX:B.07.01.00], [#HEX:F.06.55.00], [#HEX:F.04.1E7.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00], [#HEX:F.04.1E3.00]
         function executeLogin() {
             const u = formValues.LOGIN.username.trim();
             const p = formValues.LOGIN.password.trim();
@@ -2388,7 +2534,10 @@
                 }
             );
         }
+// === [#HEX:F.01.11.00] END ===
 
+// === [#HEX:F.01.12.00] START | name: executeRegister | lines: 22 ===
+// @calls: [#HEX:F.04.1E5.00], [#HEX:F.06.55.00], [#HEX:B.07.DB.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00], [#HEX:F.04.1E3.00]
         function executeRegister() {
             const em = formValues.REGISTER.email.trim();
             const un = formValues.REGISTER.username.trim();
@@ -2411,7 +2560,10 @@
                 }
             );
         }
+// === [#HEX:F.01.12.00] END ===
 
+// === [#HEX:F.01.13.00] START | name: executeDeregister | lines: 23 ===
+// @calls: [#HEX:B.07.E2.00], [#HEX:F.04.1E5.00], [#HEX:F.06.55.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00], [#HEX:F.04.1E3.00]
         function executeDeregister() {
             const un = formValues.DEREGISTER.username.trim();
             const em = formValues.DEREGISTER.email.trim();
@@ -2435,6 +2587,7 @@
                 }
             );
         }
+// === [#HEX:F.01.13.00] END ===
 
         // --- 🚀 HIPERUGRÁS & KAMERA-ANIMÁCIÓS MOTOR ---
         let isCinematicFlight = false;
@@ -2446,6 +2599,8 @@
         let flightOnComplete = null;
         let initialCameraFov = 50;
 
+// === [#HEX:F.04.1E7.00] START | name: startHyperspaceCinematic | lines: 72 ===
+// @calls: [#HEX:F.04.1DC.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.0C.00], [#HEX:F.01.11.00]
         function startHyperspaceCinematic(onComplete) {
             if (!camera || !scene) {
                 if (onComplete) onComplete();
@@ -2518,7 +2673,10 @@
             flightDuration = 3800; // ~3.8 mp
             flightOnComplete = onComplete;
         }
+// === [#HEX:F.04.1E7.00] END ===
 
+// === [#HEX:F.04.1E8.00] START | name: reset3DTerminalState | lines: 20 ===
+// @calls: [#HEX:F.07.17.00], [#HEX:F.09.0D.00], [#HEX:F.04.1CF.00] | @calledBy: [#HEX:F.01.0A.00], [#HEX:F.01.0B.00]
         function reset3DTerminalState() {
             isCinematicFlight = false;
             if (camera) {
@@ -2539,14 +2697,20 @@
             switchMode('LOGIN');
             updateScreenDisplay();
         }
+// === [#HEX:F.04.1E8.00] END ===
 
         // --- RENDER & ANIMÁCIÓS CIKLUS ---
+// === [#HEX:F.04.1E9.00] START | name: onWindowResize | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.155.00], [#HEX:F.05.20.00], [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
+// === [#HEX:F.04.1E9.00] END ===
 
+// === [#HEX:F.04.1EA.00] START | name: animate | lines: 75 ===
+// @calls: [#HEX:F.07.17.00], [#HEX:F.04.1CF.00] | @calledBy: none
         function animate(timestamp) {
             requestAnimationFrame(animate);
 
@@ -2622,6 +2786,7 @@
 
             if (renderer && scene && camera) renderer.render(scene, camera);
         }
+// === [#HEX:F.04.1EA.00] END ===
 
         // Globális UI funkciók exportálása
         window.switchMode = switchMode;

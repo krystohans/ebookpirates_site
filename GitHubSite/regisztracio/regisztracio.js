@@ -1,5 +1,15 @@
 var REGISTRATION_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
 
+// === [#HEX:F.04.1EB.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1EB.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1EB.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1FC.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1FC.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
 function tt(key, fallback) {
     if (typeof t === 'function') {
         var value = t(key);
@@ -9,7 +19,16 @@ function tt(key, fallback) {
     }
     return fallback || key;
 }
+// === [#HEX:F.04.1FC.00] END ===
+// === [#HEX:F.04.1FC.00] END ===
+// === [#HEX:F.04.1EB.00] END ===
+// === [#HEX:F.04.1EB.00] END ===
+// === [#HEX:F.04.1EB.00] END ===
 
+// === [#HEX:F.04.1EC.00] START | name: localizeByDictionary | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1EC.00] START | name: localizeByDictionary | lines: 19 ===
+// @calls: none | @calledBy: [#HEX:F.06.56.00], [#HEX:F.06.57.00]
 function localizeByDictionary(rawText) {
     var text = (rawText || '').toString();
     if (!text) {
@@ -29,11 +48,30 @@ function localizeByDictionary(rawText) {
     }
     return text;
 }
+// === [#HEX:F.04.1EC.00] END ===
+// === [#HEX:F.04.1EC.00] END ===
 
+// === [#HEX:F.01.14.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.14.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.14.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.15.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.15.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
 function applyRegistrationPageMetaTranslation() {
     document.title = tt('reg_page_title', 'eBookPirate leszek');
 }
+// === [#HEX:F.01.15.00] END ===
+// === [#HEX:F.01.15.00] END ===
+// === [#HEX:F.01.14.00] END ===
+// === [#HEX:F.01.14.00] END ===
+// === [#HEX:F.01.14.00] END ===
 
+// === [#HEX:F.06.56.00] START | name: callBackend | lines: 56 ===
+// @calls: [#HEX:F.04.1EF.00], [#HEX:F.04.1F1.00] | @calledBy: none
 function callBackend(funcName, params, onSuccess, onFailure) {
     var token = null;
     try {
@@ -90,7 +128,10 @@ function callBackend(funcName, params, onSuccess, onFailure) {
         }
     });
 }
+// === [#HEX:F.06.56.00] END ===
 
+// === [#HEX:F.04.1ED.00] START | name: safeParseJson | lines: 20 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: none
 function safeParseJson(text) {
     if (!text) {
         return null;
@@ -111,6 +152,7 @@ function safeParseJson(text) {
         return null;
     }
 }
+// === [#HEX:F.04.1ED.00] END ===
 
 document.getElementById('registrationForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -132,6 +174,8 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         nameLength: (formData.name || '').length
     });
 
+// === [#HEX:F.06.57.00] START | name: callBackend | lines: 21 ===
+// @calls: [#HEX:B.07.DB.00], [#HEX:F.04.1EF.00] | @calledBy: none
     callBackend('submitRegistrationRequest', [formData], function(response) {
         if (!response || response.success === false) {
             var backendError = '';
@@ -153,6 +197,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         statusMessage.style.color = 'green';
         document.getElementById('registrationForm').style.display = 'none';
     }, function(error) {
+// === [#HEX:F.06.57.00] END ===
         statusMessage.textContent = tt('form_error_prefix', 'Hiba történt: ') + localizeByDictionary(error.message);
         statusMessage.style.color = 'red';
         submitButton.disabled = false;

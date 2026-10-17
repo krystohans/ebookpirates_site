@@ -1660,6 +1660,8 @@
         let airshipQuizActive = false;
         let victoryZoneTriggered = false;
 
+// === [#HEX:D.01.71.00] START | name: triggerGameOver | lines: 33 ===
+// @calls: [#HEX:D.04.10.00], [#HEX:D.05.05.00], [#HEX:D.01.72.00] | @calledBy: [#HEX:D.01.8A.00]
         function triggerGameOver(reasonText) {
             isGameOver = true;
             gameStarted = false;
@@ -1675,6 +1677,8 @@
                 if (gameMsgPinchController) gameMsgPinchController.resetZoom(false);
                 msgEl.style.display = 'flex';
 
+// === [#HEX:D.01.72.00] START | name: restartAction | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:D.01.71.00]
                 const restartAction = function(e) {
                     if (e) {
                         e.stopPropagation();
@@ -1682,6 +1686,7 @@
                     }
                     window.location.reload();
                 };
+// === [#HEX:D.01.72.00] END ===
 
                 msgEl.onclick = restartAction;
                 msgEl.ontouchend = restartAction;
@@ -1693,10 +1698,13 @@
                 }
             }
         }
+// === [#HEX:D.01.71.00] END ===
 
         // =========================================================================
         // UNIVERZÁLIS KÉTUJJAS CSÍPÉS-ZOOM ÉS PÁSZTÁZÓ MOTOR (SZÖVEG- ÉS KVÍZDOBOZOK)
         // =========================================================================
+// === [#HEX:D.05.04.00] START | name: makePinchZoomable | lines: 157 ===
+// @calls: [#HEX:D.01.73.00], [#HEX:D.05.05.00], [#HEX:D.01.74.00], [#HEX:D.05.0A.00] | @calledBy: [#HEX:D.05.07.00]
         function makePinchZoomable(containerEl, contentEl, options) {
             if (!containerEl || !contentEl) return null;
 
@@ -1723,6 +1731,8 @@
 
             var getBaseScale = options.getBaseScale || function() { return 1.0; };
 
+// === [#HEX:D.01.73.00] START | name: applyTransform | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:D.05.04.00], [#HEX:D.05.05.00], [#HEX:D.01.8F.00]
             function applyTransform(withTransition) {
                 if (withTransition) {
                     contentEl.style.transition = 'transform 0.22s cubic-bezier(0.25, 1, 0.5, 1)';
@@ -1738,13 +1748,17 @@
                     contentEl.style.transform = 'translate(' + currentPanX + 'px, ' + currentPanY + 'px) scale(' + effectiveScale + ')';
                 }
             }
+// === [#HEX:D.01.73.00] END ===
 
+// === [#HEX:D.05.05.00] START | name: resetZoom | lines: 6 ===
+// @calls: [#HEX:D.01.73.00] | @calledBy: [#HEX:D.01.71.00], [#HEX:D.05.04.00], [#HEX:D.05.06.00], [#HEX:D.05.07.00], [#HEX:D.01.75.00]
             function resetZoom(animated) {
                 currentScale = 1.0;
                 currentPanX = 0;
                 currentPanY = 0;
                 applyTransform(animated !== false);
             }
+// === [#HEX:D.05.05.00] END ===
 
             containerEl.addEventListener('touchstart', function(e) {
                 if (e.touches.length === 2) {
@@ -1810,6 +1824,8 @@
                 }
             }, { passive: false });
 
+// === [#HEX:D.05.06.00] START | name: handleTouchEnd | lines: 18 ===
+// @calls: [#HEX:D.05.05.00] | @calledBy: none
             function handleTouchEnd(e) {
                 if (e.touches.length < 2) {
                     isPinching = false;
@@ -1828,6 +1844,7 @@
                     }
                 }
             }
+// === [#HEX:D.05.06.00] END ===
 
             containerEl.addEventListener('touchend', handleTouchEnd);
             containerEl.addEventListener('touchcancel', handleTouchEnd);
@@ -1851,9 +1868,13 @@
             return {
                 resetZoom: resetZoom,
                 applyTransform: applyTransform,
+// === [#HEX:D.01.74.00] START | name: getScale | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:D.05.04.00], [#HEX:D.01.8F.00]
                 getScale: function() { return currentScale; }
+// === [#HEX:D.01.74.00] END ===
             };
         }
+// === [#HEX:D.05.04.00] END ===
 
         var quizPinchController = null;
         var gameDialogPinchController = null;
@@ -1862,6 +1883,8 @@
         var gameMsgPinchController = null;
         var demoSubPinchController = null;
 
+// === [#HEX:D.04.0D.00] START | name: updateQuizPanelScale | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:D.05.07.00]
         function updateQuizPanelScale() {
             if (!isAndroid) return 1.0;
             var panel = document.getElementById('quiz-panel');
@@ -1872,7 +1895,10 @@
             var availH = window.innerHeight * 0.94;
             return Math.min(1.0, availW / baseW, availH / baseH);
         }
+// === [#HEX:D.04.0D.00] END ===
 
+// === [#HEX:D.05.07.00] START | name: initModalPinchZoom | lines: 41 ===
+// @calls: [#HEX:D.05.05.00], [#HEX:F.04.13.00], [#HEX:D.04.0D.00], [#HEX:D.05.04.00] | @calledBy: [#HEX:D.01.95.00]
         function initModalPinchZoom() {
             var quizOverlay = document.getElementById('quiz-overlay');
             var quizPanel = document.getElementById('quiz-panel');
@@ -1914,11 +1940,14 @@
                 demoSubPinchController = makePinchZoomable(demoSubOverlay, demoSubPanel, { minScale: 1.0, maxScale: 2.6, hasCenteringTranslate: false });
             }
         }
+// === [#HEX:D.05.07.00] END ===
         initModalPinchZoom();
 
         // ==========================================
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
         // ==========================================
+// === [#HEX:D.01.75.00] START | name: showProjectDialog | lines: 31 ===
+// @calls: [#HEX:D.01.76.00], [#HEX:F.04.EE.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.01.77.00], [#HEX:D.01.78.00], [#HEX:D.04.0F.00]
         function showProjectDialog(title, text, btnText, isSuccess, callback) {
             if (gameDialogPinchController) gameDialogPinchController.resetZoom(false);
             const overlay = document.getElementById('game-dialog-overlay');
@@ -1933,6 +1962,8 @@
             btnEl.innerText = btnText || '⚓ TOVÁBB';
 
             let dialogClosed = false;
+// === [#HEX:D.01.76.00] START | name: handleClose | lines: 12 ===
+// @calls: [#HEX:F.04.EE.00] | @calledBy: [#HEX:D.01.75.00]
             const handleClose = function(e) {
                 if (dialogClosed) return;
                 dialogClosed = true;
@@ -1945,19 +1976,26 @@
                     callback();
                 }
             };
+// === [#HEX:D.01.76.00] END ===
 
             btnEl.onclick = handleClose;
             btnEl.ontouchend = handleClose;
             overlay.style.display = 'flex';
         }
+// === [#HEX:D.01.75.00] END ===
 
+// === [#HEX:D.01.77.00] START | name: uiAlert | lines: 3 ===
+// @calls: [#HEX:D.01.75.00] | @calledBy: [#HEX:F.04.25.00], [#HEX:F.04.27.00], [#HEX:F.05.01.00], [#HEX:F.04.44.00], [#HEX:F.04.47.00]
         window.uiAlert = function(msg, title) {
             showProjectDialog(title || "Értesítés", msg, "⚓ ÉRTEM", true, null);
         };
+// === [#HEX:D.01.77.00] END ===
         window.alert = function(msg) {
             showProjectDialog("Értesítés", msg, "⚓ ÉRTEM", true, null);
         };
 
+// === [#HEX:D.01.78.00] START | name: openDemoSubscriptionModal | lines: 19 ===
+// @calls: [#HEX:D.01.75.00] | @calledBy: [#HEX:D.04.10.00], [#HEX:D.01.8C.00]
         function openDemoSubscriptionModal(titleText, bodyText) {
             const totalHartya = scoreOnBoat + baseHarborScore;
             if (totalHartya <= 0) {
@@ -1977,6 +2015,7 @@
             document.getElementById('demo-email-input').value = '';
             overlay.style.display = 'flex';
         }
+// === [#HEX:D.01.78.00] END ===
 
         document.addEventListener("DOMContentLoaded", function() {
             const saveSubBtn = document.getElementById('save-demo-sub-btn');
@@ -2053,6 +2092,8 @@
             }
         ];
 
+// === [#HEX:D.04.0E.00] START | name: triggerAirshipCatchQuiz | lines: 27 ===
+// @calls: [#HEX:D.04.0F.00] | @calledBy: [#HEX:D.01.8E.00]
         function triggerAirshipCatchQuiz() {
             console.log("DEBUG: triggerAirshipCatchQuiz meghívva!");
             if (airshipQuizActive) {
@@ -2080,7 +2121,10 @@
 
             showAirshipQuizModal(qData);
         }
+// === [#HEX:D.04.0E.00] END ===
 
+// === [#HEX:D.04.0F.00] START | name: showAirshipQuizModal | lines: 74 ===
+// @calls: [#HEX:D.05.05.00], [#HEX:D.01.75.00] | @calledBy: [#HEX:D.04.0E.00]
         function showAirshipQuizModal(qData) {
             if (quizPinchController) quizPinchController.resetZoom(false);
             console.log("DEBUG: showAirshipQuizModal indítása, kérdés:", qData.question);
@@ -2155,6 +2199,7 @@
 
             overlay.style.display = 'flex';
         }
+// === [#HEX:D.04.0F.00] END ===
 
 </script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -2201,6 +2246,8 @@
 
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
 
+// === [#HEX:D.01.79.00] START | name: callBackend | lines: 25 ===
+// @calls: none | @calledBy: [#HEX:F.04.05.00], [#HEX:F.04.17.00], [#HEX:F.01.00.00], [#HEX:F.01.01.00], [#HEX:F.07.00.00]
         function callBackend(action, params) {
             return new Promise((resolve, reject) => {
                 if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
@@ -2226,7 +2273,10 @@
                 }
             });
         }
+// === [#HEX:D.01.79.00] END ===
 
+// === [#HEX:D.01.7A.00] START | name: initGameData | lines: 61 ===
+// @calls: [#HEX:D.04.10.00], [#HEX:D.01.79.00], [#HEX:B.07.D4.00] | @calledBy: none
         async function initGameData() {
             boatDurability = 10; // A demójátékban a csónak élettartam pontja mindig 10-el kezdődik
             try {
@@ -2288,6 +2338,7 @@
             }
             updateScoreBoard();
         }
+// === [#HEX:D.01.7A.00] END ===
         initGameData();
 
         // Szélzászló UI generálása
@@ -2311,6 +2362,8 @@
 
         // Pontszámjelző módosítása
         const scoreBoard = document.getElementById('score-board');
+// === [#HEX:D.04.10.00] START | name: updateScoreBoard | lines: 28 ===
+// @calls: [#HEX:D.01.78.00] | @calledBy: [#HEX:D.01.71.00], [#HEX:D.01.7A.00], [#HEX:D.01.7F.00], [#HEX:D.01.8A.00], [#HEX:D.01.8B.00]
         function updateScoreBoard() {
             const durabilityDisplay = document.getElementById('durability-display');
             const boatScoreDisplay = document.getElementById('boat-score-display');
@@ -2339,6 +2392,7 @@
                 }
             }
         }
+// === [#HEX:D.04.10.00] END ===
 
         // ==========================================
         // 2. THREE.JS MOTOR INICIALIZÁLÁS
@@ -2447,6 +2501,8 @@
         let wakePoolIndex = 0;
         let lastWakeSpawnTime = 0;
 
+// === [#HEX:D.01.7B.00] START | name: spawnPooledWake | lines: 20 ===
+// @calls: none | @calledBy: [#HEX:D.01.8A.00]
         function spawnPooledWake(pos, rot) {
             const now = Date.now();
             if (now - lastWakeSpawnTime < 110) return;
@@ -2467,7 +2523,10 @@
             item.mesh.scale.set(0.6, 0.6, 0.6);
             item.mesh.material.opacity = 0.4;
         }
+// === [#HEX:D.01.7B.00] END ===
 
+// === [#HEX:D.01.7C.00] START | name: updatePooledWakes | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:D.01.8E.00]
         function updatePooledWakes() {
             for (let i = 0; i < WAKE_POOL_SIZE; i++) {
                 const item = wakePool[i];
@@ -2482,6 +2541,7 @@
                 }
             }
         }
+// === [#HEX:D.01.7C.00] END ===
 
         const MAP_RADIUS = 300;
         // Bázis a jobb felső sarokban (X+, Z-). Eredetileg (150, 0, -150) volt, kivezetve 100 egységgel az origótól!
@@ -2489,14 +2549,22 @@
 
         // Egyszerű Pseudo-Random Generátor a permanens pályához
         class PRNG {
+// === [#HEX:D.01.7D.00] START | name: constructor | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00]
             constructor(seed) { this.seed = seed; }
+// === [#HEX:D.01.7D.00] END ===
+// === [#HEX:D.01.7E.00] START | name: next | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.05.0F.00], [#HEX:F.04.124.00], [#HEX:F.04.125.00], [#HEX:F.04.17E.00], [#HEX:F.04.1C1.00]
             next() {
                 this.seed = (this.seed * 9301 + 49297) % 233280;
                 return this.seed / 233280;
             }
+// === [#HEX:D.01.7E.00] END ===
         }
         const rng = new PRNG(12345); // Fix seed!
 
+// === [#HEX:D.01.7F.00] START | name: buildScene | lines: 465 ===
+// @calls: [#HEX:D.01.7E.00], [#HEX:D.03.12.00], [#HEX:D.04.11.00], [#HEX:D.01.80.00], [#HEX:D.04.10.00] | @calledBy: none
         async function buildScene() {
             // 1. Külön csoport létrehozása a Bázis elemei (sziget henger + dekorációk + fények) számára
             harborDecorationsGroup = new THREE.Group();
@@ -2962,8 +3030,11 @@
 
             updateScoreBoard();
         }
+// === [#HEX:D.01.7F.00] END ===
 
         // Kiszámítja egyszer a léghajó célmagasságát betöltés után, hogy ne terheljük a render loopot
+// === [#HEX:D.04.11.00] START | name: calculateAirshipTargetY | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:D.01.7F.00]
         function calculateAirshipTargetY() {
             if (playerBoat && enemyShip) {
                 if (playerBoat.children.length > 0 && enemyShip.children.length > 0) {
@@ -2978,12 +3049,17 @@
                 }
             }
         }
+// === [#HEX:D.04.11.00] END ===
 
+// === [#HEX:D.01.80.00] START | name: loadHarborDecorations | lines: 316 ===
+// @calls: [#HEX:D.01.7E.00], [#HEX:D.01.81.00], [#HEX:D.01.83.00], [#HEX:D.01.82.00] | @calledBy: [#HEX:D.01.7F.00]
         function loadHarborDecorations(topY) {
             if (!baseHarbor || !harborDecorationsGroup) return;
             
             const loader = new THREE.GLTFLoader();
             
+// === [#HEX:D.01.81.00] START | name: placeDeco | lines: 68 ===
+// @calls: none | @calledBy: [#HEX:D.01.80.00], [#HEX:D.01.82.00]
             function placeDeco(modelPath, offsetPos, scaleVal, rotY, isBeach) {
                 loader.load(modelPath, function (gltf) {
                     const obj = gltf.scene;
@@ -3052,6 +3128,7 @@
                     console.error("DEKORÁCIÓ BETÖLTÉSI HIBA:", modelPath, err);
                 });
             }
+// === [#HEX:D.01.81.00] END ===
 
             // A dekorációknak 100.0-as skálát adunk a korábbi 400.0 helyett!
             const baseScale = 100.0;
@@ -3199,6 +3276,8 @@
 
             // === Teljes rámpasor lerakó függvény ===
             // rotationOffset: a csoport Y forgatása radiánban a bázis középpont körül (0 = eredeti pozíció)
+// === [#HEX:D.01.82.00] START | name: placeDockChain | lines: 88 ===
+// @calls: [#HEX:D.01.81.00], [#HEX:D.01.83.00] | @calledBy: [#HEX:D.01.80.00]
             function placeDockChain(rotationOffset) {
                 var chainGroup = new THREE.Group();
                 // A csoport a bázis középpontba kerül (BASE_POS), onnan forgatjuk
@@ -3208,6 +3287,8 @@
 
                 // Belső placeDeco: a chainGroup-ba teszi az elemeket, a pozíció a bázis középponthoz relatív
                 // yCollisionOffset: az ütközési pontok helyi függőleges eltolása, ha lejjebb kell vinni őket a víz szintjére
+// === [#HEX:D.01.83.00] START | name: chainPlaceDeco | lines: 65 ===
+// @calls: none | @calledBy: [#HEX:D.01.80.00], [#HEX:D.01.82.00]
                 function chainPlaceDeco(modelPath, offsetPos, scaleVal, rotY, customOffsets) {
                     loader.load(modelPath, function (gltf) {
                         var obj = gltf.scene;
@@ -3273,6 +3354,7 @@
                         console.error("DOCK CHAIN BETÖLTÉSI HIBA:", modelPath, err);
                     });
                 }
+// === [#HEX:D.01.83.00] END ===
 
                 // a) Lépcső (180 fokos fordulat, fele szélesség/mélység, dupla magasság)
                 chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_Stairs_01.glb', new THREE.Vector3(-39, 0.3, 39), new THREE.Vector3(dockScale / 2.0, dockScale, dockScale / 2.0), dockRot + Math.PI);
@@ -3287,6 +3369,7 @@
                 // f) Sima Dock kifutó (ez a legbelső elem a működő alap viselkedéssel)
                 chainPlaceDeco('https://storage.googleapis.com/kalozsziget-assets/models/SM_Bld_Dock_01.glb', new THREE.Vector3(-53.3, -3.5, 53.3), dockScale, dockRot);
             }
+// === [#HEX:D.01.82.00] END ===
 
             // Eredeti lánc (0° offset = eredeti helyen)
             placeDockChain(0);
@@ -3295,7 +3378,10 @@
             // Balra 60 fokkal elforgatott másolat
             placeDockChain(Math.PI / 3);
         }
+// === [#HEX:D.01.80.00] END ===
 
+// === [#HEX:D.03.12.00] START | name: spawnDiamond | lines: 99 ===
+// @calls: none | @calledBy: [#HEX:D.01.7F.00], [#HEX:D.01.8A.00], [#HEX:D.01.8B.00]
         function spawnDiamond() {
             let x, z, validPos;
             let attempts = 0;
@@ -3395,6 +3481,7 @@
             scene.add(scrollZone);
             diamonds.push(scrollZone);
         }
+// === [#HEX:D.03.12.00] END ===
 
         buildScene();
 
@@ -3403,6 +3490,8 @@
         let targetSteerAngle = 0;       // Kívánt haladási szög az ujj követéséhez
 
         // Indítás gomb/tábla funkciója (mobilon és asztalin is működik)
+// === [#HEX:D.06.0A.00] START | name: startGameFromInstruction | lines: 12 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:D.01.84.00], [#HEX:D.01.85.00], [#HEX:D.01.90.00] | @calledBy: none
         function startGameFromInstruction() {
             if (typeof requestLandscapeMode === 'function') {
                 requestLandscapeMode();
@@ -3415,6 +3504,7 @@
                 if (startInst) startInst.style.display = 'none';
             }
         }
+// === [#HEX:D.06.0A.00] END ===
         window.startGameFromInstruction = startGameFromInstruction;
 
         // ---- ZENE VEZÉRLÉS ----
@@ -3422,6 +3512,8 @@
         const musicToggleBtn = document.getElementById('music-toggle');
         let isMusicPlaying = false;
 
+// === [#HEX:D.01.84.00] START | name: toggleMusic | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:D.06.0A.00], [#HEX:D.01.8A.00], [#HEX:D.01.91.00]
         function toggleMusic() {
             const infoMusicBtn = document.getElementById('info-music-toggle');
             if (isMusicPlaying) {
@@ -3438,6 +3530,7 @@
                 if (infoMusicBtn) infoMusicBtn.style.backgroundImage = onImg;
             }
         }
+// === [#HEX:D.01.84.00] END ===
 
         if (musicToggleBtn) {
             musicToggleBtn.addEventListener('click', () => {
@@ -3453,6 +3546,8 @@
         const ambientToggleBtn = document.getElementById('ambient-toggle');
         let isAmbientPlaying = false;
 
+// === [#HEX:D.01.85.00] START | name: toggleAmbient | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:D.06.0A.00], [#HEX:D.01.8A.00], [#HEX:D.01.91.00]
         function toggleAmbient() {
             const infoAmbientBtn = document.getElementById('info-ambient-toggle');
             if (isAmbientPlaying) {
@@ -3469,6 +3564,7 @@
                 if (infoAmbientBtn) infoAmbientBtn.style.backgroundImage = onImg;
             }
         }
+// === [#HEX:D.01.85.00] END ===
 
         if (ambientToggleBtn) {
             ambientToggleBtn.addEventListener('click', () => {
@@ -3480,6 +3576,16 @@
         }
 
         // ---- TELJES KÉPERNYŐ VEZÉRLÉS ----
+// === [#HEX:D.05.08.00] START | name: toggleFullscreen | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.05.08.00] START | name: toggleFullscreen | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.05.08.00] START | name: toggleFullscreen | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.05.08.00] START | name: toggleFullscreen | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.05.08.00] START | name: toggleFullscreen | lines: 7 ===
+// @calls: none | @calledBy: none
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => console.log("Teljes képernyő hiba:", err));
@@ -3487,6 +3593,11 @@
                 if (document.exitFullscreen) document.exitFullscreen();
             }
         }
+// === [#HEX:D.05.08.00] END ===
+// === [#HEX:D.05.08.00] END ===
+// === [#HEX:D.05.08.00] END ===
+// === [#HEX:D.05.08.00] END ===
+// === [#HEX:D.05.08.00] END ===
         window.toggleFullscreen = toggleFullscreen;
 
 
@@ -3501,6 +3612,8 @@
         const infoAmbientBtn = document.getElementById('info-ambient-toggle');
 
         // Segédfüggvény az infó panelen belüli ikonok aktuális állapotának szinkronizálására
+// === [#HEX:D.01.86.00] START | name: syncInfoSoundIcons | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:D.01.87.00]
         function syncInfoSoundIcons() {
             if (infoMusicBtn) {
                 infoMusicBtn.style.backgroundImage = isMusicPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/music_mute-r.png')";
@@ -3509,17 +3622,36 @@
                 infoAmbientBtn.style.backgroundImage = isAmbientPlaying ? "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound-r.png')" : "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/sound_mute-r.png')";
             }
         }
+// === [#HEX:D.01.86.00] END ===
 
+// === [#HEX:D.01.87.00] START | name: openInfoPanel | lines: 5 ===
+// @calls: [#HEX:D.01.86.00], [#HEX:D.05.05.00] | @calledBy: none
         function openInfoPanel() {
             syncInfoSoundIcons();
             if (infoPanelPinchController) infoPanelPinchController.resetZoom(false);
             if (infoOverlay) infoOverlay.style.display = 'flex';
         }
+// === [#HEX:D.01.87.00] END ===
 
+// === [#HEX:D.01.88.00] START | name: closeInfoPanel | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.88.00] START | name: closeInfoPanel | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.88.00] START | name: closeInfoPanel | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.88.00] START | name: closeInfoPanel | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.88.00] START | name: closeInfoPanel | lines: 4 ===
+// @calls: none | @calledBy: none
         function closeInfoPanel() {
             if (infoOverlay) infoOverlay.style.display = 'none';
             window.focus();
         }
+// === [#HEX:D.01.88.00] END ===
+// === [#HEX:D.01.88.00] END ===
+// === [#HEX:D.01.88.00] END ===
+// === [#HEX:D.01.88.00] END ===
+// === [#HEX:D.01.88.00] END ===
 
         if (infoToggleBtn) {
             infoToggleBtn.addEventListener('click', (e) => {
@@ -3616,6 +3748,8 @@
         const TURN_SPEED = 0.03;
         let wind = new THREE.Vector3((Math.random() - 0.5) * 0.06, 0, (Math.random() - 0.5) * 0.06);
 
+// === [#HEX:D.01.89.00] START | name: cannonEffect | lines: 32 ===
+// @calls: none | @calledBy: [#HEX:D.01.8A.00]
         function cannonEffect() {
             // Képernyőrázkódás
             let el = document.getElementById('game-container');
@@ -3648,7 +3782,10 @@
             flash.style.opacity = '1';
             setTimeout(() => { flash.style.opacity = '0'; }, 150);
         }
+// === [#HEX:D.01.89.00] END ===
 
+// === [#HEX:D.01.8A.00] START | name: updatePhysics | lines: 431 ===
+// @calls: [#HEX:D.01.24.00], [#HEX:D.01.71.00], [#HEX:D.01.84.00], [#HEX:D.01.85.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.70.00], [#HEX:D.01.8E.00]
         function updatePhysics() {
             if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
             if (!isAndroid) scene.updateMatrixWorld(true);
@@ -4080,12 +4217,15 @@
                 }
             }
         }
+// === [#HEX:D.01.8A.00] END ===
 
         // ==========================================
         // 4. KVÍZ LOGIKA
         // ==========================================
         let currentAnswers = [];
 
+// === [#HEX:D.04.12.00] START | name: triggerQuiz | lines: 59 ===
+// @calls: [#HEX:D.05.05.00], [#HEX:D.04.14.00], [#HEX:D.01.8B.00], [#HEX:D.04.13.00] | @calledBy: [#HEX:D.01.8A.00]
         function triggerQuiz() {
             isQuizActive = true;
             if (quizQuestions.length === 0) {
@@ -4145,7 +4285,10 @@
                 if (timeLeft <= 0) handleAnswer(false);
             }, 100);
         }
+// === [#HEX:D.04.12.00] END ===
 
+// === [#HEX:D.04.13.00] START | name: showAnswerButtons | lines: 20 ===
+// @calls: [#HEX:D.04.14.00] | @calledBy: [#HEX:D.04.12.00]
         function showAnswerButtons() {
             document.getElementById('betting-area').style.display = 'none';
             
@@ -4166,6 +4309,7 @@
                 btnContainer.appendChild(btn);
             });
         }
+// === [#HEX:D.04.13.00] END ===
 
         if (document.getElementById('bet-yes-btn')) {
             document.getElementById('bet-yes-btn').onclick = () => {
@@ -4180,6 +4324,8 @@
             };
         }
 
+// === [#HEX:D.04.14.00] START | name: handleAnswer | lines: 12 ===
+// @calls: [#HEX:B.01.06.00], [#HEX:D.01.8B.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00], [#HEX:D.01.52.00], [#HEX:D.04.07.00], [#HEX:D.04.12.00]
         async function handleAnswer(isCorrect) {
             clearInterval(timerInterval);
             document.getElementById('quiz-overlay').style.display = 'none';
@@ -4192,7 +4338,10 @@
 
             resumeGame(isCorrect, isDoubleOrNothingActive);
         }
+// === [#HEX:D.04.14.00] END ===
 
+// === [#HEX:D.01.8B.00] START | name: resumeGame | lines: 27 ===
+// @calls: [#HEX:D.04.10.00], [#HEX:D.03.12.00] | @calledBy: [#HEX:D.04.12.00], [#HEX:D.04.14.00]
         function resumeGame(isCorrect, wasDoubleOrNothing) {
             if (isCorrect) {
                 if (wasDoubleOrNothing) {
@@ -4220,7 +4369,10 @@
             spawnDiamond();
             isQuizActive = false;
         }
+// === [#HEX:D.01.8B.00] END ===
 
+// === [#HEX:D.01.8C.00] START | name: exitMinigame | lines: 62 ===
+// @calls: [#HEX:D.05.05.00], [#HEX:D.01.78.00], [#HEX:D.01.8D.00] | @calledBy: [#HEX:D.01.8A.00]
         function exitMinigame(type) {
             console.log("DEBUG: exitMinigame meghívva, típus:", type);
             if (type === 'AIRSHIP') {
@@ -4283,15 +4435,21 @@
                 }, 4000);
             });
         }
+// === [#HEX:D.01.8C.00] END ===
 
+// === [#HEX:D.01.8D.00] START | name: saveDataToBackend | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:D.01.8C.00]
         async function saveDataToBackend() {
             // A demójátékban nincs bejelentkezett felhasználó, így nem mentünk közvetlenül profiladatokat
             return Promise.resolve();
         }
+// === [#HEX:D.01.8D.00] END ===
 
         // ==========================================
         // 5. RENDER LOOP
         // ==========================================
+// === [#HEX:D.01.8E.00] START | name: animate | lines: 56 ===
+// @calls: [#HEX:D.01.8A.00], [#HEX:D.04.0E.00], [#HEX:D.01.7C.00] | @calledBy: [#HEX:F.04.11.00], [#HEX:F.04.13.00], [#HEX:F.02.00.00], [#HEX:F.04.155.00], [#HEX:F.01.0B.00]
         function animate() {
             requestAnimationFrame(animate);
             let elapsedTime = Date.now() * 0.001; // Idő másodpercben (a THREE.Clock helyett)
@@ -4348,7 +4506,10 @@
             updatePhysics();
             renderer.render(scene, camera);
         }
+// === [#HEX:D.01.8E.00] END ===
 
+// === [#HEX:D.01.8F.00] START | name: handleResize | lines: 21 ===
+// @calls: [#HEX:D.01.73.00], [#HEX:D.05.05.00], [#HEX:D.01.74.00] | @calledBy: [#HEX:D.01.95.00]
         function handleResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -4370,6 +4531,9 @@
                 }
             }
         }
+// === [#HEX:D.01.8F.00] END ===
+// === [#HEX:D.01.90.00] START | name: requestLandscapeMode | lines: 20 ===
+// @calls: none | @calledBy: [#HEX:D.06.0A.00], [#HEX:D.05.09.00]
         window.requestLandscapeMode = function() {
             try {
                 const el = document.documentElement;
@@ -4390,13 +4554,17 @@
                 }
             } catch(e) {}
         };
+// === [#HEX:D.01.90.00] END ===
 
+// === [#HEX:D.05.09.00] START | name: tryEnsureTouchFullscreen | lines: 6 ===
+// @calls: [#HEX:D.01.90.00] | @calledBy: none
         function tryEnsureTouchFullscreen() {
             if (!isAndroid) return;
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 requestLandscapeMode();
             }
         }
+// === [#HEX:D.05.09.00] END ===
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('orientationchange', () => {
@@ -4435,6 +4603,8 @@
         window.addEventListener('contextmenu', e => e.preventDefault());
 
         // ---- KÖZVETLEN ÉRINTŐKÉPERNYŐS VEZÉRLÉS (KONZOL ÉS GOMBOK NÉLKÜL) ----
+// === [#HEX:D.01.91.00] START | name: steerShipToScreenPoint | lines: 22 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:D.01.84.00], [#HEX:D.01.85.00] | @calledBy: [#HEX:D.01.8A.00], [#HEX:D.01.92.00]
         function steerShipToScreenPoint(screenX, screenY) {
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
@@ -4457,11 +4627,16 @@
                 if (startInst) startInst.style.display = 'none';
             }
         }
+// === [#HEX:D.01.91.00] END ===
 
+// === [#HEX:D.01.92.00] START | name: setupMobileControls | lines: 164 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:D.01.94.00], [#HEX:D.01.93.00], [#HEX:D.05.0A.00], [#HEX:D.01.91.00] | @calledBy: [#HEX:D.01.95.00]
         function setupMobileControls() {
             const overlay = document.getElementById('mobile-overlay');
             if (overlay && isAndroid) overlay.style.display = 'block';
 
+// === [#HEX:D.01.93.00] START | name: isInteractiveElement | lines: 12 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.92.00]
             function isInteractiveElement(target) {
                 if (!target) return false;
                 return target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'A' ||
@@ -4474,6 +4649,7 @@
                        target.closest('#demo-subscription-overlay') || target.closest('#demo-exit-overlay') ||
                        target.closest('#game-dialog-overlay') || target.closest('.game-dialog-panel');
             }
+// === [#HEX:D.01.93.00] END ===
 
             // ÉRINTŐKÉPERNYŐS ESEMÉNYEK
             window.addEventListener('touchstart', (e) => {
@@ -4568,6 +4744,8 @@
                 }
             }, { passive: false });
 
+// === [#HEX:D.05.0A.00] START | name: handleTouchEnd | lines: 22 ===
+// @calls: none | @calledBy: [#HEX:D.05.04.00], [#HEX:D.01.92.00]
             function handleTouchEnd(e) {
                 if (e.touches.length < 2) {
                     isPinchZooming = false;
@@ -4590,6 +4768,7 @@
                     isDraggingCamera = false;
                 }
             }
+// === [#HEX:D.05.0A.00] END ===
 
             window.addEventListener('touchend', handleTouchEnd);
             window.addEventListener('touchcancel', handleTouchEnd);
@@ -4615,15 +4794,21 @@
                 lastMouseX = e.clientX;
             });
 
+// === [#HEX:D.01.94.00] START | name: handleMouseUp | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:D.01.92.00]
             function handleMouseUp(e) {
                 if (e && e.button !== undefined && e.button !== 0) return;
                 isMouseOrbitActive = false;
             }
+// === [#HEX:D.01.94.00] END ===
 
             window.addEventListener('mouseup', handleMouseUp);
         }
+// === [#HEX:D.01.92.00] END ===
 
         // Automatikus indítás mobilon és asztali böngészőben (Live Server teszteléshez)
+// === [#HEX:D.01.95.00] START | name: initAppControls | lines: 26 ===
+// @calls: [#HEX:D.01.8F.00], [#HEX:D.01.92.00], [#HEX:D.05.07.00] | @calledBy: none
         function initAppControls() {
             setupMobileControls();
             if (typeof initModalPinchZoom === 'function') {
@@ -4650,6 +4835,7 @@
                 }
             }
         }
+// === [#HEX:D.01.95.00] END ===
 
         if (document.readyState === 'loading') {
             window.addEventListener('DOMContentLoaded', initAppControls);

@@ -70,6 +70,8 @@ window.QuizConfig = {
 };
 
 class QuizManager {
+// === [#HEX:D.01.4E.00] START | name: constructor | lines: 20 ===
+// @calls: [#HEX:D.01.54.00], [#HEX:D.01.52.00], [#HEX:D.04.02.00], [#HEX:D.01.50.00] | @calledBy: none
   constructor() {
     this.questions = [];
     // Pedagógiai kérdéskövetés:
@@ -90,7 +92,10 @@ class QuizManager {
     this.loadQuestions();
     if (document.getElementById("quiz-overlay")) { this.uiReady = true; this.bindEvents(); this.initVisualEditor(); } else { this.loadUI(); }
   }
+// === [#HEX:D.01.4E.00] END ===
 
+// === [#HEX:D.01.4F.00] START | name: updateScale | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:D.01.08.00], [#HEX:D.05.00.00], [#HEX:D.01.52.00], [#HEX:D.04.07.00]
   updateScale() {
     const panel = document.getElementById('quiz-panel-box');
     if (!panel) return;
@@ -105,7 +110,10 @@ class QuizManager {
     panel.style.transform = `scale(${scale})`;
     panel.style.transformOrigin = 'center center';
   }
+// === [#HEX:D.01.4F.00] END ===
 
+// === [#HEX:D.04.02.00] START | name: loadQuestions | lines: 37 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.D4.00] | @calledBy: [#HEX:D.01.4E.00]
   async loadQuestions() {
     const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
     const jsonFile = (lang === 'en') ? 'quiz_questions_en.json' : 'quiz_questions.json';
@@ -143,7 +151,10 @@ class QuizManager {
 
     this.literatureQuestions = [];
   }
+// === [#HEX:D.04.02.00] END ===
 
+// === [#HEX:D.01.50.00] START | name: loadUI | lines: 24 ===
+// @calls: [#HEX:D.01.54.00], [#HEX:D.01.52.00], [#HEX:D.01.51.00] | @calledBy: [#HEX:D.01.4E.00]
   async loadUI() {
     try {
       const res = await fetch('quiz_panel.html?t=' + Date.now());
@@ -151,6 +162,8 @@ class QuizManager {
         const html = await res.text();
         const div = document.createElement('div');
         div.innerHTML = html;
+// === [#HEX:D.01.51.00] START | name: appendToDoc | lines: 11 ===
+// @calls: [#HEX:D.01.54.00], [#HEX:D.01.52.00] | @calledBy: [#HEX:D.01.50.00]
         const appendToDoc = () => {
           if (document.body) {
             document.body.appendChild(div);
@@ -162,13 +175,17 @@ class QuizManager {
             setTimeout(appendToDoc, 50);
           }
         };
+// === [#HEX:D.01.51.00] END ===
         appendToDoc();
       }
     } catch (e) {
       console.error("Hiba a kvíz UI betöltésekor:", e);
     }
   }
+// === [#HEX:D.01.50.00] END ===
 
+// === [#HEX:D.01.52.00] START | name: bindEvents | lines: 15 ===
+// @calls: [#HEX:D.01.4F.00], [#HEX:D.01.0D.00], [#HEX:D.04.14.00] | @calledBy: [#HEX:D.01.4E.00], [#HEX:D.01.50.00], [#HEX:D.01.51.00]
   bindEvents() {
     window.addEventListener('resize', () => {
       if (this.uiReady) this.updateScale();
@@ -184,15 +201,24 @@ class QuizManager {
       });
     }
   }
+// === [#HEX:D.01.52.00] END ===
 
+// === [#HEX:D.04.03.00] START | name: getQuestionId | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:D.04.06.00], [#HEX:D.04.09.00]
   getQuestionId(q) {
     return q.id !== undefined ? q.id : (q.Kerdes || q.question || JSON.stringify(q));
   }
+// === [#HEX:D.04.03.00] END ===
 
+// === [#HEX:D.04.04.00] START | name: extractQuestionText | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:D.04.07.00], [#HEX:D.01.58.00]
   extractQuestionText(q) {
     return q.Kerdes || q.question || q.text || "";
   }
+// === [#HEX:D.04.04.00] END ===
 
+// === [#HEX:D.04.05.00] START | name: extractAnswersAndCorrect | lines: 19 ===
+// @calls: none | @calledBy: [#HEX:D.04.07.00]
   extractAnswersAndCorrect(q) {
     let answers = [];
     let correctIdx = 0;
@@ -212,7 +238,10 @@ class QuizManager {
 
     return { answers, correctIdx };
   }
+// === [#HEX:D.04.05.00] END ===
 
+// === [#HEX:D.04.06.00] START | name: openQuiz | lines: 87 ===
+// @calls: [#HEX:D.04.03.00], [#HEX:D.04.07.00] | @calledBy: [#HEX:D.01.24.00], [#HEX:D.04.01.00], [#HEX:D.01.54.00]
     openQuiz(category, onComplete) {
     if (!this.uiReady || this.questions.length === 0) {
       setTimeout(() => this.openQuiz(category, onComplete), 100);
@@ -300,7 +329,10 @@ class QuizManager {
 
     this.renderQuestion();
   }
+// === [#HEX:D.04.06.00] END ===
 
+// === [#HEX:D.04.07.00] START | name: renderQuestion | lines: 169 ===
+// @calls: [#HEX:D.04.05.00], [#HEX:D.01.4F.00], [#HEX:D.04.14.00], [#HEX:D.04.04.00] | @calledBy: [#HEX:D.04.06.00]
   renderQuestion() {
     const overlay = document.getElementById('quiz-overlay');
     const panel = document.getElementById('quiz-panel-box');
@@ -470,13 +502,19 @@ class QuizManager {
  overlay.style.opacity = '1';
  overlay.style.zIndex = '99999999';
   }
+// === [#HEX:D.04.07.00] END ===
 
+// === [#HEX:D.04.08.00] START | name: closeQuizUI | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:D.04.09.00], [#HEX:D.04.0A.00]
   closeQuizUI() {
     const overlay = document.getElementById('quiz-overlay');
     if (overlay) overlay.style.display = 'none';
     window.isCutscenePlaying = false;
   }
+// === [#HEX:D.04.08.00] END ===
 
+// === [#HEX:D.04.09.00] START | name: handleAnswer | lines: 75 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:D.04.03.00], [#HEX:D.04.0A.00], [#HEX:D.04.08.00], [#HEX:D.01.68.00] | @calledBy: none
   handleAnswer(selectedIdx) {
     const overlay = document.getElementById('quiz-overlay');
     const isCorrect = (selectedIdx === this.currentCorrectIndex);
@@ -494,6 +532,8 @@ class QuizManager {
       this.missedQuestionIds.add(qId);
     }
 
+// === [#HEX:D.04.0A.00] START | name: finishQuiz | lines: 8 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:D.04.08.00] | @calledBy: [#HEX:D.04.09.00], [#HEX:D.01.53.00]
     const finishQuiz = () => {
       this.closeQuizUI();
       if (this.onCompleteCallback) {
@@ -502,6 +542,7 @@ class QuizManager {
         try { cb(isCorrect); } catch(err) { console.error('Quiz callback hiba:', err); }
       }
     };
+// === [#HEX:D.04.0A.00] END ===
 
     if (this.currentMode === 'TUTORZEP') {
       if (isCorrect) {
@@ -523,6 +564,8 @@ class QuizManager {
           }
         } else {
           // 2. Eset: carried = 0 -> A monológ ELŐSZÖR a helyszínen ugrik fel, és CSAK A BEZÁRÁSA UTÁN kerül vissza a csónak a mólóra
+// === [#HEX:D.01.53.00] START | name: onMonologClosed | lines: 11 ===
+// @calls: [#HEX:D.04.0A.00] | @calledBy: [#HEX:D.04.09.00]
           const onMonologClosed = () => {
             if (window.boat && window.homePos) {
               window.boat.position.set(window.homePos.x, 0, window.homePos.z);
@@ -534,6 +577,7 @@ class QuizManager {
             }
             finishQuiz();
           };
+// === [#HEX:D.01.53.00] END ===
 
           const emptyText = (window.gameMonologues && window.gameMonologues.airship_bad_empty) || 
                             (window.gamePopups && window.gamePopups.airship_bad_empty) || 
@@ -552,8 +596,11 @@ class QuizManager {
       finishQuiz();
     }
   }
+// === [#HEX:D.04.09.00] END ===
 
   // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ (AGENTS.md Felhasználói Szabály) ───
+// === [#HEX:D.01.54.00] START | name: initVisualEditor | lines: 136 ===
+// @calls: [#HEX:D.04.06.00], [#HEX:D.01.55.00], [#HEX:D.01.58.00], [#HEX:D.01.56.00] | @calledBy: [#HEX:D.01.4E.00], [#HEX:D.01.50.00], [#HEX:D.01.51.00]
   initVisualEditor() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('edit') !== '1' && params.get('editor') !== '1') {
@@ -649,6 +696,8 @@ class QuizManager {
     // Eseménykezelők a csúszkákhoz / mezőkhöz
     document.getElementById('qve-close').onclick = () => { editor.style.display = 'none'; window._quizDebugBorders = false; this.applyLiveStyles(); };
 
+// === [#HEX:D.01.55.00] START | name: updateLive | lines: 24 ===
+// @calls: [#HEX:D.01.58.00] | @calledBy: [#HEX:D.01.54.00]
     const updateLive = () => {
       const cfg = window.QuizConfig.TUTORZEP;
       cfg.question.top = parseInt(document.getElementById('qve-q-top').value, 10) || cfg.question.top;
@@ -673,6 +722,7 @@ class QuizManager {
       window._quizDebugBorders = document.getElementById('qve-borders').checked;
       this.applyLiveStyles();
     };
+// === [#HEX:D.01.55.00] END ===
 
     const inputs = editor.querySelectorAll('input');
     inputs.forEach(inp => inp.addEventListener('input', updateLive));
@@ -690,10 +740,16 @@ class QuizManager {
       this.openQuiz('TUTORZEP');
     };
   }
+// === [#HEX:D.01.54.00] END ===
 
+// === [#HEX:D.01.56.00] START | name: populateVisualEditorFields | lines: 22 ===
+// @calls: [#HEX:D.01.57.00] | @calledBy: [#HEX:D.01.54.00]
   populateVisualEditorFields() {
     const cfg = window.QuizConfig.TUTORZEP;
+// === [#HEX:D.01.57.00] START | name: setVal | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.24.00], [#HEX:F.05.38.00], [#HEX:D.01.56.00]
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+// === [#HEX:D.01.57.00] END ===
     setVal('qve-q-top', cfg.question.top);
     setVal('qve-q-height', cfg.question.height);
     setVal('qve-q-left', cfg.question.left);
@@ -713,7 +769,10 @@ class QuizManager {
     setVal('qve-ans-width', cfg.answers[0].width);
     setVal('qve-ans-font', cfg.answers[0].fontSize);
   }
+// === [#HEX:D.01.56.00] END ===
 
+// === [#HEX:D.01.58.00] START | name: applyLiveStyles | lines: 32 ===
+// @calls: [#HEX:D.04.04.00] | @calledBy: [#HEX:D.01.54.00], [#HEX:D.01.55.00]
   applyLiveStyles() {
     if (this.currentMode !== 'TUTORZEP') return;
     const cfg = window.QuizConfig.TUTORZEP;
@@ -746,6 +805,7 @@ class QuizManager {
       }
     }
   }
+// === [#HEX:D.01.58.00] END ===
 }
 
 if (typeof window !== 'undefined') {

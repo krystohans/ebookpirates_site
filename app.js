@@ -20,6 +20,8 @@ const PRELOAD_PAGES_LIST = [
     'konyvtar', 'kincsek'
 ];
 
+// === [#HEX:F.04.00.00] START | name: preloadPageTemplate | lines: 21 ===
+// @calls: [#HEX:F.04.16.00] | @calledBy: [#HEX:F.04.04.00], [#HEX:F.04.15.00], [#HEX:F.01.01.00], [#HEX:F.01.02.00]
 function preloadPageTemplate(pageName) {
     if (!pageName || (window.pageTemplateCache && window.pageTemplateCache[pageName])) {
         return Promise.resolve(window.pageTemplateCache ? window.pageTemplateCache[pageName] : null);
@@ -41,10 +43,13 @@ function preloadPageTemplate(pageName) {
             return null;
         });
 }
+// === [#HEX:F.04.00.00] END ===
 window.preloadPageTemplate = preloadPageTemplate;
 
 var _universalLoadingWatchdog = null;
 
+// === [#HEX:F.04.01.00] START | name: showUniversalLoading | lines: 34 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:F.06.0A.00], [#HEX:F.04.03.00] | @calledBy: [#HEX:F.04.1D.00], [#HEX:F.04.134.00]
 function showUniversalLoading(statusText, customPhrases) {
     if (typeof requestLandscapeAndFullscreen === 'function') {
         requestLandscapeAndFullscreen();
@@ -79,8 +84,11 @@ function showUniversalLoading(statusText, customPhrases) {
         hideUniversalLoading("sot_loading_complete", 300);
     }, 15000);
 }
+// === [#HEX:F.04.01.00] END ===
 window.showUniversalLoading = showUniversalLoading;
 
+// === [#HEX:F.04.02.00] START | name: updateUniversalLoadingProgress | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:F.04.04.00]
 function updateUniversalLoadingProgress(percent, statusText) {
     var fill = document.getElementById('loader-fill');
     if (fill) {
@@ -91,8 +99,11 @@ function updateUniversalLoadingProgress(percent, statusText) {
         if (statusEl) statusEl.textContent = statusText;
     }
 }
+// === [#HEX:F.04.02.00] END ===
 window.updateUniversalLoadingProgress = updateUniversalLoadingProgress;
 
+// === [#HEX:F.04.03.00] START | name: hideUniversalLoading | lines: 39 ===
+// @calls: [#HEX:F.04.14.00], [#HEX:F.04.0E.00] | @calledBy: [#HEX:F.04.01.00], [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:F.02.00.00], [#HEX:F.04.156.00]
 function hideUniversalLoading(completionText, delayMs, force) {
     if (!force) {
         // Ha az aktív céloldal a 3D Kikötő és a 3D modell még töltődik a háttérben, a betöltő aktív marad
@@ -132,8 +143,11 @@ function hideUniversalLoading(completionText, delayMs, force) {
         }
     }, wait);
 }
+// === [#HEX:F.04.03.00] END ===
 window.hideUniversalLoading = hideUniversalLoading;
 
+// === [#HEX:F.04.04.00] START | name: preloadAllSubpages | lines: 29 ===
+// @calls: [#HEX:F.04.02.00], [#HEX:F.04.00.00] | @calledBy: none
 function preloadAllSubpages(onComplete) {
     if (window._hasPreloadedSubpages) {
         if (onComplete) onComplete();
@@ -163,6 +177,7 @@ function preloadAllSubpages(onComplete) {
         if (onComplete) onComplete();
     });
 }
+// === [#HEX:F.04.04.00] END ===
 window.preloadAllSubpages = preloadAllSubpages;
 
 // ============================================================================
@@ -172,6 +187,8 @@ window._isPreloadingUserData = false;
 window._hasPreloadedUserData = false;
 var _userDataPreloadCallbacks = [];
 
+// === [#HEX:F.04.05.00] START | name: preloadUserBaseData | lines: 52 ===
+// @calls: [#HEX:F.06.54.00], [#HEX:D.01.79.00], [#HEX:B.03.15.00], [#HEX:F.04.06.00], [#HEX:F.03.0F.00] | @calledBy: [#HEX:F.04.1D.00], [#HEX:F.01.0B.00], [#HEX:F.04.178.00]
 function preloadUserBaseData(user, onComplete) {
     if (typeof onComplete === 'function') {
         _userDataPreloadCallbacks.push(onComplete);
@@ -188,6 +205,8 @@ function preloadUserBaseData(user, onComplete) {
     }
     window._isPreloadingUserData = true;
 
+// === [#HEX:F.04.06.00] START | name: finishPreload | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.04.05.00], [#HEX:F.06.00.00]
     var finishPreload = function (ships) {
         window._isPreloadingUserData = false;
         window._hasPreloadedUserData = true;
@@ -196,6 +215,7 @@ function preloadUserBaseData(user, onComplete) {
             try { cb(ships || window.userShips || [], window.toborzoMarketData); } catch (e) { }
         }
     };
+// === [#HEX:F.04.06.00] END ===
 
     var backendCaller = (typeof callBackend === 'function') ? callBackend :
         (window.parent && typeof window.parent.callBackend === 'function') ? window.parent.callBackend : null;
@@ -205,12 +225,29 @@ function preloadUserBaseData(user, onComplete) {
         return;
     }
 
+// === [#HEX:F.06.00.00] START | name: backendCaller | lines: 16 ===
+// @calls: [#HEX:F.03.0F.00], [#HEX:B.03.15.00], [#HEX:F.04.06.00] | @calledBy: none
     backendCaller('getToborzoData', [], function (response) {
         if (response && response.success && Array.isArray(response.ownedShips)) {
             window.toborzoMarketData = response;
             window.toborzoNameDict = response.nameDict || {};
             var normFunc = (typeof normalizeShipData === 'function') ? normalizeShipData :
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
                 (window.normalizeShipData ? window.normalizeShipData : function(s) { return s; });
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
             window.userShips = response.ownedShips.map(function (s) {
                 return normFunc(s, window.toborzoNameDict);
             });
@@ -221,9 +258,11 @@ function preloadUserBaseData(user, onComplete) {
         }
         finishPreload(window.userShips || []);
     }, function (err) {
+// === [#HEX:F.06.00.00] END ===
         finishPreload(window.userShips || []);
     });
 }
+// === [#HEX:F.04.05.00] END ===
 window.preloadUserBaseData = preloadUserBaseData;
 
 
@@ -248,10 +287,15 @@ window.preloadUserBaseData = preloadUserBaseData;
     var timerId = null;
     var isRunning = false;
 
+// === [#HEX:F.04.07.00] START | name: getContainers | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:F.04.08.00], [#HEX:F.04.09.00], [#HEX:F.04.0A.00], [#HEX:F.04.0D.00]
     function getContainers() {
         return document.querySelectorAll('#clockwork-dispenser-text, .clockwork-text-line');
     }
+// === [#HEX:F.04.07.00] END ===
 
+// === [#HEX:F.04.08.00] START | name: renderPhrase | lines: 26 ===
+// @calls: [#HEX:F.04.07.00] | @calledBy: [#HEX:F.04.0A.00], [#HEX:F.04.0E.00]
     function renderPhrase(text) {
         var containers = getContainers();
         if (!containers || containers.length === 0) return;
@@ -278,7 +322,10 @@ window.preloadUserBaseData = preloadUserBaseData;
             }
         });
     }
+// === [#HEX:F.04.08.00] END ===
 
+// === [#HEX:F.04.09.00] START | name: triggerFallOut | lines: 27 ===
+// @calls: [#HEX:F.04.07.00] | @calledBy: none
     function triggerFallOut(onComplete) {
         var containers = getContainers();
         if (!containers || containers.length === 0) {
@@ -306,7 +353,10 @@ window.preloadUserBaseData = preloadUserBaseData;
             if (onComplete) onComplete();
         }, Math.max(700, Math.round(maxFallTime * 1000)));
     }
+// === [#HEX:F.04.09.00] END ===
 
+// === [#HEX:F.04.0A.00] START | name: cycle | lines: 23 ===
+// @calls: [#HEX:F.04.0B.00], [#HEX:F.04.07.00], [#HEX:F.04.08.00] | @calledBy: [#HEX:F.04.0B.00], [#HEX:F.04.0C.00]
     function cycle() {
         if (!isRunning) return;
         var containers = getContainers();
@@ -324,14 +374,20 @@ window.preloadUserBaseData = preloadUserBaseData;
 
         timerId = setTimeout(function () {
             if (!isRunning) return;
+// === [#HEX:F.04.0B.00] START | name: triggerFallOut | lines: 4 ===
+// @calls: [#HEX:F.04.0A.00] | @calledBy: [#HEX:F.04.0A.00]
             triggerFallOut(function () {
                 if (!isRunning) return;
                 timerId = setTimeout(cycle, 250);
             });
+// === [#HEX:F.04.0B.00] END ===
         }, readTime);
     }
+// === [#HEX:F.04.0A.00] END ===
 
     window.ClockworkDispenser = {
+// === [#HEX:F.04.0C.00] START | name: start | lines: 17 ===
+// @calls: [#HEX:F.04.0A.00], [#HEX:F.04.182.00] | @calledBy: none
         start: function (customPhrases) {
             if (customPhrases && Array.isArray(customPhrases) && customPhrases.length > 0) {
                 phrases = customPhrases;
@@ -349,6 +405,9 @@ window.preloadUserBaseData = preloadUserBaseData;
             currentPhraseIndex = 0;
             cycle();
         },
+// === [#HEX:F.04.0C.00] END ===
+// === [#HEX:F.04.0D.00] START | name: stop | lines: 11 ===
+// @calls: [#HEX:F.04.07.00] | @calledBy: none
         stop: function () {
             isRunning = false;
             if (timerId) {
@@ -360,6 +419,9 @@ window.preloadUserBaseData = preloadUserBaseData;
                 containers.forEach(function (c) { c.innerHTML = ''; });
             }
         },
+// === [#HEX:F.04.0D.00] END ===
+// === [#HEX:F.04.0E.00] START | name: showSingle | lines: 8 ===
+// @calls: [#HEX:F.04.08.00] | @calledBy: [#HEX:F.04.03.00]
         showSingle: function (text) {
             isRunning = false;
             if (timerId) {
@@ -368,6 +430,7 @@ window.preloadUserBaseData = preloadUserBaseData;
             }
             renderPhrase(text);
         }
+// === [#HEX:F.04.0E.00] END ===
     };
 })();
 
@@ -382,6 +445,8 @@ var clockworkEngine = (function () {
     var gears = [];
     var clockworkGroup = null;
 
+// === [#HEX:F.04.0F.00] START | name: createGearGeometry | lines: 59 ===
+// @calls: none | @calledBy: [#HEX:F.04.10.00]
     function createGearGeometry(T, numTeeth, rootRadius, pitchRadius, outerRadius, holeRadius, thickness) {
         var shape = new T.Shape();
         var toothAngle = (Math.PI * 2) / numTeeth;
@@ -441,7 +506,10 @@ var clockworkEngine = (function () {
         geo.center();
         return geo;
     }
+// === [#HEX:F.04.0F.00] END ===
 
+// === [#HEX:F.04.10.00] START | name: init | lines: 93 ===
+// @calls: [#HEX:F.04.0F.00] | @calledBy: none
     function init(container) {
         if (!container) return;
         if (renderer && renderer.domElement && container.contains(renderer.domElement)) return;
@@ -535,7 +603,10 @@ var clockworkEngine = (function () {
 
         gears = [gear1, gear2, gear3, gear4];
     }
+// === [#HEX:F.04.10.00] END ===
 
+// === [#HEX:F.04.11.00] START | name: ensureThreeAndInit | lines: 14 ===
+// @calls: [#HEX:D.01.8E.00], [#HEX:F.04.1C4.00] | @calledBy: [#HEX:F.04.13.00]
     function ensureThreeAndInit(container) {
         if (window.THREE) {
             init(container);
@@ -550,7 +621,18 @@ var clockworkEngine = (function () {
             console.warn("⚠️ Three.js dinamikus betöltési figyelmeztetés az óraműhöz:", err);
         });
     }
+// === [#HEX:F.04.11.00] END ===
 
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
     function animate() {
         if (!renderer || !scene || !camera) return;
         animFrameId = requestAnimationFrame(animate);
@@ -571,8 +653,15 @@ var clockworkEngine = (function () {
 
         renderer.render(scene, camera);
     }
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
 
     return {
+// === [#HEX:F.04.13.00] START | name: start | lines: 16 ===
+// @calls: [#HEX:D.01.8E.00], [#HEX:F.04.11.00] | @calledBy: [#HEX:F.04.01.00], [#HEX:F.04.1C.00], [#HEX:F.04.31.00], [#HEX:F.04.33.00], [#HEX:F.04.CD.00]
         start: function (container) {
             var c = container || document.getElementById('clockwork-canvas-container');
             if (c) {
@@ -589,16 +678,22 @@ var clockworkEngine = (function () {
                 }
             }
         },
+// === [#HEX:F.04.13.00] END ===
+// === [#HEX:F.04.14.00] START | name: stop | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.04.03.00], [#HEX:F.02.00.00], [#HEX:F.05.20.00]
         stop: function () {
             if (animFrameId) {
                 cancelAnimationFrame(animFrameId);
                 animFrameId = null;
             }
         }
+// === [#HEX:F.04.14.00] END ===
     };
 })();
 window.ClockworkEngine = clockworkEngine;
 
+// === [#HEX:F.04.15.00] START | name: warmup3DHarborAssets | lines: 26 ===
+// @calls: [#HEX:F.04.00.00] | @calledBy: [#HEX:F.04.1D.00], [#HEX:F.01.0B.00], [#HEX:F.04.178.00]
 function warmup3DHarborAssets() {
     if (window._hasWarmedUp3DHarbor) return;
     window._hasWarmedUp3DHarbor = true;
@@ -625,15 +720,21 @@ function warmup3DHarborAssets() {
     // 3. Kikötő sablon előtöltése a memóriába
     preloadPageTemplate('kikoto_oldal').catch(function () { });
 }
+// === [#HEX:F.04.15.00] END ===
 window.warmup3DHarborAssets = warmup3DHarborAssets;
 
+// === [#HEX:F.08.00.00] START | name: getSiteLang | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.04.31.00], [#HEX:F.09.02.00]
 function getSiteLang() {
     if (typeof localStorage === 'undefined') {
         return 'hu';
     }
     return localStorage.getItem('siteLang') || 'hu';
 }
+// === [#HEX:F.08.00.00] END ===
 
+// === [#HEX:F.04.16.00] START | name: getPageHtmlUrl | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:F.04.00.00], [#HEX:F.04.27.00]
 function getPageHtmlUrl(pageName) {
     if (!pageName) {
         return "index.html";
@@ -644,18 +745,25 @@ function getPageHtmlUrl(pageName) {
     }
     return cleanName;
 }
+// === [#HEX:F.04.16.00] END ===
 
 // Globális Unity / Tutorial befejező rutin (mindig elérhető a szülő ablakban!)
+// === [#HEX:F.04.17.00] START | name: onTutorialSuccess | lines: 10 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:D.01.79.00], [#HEX:B.06.06.00] | @calledBy: none
 window.onTutorialSuccess = function (boatData) {
     var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
+// === [#HEX:F.06.01.00] START | name: callBackend | lines: 4 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:B.06.06.00] | @calledBy: none
     callBackend('markTutorialCompleted', ['unity', extraData], function (res) {
         console.log('Tutorial OK mentve:', res);
         if (typeof loadPage === 'function') loadPage('kikoto_oldal');
     }, function (err) {
+// === [#HEX:F.06.01.00] END ===
         console.warn('Tutorial OK mentési hiba:', err);
         if (typeof loadPage === 'function') loadPage('kikoto_oldal');
     });
 };
+// === [#HEX:F.04.17.00] END ===
 
 // Globális PostMessage figyelő a Tutorial és Minigame Iframe eseményeihez (mindig aktív!)
 if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
@@ -689,6 +797,8 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 });
             }
         } else if (event.data.action === 'tutorial_completed') {
+// === [#HEX:F.06.02.00] START | name: callBackend | lines: 18 ===
+// @calls: [#HEX:D.01.22.00], [#HEX:F.04.27.00], [#HEX:B.06.06.00] | @calledBy: none
             callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function (res) {
                 console.log('Tutorial befejezve és felírva válasz:', res);
                 window.userTutorialCompleted = true;
@@ -707,6 +817,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                     console.log('✅ Kincsek sikeresen felírva a felhőbe.');
                 }
             }, function (err) {
+// === [#HEX:F.06.02.00] END ===
                 console.warn('Tutorial mentési hiba:', err);
             });
         } else if (event.data.action === 'navigate_to_page') {
@@ -739,6 +850,8 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
  * ROBUSZTUS BACKEND HÍVÓ - JSON VADÁSZ MÓDDAL 🏹
  * Képes kezelni, ha a Google HTML "szemetet" (fejlécet/hibaüzenetet) küld a JSON helyett/mellett.
  */
+// === [#HEX:F.06.03.00] START | name: handleBackendPayload | lines: 35 ===
+// @calls: [#HEX:B.07.68.00], [#HEX:F.06.08.00], [#HEX:F.06.06.00], [#HEX:F.04.1C.00] | @calledBy: [#HEX:F.04.18.00], [#HEX:F.04.1A.00], [#HEX:F.06.05.00]
 function handleBackendPayload(payload, funcName, onSuccess, onFailure) {
     var data = parseJsonFromText(payload.text);
     if (data === null || typeof data === 'undefined') {
@@ -774,7 +887,10 @@ function handleBackendPayload(payload, funcName, onSuccess, onFailure) {
     httpError.response = data;
     throw httpError;
 }
+// === [#HEX:F.06.03.00] END ===
 
+// === [#HEX:F.06.04.00] START | name: handleBackendError | lines: 12 ===
+// @calls: [#HEX:F.01.00.00] | @calledBy: [#HEX:F.04.18.00], [#HEX:F.04.1A.00], [#HEX:F.06.05.00]
 function handleBackendError(error, onFailure) {
     if (onFailure) {
         onFailure(error);
@@ -787,7 +903,10 @@ function handleBackendError(error, onFailure) {
         statusDiv.style.color = "red";
     }
 }
+// === [#HEX:F.06.04.00] END ===
 
+// === [#HEX:F.04.18.00] START | name: uploadChunksSequentially | lines: 70 | action: 'assembleChunkedPayload' ===
+// @calls: [#HEX:F.06.03.00], [#HEX:F.04.1A.00], [#HEX:B.07.11.00], [#HEX:F.01.00.00], [#HEX:F.06.04.00] | @calledBy: [#HEX:F.06.05.00]
 function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onFailure) {
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
     var CHUNK_SIZE = 1024 * 1024 * 2; // 2 MB
@@ -796,6 +915,8 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
 
     var currentChunk = 0;
 
+// === [#HEX:F.04.19.00] START | name: setLocalStatus | lines: 10 ===
+// @calls: [#HEX:F.01.00.00] | @calledBy: [#HEX:F.04.18.00], [#HEX:F.04.1A.00]
     function setLocalStatus(msg) {
         console.log("📦 " + msg);
         var modalTextLocal = document.getElementById('modal-status-text');
@@ -806,7 +927,10 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
             statusDiv.style.color = "blue";
         }
     }
+// === [#HEX:F.04.19.00] END ===
 
+// === [#HEX:F.04.1A.00] START | name: sendNextChunk | lines: 48 | action: 'assembleChunkedPayload' ===
+// @calls: [#HEX:F.06.03.00], [#HEX:B.07.11.00], [#HEX:F.06.04.00], [#HEX:B.07.12.00], [#HEX:F.04.19.00] | @calledBy: [#HEX:F.04.18.00]
     function sendNextChunk() {
         if (currentChunk >= totalChunks) {
             setLocalStatus('Fájlok szerveroldali összefűzése folyamatban (' + totalChunks + ' adag)...');
@@ -855,16 +979,337 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
             handleBackendError(error, onFailure);
         });
     }
+// === [#HEX:F.04.1A.00] END ===
 
     sendNextChunk();
 }
+// === [#HEX:F.04.18.00] END ===
 
-function callBackend(funcName, params, onSuccess, onFailure) {
+// =========================================================================
+// === [#HEX:F.06.2E.00] START | name: HexEngine | lines: 175 ===
+// =========================================================================
+/**
+ * HexEngine: Futásidejű Kódkatalógus, Gyorsítótár, Beragadás-gátló & Eseménydelegáló
+ * 1. HexCache: Kliensoldali memóizáció (0ms válaszidő a gyakran olvasott adatokhoz)
+ * 2. HexSentinel: Circuit breaker & 12s timeout védelem (soha többé beragadt spinner)
+ * 3. HexDispatcher: Globális eseménydelegálás [data-hex] meghívó gombokhoz
+ * 4. HexTelemetry: 20 lépéses breadcrumb hibanyomkövető & öngyógyító feloldó
+ */
+var HexEngine = (function () {
+    var _cache = {};
+    var _defaultTTL = 30; // 30 mp alapértelmezett TTL
+
+    var _activeRequests = {};
+    var _failureCounts = {};
+    var _circuitBreakerThreshold = 3;
+    var _circuitBreakerResetTime = 30000; // 30 mp zárolás 3 hiba után
+    var _circuitBreakerTrippedUntil = {};
+
+    var _breadcrumbs = [];
+    var _maxBreadcrumbs = 20;
+
+// === [#HEX:F.04.1B.00] START | name: _logBreadcrumb | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.04.23.00], [#HEX:F.04.26.00]
+    function _logBreadcrumb(hexId, action, status, details) {
+        var entry = {
+            time: new Date().toISOString().substring(11, 19),
+            hex: hexId || 'UNKNOWN',
+            action: action || 'N/A',
+            status: status || 'INFO',
+            details: details || null
+        };
+        _breadcrumbs.push(entry);
+        if (_breadcrumbs.length > _maxBreadcrumbs) {
+            _breadcrumbs.shift();
+        }
+    }
+// === [#HEX:F.04.1B.00] END ===
+
+    return {
+        cache: {
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+            get: function (key) {
+                var item = _cache[key];
+                if (!item) return null;
+                if (Date.now() > item.expiresAt) {
+                    delete _cache[key];
+                    return null;
+                }
+                return item.data;
+            },
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+            set: function (key, data, ttlSeconds) {
+                var ttl = (typeof ttlSeconds === 'number' ? ttlSeconds : _defaultTTL) * 1000;
+                _cache[key] = {
+                    data: data,
+                    expiresAt: Date.now() + ttl
+                };
+            },
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1E.00] START | name: invalidate | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.06.05.00], [#HEX:F.04.2A.00]
+            invalidate: function (pattern) {
+                var keys = Object.keys(_cache);
+                for (var i = 0; i < keys.length; i++) {
+                    if (!pattern || keys[i].indexOf(pattern) !== -1) {
+                        delete _cache[keys[i]];
+                    }
+                }
+            },
+// === [#HEX:F.04.1E.00] END ===
+// === [#HEX:F.04.1F.00] START | name: clear | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:F.04.10B.00], [#HEX:F.04.18F.00], [#HEX:F.04.190.00]
+            clear: function () {
+                _cache = {};
+            }
+// === [#HEX:F.04.1F.00] END ===
+        },
+
+        sentinel: {
+// === [#HEX:F.04.20.00] START | name: isTripped | lines: 11 ===
+// @calls: none | @calledBy: [#HEX:F.06.05.00]
+            isTripped: function (action) {
+                var until = _circuitBreakerTrippedUntil[action];
+                if (until && Date.now() < until) {
+                    return true;
+                }
+                if (until && Date.now() >= until) {
+                    delete _circuitBreakerTrippedUntil[action];
+                    _failureCounts[action] = 0;
+                }
+                return false;
+            },
+// === [#HEX:F.04.20.00] END ===
+// === [#HEX:F.04.21.00] START | name: recordFailure | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.06.05.00], [#HEX:F.04.2B.00]
+            recordFailure: function (action) {
+                _failureCounts[action] = (_failureCounts[action] || 0) + 1;
+                if (_failureCounts[action] >= _circuitBreakerThreshold) {
+                    _circuitBreakerTrippedUntil[action] = Date.now() + _circuitBreakerResetTime;
+                    console.warn("⚠️ Circuit Breaker aktiválva: " + action + " (30 mp szünet a szerver védelmében)");
+                }
+            },
+// === [#HEX:F.04.21.00] END ===
+// === [#HEX:F.04.22.00] START | name: recordSuccess | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:F.06.05.00], [#HEX:F.04.2A.00]
+            recordSuccess: function (action) {
+                _failureCounts[action] = 0;
+            },
+// === [#HEX:F.04.22.00] END ===
+// === [#HEX:F.04.23.00] START | name: startGuard | lines: 15 ===
+// @calls: [#HEX:F.04.1B.00], [#HEX:F.04.25.00] | @calledBy: [#HEX:F.06.05.00]
+            startGuard: function (requestId, hexId, action, timeoutMs, onTimeout) {
+                var limit = timeoutMs || 12000;
+                _activeRequests[requestId] = setTimeout(function () {
+                    delete _activeRequests[requestId];
+                    _logBreadcrumb(hexId, action, 'TIMEOUT', 'Limit túllépve (' + limit + 'ms)');
+                    console.error("🚨 HexSentinel IDŐTÚLLÉPÉS: " + action + " [" + hexId + "]");
+
+                    // Automatikus beragadás-feloldás: elrejtjük a pörgőket
+                    HexEngine.sentinel.resetStuckUI();
+
+                    if (typeof onTimeout === 'function') {
+                        onTimeout(new Error("A hálózati művelet időtúllépés miatt megszakadt (" + action + ")."));
+                    }
+                }, limit);
+            },
+// === [#HEX:F.04.23.00] END ===
+// === [#HEX:F.04.24.00] START | name: clearGuard | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.06.05.00], [#HEX:F.04.2A.00], [#HEX:F.04.2B.00]
+            clearGuard: function (requestId) {
+                if (_activeRequests[requestId]) {
+                    clearTimeout(_activeRequests[requestId]);
+                    delete _activeRequests[requestId];
+                }
+            },
+// === [#HEX:F.04.24.00] END ===
+// === [#HEX:F.04.25.00] START | name: resetStuckUI | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.04.23.00], [#HEX:F.04.26.00]
+            resetStuckUI: function () {
+                var overlayIds = ['loading-overlay', 'loading-screen', 'kikoto-3d-loading-overlay', 'dashboard-loading'];
+                for (var i = 0; i < overlayIds.length; i++) {
+                    var el = document.getElementById(overlayIds[i]);
+                    if (el) el.style.display = 'none';
+                }
+                var keys = Object.keys(_activeRequests);
+                for (var j = 0; j < keys.length; j++) {
+                    clearTimeout(_activeRequests[keys[j]]);
+                    delete _activeRequests[keys[j]];
+                }
+            }
+// === [#HEX:F.04.25.00] END ===
+        },
+
+        dispatcher: {
+            handlers: {},
+// === [#HEX:F.01.00.00] START | name: register | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:F.01.0C.00], [#HEX:F.09.08.00], [#HEX:F.01.10.00], [#HEX:F.04.18F.00], [#HEX:F.09.0D.00]
+            register: function (hexId, handler) {
+                this.handlers[hexId] = handler;
+            },
+// === [#HEX:F.01.00.00] END ===
+// === [#HEX:F.04.26.00] START | name: init | lines: 60 ===
+// @calls: [#HEX:F.04.38.00], [#HEX:F.04.1B.00], [#HEX:F.04.25.00] | @calledBy: none
+            init: function () {
+                if (typeof document === 'undefined') return;
+                document.addEventListener('click', function (e) {
+                    var target = e.target.closest ? e.target.closest('[data-hex]') : null;
+                    if (!target) return;
+
+                    var hexId = target.getAttribute('data-hex');
+                    var action = target.getAttribute('data-action');
+                    var page = target.getAttribute('data-page');
+                    var argsRaw = target.getAttribute('data-args');
+
+                    var args = [];
+                    if (argsRaw) {
+                        try {
+                            args = JSON.parse(argsRaw);
+                            if (!Array.isArray(args)) args = [args];
+                        } catch (err) {
+                            args = [argsRaw];
+                        }
+                    }
+
+                    _logBreadcrumb(hexId, action || page || 'CLICK', 'INVOKED', args);
+
+                    // Gomb kettős kattintás védelem
+                    if (target.disabled || target.classList.contains('hex-locked')) return;
+                    target.classList.add('hex-locked');
+                    setTimeout(function () { target.classList.remove('hex-locked'); }, 500);
+
+                    // 1. Regisztrált Hex Handler
+                    if (typeof HexEngine.dispatcher.handlers[hexId] === 'function') {
+                        HexEngine.dispatcher.handlers[hexId].apply(null, args);
+                        return;
+                    }
+
+                    // 2. data-page szerinti aloldal meghívó gomb
+                    if (page && typeof loadPage === 'function') {
+                        loadPage(page);
+                        return;
+                    }
+
+                    // 3. data-action globális eljárás
+                    if (action && typeof window[action] === 'function') {
+                        window[action].apply(null, args);
+                        return;
+                    }
+                });
+
+                // Dupla ESC billentyű: Sürgősségi feloldás (Emergency UI Reset)
+                var lastEscTime = 0;
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' || e.keyCode === 27) {
+                        var now = Date.now();
+                        if (now - lastEscTime < 1000) {
+                            HexEngine.sentinel.resetStuckUI();
+                            console.log("🛡️ Dupla ESC: Sürgősségi UI feloldás aktiválva.");
+                        }
+                        lastEscTime = now;
+                    }
+                });
+            }
+// === [#HEX:F.04.26.00] END ===
+        },
+
+        telemetry: {
+            log: _logBreadcrumb,
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+            getTrace: function () {
+                return JSON.parse(JSON.stringify(_breadcrumbs));
+            },
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+            printTrace: function () {
+                if (console.table) {
+                    console.table(_breadcrumbs);
+                } else {
+                    console.log(_breadcrumbs);
+                }
+            },
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+            getDiagnosticReport: function () {
+                return {
+                    user: (typeof currentUserEmail !== 'undefined') ? currentUserEmail : 'N/A',
+                    page: (typeof currentPageName !== 'undefined') ? currentPageName : 'N/A',
+                    breadcrumbs: _breadcrumbs,
+                    cacheSize: Object.keys(_cache).length,
+                    activeGuards: Object.keys(_activeRequests).length
+                };
+            }
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+        }
+    };
+})();
+
+// Eseménydelegáló automatikus inicializálása
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { HexEngine.dispatcher.init(); });
+    } else {
+        HexEngine.dispatcher.init();
+    }
+}
+// === [#HEX:F.06.2E.00] END ===
+
+// === [#HEX:F.06.05.00] START | name: callBackend | lines: 95 ===
+// @calls: [#HEX:B.07.B5.00], [#HEX:B.07.4A.00], [#HEX:F.04.18.00], [#HEX:F.06.03.00], [#HEX:F.06.04.00], [#HEX:F.06.2E.00] | @calledBy: none
+function callBackend(funcName, params, onSuccess, onFailure, optHexId, optCacheTtl) {
+    var hexId = optHexId || 'F.06.05.00';
+    var cacheKey = funcName + '_' + JSON.stringify(params || []);
+
+    // 1. Gyorsítótár ellenőrzése olvasási műveleteknél
+    var isAutoCacheable = ['getMarketListings', 'getUserTradableItems', 'getMyActiveOffers', 'getHarborStatus'].indexOf(funcName) !== -1;
+    var effectiveTtl = (typeof optCacheTtl === 'number' && optCacheTtl > 0) ? optCacheTtl : (isAutoCacheable ? 25 : 0);
+
+    if (effectiveTtl > 0) {
+        var cachedData = HexEngine.cache.get(cacheKey);
+        if (cachedData) {
+            HexEngine.telemetry.log(hexId, funcName, 'CACHE_HIT', null);
+            if (onSuccess) onSuccess(cachedData);
+            return;
+        }
+    }
+
+    // 2. Circuit Breaker védelem (ha a végpont ismétlődően hibára fut)
+    if (HexEngine.sentinel.isTripped(funcName)) {
+        var tripErr = new Error("A szerver átmenetileg nem elérhető (" + funcName + "). Kérjük, várj néhány másodpercet!");
+        HexEngine.telemetry.log(hexId, funcName, 'CIRCUIT_TRIPPED', null);
+        if (onFailure) {
+            onFailure(tripErr);
+        } else {
+            uiAlert("Átmeneti hiba", tripErr.message);
+        }
+        return;
+    }
+
     // A TE DEPLOYMENT URL-ED (Ellenőrizd, hogy a legfrissebb legyen!)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
 
     var token = localStorage.getItem('ebookPiratesToken');
-
     var requestPayloadString = JSON.stringify({ action: funcName, data: params, token: token });
 
     // LIMIT: 2 MB. E felett automatikusan bekapcsol az adagoló (Chunked Upload)!
@@ -875,6 +1320,60 @@ function callBackend(funcName, params, onSuccess, onFailure) {
     }
 
     console.log("📡 Kérés indítása: " + funcName);
+    var reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+    HexEngine.telemetry.log(hexId, funcName, 'SENT', params);
+
+    // 3. Sentinel Beragadás-védelem (időtúllépés őrző)
+    var isLongProcess = ['initiateGDocSzenteles', 'finalizeUpload', 'initiateUpgradeProcess', 'finalizeTranslation', 'uploadCoverAndFinishTask'].indexOf(funcName) !== -1;
+    var timeoutDuration = isLongProcess ? 60000 : 12000;
+
+    HexEngine.sentinel.startGuard(reqId, hexId, funcName, timeoutDuration, function (timeoutErr) {
+        HexEngine.sentinel.recordFailure(funcName);
+        if (onFailure) {
+            onFailure(timeoutErr);
+        } else {
+            uiAlert("Hálózati Időtúllépés", timeoutErr.message);
+        }
+    });
+
+// === [#HEX:F.04.2A.00] START | name: wrappedSuccess | lines: 21 ===
+// @calls: [#HEX:B.06.0D.00], [#HEX:F.04.1E.00], [#HEX:B.07.30.00], [#HEX:F.04.24.00], [#HEX:B.07.2D.00] | @calledBy: [#HEX:F.06.05.00]
+    var wrappedSuccess = function (result) {
+        HexEngine.sentinel.clearGuard(reqId);
+        HexEngine.sentinel.recordSuccess(funcName);
+        HexEngine.telemetry.log(hexId, funcName, 'SUCCESS', null);
+
+        // Sikeres válasz mentése gyorsítótárba
+        if (effectiveTtl > 0 && result && (result.success !== false)) {
+            HexEngine.cache.set(cacheKey, result, effectiveTtl);
+        }
+
+        // Módosító tranzakcióknál elavult gyorsítótár ürítése
+        var isMutative = ['buyNow', 'withdrawListing', 'makeOffer', 'retractOffer', 'listItemForSale', 'BT_hireMercenary', 'BN_executeRent'].indexOf(funcName) !== -1;
+        if (isMutative) {
+            HexEngine.cache.invalidate('getMarketListings');
+            HexEngine.cache.invalidate('getMyActiveOffers');
+            HexEngine.cache.invalidate('getUserTradableItems');
+            HexEngine.cache.invalidate('getHarborStatus');
+        }
+
+        if (onSuccess) onSuccess(result);
+    };
+// === [#HEX:F.04.2A.00] END ===
+
+// === [#HEX:F.04.2B.00] START | name: wrappedFailure | lines: 10 ===
+// @calls: [#HEX:F.04.21.00], [#HEX:F.06.04.00], [#HEX:F.04.24.00] | @calledBy: [#HEX:F.06.05.00]
+    var wrappedFailure = function (err) {
+        HexEngine.sentinel.clearGuard(reqId);
+        HexEngine.sentinel.recordFailure(funcName);
+        HexEngine.telemetry.log(hexId, funcName, 'FAILED', err ? err.message : null);
+        if (onFailure) {
+            onFailure(err);
+        } else {
+            handleBackendError(err, null);
+        }
+    };
+// === [#HEX:F.04.2B.00] END ===
 
     fetch(WEB_APP_URL, {
         method: "POST",
@@ -890,29 +1389,30 @@ function callBackend(funcName, params, onSuccess, onFailure) {
             });
         })
         .then(function (payload) {
-            handleBackendPayload(payload, funcName, onSuccess, onFailure);
+            handleBackendPayload(payload, funcName, wrappedSuccess, wrappedFailure);
         })
         .catch(function (error) {
-            if (error.message && error.message.includes('Failed to fetch')) {
-                var isLongProcess = ['initiateGDocSzenteles', 'finalizeUpload', 'initiateUpgradeProcess', 'finalizeTranslation', 'uploadCoverAndFinishTask'].includes(funcName);
+            if (error.message && error.message.indexOf('Failed to fetch') !== -1) {
                 if (isLongProcess) {
                     console.warn("Látszólagos hálózati megszakadás (Failed to fetch). A háttérfolyamat valószínűleg sikeresen fut tovább.");
-                    if (onFailure) {
-                        onFailure(new Error("A szerver válaszideje lejárt, de a könyvszentelés/művelet a háttérben valószínűleg sikeresen lefut. Kérjük, frissítsd az oldalt néhány perc múlva!"));
-                    } else {
-                        handleBackendError(new Error("A szerver válaszideje lejárt, de a könyvszentelés a háttérben valószínűleg sikeresen lefut. Frissíts pár perc múlva!"), null);
-                    }
+                    wrappedFailure(new Error("A szerver válaszideje lejárt, de a művelet a háttérben valószínűleg sikeresen lefut. Kérjük, frissítsd az oldalt néhány perc múlva!"));
                     return;
                 }
             }
-            handleBackendError(error, onFailure);
+            wrappedFailure(error);
         });
 }
+// === [#HEX:F.06.05.00] END ===
 
+// === [#HEX:F.06.06.00] START | name: translateBackendResponse | lines: 3 ===
+// @calls: [#HEX:F.06.07.00] | @calledBy: [#HEX:F.06.03.00]
 function translateBackendResponse(value) {
     return translateBackendValue(value);
 }
+// === [#HEX:F.06.06.00] END ===
 
+// === [#HEX:F.06.07.00] START | name: translateBackendValue | lines: 25 ===
+// @calls: [#HEX:F.06.08.00] | @calledBy: [#HEX:F.06.06.00]
 function translateBackendValue(value) {
     if (typeof value === 'string') {
         return translateBackendText(value);
@@ -938,7 +1438,10 @@ function translateBackendValue(value) {
     }
     return mappedObject;
 }
+// === [#HEX:F.06.07.00] END ===
 
+// === [#HEX:F.06.08.00] START | name: translateBackendText | lines: 59 ===
+// @calls: [#HEX:F.04.1B.00] | @calledBy: [#HEX:F.06.03.00], [#HEX:F.06.07.00]
 function translateBackendText(text) {
     if (!text || typeof text !== 'string') {
         return text;
@@ -956,6 +1459,8 @@ function translateBackendText(text) {
     var targetDict = translations[currentLang] || {};
     var enDict = translations.en || {};
 
+// === [#HEX:F.04.1B.00] START | name: getBestLocalizedValue | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.06.08.00]
     function getBestLocalizedValue(key) {
         if (targetDict[key]) {
             return targetDict[key];
@@ -968,6 +1473,7 @@ function translateBackendText(text) {
         }
         return null;
     }
+// === [#HEX:F.04.1B.00] END ===
 
     for (var key in huDict) {
         if (Object.prototype.hasOwnProperty.call(huDict, key)) {
@@ -998,7 +1504,10 @@ function translateBackendText(text) {
 
     return text;
 }
+// === [#HEX:F.06.08.00] END ===
 
+// === [#HEX:F.04.1C.00] START | name: parseJsonFromText | lines: 64 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: [#HEX:F.06.03.00]
 function parseJsonFromText(text) {
     if (!text) {
         return null;
@@ -1063,7 +1572,10 @@ function parseJsonFromText(text) {
 
     return null;
 }
+// === [#HEX:F.04.1C.00] END ===
 
+// === [#HEX:F.01.00.00] START | name: login | lines: 45 ===
+// @calls: [#HEX:F.04.1D.00], [#HEX:B.07.01.00], [#HEX:F.06.0A.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.06.04.00], [#HEX:F.04.18.00], [#HEX:F.04.19.00], [#HEX:F.04.1D.00], [#HEX:F.04.1E.00]
 function login() {
     if (typeof requestLandscapeAndFullscreen === 'function') {
         requestLandscapeAndFullscreen();
@@ -1109,7 +1621,10 @@ function login() {
         }
     );
 }
+// === [#HEX:F.01.00.00] END ===
 
+// === [#HEX:F.04.1D.00] START | name: initializeApp | lines: 77 ===
+// @calls: [#HEX:F.04.D3.00], [#HEX:F.04.26.00], [#HEX:F.07.02.00], [#HEX:F.07.03.00], [#HEX:F.04.15.00] | @calledBy: [#HEX:F.01.00.00], [#HEX:F.01.01.00], [#HEX:F.01.0B.00], [#HEX:F.01.0C.00]
 function initializeApp(user) {
     if (typeof showUniversalLoading === 'function') {
         showUniversalLoading("sot_preload_island");
@@ -1161,6 +1676,8 @@ function initializeApp(user) {
     if (treasLinkEl) treasLinkEl.onclick = function () { loadPage('kincsek'); };
 
     // --- ALOLDALAK PREPOZÍCIONÁLÁSA ÉS ÁTIRÁNYÍTÁS ---
+// === [#HEX:F.04.1E.00] START | name: preloadAllSubpages | lines: 25 ===
+// @calls: [#HEX:F.04.D3.00], [#HEX:F.04.27.00], [#HEX:F.01.00.00] | @calledBy: [#HEX:F.04.1D.00], [#HEX:F.01.0B.00], [#HEX:F.04.178.00]
     preloadAllSubpages(function () {
         console.log("⚓ Minden aloldal prepozícionálva a memóriában!");
         if (window.pendingMarketingData) {
@@ -1186,22 +1703,43 @@ function initializeApp(user) {
             }
         }
     });
+// === [#HEX:F.04.1E.00] END ===
 }
+// === [#HEX:F.04.1D.00] END ===
 
 var isSessionChecked = false;
 
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
 function openInfoModalAuto() {
     var modal = document.getElementById('info-modal');
     if (modal) {
         modal.style.display = 'flex';
     }
 }
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
 window.openInfoModalAuto = openInfoModalAuto;
 
+// === [#HEX:F.01.01.00] START | name: checkSession | lines: 97 ===
+// @calls: [#HEX:F.04.1D.00], [#HEX:F.04.00.00], [#HEX:F.05.3B.00], [#HEX:D.01.79.00], [#HEX:F.01.02.00] | @calledBy: [#HEX:F.04.F3.00]
 function checkSession() {
     if (isSessionChecked) return;
     const token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken');
 
+// === [#HEX:F.01.02.00] START | name: show3DAuthTerminal | lines: 36 ===
+// @calls: [#HEX:F.04.00.00], [#HEX:F.05.3B.00], [#HEX:F.01.0A.00] | @calledBy: [#HEX:F.01.01.00]
     function show3DAuthTerminal() {
         document.documentElement.classList.remove('ebp-authenticated');
         var appView = document.getElementById('app-view');
@@ -1238,6 +1776,7 @@ function checkSession() {
             initAuthTerminal3D();
         }
     }
+// === [#HEX:F.01.02.00] END ===
 
     if (token) {
         document.documentElement.classList.add('ebp-authenticated');
@@ -1255,6 +1794,8 @@ function checkSession() {
                     console.log("⚡ Azonnali indulás gyorsítótárazott profilból:", cachedUser.name);
                     initializeApp(cachedUser);
                     // Háttérben frissítjük az aktuális profilt a backendről
+// === [#HEX:F.06.09.00] START | name: callBackend | lines: 7 ===
+// @calls: [#HEX:B.06.02.00] | @calledBy: none
                     callBackend('getUserDataByToken', [token], function (freshUser) {
                         if (freshUser && (freshUser.email || freshUser.name) && freshUser.isValid === true) {
                             sessionStorage.setItem('cached_user_data', JSON.stringify(freshUser));
@@ -1262,6 +1803,7 @@ function checkSession() {
                             if (freshUser.activeShipId) window.activeShipId = freshUser.activeShipId;
                         }
                     }, function () { });
+// === [#HEX:F.06.09.00] END ===
                     return;
                 }
             } catch (e) {
@@ -1295,11 +1837,14 @@ function checkSession() {
         show3DAuthTerminal();
     }
 }
+// === [#HEX:F.01.01.00] END ===
 
 // ==========================================
 // === LOGOUT (3D TERMINÁLRA VISSZAVÁLTVA) ===
 // ==========================================
 
+// === [#HEX:F.01.03.00] START | name: logout | lines: 18 ===
+// @calls: none | @calledBy: [#HEX:F.04.A7.00], [#HEX:D.01.40.00], [#HEX:B.07.2D.00], [#HEX:B.07.56.00]
 function logout() {
     document.documentElement.classList.remove('ebp-authenticated');
     sessionStorage.removeItem('ebookPiratesToken');
@@ -1318,11 +1863,14 @@ function logout() {
     // Tiszta frissítés a belépő aloldalra, hogy a 3D kamera és vezérlő fókuszba álljon
     window.location.href = 'index.html';
 }
+// === [#HEX:F.01.03.00] END ===
 
 // ==========================================
 // === KALÓZKREDIT BEOLVASÁS ÉS FRISSÍTÉS ===
 // ==========================================
 
+// === [#HEX:F.07.00.00] START | name: updateCreditDisplay | lines: 24 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.0B.00] | @calledBy: none
 function updateCreditDisplay() {
     var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
     if (!currentUserEmail && !token) return;
@@ -1347,17 +1895,43 @@ function updateCreditDisplay() {
         }
     );
 }
+// === [#HEX:F.07.00.00] END ===
 
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
 function ensureCreditDisplayIsPresent() {
     if (!document.getElementById('creditValue')) {
         console.warn("Hiba: A 'creditValue' HTML elem nem található a fejlécben!");
     }
 }
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
 
 // =======================================================
 // === FEJLÉC VEZÉRLŐK (NYELVVÁLASZTÓ ÉS MOBIL MENÜ) ===
 // =======================================================
 
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
 function toggleHeaderLangDropdown(event, forceState) {
     if (event && event.stopPropagation) event.stopPropagation();
     var dropdown = document.getElementById('header-lang-dropdown');
@@ -1371,7 +1945,22 @@ function toggleHeaderLangDropdown(event, forceState) {
         dropdown.style.display = (dropdown.style.display === 'none' || !dropdown.style.display) ? 'flex' : 'none';
     }
 }
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
 
+// === [#HEX:F.04.1F.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1F.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1F.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
 function toggleHeaderMobileSettings(event, forceState) {
     if (event && event.stopPropagation) event.stopPropagation();
     var popup = document.getElementById('header-mobile-popup');
@@ -1385,6 +1974,11 @@ function toggleHeaderMobileSettings(event, forceState) {
         popup.style.display = (popup.style.display === 'none' || !popup.style.display) ? 'flex' : 'none';
     }
 }
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.1F.00] END ===
+// === [#HEX:F.04.1F.00] END ===
+// === [#HEX:F.04.1F.00] END ===
 
 // Globális kattintás figyelő a felugró fejlécpanelek bezárására
 if (typeof document !== 'undefined' && !window._headerDropdownListenerBound) {
@@ -1405,6 +1999,8 @@ if (typeof document !== 'undefined' && !window._headerDropdownListenerBound) {
 // === 2. PILLÉR: FEKVŐ TÁJOLÁS ÉS TELJES KÉPERNYŐ MOTOR ===
 // =======================================================
 
+// === [#HEX:F.06.0A.00] START | name: requestLandscapeAndFullscreen | lines: 22 ===
+// @calls: [#HEX:F.04.20.00] | @calledBy: [#HEX:F.04.01.00], [#HEX:F.01.00.00], [#HEX:F.01.0B.00], [#HEX:F.04.174.00]
 function requestLandscapeAndFullscreen() {
     try {
         var el = document.documentElement;
@@ -1427,8 +2023,11 @@ function requestLandscapeAndFullscreen() {
     }
     updateLoadingOrientationUI();
 }
+// === [#HEX:F.06.0A.00] END ===
 window.requestLandscapeAndFullscreen = requestLandscapeAndFullscreen;
 
+// === [#HEX:F.04.20.00] START | name: updateLoadingOrientationUI | lines: 18 ===
+// @calls: none | @calledBy: [#HEX:F.06.0A.00]
 function updateLoadingOrientationUI() {
     var hint = document.getElementById('loading-orientation-hint');
     if (!hint) return;
@@ -1447,12 +2046,23 @@ function updateLoadingOrientationUI() {
         }
     }
 }
+// === [#HEX:F.04.20.00] END ===
 
 window.addEventListener('resize', updateLoadingOrientationUI);
 window.addEventListener('orientationchange', function () {
     setTimeout(updateLoadingOrientationUI, 200);
 });
 
+// === [#HEX:F.04.21.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.21.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.21.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
 function toggleFullscreen() {
     try {
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -1471,8 +2081,23 @@ function toggleFullscreen() {
         console.warn("toggleFullscreen hiba:", e);
     }
 }
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.21.00] END ===
+// === [#HEX:F.04.21.00] END ===
+// === [#HEX:F.04.21.00] END ===
 window.toggleFullscreen = toggleFullscreen;
 
+// === [#HEX:F.04.22.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
 function handleFullscreenChange() {
     var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
     var fsBtn = document.getElementById('header-fullscreen-btn');
@@ -1483,6 +2108,11 @@ function handleFullscreenChange() {
         }
     }
 }
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.22.00] END ===
+// === [#HEX:F.04.22.00] END ===
+// === [#HEX:F.04.22.00] END ===
 document.addEventListener('fullscreenchange', handleFullscreenChange);
 document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
@@ -1491,6 +2121,8 @@ document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 // =======================================================
 var deferredPwaPrompt = null;
 
+// === [#HEX:F.09.00.00] START | name: isPwaAlreadyInstalled | lines: 27 ===
+// @calls: [#HEX:A.05.12.00] | @calledBy: none
 async function isPwaAlreadyInstalled() {
     // 1. Standalone / Fullscreen módban fut-e épp a felület (PWA ablakban / iOS home screenről indítva)?
     if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
@@ -1518,6 +2150,7 @@ async function isPwaAlreadyInstalled() {
     }
     return false;
 }
+// === [#HEX:F.09.00.00] END ===
 window.isPwaAlreadyInstalled = isPwaAlreadyInstalled;
 
 window.addEventListener('beforeinstallprompt', async function (e) {
@@ -1565,6 +2198,16 @@ if (typeof window !== 'undefined') {
     }).catch(function () { });
 }
 
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
 function triggerPwaInstall() {
     if (deferredPwaPrompt) {
         deferredPwaPrompt.prompt();
@@ -1586,11 +2229,18 @@ function triggerPwaInstall() {
         alert(msg);
     }
 }
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
 window.triggerPwaInstall = triggerPwaInstall;
 
 /**
  * Returns information about the client's operating system and capabilities.
  */
+// === [#HEX:F.04.23.00] START | name: getClientOsInfo | lines: 24 ===
+// @calls: none | @calledBy: [#HEX:F.04.24.00]
 function getClientOsInfo() {
     var ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
     var platform = (navigator && navigator.platform) ? navigator.platform : 'unknown';
@@ -1615,10 +2265,13 @@ function getClientOsInfo() {
         touch: !!(('ontouchstart' in window) || (navigator && navigator.maxTouchPoints > 0))
     };
 }
+// === [#HEX:F.04.23.00] END ===
 
 /**
  * Builds the full URL to launch the Unity game with necessary parameters.
  */
+// === [#HEX:F.04.24.00] START | name: buildUnityLaunchUrl | lines: 29 ===
+// @calls: [#HEX:F.04.23.00] | @calledBy: none
 function buildUnityLaunchUrl(baseUrl, mode, token) {
     var loginName = '';
     var loginPass = '';
@@ -1648,17 +2301,23 @@ function buildUnityLaunchUrl(baseUrl, mode, token) {
 
     return launchUrl;
 }
+// === [#HEX:F.04.24.00] END ===
 
 /**
  * Placeholder for launching the fishing mini-game.
  */
+// === [#HEX:F.04.25.00] START | name: launchGame | lines: 4 ===
+// @calls: [#HEX:D.01.77.00] | @calledBy: none
 function launchGame() {
     // TODO: Implement this function to launch the Unity game for fishing.
     uiAlert("Hártya halászat hamarosan...");
 }
+// === [#HEX:F.04.25.00] END ===
 
 // === BETÖLTÉS ÉS UI ===
 
+// === [#HEX:F.04.26.00] START | name: preloadLoadingGif | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.1D.00]
 function preloadLoadingGif() {
     console.log("GIF beállítása helyi forrásból...");
 
@@ -1668,6 +2327,7 @@ function preloadLoadingGif() {
         console.log("GIF beállítva (Backend hívás nélkül).");
     }
 }
+// === [#HEX:F.04.26.00] END ===
 
 // Indítás, amikor a HTML kész
 document.addEventListener('DOMContentLoaded', function () {
@@ -1692,6 +2352,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// === [#HEX:F.07.02.00] START | name: updateCreditDisplay | lines: 14 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.0B.00] | @calledBy: [#HEX:F.04.1D.00], [#HEX:F.04.47.00], [#HEX:F.04.4B.00], [#HEX:F.04.61.00], [#HEX:F.04.6E.00]
 function updateCreditDisplay() {
     if (!currentUserEmail) return; // Csak biztonsági check kliens oldalon
     document.getElementById('creditValue').innerText = t('credit_loading');
@@ -1706,16 +2368,22 @@ function updateCreditDisplay() {
         }
     );
 }
+// === [#HEX:F.07.02.00] END ===
 
+// === [#HEX:F.07.03.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:F.04.1D.00]
 function ensureCreditDisplayIsPresent() {
     if (!document.getElementById('creditValue')) {
         console.warn("Hiba: A 'creditValue' HTML elem nem található a fejlécben!");
     }
 }
+// === [#HEX:F.07.03.00] END ===
 /**
  * KÖZPONTI OLDALBETÖLTŐ
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
+// === [#HEX:F.04.27.00] START | name: loadPage | lines: 321 ===
+// @calls: [#HEX:F.04.88.00], [#HEX:F.04.2A.00], [#HEX:F.08.09.00], [#HEX:F.04.78.00], [#HEX:D.01.0D.00] | @calledBy: [#HEX:F.04.17.00], [#HEX:F.06.01.00], [#HEX:F.06.02.00], [#HEX:F.04.1D.00], [#HEX:F.04.1E.00]
 function loadPage(pageName) {
     var closeIcon = document.querySelector('.header-close-icon');
 
@@ -1794,6 +2462,8 @@ function loadPage(pageName) {
         var kSplash = document.getElementById('kikoto_oldal-splash');
         if (kSplash) kSplash.style.display = 'none';
 
+// === [#HEX:F.04.28.00] START | name: afterKikotoMount | lines: 26 ===
+// @calls: [#HEX:F.04.134.00], [#HEX:D.01.79.00], [#HEX:F.04.2C.00], [#HEX:F.08.09.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.04.27.00]
         function afterKikotoMount() {
             var kContentEl = document.getElementById('kikoto_oldal-content');
             if (kContentEl) kContentEl.style.display = 'block';
@@ -1820,6 +2490,7 @@ function loadPage(pageName) {
                 }
             );
         }
+// === [#HEX:F.04.28.00] END ===
 
         // Ha a kikötő 3D már egyszer felépült a GPU memóriában -> Azonnali aktiválás és állapot visszaállítás (0 ms)!
         if (kikotoContainer && kikotoContainer.children.length > 0 && window._kikoto3DInitialized) {
@@ -1896,6 +2567,8 @@ function loadPage(pageName) {
     }
     if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
+// === [#HEX:F.04.29.00] START | name: makeSubpageContentResponsive | lines: 32 ===
+// @calls: none | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
     function makeSubpageContentResponsive(container) {
         if (!container) return;
         try {
@@ -1928,8 +2601,11 @@ function loadPage(pageName) {
             console.warn('makeSubpageContentResponsive figyelmeztetés:', err);
         }
     }
+// === [#HEX:F.04.29.00] END ===
     window.makeSubpageContentResponsive = makeSubpageContentResponsive;
 
+// === [#HEX:F.04.2A.00] START | name: renderAndInitPage | lines: 80 ===
+// @calls: [#HEX:F.04.88.00], [#HEX:F.08.09.00], [#HEX:F.04.78.00], [#HEX:F.04.29.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.04.27.00]
     function renderAndInitPage(htmlText) {
         if (contentDiv) {
             contentDiv.innerHTML = htmlText;
@@ -2010,6 +2686,7 @@ function loadPage(pageName) {
             }
         );
     }
+// === [#HEX:F.04.2A.00] END ===
 
     // ⚡ Memóriabeli sablon gyorsítótár azonnali betöltése (0 ms várakozás)
     if (window.pageTemplateCache && window.pageTemplateCache[pageName]) {
@@ -2037,7 +2714,10 @@ function loadPage(pageName) {
             });
     }
 }
+// === [#HEX:F.04.27.00] END ===
 
+// === [#HEX:F.04.2B.00] START | name: reloadCurrentPageForLanguage | lines: 10 ===
+// @calls: [#HEX:F.04.27.00] | @calledBy: [#HEX:F.08.0A.00]
 function reloadCurrentPageForLanguage() {
     if (!currentPageName) {
         return;
@@ -2048,6 +2728,7 @@ function reloadCurrentPageForLanguage() {
     }
     loadPage(currentPageName);
 }
+// === [#HEX:F.04.2B.00] END ===
 
 // ==========================================
 // === ACCORDION KEZELÉS (EREDETI) ===
@@ -2056,6 +2737,8 @@ function reloadCurrentPageForLanguage() {
 /**
  * Beállítja az eseménykezelőket az összes accordion gombhoz az oldalon.
  */
+// === [#HEX:F.04.2C.00] START | name: setupAccordionListeners | lines: 7 ===
+// @calls: [#HEX:F.04.F4.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2A.00]
 function setupAccordionListeners() {
     const acc = document.querySelectorAll(".accordion-button");
     acc.forEach(button => {
@@ -2063,10 +2746,21 @@ function setupAccordionListeners() {
         button.addEventListener('click', toggleAccordionPanel);
     });
 }
+// === [#HEX:F.04.2C.00] END ===
 
 /**
  * Az accordion gombra kattintáskor lefutó eseménykezelő.
  */
+// === [#HEX:F.04.2D.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.2D.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.2D.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     const panel = this.nextElementSibling;
@@ -2080,6 +2774,11 @@ function toggleAccordionPanel() {
         panel.style.maxHeight = (scrollHeight + 30) + "px";
     }
 }
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.2D.00] END ===
+// === [#HEX:F.04.2D.00] END ===
+// === [#HEX:F.04.2D.00] END ===
 
 // ==========================================
 // === SPLASH SCREEN / OLDAL LÁTOGATÁS ===
@@ -2090,6 +2789,8 @@ function toggleAccordionPanel() {
  * Ha igen -> Tartalom megjelenítése.
  * Ha nem -> Splash (Infó) képernyő megjelenítése.
  */
+// === [#HEX:F.04.2E.00] START | name: initializePage | lines: 56 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.09.00], [#HEX:F.04.134.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2A.00]
 function initializePage(pageName) {
     if (pageName === 'kikoto_oldal') {
         const kSplash = document.getElementById('kikoto_oldal-splash');
@@ -2146,10 +2847,13 @@ function initializePage(pageName) {
         }
     );
 }
+// === [#HEX:F.04.2E.00] END ===
 
 /**
  * A "Megértettem" gomb hívja: rögzíti a látogatást és vált a tartalomra.
  */
+// === [#HEX:F.04.2F.00] START | name: markPageAsSeen | lines: 20 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.0A.00], [#HEX:F.04.134.00] | @calledBy: none
 function markPageAsSeen(pageName) {
     const splash = document.getElementById(pageName + '-splash');
     const content = document.getElementById(pageName + '-content');
@@ -2170,11 +2874,22 @@ function markPageAsSeen(pageName) {
         function (err) { console.warn("Hiba a státusz mentésekor:", err); }
     );
 }
+// === [#HEX:F.04.2F.00] END ===
 
 /**
  * Kézzel visszahozza a Splash képernyőt (az "Infó" gomb).
  * Nem módosít adatbázist, csak UI váltás.
  */
+// === [#HEX:F.04.30.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
 function showSplash(pageName) {
     const splash = document.getElementById(pageName + '-splash');
     const content = document.getElementById(pageName + '-content');
@@ -2183,11 +2898,18 @@ function showSplash(pageName) {
     content.style.display = 'none';
     splash.style.display = 'block';
 }
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
 
 // ==========================================
 // === TUTORIAL / QUIZ RENDSZER ===
 // ==========================================
 
+// === [#HEX:F.04.31.00] START | name: runTutorialScript | lines: 428 ===
+// @calls: [#HEX:F.04.3A.00], [#HEX:B.06.04.00], [#HEX:B.06.06.00], [#HEX:D.01.00.00], [#HEX:F.04.3B.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function runTutorialScript() {
     console.log('runTutorialScript() FÜGGVÉNY ELINDULT (Unity + fallback verzió).');
 
@@ -2201,6 +2923,8 @@ function runTutorialScript() {
     var currentFlowState = null;
     var localTutorialQuestions = [];
 
+// === [#HEX:F.08.02.00] START | name: getLocalTutorialQuestionsForLang | lines: 46 ===
+// @calls: [#HEX:A.05.17.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.09.02.00]
     function getLocalTutorialQuestionsForLang(siteLang) {
         var normalized = String(siteLang || 'hu').toLowerCase();
         if (normalized.indexOf('-') > -1) {
@@ -2247,12 +2971,20 @@ function runTutorialScript() {
 
         return questionMap[normalized] || questionMap.hu;
     }
+// === [#HEX:F.08.02.00] END ===
 
+// === [#HEX:F.09.02.00] START | name: activateLocalQuizMode | lines: 3 ===
+// @calls: [#HEX:F.08.02.00], [#HEX:F.08.00.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00]
     function activateLocalQuizMode() {
         localTutorialQuestions = getLocalTutorialQuestionsForLang(getSiteLang());
     }
+// === [#HEX:F.09.02.00] END ===
 
+// === [#HEX:F.04.32.00] START | name: completeQuizLocally | lines: 19 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.06.06.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.09.03.00]
     function completeQuizLocally() {
+// === [#HEX:F.06.0B.00] START | name: callBackend | lines: 10 ===
+// @calls: [#HEX:B.06.06.00] | @calledBy: none
         callBackend('markTutorialCompleted', ['quiz'], function (res) {
             if (res && res.success) {
                 if (document.getElementById('quiz-container')) {
@@ -2263,6 +2995,7 @@ function runTutorialScript() {
                 }
             }
         }, function () {
+// === [#HEX:F.06.0B.00] END ===
             if (document.getElementById('quiz-container')) {
                 document.getElementById('quiz-container').style.display = 'none';
             }
@@ -2271,7 +3004,10 @@ function runTutorialScript() {
             }
         });
     }
+// === [#HEX:F.04.32.00] END ===
 
+// === [#HEX:F.04.33.00] START | name: ensureUnityUiElements | lines: 78 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.39.00]
     function ensureUnityUiElements() {
         var newUserContent = document.getElementById('new-user-content');
         if (!newUserContent) {
@@ -2350,7 +3086,10 @@ function runTutorialScript() {
             continueBtn.innerText = t('tutorial_unity_continue_button');
         }
     }
+// === [#HEX:F.04.33.00] END ===
 
+// === [#HEX:F.04.34.00] START | name: setUnityStatus | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.38.00]
     function setUnityStatus(text, color) {
         var statusEl = document.getElementById('tutorial-unity-status');
         if (statusEl) {
@@ -2360,14 +3099,20 @@ function runTutorialScript() {
             }
         }
     }
+// === [#HEX:F.04.34.00] END ===
 
+// === [#HEX:F.04.35.00] START | name: stopUnityTimeout | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.36.00], [#HEX:F.04.38.00]
     function stopUnityTimeout() {
         if (unityLaunchTimeoutId) {
             clearTimeout(unityLaunchTimeoutId);
             unityLaunchTimeoutId = null;
         }
     }
+// === [#HEX:F.04.35.00] END ===
 
+// === [#HEX:F.04.36.00] START | name: showQuizMode | lines: 18 ===
+// @calls: [#HEX:F.04.35.00], [#HEX:F.04.3B.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3F.00]
     function showQuizMode() {
         stopUnityTimeout();
         var panel = document.getElementById('tutorial-unity-panel');
@@ -2386,7 +3131,10 @@ function runTutorialScript() {
 
         startQuiz();
     }
+// === [#HEX:F.04.36.00] END ===
 
+// === [#HEX:F.04.37.00] START | name: checkUnityWebGLSupport | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.04.31.00]
     function checkUnityWebGLSupport() {
         try {
             var canvas = document.createElement('canvas');
@@ -2399,7 +3147,10 @@ function runTutorialScript() {
             return { ok: false, reason: t('tutorial_unity_status_webgl_not_supported') };
         }
     }
+// === [#HEX:F.04.37.00] END ===
 
+// === [#HEX:F.04.38.00] START | name: mountUnityIframe | lines: 33 ===
+// @calls: [#HEX:F.04.34.00], [#HEX:F.04.F3.00], [#HEX:F.04.35.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.39.00]
     function mountUnityIframe(host) {
         if (!host || !unityTargetUrl) {
             setUnityStatus('Hiányzó játékmotor útvonal.', '#c0392b');
@@ -2433,7 +3184,10 @@ function runTutorialScript() {
             setUnityStatus('Tutorial aktív.', '#00ffcc');
         }, 8000);
     }
+// === [#HEX:F.04.38.00] END ===
 
+// === [#HEX:F.04.39.00] START | name: tryLaunchUnity | lines: 18 ===
+// @calls: [#HEX:F.04.33.00], [#HEX:F.04.38.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3A.00], [#HEX:F.04.F5.00]
     function tryLaunchUnity(flow, autoStart) {
         ensureUnityUiElements();
 
@@ -2452,14 +3206,20 @@ function runTutorialScript() {
         gamePanel.style.display = 'block';
         mountUnityIframe(host);
     }
+// === [#HEX:F.04.39.00] END ===
 
+// === [#HEX:F.04.3A.00] START | name: initializeTutorialPage | lines: 6 ===
+// @calls: [#HEX:F.04.39.00] | @calledBy: [#HEX:F.04.31.00]
     function initializeTutorialPage(flow) {
         currentFlowState = flow || {};
         var gamePanel = document.getElementById('tutorial-game-panel');
         if (gamePanel) gamePanel.style.display = 'block';
         tryLaunchUnity(flow || {}, true);
     }
+// === [#HEX:F.04.3A.00] END ===
 
+// === [#HEX:F.04.3B.00] START | name: startQuiz | lines: 12 ===
+// @calls: [#HEX:F.09.02.00], [#HEX:F.04.3D.00], [#HEX:D.04.14.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.36.00]
     function startQuiz() {
         currentQuestionIndex = 0;
         activateLocalQuizMode();
@@ -2472,7 +3232,10 @@ function runTutorialScript() {
         newBtn.addEventListener('click', handleAnswer);
         loadQuestion(currentQuestionIndex);
     }
+// === [#HEX:F.04.3B.00] END ===
 
+// === [#HEX:F.04.3C.00] START | name: showFeedback | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3D.00], [#HEX:F.07.04.00], [#HEX:F.09.03.00]
     function showFeedback(message, color) {
         if (!feedbackEl) {
             return;
@@ -2480,7 +3243,10 @@ function runTutorialScript() {
         feedbackEl.textContent = message;
         feedbackEl.style.color = color;
     }
+// === [#HEX:F.04.3C.00] END ===
 
+// === [#HEX:F.04.3D.00] START | name: loadQuestion | lines: 22 ===
+// @calls: [#HEX:F.04.3C.00], [#HEX:F.07.04.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00], [#HEX:F.09.03.00]
     function loadQuestion(index) {
         showFeedback('', 'black');
         var btn = document.getElementById('submit-btn');
@@ -2503,7 +3269,10 @@ function runTutorialScript() {
 
         displayQuestion(localQuestion);
     }
+// === [#HEX:F.04.3D.00] END ===
 
+// === [#HEX:F.07.04.00] START | name: displayQuestion | lines: 38 ===
+// @calls: [#HEX:F.04.3C.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3D.00]
     function displayQuestion(qObj) {
         if (!qObj || !questionTextEl || !optionsContainer) {
             return;
@@ -2542,7 +3311,10 @@ function runTutorialScript() {
             btn.disabled = false;
         }
     }
+// === [#HEX:F.07.04.00] END ===
 
+// === [#HEX:F.09.03.00] START | name: handleAnswer | lines: 36 ===
+// @calls: [#HEX:F.04.3C.00], [#HEX:F.04.3D.00], [#HEX:F.04.32.00] | @calledBy: none
     function handleAnswer() {
         var selectedOption = document.querySelector('input[name="answer"]:checked');
         var btn = document.getElementById('submit-btn');
@@ -2579,32 +3351,48 @@ function runTutorialScript() {
             }
         }
     }
+// === [#HEX:F.09.03.00] END ===
 
+// === [#HEX:F.01.04.00] START | name: SaveTokenToSheet | lines: 9 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.06.05.00] | @calledBy: [#HEX:F.04.31.00]
     window.SaveTokenToSheet = function (email, token) {
         var finalToken = token || '';
         if (!finalToken) {
             return;
         }
+// === [#HEX:F.06.0C.00] START | name: callBackend | lines: 1 ===
+// @calls: [#HEX:B.06.05.00] | @calledBy: none
         callBackend('saveGameStateToken', [finalToken], function () { }, function (err) {
+// === [#HEX:F.06.0C.00] END ===
             console.warn('Játékállás token mentése sikertelen:', err);
         });
     };
+// === [#HEX:F.01.04.00] END ===
 
+// === [#HEX:F.04.3E.00] START | name: onTutorialSuccess | lines: 10 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:D.01.79.00], [#HEX:B.06.06.00] | @calledBy: [#HEX:F.04.31.00]
     window.onTutorialSuccess = function (boatData) {
         var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
+// === [#HEX:F.06.0D.00] START | name: callBackend | lines: 4 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:B.06.06.00] | @calledBy: none
         callBackend('markTutorialCompleted', ['unity', extraData], function (res) {
             console.log('Tutorial OK mentve:', res);
             loadPage('kikoto_oldal');
         }, function (err) {
+// === [#HEX:F.06.0D.00] END ===
             console.warn('Tutorial OK mentési hiba:', err);
             loadPage('kikoto_oldal');
         });
     };
+// === [#HEX:F.04.3E.00] END ===
 
+// === [#HEX:F.04.3F.00] START | name: onUnityTutorialFailed | lines: 4 ===
+// @calls: [#HEX:F.04.36.00] | @calledBy: [#HEX:F.04.31.00]
     window.onUnityTutorialFailed = function (reason) {
         console.warn('Unity tutorial hiba jelzés:', reason || t('tutorial_unity_fail_reason_unknown'));
         showQuizMode();
     };
+// === [#HEX:F.04.3F.00] END ===
 
     callBackend('getTutorialFlowState', [],
         initializeTutorialPage,
@@ -2616,12 +3404,15 @@ function runTutorialScript() {
         }
     );
 }
+// === [#HEX:F.04.31.00] END ===
 
 /* ========================================= */
 /* === STÍLUSOS RENDSZER ÜZENETEK (UI) === */
 /* ========================================= */
 
 // 1. Az alap függvény (Ezt hívja a többi)
+// === [#HEX:F.05.01.00] START | name: showSystemModal | lines: 44 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.40.00], [#HEX:F.04.41.00], [#HEX:F.04.42.00], [#HEX:F.04.A4.00], [#HEX:F.04.D3.00]
 function showSystemModal(title, message, iconClass, buttons) {
     const modal = document.getElementById('system-message-modal');
     const titleEl = document.getElementById('sys-modal-title');
@@ -2666,8 +3457,11 @@ function showSystemModal(title, message, iconClass, buttons) {
     // Megjelenítés
     modal.style.display = 'flex';
 }
+// === [#HEX:F.05.01.00] END ===
 
 // 2. HELYETTESÍTŐ: alert() helyett -> uiAlert()
+// === [#HEX:F.04.40.00] START | name: uiAlert | lines: 8 ===
+// @calls: [#HEX:F.05.01.00] | @calledBy: none
 function uiAlert(message, title = t('modal_notice_title')) {
     showSystemModal(
         title,
@@ -2676,8 +3470,11 @@ function uiAlert(message, title = t('modal_notice_title')) {
         [{ text: t('modal_ok'), color: "#2e8b57", textColor: "white" }]
     );
 }
+// === [#HEX:F.04.40.00] END ===
 
 // 3. HELYETTESÍTŐ: confirm() helyett -> uiConfirm()
+// === [#HEX:F.04.41.00] START | name: uiConfirm | lines: 11 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.05.01.00] | @calledBy: none
 function uiConfirm(message, title, onYes) {
     showSystemModal(
         title || t('modal_confirm_title'),
@@ -2689,8 +3486,11 @@ function uiConfirm(message, title, onYes) {
         ]
     );
 }
+// === [#HEX:F.04.41.00] END ===
 
 // 4. HELYETTESÍTŐ: prompt() helyett -> uiPrompt()
+// === [#HEX:F.04.42.00] START | name: uiPrompt | lines: 32 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.05.01.00] | @calledBy: [#HEX:F.04.A2.00]
 function uiPrompt(message, title, placeholder, onCommit) {
     // Egyedi ID a beviteli mezőnek
     const inputId = 'sys-modal-input-' + Date.now();
@@ -2713,16 +3513,32 @@ function uiPrompt(message, title, placeholder, onCommit) {
                 text: t('modal_continue'),
                 color: "#2e8b57",
                 textColor: "white",
+// === [#HEX:F.04.43.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.43.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.43.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
                 callback: function () {
                     // Itt olvassuk ki az értéket, még mielőtt a modal tartalma törlődne
                     const val = document.getElementById(inputId).value;
                     if (onCommit) onCommit(val);
                 }
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.43.00] END ===
+// === [#HEX:F.04.43.00] END ===
+// === [#HEX:F.04.43.00] END ===
             },
             { text: t('modal_cancel'), color: "#555", textColor: "white" }
         ]
     );
 }
+// === [#HEX:F.04.42.00] END ===
 
 
 // ===============
@@ -2744,6 +3560,8 @@ const tavernaImageSources = {
  * Előtölti a Taverna összes szükséges képét a központi képkezelőből.
  * @param {function} callback A függvény, ami a sikeres betöltés után lefut.
  */
+// === [#HEX:F.04.44.00] START | name: preloadTavernaImages | lines: 31 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:B.07.3E.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.06.0E.00]
 function preloadTavernaImages(callback) {
     // Ha már be vannak töltve a képek, nem kérjük le újra.
     if (tavernaImageSources.kartya_hatlap) {
@@ -2775,11 +3593,14 @@ function preloadTavernaImages(callback) {
         }
     );
 }
+// === [#HEX:F.04.44.00] END ===
 
 /**
 * Segédfüggvény a Pult modal nézeteinek váltogatásához.
 * @param {string} viewName A megjelenítendő nézet neve (read, compose, check_status_init, feedback).
 */
+// === [#HEX:F.04.45.00] START | name: showPultView | lines: 21 ===
+// @calls: [#HEX:F.04.46.00] | @calledBy: none
 function showPultView(viewName) {
     // Összes nézet elrejtése
     document.getElementById('pult-view-read').style.display = 'none';
@@ -2801,10 +3622,13 @@ function showPultView(viewName) {
         loadTavernaMessages();
     }
 }
+// === [#HEX:F.04.45.00] END ===
 
 /**
  * Betölti a felhasználó üzeneteit a szerverről és megjeleníti őket.
  */
+// === [#HEX:F.04.46.00] START | name: loadTavernaMessages | lines: 25 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.05.00.00] | @calledBy: [#HEX:F.04.45.00], [#HEX:F.04.4C.00]
 function loadTavernaMessages() {
     const messagesListDiv = document.getElementById('pult-messages-list');
     messagesListDiv.innerHTML = '<p>' + t('taverna_messages_loading') + '</p>';
@@ -2830,10 +3654,13 @@ function loadTavernaMessages() {
         }
     );
 }
+// === [#HEX:F.04.46.00] END ===
 
 /**
  * Bezárja az összes taverna oldali modalt/panelt.
  */
+// === [#HEX:F.05.02.00] START | name: closeAllTavernaModals | lines: 17 ===
+// @calls: none | @calledBy: [#HEX:F.04.47.00]
 function closeAllTavernaModals() {
     const pultModal = document.getElementById('pult-modal');
     const asztalConfirmModal = document.getElementById('asztal-confirm-modal');
@@ -2851,12 +3678,15 @@ function closeAllTavernaModals() {
         if (chatIframe) chatIframe.src = 'about:blank';
     }
 }
+// === [#HEX:F.05.02.00] END ===
 
 
 /**
 * Inicializálja a Taverna oldalt: megjeleníti a kezdő üzenetet
 * és eseménykezelőket rendel a gombokhoz.
 */
+// === [#HEX:F.04.47.00] START | name: initializeTavernaPage | lines: 199 ===
+// @calls: [#HEX:B.07.3C.00], [#HEX:F.04.48.00], [#HEX:F.07.02.00], [#HEX:F.06.4F.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function initializeTavernaPage() {
     // --- VÁLTOZÓK FELVÉTELE ---
     const pultModal = document.getElementById('pult-modal');
@@ -3020,6 +3850,8 @@ function initializeTavernaPage() {
             return;
         }
 
+// === [#HEX:F.06.0E.00] START | name: requestPin | lines: 32 ===
+// @calls: [#HEX:B.07.3C.00], [#HEX:F.04.48.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.44.00] | @calledBy: none
         requestPin(function (pinCode) {
             currentTavernPin = pinCode;
 
@@ -3052,13 +3884,17 @@ function initializeTavernaPage() {
                 });
             }
         }, t('taverna_game_entry_prompt'));
+// === [#HEX:F.06.0E.00] END ===
     };
 
     closeGameBtn.onclick = () => { jatekteremModal.style.display = 'none'; };
 }
+// === [#HEX:F.04.47.00] END ===
 
 // === JÁTÉKVEZÉRLŐ FÜGGVÉNYEK ===
 
+// === [#HEX:F.04.48.00] START | name: resetGame | lines: 58 ===
+// @calls: [#HEX:F.07.05.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.06.0E.00], [#HEX:F.04.4B.00]
 function resetGame() {
     gameState = 'betting';
 
@@ -3117,7 +3953,10 @@ function resetGame() {
         bettingArea.style.display = 'block';
     }
 }
+// === [#HEX:F.04.48.00] END ===
 
+// === [#HEX:F.07.05.00] START | name: handlePlayButtonClick | lines: 27 ===
+// @calls: [#HEX:F.04.49.00] | @calledBy: [#HEX:F.04.48.00]
 function handlePlayButtonClick() {
     const gameBetInput = document.getElementById('game-bet-input');
     const gameFeedbackText = document.getElementById('game-feedback-text');
@@ -3145,7 +3984,10 @@ function handlePlayButtonClick() {
 
     startGameAnimation(bet);
 }
+// === [#HEX:F.07.05.00] END ===
 
+// === [#HEX:F.04.49.00] START | name: startGameAnimation | lines: 14 ===
+// @calls: [#HEX:F.04.4A.00] | @calledBy: [#HEX:F.07.05.00]
 function startGameAnimation(bet) {
     gameState = 'animating';
     document.getElementById('game-betting-area').style.display = 'none';
@@ -3160,7 +4002,10 @@ function startGameAnimation(bet) {
         showCardsForChoice(bet);
     }, 3000);
 }
+// === [#HEX:F.04.49.00] END ===
 
+// === [#HEX:F.04.4A.00] START | name: showCardsForChoice | lines: 30 ===
+// @calls: [#HEX:F.04.4B.00] | @calledBy: [#HEX:F.04.49.00]
 function showCardsForChoice(bet) {
     gameState = 'choosing';
     document.getElementById('game-info-text').innerText = t('game_pick_card_prompt');
@@ -3191,7 +4036,10 @@ function showCardsForChoice(bet) {
         })(cards[i]);
     }
 }
+// === [#HEX:F.04.4A.00] END ===
 
+// === [#HEX:F.04.4B.00] START | name: handleCardChoice | lines: 62 ===
+// @calls: [#HEX:F.04.48.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.3D.00] | @calledBy: [#HEX:F.04.4A.00]
 function handleCardChoice(bet, chosenCard) {
     if (gameState !== 'choosing') return;
     gameState = 'result';
@@ -3254,6 +4102,7 @@ function handleCardChoice(bet, chosenCard) {
         }
     );
 }
+// === [#HEX:F.04.4B.00] END ===
 
 // --- BÉTA ASZTAL FRONTEND LOGIKA ---
 
@@ -3262,6 +4111,8 @@ function handleCardChoice(bet, chosenCard) {
 * Váltogat a Pult belső nézetei között.
 * @param {string} viewSuffix A nézet azonosítója (pl. 'read', 'compose', 'beta_menu').
 */
+// === [#HEX:F.04.4C.00] START | name: showPultView | lines: 40 ===
+// @calls: [#HEX:F.04.46.00], [#HEX:F.04.54.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.05.03.00], [#HEX:F.04.53.00], [#HEX:F.04.55.00], [#HEX:F.04.57.00]
 function showPultView(viewSuffix) {
     // A lehetséges nézetek ID-jainak listája
     const views = [
@@ -3302,8 +4153,11 @@ function showPultView(viewSuffix) {
         loadBetaWorks(); // Ez a függvény már létezik a kódodban
     }
 }
+// === [#HEX:F.04.4C.00] END ===
 
 // 1. JAVÍTOTT MODAL NYITÓ (Flex display + Suffix hívás)
+// === [#HEX:F.05.03.00] START | name: openPultModal | lines: 11 ===
+// @calls: [#HEX:F.04.4C.00] | @calledBy: none
 function openPultModal() {
     const modal = document.getElementById('pult-modal');
     if (modal) {
@@ -3315,9 +4169,12 @@ function openPultModal() {
         console.error("Hiba: Nem található a 'pult-modal' elem!");
     }
 }
+// === [#HEX:F.05.03.00] END ===
 
 // 1.B Új Taverna Asztaltársaság hívása
 
+// === [#HEX:F.04.4D.00] START | name: sendTavernJobsChat | lines: 27 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.01.04.00] | @calledBy: none
 function sendTavernJobsChat() {
     var inputEl = document.getElementById('tavern-jobs-chat-input');
     if (!inputEl) return;
@@ -3332,6 +4189,8 @@ function sendTavernJobsChat() {
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
 
+// === [#HEX:F.06.0F.00] START | name: callBackend | lines: 9 ===
+// @calls: [#HEX:B.01.04.00] | @calledBy: none
     callBackend('handleTavernTableChat', [message], function (response) {
         if (loading) loading.style.display = 'none';
         if (response && response.reply) {
@@ -3341,11 +4200,15 @@ function sendTavernJobsChat() {
         }
         contentDiv.scrollTop = contentDiv.scrollHeight;
     }, function (err) {
+// === [#HEX:F.06.0F.00] END ===
         if (loading) loading.style.display = 'none';
         contentDiv.innerHTML += '<p style="color: red;"><i>A kocsmazaj elnyomta a hangodat. (Hálózati hiba: ' + err.message + ')</i></p>';
     });
 }
+// === [#HEX:F.04.4D.00] END ===
 
+// === [#HEX:F.04.4E.00] START | name: openMercenaryMarketFromTavern | lines: 41 ===
+// @calls: [#HEX:B.07.C1.00], [#HEX:D.01.79.00], [#HEX:F.04.4F.00] | @calledBy: [#HEX:F.04.4F.00], [#HEX:F.06.11.00]
 function openMercenaryMarketFromTavern() {
     var modal = document.getElementById('mercenary-market-modal');
     var listContainer = document.getElementById('mercenary-market-list');
@@ -3356,6 +4219,8 @@ function openMercenaryMarketFromTavern() {
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
 
+// === [#HEX:F.06.10.00] START | name: callBackend | lines: 27 ===
+// @calls: [#HEX:B.07.C1.00], [#HEX:F.04.4F.00] | @calledBy: none
     callBackend('getAvailableMercenaries', [], function (response) {
         if (loading) loading.style.display = 'none';
 
@@ -3383,33 +4248,48 @@ function openMercenaryMarketFromTavern() {
             if (listContainer) listContainer.innerHTML = '<p style="color:red;">Hiba a zsoldosok betöltésekor: ' + (response ? response.error : 'Ismeretlen hiba') + '</p>';
         }
     }, function (err) {
+// === [#HEX:F.06.10.00] END ===
         if (loading) loading.style.display = 'none';
         if (listContainer) listContainer.innerHTML = '<p style="color:red;">Hálózati hiba: ' + err.message + '</p>';
     });
 }
+// === [#HEX:F.04.4E.00] END ===
 
+// === [#HEX:F.04.4F.00] START | name: handleHireMercenary | lines: 25 ===
+// @calls: [#HEX:F.04.4E.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.4E.00], [#HEX:F.06.10.00]
 function handleHireMercenary(mercName, cost) {
-    var pinCode = prompt("Zsoldos felbérlése: " + mercName + "\nÁr: " + cost + " Kr\n\nKérlek, add meg a Munkavállalói PIN kódodat a szerződés hitelesítéséhez:");
-    if (!pinCode) return;
+    var msg = "Zsoldos felbérlése: " + mercName + "<br>Ár: " + cost + " Kr<br><br>Kérlek, add meg a Munkavállalói PIN kódodat a szerződés hitelesítéséhez:";
+// === [#HEX:F.06.11.00] START | name: requestPin | lines: 23 ===
+// @calls: [#HEX:F.06.4B.00], [#HEX:F.04.40.00], [#HEX:F.04.4E.00] | @calledBy: none
+    requestPin(function (pinCode) {
+        if (!pinCode) return;
 
-    var loading = document.getElementById('loading-overlay');
-    if (loading) loading.style.display = 'flex';
+        var loading = document.getElementById('loading-overlay');
+        if (loading) loading.style.display = 'flex';
 
-    callBackend('BT_hireMercenary', [pinCode, mercName, cost], function (response) {
-        if (loading) loading.style.display = 'none';
+// === [#HEX:F.06.11.00] START | name: callBackend | lines: 10 ===
+// @calls: [#HEX:F.04.4E.00], [#HEX:D.01.77.00] | @calledBy: none
+        callBackend('BT_hireMercenary', [pinCode, mercName, cost], function (response) {
+            if (loading) loading.style.display = 'none';
 
-        if (response && response.npcResponse && !response.npcResponse.includes("Hiba")) {
-            uiAlert("Sikeres bérlés!", response.npcResponse);
-            openMercenaryMarketFromTavern(); // Refresh the list!
-        } else {
-            uiAlert("Hiba", response ? response.npcResponse : "Ismeretlen hiba történt.");
-        }
-    }, function (err) {
-        if (loading) loading.style.display = 'none';
-        uiAlert("Hálózati hiba", err.message);
-    });
+            if (response && response.npcResponse && !response.npcResponse.includes("Hiba")) {
+                uiAlert("Sikeres bérlés!", response.npcResponse);
+                openMercenaryMarketFromTavern(); // Refresh the list!
+            } else {
+                uiAlert("Hiba", response ? response.npcResponse : "Ismeretlen hiba történt.");
+            }
+        }, function (err) {
+// === [#HEX:F.06.11.00] END ===
+            if (loading) loading.style.display = 'none';
+            uiAlert("Hálózati hiba", err.message);
+        });
+    }, msg);
+// === [#HEX:F.06.11.00] END ===
 }
+// === [#HEX:F.04.4F.00] END ===
 
+// === [#HEX:F.04.50.00] START | name: openTavernJobs | lines: 20 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.95.00] | @calledBy: none
 function openTavernJobs() {
     const modal = document.getElementById('tavern-jobs-modal');
     if (modal) {
@@ -3418,6 +4298,8 @@ function openTavernJobs() {
         contentDiv.innerHTML = '<p style="text-align: center;"><i>Odalépsz a leghangosabb asztalhoz...<br>A rendszer hallgatózik...</i></p>';
 
         if (typeof callBackend === 'function') {
+// === [#HEX:F.06.12.00] START | name: callBackend | lines: 7 ===
+// @calls: [#HEX:B.07.95.00] | @calledBy: none
             callBackend("getTavernJobs", [], function (response) {
                 if (response && response.text) {
                     contentDiv.innerHTML = response.text.replace(/\n/g, '<br>');
@@ -3425,11 +4307,13 @@ function openTavernJobs() {
                     contentDiv.innerHTML = '<p>Az asztalnál lévők csak morognak. (Hiba: ' + (response.error || "Nincs válasz") + ')</p>';
                 }
             });
+// === [#HEX:F.06.12.00] END ===
         } else {
             contentDiv.innerHTML = '<p>A hálózati kapcsolat megszakadt, nem hallod, mit mondanak.</p>';
         }
     }
 }
+// === [#HEX:F.04.50.00] END ===
 
 // 2. JAVÍTOTT KÖLTSÉG SZÁMOLÓ (Esemény delegálás - Nincs több "null" hiba!)
 // Ez helyettesíti a régi 'DOMContentLoaded' blokkot
@@ -3440,6 +4324,16 @@ document.addEventListener('input', function (e) {
     }
 });
 
+// === [#HEX:F.04.51.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.51.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.51.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.62.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.62.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
 function updateBetaCost() {
     const fee = 10;
     const bonusInput = document.getElementById('beta-bonus');
@@ -3459,8 +4353,15 @@ function updateBetaCost() {
     if (totalCalcEl) totalCalcEl.textContent = pool + " Kr";
     if (finalCostEl) finalCostEl.textContent = total + " Kr";
 }
+// === [#HEX:F.04.62.00] END ===
+// === [#HEX:F.04.62.00] END ===
+// === [#HEX:F.04.51.00] END ===
+// === [#HEX:F.04.51.00] END ===
+// === [#HEX:F.04.51.00] END ===
 
 // 1. FELTÖLTÉS INDÍTÁSA (PIN Kéréssel)
+// === [#HEX:F.04.52.00] START | name: initiateBetaUpload | lines: 30 ===
+// @calls: [#HEX:D.01.77.00], [#HEX:F.06.4F.00], [#HEX:F.04.53.00] | @calledBy: none
 function initiateBetaUpload() {
     const title = document.getElementById('beta-title').value;
     const content = document.getElementById('beta-content').value;
@@ -3482,20 +4383,26 @@ function initiateBetaUpload() {
 
     // PIN bekérése a globális panellel
     if (typeof requestPin === 'function') {
+// === [#HEX:F.06.13.00] START | name: requestPin | lines: 3 ===
+// @calls: [#HEX:F.04.53.00] | @calledBy: none
         requestPin(function (pinCode) {
             sendBetaUploadToServer(pinCode, payload);
         }, t('beta_upload_confirm_html'));
+// === [#HEX:F.06.13.00] END ===
     } else {
         // Ha valami csoda folytán mégsem lenne betöltve (fallback)
         const p = prompt(t('pin_prompt_label'));
         if (p) sendBetaUploadToServer(p, payload);
     }
 }
+// === [#HEX:F.04.52.00] END ===
 
 // =========================================
 // === BÉTA FELTÖLTÉS KÜLDÉSE (VISSZAJELZÉSSEL) ===
 // =========================================
 
+// === [#HEX:F.04.53.00] START | name: sendBetaUploadToServer | lines: 35 ===
+// @calls: [#HEX:B.07.3F.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.4C.00] | @calledBy: [#HEX:F.04.52.00], [#HEX:F.06.13.00]
 function sendBetaUploadToServer(pinCode, payload) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -3531,8 +4438,11 @@ function sendBetaUploadToServer(pinCode, payload) {
         }
     );
 }
+// === [#HEX:F.04.53.00] END ===
 
 // 2. LISTA BETÖLTÉSE
+// === [#HEX:F.04.54.00] START | name: loadBetaWorks | lines: 23 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.40.00], [#HEX:F.04.55.00] | @calledBy: [#HEX:F.04.4C.00], [#HEX:F.04.57.00]
 function loadBetaWorks() {
     var container = document.getElementById('beta-list-container');
     container.innerHTML = '<p style="text-align:center;">' + t('beta_list_loading') + '</p>';
@@ -3556,8 +4466,11 @@ function loadBetaWorks() {
         }
     );
 }
+// === [#HEX:F.04.54.00] END ===
 
 // A lista kirajzolása (Kliens oldal)
+// === [#HEX:F.04.55.00] START | name: renderBetaList | lines: 57 ===
+// @calls: [#HEX:F.04.56.00], [#HEX:F.04.4C.00] | @calledBy: [#HEX:F.04.54.00]
 function renderBetaList(works) {
     const container = document.getElementById('beta-list-container');
     container.innerHTML = '';
@@ -3615,6 +4528,7 @@ function renderBetaList(works) {
         container.appendChild(div);
     });
 }
+// === [#HEX:F.04.55.00] END ===
 
 // ===================================
 // === BÉTA OLVASÓ (FRONTEND) ===
@@ -3625,6 +4539,8 @@ let currentBetaWorkTitle = null;
 
 // 1. Olvasó Megnyitása
 // (Ezt hívja a lista "Olvasás" gombja)
+// === [#HEX:F.04.56.00] START | name: openBetaReader | lines: 20 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.42.00] | @calledBy: [#HEX:F.04.55.00]
 function openBetaReader(workId, workTitle) {
     currentBetaWorkId = workId;
     currentBetaWorkTitle = workTitle;
@@ -3645,8 +4561,11 @@ function openBetaReader(workId, workTitle) {
         }
     );
 }
+// === [#HEX:F.04.56.00] END ===
 
 // Ezt a függvényt hívja a "📖 Olvasok (Kreditszerzés)" gomb
+// === [#HEX:F.04.57.00] START | name: listBetaWorksForReader | lines: 13 ===
+// @calls: [#HEX:F.04.54.00], [#HEX:F.04.4C.00] | @calledBy: [#HEX:F.04.5A.00]
 function listBetaWorksForReader() {
     // 1. Átváltunk a listázó nézetre a pulton belül
     showPultView('beta_list');
@@ -3660,17 +4579,23 @@ function listBetaWorksForReader() {
         document.getElementById('beta-list-container').innerHTML = t('beta_reader_loader_missing');
     }
 }
+// === [#HEX:F.04.57.00] END ===
 
 // 2. Kilépés (Megerősítéssel)
+// === [#HEX:F.04.58.00] START | name: closeBetaReader | lines: 25 ===
+// @calls: [#HEX:F.04.59.00], [#HEX:F.04.C6.00] | @calledBy: none
 function closeBetaReader() {
     // Ellenőrizzük, írt-e már valamit
     const opinion = document.getElementById('log-opinion').value;
 
     // Belső függvény: Ez végzi a tényleges bezárást és törlést
+// === [#HEX:F.04.59.00] START | name: veglegesBezaras | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.04.58.00]
     const veglegesBezaras = function () {
         document.getElementById('beta-reader-modal').style.display = 'none';
         document.getElementById('beta-log-form').reset();
     };
+// === [#HEX:F.04.59.00] END ===
 
     if (opinion.length > 10) {
         // 1. ESET: Van szöveg -> Kérdezünk
@@ -3687,8 +4612,11 @@ function closeBetaReader() {
         veglegesBezaras();
     }
 }
+// === [#HEX:F.04.58.00] END ===
 
 // 3. Napló Beküldése
+// === [#HEX:F.04.5A.00] START | name: submitLogbook | lines: 46 ===
+// @calls: [#HEX:F.04.57.00], [#HEX:B.04.14.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
 function submitLogbook() {
     const gender = document.getElementById('log-gender').value;
     const age = document.getElementById('log-age').value;
@@ -3735,12 +4663,15 @@ function submitLogbook() {
         }
     );
 }
+// === [#HEX:F.04.5A.00] END ===
 
 // ===================================
 // === SZERZŐI STATISZTIKA (FRONTEND) ===
 // ===================================
 
 // 1. Saját művek listázása
+// === [#HEX:F.04.5B.00] START | name: showMyBetaStats | lines: 20 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.06.11.00], [#HEX:F.04.5C.00], [#HEX:F.04.4C.00] | @calledBy: [#HEX:F.06.18.00]
 function showMyBetaStats() {
     showPultView('beta_my_works');
 
@@ -3761,8 +4692,11 @@ function showMyBetaStats() {
         function (err) { container.innerHTML = '<p style="color:red;">' + t('server_error_prefix') + err.message + '</p>'; }
     );
 }
+// === [#HEX:F.04.5B.00] END ===
 
 // Lista kirajzolása (Saját Művek) - BŐVÍTETT VERZIÓ
+// === [#HEX:F.04.5C.00] START | name: renderMyWorksList | lines: 39 ===
+// @calls: [#HEX:F.04.60.00], [#HEX:F.04.5F.00], [#HEX:F.04.5D.00] | @calledBy: [#HEX:F.04.5B.00]
 function renderMyWorksList(works) {
     var container = document.getElementById('beta-my-works-container');
     container.innerHTML = '';
@@ -3802,8 +4736,11 @@ function renderMyWorksList(works) {
         container.appendChild(div);
     });
 }
+// === [#HEX:F.04.5C.00] END ===
 
 // 2. Vásárlás indítása (PIN bekérése)
+// === [#HEX:F.04.5D.00] START | name: initiateStatPurchase | lines: 18 ===
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.4F.00], [#HEX:D.01.77.00], [#HEX:F.06.15.00] | @calledBy: [#HEX:F.04.5C.00]
 function initiateStatPurchase(workId) {
     uiConfirm(
         t('beta_stats_purchase_message'), // Üzenet
@@ -3811,10 +4748,13 @@ function initiateStatPurchase(workId) {
         function () {
             // Ez a kód fut le, ha a felhasználó az IGEN-re kattintott
             if (typeof requestPin === 'function') {
+// === [#HEX:F.06.14.00] START | name: requestPin | lines: 4 ===
+// @calls: [#HEX:F.06.15.00] | @calledBy: none
                 requestPin(function (pinCode) {
                     // Ez fut le, ha beírta a PIN-t és rányomott a rendben gombra
                     fetchBetaStats(workId, pinCode);
                 }, t('beta_stats_purchase_confirm_title'));
+// === [#HEX:F.06.14.00] END ===
             } else {
                 // Ha valamiért nincs betöltve a PIN bekérő script, szólunk (szépen)
                 uiAlert(t('pin_module_missing'), t('system_error_title'));
@@ -3822,8 +4762,11 @@ function initiateStatPurchase(workId) {
         }
     );
 }
+// === [#HEX:F.04.5D.00] END ===
 
 // 3. Adatok lekérése és megjelenítése
+// === [#HEX:F.06.15.00] START | name: fetchBetaStats | lines: 22 ===
+// @calls: [#HEX:B.02.0A.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.5E.00] | @calledBy: [#HEX:F.04.5D.00], [#HEX:F.06.14.00]
 function fetchBetaStats(workId, pinCode) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -3846,8 +4789,11 @@ function fetchBetaStats(workId, pinCode) {
         }
     );
 }
+// === [#HEX:F.06.15.00] END ===
 
 // Táblázat kirajzolása a Modalban
+// === [#HEX:F.04.5E.00] START | name: renderStatsTable | lines: 30 ===
+// @calls: none | @calledBy: [#HEX:F.06.15.00]
 function renderStatsTable(title, rows) {
     var modal = document.getElementById('beta-stats-modal');
     var titleEl = document.getElementById('stats-modal-title');
@@ -3878,12 +4824,15 @@ function renderStatsTable(title, rows) {
 
     modal.style.display = 'flex';
 }
+// === [#HEX:F.04.5E.00] END ===
 
 // ===================================
 // === BÉTA MŰVEK KEZELÉSE (USER) ===
 // ===================================
 
 // 1. UTÁNTÖLTÉS INDÍTÁSA
+// === [#HEX:F.04.5F.00] START | name: initiateBetaRefill | lines: 21 ===
+// @calls: [#HEX:D.01.77.00], [#HEX:F.06.4F.00], [#HEX:F.06.18.00] | @calledBy: [#HEX:F.04.5C.00]
 function initiateBetaRefill(workId, title) {
     // Mennyit töltsünk?
     const amountStr = prompt(t('beta_refill_prompt_prefix') + title + t('beta_refill_prompt_suffix'));
@@ -3897,16 +4846,22 @@ function initiateBetaRefill(workId, title) {
 
     // PIN bekérése
     if (typeof requestPin === 'function') {
+// === [#HEX:F.06.16.00] START | name: requestPin | lines: 3 ===
+// @calls: [#HEX:F.06.18.00] | @calledBy: none
         requestPin(function (pinCode) {
             sendManageRequest(pinCode, 'REFILL', workId, amount);
         }, t('beta_refill_confirm_title'));
+// === [#HEX:F.06.16.00] END ===
     } else {
         const p = prompt(t('pin_prompt_label'));
         if (p) sendManageRequest(p, 'REFILL', workId, amount);
     }
 }
+// === [#HEX:F.04.5F.00] END ===
 
 // 2. LEZÁRÁS INDÍTÁSA
+// === [#HEX:F.04.60.00] START | name: initiateBetaClose | lines: 21 ===
+// @calls: [#HEX:F.04.C6.00], [#HEX:D.01.77.00], [#HEX:F.06.4F.00], [#HEX:F.06.18.00] | @calledBy: [#HEX:F.04.5C.00]
 function initiateBetaClose(workId, title) {
     // A szöveg formázása HTML-lel a szebb megjelenésért
     const message = t('beta_close_confirm_html_prefix') + title + t('beta_close_confirm_html_suffix');
@@ -3917,10 +4872,13 @@ function initiateBetaClose(workId, title) {
         function () {
             // Ez fut le, ha az IGEN-re kattintott
             if (typeof requestPin === 'function') {
+// === [#HEX:F.06.17.00] START | name: requestPin | lines: 4 ===
+// @calls: [#HEX:F.06.18.00] | @calledBy: none
                 requestPin(function (pinCode) {
                     // Ez fut le, ha beírta a PIN-t
                     sendManageRequest(pinCode, 'CLOSE', workId, 0);
                 }, t('beta_close_confirm_title'));
+// === [#HEX:F.06.17.00] END ===
             } else {
                 // Prompt helyett hibaüzenet, ha nincs PIN modul
                 uiAlert(t('pin_module_missing'), t('system_error_title'));
@@ -3928,8 +4886,11 @@ function initiateBetaClose(workId, title) {
         }
     );
 }
+// === [#HEX:F.04.60.00] END ===
 
 // Közös szerverhívó
+// === [#HEX:F.06.18.00] START | name: sendManageRequest | lines: 22 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.41.00], [#HEX:F.04.5B.00] | @calledBy: [#HEX:F.04.5F.00], [#HEX:F.06.16.00], [#HEX:F.04.60.00], [#HEX:F.06.17.00]
 function sendManageRequest(pinCode, action, workId, amount) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -3952,6 +4913,7 @@ function sendManageRequest(pinCode, action, workId, amount) {
         }
     );
 }
+// === [#HEX:F.06.18.00] END ===
 
 
 //  ========
@@ -3961,6 +4923,8 @@ function sendManageRequest(pinCode, action, workId, amount) {
 /**
  * SEGÉDFÜGGVÉNY: Inicializálja a Bank szekciót a Piac oldalon.
  */
+// === [#HEX:F.04.61.00] START | name: initializeBankSection | lines: 153 ===
+// @calls: [#HEX:B.02.01.00], [#HEX:F.07.02.00], [#HEX:B.06.0B.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.62.00]
 function initializeBankSection() {
     var exchangeBtn = document.getElementById('bank-exchange-btn');
     var sendBtn = document.getElementById('bank-send-btn');
@@ -4114,6 +5078,7 @@ function initializeBankSection() {
         );
     }
 }
+// === [#HEX:F.04.61.00] END ===
 
 // =========================================
 // === PIAC RENDSZER (HIBRID SZŰRÉSSEL) ===
@@ -4129,6 +5094,8 @@ var CLIENT_SIDE_FILTER_THRESHOLD = 100; // E felett szerver oldali a keresés
 /**
  * Piac oldal inicializálása (HIBRID SZŰRÉSSEL)
  */
+// === [#HEX:F.04.62.00] START | name: initializePiacOldal | lines: 86 ===
+// @calls: [#HEX:B.07.2D.00], [#HEX:F.07.06.00], [#HEX:D.01.79.00], [#HEX:F.04.65.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:F.04.63.00]
 function initializePiacOldal() {
     var loaders = {
         piaci: document.getElementById('piaci-lista-loader'),
@@ -4156,6 +5123,8 @@ function initializePiacOldal() {
     var searchButton = document.getElementById('piac-kereso-gomb');
 
     // 1. Tételszám lekérése a döntéshez (callBackend)
+// === [#HEX:F.06.19.00] START | name: callBackend | lines: 55 ===
+// @calls: [#HEX:B.07.2D.00], [#HEX:F.07.06.00], [#HEX:D.01.77.00], [#HEX:B.07.32.00] | @calledBy: none
     callBackend('getMarketItemCount', [], function (response) {
         if (!response.success) {
             containers.piaci.innerHTML = '<p style="color:red;">' + t('market_load_error_prefix') + response.error + '</p>';
@@ -4169,6 +5138,8 @@ function initializePiacOldal() {
             if (searchInput) searchInput.placeholder = t('market_filter_placeholder');
 
             // Null paraméterrel mindent lekérünk
+// === [#HEX:F.06.1A.00] START | name: callBackend | lines: 16 ===
+// @calls: [#HEX:B.07.2D.00], [#HEX:F.07.06.00] | @calledBy: none
             callBackend('getMarketListings', [null], function (listingResponse) {
                 if (loaders.piaci) loaders.piaci.style.display = 'none';
                 if (listingResponse.success) {
@@ -4185,6 +5156,7 @@ function initializePiacOldal() {
                     };
                 }
             });
+// === [#HEX:F.06.1A.00] END ===
 
         } else {
             // --- SZERVEROLDALI MÓD (Kímélő, csak keresésre tölt) ---
@@ -4202,7 +5174,10 @@ function initializePiacOldal() {
                 if (loaders.piaci) loaders.piaci.style.display = 'block';
                 containers.piaci.innerHTML = '';
 
+// === [#HEX:F.06.1B.00] START | name: callBackend | lines: 1 ===
+// @calls: [#HEX:B.07.2D.00] | @calledBy: none
                 callBackend('getMarketListings', [{ name: searchTerm }], function (listingResponse) {
+// === [#HEX:F.06.1B.00] END ===
                     if (loaders.piaci) loaders.piaci.style.display = 'none';
                     if (listingResponse.success) {
                         displayListings(listingResponse.listings, containers.piaci);
@@ -4211,15 +5186,30 @@ function initializePiacOldal() {
             };
         }
     });
+// === [#HEX:F.06.19.00] END ===
 
     setupSellModalListeners();
     setupOfferModalListeners();
 }
+// === [#HEX:F.04.62.00] END ===
 
+// === [#HEX:F.04.63.00] START | name: initializeBankOldal | lines: 3 ===
+// @calls: [#HEX:F.04.62.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function initializeBankOldal() {
     initializePiacOldal();
 }
+// === [#HEX:F.04.63.00] END ===
 
+// === [#HEX:F.04.64.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.64.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.64.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.75.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.75.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
 function toggleBuyNowInput(isFixedSelected) {
     document.getElementById('fixed-price-container').style.display = isFixedSelected ? 'block' : 'none';
     document.getElementById('buy-now-price-container').style.display = isFixedSelected ? 'none' : 'block';
@@ -4229,7 +5219,14 @@ function toggleBuyNowInput(isFixedSelected) {
         document.getElementById('hirdetes-ar').value = '';
     }
 }
+// === [#HEX:F.04.75.00] END ===
+// === [#HEX:F.04.75.00] END ===
+// === [#HEX:F.04.64.00] END ===
+// === [#HEX:F.04.64.00] END ===
+// === [#HEX:F.04.64.00] END ===
 
+// === [#HEX:F.07.06.00] START | name: displayListings | lines: 52 ===
+// @calls: [#HEX:F.04.69.00], [#HEX:F.05.04.00] | @calledBy: [#HEX:F.04.62.00], [#HEX:F.06.19.00], [#HEX:F.06.1A.00]
 function displayListings(listings, container) {
     container.innerHTML = '';
     if (listings.length === 0) {
@@ -4282,7 +5279,10 @@ function displayListings(listings, container) {
         container.appendChild(entryDiv);
     });
 }
+// === [#HEX:F.07.06.00] END ===
 
+// === [#HEX:F.04.65.00] START | name: loadMyListedItems | lines: 39 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:F.04.66.00], [#HEX:B.07.2B.00] | @calledBy: [#HEX:F.04.62.00]
 function loadMyListedItems() {
     var loader = document.getElementById('meghirdetett-lista-loader');
     var container = document.getElementById('meghirdetett-lista');
@@ -4292,6 +5292,8 @@ function loadMyListedItems() {
     container.innerHTML = '';
 
     // callBackend használata (email nélkül)
+// === [#HEX:F.06.1C.00] START | name: callBackend | lines: 29 ===
+// @calls: [#HEX:B.07.2B.00], [#HEX:F.04.66.00] | @calledBy: none
     callBackend('getMyListedItems', [], function (response) {
         loader.style.display = 'none';
         if (!response.success) {
@@ -4321,17 +5323,29 @@ function loadMyListedItems() {
             });
         }
     });
+// === [#HEX:F.06.1C.00] END ===
 }
+// === [#HEX:F.04.65.00] END ===
 
+// === [#HEX:F.04.66.00] START | name: withdrawListingAction | lines: 11 ===
+// @calls: [#HEX:B.07.2C.00], [#HEX:F.04.6B.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.65.00], [#HEX:F.06.1C.00]
 function withdrawListingAction(listingId, itemName) {
-    var pinCode = prompt(t('market_withdraw_pin_prefix') + itemName + t('market_withdraw_pin_suffix'));
-    if (pinCode === null || !pinCode) return;
+    var msg = t('market_withdraw_pin_prefix') + itemName + t('market_withdraw_pin_suffix');
+// === [#HEX:F.06.1E.00] START | name: requestPin | lines: 7 ===
+// @calls: [#HEX:F.04.6B.00], [#HEX:B.07.2C.00], [#HEX:F.06.4B.00] | @calledBy: none
+    requestPin(function (pinCode) {
+        if (!pinCode) return;
 
-    document.getElementById('loading-overlay').style.display = 'flex';
-    // callBackend használata (email nélkül)
-    callBackend('withdrawListing', [listingId, pinCode], handleServerResponse);
+        document.getElementById('loading-overlay').style.display = 'flex';
+        // callBackend használata (email nélkül)
+        callBackend('withdrawListing', [listingId, pinCode], handleServerResponse);
+    }, msg);
+// === [#HEX:F.06.1E.00] END ===
 }
+// === [#HEX:F.04.66.00] END ===
 
+// === [#HEX:F.04.67.00] START | name: initializeSellableItemsSection | lines: 41 ===
+// @calls: [#HEX:B.06.0D.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.62.00]
 function initializeSellableItemsSection() {
     var typeSelect = document.getElementById('sell-item-type-select');
     var itemSelect = document.getElementById('sell-item-select');
@@ -4345,6 +5359,8 @@ function initializeSellableItemsSection() {
 
         loader.style.display = 'block';
 
+// === [#HEX:F.06.1D.00] START | name: callBackend | lines: 19 ===
+// @calls: [#HEX:B.06.0D.00] | @calledBy: none
         callBackend('getUserTradableItems', [], function (response) {
             loader.style.display = 'none';
             if (response.success) {
@@ -4364,6 +5380,7 @@ function initializeSellableItemsSection() {
                 itemSelect.style.display = 'block';
             }
         });
+// === [#HEX:F.06.1D.00] END ===
     };
 
     sellButton.onclick = function () {
@@ -4373,8 +5390,13 @@ function initializeSellableItemsSection() {
         if (type && id) openSellModal(id, type, name);
     };
 }
+// === [#HEX:F.04.67.00] END ===
 
+// === [#HEX:F.04.68.00] START | name: loadMyActiveOffers | lines: 19 ===
+// @calls: [#HEX:B.07.30.00], [#HEX:D.01.79.00], [#HEX:F.04.6A.00] | @calledBy: [#HEX:F.04.62.00]
 function loadMyActiveOffers(container, loader) {
+// === [#HEX:F.06.1E.00] START | name: callBackend | lines: 17 ===
+// @calls: [#HEX:B.07.30.00], [#HEX:F.04.6A.00] | @calledBy: none
     callBackend('getMyActiveOffers', [], function (response) {
         if (loader) loader.style.display = 'none';
         if (response.success && response.offers.length > 0) {
@@ -4392,26 +5414,42 @@ function loadMyActiveOffers(container, loader) {
             });
         }
     });
+// === [#HEX:F.06.1E.00] END ===
 }
+// === [#HEX:F.04.68.00] END ===
 
+// === [#HEX:F.04.69.00] START | name: buyNowAction | lines: 11 ===
+// @calls: [#HEX:F.04.6B.00], [#HEX:B.02.02.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.07.06.00]
 function buyNowAction(listingId) {
-    var pinCode = prompt(t('market_buy_pin_prompt'));
-    if (pinCode) {
+// === [#HEX:F.06.21.00] START | name: requestPin | lines: 6 ===
+// @calls: [#HEX:F.04.6B.00], [#HEX:B.02.02.00], [#HEX:F.06.4B.00] | @calledBy: none
+    requestPin(function (pinCode) {
+        if (!pinCode) return;
         document.getElementById('loading-overlay').style.display = 'flex';
         // callBackend, email nélkül
         callBackend('buyNow', [listingId, pinCode], handleServerResponse);
-    }
+    }, t('market_buy_pin_prompt'));
+// === [#HEX:F.06.21.00] END ===
 }
+// === [#HEX:F.04.69.00] END ===
 
+// === [#HEX:F.04.6A.00] START | name: retractOfferAction | lines: 11 ===
+// @calls: [#HEX:F.04.6B.00], [#HEX:D.01.79.00], [#HEX:B.07.2F.00] | @calledBy: [#HEX:F.04.68.00], [#HEX:F.06.1E.00]
 function retractOfferAction(offerId) {
-    var pinCode = prompt(t('market_retract_pin_prompt'));
-    if (pinCode) {
+// === [#HEX:F.06.22.00] START | name: requestPin | lines: 6 ===
+// @calls: [#HEX:F.04.6B.00], [#HEX:B.07.2F.00], [#HEX:F.06.4B.00] | @calledBy: none
+    requestPin(function (pinCode) {
+        if (!pinCode) return;
         document.getElementById('loading-overlay').style.display = 'flex';
         // callBackend, email nélkül
         callBackend('retractOffer', [offerId, pinCode], handleServerResponse);
-    }
+    }, t('market_retract_pin_prompt'));
+// === [#HEX:F.06.22.00] END ===
 }
+// === [#HEX:F.04.6A.00] END ===
 
+// === [#HEX:F.05.04.00] START | name: openOfferModal | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.07.06.00]
 function openOfferModal(action, listingId, offerId, itemName) {
     currentOfferAction = { action: action, listingId: listingId, offerId: offerId };
     document.getElementById('ajanlat-modal-item-name').textContent = itemName;
@@ -4427,7 +5465,10 @@ function openOfferModal(action, listingId, offerId, itemName) {
     }
     document.getElementById('ajanlat-modal').style.display = 'flex';
 }
+// === [#HEX:F.05.04.00] END ===
 
+// === [#HEX:F.05.05.00] START | name: setupOfferModalListeners | lines: 18 ===
+// @calls: [#HEX:B.07.2E.00], [#HEX:F.04.6B.00], [#HEX:D.01.79.00], [#HEX:B.07.31.00] | @calledBy: [#HEX:F.04.62.00]
 function setupOfferModalListeners() {
     var submitBtn = document.getElementById('ajanlat-submit-btn');
     if (submitBtn) {
@@ -4446,7 +5487,10 @@ function setupOfferModalListeners() {
         };
     }
 }
+// === [#HEX:F.05.05.00] END ===
 
+// === [#HEX:F.05.06.00] START | name: setupSellModalListeners | lines: 61 ===
+// @calls: [#HEX:F.04.6B.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.2A.00] | @calledBy: [#HEX:F.04.62.00]
 function setupSellModalListeners() {
     // --- SZÜKSÉGES ELEMEK ---
     var fixedPriceContainer = document.getElementById('fixed-price-container');
@@ -4508,8 +5552,11 @@ function setupSellModalListeners() {
         );
     };
 }
+// === [#HEX:F.05.06.00] END ===
 
 // Közös válaszkezelő függvény
+// === [#HEX:F.04.6B.00] START | name: handleServerResponse | lines: 23 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.66.00], [#HEX:F.04.69.00], [#HEX:F.04.6A.00], [#HEX:F.05.05.00], [#HEX:F.05.06.00]
 function handleServerResponse(response) {
     document.getElementById('loading-overlay').style.display = 'none';
 
@@ -4533,6 +5580,7 @@ function handleServerResponse(response) {
         loadPage('piac_oldal');
     }
 }
+// === [#HEX:F.04.6B.00] END ===
 
 // =========================================
 // === HAJÓMŰHELY FUNKCIÓK (JAVÍTOTT)    ===
@@ -4542,6 +5590,8 @@ var shipyardData = null;
 var userCredits = 0; // Helyi változó a pontos számításhoz
 
 // Inicializálás
+// === [#HEX:F.03.01.00] START | name: initShipyard | lines: 26 ===
+// @calls: [#HEX:F.04.6D.00], [#HEX:F.04.72.00], [#HEX:B.03.09.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:F.04.6E.00], [#HEX:F.06.1F.00], [#HEX:F.04.76.00]
 function initShipyard() {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
@@ -4568,7 +5618,10 @@ function initShipyard() {
         }
     );
 }
+// === [#HEX:F.03.01.00] END ===
 
+// === [#HEX:F.04.6C.00] START | name: showWorkshopTab | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.04.74.00], [#HEX:F.06.22.00]
 function showWorkshopTab(tabName) {
     var tabs = document.querySelectorAll('.workshop-tab');
     for (var i = 0; i < tabs.length; i++) {
@@ -4577,7 +5630,10 @@ function showWorkshopTab(tabName) {
     var activeTab = document.getElementById('tab-' + tabName);
     if (activeTab) activeTab.style.display = 'block';
 }
+// === [#HEX:F.04.6C.00] END ===
 
+// === [#HEX:F.04.6D.00] START | name: renderRepairList | lines: 56 ===
+// @calls: [#HEX:F.04.6E.00] | @calledBy: [#HEX:F.03.01.00]
 function renderRepairList() {
     var container = document.getElementById('repair-list');
     if (!container) return;
@@ -4634,7 +5690,10 @@ function renderRepairList() {
         }
     });
 }
+// === [#HEX:F.04.6D.00] END ===
 
+// === [#HEX:F.04.6E.00] START | name: confirmRepair | lines: 66 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00], [#HEX:D.01.77.00], [#HEX:F.03.01.00] | @calledBy: [#HEX:F.04.6D.00]
 function confirmRepair(shipId) {
     var inputEl = document.getElementById('repair-input-' + shipId);
     if (!inputEl) return;
@@ -4648,6 +5707,8 @@ function confirmRepair(shipId) {
     var cost = amount * 100;
 
     // Feltételezzük, hogy a requestPin létezik
+// === [#HEX:F.06.1F.00] START | name: requestPin | lines: 52 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.03.01.00], [#HEX:F.04.77.00] | @calledBy: none
     requestPin(function (pin) {
         var overlay = document.getElementById('loading-overlay');
         if (overlay) overlay.style.display = 'flex';
@@ -4700,8 +5761,12 @@ function confirmRepair(shipId) {
             });
 
     }, t('shipyard_repair_prompt_prefix') + cost + ' ' + t('credit_long') + t('shipyard_repair_prompt_suffix'));
+// === [#HEX:F.06.1F.00] END ===
 }
+// === [#HEX:F.04.6E.00] END ===
 
+// === [#HEX:F.04.6F.00] START | name: renderMarketList | lines: 41 ===
+// @calls: [#HEX:F.04.71.00], [#HEX:F.04.70.00] | @calledBy: [#HEX:F.03.01.00]
 function renderMarketList() {
     var sellContainer = document.getElementById('market-sell-list');
     if (sellContainer) {
@@ -4743,8 +5808,13 @@ function renderMarketList() {
         }
     }
 }
+// === [#HEX:F.04.6F.00] END ===
 
+// === [#HEX:F.04.70.00] START | name: confirmSell | lines: 9 ===
+// @calls: [#HEX:F.06.4F.00], [#HEX:F.04.76.00] | @calledBy: [#HEX:F.04.6F.00]
 function confirmSell(shipId, price) {
+// === [#HEX:F.06.20.00] START | name: requestPin | lines: 7 ===
+// @calls: [#HEX:F.04.76.00] | @calledBy: none
     requestPin(function (pin) {
         var ship = null;
         for (var i = 0; i < shipyardData.playerShips.length; i++) {
@@ -4752,9 +5822,15 @@ function confirmSell(shipId, price) {
         }
         if (ship) sendTransaction('sell_to_shop', { sheetName: ship.category, rowIndex: ship.rowIndex, hp: ship.hp, id: ship.id }, pin);
     }, t('shipyard_sell_confirm_prefix') + price + t('shipyard_sell_confirm_suffix'));
+// === [#HEX:F.06.20.00] END ===
 }
+// === [#HEX:F.04.70.00] END ===
 
+// === [#HEX:F.04.71.00] START | name: confirmBuy | lines: 9 ===
+// @calls: [#HEX:F.06.4F.00], [#HEX:F.04.76.00] | @calledBy: [#HEX:F.04.6F.00]
 function confirmBuy(shipId, price) {
+// === [#HEX:F.06.21.00] START | name: requestPin | lines: 7 ===
+// @calls: [#HEX:F.04.76.00] | @calledBy: none
     requestPin(function (pin) {
         var ship = null;
         for (var i = 0; i < shipyardData.shopShips.length; i++) {
@@ -4762,8 +5838,12 @@ function confirmBuy(shipId, price) {
         }
         if (ship) sendTransaction('buy_from_shop', { sheetName: ship.category, rowIndex: ship.rowIndex, hp: ship.hp, id: ship.id }, pin);
     }, t('shipyard_buy_confirm_prefix') + price + ' ' + t('credit_long') + t('shipyard_buy_confirm_suffix'));
+// === [#HEX:F.06.21.00] END ===
 }
+// === [#HEX:F.04.71.00] END ===
 
+// === [#HEX:F.04.72.00] START | name: updateBuildOptions | lines: 21 ===
+// @calls: [#HEX:F.04.73.00] | @calledBy: [#HEX:F.03.01.00]
 function updateBuildOptions() {
     var catEl = document.getElementById('build-category');
     var select = document.getElementById('build-type');
@@ -4785,7 +5865,10 @@ function updateBuildOptions() {
     }
     calculateBuildCost();
 }
+// === [#HEX:F.04.72.00] END ===
 
+// === [#HEX:F.04.73.00] START | name: calculateBuildCost | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.04.72.00]
 function calculateBuildCost() {
     var typeEl = document.getElementById('build-type');
     if (!typeEl) return;
@@ -4799,7 +5882,10 @@ function calculateBuildCost() {
     if (prevHp) prevHp.innerText = hp;
     if (prevCost) prevCost.innerText = cost;
 }
+// === [#HEX:F.04.73.00] END ===
 
+// === [#HEX:F.04.74.00] START | name: initiateBuild | lines: 17 ===
+// @calls: [#HEX:D.01.77.00], [#HEX:F.06.4F.00], [#HEX:F.04.76.00], [#HEX:F.04.6C.00] | @calledBy: none
 function initiateBuild() {
     var type = document.getElementById('build-type').value;
     var name = document.getElementById('build-name').value;
@@ -4810,15 +5896,36 @@ function initiateBuild() {
 
     if (!name) { uiAlert(t('shipyard_name_required')); return; }
 
+// === [#HEX:F.06.22.00] START | name: requestPin | lines: 6 ===
+// @calls: [#HEX:F.04.76.00], [#HEX:F.04.6C.00] | @calledBy: none
     requestPin(function (pin) {
         // JAVÍTVA: Callback függvényt adunk át, ami átvált a Repair fülre
+// === [#HEX:F.04.75.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.75.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.75.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.86.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.86.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
         sendTransaction('build_new', { type: type, name: name, category: category, baseHp: hp }, pin, function () {
+// === [#HEX:F.04.86.00] END ===
+// === [#HEX:F.04.86.00] END ===
+// === [#HEX:F.04.75.00] END ===
+// === [#HEX:F.04.75.00] END ===
+// === [#HEX:F.04.75.00] END ===
             showWorkshopTab('repair'); // Sikeres építés után a "Saját hajók" listára ugrunk
         });
     }, t('shipyard_build_prefix') + type + t('shipyard_build_cost_prefix') + cost + ' ' + t('credit_long') + '.');
+// === [#HEX:F.06.22.00] END ===
 }
+// === [#HEX:F.04.74.00] END ===
 
 // JAVÍTVA: A sendTransaction most már elfogad egy 4. (opcionális) callback paramétert
+// === [#HEX:F.04.76.00] START | name: sendTransaction | lines: 31 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.03.01.00], [#HEX:F.04.77.00], [#HEX:B.03.0A.00] | @calledBy: [#HEX:F.04.70.00], [#HEX:F.06.20.00], [#HEX:F.04.71.00], [#HEX:F.06.21.00], [#HEX:F.04.74.00]
 function sendTransaction(action, data, pin, onSuccess) {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
@@ -4850,7 +5957,10 @@ function sendTransaction(action, data, pin, onSuccess) {
         }
     );
 }
+// === [#HEX:F.04.76.00] END ===
 
+// === [#HEX:F.04.77.00] START | name: updateLocalCredit | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:F.04.6E.00], [#HEX:F.06.1F.00], [#HEX:F.04.76.00]
 function updateLocalCredit(amount) {
     // Frissítjük a globális és helyi változót is
     amount = Number(amount);
@@ -4867,6 +5977,7 @@ function updateLocalCredit(amount) {
         }
     }
 }
+// === [#HEX:F.04.77.00] END ===
 
 /* ================================================= */
 /* === KÖNYVSZENTÉLY (ROUTERESÍTVE) START === */
@@ -4881,6 +5992,8 @@ var searchTypeSelect = null;
 /**
  * A konyvszentely_oldal.html logikája (Inicializálás)
  */
+// === [#HEX:F.04.78.00] START | name: initializeKonyvszentely | lines: 33 ===
+// @calls: [#HEX:F.04.79.00], [#HEX:F.04.7C.00], [#HEX:F.04.7B.00], [#HEX:F.04.7E.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function initializeKonyvszentely(retryCount) {
     retryCount = retryCount || 0;
 
@@ -4914,10 +6027,13 @@ function initializeKonyvszentely(retryCount) {
         }, 150);
     }, 100);
 }
+// === [#HEX:F.04.78.00] END ===
 
 /**
  * Vagyon lekérdezése (Kristály, Tálentum)
  */
+// === [#HEX:F.04.79.00] START | name: loadWalletStats | lines: 28 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.04.0E.00], [#HEX:F.04.7A.00] | @calledBy: [#HEX:F.04.78.00], [#HEX:F.04.7F.00]
 function loadWalletStats(retryCount) {
     retryCount = retryCount || 0;
     callBackend('getKonyvszentelyStats', [],
@@ -4946,10 +6062,13 @@ function loadWalletStats(retryCount) {
         }
     );
 }
+// === [#HEX:F.04.79.00] END ===
 
 /**
  * Letkristály eladás gomb
  */
+// === [#HEX:F.04.7A.00] START | name: renderSellButton | lines: 56 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:F.04.C6.00], [#HEX:F.06.4F.00], [#HEX:D.01.77.00], [#HEX:B.02.06.00] | @calledBy: [#HEX:F.04.79.00]
 function renderSellButton() {
     var sellContainer = document.getElementById('ksz-sell-container');
 
@@ -4971,6 +6090,8 @@ function renderSellButton() {
                 // PIN modul ellenőrzése
                 if (typeof requestPin === 'function') {
 
+// === [#HEX:F.06.23.00] START | name: requestPin | lines: 26 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.02.06.00] | @calledBy: none
                     requestPin(function (pinCode) {
                         document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -4997,6 +6118,7 @@ function renderSellButton() {
                         );
 
                     }, t('transaction_confirm_title'));
+// === [#HEX:F.06.23.00] END ===
 
                 } else {
                     uiAlert(t('pin_module_missing'), t('system_error_title'));
@@ -5006,7 +6128,10 @@ function renderSellButton() {
         sellContainer.appendChild(sellBtn);
     }
 }
+// === [#HEX:F.04.7A.00] END ===
 
+// === [#HEX:F.04.7B.00] START | name: toggleSearchTerm | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.04.78.00]
 function toggleSearchTerm() {
     var searchType = searchTypeSelect.value;
     var searchTermInput = document.getElementById('ksz-search-term');
@@ -5015,7 +6140,10 @@ function toggleSearchTerm() {
         if (searchType === 'all') searchTermInput.value = '';
     }
 }
+// === [#HEX:F.04.7B.00] END ===
 
+// === [#HEX:F.04.7C.00] START | name: searchCopies | lines: 26 ===
+// @calls: [#HEX:B.06.0F.00], [#HEX:F.07.07.00], [#HEX:D.01.79.00], [#HEX:F.04.80.00] | @calledBy: [#HEX:F.04.78.00], [#HEX:F.04.7F.00]
 function searchCopies(retryCount) {
     retryCount = retryCount || 0;
     setLoadingState(true, 'search');
@@ -5042,7 +6170,10 @@ function searchCopies(retryCount) {
         }
     );
 }
+// === [#HEX:F.04.7C.00] END ===
 
+// === [#HEX:F.07.07.00] START | name: displayResults | lines: 32 ===
+// @calls: [#HEX:F.04.7D.00], [#HEX:F.04.80.00] | @calledBy: [#HEX:F.04.7C.00]
 function displayResults(copies) {
     var list = document.getElementById('ksz-results-list');
     list.innerHTML = '';
@@ -5075,7 +6206,10 @@ function displayResults(copies) {
     }
     setLoadingState(false, 'search');
 }
+// === [#HEX:F.07.07.00] END ===
 
+// === [#HEX:F.04.7D.00] START | name: selectCopy | lines: 21 ===
+// @calls: none | @calledBy: [#HEX:F.07.07.00]
 function selectCopy(element, copy) {
     var allItems = document.querySelectorAll('#ksz-results-list .item-entry');
     for (var i = 0; i < allItems.length; i++) {
@@ -5097,7 +6231,10 @@ function selectCopy(element, copy) {
     document.getElementById('ksz-selection-details').innerHTML = detailsHTML;
     document.getElementById('ksz-action-section').style.display = 'block';
 }
+// === [#HEX:F.04.7D.00] END ===
 
+// === [#HEX:F.04.7E.00] START | name: processUpgrade | lines: 36 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:F.04.C6.00], [#HEX:D.01.77.00], [#HEX:F.06.4F.00], [#HEX:F.04.80.00] | @calledBy: [#HEX:F.04.78.00]
 function processUpgrade() {
     if (!selectedCopy) { uiAlert(t('ksz_select_copy_first'), t('missing_data_title')); return; }
 
@@ -5111,6 +6248,8 @@ function processUpgrade() {
     confirmMsg += t('ksz_upgrade_confirm_suffix');
 
     uiConfirm(confirmMsg, t('ksz_upgrade_title'), function () {
+// === [#HEX:F.06.24.00] START | name: requestPin | lines: 21 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.80.00], [#HEX:F.04.7F.00], [#HEX:B.07.33.00] | @calledBy: none
         requestPin(function (pinCode) {
             setLoadingState(true, 'upgrade');
 
@@ -5132,9 +6271,13 @@ function processUpgrade() {
                 }
             );
         }, "Kérlek add meg a PIN kódodat a(z) <b>" + selectedCopy.title + "</b> felszenteléséhez:");
+// === [#HEX:F.06.24.00] END ===
     });
 }
+// === [#HEX:F.04.7E.00] END ===
 
+// === [#HEX:F.04.7F.00] START | name: handleProcessResult | lines: 17 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.77.00], [#HEX:F.04.7C.00], [#HEX:F.04.80.00], [#HEX:F.04.79.00] | @calledBy: [#HEX:F.04.7E.00], [#HEX:F.06.24.00]
 function handleProcessResult(result) {
     var title = result.success ? t('success_title') : t('error_title');
     uiAlert(result.message, title);
@@ -5152,7 +6295,10 @@ function handleProcessResult(result) {
         loadWalletStats();
     }
 }
+// === [#HEX:F.04.7F.00] END ===
 
+// === [#HEX:F.04.80.00] START | name: setLoadingState | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.04.7C.00], [#HEX:F.07.07.00], [#HEX:F.04.7E.00], [#HEX:F.06.24.00], [#HEX:F.04.7F.00]
 function setLoadingState(isLoading, type) {
     if (searchBtn) searchBtn.disabled = isLoading;
     if (upgradeBtn) upgradeBtn.disabled = isLoading;
@@ -5165,6 +6311,7 @@ function setLoadingState(isLoading, type) {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = isLoading ? 'flex' : 'none';
 }
+// === [#HEX:F.04.80.00] END ===
 
 // ===============================
 // === FELHŐKOLOSTOR FUNKCIÓK (JAVÍTOTT - ES5 BIZTOS) ===
@@ -5173,6 +6320,8 @@ function setLoadingState(isLoading, type) {
 // Globális callback a PIN modalhoz
 var pinCallback = null;
 
+// === [#HEX:F.06.25.00] START | name: requestPin | lines: 22 ===
+// @calls: [#HEX:F.04.EE.00] | @calledBy: none
 function requestPin(callback, customMessage) {
     pinCallback = callback;
     var modal = document.getElementById('monk-pin-modal');
@@ -5195,7 +6344,10 @@ function requestPin(callback, customMessage) {
         if (p) callback(p);
     }
 }
+// === [#HEX:F.06.25.00] END ===
 
+// === [#HEX:F.04.81.00] START | name: finalizeMonkUpload | lines: 9 ===
+// @calls: [#HEX:D.01.77.00] | @calledBy: none
 function finalizeMonkUpload() {
     var input = document.getElementById('monk-pin-input');
     var pin = input ? input.value : null;
@@ -5205,13 +6357,19 @@ function finalizeMonkUpload() {
     if (pinCallback) pinCallback(pin);
     pinCallback = null; // Reset
 }
+// === [#HEX:F.04.81.00] END ===
 
+// === [#HEX:F.05.07.00] START | name: closeMonkPinModal | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17C.00]
 function closeMonkPinModal() {
     document.getElementById('monk-pin-modal').style.display = 'none';
     pinCallback = null;
 }
+// === [#HEX:F.05.07.00] END ===
 
 // Fülváltó logika
+// === [#HEX:F.04.82.00] START | name: openMonasteryTab | lines: 24 ===
+// @calls: [#HEX:F.04.96.00], [#HEX:F.04.98.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.EF.00]
 function openMonasteryTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tab-content");
@@ -5236,9 +6394,20 @@ function openMonasteryTab(evt, tabName) {
     if (tabName === 'Forum') loadForumPosts();
     if (tabName === 'Suttogo') loadChatPartners();
 }
+// === [#HEX:F.04.82.00] END ===
 
 // --- MUNKAPAD FUNKCIÓK ---
 
+// === [#HEX:F.04.83.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.83.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.83.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.94.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.94.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
 function toggleUploadType() {
     var type = document.querySelector('input[name="uploadType"]:checked').value;
     var titleInput = document.getElementById('monk-upload-title');
@@ -5261,10 +6430,30 @@ function toggleUploadType() {
         if (appOptions) appOptions.style.display = 'block';
     }
 }
+// === [#HEX:F.04.94.00] END ===
+// === [#HEX:F.04.94.00] END ===
+// === [#HEX:F.04.83.00] END ===
+// === [#HEX:F.04.83.00] END ===
+// === [#HEX:F.04.83.00] END ===
 
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
 function toggleTranslatorLanguage() {
     // Deprecated since checkboxes are used now.
 }
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
 
 var ALL_MONK_ROLES = [
     { val: 'editor', text: 'Lektor' },
@@ -5279,6 +6468,8 @@ var ALL_MONK_ROLES = [
     { val: 'translator_Lengyel', text: 'Fordító (Lengyel)' }
 ];
 
+// === [#HEX:F.04.84.00] START | name: getRoleCheckboxesHtml | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.9F.00]
 function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
     var html = '<details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin: 10px 0; text-align: left;">';
     html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása...</summary>';
@@ -5294,7 +6485,10 @@ function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
     html += '</div></details>';
     return html;
 }
+// === [#HEX:F.04.84.00] END ===
 
+// === [#HEX:F.04.85.00] START | name: submitMonasteryWork | lines: 87 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00], [#HEX:D.01.77.00] | @calledBy: none
 async function submitMonasteryWork() {
     var title = document.getElementById('monk-upload-title').value;
     var fileInput = document.getElementById('monk-upload-file');
@@ -5309,10 +6503,14 @@ async function submitMonasteryWork() {
     if (!manuscriptFile) { uiAlert(t('monk_upload_file_required')); return; }
 
     // Itt az async function marad callbackként!
+// === [#HEX:F.06.26.00] START | name: requestPin | lines: 72 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00] | @calledBy: none
     requestPin(async function (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
 
         // Belső segédfüggvény Promise-al (ez kell az await-hez)
+// === [#HEX:F.04.86.00] START | name: readFileToBase64 | lines: 15 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.85.00], [#HEX:F.06.26.00]
         var readFileToBase64 = function (file) {
             return new Promise(function (resolve, reject) {
                 var reader = new FileReader();
@@ -5328,6 +6526,7 @@ async function submitMonasteryWork() {
                 reader.readAsDataURL(file);
             });
         };
+// === [#HEX:F.04.86.00] END ===
 
         try {
             // Itt használjuk az AWAIT-et, ahogy kérted!
@@ -5381,10 +6580,14 @@ async function submitMonasteryWork() {
             uiAlert(t('monk_upload_prep_error_prefix') + err);
         }
     });
+// === [#HEX:F.06.26.00] END ===
 }
+// === [#HEX:F.04.85.00] END ===
 
 var agentPollingInterval = null;
 
+// === [#HEX:F.04.87.00] START | name: setupAgentPolling | lines: 14 ===
+// @calls: [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00]
 function setupAgentPolling(hasPending) {
     if (agentPollingInterval) {
         clearInterval(agentPollingInterval);
@@ -5399,7 +6602,10 @@ function setupAgentPolling(hasPending) {
         }, 15000);
     }
 }
+// === [#HEX:F.04.87.00] END ===
 
+// === [#HEX:F.04.88.00] START | name: refreshMonasteryWork | lines: 174 ===
+// @calls: [#HEX:F.05.11.00], [#HEX:F.04.8F.00], [#HEX:F.04.89.00], [#HEX:F.04.9E.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:F.04.82.00], [#HEX:F.04.85.00], [#HEX:F.06.26.00]
 function refreshMonasteryWork(silent) {
     var container = document.getElementById('monastery-work-list');
     if (!silent) {
@@ -5407,6 +6613,8 @@ function refreshMonasteryWork(silent) {
     }
 
     // Várakozó kvízkérdések lekérése a jóváhagyó panelhez
+// === [#HEX:F.06.27.00] START | name: callBackend | lines: 30 ===
+// @calls: [#HEX:F.04.89.00], [#HEX:F.04.8A.00], [#HEX:B.07.CE.00] | @calledBy: none
     callBackend('getPendingQuizQuestions', [], function (quizRes) {
         var quizPanel = document.getElementById('monk-quiz-approval-panel');
         var quizList = document.getElementById('monk-quiz-approval-list');
@@ -5437,6 +6645,7 @@ function refreshMonasteryWork(silent) {
             quizList.innerHTML = '';
         }
     }, function (err) {
+// === [#HEX:F.06.27.00] END ===
         var quizPanel = document.getElementById('monk-quiz-approval-panel');
         if (quizPanel) quizPanel.style.display = 'none';
     });
@@ -5574,6 +6783,7 @@ function refreshMonasteryWork(silent) {
                     '</div>' +
                     '</div>';
             });
+// === [#HEX:F.04.88.00] END ===
 
             // --- 3. SZEMÉTHALOM ---
             if (res.isAntipat && res.trashItems && res.trashItems.length > 0) {
@@ -5608,6 +6818,8 @@ function refreshMonasteryWork(silent) {
     );
 }
 
+// === [#HEX:F.04.89.00] START | name: escapeHtml | lines: 514 ===
+// @calls: [#HEX:F.04.8F.00], [#HEX:B.07.5F.00], [#HEX:F.04.88.00], [#HEX:F.08.04.00], [#HEX:F.04.95.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.06.27.00]
 function escapeHtml(text) {
     if (!text) return '';
     return text.toString()
@@ -5618,6 +6830,8 @@ function escapeHtml(text) {
         .replace(/'/g, "&#039;");
 }
 
+// === [#HEX:F.04.8A.00] START | name: handleQuizDecision | lines: 21 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:F.04.C6.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.CF.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.06.27.00], [#HEX:F.04.89.00]
 function handleQuizDecision(rowIndex, decision) {
     var confirmMsg = decision === 'OK' ?
         t('monk_quiz_approve_confirm') :
@@ -5625,6 +6839,8 @@ function handleQuizDecision(rowIndex, decision) {
 
     uiConfirm(confirmMsg, t('modal_confirm_title'), function () {
         document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.28.00] START | name: callBackend | lines: 9 ===
+// @calls: [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.CF.00] | @calledBy: none
         callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (res && res.success) {
@@ -5634,20 +6850,26 @@ function handleQuizDecision(rowIndex, decision) {
                 uiAlert(t('error_prefix') + (res ? res.message || res.error : 'Szerver hiba'), t('modal_notice_title'));
             }
         }, function (err) {
+// === [#HEX:F.06.28.00] END ===
             document.getElementById('loading-overlay').style.display = 'none';
             uiAlert(t('error_prefix') + err.message, t('modal_notice_title'));
         });
     });
 }
+// === [#HEX:F.04.8A.00] END ===
 
 // --- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK ---
 
+// === [#HEX:F.05.08.00] START | name: openQuizBookModal | lines: 67 ===
+// @calls: [#HEX:F.04.19E.00], [#HEX:D.01.79.00], [#HEX:F.05.09.00], [#HEX:B.06.1F.00] | @calledBy: [#HEX:F.04.89.00]
 function openQuizBookModal() {
     try {
         console.log("openQuizBookModal() elindult");
         var loading = document.getElementById('loading-overlay');
         if (loading) loading.style.display = 'flex';
 
+// === [#HEX:F.06.29.00] START | name: callBackend | lines: 46 ===
+// @calls: [#HEX:F.05.09.00], [#HEX:B.06.1F.00], [#HEX:F.04.19E.00] | @calledBy: none
         callBackend('checkIfUserIsMonk', [], function (res) {
             try {
                 if (loading) loading.style.display = 'none';
@@ -5694,6 +6916,7 @@ function openQuizBookModal() {
                 openQuizBookModalDirect();
             }
         }, function (err) {
+// === [#HEX:F.06.29.00] END ===
             try {
                 if (loading) loading.style.display = 'none';
                 console.warn("checkIfUserIsMonk sikertelen (hibás ág):", err);
@@ -5709,7 +6932,10 @@ function openQuizBookModal() {
         alert("Kritikus kliens hiba: " + globalErr.message);
     }
 }
+// === [#HEX:F.05.08.00] END ===
 
+// === [#HEX:F.05.09.00] START | name: openQuizBookModalDirect | lines: 26 ===
+// @calls: none | @calledBy: [#HEX:F.04.89.00], [#HEX:F.05.08.00], [#HEX:F.06.29.00], [#HEX:B.07.2D.00], [#HEX:B.01.03.00]
 function openQuizBookModalDirect() {
     var npcModal = document.getElementById('universal-npc-modal');
     if (npcModal) npcModal.style.display = 'none';
@@ -5736,12 +6962,18 @@ function openQuizBookModalDirect() {
 
     modal.style.display = 'flex';
 }
+// === [#HEX:F.05.09.00] END ===
 
+// === [#HEX:F.04.8B.00] START | name: closeUniversalNPCChat | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.04.89.00], [#HEX:B.01.07.00]
 function closeUniversalNPCChat() {
     var modal = document.getElementById('universal-npc-modal');
     if (modal) modal.style.display = 'none';
 }
+// === [#HEX:F.04.8B.00] END ===
 
+// === [#HEX:F.05.0A.00] START | name: closeQuizBookModal | lines: 24 ===
+// @calls: none | @calledBy: [#HEX:F.04.89.00], [#HEX:F.05.0B.00], [#HEX:F.06.2A.00], [#HEX:F.05.29.00], [#HEX:F.04.17C.00]
 function closeQuizBookModal() {
     var modal = document.getElementById('quiz-book-modal');
     if (!modal) return;
@@ -5766,7 +6998,10 @@ function closeQuizBookModal() {
 
     modal.style.display = 'none';
 }
+// === [#HEX:F.05.0A.00] END ===
 
+// === [#HEX:F.05.0B.00] START | name: submitQuizFromModal | lines: 53 ===
+// @calls: [#HEX:F.05.0A.00], [#HEX:D.01.79.00], [#HEX:F.04.27.00], [#HEX:B.07.CD.00] | @calledBy: [#HEX:F.04.89.00]
 function submitQuizFromModal() {
     // Honeypot ellenőrzés (bot védelem)
     var honeypot = document.getElementById('modal-website-url-hp');
@@ -5797,6 +7032,8 @@ function submitQuizFromModal() {
     feedbackDiv.style.color = '#b38600';
     submitBtn.disabled = true;
 
+// === [#HEX:F.06.2A.00] START | name: callBackend | lines: 18 ===
+// @calls: [#HEX:B.07.CD.00], [#HEX:F.04.27.00], [#HEX:F.05.0A.00] | @calledBy: none
     callBackend('submitNewQuestion', [formData], function (res) {
         if (res && res.success) {
             feedbackDiv.textContent = res.message || 'Sikeres beküldés!';
@@ -5815,12 +7052,16 @@ function submitQuizFromModal() {
             submitBtn.disabled = false;
         }
     }, function (err) {
+// === [#HEX:F.06.2A.00] END ===
         feedbackDiv.textContent = 'Hálózati hiba: ' + err.message;
         feedbackDiv.style.color = 'red';
         submitBtn.disabled = false;
     });
 }
+// === [#HEX:F.05.0B.00] END ===
 
+// === [#HEX:F.04.8C.00] START | name: purgeWork | lines: 19 ===
+// @calls: [#HEX:F.04.C6.00], [#HEX:B.07.5F.00], [#HEX:D.01.77.00], [#HEX:D.01.79.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.89.00]
 function purgeWork(workId, title) {
     var message = t('monk_purge_confirm_html_prefix') + title + t('monk_purge_confirm_html_suffix');
 
@@ -5840,7 +7081,10 @@ function purgeWork(workId, title) {
         );
     });
 }
+// === [#HEX:F.04.8C.00] END ===
 
+// === [#HEX:F.08.04.00] START | name: openPublishWindowForTranslation | lines: 74 ===
+// @calls: [#HEX:B.04.15.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.69.00] | @calledBy: [#HEX:F.04.89.00]
 function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle, targetLang, rootCode) {
     var btnElement = document.getElementById(btnId);
     if (btnElement) {
@@ -5861,6 +7105,8 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
     }
 
     setLoadingState(true, 'monastery');
+// === [#HEX:F.06.2B.00] START | name: callBackend | lines: 53 ===
+// @calls: [#HEX:B.04.15.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.69.00], [#HEX:F.04.80.00] | @calledBy: none
     callBackend('getOriginalBookDataForTranslation', [rootCode], function (res) {
         setLoadingState(false, 'monastery');
         if (!res.success) {
@@ -5901,6 +7147,8 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
                 if (sMsg) sMsg.innerHTML = t('monk_publish_timeout_html');
                 return;
             }
+// === [#HEX:F.06.2C.00] START | name: callBackend | lines: 11 ===
+// @calls: [#HEX:B.07.69.00], [#HEX:F.04.88.00] | @calledBy: none
             callBackend('checkWorkExists', [workId], function (exists) {
                 if (exists === false) {
                     clearInterval(poller);
@@ -5912,10 +7160,15 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
                     if (typeof refreshMonasteryWork === 'function') refreshMonasteryWork();
                 }
             });
+// === [#HEX:F.06.2C.00] END ===
         }, 5000);
     });
+// === [#HEX:F.06.2B.00] END ===
 }
+// === [#HEX:F.08.04.00] END ===
 
+// === [#HEX:F.04.8D.00] START | name: openPublishWindow | lines: 58 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.69.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
     var btnElement = document.getElementById(btnId);
     if (btnElement) {
@@ -5974,13 +7227,18 @@ function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
         );
     }, 5000);
 }
+// === [#HEX:F.04.8D.00] END ===
 
+// === [#HEX:F.08.05.00] START | name: finalizeTranslationProcess | lines: 36 ===
+// @calls: [#HEX:B.07.B5.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.06.4F.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.89.00]
 function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootCode, targetLangCode) {
     if (!rootCode || rootCode === 'null') {
         uiAlert("Hiba: A könyv forráskódja nem található a fordításhoz!");
         return;
     }
 
+// === [#HEX:F.06.2D.00] START | name: requestPin | lines: 29 ===
+// @calls: [#HEX:B.07.B5.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00] | @calledBy: none
     requestPin(function (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -6010,15 +7268,21 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
             }
         );
     }, "Add meg a Mesterkódot a <b>" + title + "</b> publikálásához:");
+// === [#HEX:F.06.2D.00] END ===
 }
+// === [#HEX:F.08.05.00] END ===
 
 // --- PAPÁT CLOUD INDÍTÁSA ---
+// === [#HEX:F.04.8E.00] START | name: triggerPapatAgent | lines: 27 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.89.00]
 function triggerPapatAgent(workId) {
     if (!confirm("Biztosan elindítod az AI elemzést (Papát)? Ez eltarthat 1-2 percig.")) return;
 
     showLoading("Papát hívása...");
 
     // 1. Állapot frissítése (hogy látszódjon a folyamat)
+// === [#HEX:F.06.2E.00] START | name: callBackend | lines: 20 ===
+// @calls: [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: none
     callBackend('manageWorkStatus', [workId, 'set_status', 'Agent elemzés alatt'], function (res) {
         if (!res || !res.success) {
             hideLoading();
@@ -6027,6 +7291,8 @@ function triggerPapatAgent(workId) {
         }
 
         // 2. Felhő alapú folyamat elindítása a Backend-en keresztül
+// === [#HEX:F.06.2F.00] START | name: callBackend | lines: 11 ===
+// @calls: [#HEX:F.04.88.00] | @calledBy: none
         callBackend('triggerPapatCloudProcess', [workId], function (papatRes) {
             hideLoading();
             if (papatRes && papatRes.success) {
@@ -6038,13 +7304,20 @@ function triggerPapatAgent(workId) {
                 refreshMonasteryWork();
             }
         });
+// === [#HEX:F.06.2F.00] END ===
     });
+// === [#HEX:F.06.2E.00] END ===
 }
+// === [#HEX:F.04.8E.00] END ===
 
+// === [#HEX:F.04.8F.00] START | name: cancelAgentAnalysis | lines: 13 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function cancelAgentAnalysis(workId) {
     if (!confirm("Biztosan megszakítod az AI elemzést? A mű visszakerül 'Elbírálás alatt' státuszba, és kézzel kell elbírálnod.")) return;
 
     document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.30.00] START | name: callBackend | lines: 8 ===
+// @calls: [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: none
     callBackend('manageWorkStatus', [workId, 'set_status', 'Elbírálás alatt'], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res && res.success) {
@@ -6053,8 +7326,12 @@ function cancelAgentAnalysis(workId) {
             alert("Hiba: " + (res ? res.error : "Szerver hiba"));
         }
     });
+// === [#HEX:F.06.30.00] END ===
 }
+// === [#HEX:F.04.8F.00] END ===
 
+// === [#HEX:F.04.90.00] START | name: getMonasteryWorkStatusLabel | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function getMonasteryWorkStatusLabel(status) {
     var statusMap = {
         'Elbírálás alatt': 'monk_work_status_under_review',
@@ -6068,7 +7345,10 @@ function getMonasteryWorkStatusLabel(status) {
     var translated = t(key);
     return translated === key ? status : translated;
 }
+// === [#HEX:F.04.90.00] END ===
 
+// === [#HEX:F.04.91.00] START | name: getMonasteryTaskStatusLabel | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:F.04.89.00], [#HEX:F.04.93.00]
 function getMonasteryTaskStatusLabel(status) {
     var statusMap = {
         'inaktív': 'monk_task_status_inactive',
@@ -6083,13 +7363,19 @@ function getMonasteryTaskStatusLabel(status) {
     var translated = t(key);
     return translated === key ? status : translated;
 }
+// === [#HEX:F.04.91.00] END ===
 
+// === [#HEX:F.04.92.00] START | name: getMonasteryTaskLabel | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:F.04.89.00], [#HEX:F.04.93.00]
 function getMonasteryTaskLabel(taskKey, fallbackLabel) {
     var key = 'monk_task_label_' + taskKey;
     var translated = t(key);
     return translated === key ? (fallbackLabel || taskKey) : translated;
 }
+// === [#HEX:F.04.92.00] END ===
 
+// === [#HEX:F.04.93.00] START | name: renderDetailedChecklist | lines: 96 ===
+// @calls: [#HEX:F.04.9B.00], [#HEX:F.04.9D.00], [#HEX:F.04.92.00], [#HEX:F.04.95.00], [#HEX:F.04.9C.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function renderDetailedChecklist(work, allMonks, currentUser) {
     var html = '<table style="width:100%; font-size:0.9em; border-collapse:collapse;">';
 
@@ -6122,6 +7408,7 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
                     });
                     action = '<select style="padding:2px;" onchange="doWorkAction(\'' + work.id + '\', \'select_monk\', \'' + key + '\', this.value)">' + opts + '</select>';
                 } else {
+// === [#HEX:F.04.89.00] END ===
                     action = '<span style="color:#d9534f;">' + t('monk_no_applicant') + '</span>';
                 }
                 if (userHasRole && !task.selectedMonk) {
@@ -6186,14 +7473,20 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
     html += '</table>';
     return html;
 }
+// === [#HEX:F.04.93.00] END ===
 
+// === [#HEX:F.04.94.00] START | name: resignTask | lines: 6 ===
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.95.00] | @calledBy: [#HEX:F.04.93.00]
 function resignTask(workId, taskKey) {
     var message = t('monk_resign_confirm_html');
     uiConfirm(message, t('task_withdraw_title'), function () {
         doWorkAction(workId, 'resign_task', { taskKey: taskKey });
     });
 }
+// === [#HEX:F.04.94.00] END ===
 
+// === [#HEX:F.04.95.00] START | name: doWorkAction | lines: 22 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00], [#HEX:F.04.93.00], [#HEX:F.04.94.00], [#HEX:F.04.9B.00]
 function doWorkAction(workId, action, param1, param2) {
     var extraData = param1;
     if (action === 'select_monk') {
@@ -6216,8 +7509,11 @@ function doWorkAction(workId, action, param1, param2) {
         }
     );
 }
+// === [#HEX:F.04.95.00] END ===
 
 // --- 2. FÓRUM (Közös Terem) ---
+// === [#HEX:F.04.96.00] START | name: loadForumPosts | lines: 23 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.4F.00] | @calledBy: [#HEX:F.04.82.00], [#HEX:F.04.97.00]
 function loadForumPosts() {
     var container = document.getElementById('monastery-forum-posts');
     if (!container) return;
@@ -6241,7 +7537,10 @@ function loadForumPosts() {
         function (err) { container.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>'; }
     );
 }
+// === [#HEX:F.04.96.00] END ===
 
+// === [#HEX:F.04.97.00] START | name: submitForumPost | lines: 24 ===
+// @calls: [#HEX:F.04.96.00], [#HEX:B.07.51.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
 function submitForumPost() {
     var input = document.getElementById('forum-post-input');
     var text = input.value;
@@ -6266,10 +7565,13 @@ function submitForumPost() {
         }
     );
 }
+// === [#HEX:F.04.97.00] END ===
 
 // --- 3. SUTTOGÓ (Chat) ---
 var currentChatPartnerEmail = null;
 
+// === [#HEX:F.04.98.00] START | name: loadChatPartners | lines: 34 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:F.04.99.00], [#HEX:B.05.02.00] | @calledBy: [#HEX:F.04.82.00]
 function loadChatPartners() {
     var list = document.getElementById('chat-partners-list');
     list.innerHTML = '<i>' + t('monk_chat_loading') + '</i>';
@@ -6304,7 +7606,10 @@ function loadChatPartners() {
         function (err) { list.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>'; }
     );
 }
+// === [#HEX:F.04.98.00] END ===
 
+// === [#HEX:F.04.99.00] START | name: selectMonasteryChatPartner | lines: 29 ===
+// @calls: [#HEX:B.07.53.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.98.00]
 function selectMonasteryChatPartner(element, email, name) {
     var items = document.querySelectorAll('.chat-user-item');
     for (var i = 0; i < items.length; i++) {
@@ -6334,7 +7639,10 @@ function selectMonasteryChatPartner(element, email, name) {
         function (err) { msgArea.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>'; }
     );
 }
+// === [#HEX:F.04.99.00] END ===
 
+// === [#HEX:F.04.9A.00] START | name: sendPrivateMessage | lines: 15 ===
+// @calls: [#HEX:D.01.79.00] | @calledBy: none
 function sendPrivateMessage() {
     var input = document.getElementById('chat-message-input');
     var msg = input.value;
@@ -6350,27 +7658,42 @@ function sendPrivateMessage() {
         function (err) { console.error(t('chat_error_prefix'), err); }
     );
 }
+// === [#HEX:F.04.9A.00] END ===
 
+// === [#HEX:F.04.9B.00] START | name: offerPrice | lines: 6 ===
+// @calls: [#HEX:F.04.95.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.93.00]
 function offerPrice(workId, taskKey) {
     var priceInput = document.getElementById('price-' + taskKey);
     var price = priceInput.value;
     if (!price || price <= 0) { uiAlert(t('monk_offer_price_invalid')); return; }
     doWorkAction(workId, 'offer_price', { taskKey: taskKey, price: price });
 }
+// === [#HEX:F.04.9B.00] END ===
 
+// === [#HEX:F.04.9C.00] START | name: payDirect | lines: 5 ===
+// @calls: [#HEX:F.04.95.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.93.00]
 function payDirect(workId, taskKey) {
+// === [#HEX:F.06.31.00] START | name: requestPin | lines: 3 ===
+// @calls: [#HEX:F.04.95.00] | @calledBy: none
     requestPin(function (pin) {
         doWorkAction(workId, 'pay_direct', { taskKey: taskKey, pinCode: pin });
     });
+// === [#HEX:F.06.31.00] END ===
 }
+// === [#HEX:F.04.9C.00] END ===
 
+// === [#HEX:F.04.9D.00] START | name: acceptCredit | lines: 6 ===
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.95.00] | @calledBy: [#HEX:F.04.93.00]
 function acceptCredit(workId, taskKey) {
     var message = t('monk_credit_confirm_html');
     uiConfirm(message, t('credit_request_title'), function () {
         doWorkAction(workId, 'accept_credit', { taskKey: taskKey });
     });
 }
+// === [#HEX:F.04.9D.00] END ===
 
+// === [#HEX:F.04.9E.00] START | name: hireMinistransMulti | lines: 17 ===
+// @calls: [#HEX:F.04.C6.00], [#HEX:D.01.77.00], [#HEX:F.04.95.00] | @calledBy: [#HEX:F.04.88.00]
 function hireMinistransMulti(workId, applicantName) {
     var roles = [];
     var checkboxes = document.querySelectorAll('.role-select-' + workId + ':checked');
@@ -6388,9 +7711,12 @@ function hireMinistransMulti(workId, applicantName) {
         doWorkAction(workId, 'hire_ministrans', { roles: roles.join(","), applicantName: applicantName });
     });
 }
+// === [#HEX:F.04.9E.00] END ===
 
 // --- SZEMÉLYZETI KEZELŐ FUNKCIÓK ---
 
+// === [#HEX:F.04.9F.00] START | name: loadPersonnelData | lines: 52 ===
+// @calls: [#HEX:F.04.A2.00], [#HEX:D.01.79.00], [#HEX:F.04.84.00], [#HEX:F.04.A0.00], [#HEX:B.07.49.00] | @calledBy: [#HEX:F.04.A0.00], [#HEX:F.04.A1.00], [#HEX:F.04.A2.00]
 function loadPersonnelData() {
     var panel = document.getElementById('personnel-panel');
     var container = document.getElementById('personnel-list-container');
@@ -6443,7 +7769,10 @@ function loadPersonnelData() {
         function (err) { container.innerHTML = '<p style="color:red;">' + t('error_prefix') + err.message + '</p>'; }
     );
 }
+// === [#HEX:F.04.9F.00] END ===
 
+// === [#HEX:F.04.A0.00] START | name: adminUpdateMonkRoles | lines: 26 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.57.00], [#HEX:F.04.9F.00] | @calledBy: [#HEX:F.04.9F.00]
 function adminUpdateMonkRoles(email) {
     var roles = [];
     var safeEmail = CSS.escape(email);
@@ -6470,7 +7799,10 @@ function adminUpdateMonkRoles(email) {
         }
     );
 }
+// === [#HEX:F.04.A0.00] END ===
 
+// === [#HEX:F.04.A1.00] START | name: adminRevokeTask | lines: 7 ===
+// @calls: [#HEX:F.04.9F.00], [#HEX:F.04.C6.00], [#HEX:F.04.95.00] | @calledBy: [#HEX:F.04.9F.00]
 function adminRevokeTask(workId, taskKey) {
     var message = t('monk_admin_revoke_confirm_html');
     uiConfirm(message, t('task_retake_title'), function () {
@@ -6478,7 +7810,10 @@ function adminRevokeTask(workId, taskKey) {
         setTimeout(loadPersonnelData, 1500);
     });
 }
+// === [#HEX:F.04.A1.00] END ===
 
+// === [#HEX:F.04.A2.00] START | name: adminExpelMonk | lines: 25 ===
+// @calls: [#HEX:F.04.42.00], [#HEX:D.01.79.00], [#HEX:F.04.C6.00], [#HEX:D.01.77.00], [#HEX:B.07.58.00] | @calledBy: [#HEX:F.04.9F.00]
 function adminExpelMonk(email) {
     uiPrompt(t('monk_expel_prompt_prefix') + email + t('monk_expel_prompt_suffix'),
         t('monk_expel_title'), t('monk_expel_placeholder'),
@@ -6504,7 +7839,10 @@ function adminExpelMonk(email) {
         }
     );
 }
+// === [#HEX:F.04.A2.00] END ===
 
+// === [#HEX:F.04.A3.00] START | name: uploadCoverFromCard | lines: 40 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:B.07.4A.00], [#HEX:D.01.79.00], [#HEX:F.04.C6.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.93.00]
 function uploadCoverFromCard(workId, taskKey) {
     var fileInput = document.getElementById('cover-upload-' + workId);
     var file = fileInput ? fileInput.files[0] : null;
@@ -6545,7 +7883,10 @@ function uploadCoverFromCard(workId, taskKey) {
         }
     });
 }
+// === [#HEX:F.04.A3.00] END ===
 
+// === [#HEX:F.04.A4.00] START | name: resignFromOrder | lines: 19 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.04.C6.00], [#HEX:F.04.A7.00], [#HEX:F.05.01.00] | @calledBy: none
 function resignFromOrder() {
     var message1 = t('monk_resign_order_confirm_html');
     uiConfirm(message1, t('monk_resign_order_title'), function () {
@@ -6554,18 +7895,27 @@ function resignFromOrder() {
                 {
                     text: t('monk_resign_game_yes'),
                     color: "#c0392b", textColor: "white",
+// === [#HEX:F.04.A5.00] START | name: callback | lines: 1 ===
+// @calls: [#HEX:F.04.A7.00] | @calledBy: none
                     callback: function () { finalizeResignation(true); }
+// === [#HEX:F.04.A5.00] END ===
                 },
                 {
                     text: t('monk_resign_game_no'),
                     color: "#2980b9", textColor: "white",
+// === [#HEX:F.04.A6.00] START | name: callback | lines: 1 ===
+// @calls: [#HEX:F.04.A7.00] | @calledBy: none
                     callback: function () { finalizeResignation(false); }
+// === [#HEX:F.04.A6.00] END ===
                 }
             ]
         );
     });
 }
+// === [#HEX:F.04.A4.00] END ===
 
+// === [#HEX:F.04.A7.00] START | name: finalizeResignation | lines: 19 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.27.00], [#HEX:B.07.56.00], [#HEX:F.01.03.00] | @calledBy: [#HEX:F.04.A4.00], [#HEX:F.04.A5.00], [#HEX:F.04.A6.00]
 function finalizeResignation(leaveGame) {
     var loading = document.getElementById('loading-overlay');
     if (loading) loading.style.display = 'flex';
@@ -6585,6 +7935,7 @@ function finalizeResignation(leaveGame) {
         }
     );
 }
+// === [#HEX:F.04.A7.00] END ===
 
 // ============================================================================
 // KÖNYVFELTÖLTŐ ÉS SZENTELŐ MODUL (Eredeti, szétválasztott logika)
@@ -6618,9 +7969,12 @@ function finalizeResignation(leaveGame) {
         }
     } catch (e) { console.warn('Paraméter feldolgozási hiba:', e); }
 
+// === [#HEX:F.04.A8.00] START | name: getParam | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:F.04.A9.00]
     function getParam(key) {
         return (serverParams && serverParams[key] && serverParams[key][0]) ? serverParams[key][0] : null;
     }
+// === [#HEX:F.04.A8.00] END ===
 
     // --- INICIALIZÁLÁS (DOM betöltéskor) ---
     document.addEventListener("DOMContentLoaded", function () {
@@ -6712,6 +8066,8 @@ function finalizeResignation(leaveGame) {
     });
 
     // --- ŰRLAP BEKÜLDÉSE (A KÉT ÁG KEZELÉSE) ---
+// === [#HEX:F.04.A9.00] START | name: handleFormSubmit | lines: 44 ===
+// @calls: [#HEX:F.04.AB.00], [#HEX:F.04.AC.00], [#HEX:D.01.79.00], [#HEX:F.04.B0.00], [#HEX:F.04.AA.00] | @calledBy: none
     function handleFormSubmit(event) {
         event.preventDefault();
         if (isSubmitting) return;
@@ -6756,8 +8112,11 @@ function finalizeResignation(leaveGame) {
             );
         }
     }
+// === [#HEX:F.04.A9.00] END ===
 
     // --- SZENTELÉS SPECIFIKUS FELDOLGOZÓ ---
+// === [#HEX:F.04.AA.00] START | name: handleSzentelesResponse | lines: 32 ===
+// @calls: [#HEX:F.04.AB.00], [#HEX:F.04.B0.00], [#HEX:F.04.B6.00], [#HEX:F.04.AE.00], [#HEX:F.04.B2.00] | @calledBy: [#HEX:F.04.A9.00]
     function handleSzentelesResponse(response, formData) {
         setUiState('loading', 'Fájlok visszaalakítása és véglegesítés...');
         try {
@@ -6790,8 +8149,11 @@ function finalizeResignation(leaveGame) {
             showError(new Error("Feldolgozási hiba (Szentelés): " + e.message));
         }
     }
+// === [#HEX:F.04.AA.00] END ===
 
     // --- KÖZÖS FÁJLFELDOLGOZÓ ÉS FELTÖLTŐ (Core Logic) ---
+// === [#HEX:F.04.AB.00] START | name: processFilesAndFinalize | lines: 988 ===
+// @calls: [#HEX:F.07.0B.00], [#HEX:F.04.AD.00], [#HEX:F.05.0C.00], [#HEX:F.04.C9.00], [#HEX:F.07.09.00] | @calledBy: [#HEX:F.04.A9.00], [#HEX:F.04.AA.00]
     async function processFilesAndFinalize(formObject, basicCode, rowNumber, gdocId, logId, userEmail) {
         try {
             setUiState('loading', 'Fájlok vízjelezése, kicsomagolása és feltöltése...');
@@ -6912,6 +8274,8 @@ function finalizeResignation(leaveGame) {
 
     // --- SEGÉDFÜGGVÉNYEK ---
 
+// === [#HEX:F.04.AC.00] START | name: buildBaseFormData | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.04.A9.00], [#HEX:F.04.AB.00]
     function buildBaseFormData(form, basicCode) {
         var data = {
             ownerEmail: form.ownerEmail.value,
@@ -6927,7 +8291,10 @@ function finalizeResignation(leaveGame) {
         if (basicCode) data.basicCode = basicCode;
         return data;
     }
+// === [#HEX:F.04.AC.00] END ===
 
+// === [#HEX:F.04.AD.00] START | name: getVerificationData | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00]
     function getVerificationData() {
         var q1 = document.getElementById('quiz_q1');
         var a1 = document.getElementById('quiz_a1');
@@ -6942,7 +8309,10 @@ function finalizeResignation(leaveGame) {
             { question: q3.value.trim(), answer: a3.value.trim() }
         ];
     }
+// === [#HEX:F.04.AD.00] END ===
 
+// === [#HEX:F.04.AE.00] START | name: setUiState | lines: 19 ===
+// @calls: none | @calledBy: [#HEX:F.04.A9.00], [#HEX:F.04.AA.00], [#HEX:F.04.AB.00], [#HEX:F.04.AF.00], [#HEX:F.04.B0.00]
     function setUiState(state, message) {
         var modal = document.getElementById('loading-modal');
         var modalTextLocal = document.getElementById('modal-status-text');
@@ -6962,7 +8332,10 @@ function finalizeResignation(leaveGame) {
             if (modal) modal.style.display = 'none';
         }
     }
+// === [#HEX:F.04.AE.00] END ===
 
+// === [#HEX:F.04.AF.00] START | name: showResult | lines: 14 ===
+// @calls: [#HEX:F.04.AE.00] | @calledBy: [#HEX:F.04.AB.00]
     function showResult(message) {
         setUiState('finished', message);
         if (!message.startsWith(t('error_prefix'))) {
@@ -6977,13 +8350,19 @@ function finalizeResignation(leaveGame) {
             if (title) title.innerText = t('upload_completed_title');
         }
     }
+// === [#HEX:F.04.AF.00] END ===
 
+// === [#HEX:F.04.B0.00] START | name: showError | lines: 4 ===
+// @calls: [#HEX:F.04.AE.00] | @calledBy: [#HEX:F.04.A9.00], [#HEX:F.04.AA.00], [#HEX:F.04.AB.00]
     function showError(error) {
         var msg = (error && error.message) ? error.message : t('unknown_error');
         setUiState('finished', t('error_prefix') + msg);
     }
+// === [#HEX:F.04.B0.00] END ===
 
     // --- Backend Handler Callbackek ---
+// === [#HEX:F.04.B1.00] START | name: populateDropdowns | lines: 20 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00]
     function populateDropdowns(data) {
         var genreSelect = document.getElementById('productType');
         var languageSelect = document.getElementById('language');
@@ -7004,7 +8383,10 @@ function finalizeResignation(leaveGame) {
             languageSelect.appendChild(o);
         });
     }
+// === [#HEX:F.04.B1.00] END ===
 
+// === [#HEX:F.07.08.00] START | name: displayLogo | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00]
     function displayLogo(imageData) {
         var logoElement = document.getElementById('oldal-logo');
         if (logoElement && imageData && imageData.data) {
@@ -7012,21 +8394,58 @@ function finalizeResignation(leaveGame) {
             logoElement.style.display = 'block';
         }
     }
+// === [#HEX:F.07.08.00] END ===
 
+// === [#HEX:F.07.09.00] START | name: displayLogoError | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00]
     function displayLogoError(error) { console.error("Logo betöltési hiba:", error); }
+// === [#HEX:F.07.09.00] END ===
 
+// === [#HEX:F.07.0A.00] START | name: displayLoadingGif | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00]
     function displayLoadingGif(imageData) {
         var gifElement = document.getElementById('book_upload-image');
         if (gifElement) gifElement.src = 'https://storage.googleapis.com/kalozsziget-assets/images/book_upload.gif';
     }
+// === [#HEX:F.07.0A.00] END ===
 
     // --- Utilitik (Vízjelezéshez, stb.) ---
+// === [#HEX:F.04.B2.00] START | name: sanitizeForFilename | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.04.AA.00], [#HEX:F.04.AB.00]
     function sanitizeForFilename(text) { if (!text) return "nevtelen_konyv"; return text.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, ''); }
+// === [#HEX:F.04.B2.00] END ===
+// === [#HEX:F.04.B3.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C4.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C4.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
     function encodeIdToZeroWidth(id) { var b = ''; for (var i = 0; i < id.length; i++) b += id[i].charCodeAt(0).toString(2).padStart(8, '0'); var z = ''; for (const x of b) z += (x === '0') ? '\u200b' : '\u200c'; return z + '\u200d'; }
+// === [#HEX:F.04.C4.00] END ===
+// === [#HEX:F.04.C4.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B4.00] START | name: readFileAsBase64 | lines: 1 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.AB.00]
     function readFileAsBase64(file) { return new Promise((res, rej) => { var r = new FileReader(); r.onload = () => res(r.result); r.onerror = e => rej(e); r.readAsDataURL(file); }); }
+// === [#HEX:F.04.B4.00] END ===
+// === [#HEX:F.04.B5.00] START | name: readBlobAsDataURL | lines: 1 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.AB.00]
     function readBlobAsDataURL(blob) { return new Promise((res, rej) => { var r = new FileReader(); r.onload = () => res(r.result); r.onerror = e => rej(e); r.readAsDataURL(blob); }); }
+// === [#HEX:F.04.B5.00] END ===
+// === [#HEX:F.04.B6.00] START | name: base64ToBlob | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.04.AA.00], [#HEX:F.04.AB.00]
     function base64ToBlob(b64, mime) { mime = mime || 'application/epub+zip'; var c = atob(b64); var b = new Uint8Array(c.length); for (var i = 0; i < c.length; i++) b[i] = c.charCodeAt(i); return new Blob([b], { type: mime }); }
+// === [#HEX:F.04.B6.00] END ===
+// === [#HEX:F.04.B7.00] START | name: embedIdInImage | lines: 1 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: none
     function embedIdInImage(src, id) { return new Promise((res, rej) => { var i = new Image(); i.onload = function () { var c = document.createElement('canvas'); c.width = i.width; c.height = i.height; var x = c.getContext('2d'); x.drawImage(i, 0, 0); var b = ''; for (var k = 0; k < id.length; k++) b += id[k].charCodeAt(0).toString(2).padStart(8, '0'); b += "11111111"; var p = x.getImageData(0, 0, c.width, c.height); var d = 0; for (var k = 0; k < b.length; k++) { if ((d + 1) % 4 === 0) d++; var v = p.data[d]; p.data[d] = (b[k] === '1') ? (v | 1) : (v & 254); d++; } x.putImageData(p, 0, 0); res(c.toDataURL('image/png')); }; i.onerror = e => rej(new Error("Kép hiba")); if (typeof src === 'string') i.src = src; else { var r = new FileReader(); r.onload = e => i.src = e.target.result; r.readAsDataURL(src); } }); }
+// === [#HEX:F.04.B7.00] END ===
 
 })();
 
@@ -7042,15 +8461,20 @@ function finalizeResignation(leaveGame) {
 /**
  * Megakadályozza az alapértelmezett jobbklikk menüt.
  */
+// === [#HEX:F.04.B8.00] START | name: preventContextMenuDefault | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.B9.00]
 function preventContextMenuDefault(event) {
     event.preventDefault();
     return false;
 }
+// === [#HEX:F.04.B8.00] END ===
 
 /**
  * Szigorú jobbklikk-tiltás egy adott elemen és annak gyermekein.
  * @param {string} elementId Az elem ID-ja.
  */
+// === [#HEX:F.04.B9.00] START | name: disableContextMenuOnElement | lines: 14 ===
+// @calls: [#HEX:F.04.B8.00] | @calledBy: none
 function disableContextMenuOnElement(elementId) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -7065,6 +8489,7 @@ function disableContextMenuOnElement(elementId) {
         }
     }
 }
+// === [#HEX:F.04.B9.00] END ===
 
 // =====================================
 // === ÚJ TÉRKÉP (FREE MOVE & ZOOM) ===
@@ -7087,6 +8512,8 @@ const MIN_ZOOM = 0.5;
 /**
  * Megnyitás és inicializálás
  */
+// === [#HEX:F.04.BA.00] START | name: openMapViewer | lines: 50 ===
+// @calls: [#HEX:F.04.C0.00], [#HEX:F.04.BB.00], [#HEX:B.07.60.00], [#HEX:D.01.79.00], [#HEX:F.04.BC.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openMapViewer(fileId, mapName) {
     const modal = document.getElementById('map-viewer-modal');
     const img = document.getElementById('map-viewer-image');
@@ -7137,15 +8564,21 @@ function openMapViewer(fileId, mapName) {
         }
     );
 }
+// === [#HEX:F.04.BA.00] END ===
 
+// === [#HEX:F.04.BB.00] START | name: closeMapViewer | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BA.00]
 function closeMapViewer() {
     document.getElementById('map-viewer-modal').style.display = 'none';
     document.getElementById('map-viewer-image').src = '';
 }
+// === [#HEX:F.04.BB.00] END ===
 
 /**
  * Alaphelyzetbe állítja a változókat
  */
+// === [#HEX:F.04.BC.00] START | name: resetMapState | lines: 11 ===
+// @calls: [#HEX:F.04.BD.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BA.00], [#HEX:F.04.BE.00]
 function resetMapState() {
     mapState = {
         scale: 1,
@@ -7157,11 +8590,14 @@ function resetMapState() {
     };
     updateMapTransform();
 }
+// === [#HEX:F.04.BC.00] END ===
 
 /**
  * A transzformáció (CSS) alkalmazása a képre
  * Ez a "motor", ami mozgatja a képet
  */
+// === [#HEX:F.04.BD.00] START | name: updateMapTransform | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BC.00], [#HEX:F.04.BE.00], [#HEX:F.04.BF.00]
 function updateMapTransform() {
     const img = document.getElementById('map-viewer-image');
     if (!img) return;
@@ -7169,10 +8605,13 @@ function updateMapTransform() {
     // Itt történik a varázslat: egyszerre mozgatjuk (translate) és nagyítjuk (scale)
     img.style.transform = `translate(${mapState.pointX}px, ${mapState.pointY}px) scale(${mapState.scale})`;
 }
+// === [#HEX:F.04.BD.00] END ===
 
 /**
  * Eseménykezelők (Drag & Zoom)
  */
+// === [#HEX:F.04.BE.00] START | name: setupFreeControls | lines: 47 ===
+// @calls: [#HEX:F.04.BF.00], [#HEX:F.04.BD.00], [#HEX:F.04.BC.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BA.00]
 function setupFreeControls(wrapper) {
     // --- GOMBOK ---
     document.getElementById('zoom-in-btn').onclick = () => zoomFree('in');
@@ -7220,10 +8659,13 @@ function setupFreeControls(wrapper) {
         updateMapTransform();
     };
 }
+// === [#HEX:F.04.BE.00] END ===
 
 /**
  * Zoom logika
  */
+// === [#HEX:F.04.BF.00] START | name: zoomFree | lines: 11 ===
+// @calls: [#HEX:F.04.BD.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BE.00]
 function zoomFree(direction) {
     if (direction === 'in' && mapState.scale < MAX_ZOOM) {
         mapState.scale += ZOOM_SPEED;
@@ -7235,20 +8677,26 @@ function zoomFree(direction) {
     mapState.scale = Math.round(mapState.scale * 10) / 10;
     updateMapTransform();
 }
+// === [#HEX:F.04.BF.00] END ===
 
 // Biztonság
+// === [#HEX:F.04.C0.00] START | name: disableContextMenuOnElement | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BA.00]
 function disableContextMenuOnElement(elementId) {
     const el = document.getElementById(elementId);
     if (el) {
         el.oncontextmenu = (e) => { e.preventDefault(); return false; };
     }
 }
+// === [#HEX:F.04.C0.00] END ===
 
 // ===============================
 
 /**
  * Elindítja a térképmásolási folyamatot.
  */
+// === [#HEX:F.04.C1.00] START | name: initiateMapCopy | lines: 26 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.27.00], [#HEX:B.04.16.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.CC.00]
 function initiateMapCopy(mapSheetRowIndex, mapName) {
     const pinCodeInput = document.getElementById('copy-map-pin');
     const pinCode = pinCodeInput ? pinCodeInput.value : null;
@@ -7275,10 +8723,13 @@ function initiateMapCopy(mapSheetRowIndex, mapName) {
         }
     );
 }
+// === [#HEX:F.04.C1.00] END ===
 
 /**
  * Kezeli a térképfeltöltő modal "Feltöltés" gombjának megnyomását.
  */
+// === [#HEX:F.04.C2.00] START | name: handleMapUploadSubmit | lines: 80 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.79.00], [#HEX:F.04.27.00], [#HEX:B.07.61.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function handleMapUploadSubmit() {
     var identifierInput = document.getElementById('map-identifier');
     var fileInput = document.getElementById('map-file');
@@ -7359,10 +8810,13 @@ function handleMapUploadSubmit() {
     };
     reader.readAsDataURL(file);
 }
+// === [#HEX:F.04.C2.00] END ===
 
 /**
  * SEGÉDFÜGGVÉNY: Bármilyen kép DataURL-t PNG DataURL-lé konvertál Canvas segítségével.
  */
+// === [#HEX:F.04.C3.00] START | name: convertToPngDataUrl | lines: 26 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.A3.00], [#HEX:F.04.AB.00], [#HEX:F.04.C2.00], [#HEX:F.04.E6.00], [#HEX:F.04.126.00]
 function convertToPngDataUrl(inputDataUrl) {
     return new Promise(function (resolve, reject) {
         var img = new Image();
@@ -7389,6 +8843,7 @@ function convertToPngDataUrl(inputDataUrl) {
         img.src = inputDataUrl;
     });
 }
+// === [#HEX:F.04.C3.00] END ===
 
 // =====================================
 // --- KÖNYVTÁR ÉS LETÖLTÉS FUNKCIÓK ---
@@ -7400,6 +8855,8 @@ function convertToPngDataUrl(inputDataUrl) {
 * Kezeli a térkép feltöltés gomb láthatóságát és a modalokat.
 * @param {object} data A szerverről kapott, előre betöltött adatcsomag.
 */
+// === [#HEX:F.04.C4.00] START | name: initializeLibraryAndMapPage | lines: 246 ===
+// @calls: [#HEX:F.04.BA.00], [#HEX:F.04.C7.00], [#HEX:F.04.C8.00], [#HEX:F.05.0C.00], [#HEX:F.04.C2.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:F.04.AB.00]
 function initializeLibraryAndMapPage(data) {
     var booksContainer = document.getElementById('konyvtar-books-content');
     var copiesContainer = document.getElementById('konyvtar-copies-content');
@@ -7622,17 +9079,23 @@ function initializeLibraryAndMapPage(data) {
 
                     entryDiv.querySelector('.approve-btn').onclick = function () {
                         if (typeof uiConfirm === 'function') {
+// === [#HEX:F.04.C5.00] START | name: uiConfirm | lines: 3 ===
+// @calls: [#HEX:F.04.C7.00] | @calledBy: none
                             uiConfirm('Biztosan jóváhagyod ezt a térképet?', 'Megerősítés', function () {
                                 handleMapApproval(map.rowIndex, 'approve');
                             });
+// === [#HEX:F.04.C5.00] END ===
                         }
                     };
 
                     entryDiv.querySelector('.reject-btn').onclick = function () {
                         if (typeof uiConfirm === 'function') {
+// === [#HEX:F.04.C6.00] START | name: uiConfirm | lines: 3 ===
+// @calls: [#HEX:F.04.C7.00] | @calledBy: [#HEX:F.04.58.00], [#HEX:F.04.5D.00], [#HEX:F.04.60.00], [#HEX:F.04.7A.00], [#HEX:F.04.7E.00]
                             uiConfirm('Biztosan elutasítod ezt a térképet?', 'Megerősítés', function () {
                                 handleMapApproval(map.rowIndex, 'reject');
                             });
+// === [#HEX:F.04.C6.00] END ===
                         }
                     };
 
@@ -7646,10 +9109,13 @@ function initializeLibraryAndMapPage(data) {
         }
     }
 }
+// === [#HEX:F.04.C4.00] END ===
 
 /**
  * Papát térkép elbírálás backend hívás
  */
+// === [#HEX:F.04.C7.00] START | name: handleMapApproval | lines: 18 ===
+// @calls: [#HEX:B.07.63.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.27.00], [#HEX:B.07.64.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00], [#HEX:F.04.C5.00], [#HEX:F.04.C6.00]
 function handleMapApproval(rowIndex, action) {
     document.getElementById('loading-overlay').style.display = 'flex';
     var functionName = action === 'approve' ? 'approveMapImage' : 'rejectMapImage';
@@ -7668,12 +9134,15 @@ function handleMapApproval(rowIndex, action) {
         }
     );
 }
+// === [#HEX:F.04.C7.00] END ===
 
 // =========================================================
 // === KÖNYVTÁR OLVASÓK (VÉGLEGES, MŰKÖDŐ VERZIÓ) ===
 // =========================================================
 
 // SEGÉDFÜGGVÉNY: Megjelenítés (VÉDELEMMEL ÉS SCROLL JAVÍTÁSSAL)
+// === [#HEX:F.07.0B.00] START | name: displayInReader | lines: 44 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.05.0C.00]
 function displayInReader(htmlContent) {
     var modal = document.getElementById('reader-modal');
     var readerContent = document.getElementById('reader-content-display');
@@ -7718,9 +9187,13 @@ function displayInReader(htmlContent) {
         }
     }, 200);
 }
+// === [#HEX:F.07.0B.00] END ===
 
 // 1. HAJÓNAPLÓ OLVASÓ (Biztos módszer: getLogEntry + Kliens oldali HTML)
+// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openLogReader(logId) {
+// === [#HEX:F.04.C8.00] END ===
     if (!logId) return;
     console.log(`Napló olvasásának indítása: ${logId}`);
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -7780,6 +9253,7 @@ function openLogReader(logId) {
                 document.getElementById('loading-overlay').style.display = 'none';
             }
         },
+// === [#HEX:F.04.AB.00] END ===
         function (err) {
             // Szerverhívás hiba esetén
             document.getElementById('loading-overlay').style.display = 'none';
@@ -7790,7 +9264,10 @@ function openLogReader(logId) {
 }
 
 // 2. MÁSOLAT OLVASÓ (A TE LOGIKÁDDAL!)
+// === [#HEX:F.04.C9.00] START | name: openReaderFor | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openReaderFor(copyCode) {
+// === [#HEX:F.04.C9.00] END ===
     document.getElementById('loading-overlay').style.display = 'flex';
 
     callBackend('getAllChapterContents', [copyCode],
@@ -7876,6 +9353,8 @@ function openReaderFor(copyCode) {
 }
 
 // 3. TEKERCS OLVASÓ (Ugyanazzal a logikával)
+// === [#HEX:F.05.0C.00] START | name: openReaderForScroll | lines: 47 ===
+// @calls: [#HEX:F.07.0B.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.37.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openReaderForScroll(tekercsToken) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -7923,11 +9402,14 @@ function openReaderForScroll(tekercsToken) {
         }
     );
 }
+// === [#HEX:F.05.0C.00] END ===
 
 // =====================================
 // === TEKERCSMESTER FUNKCIÓK (ROUTERESÍTVE) ===
 // =====================================
 
+// === [#HEX:F.04.CA.00] START | name: initializeTekercsmesterPage | lines: 68 ===
+// @calls: [#HEX:B.04.12.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.02.09.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:F.04.CB.00], [#HEX:F.05.0D.00]
 function initializeTekercsmesterPage(preloadedData) {
     var loader = document.getElementById('sajat-tekercs-lista-loader');
     var sajatListaDiv = document.getElementById('sajat-tekercs-lista');
@@ -7996,7 +9478,10 @@ function initializeTekercsmesterPage(preloadedData) {
         );
     };
 }
+// === [#HEX:F.04.CA.00] END ===
 
+// === [#HEX:F.04.CB.00] START | name: setupTekercsButtons | lines: 86 ===
+// @calls: [#HEX:B.02.07.00], [#HEX:F.04.CA.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.CA.00]
 function setupTekercsButtons(currentHartya) {
     var hartyaCountSpan = document.getElementById('hartya-count');
     // .closest() helyett biztonságosabb parentNode bejárást is használhatnánk, de a modern böngészők ismerik
@@ -8083,7 +9568,10 @@ function setupTekercsButtons(currentHartya) {
         }
     }
 }
+// === [#HEX:F.04.CB.00] END ===
 
+// === [#HEX:F.05.0D.00] START | name: renderMyScrollList | lines: 77 ===
+// @calls: [#HEX:F.04.CA.00], [#HEX:F.07.02.00], [#HEX:B.04.0A.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.CA.00]
 function renderMyScrollList(myTekercs, container) {
     container.innerHTML = '';
     if (myTekercs && myTekercs.length > 0) {
@@ -8161,6 +9649,7 @@ function renderMyScrollList(myTekercs, container) {
         container.innerHTML = '<p>' + t('no_scrolls_yet') + '</p>';
     }
 }
+// === [#HEX:F.05.0D.00] END ===
 
 // =====================================
 // === MÁSOLATOK OLDAL INICIALIZÁLÓ ===
@@ -8170,6 +9659,8 @@ function renderMyScrollList(myTekercs, container) {
  * Inicializálja a Másolatok oldalt.
  * JAVÍTVA: callBackend hívásokból kivéve a currentUserEmail.
  */
+// === [#HEX:F.04.CC.00] START | name: initializeMasolatokAndCopyMapPage | lines: 267 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function initializeMasolatokAndCopyMapPage(data) {
     var myCopiesLoader = document.getElementById('sajat-masolat-lista-loader');
     var myCopiesContainer = document.getElementById('sajat-masolat-lista-content');
@@ -8437,10 +9928,13 @@ function initializeMasolatokAndCopyMapPage(data) {
         }
     }
 }
+// === [#HEX:F.04.CC.00] END ===
 
 /**
  * Betölti a kiválasztott hajónaplót kivonatolás céljából
  */
+// === [#HEX:F.04.CD.00] START | name: loadLogForExtraction | lines: 120 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.1F.00] | @calledBy: none
 function loadLogForExtraction() {
     var select = document.getElementById('log-extract-select');
     var modalDiv = document.getElementById('log-extract-modal');
@@ -8561,10 +10055,13 @@ function loadLogForExtraction() {
         }
     );
 }
+// === [#HEX:F.04.CD.00] END ===
 
 /**
  * Papát feltölti a GDoc naplómásolatot.
  */
+// === [#HEX:F.04.CE.00] START | name: submitPapatLogUpload | lines: 37 ===
+// @calls: [#HEX:B.04.1E.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.27.00] | @calledBy: none
 function submitPapatLogUpload() {
     var gdocUrl = document.getElementById('papat-log-gdoc').value.trim();
     var copyName = document.getElementById('papat-log-name').value.trim();
@@ -8602,10 +10099,13 @@ function submitPapatLogUpload() {
         }
     );
 }
+// === [#HEX:F.04.CE.00] END ===
 
 /**
  * Végrehajtja a kiválasztott bejegyzések kivonatolását és a kifizetést
  */
+// === [#HEX:F.04.CF.00] START | name: executeLogExtraction | lines: 51 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00], [#HEX:D.01.77.00], [#HEX:B.04.0B.00] | @calledBy: none
 function executeLogExtraction() {
     var select = document.getElementById('log-extract-select');
     var checkboxes = document.querySelectorAll('.log-extract-checkbox:checked');
@@ -8630,6 +10130,8 @@ function executeLogExtraction() {
     var customMessage = "A művelet díja " + totalCost + " Kalózkredit.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!";
 
     if (typeof requestPin === 'function') {
+// === [#HEX:F.06.32.00] START | name: requestPin | lines: 23 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.04.0B.00], [#HEX:F.04.27.00] | @calledBy: none
         requestPin(function (pinCode) {
             document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -8653,15 +10155,19 @@ function executeLogExtraction() {
                 }
             );
         }, customMessage);
+// === [#HEX:F.06.32.00] END ===
     } else {
         if (typeof uiAlert === 'function') uiAlert("A PIN bekérő modul nem elérhető!");
     }
 }
+// === [#HEX:F.04.CF.00] END ===
 
 /**
  * Elindítja a kliensoldali letöltési és vízjelezési folyamatot.
  * @param {string} contentId A könyv forrásának azonosítója (Mappa ID az O oszlopból).
  */
+// === [#HEX:F.04.D0.00] START | name: startClientSideDownloadProcess | lines: 73 ===
+// @calls: [#HEX:F.04.D1.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.E3.00], [#HEX:B.07.34.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 async function startClientSideDownloadProcess(contentId, bookTitle) {
     var statusOverlay = document.getElementById('loading-overlay');
     var allDownloadButtons = Array.prototype.slice.call(document.querySelectorAll('.download-btn'));
@@ -8735,6 +10241,7 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
         allDownloadButtons.forEach(function (btn) { btn.disabled = false; });
     }
 }
+// === [#HEX:F.04.D0.00] END ===
 
 
 /**
@@ -8746,6 +10253,8 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
  * @param {string} newCoverFilename Az új borító kívánt fájlneve (pl. "kep.png").
  * @returns {Promise<Blob>} A kész, végleges ePub fájl.
  */
+// === [#HEX:F.04.D1.00] START | name: processEpubFile | lines: 112 ===
+// @calls: [#HEX:F.04.E2.00], [#HEX:F.04.E4.00] | @calledBy: [#HEX:F.04.D0.00]
 async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilename) {
     var zip = new JSZip();
     var loadedZip = await zip.loadAsync(epubBlob);
@@ -8858,6 +10367,7 @@ async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilenam
 
     return await loadedZip.generateAsync({ type: 'blob', mimeType: 'application/epub+zip' });
 }
+// === [#HEX:F.04.D1.00] END ===
 
 // ===================================
 // === MARKETING (VÉLEMÉNY) MODUL ===
@@ -8867,6 +10377,8 @@ var currentMarketingBookId = null;
 var currentMarketingFolderId = null;
 
 // URL Paraméterek ellenőrzése
+// === [#HEX:F.04.D2.00] START | name: checkUrlParametersForMarketing | lines: 32 ===
+// @calls: [#HEX:F.01.00.00] | @calledBy: [#HEX:F.04.F3.00]
 function checkUrlParametersForMarketing() {
     try {
         // 1. Szabványos URL paraméter olvasás (Böngésző független)
@@ -8899,8 +10411,11 @@ function checkUrlParametersForMarketing() {
         console.error("Hiba az URL paraméterek olvasásakor:", e);
     }
 }
+// === [#HEX:F.04.D2.00] END ===
 
 // Betölti a kérdőívet
+// === [#HEX:F.04.D3.00] START | name: loadMarketingView | lines: 74 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.04.D7.00], [#HEX:D.01.79.00], [#HEX:F.01.00.00], [#HEX:F.05.01.00] | @calledBy: [#HEX:F.04.1D.00], [#HEX:F.04.1E.00]
 function loadMarketingView(bookId, folderId) {
     console.log(">>> loadMarketingView MEGHÍVVA: " + bookId);
 
@@ -8946,7 +10461,10 @@ function loadMarketingView(bookId, folderId) {
                         text: "Rendben, vissza a Kikötőbe",
                         color: "#2e8b57",
                         textColor: "white",
+// === [#HEX:F.04.D4.00] START | name: callback | lines: 1 ===
+// @calls: [#HEX:F.04.D7.00] | @calledBy: none
                         callback: function () { returnToPort(); }
+// === [#HEX:F.04.D4.00] END ===
                     }]
                 );
             }
@@ -8958,7 +10476,10 @@ function loadMarketingView(bookId, folderId) {
                     "fas fa-exclamation-triangle",
                     [{
                         text: "Vissza",
+// === [#HEX:F.04.D5.00] START | name: callback | lines: 1 ===
+// @calls: [#HEX:F.04.D7.00] | @calledBy: none
                         callback: function () { returnToPort(); }
+// === [#HEX:F.04.D5.00] END ===
                     }]
                 );
             }
@@ -8970,12 +10491,18 @@ function loadMarketingView(bookId, folderId) {
                 "Kapcsolódási Hiba",
                 "Nem sikerült elérni a szervert: " + err.message,
                 "fas fa-wifi",
+// === [#HEX:F.04.D6.00] START | name: callback | lines: 1 ===
+// @calls: [#HEX:F.04.D7.00] | @calledBy: none
                 [{ text: "Vissza", callback: function () { returnToPort(); } }]
+// === [#HEX:F.04.D6.00] END ===
             );
         }
     );
 }
+// === [#HEX:F.04.D3.00] END ===
 
+// === [#HEX:F.04.D7.00] START | name: returnToPort | lines: 11 ===
+// @calls: [#HEX:F.04.27.00] | @calledBy: [#HEX:F.04.D3.00], [#HEX:F.04.D4.00], [#HEX:F.04.D5.00], [#HEX:F.04.D6.00], [#HEX:F.04.D8.00]
 function returnToPort() {
     document.getElementById('marketing-view').style.display = 'none';
     document.getElementById('app-view').style.display = 'flex';
@@ -8987,11 +10514,14 @@ function returnToPort() {
         loadPage('kikoto_oldal');
     }
 }
+// === [#HEX:F.04.D7.00] END ===
 
 /**
  * Dinamikusan kirajzolja a kérdéseket.
  * Kétlépcsős folyamat: Ellenőrzés -> Értékelés
  */
+// === [#HEX:F.04.D8.00] START | name: renderMarketingQuestions | lines: 152 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.04.D7.00], [#HEX:F.01.05.00], [#HEX:F.05.01.00] | @calledBy: [#HEX:F.04.D3.00]
 function renderMarketingQuestions(config, isOwner, bookId, folderId) {
     console.log(">>> RENDER START. Kapott kérdések:", config.questions);
 
@@ -9104,10 +10634,13 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
                         text: "Kilépés",
                         color: "#8b0000",
                         textColor: "white",
+// === [#HEX:F.04.D9.00] START | name: callback | lines: 4 ===
+// @calls: [#HEX:F.04.D7.00] | @calledBy: none
                         callback: function () {
                             document.getElementById('marketing-view').style.display = 'none';
                             returnToPort();
                         }
+// === [#HEX:F.04.D9.00] END ===
                     }]
                 );
                 return;
@@ -9144,10 +10677,13 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
         container.insertBefore(authorPanel, container.firstChild);
     }
 }
+// === [#HEX:F.04.D8.00] END ===
 
 /**
  * Válaszok összegyűjtése és beküldése.
  */
+// === [#HEX:F.04.DA.00] START | name: submitMarketingForm | lines: 85 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.04.D7.00], [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:B.04.18.00] | @calledBy: none
 function submitMarketingForm() {
     var form = document.getElementById('marketing-form');
     var formData = new FormData(form);
@@ -9207,10 +10743,13 @@ function submitMarketingForm() {
                         text: "Kreditek Zsebretétele & Kilépés",
                         color: "#2e8b57",
                         textColor: "white",
+// === [#HEX:F.04.DB.00] START | name: callback | lines: 4 ===
+// @calls: [#HEX:F.04.D7.00], [#HEX:F.07.02.00] | @calledBy: none
                         callback: function () {
                             returnToPort();
                             updateCreditDisplay();
                         }
+// === [#HEX:F.04.DB.00] END ===
                     }]
                 );
             } else {
@@ -9233,6 +10772,7 @@ function submitMarketingForm() {
         }
     );
 }
+// === [#HEX:F.04.DA.00] END ===
 
 // ===============================================
 // === SZERZŐI DASHBOARD FUNKCIÓK MARKETINGHEZ ===
@@ -9242,6 +10782,16 @@ let currentDashBookId = null;
 let currentDashFolderId = null;
 
 // Fülváltó a Dashboardon belül
+// === [#HEX:F.04.DC.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.DC.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.DC.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.ED.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.ED.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
 function openDashboardTab(evt, tabName) {
     var tabs = document.querySelectorAll('#author-dashboard-modal .tab-content');
     for (var i = 0; i < tabs.length; i++) { tabs[i].style.display = 'none'; }
@@ -9252,6 +10802,11 @@ function openDashboardTab(evt, tabName) {
     document.getElementById(tabName).style.display = 'block';
     evt.currentTarget.classList.add('active');
 }
+// === [#HEX:F.04.ED.00] END ===
+// === [#HEX:F.04.ED.00] END ===
+// === [#HEX:F.04.DC.00] END ===
+// === [#HEX:F.04.DC.00] END ===
+// === [#HEX:F.04.DC.00] END ===
 
 /**
  * Megnyitja a Dashboardot egy adott könyvhöz.
@@ -9259,6 +10814,8 @@ function openDashboardTab(evt, tabName) {
  * @param {string} folderId - A könyv mappájának ID-ja (ahol a JSON van).
  * @param {string} title - A könyv címe (fejléchez).
  */
+// === [#HEX:F.01.05.00] START | name: openAuthorDashboard | lines: 19 ===
+// @calls: [#HEX:F.04.DD.00], [#HEX:D.01.79.00], [#HEX:B.06.18.00] | @calledBy: [#HEX:F.04.D8.00], [#HEX:F.04.EF.00]
 function openAuthorDashboard(bookId, folderId, title) {
     currentDashBookId = bookId;
     currentDashFolderId = folderId;
@@ -9278,12 +10835,15 @@ function openAuthorDashboard(bookId, folderId, title) {
         }
     );
 }
+// === [#HEX:F.01.05.00] END ===
 
 /**
  * Kirajzolja a Dashboard adatait.
  * 1. Feltölti a "Meglévő kérdések" listát a Settings fülön.
  * 2. Kirajzolja a Statisztikákat az Eredmények fülön.
  */
+// === [#HEX:F.04.DD.00] START | name: renderDashboardStats | lines: 120 ===
+// @calls: none | @calledBy: [#HEX:F.01.05.00]
 function renderDashboardStats(response) {
     const loadingEl = document.getElementById('dashboard-loading');
     const contentEl = document.getElementById('dashboard-content');
@@ -9404,10 +10964,13 @@ function renderDashboardStats(response) {
         detailsList.appendChild(itemDiv);
     }
 }
+// === [#HEX:F.04.DD.00] END ===
 
 /**
  * Összeszedi a 3 Verify mezőt és elküldi a szervernek mentésre.
  */
+// === [#HEX:F.04.DE.00] START | name: submitVerificationQuiz | lines: 44 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.6D.00], [#HEX:F.05.01.00] | @calledBy: none
 function submitVerificationQuiz() {
     var questionsToSave = [];
 
@@ -9452,7 +11015,10 @@ function submitVerificationQuiz() {
         }
     );
 }
+// === [#HEX:F.04.DE.00] END ===
 
+// === [#HEX:F.04.DF.00] START | name: submitNewQuestion | lines: 35 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.6C.00] | @calledBy: none
 function submitNewQuestion() {
     var text = document.getElementById('nq-text').value;
     var type = document.getElementById('nq-type').value;
@@ -9488,11 +11054,14 @@ function submitNewQuestion() {
         }
     );
 }
+// === [#HEX:F.04.DF.00] END ===
 
 // =============
 // == KINCSEK ==
 // =============
 
+// === [#HEX:F.04.E0.00] START | name: initializeKincsekPage | lines: 121 ===
+// @calls: [#HEX:B.07.68.00], [#HEX:D.01.79.00], [#HEX:B.07.A8.00], [#HEX:F.04.E1.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00], [#HEX:B.07.2D.00]
 function initializeKincsekPage(response) {
     if (!response || !response.success) {
         var errorMessage = response ? response.error : t('unknown_server_error');
@@ -9614,7 +11183,10 @@ function initializeKincsekPage(response) {
         );
     }
 }
+// === [#HEX:F.04.E0.00] END ===
 
+// === [#HEX:F.04.E1.00] START | name: handleMercenaryAction | lines: 22 ===
+// @calls: [#HEX:B.07.A9.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.AA.00], [#HEX:F.04.27.00] | @calledBy: [#HEX:F.04.E0.00]
 function handleMercenaryAction(actionType, targetEmail) {
     if (!confirm("Biztosan " + (actionType === 'extend' ? "meghosszabbítod" : "elküldöd") + " ezt a zsoldost?")) {
         return;
@@ -9637,6 +11209,7 @@ function handleMercenaryAction(actionType, targetEmail) {
         }
     );
 }
+// === [#HEX:F.04.E1.00] END ===
 
 
 // ==========================
@@ -9644,6 +11217,8 @@ function handleMercenaryAction(actionType, targetEmail) {
 // ==========================
 
 // Relatív és valós útvonal összefűzése
+// === [#HEX:F.04.E2.00] START | name: resolvePath | lines: 17 ===
+// @calls: none | @calledBy: [#HEX:F.04.D1.00]
 function resolvePath(basePath, relativePath) {
     var baseParts = basePath.split('/');
     var relativeParts = relativePath.split('/');
@@ -9661,8 +11236,11 @@ function resolvePath(basePath, relativePath) {
     }
     return baseParts.join('/');
 }
+// === [#HEX:F.04.E2.00] END ===
 
 // LSB Vízjelezés Borítóképnél (Async marad, de szintaxis tisztítás)
+// === [#HEX:F.04.E3.00] START | name: embedIdInImage | lines: 64 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.D0.00]
 function embedIdInImage(imageFile, id) {
     return new Promise(function (resolve, reject) {
         var reader = new FileReader();
@@ -9727,8 +11305,11 @@ function embedIdInImage(imageFile, id) {
         reader.readAsDataURL(imageFile);
     });
 }
+// === [#HEX:F.04.E3.00] END ===
 
 // nulla széles titkos kód
+// === [#HEX:F.04.E4.00] START | name: encodeIdToZeroWidth | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.D1.00]
 function encodeIdToZeroWidth(id) {
     var binaryId = '';
     for (var i = 0; i < id.length; i++) {
@@ -9743,6 +11324,7 @@ function encodeIdToZeroWidth(id) {
     }
     return zeroWidthCode + '\u200d';
 }
+// === [#HEX:F.04.E4.00] END ===
 
 // Jelszó láthatóság
 var togglePassword = document.querySelector('#togglePassword');
@@ -9765,6 +11347,8 @@ if (togglePassword && passwordInput) {
 
 var MIN_LOG_RANK = 'Fregattkapitány';
 
+// === [#HEX:F.05.0E.00] START | name: checkRankAndOpenLogModal | lines: 41 ===
+// @calls: [#HEX:B.07.67.00], [#HEX:B.07.24.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.05.0F.00] | @calledBy: none
 function checkRankAndOpenLogModal() {
     console.log("Rang ellenőrzése és napló ID lekérése a naplóíráshoz...");
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -9806,7 +11390,10 @@ function checkRankAndOpenLogModal() {
         }
     );
 }
+// === [#HEX:F.05.0E.00] END ===
 
+// === [#HEX:F.05.0F.00] START | name: openLogEntryModal | lines: 143 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.04.E6.00], [#HEX:D.01.7E.00], [#HEX:F.05.10.00], [#HEX:F.04.E5.00] | @calledBy: [#HEX:F.05.0E.00]
 function openLogEntryModal(entryId, logIdForContext) {
     if (typeof entryId === 'undefined') entryId = 'last';
 
@@ -9950,12 +11537,18 @@ function openLogEntryModal(entryId, logIdForContext) {
         }
     );
 }
+// === [#HEX:F.05.0F.00] END ===
 
+// === [#HEX:F.05.10.00] START | name: closeLogEntryModal | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.05.0F.00], [#HEX:F.04.E6.00], [#HEX:F.05.29.00], [#HEX:F.04.17C.00]
 function closeLogEntryModal() {
     var modal = document.getElementById('log-entry-modal');
     if (modal) modal.style.display = 'none';
 }
+// === [#HEX:F.05.10.00] END ===
 
+// === [#HEX:F.04.E5.00] START | name: getGeoLocation | lines: 24 ===
+// @calls: [#HEX:D.01.77.00] | @calledBy: [#HEX:F.05.0F.00]
 function getGeoLocation(silentMode) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -9980,8 +11573,11 @@ function getGeoLocation(silentMode) {
         }
     }
 }
+// === [#HEX:F.04.E5.00] END ===
 
 // Async maradhat, mert a képfeldolgozáshoz kell
+// === [#HEX:F.04.E6.00] START | name: submitLogEntry | lines: 79 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.05.10.00], [#HEX:B.07.1E.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.05.0F.00]
 async function submitLogEntry() {
     var form = document.getElementById('log-entry-form');
     var statusDiv = document.getElementById('log-entry-status');
@@ -10061,14 +11657,32 @@ async function submitLogEntry() {
         console.error("Képfeldolgozási hiba:", error);
     }
 }
+// === [#HEX:F.04.E6.00] END ===
 
+// === [#HEX:F.04.E7.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.E7.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.E7.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F8.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F8.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
 function toggleLogSplash() {
     var splashText = document.getElementById('log-entry-splash-text');
     if (splashText) {
         splashText.style.display = (splashText.style.display === 'none') ? 'block' : 'none';
     }
 }
+// === [#HEX:F.04.F8.00] END ===
+// === [#HEX:F.04.F8.00] END ===
+// === [#HEX:F.04.E7.00] END ===
+// === [#HEX:F.04.E7.00] END ===
+// === [#HEX:F.04.E7.00] END ===
 
+// === [#HEX:F.04.E8.00] START | name: showLogPublishingSection | lines: 65 ===
+// @calls: [#HEX:F.07.02.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
 function showLogPublishingSection(logId, gdocId) {
     var section = document.getElementById('log-publish-section');
     if (!section) {
@@ -10134,10 +11748,15 @@ function showLogPublishingSection(logId, gdocId) {
         );
     };
 }
+// === [#HEX:F.04.E8.00] END ===
 
 // ===================== NPC INTERFÉSZEK =====================================
 
 // === HANGVEZÉRLŐ SEGÉDFÜGGVÉNY PORTRÉ VIDEÓKHOZ ===
+// === [#HEX:F.07.0C.00] START | name: toggleVideoAudio | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0C.00] START | name: toggleVideoAudio | lines: 18 ===
+// @calls: none | @calledBy: [#HEX:F.04.E9.00], [#HEX:F.05.13.00], [#HEX:F.02.00.00], [#HEX:F.05.1E.00]
 function toggleVideoAudio(videoId, btnId) {
     var video = document.getElementById(videoId);
     var btn = document.getElementById(btnId);
@@ -10156,12 +11775,16 @@ function toggleVideoAudio(videoId, btnId) {
         btn.title = 'Hang bekapcsolása';
     }
 }
+// === [#HEX:F.07.0C.00] END ===
+// === [#HEX:F.07.0C.00] END ===
 window.toggleVideoAudio = toggleVideoAudio;
 
 // === UNIVERZÁLIS MEGJELENÍTŐ ===
 
 var ACTIVE_NPC_CONFIG = {};
 
+// === [#HEX:F.04.E9.00] START | name: openUniversalNPC | lines: 161 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:F.05.2E.00], [#HEX:F.07.15.00] | @calledBy: none
 function openUniversalNPC(npcId, config) {
     if (npcId === 'harbormaster') {
         if (typeof openHarbormasterModal === 'function') {
@@ -10323,8 +11946,11 @@ function openUniversalNPC(npcId, config) {
         callBackend('handleNPCInteraction', [npcId, "", "INIT", null], handleUniversalResponse);
     }
 }
+// === [#HEX:F.04.E9.00] END ===
 window.openUniversalNPC = openUniversalNPC;
 
+// === [#HEX:F.04.EA.00] START | name: sendUniversalMessage | lines: 43 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:F.04.1A0.00] | @calledBy: none
 function sendUniversalMessage() {
     var input = document.getElementById('universal-chat-input');
     var msg = input.value.trim();
@@ -10368,7 +11994,10 @@ function sendUniversalMessage() {
         }
     );
 }
+// === [#HEX:F.04.EA.00] END ===
 
+// === [#HEX:F.04.EB.00] START | name: addBubbleToUniversal | lines: 58 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: none
 function addBubbleToUniversal(sender, text, type) {
     var chatArea = document.getElementById('universal-chat-area');
     var div = document.createElement('div');
@@ -10427,7 +12056,18 @@ function addBubbleToUniversal(sender, text, type) {
         chatArea.scrollTop = chatArea.scrollHeight;
     }, 50);
 }
+// === [#HEX:F.04.EB.00] END ===
 
+// === [#HEX:F.04.EC.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.EC.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.EC.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.FD.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.FD.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
 function adjustColorBrightness(col, amt) {
     if (col[0] !== "#") return col;
     var num = parseInt(col.slice(1), 16);
@@ -10437,8 +12077,15 @@ function adjustColorBrightness(col, amt) {
     var newColor = g | (b << 8) | (r << 16);
     return "#" + (0x1000000 + (newColor < 0 ? 0 : newColor > 0xFFFFFF ? 0xFFFFFF : newColor)).toString(16).slice(1);
 }
+// === [#HEX:F.04.FD.00] END ===
+// === [#HEX:F.04.FD.00] END ===
+// === [#HEX:F.04.EC.00] END ===
+// === [#HEX:F.04.EC.00] END ===
+// === [#HEX:F.04.EC.00] END ===
 
 // === SZERVER VÁLASZ FELDOLGOZÁSA ===
+// === [#HEX:F.04.ED.00] START | name: handleUniversalResponse | lines: 165 ===
+// @calls: [#HEX:F.04.EE.00], [#HEX:F.07.02.00], [#HEX:F.05.01.00], [#HEX:D.01.00.00], [#HEX:F.04.1A0.00] | @calledBy: none
 function handleUniversalResponse(response) {
     var chatArea = document.getElementById('universal-chat-area');
     console.log("Szerver válasz érkezett:", response);
@@ -10458,11 +12105,14 @@ function handleUniversalResponse(response) {
                 sm.body || sm.message || "",
                 sm.icon || "fas fa-info-circle",
                 [{
+// === [#HEX:F.04.EE.00] START | name: callback | lines: 5 ===
+// @calls: [#HEX:F.07.02.00] | @calledBy: [#HEX:F.05.01.00], [#HEX:F.04.41.00], [#HEX:F.04.42.00], [#HEX:F.04.44.00], [#HEX:F.06.25.00]
                     text: "Rendben", color: "#2e8b57", textColor: "white", callback: function () {
                         if (typeof updateCreditDisplay === 'function') {
                             updateCreditDisplay();
                         }
                     }
+// === [#HEX:F.04.EE.00] END ===
                 }]
             );
         } else {
@@ -10604,8 +12254,11 @@ function handleUniversalResponse(response) {
         }, 1500); // Késleltetés, hogy a játékos elolvashassa a siker üzenetet
     }
 }
+// === [#HEX:F.04.ED.00] END ===
 
 // === UNIVERZÁLIS GOMBKEZELŐ ===
+// === [#HEX:F.04.EF.00] START | name: handleNPCButtonAction | lines: 104 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.82.00], [#HEX:F.06.4F.00], [#HEX:F.04.1A1.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.ED.00]
 function handleNPCButtonAction(btn) {
     console.log("Gomb megnyomva:", btn);
 
@@ -10658,6 +12311,8 @@ function handleNPCButtonAction(btn) {
         var params = parts.slice(3);
         var npcId = document.getElementById('current-npc-id').value;
 
+// === [#HEX:F.06.33.00] START | name: requestPin | lines: 26 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:F.04.1A0.00] | @calledBy: none
         requestPin(function (pinCode) {
             addBubbleToUniversal(t('chat_me_label'), t('pin_provided_masked'), "outgoing");
 
@@ -10684,6 +12339,7 @@ function handleNPCButtonAction(btn) {
             );
 
         }, '<strong>' + modalTitle + '</strong>');
+// === [#HEX:F.06.33.00] END ===
 
         return;
     }
@@ -10710,7 +12366,10 @@ function handleNPCButtonAction(btn) {
 
     triggerUniversalServerAction(actionType, extraData);
 }
+// === [#HEX:F.04.EF.00] END ===
 
+// === [#HEX:F.04.F0.00] START | name: triggerUniversalServerAction | lines: 25 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:F.04.1A0.00] | @calledBy: [#HEX:F.04.EF.00]
 function triggerUniversalServerAction(actionType, extraData) {
     var npcId = document.getElementById('current-npc-id').value;
     var chatArea = document.getElementById('universal-chat-area');
@@ -10736,7 +12395,10 @@ function triggerUniversalServerAction(actionType, extraData) {
         }
     );
 }
+// === [#HEX:F.04.F0.00] END ===
 
+// === [#HEX:F.04.F1.00] START | name: triggerNPCPayment | lines: 11 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:F.04.1A0.00] | @calledBy: none
 function triggerNPCPayment(amount) {
     var npcId = document.getElementById('current-npc-id').value;
     addBubbleToUniversal(t('chat_you_label'), t('payment_sent_prefix') + amount + ' ' + t('credit_short') + t('payment_sent_suffix'), "outgoing");
@@ -10748,6 +12410,7 @@ function triggerNPCPayment(amount) {
         }
     );
 }
+// === [#HEX:F.04.F1.00] END ===
 
 // Enter támogatás
 var univInput = document.getElementById('universal-chat-input');
@@ -10760,6 +12423,16 @@ if (univInput) {
 // ================================= UNIVERZÁLIS NPC VEZÉRLŐ VÉGE ====================================
 
 // Segédfüggvény a harmonikához
+// === [#HEX:F.04.F2.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F2.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F2.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.103.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.103.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     var panel = this.nextElementSibling;
@@ -10769,6 +12442,11 @@ function toggleAccordionPanel() {
         panel.style.maxHeight = panel.scrollHeight + "px";
     }
 }
+// === [#HEX:F.04.103.00] END ===
+// === [#HEX:F.04.103.00] END ===
+// === [#HEX:F.04.F2.00] END ===
+// === [#HEX:F.04.F2.00] END ===
+// === [#HEX:F.04.F2.00] END ===
 
 // ... (előző kódok vége) ...
 
@@ -10784,6 +12462,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // === WINDOW ONLOAD (INDÍTÁS) ===
+// === [#HEX:F.04.F3.00] START | name: onload | lines: 60 ===
+// @calls: [#HEX:F.04.D2.00], [#HEX:F.01.00.00], [#HEX:F.04.F4.00], [#HEX:F.01.01.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.38.00], [#HEX:F.04.85.00], [#HEX:F.06.26.00], [#HEX:F.04.86.00]
 window.onload = function () {
     console.log(">>> OLLDAL BETÖLTVE. Rendszer indítása...");
 
@@ -10844,8 +12524,11 @@ window.onload = function () {
 
     console.log(">>> Minden rendszer kész.");
 };
+// === [#HEX:F.04.F3.00] END ===
 
 // Segédfüggvény a harmonikához (KÍVÜL HAGYJUK, hogy globális legyen)
+// === [#HEX:F.04.F4.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.2C.00], [#HEX:F.04.F3.00]
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     var panel = this.nextElementSibling;
@@ -10855,11 +12538,14 @@ function toggleAccordionPanel() {
         panel.style.maxHeight = panel.scrollHeight + "px";
     }
 }
+// === [#HEX:F.04.F4.00] END ===
 
 /**
  * Elindítja a játékot a szerverről lekért mentett játékállással.
  * Ezt a 'tutorial_oldal.html'-en lévő "Ugrás a mentett álláshoz" gomb hívja.
  */
+// === [#HEX:F.04.F5.00] START | name: jumpToSavedState | lines: 41 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.39.00], [#HEX:B.06.04.00] | @calledBy: none
 function jumpToSavedState() {
     console.log("Kísérlet a mentett játékállás betöltésére...");
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -10901,7 +12587,10 @@ function jumpToSavedState() {
         }
     );
 }
+// === [#HEX:F.04.F5.00] END ===
 
+// === [#HEX:F.04.F6.00] START | name: triggerAgentAnalysis | lines: 18 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: [#HEX:F.04.88.00]
 function triggerAgentAnalysis(workId) {
     if (!confirm('Biztosan átadod ezt a kéziratot a Papát AI asszisztensnek elemzésre? A háttérfolyamat perceket is igénybe vehet.')) return;
 
@@ -10920,8 +12609,11 @@ function triggerAgentAnalysis(workId) {
         }
     );
 }
+// === [#HEX:F.04.F6.00] END ===
 
 // --- PAPÁT REPORT MEGJELENÍTŐ LOGIKA ---
+// === [#HEX:F.05.11.00] START | name: openPapatReportModal | lines: 68 ===
+// @calls: [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.88.00]
 function openPapatReportModal(workId) {
     if (!window.currentMonasteryWorks) {
         uiAlert("Hiba: Nem találhatóak a művek a memóriában. Frissítsd a listát!", "Rendszerhiba");
@@ -10990,16 +12682,22 @@ function openPapatReportModal(workId) {
     var modal = document.getElementById('papat-report-modal');
     if (modal) modal.style.display = 'flex';
 }
+// === [#HEX:F.05.11.00] END ===
 
+// === [#HEX:F.05.12.00] START | name: closePapatReportModal | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17C.00]
 function closePapatReportModal() {
     var modal = document.getElementById('papat-report-modal');
     if (modal) modal.style.display = 'none';
 }
+// === [#HEX:F.05.12.00] END ===
 
 console.log("EOF");
 
 
 // === KOCSMAI HIRDETOTABLA ===
+// === [#HEX:F.04.F7.00] START | name: openNoticeBoard | lines: 18 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.B8.00], [#HEX:F.04.184.00] | @calledBy: none
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
     if (modal) modal.style.display = 'flex';
@@ -11007,6 +12705,8 @@ function openNoticeBoard() {
     if (boardDiv) boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiú épp szögeli fel az új papírokat...</p>';
 
     if (typeof callBackend === 'function') {
+// === [#HEX:F.06.34.00] START | name: callBackend | lines: 7 ===
+// @calls: [#HEX:B.07.B8.00], [#HEX:F.04.184.00] | @calledBy: none
         callBackend("getNoticeBoardData", [], function (response) {
             if (response && response.success && response.data) {
                 renderNoticeBoard(response.data);
@@ -11014,11 +12714,17 @@ function openNoticeBoard() {
                 if (boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">A szél lefújta az összes papírt. (Hiba: ' + (response ? response.error : 'Nincs válasz') + ')</p>';
             }
         });
+// === [#HEX:F.06.34.00] END ===
     } else {
         if (boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">Hálózati hiba: A backend nem elérhető.</p>';
     }
 }
+// === [#HEX:F.04.F7.00] END ===
 
+// === [#HEX:F.04.F8.00] START | name: renderNoticeBoard | lines: 68 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F8.00] START | name: renderNoticeBoard | lines: 68 ===
+// @calls: none | @calledBy: [#HEX:F.04.F7.00], [#HEX:F.06.34.00]
 function renderNoticeBoard(data) {
     var boardDiv = document.getElementById('notice-board-content');
     if (!boardDiv) return;
@@ -11087,16 +12793,23 @@ function renderNoticeBoard(data) {
         boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.5em; font-family: \'Pirata One\', cursive;">A tábla jelenleg kong az ürességtől...</p>';
     }
 }
+// === [#HEX:F.04.F8.00] END ===
+// === [#HEX:F.04.F8.00] END ===
 
+// === [#HEX:F.04.F9.00] START | name: reloadCopiesPage | lines: 6 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:F.07.02.00] | @calledBy: [#HEX:B.05.35.00], [#HEX:B.05.37.00], [#HEX:B.05.3A.00]
 function reloadCopiesPage() {
     var modal = document.getElementById('universal-npc-modal');
     if (modal) modal.style.display = 'none';
     if (typeof updateCreditDisplay === 'function') updateCreditDisplay();
     loadPage('masolatok_oldal');
 }
+// === [#HEX:F.04.F9.00] END ===
 
 // --- TOBORZÓBARAKK LOGIKA ---
 
+// === [#HEX:F.04.FA.00] START | name: openToborzoBarakk | lines: 40 ===
+// @calls: [#HEX:F.03.0E.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.03.15.00], [#HEX:F.09.04.00] | @calledBy: none
 function openToborzoBarakk() {
     // UI Initialization
     document.getElementById('toborzo-modal').style.display = 'flex';
@@ -11137,7 +12850,10 @@ function openToborzoBarakk() {
         }
     );
 }
+// === [#HEX:F.04.FA.00] END ===
 
+// === [#HEX:F.09.04.00] START | name: switchToborzoTab | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.04.FA.00]
 function switchToborzoTab(tab) {
     document.getElementById('toborzo-tab-munkavallalo').style.display = (tab === 'munkavallalo') ? 'block' : 'none';
     document.getElementById('toborzo-tab-kapitany').style.display = (tab === 'kapitany') ? 'block' : 'none';
@@ -11145,7 +12861,18 @@ function switchToborzoTab(tab) {
     document.getElementById('tab-btn-munkavallalo').style.background = (tab === 'munkavallalo') ? 'var(--color-gold)' : '#bdbdbd';
     document.getElementById('tab-btn-kapitany').style.background = (tab === 'kapitany') ? 'var(--color-gold)' : '#bdbdbd';
 }
+// === [#HEX:F.09.04.00] END ===
 
+// === [#HEX:F.04.FB.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.FB.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.FB.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.10C.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.10C.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
 function hasRequiredRank(playerRank, role) {
     var rankHierarchy = [
         '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
@@ -11171,7 +12898,14 @@ function hasRequiredRank(playerRank, role) {
 
     return playerIdx >= requiredIdx;
 }
+// === [#HEX:F.04.10C.00] END ===
+// === [#HEX:F.04.10C.00] END ===
+// === [#HEX:F.04.FB.00] END ===
+// === [#HEX:F.04.FB.00] END ===
+// === [#HEX:F.04.FB.00] END ===
 
+// === [#HEX:F.07.0D.00] START | name: savePlayerJobStatus | lines: 27 ===
+// @calls: [#HEX:B.07.BC.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
 function savePlayerJobStatus() {
     const status = document.getElementById('toborzo-status-select').value;
     const role = document.getElementById('toborzo-role-select').value;
@@ -11199,7 +12933,10 @@ function savePlayerJobStatus() {
         }
     );
 }
+// === [#HEX:F.07.0D.00] END ===
 
+// === [#HEX:F.03.02.00] START | name: renderSelectedShipCrew | lines: 176 ===
+// @calls: [#HEX:F.04.1B2.00], [#HEX:F.04.1A5.00], [#HEX:F.04.1AA.00] | @calledBy: none
 function renderSelectedShipCrew() {
     var select = document.getElementById('toborzo-myships-select');
     var detailsDiv = document.getElementById('toborzo-myship-details');
@@ -11233,6 +12970,16 @@ function renderSelectedShipCrew() {
     var availableCrew = window.toborzoAvailableCrew || [];
     var nameDict = window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
 
+// === [#HEX:F.04.FC.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.FC.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.FC.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.10D.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.10D.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
     var resolvePirateName = function (email) {
         if (!email) return '';
         var lower = String(email).toLowerCase().trim();
@@ -11241,6 +12988,11 @@ function renderSelectedShipCrew() {
         if (match && match.name) return match.name;
         return email;
     };
+// === [#HEX:F.04.10D.00] END ===
+// === [#HEX:F.04.10D.00] END ===
+// === [#HEX:F.04.FC.00] END ===
+// === [#HEX:F.04.FC.00] END ===
+// === [#HEX:F.04.FC.00] END ===
 
     var sortedCrew = availableCrew.slice().sort(function (a, b) {
         var nameA = resolvePirateName(a.email) || a.name || '';
@@ -11376,7 +13128,10 @@ function renderSelectedShipCrew() {
     rolesContainer.appendChild(formDiv);
     rolesContainer.appendChild(submitBtn);
 }
+// === [#HEX:F.03.02.00] END ===
 
+// === [#HEX:F.04.FD.00] START | name: submitBulkCrewAssignment | lines: 53 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.03.17.00] | @calledBy: none
 function submitBulkCrewAssignment(shipId) {
     var assignmentsMap = {
         "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [],
@@ -11430,7 +13185,10 @@ function submitBulkCrewAssignment(shipId) {
         }
     );
 }
+// === [#HEX:F.04.FD.00] END ===
 
+// === [#HEX:F.04.FE.00] START | name: assignToRole | lines: 23 ===
+// @calls: [#HEX:B.03.16.00], [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
 function assignToRole(shipId, role) {
     var targetEmail = prompt("Kit szeretnél beosztani a(z) " + role + " pozícióra ezen a hajón?\\n\\nÍrd be a zsoldos/játékos email címét. Ha SAJÁT MAGADAT akarod beosztani, hagyd üresen a mezőt!", "");
 
@@ -11454,7 +13212,10 @@ function assignToRole(shipId, role) {
         }
     );
 }
+// === [#HEX:F.04.FE.00] END ===
 
+// === [#HEX:F.04.FF.00] START | name: removeRole | lines: 20 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
 function removeRole(shipId, roleToClear, specificEmail) {
     var msg = specificEmail ? "Biztosan ki akarod rúgni ezt a személyt: " + specificEmail + "?" : "Biztosan ki akarod rúgni a(z) " + roleToClear + " pozíción lévő összes személyt?";
     if (!confirm(msg)) return;
@@ -11475,12 +13236,15 @@ function removeRole(shipId, roleToClear, specificEmail) {
         }
     );
 }
+// === [#HEX:F.04.FF.00] END ===
 
 
 // =========================================================================
 // === KIKÖTŐMESTER / BARBA NEGRA MULTIMÉDIÁS ÉS SVG VEZÉRLŐ LOGIKA ===
 // =========================================================================
 
+// === [#HEX:F.05.13.00] START | name: openHarbormasterModal | lines: 117 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.04.18B.00], [#HEX:F.04.190.00] | @calledBy: none
 function openHarbormasterModal() {
     var modal = document.getElementById('harbormaster-modal');
     if (!modal) return;
@@ -11598,8 +13362,11 @@ function openHarbormasterModal() {
         }
     }
 }
+// === [#HEX:F.05.13.00] END ===
 window.openHarbormasterModal = openHarbormasterModal;
 
+// === [#HEX:F.05.14.00] START | name: closeHarbormasterModal | lines: 60 ===
+// @calls: [#HEX:F.02.09.00], [#HEX:F.04.193.00], [#HEX:F.04.1CF.00] | @calledBy: none
 function closeHarbormasterModal(e) {
     if (e) {
         if (e.stopPropagation) e.stopPropagation();
@@ -11660,8 +13427,13 @@ function closeHarbormasterModal(e) {
     if (typeof isModalOpen !== 'undefined') isModalOpen = false;
     if (typeof isCinematicTransitioning !== 'undefined') isCinematicTransitioning = false;
 }
+// === [#HEX:F.05.14.00] END ===
 window.closeHarbormasterModal = closeHarbormasterModal;
 
+// === [#HEX:F.04.100.00] START | name: setupHarbormasterTooltips | lines: 39 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.100.00] START | name: setupHarbormasterTooltips | lines: 39 ===
+// @calls: none | @calledBy: [#HEX:F.05.13.00]
 function setupHarbormasterTooltips() {
     var svg = document.getElementById('harbormaster-interactive-svg');
     var tooltip = document.getElementById('harbormaster-tooltip');
@@ -11701,8 +13473,12 @@ function setupHarbormasterTooltips() {
         });
     });
 }
+// === [#HEX:F.04.100.00] END ===
+// === [#HEX:F.04.100.00] END ===
 window.setupHarbormasterTooltips = setupHarbormasterTooltips;
 
+// === [#HEX:F.04.101.00] START | name: addBubbleToHarbormaster | lines: 46 ===
+// @calls: [#HEX:F.04.18D.00] | @calledBy: none
 function addBubbleToHarbormaster(sender, text, type, buttons) {
     var chatArea = document.getElementById('harbormaster-chat-area');
     if (!chatArea) return;
@@ -11749,8 +13525,11 @@ function addBubbleToHarbormaster(sender, text, type, buttons) {
         chatArea.scrollTop = chatArea.scrollHeight;
     }, 50);
 }
+// === [#HEX:F.04.101.00] END ===
 window.addBubbleToHarbormaster = addBubbleToHarbormaster;
 
+// === [#HEX:F.04.102.00] START | name: handleHarbormasterChipClick | lines: 54 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00] | @calledBy: none
 function handleHarbormasterChipClick(btn) {
     var replyText = btn.reply || btn.payload || btn.text;
     addBubbleToHarbormaster('Te', replyText, 'outgoing');
@@ -11766,6 +13545,8 @@ function handleHarbormasterChipClick(btn) {
         var modalTitle = parts[2] || 'Biztonsági PIN Kód';
         var params = parts.slice(3);
 
+// === [#HEX:F.06.35.00] START | name: requestPin | lines: 16 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.04.18F.00] | @calledBy: none
         requestPin(function (pinCode) {
             var loaderId = 'hb-load-' + Date.now();
             addHarbormasterLoader(loaderId, 'PIN hitelesítés...');
@@ -11782,6 +13563,7 @@ function handleHarbormasterChipClick(btn) {
                 }
             );
         }, '<strong>' + modalTitle + '</strong>');
+// === [#HEX:F.06.35.00] END ===
         return;
     }
 
@@ -11805,7 +13587,12 @@ function handleHarbormasterChipClick(btn) {
 
     sendHarbormasterMessageText(replyText);
 }
+// === [#HEX:F.04.102.00] END ===
 
+// === [#HEX:F.04.103.00] START | name: addHarbormasterLoader | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.103.00] START | name: addHarbormasterLoader | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:F.04.102.00], [#HEX:F.06.35.00], [#HEX:F.04.106.00], [#HEX:F.04.109.00], [#HEX:F.04.10B.00]
 function addHarbormasterLoader(loaderId, text) {
     var chatArea = document.getElementById('harbormaster-chat-area');
     if (!chatArea) return;
@@ -11816,12 +13603,22 @@ function addHarbormasterLoader(loaderId, text) {
     chatArea.appendChild(loader);
     chatArea.scrollTop = chatArea.scrollHeight;
 }
+// === [#HEX:F.04.103.00] END ===
+// === [#HEX:F.04.103.00] END ===
 
+// === [#HEX:F.04.104.00] START | name: removeHarbormasterLoader | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.104.00] START | name: removeHarbormasterLoader | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.04.102.00], [#HEX:F.06.35.00], [#HEX:F.04.106.00], [#HEX:F.04.109.00], [#HEX:F.04.10B.00]
 function removeHarbormasterLoader(loaderId) {
     var l = document.getElementById(loaderId);
     if (l) l.remove();
 }
+// === [#HEX:F.04.104.00] END ===
+// === [#HEX:F.04.104.00] END ===
 
+// === [#HEX:F.04.105.00] START | name: sendHarbormasterMessage | lines: 8 ===
+// @calls: [#HEX:F.04.191.00] | @calledBy: none
 function sendHarbormasterMessage() {
     var input = document.getElementById('harbormaster-chat-input');
     if (!input) return;
@@ -11830,8 +13627,11 @@ function sendHarbormasterMessage() {
     input.value = '';
     sendHarbormasterMessageText(msg);
 }
+// === [#HEX:F.04.105.00] END ===
 window.sendHarbormasterMessage = sendHarbormasterMessage;
 
+// === [#HEX:F.04.106.00] START | name: sendHarbormasterMessageText | lines: 21 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.04.18F.00] | @calledBy: none
 function sendHarbormasterMessageText(msg) {
     addBubbleToHarbormaster('Te', msg, 'outgoing');
 
@@ -11853,8 +13653,13 @@ function sendHarbormasterMessageText(msg) {
         }
     );
 }
+// === [#HEX:F.04.106.00] END ===
 window.sendHarbormasterMessageText = sendHarbormasterMessageText;
 
+// === [#HEX:F.04.107.00] START | name: openHarbormasterConsole | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.107.00] START | name: openHarbormasterConsole | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:F.04.10A.00], [#HEX:F.04.10C.00], [#HEX:F.04.10E.00], [#HEX:F.04.110.00]
 function openHarbormasterConsole(title, contentHtml) {
     var consolePanel = document.getElementById('harbormaster-console-panel');
     var titleEl = document.getElementById('harbormaster-console-title');
@@ -11865,14 +13670,24 @@ function openHarbormasterConsole(title, contentHtml) {
     bodyEl.innerHTML = contentHtml || '';
     consolePanel.style.display = 'flex';
 }
+// === [#HEX:F.04.107.00] END ===
+// === [#HEX:F.04.107.00] END ===
 window.openHarbormasterConsole = openHarbormasterConsole;
 
+// === [#HEX:F.04.108.00] START | name: closeHarbormasterConsole | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.108.00] START | name: closeHarbormasterConsole | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.05.13.00], [#HEX:F.05.14.00], [#HEX:F.04.109.00], [#HEX:F.04.10B.00], [#HEX:F.06.36.00]
 function closeHarbormasterConsole() {
     var consolePanel = document.getElementById('harbormaster-console-panel');
     if (consolePanel) consolePanel.style.display = 'none';
 }
+// === [#HEX:F.04.108.00] END ===
+// === [#HEX:F.04.108.00] END ===
 window.closeHarbormasterConsole = closeHarbormasterConsole;
 
+// === [#HEX:F.04.109.00] START | name: triggerHarbormasterAction | lines: 128 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.195.00], [#HEX:F.04.19B.00], [#HEX:B.05.0D.00] | @calledBy: none
 function triggerHarbormasterAction(monitorId) {
     // 1. Hajóbérlés (balfelso_monitor)
     if (monitorId === 'balfelso_monitor') {
@@ -12001,8 +13816,11 @@ function triggerHarbormasterAction(monitorId) {
         return;
     }
 }
+// === [#HEX:F.04.109.00] END ===
 window.triggerHarbormasterAction = triggerHarbormasterAction;
 
+// === [#HEX:F.04.10A.00] START | name: renderRentalsConsole | lines: 21 ===
+// @calls: [#HEX:F.04.196.00], [#HEX:F.04.192.00] | @calledBy: none
 function renderRentalsConsole(buttons) {
     var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
     buttons.forEach(function (btn) {
@@ -12024,9 +13842,14 @@ function renderRentalsConsole(buttons) {
     html += '</div></div>';
     openHarbormasterConsole('BÉRELHETŐ HAJÓK ÉS LADIKOK', html);
 }
+// === [#HEX:F.04.10A.00] END ===
 window.renderRentalsConsole = renderRentalsConsole;
 
+// === [#HEX:F.04.10B.00] START | name: executeRentFromConsole | lines: 21 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00] | @calledBy: none
 function executeRentFromConsole(shipId, fee) {
+// === [#HEX:F.06.36.00] START | name: requestPin | lines: 19 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:B.05.0A.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -12046,9 +13869,13 @@ function executeRentFromConsole(shipId, fee) {
             }
         );
     }, '<strong>Hajóbérlés Jóváhagyása (' + fee + ')</strong>');
+// === [#HEX:F.06.36.00] END ===
 }
+// === [#HEX:F.04.10B.00] END ===
 window.executeRentFromConsole = executeRentFromConsole;
 
+// === [#HEX:F.04.10C.00] START | name: renderMapsConsole | lines: 18 ===
+// @calls: [#HEX:F.04.192.00], [#HEX:F.04.198.00] | @calledBy: none
 function renderMapsConsole(buttons) {
     var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
     buttons.forEach(function (btn) {
@@ -12067,9 +13894,14 @@ function renderMapsConsole(buttons) {
     html += '</div></div>';
     openHarbormasterConsole('TÉRKÉPRAKTÁR (30 Kr / db)', html);
 }
+// === [#HEX:F.04.10C.00] END ===
 window.renderMapsConsole = renderMapsConsole;
 
+// === [#HEX:F.04.10D.00] START | name: executeMapBuyFromConsole | lines: 21 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00] | @calledBy: none
 function executeMapBuyFromConsole(mapRowIndex) {
+// === [#HEX:F.06.37.00] START | name: requestPin | lines: 19 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.04.18F.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -12089,9 +13921,13 @@ function executeMapBuyFromConsole(mapRowIndex) {
             }
         );
     }, '<strong>Térkép vásárlás (30 Kr)</strong>');
+// === [#HEX:F.06.37.00] END ===
 }
+// === [#HEX:F.04.10D.00] END ===
 window.executeMapBuyFromConsole = executeMapBuyFromConsole;
 
+// === [#HEX:F.04.10E.00] START | name: renderReturnRentalConsole | lines: 16 ===
+// @calls: [#HEX:F.04.192.00], [#HEX:F.04.19A.00] | @calledBy: none
 function renderReturnRentalConsole(buttons) {
     var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
     buttons.forEach(function (btn) {
@@ -12108,9 +13944,14 @@ function renderReturnRentalConsole(buttons) {
     html += '</div></div>';
     openHarbormasterConsole('BÉRELT HAJÓK VISSZAVÉTELE', html);
 }
+// === [#HEX:F.04.10E.00] END ===
 window.renderReturnRentalConsole = renderReturnRentalConsole;
 
+// === [#HEX:F.04.10F.00] START | name: executeReturnFromConsole | lines: 21 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.06.4F.00] | @calledBy: none
 function executeReturnFromConsole(shipId) {
+// === [#HEX:F.06.38.00] START | name: requestPin | lines: 19 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00], [#HEX:F.04.18F.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -12130,9 +13971,13 @@ function executeReturnFromConsole(shipId) {
             }
         );
     }, '<strong>Hajó Visszaadás és Kaució Elszámolás</strong>');
+// === [#HEX:F.06.38.00] END ===
 }
+// === [#HEX:F.04.10F.00] END ===
 window.executeReturnFromConsole = executeReturnFromConsole;
 
+// === [#HEX:F.04.110.00] START | name: renderAdminConsole | lines: 20 ===
+// @calls: [#HEX:F.04.19D.00], [#HEX:F.04.19C.00], [#HEX:F.04.192.00] | @calledBy: none
 function renderAdminConsole() {
     var html = '<div class="harbormaster-console-body-scroll">';
     html += '<div class="harbormaster-form-group">';
@@ -12153,9 +13998,14 @@ function renderAdminConsole() {
     html += '</div></div>';
     openHarbormasterConsole('HIVATALOS ÜGYEK (50 Kr)', html);
 }
+// === [#HEX:F.04.110.00] END ===
 window.renderAdminConsole = renderAdminConsole;
 
 var _currentAdminType = null;
+// === [#HEX:F.04.111.00] START | name: showAdminForm | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.111.00] START | name: showAdminForm | lines: 20 ===
+// @calls: none | @calledBy: [#HEX:F.04.110.00]
 function showAdminForm(type) {
     _currentAdminType = type;
     var container = document.getElementById('harbormaster-admin-form-container');
@@ -12176,8 +14026,12 @@ function showAdminForm(type) {
     input.value = '';
     input.focus();
 }
+// === [#HEX:F.04.111.00] END ===
+// === [#HEX:F.04.111.00] END ===
 window.showAdminForm = showAdminForm;
 
+// === [#HEX:F.04.112.00] START | name: submitAdminForm | lines: 36 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:B.05.0F.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00] | @calledBy: none
 function submitAdminForm() {
     var input = document.getElementById('harbormaster-admin-input');
     if (!input || !input.value.trim()) {
@@ -12194,6 +14048,8 @@ function submitAdminForm() {
         return;
     }
 
+// === [#HEX:F.06.39.00] START | name: requestPin | lines: 19 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:F.04.18E.00], [#HEX:B.05.0F.00], [#HEX:F.04.18C.00], [#HEX:D.01.79.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -12213,10 +14069,14 @@ function submitAdminForm() {
             }
         );
     }, '<strong>Hivatalos Ügy Jóváhagyása (50 Kr)</strong>');
+// === [#HEX:F.06.39.00] END ===
 }
+// === [#HEX:F.04.112.00] END ===
 window.submitAdminForm = submitAdminForm;
 
 
+// === [#HEX:F.04.113.00] START | name: tryGoToDeck | lines: 11 ===
+// @calls: [#HEX:F.05.34.00], [#HEX:F.04.27.00] | @calledBy: none
 function tryGoToDeck() {
     if (typeof openFedelzetModal === 'function') {
         openFedelzetModal();
@@ -12228,6 +14088,7 @@ function tryGoToDeck() {
         loadPage('fedelzet_oldal');
     }
 }
+// === [#HEX:F.04.113.00] END ===
 window.tryGoToDeck = tryGoToDeck;
 
 
@@ -12241,11 +14102,23 @@ let deckChatState = 'IDLE'; // IDLE, AWAITING_HARTYA_CONFIRM, AWAITING_KALAND_TA
 let deckExpeditionIsland = '';
 let deckExpeditionBook = '';
 
+// === [#HEX:F.03.03.00] START | name: normalizeShipData | lines: 246 ===
+// @calls: [#HEX:F.04.1B2.00], [#HEX:F.04.1B3.00] | @calledBy: none
 function normalizeShipData(ship, nameDict) {
     if (!ship || typeof ship !== 'object') return ship;
     nameDict = nameDict || window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
 
     // Segédfüggvény: Email vagy név feloldása kalóznévre a kalozadatok A->B oszlopai alapján (nameDict)
+// === [#HEX:F.04.114.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.114.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.114.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
     var resolvePirateName = function (emailOrName) {
         if (!emailOrName) return '';
         var raw = String(emailOrName).trim();
@@ -12268,6 +14141,11 @@ function normalizeShipData(ship, nameDict) {
         var prefix = raw.split('@')[0];
         return prefix.charAt(0).toUpperCase() + prefix.slice(1);
     };
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.114.00] END ===
+// === [#HEX:F.04.114.00] END ===
+// === [#HEX:F.04.114.00] END ===
 
     var BLOCKED_ATTR_ROLES = [
         'méret', 'mérettartomány', 'ár', 'költség', 'sebesség', 'gyorsaság', 'élettartam',
@@ -12380,6 +14258,8 @@ function normalizeShipData(ship, nameDict) {
         }
     }
 
+// === [#HEX:F.04.115.00] START | name: addMember | lines: 32 ===
+// @calls: [#HEX:F.04.1B2.00] | @calledBy: none
     var addMember = function (rawVal, role) {
         if (!rawVal) return;
         var valStr = String(rawVal).trim();
@@ -12412,6 +14292,7 @@ function normalizeShipData(ship, nameDict) {
             email: valStr
         });
     };
+// === [#HEX:F.04.115.00] END ===
 
     // A: crew objektumból
     for (var rKey in crewObj) {
@@ -12487,11 +14368,14 @@ function normalizeShipData(ship, nameDict) {
 
     return ship;
 }
+// === [#HEX:F.03.03.00] END ===
 window.normalizeShipData = normalizeShipData;
 
 var isFetchingDeckShips = false;
 var deckShipsCallbacks = [];
 
+// === [#HEX:F.03.04.00] START | name: loadDeckShips | lines: 48 ===
+// @calls: [#HEX:F.04.116.00], [#HEX:F.03.11.00], [#HEX:F.04.1B6.00], [#HEX:D.01.79.00], [#HEX:B.03.15.00] | @calledBy: none
 function loadDeckShips(onComplete) {
     if (onComplete) deckShipsCallbacks.push(onComplete);
 
@@ -12514,6 +14398,8 @@ function loadDeckShips(onComplete) {
     if (isFetchingDeckShips) return;
     isFetchingDeckShips = true;
 
+// === [#HEX:F.04.116.00] START | name: finishLoading | lines: 9 ===
+// @calls: [#HEX:F.04.1B6.00], [#HEX:F.03.11.00] | @calledBy: [#HEX:F.03.04.00], [#HEX:F.06.3A.00]
     var finishLoading = function (ships) {
         isFetchingDeckShips = false;
         renderDeckShipCards();
@@ -12523,7 +14409,10 @@ function loadDeckShips(onComplete) {
             try { cb(ships || window.userShips || []); } catch (e) { }
         }
     };
+// === [#HEX:F.04.116.00] END ===
 
+// === [#HEX:F.06.3A.00] START | name: callBackend | lines: 12 ===
+// @calls: [#HEX:F.04.116.00], [#HEX:F.03.0F.00], [#HEX:B.03.15.00] | @calledBy: none
     callBackend('getToborzoData', [], function (response) {
         if (response && response.success && Array.isArray(response.ownedShips)) {
             window.toborzoMarketData = response;
@@ -12536,11 +14425,15 @@ function loadDeckShips(onComplete) {
         }
         finishLoading(window.userShips || []);
     }, function (err) {
+// === [#HEX:F.06.3A.00] END ===
         console.warn('Fedélzet getToborzoData figyelmeztetés:', err);
         finishLoading(window.userShips || []);
     });
 }
+// === [#HEX:F.03.04.00] END ===
 
+// === [#HEX:F.04.117.00] START | name: initFedelzetOldal | lines: 18 ===
+// @calls: [#HEX:F.04.1B5.00], [#HEX:F.01.06.00], [#HEX:F.03.10.00] | @calledBy: none
 function initFedelzetOldal() {
     // Háttérvideó garantált némítása
     var bgVid = document.getElementById('fedelzet-video-player');
@@ -12559,7 +14452,12 @@ function initFedelzetOldal() {
         startSessionPolling();
     }
 }
+// === [#HEX:F.04.117.00] END ===
 
+// === [#HEX:F.04.118.00] START | name: setDeckScreenText | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.118.00] START | name: setDeckScreenText | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.04.117.00], [#HEX:F.04.11C.00], [#HEX:F.04.11D.00], [#HEX:F.04.11E.00], [#HEX:F.06.3B.00]
 function setDeckScreenText(htmlText) {
     var txtEl = document.getElementById('deck-screen-text');
     var kepernyoPath = document.getElementById('kepernyo');
@@ -12572,7 +14470,11 @@ function setDeckScreenText(htmlText) {
         if (kepernyoPath) kepernyoPath.classList.remove('deck-screen-active');
     }
 }
+// === [#HEX:F.04.118.00] END ===
+// === [#HEX:F.04.118.00] END ===
 
+// === [#HEX:F.04.119.00] START | name: populateDeckCrewRecipients | lines: 124 ===
+// @calls: [#HEX:B.03.15.00], [#HEX:F.04.1B7.00], [#HEX:F.04.1B8.00] | @calledBy: none
 function populateDeckCrewRecipients() {
     var crewSelect = document.getElementById('deck-msg-recipient-select');
     if (!crewSelect) return;
@@ -12596,6 +14498,10 @@ function populateDeckCrewRecipients() {
 
     var BLOCKED_SIZE_VALUES = ['xs', 's', 'm', 'l', 'xl', 'xxl', 'true', 'false', 'undefined', 'null'];
 
+// === [#HEX:F.04.11A.00] START | name: resolveName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11A.00] START | name: resolveName | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.04.119.00], [#HEX:F.04.11B.00]
     var resolveName = function (emailOrName) {
         if (!emailOrName) return '';
         var raw = String(emailOrName).trim();
@@ -12604,7 +14510,11 @@ function populateDeckCrewRecipients() {
         if (nameDict[raw]) return nameDict[raw];
         return raw;
     };
+// === [#HEX:F.04.11A.00] END ===
+// === [#HEX:F.04.11A.00] END ===
 
+// === [#HEX:F.04.11B.00] START | name: addRecipientOption | lines: 31 ===
+// @calls: [#HEX:F.04.1B7.00] | @calledBy: none
     var addRecipientOption = function (rawVal, role) {
         if (!rawVal) return;
         var valStr = String(rawVal).trim();
@@ -12636,6 +14546,7 @@ function populateDeckCrewRecipients() {
             crewSelect.appendChild(opt);
         }
     };
+// === [#HEX:F.04.11B.00] END ===
 
     // 1. Ha crewNames objektum van (pl. getToborzoData)
     if (ship.crewNames && typeof ship.crewNames === 'object') {
@@ -12697,7 +14608,10 @@ function populateDeckCrewRecipients() {
     if (ship.captain) addRecipientOption(ship.captain, 'Kapitány');
     if (ship.owner) addRecipientOption(ship.owner, 'Tulajdonos');
 }
+// === [#HEX:F.04.119.00] END ===
 
+// === [#HEX:F.03.05.00] START | name: renderDeckShipCards | lines: 76 ===
+// @calls: [#HEX:F.04.1B6.00], [#HEX:F.03.12.00], [#HEX:F.03.13.00] | @calledBy: none
 function renderDeckShipCards() {
     var list = document.getElementById('deck-ship-cards-list');
     if (!list) return;
@@ -12774,7 +14688,10 @@ function renderDeckShipCards() {
 
     populateDeckCrewRecipients();
 }
+// === [#HEX:F.03.05.00] END ===
 
+// === [#HEX:F.03.06.00] START | name: openDeckShipModal | lines: 11 ===
+// @calls: [#HEX:F.04.129.00] | @calledBy: none
 function openDeckShipModal(index) {
     if (!window.userShips || !window.userShips[index]) return;
     currentFetchedVehicles = window.userShips;
@@ -12786,7 +14703,10 @@ function openDeckShipModal(index) {
         showVehicleDetails(index);
     }
 }
+// === [#HEX:F.03.06.00] END ===
 
+// === [#HEX:F.03.07.00] START | name: selectDeckShip | lines: 22 ===
+// @calls: [#HEX:F.04.1B6.00], [#HEX:F.04.1BD.00], [#HEX:F.03.11.00] | @calledBy: none
 function selectDeckShip(shipId, isInitial) {
     if (!window.userShips) return;
     var targetId = String(shipId || '').trim();
@@ -12809,7 +14729,10 @@ function selectDeckShip(shipId, isInitial) {
         }
     }
 }
+// === [#HEX:F.03.07.00] END ===
 
+// === [#HEX:F.04.11C.00] START | name: handleDeckElementHover | lines: 47 ===
+// @calls: [#HEX:F.04.1B5.00] | @calledBy: none
 function handleDeckElementHover(elemId) {
     var hoverItems = {
         'tekero_gomb': {
@@ -12857,11 +14780,17 @@ function handleDeckElementHover(elemId) {
         setDeckScreenText(html);
     }
 }
+// === [#HEX:F.04.11C.00] END ===
 
+// === [#HEX:F.04.11D.00] START | name: handleDeckElementLeave | lines: 3 ===
+// @calls: [#HEX:F.04.1B5.00] | @calledBy: none
 function handleDeckElementLeave() {
     setDeckScreenText('');
 }
+// === [#HEX:F.04.11D.00] END ===
 
+// === [#HEX:F.04.11E.00] START | name: handleDeckElementClick | lines: 97 ===
+// @calls: [#HEX:F.05.35.00], [#HEX:F.04.1C1.00], [#HEX:B.07.24.00], [#HEX:D.01.79.00], [#HEX:F.04.1BE.00] | @calledBy: none
 function handleDeckElementClick(elemId) {
     if (elemId === 'auto_gomb') {
         loadPage('tutorial_oldal');
@@ -12911,6 +14840,8 @@ function handleDeckElementClick(elemId) {
         var isCaptain = ship.isCaptain || (ship.captain && (ship.captain.toLowerCase().includes(myEmail) || ship.captain.toLowerCase().includes(myNick)));
 
         setDeckScreenText('Hajónapló hozzáférési jogosultság ellenőrzése... <span class=\"crt-cursor\">▋</span>');
+// === [#HEX:F.06.3B.00] START | name: callBackend | lines: 34 ===
+// @calls: [#HEX:F.04.1C1.00], [#HEX:B.07.24.00], [#HEX:F.04.1BE.00], [#HEX:F.04.1B5.00], [#HEX:F.04.1BC.00] | @calledBy: none
         callBackend('checkLogWritePermission', [], function (logId) {
             if (logId && typeof logId === 'string') {
                 var form = document.getElementById('deck-logbook-form');
@@ -12945,6 +14876,7 @@ function handleDeckElementClick(elemId) {
                 setDeckScreenText(htmlDenied);
             }
         }, function (err) {
+// === [#HEX:F.06.3B.00] END ===
             if (isOwner || isCaptain) {
                 var form4 = document.getElementById('deck-logbook-form');
                 var denied4 = document.getElementById('deck-logbook-denied');
@@ -12959,7 +14891,10 @@ function handleDeckElementClick(elemId) {
         });
     }
 }
+// === [#HEX:F.04.11E.00] END ===
 
+// === [#HEX:F.04.11F.00] START | name: openDeckConsole | lines: 29 ===
+// @calls: [#HEX:F.03.10.00], [#HEX:F.04.1B6.00], [#HEX:F.03.11.00] | @calledBy: none
 function openDeckConsole(subId, titleText) {
     var panel = document.getElementById('deck-console-panel');
     var title = document.getElementById('deck-console-title');
@@ -12989,14 +14924,23 @@ function openDeckConsole(subId, titleText) {
 
     panel.style.display = 'flex';
 }
+// === [#HEX:F.04.11F.00] END ===
 
+// === [#HEX:F.04.120.00] START | name: closeDeckConsole | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.120.00] START | name: closeDeckConsole | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.03.07.00]
 function closeDeckConsole() {
     var panel = document.getElementById('deck-console-panel');
     if (panel) {
         panel.style.display = 'none';
     }
 }
+// === [#HEX:F.04.120.00] END ===
+// === [#HEX:F.04.120.00] END ===
 
+// === [#HEX:F.04.121.00] START | name: setupDeckLogImagePreview | lines: 32 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.77.00] | @calledBy: none
 function setupDeckLogImagePreview() {
     var imageInput = document.getElementById('deck-log-image');
     var imagePreview = document.getElementById('deck-log-image-preview');
@@ -13029,7 +14973,10 @@ function setupDeckLogImagePreview() {
         }
     };
 }
+// === [#HEX:F.04.121.00] END ===
 
+// === [#HEX:F.04.122.00] START | name: onDeckLogDateChange | lines: 10 ===
+// @calls: [#HEX:F.04.1C1.00] | @calledBy: none
 function onDeckLogDateChange(dateValue) {
     if (!dateValue || typeof dateValue !== 'string') return;
     dateValue = dateValue.trim();
@@ -13040,8 +14987,13 @@ function onDeckLogDateChange(dateValue) {
         loadDeckLogEntry(dateValue);
     }
 }
+// === [#HEX:F.04.122.00] END ===
 window.onDeckLogDateChange = onDeckLogDateChange;
 
+// === [#HEX:F.04.123.00] START | name: getDeckLogGeoLocation | lines: 27 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.123.00] START | name: getDeckLogGeoLocation | lines: 27 ===
+// @calls: none | @calledBy: [#HEX:F.04.124.00], [#HEX:F.06.3C.00], [#HEX:F.06.3D.00]
 function getDeckLogGeoLocation(silent) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -13069,7 +15021,11 @@ function getDeckLogGeoLocation(silent) {
         }
     }
 }
+// === [#HEX:F.04.123.00] END ===
+// === [#HEX:F.04.123.00] END ===
 
+// === [#HEX:F.04.124.00] START | name: loadDeckLogEntry | lines: 196 ===
+// @calls: [#HEX:D.01.7E.00], [#HEX:B.07.24.00], [#HEX:D.01.79.00], [#HEX:B.07.21.00], [#HEX:F.04.1C0.00] | @calledBy: none
 function loadDeckLogEntry(entryId) {
     var entryIdInput = document.getElementById('deck-log-entry-id');
     var dateInput = document.getElementById('deck-log-date');
@@ -13106,6 +15062,8 @@ function loadDeckLogEntry(entryId) {
         nextBtn.onclick = null;
     }
 
+// === [#HEX:F.06.3C.00] START | name: callBackend | lines: 157 ===
+// @calls: [#HEX:F.04.1C1.00], [#HEX:B.07.24.00], [#HEX:B.07.21.00], [#HEX:F.04.1C0.00] | @calledBy: none
     callBackend('checkLogWritePermission', [], function (currentLogId) {
         if (!currentLogId || typeof currentLogId !== 'string') {
             if (statusDiv) statusDiv.textContent = 'Nem található írható hajónapló azonosító.';
@@ -13150,6 +15108,8 @@ function loadDeckLogEntry(entryId) {
             }
         } else {
             // === BEJEGYZÉS BETÖLTÉSE (ID, dátum vagy 'last') ===
+// === [#HEX:F.06.3D.00] START | name: callBackend | lines: 109 ===
+// @calls: [#HEX:F.04.1C1.00], [#HEX:B.07.21.00], [#HEX:F.04.1C0.00] | @calledBy: none
             callBackend('getLogEntry', [currentLogId, entryId || 'last'], function (entry) {
                 if (!entry || entry.error) {
                     if (statusDiv) statusDiv.textContent = 'Hiba a bejegyzés betöltésekor: ' + (entry ? entry.error : 'Ismeretlen hiba');
@@ -13259,14 +15219,19 @@ function loadDeckLogEntry(entryId) {
                     }
                 }
             }, function (err) {
+// === [#HEX:F.06.3D.00] END ===
                 if (statusDiv) statusDiv.textContent = 'Hálózati hiba: ' + err.message;
             });
         }
     }, function (err) {
+// === [#HEX:F.06.3C.00] END ===
         if (statusDiv) statusDiv.textContent = 'Jogosultság lekérdezési hiba: ' + err.message;
     });
 }
+// === [#HEX:F.04.124.00] END ===
 
+// === [#HEX:F.04.125.00] START | name: navigateDeckLogEntry | lines: 12 ===
+// @calls: [#HEX:F.04.1C1.00], [#HEX:D.01.7E.00] | @calledBy: none
 function navigateDeckLogEntry(direction) {
     if (!window.currentDeckLogEntry) return;
     if (direction === 'prev' && window.currentDeckLogEntry.prevId) {
@@ -13279,7 +15244,10 @@ function navigateDeckLogEntry(direction) {
         }
     }
 }
+// === [#HEX:F.04.125.00] END ===
 
+// === [#HEX:F.04.126.00] START | name: executeDeckSaveLogEntry | lines: 101 ===
+// @calls: [#HEX:F.04.F3.00], [#HEX:B.07.1E.00], [#HEX:F.04.1C1.00], [#HEX:D.01.79.00], [#HEX:F.04.1B5.00] | @calledBy: none
 async function executeDeckSaveLogEntry() {
     var dateEl = document.getElementById('deck-log-date');
     var timeEl = document.getElementById('deck-log-time');
@@ -13346,6 +15314,8 @@ async function executeDeckSaveLogEntry() {
             }
         }
 
+// === [#HEX:F.06.3E.00] START | name: callBackend | lines: 18 ===
+// @calls: [#HEX:F.04.1C1.00], [#HEX:F.04.1B5.00], [#HEX:B.07.1E.00] | @calledBy: none
         callBackend('saveLogEntry', [entryData], function (response) {
             if (saveBtn) saveBtn.disabled = false;
             if (response && response.success) {
@@ -13364,6 +15334,7 @@ async function executeDeckSaveLogEntry() {
                 }
             }
         }, function (err) {
+// === [#HEX:F.06.3E.00] END ===
             if (saveBtn) saveBtn.disabled = false;
             setDeckScreenText('❌ <span style=\"color:#ff6666;\">Szerverhiba mentéskor: ' + err.message + '</span>');
             if (statusEl) {
@@ -13381,8 +15352,13 @@ async function executeDeckSaveLogEntry() {
         }
     }
 }
+// === [#HEX:F.04.126.00] END ===
 
+// === [#HEX:F.04.127.00] START | name: loadCompletableScrolls | lines: 28 ===
+// @calls: [#HEX:B.04.03.00], [#HEX:D.01.79.00], [#HEX:F.05.15.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function loadCompletableScrolls() {
+// === [#HEX:F.06.3F.00] START | name: callBackend | lines: 26 ===
+// @calls: [#HEX:B.04.03.00], [#HEX:F.05.15.00] | @calledBy: none
     callBackend('getCompletableScrollSets', [], function (res) {
         var container = document.getElementById('completable-scrolls-list');
         var section = document.getElementById('masolatta-fuzes-section');
@@ -13409,12 +15385,18 @@ function loadCompletableScrolls() {
             section.style.display = 'none';
         }
     });
+// === [#HEX:F.06.3F.00] END ===
 }
+// === [#HEX:F.04.127.00] END ===
 
+// === [#HEX:F.05.15.00] START | name: bindScrolls | lines: 17 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.04.1F.00], [#HEX:F.04.27.00] | @calledBy: [#HEX:F.04.127.00], [#HEX:F.06.3F.00]
 function bindScrolls(baseCode) {
     if (!confirm("Biztosan összefűzöd a tekercseket? A felhasznált fejezetek eltűnnek, és egy új Másolat jön létre!")) return;
 
     document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.40.00] START | name: callBackend | lines: 9 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:B.04.1F.00], [#HEX:D.01.77.00] | @calledBy: none
     callBackend('bindScrollsToCopy', [baseCode], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res && res.success) {
@@ -13424,15 +15406,19 @@ function bindScrolls(baseCode) {
             uiAlert("Hiba: " + (res ? res.error : "Ismeretlen hiba történt."), "Kudarc");
         }
     }, function (err) {
+// === [#HEX:F.06.40.00] END ===
         document.getElementById('loading-overlay').style.display = 'none';
         uiAlert("Hálózati hiba: " + err.message);
     });
 }
+// === [#HEX:F.05.15.00] END ===
 
 
 // --- JÁRMŰ MODAL LOGIKA ---
 var currentFetchedVehicles = [];
 
+// === [#HEX:F.05.16.00] START | name: openVehicleModal | lines: 27 ===
+// @calls: [#HEX:F.04.128.00], [#HEX:D.01.79.00], [#HEX:B.06.1D.00], [#HEX:F.03.0F.00] | @calledBy: none
 function openVehicleModal(category) {
     var modal = document.getElementById('vehicle-modal');
     var title = document.getElementById('vehicle-modal-title');
@@ -13460,12 +15446,30 @@ function openVehicleModal(category) {
         }
     );
 }
+// === [#HEX:F.05.16.00] END ===
 
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
 function closeVehicleModal() {
     var modal = document.getElementById('vehicle-modal');
     if (modal) modal.style.display = 'none';
 }
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
 
+// === [#HEX:F.04.128.00] START | name: renderVehicleList | lines: 21 ===
+// @calls: [#HEX:F.04.129.00] | @calledBy: [#HEX:F.05.16.00], [#HEX:F.04.129.00]
 function renderVehicleList() {
     var body = document.getElementById('vehicle-modal-body');
     if (currentFetchedVehicles.length === 0) {
@@ -13487,7 +15491,10 @@ function renderVehicleList() {
     html += '</ul>';
     body.innerHTML = html;
 }
+// === [#HEX:F.04.128.00] END ===
 
+// === [#HEX:F.04.129.00] START | name: showVehicleDetails | lines: 93 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:F.04.128.00], [#HEX:F.03.0F.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.03.06.00], [#HEX:F.04.128.00], [#HEX:F.03.12.00]
 function showVehicleDetails(index) {
     var v = currentFetchedVehicles[index];
     if (!v) return;
@@ -13581,30 +15588,41 @@ function showVehicleDetails(index) {
     html += '</div>';
     body.innerHTML = html;
 }
+// === [#HEX:F.04.129.00] END ===
 window.showVehicleDetails = showVehicleDetails;
 
 // --- VÁRÓTEREM ÉS SESSION POLLING LOGIKA ---
 var sessionPollInterval = null;
 
+// === [#HEX:F.01.06.00] START | name: startSessionPolling | lines: 5 ===
+// @calls: [#HEX:F.01.07.00], [#HEX:F.01.08.00] | @calledBy: [#HEX:F.04.117.00]
 function startSessionPolling() {
     stopSessionPolling();
     checkActiveSessionStatus(); // Első hívás azonnal
     sessionPollInterval = setInterval(checkActiveSessionStatus, 15000); // 15 másodpercenként
 }
+// === [#HEX:F.01.06.00] END ===
 
+// === [#HEX:F.01.07.00] START | name: stopSessionPolling | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.01.06.00], [#HEX:F.01.08.00]
 function stopSessionPolling() {
     if (sessionPollInterval) {
         clearInterval(sessionPollInterval);
         sessionPollInterval = null;
     }
 }
+// === [#HEX:F.01.07.00] END ===
 
+// === [#HEX:F.01.08.00] START | name: checkActiveSessionStatus | lines: 52 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:F.04.12C.00], [#HEX:D.01.77.00], [#HEX:B.07.CA.00], [#HEX:F.01.07.00] | @calledBy: [#HEX:F.01.06.00]
 function checkActiveSessionStatus() {
     if (!selectedShipForDeparture || typeof currentPageName === 'undefined' || currentPageName !== 'fedelzet_oldal') {
         stopSessionPolling();
         return;
     }
 
+// === [#HEX:F.06.41.00] START | name: callBackend | lines: 42 ===
+// @calls: [#HEX:F.04.12C.00], [#HEX:D.01.77.00], [#HEX:B.07.CA.00] | @calledBy: none
     callBackend('getActiveSessionStatus', [selectedShipForDeparture.id], function (res) {
         if (!res || res.error) return;
 
@@ -13647,23 +15665,33 @@ function checkActiveSessionStatus() {
             }
         }
     }, function (err) {
+// === [#HEX:F.06.41.00] END ===
         // Csendes naplózás háttérbeli lekérdezésnél
         console.warn("Session állapot lekérdezési figyelmeztetés:", err && err.message ? err.message : err);
     });
 }
+// === [#HEX:F.01.08.00] END ===
 
+// === [#HEX:F.04.12A.00] START | name: startFishingMiniGame | lines: 4 ===
+// @calls: [#HEX:D.01.77.00], [#HEX:F.04.12C.00] | @calledBy: none
 function startFishingMiniGame() {
     uiAlert("A Hártyahalászat elindult!", "Horgászat");
     loadGamePage({ gameType: 'Hártyahalászat' });
 }
+// === [#HEX:F.04.12A.00] END ===
 
+// === [#HEX:F.04.12B.00] START | name: joinPvpDefense | lines: 3 ===
+// @calls: [#HEX:D.01.77.00] | @calledBy: none
 function joinPvpDefense() {
     uiAlert("Mindenki a fedélzetre! Fegyvereket tölts! (PvP Harci modul betöltése)", "Riadó");
 }
+// === [#HEX:F.04.12B.00] END ===
 // ---------------------------------------------
 
 
 // --- GAME OLDAL LOGIKA ---
+// === [#HEX:F.04.12C.00] START | name: loadGamePage | lines: 104 ===
+// @calls: [#HEX:D.01.24.00], [#HEX:F.07.12.00], [#HEX:D.01.77.00], [#HEX:F.04.27.00], [#HEX:F.04.130.00] | @calledBy: [#HEX:F.01.08.00], [#HEX:F.06.41.00], [#HEX:F.04.12A.00]
 function loadGamePage(sessionData) {
     loadPage('game_oldal');
 
@@ -13696,6 +15724,16 @@ function loadGamePage(sessionData) {
                 // Ideiglenes: a felhőből hívjuk meg a webhatter02.mp4-et, ha nincs backend által küldött URL
                 var introVid = sessionData.introVideo || { video_url: 'https://storage.googleapis.com/kalozsziget-assets/videos/webhatter02.mp4', fallback_image: 'placeholder_fish.jpg' };
 
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
                 playMediaSequence([introVid], function () {
                     if (titleEl) titleEl.textContent = "Hártyahalászat";
 
@@ -13717,6 +15755,11 @@ function loadGamePage(sessionData) {
                     var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
                     minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
                 });
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
                 return;
             }
 
@@ -13768,6 +15811,7 @@ function loadGamePage(sessionData) {
         }
     }, 100);
 }
+// === [#HEX:F.04.12C.00] END ===
 
 
 // =====================================================================
@@ -13778,6 +15822,8 @@ var GameAssetPreloader = {
     preloadedIframes: {}, // Google Drive / Minigame iframe-ek
 
     // Képek előtöltése (Fallback)
+// === [#HEX:F.04.12D.00] START | name: preloadImage | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.04.12F.00]
     preloadImage: function (url) {
         if (!url || this.preloadedImages[url]) return;
         var img = new Image();
@@ -13785,8 +15831,11 @@ var GameAssetPreloader = {
         this.preloadedImages[url] = img;
         console.log("[Preloader] Kép előtöltve: " + url);
     },
+// === [#HEX:F.04.12D.00] END ===
 
     // Videó / Iframe előtöltése (Láthatatlan DOM elemmel)
+// === [#HEX:F.04.12E.00] START | name: preloadIframe | lines: 34 ===
+// @calls: none | @calledBy: [#HEX:F.04.12F.00]
     preloadIframe: function (url) {
         if (!url || this.preloadedIframes[url]) return;
 
@@ -13821,8 +15870,11 @@ var GameAssetPreloader = {
         this.preloadedIframes[url] = iframe;
         console.log("[Preloader] Videó/Minigame Iframe előtöltve: " + finalUrl);
     },
+// === [#HEX:F.04.12E.00] END ===
 
     // Intelligens fa-elemző (Kiolvassa a következő lehetséges utakat)
+// === [#HEX:F.04.12F.00] START | name: analyzeAndPreloadNext | lines: 10 ===
+// @calls: [#HEX:F.04.12E.00], [#HEX:F.04.12D.00] | @calledBy: [#HEX:F.04.130.00]
     analyzeAndPreloadNext: function (sessionData, currentCheckpoint) {
         if (!sessionData) return;
 
@@ -13833,6 +15885,7 @@ var GameAssetPreloader = {
         // this.preloadImage("fallback_url.jpg");
         // this.preloadIframe("https://drive.google.com/.../preview");
     }
+// === [#HEX:F.04.12F.00] END ===
 };
 
 
@@ -13841,6 +15894,8 @@ var GameAssetPreloader = {
 // =====================================================================
 
 // Szekvenciális videólejátszó segédfüggvény
+// === [#HEX:F.07.0F.00] START | name: playMediaSequence | lines: 52 ===
+// @calls: [#HEX:F.07.10.00], [#HEX:D.01.00.00] | @calledBy: none
 function playMediaSequence(mediaArray, onCompleteCallback) {
     var videoEl = document.getElementById('game-video-player');
     var fallbackImg = document.getElementById('game-fallback-image');
@@ -13852,6 +15907,8 @@ function playMediaSequence(mediaArray, onCompleteCallback) {
 
     var currentIndex = 0;
 
+// === [#HEX:F.07.10.00] START | name: playNext | lines: 38 ===
+// @calls: [#HEX:D.01.00.00] | @calledBy: [#HEX:F.07.0F.00]
     function playNext() {
         if (currentIndex >= mediaArray.length) {
             if (onCompleteCallback) onCompleteCallback();
@@ -13890,10 +15947,14 @@ function playMediaSequence(mediaArray, onCompleteCallback) {
             playNext();
         }
     }
+// === [#HEX:F.07.10.00] END ===
 
     playNext();
 }
+// === [#HEX:F.07.0F.00] END ===
 
+// === [#HEX:F.04.130.00] START | name: renderGameCheckpoint | lines: 197 | action: 'RETURN_TO_SHIP' ===
+// @calls: [#HEX:D.01.24.00], [#HEX:F.07.12.00], [#HEX:F.04.131.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.12C.00], [#HEX:F.07.11.00], [#HEX:F.04.131.00]
 function renderGameCheckpoint(sessionData, currentCheckpoint) {
     if (!sessionData || !sessionData.nodes) {
         console.error("Érvénytelen JSON struktúra a renderelőben!");
@@ -13963,7 +16024,10 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             btnReturn.className = 'btn-primary';
             btnReturn.textContent = 'Visszatérés a Hajóra';
             btnReturn.onclick = function () {
+// === [#HEX:F.06.42.00] START | name: callBackend | lines: 1 | action: 'RETURN_TO_SHIP' ===
+// @calls: [#HEX:B.07.CB.00] | @calledBy: none
                 callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function () {
+// === [#HEX:F.06.42.00] END ===
                     loadPage('fedelzet_oldal');
                 });
             };
@@ -13989,7 +16053,10 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
                     btn.textContent = 'Indulás az Expedícióra';
                     btn.onclick = function () {
                         document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.43.00] START | name: callBackend | lines: 1 | action: 'DEPART_TO_FIRST_LOCATION' ===
+// @calls: [#HEX:B.07.CB.00] | @calledBy: none
                         callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'DEPART_TO_FIRST_LOCATION' }], function (res) {
+// === [#HEX:F.06.43.00] END ===
                             document.getElementById('loading-overlay').style.display = 'none';
                             if (res.success && res.sessionData) {
                                 renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint);
@@ -14025,6 +16092,8 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         }
         if (currentNode.mediaSequence.arrival) mediaToPlay.push(currentNode.mediaSequence.arrival);
 
+// === [#HEX:F.07.11.00] START | name: playMediaSequence | lines: 18 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.130.00], [#HEX:B.07.CB.00] | @calledBy: none
         playMediaSequence(mediaToPlay, function () {
             narrativeText.textContent = "Megérkeztetek a célhoz. Itt az ideje a Képzettségpróbának!";
             actionsContainer.innerHTML = '';
@@ -14034,7 +16103,10 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             btnArrive.textContent = 'Utazás folytatása / Képzettségpróba';
             btnArrive.onclick = function () {
                 document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.44.00] START | name: callBackend | lines: 1 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
+// @calls: [#HEX:B.07.CB.00] | @calledBy: none
                 callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.toNode || 'LOC_1' } }], function (res) {
+// === [#HEX:F.06.44.00] END ===
                     document.getElementById('loading-overlay').style.display = 'none';
                     if (res.success && res.sessionData) {
                         renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint);
@@ -14043,6 +16115,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             };
             actionsContainer.appendChild(btnArrive);
         });
+// === [#HEX:F.07.11.00] END ===
     }
 
     // 3. KALANDJÁTÉK ÁLTALÁNOS NODE (NARRATIVE, MINIGAME)
@@ -14051,9 +16124,12 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         if (currentNode.introVideo) {
             actionsContainer.innerHTML = "<em>Videó betöltése...</em>";
             var kMedia = [{ video_url: currentNode.introVideo, fallback_image: '' }]; // Ideális esetben ez URL lesz, most csak ID van az .md-ben
+// === [#HEX:F.07.12.00] START | name: playMediaSequence | lines: 3 ===
+// @calls: [#HEX:F.04.131.00] | @calledBy: [#HEX:F.04.12C.00], [#HEX:F.04.130.00]
             playMediaSequence(kMedia, function () {
                 renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer);
             });
+// === [#HEX:F.07.12.00] END ===
         } else {
             renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer);
         }
@@ -14078,7 +16154,10 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         btnReturnLoc.textContent = 'Visszatérés a Hajóra';
         btnReturnLoc.onclick = function () {
             document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.45.00] START | name: callBackend | lines: 1 | action: 'RETURN_TO_SHIP' ===
+// @calls: [#HEX:B.07.CB.00] | @calledBy: none
             callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function (res) {
+// === [#HEX:F.06.45.00] END ===
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success && res.sessionData) {
                     renderGameCheckpoint(res.sessionData, 'HAJO_START');
@@ -14091,7 +16170,10 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
     // Intelligens előtöltés indítása a háttérben!
     GameAssetPreloader.analyzeAndPreloadNext(sessionData, currentCheckpoint);
 }
+// === [#HEX:F.04.130.00] END ===
 
+// === [#HEX:F.04.131.00] START | name: renderKalandjatekOptions | lines: 53 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
+// @calls: [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.27.00], [#HEX:F.04.130.00], [#HEX:B.07.CB.00] | @calledBy: [#HEX:F.04.130.00], [#HEX:F.07.12.00]
 function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer) {
     narrativeText.textContent = currentNode.introNarrative || currentNode.narrative || "Esemény a kaland során.";
     actionsContainer.innerHTML = '';
@@ -14103,7 +16185,10 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
         btnS.textContent = 'Kaland Sikeres Folytatása';
         btnS.onclick = function () {
             document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.46.00] START | name: callBackend | lines: 1 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
+// @calls: [#HEX:B.07.CB.00] | @calledBy: none
             callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.successBranch.nextCheckpoint } }], function (res) {
+// === [#HEX:F.06.46.00] END ===
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success && res.sessionData) {
                     renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint || currentNode.successBranch.nextCheckpoint);
@@ -14127,7 +16212,10 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
             }
 
             document.getElementById('loading-overlay').style.display = 'flex';
+// === [#HEX:F.06.47.00] START | name: callBackend | lines: 1 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
+// @calls: [#HEX:B.07.CB.00] | @calledBy: none
             callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: nextCP } }], function (res) {
+// === [#HEX:F.06.47.00] END ===
                 document.getElementById('loading-overlay').style.display = 'none';
                 if (res.success && res.sessionData) {
                     renderGameCheckpoint(res.sessionData, res.sessionData.crew[0].currentCheckpoint || nextCP);
@@ -14145,6 +16233,7 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
         actionsContainer.appendChild(btnRet);
     }
 }
+// === [#HEX:F.04.131.00] END ===
 
 
 
@@ -14159,6 +16248,8 @@ window.lastDiceRollResult = 0;
 window.onDiceRollCompleted = null; // Callback a Kalandjátékhoz
 
 // Ez a függvény bármelyik kaland-gombra ráköthető!
+// === [#HEX:F.04.132.00] START | name: launchDiceRoller | lines: 35 ===
+// @calls: [#HEX:D.01.24.00], [#HEX:F.04.EE.00], [#HEX:F.04.F3.00] | @calledBy: none
 function launchDiceRoller(callback) {
     var minigameContainer = document.getElementById('game-minigame-container');
     var minigameFrame = document.getElementById('game-minigame-frame');
@@ -14194,6 +16285,7 @@ function launchDiceRoller(callback) {
     minigameFrame.src = 'minigame_dice.html';
     minigameFrame.onload = function () { minigameFrame.contentWindow.focus(); };
 }
+// === [#HEX:F.04.132.00] END ===
 
 // Figyeljük a postMessage üzeneteket az iframe-ből
 window.addEventListener('message', function (event) {
@@ -14293,6 +16385,8 @@ window.addEventListener('message', function (event) {
    === 3D KIKÖTŐ & FEDÉLZET LÁTKÉP ENGINE (Three.js WebGL & 2D Fallback) ===
    ========================================================================== */
 
+// === [#HEX:F.09.05.00] START | name: isWebGLAvailable | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.04.134.00]
 function isWebGLAvailable() {
     try {
         var canvas = document.createElement('canvas');
@@ -14301,11 +16395,22 @@ function isWebGLAvailable() {
         return false;
     }
 }
+// === [#HEX:F.09.05.00] END ===
 
 let kikoto3DRunning = false;
 let kikotoAnimFrameId = null;
 let kikotoCleanupCallbacks = [];
 
+// === [#HEX:F.04.133.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.133.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.133.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.144.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.144.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
 function cleanupKikotoOldal() {
     kikoto3DRunning = false;
     if (kikotoAnimFrameId) {
@@ -14330,8 +16435,15 @@ function cleanupKikotoOldal() {
         overlay.classList.remove('active');
     }
 }
+// === [#HEX:F.04.144.00] END ===
+// === [#HEX:F.04.144.00] END ===
+// === [#HEX:F.04.133.00] END ===
+// === [#HEX:F.04.133.00] END ===
+// === [#HEX:F.04.133.00] END ===
 window.cleanupKikotoOldal = cleanupKikotoOldal;
 
+// === [#HEX:F.04.134.00] START | name: initializeKikotoOldal | lines: 64 ===
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.01.00], [#HEX:F.02.00.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2E.00], [#HEX:F.04.2F.00]
 function initializeKikotoOldal() {
     var canvasContainer = document.getElementById('webgl-canvas-container');
     var container2D = document.getElementById('kikoto-2d-container');
@@ -14396,9 +16508,12 @@ function initializeKikotoOldal() {
         if (container2D) container2D.style.display = 'block';
     });
 }
+// === [#HEX:F.04.134.00] END ===
 window.initializeKikotoOldal = initializeKikotoOldal;
 window.initKikotoOldal = initializeKikotoOldal;
 
+// === [#HEX:F.04.135.00] START | name: tryGoToDeck | lines: 11 ===
+// @calls: [#HEX:F.05.34.00], [#HEX:F.04.27.00] | @calledBy: none
 function tryGoToDeck() {
     if (typeof openFedelzetModal === 'function') {
         openFedelzetModal();
@@ -14410,8 +16525,11 @@ function tryGoToDeck() {
         loadPage('fedelzet_oldal');
     }
 }
+// === [#HEX:F.04.135.00] END ===
 window.tryGoToDeck = tryGoToDeck;
 
+// === [#HEX:F.02.00.00] START | name: runKikoto3DModule | lines: 4585 ===
+// @calls: [#HEX:F.03.0E.00], [#HEX:F.05.2E.00], [#HEX:B.07.BC.00], [#HEX:F.04.1B2.00], [#HEX:A.05.17.00] | @calledBy: [#HEX:F.04.134.00]
 function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Water) {
     kikoto3DRunning = true;
 
@@ -14492,6 +16610,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
     /**
      * Nyelvi fordítás dinamikus lekérdezése (web_fordito.js / parent ablak alapján)
      */
+// === [#HEX:F.04.136.00] START | name: getLocalizedText | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.136.00] START | name: getLocalizedText | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.137.00]
     function getLocalizedText(langKey, fallback) {
         try {
             if (window.t && typeof window.t === 'function') {
@@ -14507,10 +16629,16 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         }
         return fallback;
     }
+// === [#HEX:F.04.136.00] END ===
+// === [#HEX:F.04.136.00] END ===
 
     /**
      * Épület hover derengés / emissive kiemelés aktiválása
      */
+// === [#HEX:F.02.01.00] START | name: applyHighlight | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.02.01.00] START | name: applyHighlight | lines: 20 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.137.00]
     function applyHighlight(meshes) {
         if (!meshes || meshes.length === 0) return;
         meshes.forEach(mesh => {
@@ -14531,10 +16659,16 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             });
         });
     }
+// === [#HEX:F.02.01.00] END ===
+// === [#HEX:F.02.01.00] END ===
 
     /**
      * Épület hover derengés visszaállítása alapállapotra
      */
+// === [#HEX:F.02.02.00] START | name: removeHighlight | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.02.02.00] START | name: removeHighlight | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.05.14.00], [#HEX:F.02.00.00], [#HEX:F.04.137.00], [#HEX:F.05.19.00], [#HEX:F.05.1A.00]
     function removeHighlight(meshes) {
         if (!meshes || meshes.length === 0) return;
         meshes.forEach(mesh => {
@@ -14550,10 +16684,16 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             });
         });
     }
+// === [#HEX:F.02.02.00] END ===
+// === [#HEX:F.02.02.00] END ===
 
     /**
      * Dinamikus Modál Állapot Vizsgálat (Garantálja, hogy nyitott felugró ablak esetén ne kattintsunk a színtérre)
      */
+// === [#HEX:F.05.18.00] START | name: isAnyModalOpen | lines: 16 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.18.00] START | name: isAnyModalOpen | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.137.00], [#HEX:F.04.138.00], [#HEX:F.04.139.00]
     function isAnyModalOpen() {
         const modalEls = document.querySelectorAll('#universal-npc-modal, #toborzo-modal, #harbormaster-modal, #fedelzet-modal, #info-modal, #monk-pin-modal, #system-message-modal, #log-entry-modal, .gamemode-modal');
         let openFound = false;
@@ -14570,10 +16710,14 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         }
         return true;
     }
+// === [#HEX:F.05.18.00] END ===
+// === [#HEX:F.05.18.00] END ===
 
     /**
      * Kurzor mozgatás & Épület Raycast Hover Eseménykezelő
      */
+// === [#HEX:F.04.137.00] START | name: onPointerMove | lines: 69 ===
+// @calls: [#HEX:F.02.09.00], [#HEX:F.02.08.00], [#HEX:F.05.2C.00], [#HEX:F.04.185.00] | @calledBy: none
     function onPointerMove(e) {
         if (isCinematicTransitioning || isAnyModalOpen()) {
             if (currentHoveredLocation) {
@@ -14643,19 +16787,25 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             currentHoveredLocation = hovered;
         }
     }
+// === [#HEX:F.04.137.00] END ===
 
     /**
      * Kattintás indítás (Kamera drag vs kattintás megkülönböztetéshez)
      */
+// === [#HEX:F.04.138.00] START | name: onPointerDown | lines: 5 ===
+// @calls: [#HEX:F.05.2C.00] | @calledBy: none
     function onPointerDown(e) {
         if (isCinematicTransitioning || isAnyModalOpen()) return;
         pointerDownPos = { x: e.clientX, y: e.clientY };
         pointerDownTime = performance.now();
     }
+// === [#HEX:F.04.138.00] END ===
 
     /**
      * Kattintás befejezés & Épületre fókuszáló átmenet elindítása
      */
+// === [#HEX:F.04.139.00] START | name: onPointerUp | lines: 10 ===
+// @calls: [#HEX:F.04.189.00], [#HEX:F.05.2C.00] | @calledBy: none
     function onPointerUp(e) {
         if (isCinematicTransitioning || isAnyModalOpen()) return;
         const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
@@ -14666,10 +16816,13 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             triggerLocationTransition(currentHoveredLocation);
         }
     }
+// === [#HEX:F.04.139.00] END ===
 
     /**
      * Filmes kameraközelítés és sötétedő átmenet aktiválása a kiválasztott épületre
      */
+// === [#HEX:F.04.13A.00] START | name: triggerLocationTransition | lines: 29 ===
+// @calls: [#HEX:F.04.18A.00] | @calledBy: none
     function triggerLocationTransition(location) {
         if (isCinematicTransitioning) return;
         isCinematicTransitioning = true;
@@ -14699,10 +16852,13 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             navigateToSubpage(location);
         }, 1100);
     }
+// === [#HEX:F.04.13A.00] END ===
 
     /**
      * Cél aloldal vagy funkció meghívása a központi rendszeren keresztül
      */
+// === [#HEX:F.04.13B.00] START | name: navigateToSubpage | lines: 126 ===
+// @calls: [#HEX:F.04.19E.00], [#HEX:F.04.1A6.00], [#HEX:F.05.20.00], [#HEX:F.05.2E.00], [#HEX:F.04.27.00] | @calledBy: none
     function navigateToSubpage(target) {
         const pageId = (typeof target === 'object' && target.id) ? target.id : target;
         // 0. Kikötőmester / Barba Negra egyedi multimédiás SVG modál megnyitása
@@ -14829,10 +16985,13 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             window.location.href = pageId + '.html';
         }
     }
+// === [#HEX:F.04.13B.00] END ===
 
     // ─── UNIVERZÁLIS NPC & TOBORZÓ MODAL VEZÉRLÉS (STANDALONE & BEÁGYAZOTT TÁMOGATÁS) ─────────────
     window.ACTIVE_NPC_CONFIG = {};
 
+// === [#HEX:F.05.19.00] START | name: closeUniversalNPCModal | lines: 45 ===
+// @calls: [#HEX:F.02.09.00], [#HEX:F.04.1CF.00] | @calledBy: none
     window.closeUniversalNPCModal = function (e) {
         if (e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -14878,7 +17037,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         isModalOpen = false;
         isCinematicTransitioning = false;
     };
+// === [#HEX:F.05.19.00] END ===
 
+// === [#HEX:F.05.1A.00] START | name: closeToborzoModal | lines: 51 ===
+// @calls: [#HEX:F.02.09.00], [#HEX:F.04.1CF.00] | @calledBy: none
     window.closeToborzoModal = function (e) {
         if (e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -14930,7 +17092,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         isModalOpen = false;
         isCinematicTransitioning = false;
     };
+// === [#HEX:F.05.1A.00] END ===
 
+// === [#HEX:F.04.13C.00] START | name: sendUniversalMessage | lines: 55 ===
+// @calls: [#HEX:B.01.03.00], [#HEX:D.01.79.00], [#HEX:F.04.1A1.00], [#HEX:F.04.1A0.00] | @calledBy: none
     window.sendUniversalMessage = function () {
         var input = document.getElementById('universal-chat-input');
         if (!input) return;
@@ -14986,7 +17151,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }, 800);
         }
     };
+// === [#HEX:F.04.13C.00] END ===
 
+// === [#HEX:F.04.13D.00] START | name: addBubbleToUniversal | lines: 59 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: none
     window.addBubbleToUniversal = function (sender, text, type) {
         var chatArea = document.getElementById('universal-chat-area');
         if (!chatArea) return;
@@ -15046,18 +17214,26 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             chatArea.scrollTop = chatArea.scrollHeight;
         }, 50);
     };
+// === [#HEX:F.04.13D.00] END ===
 
+// === [#HEX:F.04.13E.00] START | name: handleUniversalResponse | lines: 6 ===
+// @calls: [#HEX:F.04.1A0.00] | @calledBy: none
     window.handleUniversalResponse = function (response) {
         if (!response) return;
         var text = typeof response === 'string' ? response : (response.text || response.message || JSON.stringify(response));
         var name = (window.currentNPCConfig && window.currentNPCConfig.name) || 'NPC';
         window.addBubbleToUniversal(name, text, "incoming");
     };
+// === [#HEX:F.04.13E.00] END ===
 
     // ─── TOBORZÓBARAKK LOGIKA (INTERAKTÍV SVG + MP4 ANIMÁCIÓ + KIBER KONZOLOK) ───────────────────────────
     window.toborzoOwnedShips = [];
     window.toborzoAvailableCrew = [];
 
+// === [#HEX:F.04.13F.00] START | name: initToborzoSvgInteractions | lines: 40 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13F.00] START | name: initToborzoSvgInteractions | lines: 40 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.143.00]
     window.initToborzoSvgInteractions = function () {
         var svg = document.getElementById('toborzo-interactive-svg');
         var tooltip = document.getElementById('toborzo-tooltip');
@@ -15098,7 +17274,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             });
         });
     };
+// === [#HEX:F.04.13F.00] END ===
+// === [#HEX:F.04.13F.00] END ===
 
+// === [#HEX:F.04.140.00] START | name: openToborzoConsole | lines: 22 ===
+// @calls: [#HEX:F.03.0E.00] | @calledBy: none
     window.openToborzoConsole = function (type) {
         var cMunk = document.getElementById('toborzo-console-munkavallalo');
         var cKap = document.getElementById('toborzo-console-kapitany');
@@ -15121,7 +17301,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             window.renderSelectedShipCrew();
         }
     };
+// === [#HEX:F.04.140.00] END ===
 
+// === [#HEX:F.04.141.00] START | name: closeToborzoConsole | lines: 19 ===
+// @calls: [#HEX:F.05.31.00] | @calledBy: none
     window.closeToborzoConsole = function () {
         var cMunk = document.getElementById('toborzo-console-munkavallalo');
         var cKap = document.getElementById('toborzo-console-kapitany');
@@ -15141,7 +17324,12 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             el.style.display = 'flex';
         });
     };
+// === [#HEX:F.04.141.00] END ===
 
+// === [#HEX:F.04.142.00] START | name: hasRequiredRank | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.142.00] START | name: hasRequiredRank | lines: 24 ===
+// @calls: none | @calledBy: [#HEX:F.03.02.00], [#HEX:F.02.00.00], [#HEX:F.03.08.00]
     window.hasRequiredRank = function (playerRank, role) {
         var rankHierarchy = [
             '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
@@ -15166,7 +17354,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         }
         return playerIdx >= requiredIdx;
     };
+// === [#HEX:F.04.142.00] END ===
+// === [#HEX:F.04.142.00] END ===
 
+// === [#HEX:F.04.143.00] START | name: openToborzoBarakk | lines: 69 ===
+// @calls: [#HEX:B.03.1F.00], [#HEX:F.04.13.00], [#HEX:F.04.1A4.00], [#HEX:F.03.0E.00], [#HEX:D.01.79.00] | @calledBy: none
     window.openToborzoBarakk = function () {
         var modal = document.getElementById('toborzo-modal');
         if (modal) modal.style.display = 'flex';
@@ -15190,6 +17382,8 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         if (loadingEl) loadingEl.style.display = 'flex';
 
         if (typeof window.callBackend === 'function') {
+// === [#HEX:F.04.144.00] START | name: loadFallback | lines: 20 ===
+// @calls: [#HEX:F.03.0E.00], [#HEX:D.01.79.00], [#HEX:B.03.15.00], [#HEX:F.04.1A8.00] | @calledBy: none
             var loadFallback = function () {
                 window.callBackend('getToborzoData', [],
                     function (fbData) {
@@ -15210,6 +17404,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                     }
                 );
             };
+// === [#HEX:F.04.144.00] END ===
 
             window.callBackend('getToborzoFullMarketData', [],
                 function (data) {
@@ -15236,7 +17431,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }, 300);
         }
     };
+// === [#HEX:F.04.143.00] END ===
 
+// === [#HEX:F.04.145.00] START | name: renderToborzoFullMarket | lines: 200 ===
+// @calls: [#HEX:F.05.33.00], [#HEX:F.04.13.00], [#HEX:B.07.D3.00], [#HEX:B.07.D0.00], [#HEX:B.07.D1.00] | @calledBy: none
     window.renderToborzoFullMarket = function (data) {
         if (!data) return;
 
@@ -15437,7 +17635,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             });
         }
     };
+// === [#HEX:F.04.145.00] END ===
 
+// === [#HEX:F.07.13.00] START | name: savePlayerJobStatus | lines: 57 ===
+// @calls: [#HEX:F.04.1A4.00], [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.BC.00] | @calledBy: none
     window.savePlayerJobStatus = function () {
         var stSelect = document.getElementById('toborzo-status-select');
         var rSelect = document.getElementById('toborzo-role-select');
@@ -15495,7 +17696,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }, 400);
         }
     };
+// === [#HEX:F.07.13.00] END ===
 
+// === [#HEX:F.03.08.00] START | name: renderSelectedShipCrew | lines: 183 ===
+// @calls: [#HEX:F.04.1B2.00], [#HEX:F.04.1A5.00], [#HEX:F.04.1AA.00], [#HEX:F.05.32.00] | @calledBy: none
     window.renderSelectedShipCrew = function () {
         var select = document.getElementById('toborzo-myships-select');
         var detailsDiv = document.getElementById('toborzo-myship-details');
@@ -15525,6 +17729,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         var availableCrew = window.toborzoAvailableCrew || [];
         var nameDict = window.toborzoNameDict || (window.toborzoMarketData && window.toborzoMarketData.nameDict) || {};
 
+// === [#HEX:F.04.146.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.146.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.03.02.00], [#HEX:F.03.03.00], [#HEX:F.04.115.00], [#HEX:F.02.00.00], [#HEX:F.03.08.00]
         var resolvePirateName = function (email) {
             if (!email) return '';
             var lower = String(email).toLowerCase().trim();
@@ -15533,6 +17741,8 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             if (match && match.name) return match.name;
             return email;
         };
+// === [#HEX:F.04.146.00] END ===
+// === [#HEX:F.04.146.00] END ===
 
         var sortedCrew = availableCrew.slice().sort(function (a, b) {
             var nameA = resolvePirateName(a.email) || a.name || '';
@@ -15679,7 +17889,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             rolesContainer.appendChild(submitBtn);
         }
     };
+// === [#HEX:F.03.08.00] END ===
 
+// === [#HEX:F.04.147.00] START | name: submitBulkCrewAssignment | lines: 51 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
     window.submitBulkCrewAssignment = function (shipId) {
         var assignmentsMap = {
             "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [],
@@ -15731,15 +17944,26 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }, 400);
         }
     };
+// === [#HEX:F.04.147.00] END ===
 
     // ─── SUBMODAL ÉS TOBORZÓBARAKK PIACI LOGIKÁK ──────────────────────────────────
+// === [#HEX:F.05.1B.00] START | name: closeToborzoSubmodals | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.1B.00] START | name: closeToborzoSubmodals | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.141.00], [#HEX:F.04.148.00], [#HEX:F.04.14A.00]
     window.closeToborzoSubmodals = function () {
         var postModal = document.getElementById('toborzo-post-job-submodal');
         var directModal = document.getElementById('toborzo-direct-offer-submodal');
         if (postModal) postModal.style.display = 'none';
         if (directModal) directModal.style.display = 'none';
     };
+// === [#HEX:F.05.1B.00] END ===
+// === [#HEX:F.05.1B.00] END ===
 
+// === [#HEX:F.05.1C.00] START | name: openPostJobSubmodal | lines: 33 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.1C.00] START | name: openPostJobSubmodal | lines: 33 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.03.08.00]
     window.openPostJobSubmodal = function (shipId, shipName, role) {
         var submodal = document.getElementById('toborzo-post-job-submodal');
         if (!submodal) return;
@@ -15773,7 +17997,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
         submodal.style.display = 'flex';
     };
+// === [#HEX:F.05.1C.00] END ===
+// === [#HEX:F.05.1C.00] END ===
 
+// === [#HEX:F.04.148.00] START | name: submitPostJobOpening | lines: 39 ===
+// @calls: [#HEX:B.03.20.00], [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.05.31.00] | @calledBy: none
     window.submitPostJobOpening = function () {
         var shipId = document.getElementById('post-job-ship-id').value;
         var role = document.getElementById('post-job-role').value;
@@ -15813,7 +18041,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             );
         }
     };
+// === [#HEX:F.04.148.00] END ===
 
+// === [#HEX:F.05.1D.00] START | name: openDirectOfferSubmodal | lines: 24 ===
+// @calls: [#HEX:F.04.1AC.00] | @calledBy: none
     window.openDirectOfferSubmodal = function (matrozEmail, matrozName, matrozRole, matrozWage) {
         var submodal = document.getElementById('toborzo-direct-offer-submodal');
         if (!submodal) return;
@@ -15838,7 +18069,12 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         window.updateDirectOfferRolesDropdown();
         submodal.style.display = 'flex';
     };
+// === [#HEX:F.05.1D.00] END ===
 
+// === [#HEX:F.04.149.00] START | name: updateDirectOfferRolesDropdown | lines: 28 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.149.00] START | name: updateDirectOfferRolesDropdown | lines: 28 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.05.1D.00]
     window.updateDirectOfferRolesDropdown = function () {
         var shipSelect = document.getElementById('direct-offer-ship-select');
         var roleSelect = document.getElementById('direct-offer-role-select');
@@ -15867,7 +18103,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }
         });
     };
+// === [#HEX:F.04.149.00] END ===
+// === [#HEX:F.04.149.00] END ===
 
+// === [#HEX:F.04.14A.00] START | name: submitDirectJobOffer | lines: 43 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:B.07.D2.00], [#HEX:F.05.31.00] | @calledBy: none
     window.submitDirectJobOffer = function () {
         var targetMatrozEmail = document.getElementById('direct-offer-matroz-email').value;
         var shipSelect = document.getElementById('direct-offer-ship-select');
@@ -15911,7 +18151,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             );
         }
     };
+// === [#HEX:F.04.14A.00] END ===
 
+// === [#HEX:F.04.14B.00] START | name: applyForJobOpening | lines: 29 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
     window.applyForJobOpening = function (hirdetesId) {
         if (!confirm("Biztosan jelentkezni szeretnél erre a hajós pozícióra?")) return;
 
@@ -15941,7 +18184,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             );
         }
     };
+// === [#HEX:F.04.14B.00] END ===
 
+// === [#HEX:F.04.14C.00] START | name: reviewJobApplicant | lines: 30 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
     window.reviewJobApplicant = function (jelentkezesId, isApproved) {
         var actionName = isApproved ? "elfogadni és ajánlatot tenni a pozícióra" : "elutasítani ezt a jelentkezést";
         if (!confirm("Biztosan szeretnéd " + actionName + "?")) return;
@@ -15972,7 +18218,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             );
         }
     };
+// === [#HEX:F.04.14C.00] END ===
 
+// === [#HEX:F.04.14D.00] START | name: respondToJobOffer | lines: 32 ===
+// @calls: [#HEX:F.04.1A6.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: none
     window.respondToJobOffer = function (ajanlatId, isAccepted) {
         var promptMsg = isAccepted ?
             "Biztosan ELFOGADOD az állásajánlatot? Ezzel a szerződés azonnal megkötésre kerül, és szolgálatba lépsz a hajón!" :
@@ -16005,6 +18254,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             );
         }
     };
+// === [#HEX:F.04.14D.00] END ===
 
 
     // ─── FEDÉLZET MODAL LOGIKA & IRÁNYÍTÁS (STANDALONE & BEÁGYAZOTT TÁMOGATÁS) ────────
@@ -16015,6 +18265,8 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
     window.fedelzetExpeditionIsland = '';
     window.fedelzetExpeditionBook = '';
 
+// === [#HEX:F.04.14E.00] START | name: fedelzetAddChatMessage | lines: 37 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: none
     window.fedelzetAddChatMessage = function (sender, text, type) {
         var history = document.getElementById('fedelzet-deck-chat-history');
         if (!history) return;
@@ -16052,7 +18304,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             history.scrollTop = history.scrollHeight;
         }, 30);
     };
+// === [#HEX:F.04.14E.00] END ===
 
+// === [#HEX:F.05.1E.00] START | name: openFedelzetModal | lines: 106 ===
+// @calls: [#HEX:F.04.1B4.00], [#HEX:F.07.15.00] | @calledBy: none
     window.openFedelzetModal = function () {
         console.log("🚢 3D Kikötő: Fedélzet modal megnyitása (Opálos háttér)");
         var modal = document.getElementById('fedelzet-modal');
@@ -16159,7 +18414,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }
         }
     };
+// === [#HEX:F.05.1E.00] END ===
 
+// === [#HEX:F.05.1F.00] START | name: closeFedelzetModal | lines: 48 ===
+// @calls: [#HEX:F.02.09.00], [#HEX:F.04.1CF.00] | @calledBy: none
     window.closeFedelzetModal = function (e) {
         if (e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -16208,7 +18466,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         isModalOpen = false;
         isCinematicTransitioning = false;
     };
+// === [#HEX:F.05.1F.00] END ===
 
+// === [#HEX:F.04.14F.00] START | name: fedelzetInit | lines: 91 ===
+// @calls: [#HEX:F.06.54.00], [#HEX:B.03.14.00], [#HEX:D.01.79.00], [#HEX:F.04.1B1.00], [#HEX:F.03.09.00] | @calledBy: [#HEX:F.02.00.00]
     window.fedelzetInit = function () {
         var loadingEl = document.getElementById('fedelzet-loading');
         if (loadingEl) loadingEl.style.display = 'flex';
@@ -16300,7 +18561,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }, 400);
         }
     };
+// === [#HEX:F.04.14F.00] END ===
 
+// === [#HEX:F.03.09.00] START | name: fedelzetSelectShip | lines: 20 ===
+// @calls: [#HEX:F.04.1B1.00] | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.14F.00]
     window.fedelzetSelectShip = function (shipId, isInitial) {
         var ship = (window.fedelzetUserShips || []).find(function (s) { return s.id === shipId; });
         if (ship) {
@@ -16321,7 +18585,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             window.fedelzetAddChatMessage("Kikötőmester", msg, "incoming");
         }
     };
+// === [#HEX:F.03.09.00] END ===
 
+// === [#HEX:F.04.150.00] START | name: fedelzetPrepareDeparture | lines: 61 ===
+// @calls: [#HEX:F.04.1B1.00] | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.153.00]
     window.fedelzetPrepareDeparture = function (gameType) {
         window.fedelzetSelectedGameType = gameType;
         var targetInput = document.getElementById('fedelzet-departure-target');
@@ -16383,7 +18650,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             chatInput.focus();
         }
     };
+// === [#HEX:F.04.150.00] END ===
 
+// === [#HEX:F.04.151.00] START | name: fedelzetExecuteDeparture | lines: 109 ===
+// @calls: [#HEX:F.06.54.00], [#HEX:F.04.152.00], [#HEX:F.05.35.00], [#HEX:B.07.C2.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.153.00]
     window.fedelzetExecuteDeparture = function () {
         var gameType = window.fedelzetSelectedGameType || 'Hártyahalászat';
         var ship = window.fedelzetSelectedShip;
@@ -16447,6 +18717,8 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             proceedWithDeparture();
         }
 
+// === [#HEX:F.04.152.00] START | name: proceedWithDeparture | lines: 45 ===
+// @calls: [#HEX:F.06.54.00], [#HEX:F.05.35.00], [#HEX:B.07.C2.00], [#HEX:F.04.27.00], [#HEX:F.04.1B1.00] | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.151.00]
         function proceedWithDeparture() {
             if (backendCaller) {
                 backendCaller('requestDeparture', [ship.id, gameType, finalTarget],
@@ -16492,8 +18764,12 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                 }, 400);
             }
         }
+// === [#HEX:F.04.152.00] END ===
     };
+// === [#HEX:F.04.151.00] END ===
 
+// === [#HEX:F.04.153.00] START | name: fedelzetSendDeckChat | lines: 80 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:F.04.151.00], [#HEX:F.04.1B1.00], [#HEX:F.04.150.00] | @calledBy: [#HEX:F.02.00.00]
     window.fedelzetSendDeckChat = function () {
         var input = document.getElementById('fedelzet-deck-chat-input');
         if (!input) return;
@@ -16574,7 +18850,10 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             window.fedelzetAddChatMessage("Legénység", reply, "incoming");
         }, 500);
     };
+// === [#HEX:F.04.153.00] END ===
 
+// === [#HEX:F.04.154.00] START | name: fedelzetJumpToSavedState | lines: 8 ===
+// @calls: [#HEX:F.04.27.00], [#HEX:F.05.35.00] | @calledBy: [#HEX:F.02.00.00]
     window.fedelzetJumpToSavedState = function () {
         window.closeFedelzetModal();
         if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
@@ -16583,6 +18862,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             window.location.href = 'minigame_fishing.html';
         }
     };
+// === [#HEX:F.04.154.00] END ===
 
     // ─── 14 DB MÓLÓ, HÍD ÉS HAJÓ ELEM INTERAKTÍV DEFINÍCIÓJA (FEDÉLZET) ────────────
     const deckInteractiveDefs = [
@@ -16602,6 +18882,8 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         { name: "SM_Veh_Boat_Medium_01_Hull_Attachments", fallbackPos: new THREE.Vector3(-45.7, -1.0, 14.7), camTarget: new THREE.Vector3(-53.0, 3.2, 14.7), lookAt: new THREE.Vector3(-45.7, 1.5, 14.7) }
     ];
 
+// === [#HEX:F.01.09.00] START | name: registerDeckInteractiveElements | lines: 58 ===
+// @calls: [#HEX:F.05.34.00] | @calledBy: none
     function registerDeckInteractiveElements() {
         if (!scene) return;
         deckInteractiveDefs.forEach(def => {
@@ -16660,11 +18942,14 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }
         });
     }
+// === [#HEX:F.01.09.00] END ===
 
     /**
      * 🌀 Dinamikus Hullámgyűrű Generátor (Módszer 2: Dynamic Wave & Ripple System)
      * Koncentrikus, kifelé terjedő animált hullámokat generál a hajók, mólók, hidak és partvonal körül.
      */
+// === [#HEX:F.03.0A.00] START | name: createBoatRipple | lines: 95 ===
+// @calls: [#HEX:A.05.17.00] | @calledBy: none
     function createBoatRipple(targetOrPos, sizeX, sizeZ, speed, intensity) {
         if (typeof speed === 'undefined') speed = 1.0;
         if (typeof intensity === 'undefined') intensity = 1.0;
@@ -16760,8 +19045,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             material: rippleMat
         });
     }
+// === [#HEX:F.03.0A.00] END ===
 
     // 1. Háromdimenziós Tér Inicializálása
+// === [#HEX:F.04.155.00] START | name: init | lines: 116 ===
+// @calls: [#HEX:F.04.188.00], [#HEX:F.02.0A.00], [#HEX:D.01.12.00], [#HEX:F.04.1C5.00], [#HEX:F.04.1E9.00] | @calledBy: none
     function init() {
         const container = document.getElementById('webgl-canvas-container');
 
@@ -16878,8 +19166,13 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         // Render ciklus indítása
         animate();
     }
+// === [#HEX:F.04.155.00] END ===
 
     // Standard Fényforrások (Alapbeállítások: Napfény 1.0, Dőlésszög 900, Hemi 1.6, Ambient 0.7, IBL 1.0, Köd 0.002)
+// === [#HEX:F.02.03.00] START | name: setupLighting | lines: 30 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.02.03.00] START | name: setupLighting | lines: 30 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.155.00]
     function setupLighting() {
         // Félgömb / Szórt Égbolt Fény (felül égkék, alul meleg föld/tenger tónus - Hemi: 1.6)
         const hemiLight = new THREE.HemisphereLight(0xffffff, 0x3d4a36, 1.6);
@@ -16910,11 +19203,17 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         window._kikotoSunLight = sunLight;
 
     }
+// === [#HEX:F.02.03.00] END ===
+// === [#HEX:F.02.03.00] END ===
 
     /**
      * Napszak Szerinti Környezeti és Fény Dinamika (Tutorial & Hártyahalász Motor)
      * A böngésző helyi órája alapján finoman skálázza a fényeket a beállított alapértékekig.
      */
+// === [#HEX:F.02.04.00] START | name: updateEnvironmentLighting | lines: 188 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.02.04.00] START | name: updateEnvironmentLighting | lines: 188 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.155.00], [#HEX:F.04.156.00]
     function updateEnvironmentLighting() {
         const now = new Date();
         const hrs = now.getHours() + now.getMinutes() / 60;
@@ -17103,8 +19402,12 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }
         }
     }
+// === [#HEX:F.02.04.00] END ===
+// === [#HEX:F.02.04.00] END ===
 
     // Modell Betöltő (GLTFLoader)
+// === [#HEX:F.04.156.00] START | name: loadHarborModel | lines: 1505 ===
+// @calls: [#HEX:F.04.13.00], [#HEX:F.04.1A6.00], [#HEX:D.01.12.00], [#HEX:F.04.1C6.00], [#HEX:F.03.14.00] | @calledBy: none
     function loadHarborModel() {
         const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb';
         const loader = new GLTFLoader();
@@ -17242,12 +19545,18 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
                 let tavernaLampNode = harborModel.getObjectByName("Taverna001") || harborModel.getObjectByName("Taverna.001");
                 let tavernaLampMaterials = [];
 
+// === [#HEX:F.04.157.00] START | name: isTavernaBulb | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.157.00] START | name: isTavernaBulb | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.156.00]
                 function isTavernaBulb(mat) {
                     if (!mat || !mat.name) return false;
                     const name = mat.name.trim().toLowerCase();
                     // Kifejezetten a .001 izzó anyag azonosítása, a sima kocsmamaterial épületanyag KIZÁRÁSÁVAL!
                     return name === "kocsmamaterial.001" || name.startsWith("kocsmamaterial.001") || name.startsWith("kocsma_material.001");
                 }
+// === [#HEX:F.04.157.00] END ===
+// === [#HEX:F.04.157.00] END ===
 
                 harborModel.traverse(node => {
                     if (node.name && (node.name === "Taverna001" || node.name === "Taverna.001" || node.name.includes("Taverna001") || node.name.includes("Taverna.001"))) {
@@ -18610,10 +20919,13 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             }
         );
     }
+// === [#HEX:F.04.156.00] END ===
 
     /**
      * Alapértelmezett Kikötő Kamera Beállítás
      */
+// === [#HEX:F.02.05.00] START | name: setupCameraToModel | lines: 15 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: none
     function setupCameraToModel(model) {
         // A kiválasztott tökéletes kameraállás és fókuszpont
         camera.position.set(-65.7, 10.9, 1.6);
@@ -18629,8 +20941,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         defaultCameraPos.copy(camera.position);
         defaultTargetPos.copy(controls.target);
     }
+// === [#HEX:F.02.05.00] END ===
 
     // Globális kamera visszaállító
+// === [#HEX:F.02.06.00] START | name: resetPortCamera | lines: 7 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: none
     window.resetPortCamera = function () {
         if (controls && defaultCameraPos.length() > 0) {
             camera.position.copy(defaultCameraPos);
@@ -18638,7 +20953,18 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             controls.update();
         }
     };
+// === [#HEX:F.02.06.00] END ===
 
+// === [#HEX:F.04.158.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.158.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.158.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.169.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.169.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -18646,7 +20972,14 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
 
     }
+// === [#HEX:F.04.169.00] END ===
+// === [#HEX:F.04.169.00] END ===
+// === [#HEX:F.04.158.00] END ===
+// === [#HEX:F.04.158.00] END ===
+// === [#HEX:F.04.158.00] END ===
 
+// === [#HEX:F.04.159.00] START | name: animate | lines: 260 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: none
     function animate() {
         if (!kikoto3DRunning) return;
         kikotoAnimFrameId = requestAnimationFrame(animate);
@@ -18907,9 +21240,12 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             renderer.render(scene, camera);
         }
     }
+// === [#HEX:F.04.159.00] END ===
 
     // Indítás
 
+// === [#HEX:F.05.20.00] START | name: resetKikotoViewport | lines: 67 ===
+// @calls: [#HEX:F.02.09.00], [#HEX:F.04.1E9.00], [#HEX:F.04.14.00], [#HEX:F.04.1CF.00] | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.13B.00]
     function resetKikotoViewport() {
         console.log("⚓ 3D Kikötő Viewport Állapot Visszaállítása (0 ms ébresztés)");
         isCinematicTransitioning = false;
@@ -18977,6 +21313,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             if (m) m.style.display = 'none';
         });
     }
+// === [#HEX:F.05.20.00] END ===
 
     // Inicializálás hívása
     init();
@@ -18997,6 +21334,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         }
     });
 }
+// === [#HEX:F.02.00.00] END ===
 
 
 
@@ -19006,6 +21344,8 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 var authTerminal3DRunning = false;
 var authTerminal3DInitialized = false;
 
+// === [#HEX:F.01.0A.00] START | name: initAuthTerminal3D | lines: 29 ===
+// @calls: [#HEX:F.01.0B.00], [#HEX:F.04.1E8.00] | @calledBy: [#HEX:F.01.01.00], [#HEX:F.01.02.00]
 function initAuthTerminal3D() {
     if (authTerminal3DRunning || authTerminal3DInitialized) {
         if (typeof window.reset3DTerminalState === 'function') {
@@ -19035,8 +21375,11 @@ function initAuthTerminal3D() {
         console.error("❌ Hiba a 3D Beléptető Terminál modulok betöltésekor:", err);
     });
 }
+// === [#HEX:F.01.0A.00] END ===
 window.initAuthTerminal3D = initAuthTerminal3D;
 
+// === [#HEX:F.01.0B.00] START | name: runAuthTerminal3DModule | lines: 1874 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.02.0E.00], [#HEX:F.08.0A.00], [#HEX:F.06.55.00], [#HEX:F.04.1C9.00] | @calledBy: [#HEX:F.01.0A.00]
 function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     if (authTerminal3DRunning) return;
     authTerminal3DRunning = true;
@@ -19077,6 +21420,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
 
     // Nyelvi címkék kiolvasása a központi web_fordito.js szótárból
+// === [#HEX:F.04.15A.00] START | name: getL | lines: 7 ===
+// @calls: [#HEX:F.04.181.00] | @calledBy: none
     function getL() {
         if (typeof window.getTerminalLabels === 'function') {
             var activeLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : (localStorage.getItem('siteLang') || 'hu');
@@ -19084,8 +21429,11 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         }
         return {};
     }
+// === [#HEX:F.04.15A.00] END ===
 
     // --- JELSZÓ LÁTHATÓSÁG VÁLTÓ ---
+// === [#HEX:F.09.06.00] START | name: togglePasswordVisibility | lines: 21 ===
+// @calls: [#HEX:F.01.00.00], [#HEX:F.04.1E5.00] | @calledBy: none
     function togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
         const modalPassInput = document.querySelector('#m-login-password');
@@ -19107,8 +21455,11 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
         setTerminalStatus(isPasswordVisible ? 'status_pass_visible' : 'status_pass_masked', false);
     }
+// === [#HEX:F.09.06.00] END ===
     window.togglePasswordVisibility = togglePasswordVisibility;
 
+// === [#HEX:F.09.07.00] START | name: setupPasswordToggle | lines: 9 ===
+// @calls: [#HEX:F.09.0B.00] | @calledBy: none
     function setupPasswordToggle() {
         const toggleModalPass = document.querySelector('#toggle-modal-password');
         if (toggleModalPass) {
@@ -19118,8 +21469,11 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             });
         }
     }
+// === [#HEX:F.09.07.00] END ===
 
     // --- THREE.JS INICIALIZÁLÁS ---
+// === [#HEX:F.04.15B.00] START | name: initThree | lines: 73 ===
+// @calls: [#HEX:F.04.1D0.00], [#HEX:F.05.37.00], [#HEX:F.04.1CB.00], [#HEX:F.05.22.00], [#HEX:F.09.0C.00] | @calledBy: none
     function initThree() {
         const container = document.getElementById('webgl-container');
         if (!container) return;
@@ -19193,8 +21547,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         // Render loop indítása
         animate(0);
     }
+// === [#HEX:F.04.15B.00] END ===
 
     // --- KOZMOSZ GÖMB ---
+// === [#HEX:F.04.15C.00] START | name: initCosmosSphere | lines: 34 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.15C.00] START | name: initCosmosSphere | lines: 34 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
     function initCosmosSphere() {
         const textureLoader = new THREE.TextureLoader();
         const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/images/galaxiskep_globusba.jpg';
@@ -19229,16 +21588,23 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         cosmosSphere.rotation.y = -Math.PI / 2;
         scene.add(cosmosSphere);
     }
+// === [#HEX:F.04.15C.00] END ===
+// === [#HEX:F.04.15C.00] END ===
 
     // --- METEOR / ÜSTÖKÖS KEZELŐ ---
     class MeteorManager {
+// === [#HEX:F.04.15D.00] START | name: constructor | lines: 6 ===
+// @calls: [#HEX:F.04.1CD.00] | @calledBy: none
         constructor(targetScene, radius) {
             this.scene = targetScene;
             this.radius = radius - 2;
             this.activeMeteors = [];
             this.scheduleNext();
         }
+// === [#HEX:F.04.15D.00] END ===
 
+// === [#HEX:F.04.15E.00] START | name: scheduleNext | lines: 7 ===
+// @calls: [#HEX:F.04.1CE.00] | @calledBy: none
         scheduleNext() {
             const delay = 3500 + Math.random() * 6000;
             setTimeout(() => {
@@ -19246,7 +21612,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 this.scheduleNext();
             }, delay);
         }
+// === [#HEX:F.04.15E.00] END ===
 
+// === [#HEX:F.04.15F.00] START | name: spawn | lines: 31 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.15F.00] START | name: spawn | lines: 31 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15E.00]
         spawn() {
             const startPos = new THREE.Vector3(
                 (Math.random() - 0.5) * this.radius * 1.6,
@@ -19278,7 +21649,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 decay: 0.012 + Math.random() * 0.01
             });
         }
+// === [#HEX:F.04.15F.00] END ===
+// === [#HEX:F.04.15F.00] END ===
 
+// === [#HEX:F.04.160.00] START | name: update | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.160.00] START | name: update | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.05.14.00], [#HEX:F.02.00.00], [#HEX:F.04.13B.00], [#HEX:F.05.19.00], [#HEX:F.05.1A.00]
         update() {
             for (let i = this.activeMeteors.length - 1; i >= 0; i--) {
                 const m = this.activeMeteors[i];
@@ -19294,9 +21671,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 }
             }
         }
+// === [#HEX:F.04.160.00] END ===
+// === [#HEX:F.04.160.00] END ===
     }
 
     // --- DINAMIKUS KIJELZŐ TEXTÚRA (CANVAS) ---
+// === [#HEX:F.04.161.00] START | name: initScreenCanvasTexture | lines: 14 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: none
     function initScreenCanvasTexture() {
         if (!screenCanvas) return;
         screenTexture = new THREE.CanvasTexture(screenCanvas);
@@ -19311,8 +21692,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
         updateScreenDisplay();
     }
+// === [#HEX:F.04.161.00] END ===
 
     // --- 3D Képernyő Szem-ikon rajzoló ---
+// === [#HEX:F.04.162.00] START | name: drawEyeIconOnCanvas | lines: 31 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.162.00] START | name: drawEyeIconOnCanvas | lines: 31 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00]
     function drawEyeIconOnCanvas(context, cx, cy, isVisible) {
         context.save();
         context.fillStyle = isVisible ? 'rgba(255, 221, 0, 0.25)' : 'rgba(0, 255, 204, 0.14)';
@@ -19344,8 +21730,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         }
         context.restore();
     }
+// === [#HEX:F.04.162.00] END ===
+// === [#HEX:F.04.162.00] END ===
 
     // Képernyő újra-rajzolása többnyelvű feliratokkal (1.5x NÖVELT BETŰMÉRET & ÚJ TABSOR)
+// === [#HEX:F.07.14.00] START | name: updateScreenDisplay | lines: 126 ===
+// @calls: [#HEX:F.04.1C9.00], [#HEX:F.04.1D2.00], [#HEX:F.04.1D1.00], [#HEX:F.04.1D4.00], [#HEX:F.04.1D3.00] | @calledBy: none
     function updateScreenDisplay() {
         if (!screenCanvas || !ctx) return;
         const w = screenCanvas.width;
@@ -19472,7 +21862,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
         if (screenTexture) screenTexture.needsUpdate = true;
     }
+// === [#HEX:F.07.14.00] END ===
 
+// === [#HEX:F.04.163.00] START | name: drawTerminalTab | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.163.00] START | name: drawTerminalTab | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00]
     function drawTerminalTab(context, x, y, w, h, text, isActive, fontSize = 24) {
         context.fillStyle = isActive ? 'rgba(0, 255, 204, 0.32)' : 'rgba(0, 255, 204, 0.06)';
         context.fillRect(x, y, w, h);
@@ -19486,7 +21881,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         context.fillText(text || '', x + w / 2, y + (h / 2) + 8);
         context.textAlign = 'left';
     }
+// === [#HEX:F.04.163.00] END ===
+// === [#HEX:F.04.163.00] END ===
 
+// === [#HEX:F.04.164.00] START | name: drawField | lines: 17 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.164.00] START | name: drawField | lines: 17 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00]
     function drawField(context, x, y, label, value, isActive, cursor, boxHeight = 54, labelSize = 22, valueSize = 34, boxOffset = 6) {
         context.fillStyle = isActive ? '#00ffcc' : 'rgba(0, 255, 204, 0.7)';
         context.font = 'bold ' + labelSize + 'px "Orbitron", "Segoe UI", sans-serif';
@@ -19504,7 +21905,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         const displayText = (value || '') + (isActive ? cursor : '');
         context.fillText(displayText, x + 16, boxY + (boxHeight / 2) + (valueSize * 0.35));
     }
+// === [#HEX:F.04.164.00] END ===
+// === [#HEX:F.04.164.00] END ===
 
+// === [#HEX:F.04.165.00] START | name: drawActionButton | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.165.00] START | name: drawActionButton | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.07.14.00]
     function drawActionButton(context, x, y, w, h, text, isDanger = false, fontSize = 36) {
         context.fillStyle = isDanger ? '#661111' : '#004d40';
         context.fillRect(x, y, w, h);
@@ -19518,8 +21925,14 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         context.fillText(text || '', x + w / 2, y + (h / 2) + (fontSize * 0.35));
         context.textAlign = 'left';
     }
+// === [#HEX:F.04.165.00] END ===
+// === [#HEX:F.04.165.00] END ===
 
     // InfoMesh és ScreenMesh Anyag és UV kezelők
+// === [#HEX:F.03.0B.00] START | name: applyInfoMeshMaterial | lines: 78 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.0B.00] START | name: applyInfoMeshMaterial | lines: 78 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00]
     function applyInfoMeshMaterial(mesh) {
         if (!mesh || !mesh.geometry) return;
         try {
@@ -19598,8 +22011,14 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             console.warn('Hiba az InfoMesh anyag hozzárendelésekor:', e);
         }
     }
+// === [#HEX:F.03.0B.00] END ===
+// === [#HEX:F.03.0B.00] END ===
 
     // Célkereszt ikon generálása FokuszMesh gombra
+// === [#HEX:F.04.166.00] START | name: createCrosshairCanvas | lines: 76 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.166.00] START | name: createCrosshairCanvas | lines: 76 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0C.00]
     function createCrosshairCanvas() {
         const canvas = document.createElement('canvas');
         canvas.width = 512;
@@ -19676,7 +22095,11 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
         return canvas;
     }
+// === [#HEX:F.04.166.00] END ===
+// === [#HEX:F.04.166.00] END ===
 
+// === [#HEX:F.03.0C.00] START | name: applyFokuszMeshMaterial | lines: 61 ===
+// @calls: [#HEX:F.04.1D5.00] | @calledBy: none
     function applyFokuszMeshMaterial(mesh) {
         if (!mesh || !mesh.geometry) return;
         try {
@@ -19738,8 +22161,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             console.warn('Hiba a FokuszMesh anyag hozzárendelésekor:', e);
         }
     }
+// === [#HEX:F.03.0C.00] END ===
 
     // Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője
+// === [#HEX:F.03.0D.00] START | name: applyLangMeshMaterial | lines: 79 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.0D.00] START | name: applyLangMeshMaterial | lines: 79 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00]
     function applyLangMeshMaterial(mesh, lang) {
         if (!mesh || !mesh.geometry) return;
         try {
@@ -19819,8 +22247,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             console.warn('Hiba a nyelvválasztó material hozzárendelésekor (' + lang + '):', e);
         }
     }
+// === [#HEX:F.03.0D.00] END ===
+// === [#HEX:F.03.0D.00] END ===
 
     // --- GLB MODELL BETÖLTÉSE ---
+// === [#HEX:F.04.167.00] START | name: loadDeviceModel | lines: 120 ===
+// @calls: [#HEX:F.05.3B.00], [#HEX:F.04.1D7.00], [#HEX:F.03.15.00], [#HEX:F.04.1D8.00], [#HEX:F.03.17.00] | @calledBy: none
     function loadDeviceModel() {
         const gltfLoader = new GLTFLoader();
         const modelPaths = [
@@ -19830,6 +22262,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb'
         ];
 
+// === [#HEX:F.04.168.00] START | name: tryLoad | lines: 108 ===
+// @calls: [#HEX:F.05.3B.00], [#HEX:F.03.15.00], [#HEX:F.04.1D8.00], [#HEX:F.03.17.00], [#HEX:F.03.16.00] | @calledBy: none
         function tryLoad(index) {
             if (index >= modelPaths.length) {
                 console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
@@ -19938,10 +22372,16 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 }
             );
         }
+// === [#HEX:F.04.168.00] END ===
 
         tryLoad(0);
     }
+// === [#HEX:F.04.167.00] END ===
 
+// === [#HEX:F.04.169.00] START | name: createFallbackDevice | lines: 16 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.169.00] START | name: createFallbackDevice | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00]
     function createFallbackDevice() {
         const group = new THREE.Group();
         const bodyGeo = new THREE.BoxGeometry(2.8, 1.8, 1.2);
@@ -19958,8 +22398,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         scene.add(group);
         deviceModel = group;
     }
+// === [#HEX:F.04.169.00] END ===
+// === [#HEX:F.04.169.00] END ===
 
     // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
+// === [#HEX:F.05.21.00] START | name: setupDirectKeyboardAndRaycast | lines: 164 ===
+// @calls: [#HEX:F.04.1DD.00], [#HEX:F.04.1E5.00], [#HEX:F.07.17.00], [#HEX:F.04.1DC.00], [#HEX:F.04.1E4.00] | @calledBy: none
     function setupDirectKeyboardAndRaycast() {
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -20124,7 +22568,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             });
         }
     }
+// === [#HEX:F.05.21.00] END ===
 
+// === [#HEX:F.05.22.00] START | name: onVisualViewportResize | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
     function onVisualViewportResize() {
         if (!renderer || !camera) return;
         const vv = window.visualViewport;
@@ -20134,8 +22581,13 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             renderer.setSize(vv.width, vv.height);
         }
     }
+// === [#HEX:F.05.22.00] END ===
 
+// === [#HEX:F.05.23.00] START | name: setupModalInputSync | lines: 19 ===
+// @calls: [#HEX:F.07.17.00], [#HEX:F.01.00.00], [#HEX:F.05.38.00], [#HEX:F.04.1D9.00] | @calledBy: none
     function setupModalInputSync() {
+// === [#HEX:F.04.16A.00] START | name: bindInput | lines: 9 ===
+// @calls: [#HEX:F.05.38.00], [#HEX:F.07.17.00] | @calledBy: none
         const bindInput = (id, mode, key) => {
             const el = document.getElementById(id);
             if (!el) return;
@@ -20145,6 +22597,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 updateScreenDisplay();
             });
         };
+// === [#HEX:F.04.16A.00] END ===
 
         bindInput('m-login-username', 'LOGIN', 'username');
         bindInput('m-login-password', 'LOGIN', 'password');
@@ -20154,12 +22607,21 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         bindInput('m-del-email', 'DEREGISTER', 'email');
         bindInput('m-del-reason', 'DEREGISTER', 'reason');
     }
+// === [#HEX:F.05.23.00] END ===
 
+// === [#HEX:F.05.24.00] START | name: syncModalInputsFrom3D | lines: 14 ===
+// @calls: [#HEX:F.01.00.00], [#HEX:D.01.57.00] | @calledBy: none
     function syncModalInputsFrom3D() {
+// === [#HEX:F.04.16B.00] START | name: setVal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.16B.00] START | name: setVal | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.24.00]
         const setVal = (id, val) => {
             const el = document.getElementById(id);
             if (el && el.value !== val) el.value = val || '';
         };
+// === [#HEX:F.04.16B.00] END ===
+// === [#HEX:F.04.16B.00] END ===
 
         setVal('m-login-username', formValues.LOGIN.username);
         setVal('m-login-password', formValues.LOGIN.password);
@@ -20169,7 +22631,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         setVal('m-del-email', formValues.DEREGISTER.email);
         setVal('m-del-reason', formValues.DEREGISTER.reason);
     }
+// === [#HEX:F.05.24.00] END ===
 
+// === [#HEX:F.04.16C.00] START | name: handleScreenUVClick | lines: 84 ===
+// @calls: [#HEX:F.04.1DD.00], [#HEX:F.04.1E5.00], [#HEX:F.07.17.00], [#HEX:F.04.1DC.00], [#HEX:F.09.0D.00] | @calledBy: none
     function handleScreenUVClick(uv, clickX, clickY) {
         const pxX = uv.x * 1024;
         const pxY = (1 - uv.y) * 512;
@@ -20254,7 +22719,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
         updateScreenDisplay();
     }
+// === [#HEX:F.04.16C.00] END ===
 
+// === [#HEX:F.04.16D.00] START | name: blurVirtualInput | lines: 13 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: none
     function blurVirtualInput() {
         if (!virtualInput) return;
         try {
@@ -20268,7 +22736,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             } catch (e) { }
         }
     }
+// === [#HEX:F.04.16D.00] END ===
 
+// === [#HEX:F.04.16E.00] START | name: focusVirtualInput | lines: 39 ===
+// @calls: [#HEX:F.04.1DE.00], [#HEX:F.04.1E1.00] | @calledBy: none
     function focusVirtualInput(touchX, touchY) {
         if (!virtualInput) return;
         const targetFieldKey = getActiveFieldKey();
@@ -20292,6 +22763,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             virtualInput.inputMode = 'text';
         }
 
+// === [#HEX:F.04.16F.00] START | name: doFocus | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.16F.00] START | name: doFocus | lines: 11 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.16E.00]
         const doFocus = () => {
             try {
                 virtualInput.focus({ preventScroll: true });
@@ -20303,12 +22778,17 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 try { virtualInput.focus(); } catch (err) { }
             }
         };
+// === [#HEX:F.04.16F.00] END ===
+// === [#HEX:F.04.16F.00] END ===
 
         doFocus();
         setTimeout(doFocus, 30);
         setTimeout(doFocus, 100);
     }
+// === [#HEX:F.04.16E.00] END ===
 
+// === [#HEX:F.04.170.00] START | name: handleDirectKeyInput | lines: 56 ===
+// @calls: [#HEX:F.04.1DD.00], [#HEX:F.04.1E5.00], [#HEX:F.07.17.00], [#HEX:F.04.1C9.00], [#HEX:F.09.0D.00] | @calledBy: none
     function handleDirectKeyInput(event) {
         if (!event || typeof event.key === 'undefined' || event.key === null) return;
         const key = event.key;
@@ -20365,7 +22845,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             updateScreenDisplay();
         }
     }
+// === [#HEX:F.04.170.00] END ===
 
+// === [#HEX:F.04.171.00] START | name: syncVirtualInput | lines: 8 ===
+// @calls: [#HEX:F.05.38.00], [#HEX:F.07.17.00], [#HEX:F.04.1E1.00] | @calledBy: none
     function syncVirtualInput(val) {
         let targetFieldKey = getActiveFieldKey();
         if (!targetFieldKey) return;
@@ -20374,7 +22857,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         syncModalInputsFrom3D();
         updateScreenDisplay();
     }
+// === [#HEX:F.04.171.00] END ===
 
+// === [#HEX:F.04.172.00] START | name: getActiveFieldKey | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.172.00] START | name: getActiveFieldKey | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.16E.00], [#HEX:F.04.170.00], [#HEX:F.04.171.00]
     function getActiveFieldKey() {
         if (currentMode === 'LOGIN') {
             return (activeFieldIndex === 0) ? 'username' : 'password';
@@ -20387,8 +22875,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         }
         return null;
     }
+// === [#HEX:F.04.172.00] END ===
+// === [#HEX:F.04.172.00] END ===
 
     // --- MÓDVÁLTÁS ---
+// === [#HEX:F.09.08.00] START | name: switchMode | lines: 36 ===
+// @calls: [#HEX:F.04.1E5.00], [#HEX:F.07.17.00], [#HEX:F.01.00.00], [#HEX:F.05.38.00] | @calledBy: none
     function switchMode(mode) {
         if (currentMode !== 'INFO' && mode !== 'INFO') {
             previousMode = currentMode;
@@ -20425,7 +22917,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         syncModalInputsFrom3D();
         updateScreenDisplay();
     }
+// === [#HEX:F.09.08.00] END ===
 
+// === [#HEX:F.04.173.00] START | name: toggle3DInfoMode | lines: 8 ===
+// @calls: [#HEX:F.09.0D.00] | @calledBy: none
     function toggle3DInfoMode() {
         if (currentMode === 'INFO') {
             switchMode(previousMode || 'LOGIN');
@@ -20434,7 +22929,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             switchMode('INFO');
         }
     }
+// === [#HEX:F.04.173.00] END ===
 
+// === [#HEX:F.04.174.00] START | name: executeCurrentMode | lines: 8 ===
+// @calls: [#HEX:F.06.0A.00], [#HEX:F.01.11.00], [#HEX:F.01.13.00], [#HEX:F.01.12.00] | @calledBy: none
     function executeCurrentMode() {
         if (typeof requestLandscapeAndFullscreen === 'function') {
             requestLandscapeAndFullscreen();
@@ -20443,8 +22941,11 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         else if (currentMode === 'REGISTER') executeRegister();
         else if (currentMode === 'DEREGISTER') executeDeregister();
     }
+// === [#HEX:F.04.174.00] END ===
 
     // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
+// === [#HEX:F.08.06.00] START | name: handleLangSwitch | lines: 16 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.08.0A.00], [#HEX:F.07.17.00], [#HEX:F.08.07.00] | @calledBy: none
     function handleLangSwitch(lang) {
         window.currentLang = lang;
         if (typeof localStorage !== 'undefined') {
@@ -20461,7 +22962,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         updateActiveLangButtonsInModal();
         updateScreenDisplay();
     }
+// === [#HEX:F.08.06.00] END ===
 
+// === [#HEX:F.05.25.00] START | name: updateActiveLangButtonsInModal | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.25.00] START | name: updateActiveLangButtonsInModal | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.05.26.00], [#HEX:F.05.27.00]
     function updateActiveLangButtonsInModal() {
         const lang = window.currentLang || localStorage.getItem('siteLang') || 'hu';
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -20469,23 +22975,33 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             btn.classList.toggle('active', btnLang === lang);
         });
     }
+// === [#HEX:F.05.25.00] END ===
+// === [#HEX:F.05.25.00] END ===
 
     // --- KAMERA GYORSPOZÍCIÓK ---
+// === [#HEX:F.04.175.00] START | name: focusOnScreen | lines: 6 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: none
     function focusOnScreen() {
         if (!controls) return;
         camera.position.set(0, 0.25, 2.2);
         controls.target.set(0, 0.15, 0);
         controls.update();
     }
+// === [#HEX:F.04.175.00] END ===
 
+// === [#HEX:F.02.07.00] START | name: resetCamera | lines: 6 ===
+// @calls: [#HEX:F.04.1CF.00] | @calledBy: none
     function resetCamera() {
         if (!controls) return;
         camera.position.set(0, 0.35, 2.6);
         controls.target.set(0, 0.15, 0);
         controls.update();
     }
+// === [#HEX:F.02.07.00] END ===
 
     // --- INFÓ MODAL KEZELŐ ---
+// === [#HEX:F.05.26.00] START | name: toggleInfoModal | lines: 11 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: none
     function toggleInfoModal() {
         const modal = document.getElementById('info-modal');
         if (!modal) return;
@@ -20497,7 +23013,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             updateActiveLangButtonsInModal();
         }
     }
+// === [#HEX:F.05.26.00] END ===
 
+// === [#HEX:F.05.27.00] START | name: openInfoModalAuto | lines: 8 ===
+// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: none
     function openInfoModalAuto() {
         const modal = document.getElementById('info-modal');
         if (modal) {
@@ -20506,15 +23025,21 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             updateActiveLangButtonsInModal();
         }
     }
+// === [#HEX:F.05.27.00] END ===
 
+// === [#HEX:F.05.28.00] START | name: onModalBackdropClick | lines: 5 ===
+// @calls: [#HEX:F.05.3A.00] | @calledBy: none
     function onModalBackdropClick(e) {
         if (e.target.id === 'info-modal') {
             toggleInfoModal();
         }
     }
+// === [#HEX:F.05.28.00] END ===
 
     // --- BACKEND MŰVELETEK ---
     // --- ROBUSZTUS BACKEND KOMMUNIKÁCIÓ & JSON ÉRTELMEZŐ ---
+// === [#HEX:F.04.176.00] START | name: parseJsonSafe | lines: 41 ===
+// @calls: [#HEX:F.04.13.00] | @calledBy: none
     function parseJsonSafe(text) {
         if (!text) return null;
         try {
@@ -20556,7 +23081,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         }
         return null;
     }
+// === [#HEX:F.04.176.00] END ===
 
+// === [#HEX:F.06.48.00] START | name: callBackendApi | lines: 29 ===
+// @calls: [#HEX:F.04.1E6.00] | @calledBy: none
     function callBackendApi(action, dataObj, onSuccess, onFailure) {
         const payload = {
             action: action,
@@ -20586,7 +23114,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 if (onFailure) onFailure(err);
             });
     }
+// === [#HEX:F.06.48.00] END ===
 
+// === [#HEX:F.04.177.00] START | name: setTerminalStatus | lines: 11 ===
+// @calls: [#HEX:F.07.17.00] | @calledBy: none
     function setTerminalStatus(keyOrText, isError = false, param = '') {
         isStatusError = isError;
         if (typeof keyOrText === 'string' && keyOrText.startsWith('status_')) {
@@ -20598,7 +23129,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         }
         updateScreenDisplay();
     }
+// === [#HEX:F.04.177.00] END ===
 
+// === [#HEX:F.01.0C.00] START | name: executeLogin | lines: 59 ===
+// @calls: [#HEX:F.04.1D.00], [#HEX:F.04.1E5.00], [#HEX:B.07.01.00], [#HEX:F.06.55.00], [#HEX:F.04.1C9.00] | @calledBy: none
     function executeLogin() {
         const u = formValues.LOGIN.username.trim();
         const p = formValues.LOGIN.password.trim();
@@ -20658,7 +23192,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
         });
     }
+// === [#HEX:F.01.0C.00] END ===
 
+// === [#HEX:F.01.0D.00] START | name: executeRegister | lines: 21 ===
+// @calls: [#HEX:F.04.1E5.00], [#HEX:F.06.55.00], [#HEX:F.04.1C9.00], [#HEX:B.07.DB.00] | @calledBy: none
     function executeRegister() {
         const em = formValues.REGISTER.email.trim();
         const un = formValues.REGISTER.username.trim();
@@ -20680,7 +23217,10 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
         });
     }
+// === [#HEX:F.01.0D.00] END ===
 
+// === [#HEX:F.01.0E.00] START | name: executeDeregister | lines: 22 ===
+// @calls: [#HEX:F.04.1E5.00], [#HEX:F.06.55.00], [#HEX:F.04.1C9.00], [#HEX:B.07.E2.00] | @calledBy: none
     function executeDeregister() {
         const un = formValues.DEREGISTER.username.trim();
         const em = formValues.DEREGISTER.email.trim();
@@ -20703,6 +23243,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             var L = getL(); setTerminalStatus((L.status_net_error || "HÁLÓZATI HIBA: ") + (err.message || "A szerver nem elérhető"), true);
         });
     }
+// === [#HEX:F.01.0E.00] END ===
 
     // --- 🚀 HIPERUGRÁS & KAMERA-ANIMÁCIÓS MOTOR ---
     let isCinematicFlight = false;
@@ -20714,6 +23255,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     let flightOnComplete = null;
     let initialCameraFov = 50;
 
+// === [#HEX:F.04.178.00] START | name: startHyperspaceCinematic | lines: 75 ===
+// @calls: [#HEX:F.04.1DC.00], [#HEX:F.04.15.00], [#HEX:F.04.1E.00], [#HEX:F.04.05.00] | @calledBy: none
     function startHyperspaceCinematic(onComplete) {
         if (typeof preloadAllSubpages === 'function') preloadAllSubpages();
         if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
@@ -20789,6 +23332,9 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         flightDuration = 3800; // ~3.8 mp
         flightOnComplete = onComplete;
     }
+// === [#HEX:F.04.178.00] END ===
+// === [#HEX:F.04.179.00] START | name: reset3DTerminalState | lines: 20 ===
+// @calls: [#HEX:F.07.17.00], [#HEX:F.09.0D.00], [#HEX:F.04.1CF.00] | @calledBy: none
     function reset3DTerminalState() {
         isCinematicFlight = false;
         if (camera) {
@@ -20809,15 +23355,24 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         switchMode('LOGIN');
         updateScreenDisplay();
     }
+// === [#HEX:F.04.179.00] END ===
 
     // --- RENDER & ANIMÁCIÓS CIKLUS ---
+// === [#HEX:F.04.17A.00] START | name: onWindowResize | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.17A.00] START | name: onWindowResize | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.155.00], [#HEX:F.05.20.00], [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
     function onWindowResize() {
         if (!camera || !renderer) return;
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
+// === [#HEX:F.04.17A.00] END ===
+// === [#HEX:F.04.17A.00] END ===
 
+// === [#HEX:F.04.17B.00] START | name: animate | lines: 73 ===
+// @calls: [#HEX:F.07.17.00], [#HEX:F.04.1CF.00] | @calledBy: none
     function animate(timestamp) {
         requestAnimationFrame(animate);
 
@@ -20891,6 +23446,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
         if (renderer && scene && camera) renderer.render(scene, camera);
     }
+// === [#HEX:F.04.17B.00] END ===
 
     // Window exportok
     window.switchMode = switchMode;
@@ -20911,6 +23467,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     // Inicializálás elindítása a modulon belül
     initThree();
 }
+// === [#HEX:F.01.0B.00] END ===
 window.runAuthTerminal3DModule = runAuthTerminal3DModule;
 
 // ==========================================================================
@@ -20918,11 +23475,15 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
 // (Dynamic Viewport Height, Safe Area, Body Scroll-Lock & visualViewport API)
 // ==========================================================================
 
+// === [#HEX:F.05.29.00] START | name: initPillarThreeModalAndKeyboardManager | lines: 172 ===
+// @calls: [#HEX:F.05.10.00], [#HEX:F.05.0A.00], [#HEX:F.05.12.00], [#HEX:F.05.07.00], [#HEX:F.05.2F.00] | @calledBy: none
 (function initPillarThreeModalAndKeyboardManager() {
     var savedScrollY = 0;
     var isScrollLocked = false;
 
     // 1. Háttér Lefagyasztás (Scroll-Lock / Body Freeze)
+// === [#HEX:F.05.2A.00] START | name: checkAndApplyScrollLock | lines: 40 ===
+// @calls: none | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17C.00], [#HEX:F.04.17D.00]
     function checkAndApplyScrollLock() {
         var modalSelectors = [
             '.gamemode-modal',
@@ -20963,8 +23524,11 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
             isScrollLocked = false;
         }
     }
+// === [#HEX:F.05.2A.00] END ===
 
     // 2. Virtuális Billentyűzet és VisualViewport Kezelő
+// === [#HEX:F.05.2B.00] START | name: handleVisualViewportResize | lines: 38 ===
+// @calls: none | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17D.00]
     function handleVisualViewportResize() {
         if (!window.visualViewport) return;
 
@@ -21003,8 +23567,11 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
             document.documentElement.style.removeProperty('--keyboard-offset');
         }
     }
+// === [#HEX:F.05.2B.00] END ===
 
     // 3. Billentyűzetes ESC Bezárás Kezelő
+// === [#HEX:F.04.17C.00] START | name: handleEscKey | lines: 28 ===
+// @calls: [#HEX:F.05.10.00], [#HEX:F.05.0A.00], [#HEX:F.05.12.00], [#HEX:F.05.07.00], [#HEX:F.05.2F.00] | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17D.00]
     function handleEscKey(e) {
         if (e.key === 'Escape' || e.keyCode === 27) {
             var openModals = document.querySelectorAll(
@@ -21033,8 +23600,11 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
             }
         }
     }
+// === [#HEX:F.04.17C.00] END ===
 
     // 4. Eseménykezelők és Megfigyelők Inicializálása
+// === [#HEX:F.04.17D.00] START | name: setupListeners | lines: 44 ===
+// @calls: [#HEX:F.05.2B.00], [#HEX:F.04.17C.00], [#HEX:D.01.0D.00], [#HEX:F.05.2A.00] | @calledBy: [#HEX:F.05.29.00]
     function setupListeners() {
         // Visual Viewport figyelése
         if (window.visualViewport) {
@@ -21079,6 +23649,7 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
         // Kezdeti állapot ellenőrzése
         checkAndApplyScrollLock();
     }
+// === [#HEX:F.04.17D.00] END ===
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupListeners);
@@ -21090,11 +23661,20 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
     window.checkAndApplyModalScrollLock = checkAndApplyScrollLock;
     window.handleVisualViewportResize = handleVisualViewportResize;
 })();
+// === [#HEX:F.05.29.00] END ===
 
 // ==========================================================================
 // 5. PILLÉR: PWA SERVICE WORKER REGISZTRÁCIÓ & ÉLETCIKLUS-KEZELŐ
 // ==========================================================================
 
+// === [#HEX:F.01.0F.00] START | name: registerPwaServiceWorker | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.0F.00] START | name: registerPwaServiceWorker | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.0F.00] START | name: registerPwaServiceWorker | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.10.00] START | name: registerPwaServiceWorker | lines: 25 ===
+// @calls: [#HEX:F.01.00.00] | @calledBy: none
 function registerPwaServiceWorker() {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
@@ -21120,6 +23700,10 @@ function registerPwaServiceWorker() {
         });
     }
 }
+// === [#HEX:F.01.10.00] END ===
+// === [#HEX:F.01.0F.00] END ===
+// === [#HEX:F.01.0F.00] END ===
+// === [#HEX:F.01.0F.00] END ===
 registerPwaServiceWorker();
 window.registerPwaServiceWorker = registerPwaServiceWorker;
 

@@ -1574,6 +1574,8 @@ const translations = {
         'server_overloaded_short': 'Server overloaded.',
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
+// === [#HEX:F.04.17E.00] START | name: does | lines: 1045 ===
+// @calls: [#HEX:A.05.12.00], [#HEX:A.05.17.00], [#HEX:D.01.7E.00], [#HEX:F.04.13.00], [#HEX:B.06.00.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -2593,6 +2595,14 @@ const translations = {
         'vilagterkep_p_61': "A settlement located in the heart of the plain, at the junction of several important trade routes <strong>Crossroads Fair</strong> not a city in the classical sense of the word. Rather, it is a constantly pulsating, changing organism, a permanent, huge fairground made up of tents, stalls and temporary inns. Everything is available here and everything is for sale. Hegymély blacksmiths sell the masterpieces of the Vaskapu Mine, island sailors offer the treasures of the Letter Sea, and Erdővár archers exchange their bows made from the special yew trees of the Óvó Erdő for metal and salt. It is unfortunate, but a natural consequence of this frenzy at the fair is poor public security, which makes it easy for code-goers alone to become victims or even commodities after dark.",
         'vilagterkep_p_62': "It is the common sea exit of the Eastern Kingdoms and the Tu-a-ni Empire towards the Cultur Ocean, so it is also the hottest collision zone of the two power concentrations.",
         'vilagterkep_p_63': "The easternmost, separate mountain range of the continent, Tu-a-ni, is also the territory of the Tu-a-ni Empire itself. The mountain tribes, which used to be involved in endless wars, have been living in relative peace for centuries, and thanks to their alliance, they can claim a huge cultural and technological development. The achievements of their science protect their people from ice storms attacking from the Arctic, barbarian tribes trying to invade from the west, and armies coming to conquer from the southwest.",
+// === [#HEX:F.04.17F.00] START | name: to | lines: 26 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.17F.00] START | name: to | lines: 26 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.17F.00] START | name: to | lines: 26 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.190.00] START | name: to | lines: 26 ===
+// @calls: [#HEX:F.04.1F.00] | @calledBy: none
         'vilagterkep_p_64': "The Tu-a-ni Mountains begin east of the Dragonspine Mountains, beyond the Plains of the Eastern Kingdoms, and serve much the same function to the people who live there as the Dragonspine Mountains do to the inhabitants of the Katarakbis Plains: a climatic dividing line and a bulwark. The Tu-a-nias expanded along the line of this mountain range and built a developed empire. They represent a different culture than the people living along the Dragon's Ridge Mountains, and in recent centuries they have become more and more distant from the other peoples of the continent in all areas, both socially and technically.",
         'vilagterkep_p_65': "The Tu-a-ni Mountains actually protrude from the continent like a sharp, rocky peninsula. Due to its location, the western half of the <strong>Into the Sea of ​​Záner</strong> runs down, while the eastern half of the <strong>Whispering Fjords</strong> borders its region and winds up the <strong>Frozen region</strong> towards. The part of the mountain range towards the Frostlands is as dead and frozen as all the other mountains in the Crown of Permafrost. At the same time, really heavy rains are avoided, since the mountain chain can divert the wetter air masses towards the Zsáner Sea and the fjords. It doesn't trap rain clouds like the Dragon's Ridge Mountains. That is why the gentle side of the Tu-a-ni Mountains is a habitable and cultivable area for human civilization up to serious heights, although really intensive agricultural activity is typical of the coastal region.",
         'vilagterkep_p_66': "The southern reaches are also surrounded by a central mountain range, enclosing the fertile Fülle Basin, which is the pantry of the Tu-a-ni Empire. Since animal husbandry is characteristic of this area, it is no coincidence that the sprawling central mountains <strong>For Karám Mountains</strong> is called And the areas beyond it are inhabited by semi-nomadic pastoral peoples, who are actually kept in serfdom by the Tu-a-ni, who strictly regulate the lives of the nomads.",
@@ -2619,6 +2629,11 @@ const translations = {
 
     },
     'de': {
+// === [#HEX:F.04.190.00] END ===
+// === [#HEX:F.04.17F.00] END ===
+// === [#HEX:F.04.17F.00] END ===
+// === [#HEX:F.04.17E.00] END ===
+// === [#HEX:F.04.17F.00] END ===
         // --- Steampunk-Uhrwerk-Ladebildschirm (SÓT) (DE) ---
         'sot_init_clockwork': '3D-UHRWERK WIRD INITIALISIERT...',
         'sot_preload_island': 'PIRATENINSEL WIRD VORPOSITIONIERT...',
@@ -9366,6 +9381,8 @@ Object.keys(registrationDeletionTranslations).forEach(function(langKey) {
  * Ez a függvény frissíti a felhasználói felületet (UI).
  * Megkeres minden 'data-lang' attribútummal rendelkező elemet a HTML-ben.
  */
+// === [#HEX:F.08.07.00] START | name: updateLanguageUI | lines: 80 ===
+// @calls: [#HEX:F.08.08.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2A.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00]
 function updateLanguageUI() {
     var storedLang = localStorage.getItem('siteLang');
     if ((!currentLang || !translations[currentLang]) && storedLang && translations[storedLang]) {
@@ -9446,7 +9463,10 @@ function updateLanguageUI() {
     // Jelzés a HTML tag-en is (pl. CSS formázáshoz hasznos lehet: html[lang="en"])
     document.documentElement.lang = currentLang;
 }
+// === [#HEX:F.08.07.00] END ===
 
+// === [#HEX:F.08.08.00] START | name: updateActiveLangButtons | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:F.08.07.00]
 function updateActiveLangButtons() {
     const langButtons = document.querySelectorAll('.lang-btn');
     langButtons.forEach(button => {
@@ -9454,7 +9474,10 @@ function updateActiveLangButtons() {
         button.classList.toggle('active', buttonLang === currentLang);
     });
 }
+// === [#HEX:F.08.08.00] END ===
 
+// === [#HEX:F.08.09.00] START | name: bindLanguageButtons | lines: 31 ===
+// @calls: [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2A.00]
 function bindLanguageButtons() {
     if (typeof window !== 'undefined' && !window._langButtonDelegated) {
         document.addEventListener('click', function(event) {
@@ -9486,11 +9509,22 @@ function bindLanguageButtons() {
         button.setAttribute('data-lang-bound', '1');
     });
 }
+// === [#HEX:F.08.09.00] END ===
 
 /**
  * Segédfüggvény a JavaScript kódban lévő dinamikus szövegekhez (pl. alert, generált HTML).
  * Használat: alert(t('error_auth'));
  */
+// === [#HEX:F.04.180.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.180.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.180.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.191.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.191.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
 function t(key) {
     if (translations[currentLang] && translations[currentLang][key]) {
         return translations[currentLang][key];
@@ -9498,11 +9532,18 @@ function t(key) {
     // Ha nincs fordítás, visszaadja a kulcsot, hogy lássuk, mi hiányzik
     return key; 
 }
+// === [#HEX:F.04.191.00] END ===
+// === [#HEX:F.04.191.00] END ===
+// === [#HEX:F.04.180.00] END ===
+// === [#HEX:F.04.180.00] END ===
+// === [#HEX:F.04.180.00] END ===
 
 /**
  * Nyelvváltó gomb funkciója.
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
+// === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
+// @calls: [#HEX:F.08.0B.00], [#HEX:F.08.07.00], [#HEX:F.04.2B.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;
@@ -9520,6 +9561,7 @@ function switchLanguage(lang) {
         console.error('Ismeretlen nyelv:', lang);
     }
 }
+// === [#HEX:F.08.0A.00] END ===
 
 // 4. INDÍTÁS
 // ----------------------------------------------------------------
@@ -9534,6 +9576,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // ----------------------------------------------------------------
 // 3D KOZMOSZ TERMINÁL SZÓTÁR KINYERŐ SEGÉDFÜGGVÉNY
 // ----------------------------------------------------------------
+// === [#HEX:F.04.181.00] START | name: getTerminalLabels | lines: 30 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15A.00], [#HEX:F.04.1C9.00]
 function getTerminalLabels(lang) {
     var l = lang || currentLang || 'hu';
     if (typeof translations === 'undefined' || !translations[l]) l = 'hu';
@@ -9564,11 +9608,14 @@ function getTerminalLabels(lang) {
     }
     return res;
 }
+// === [#HEX:F.04.181.00] END ===
 window.getTerminalLabels = getTerminalLabels;
 
 // ----------------------------------------------------------------
 // STEAMPUNK ÓRAMŰ TÖLTŐKÉPERNYŐ (SÓT) KIFEJEZÉS KINYERŐ SEGÉDFÜGGVÉNY
 // ----------------------------------------------------------------
+// === [#HEX:F.04.182.00] START | name: getClockworkPhrases | lines: 24 ===
+// @calls: none | @calledBy: [#HEX:F.04.0C.00]
 function getClockworkPhrases(lang) {
     var l = lang || currentLang || 'hu';
     if (typeof translations === 'undefined' || !translations[l]) l = 'hu';
@@ -9593,4 +9640,5 @@ function getClockworkPhrases(lang) {
         "Hajónapló előkészítése..."
     ];
 }
+// === [#HEX:F.04.182.00] END ===
 window.getClockworkPhrases = getClockworkPhrases;

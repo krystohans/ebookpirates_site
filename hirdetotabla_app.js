@@ -1,5 +1,7 @@
 
 // === KOCSMAI HIRDETOTABLA ===
+// === [#HEX:F.04.183.00] START | name: openNoticeBoard | lines: 18 ===
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.B8.00], [#HEX:F.04.184.00] | @calledBy: none
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
     if(modal) modal.style.display = 'flex';
@@ -7,6 +9,8 @@ function openNoticeBoard() {
     if(boardDiv) boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.2em;"><i class="fas fa-spinner fa-spin"></i> A pultosfiú épp szögeli fel az új papírokat...</p>';
 
     if (typeof callBackend === 'function') {
+// === [#HEX:F.06.4A.00] START | name: callBackend | lines: 7 ===
+// @calls: [#HEX:B.07.B8.00], [#HEX:F.04.184.00] | @calledBy: none
         callBackend("getNoticeBoardData", [], function(response) {
             if (response && response.success && response.data) {
                 renderNoticeBoard(response.data);
@@ -14,11 +18,15 @@ function openNoticeBoard() {
                 if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">A szél lefújta az összes papírt. (Hiba: ' + (response ? response.error : 'Nincs válasz') + ')</p>';
             }
         });
+// === [#HEX:F.06.4A.00] END ===
     } else {
         if(boardDiv) boardDiv.innerHTML = '<p style="color: #ff5555; text-align: center; width: 100%; font-size: 1.2em;">Hálózati hiba: A backend nem elérhető.</p>';
     }
 }
+// === [#HEX:F.04.183.00] END ===
 
+// === [#HEX:F.04.184.00] START | name: renderNoticeBoard | lines: 67 ===
+// @calls: none | @calledBy: [#HEX:F.04.F7.00], [#HEX:F.06.34.00], [#HEX:F.04.183.00], [#HEX:F.06.4A.00]
 function renderNoticeBoard(data) {
     var boardDiv = document.getElementById('notice-board-content');
     if(!boardDiv) return;
@@ -86,3 +94,4 @@ function renderNoticeBoard(data) {
         boardDiv.innerHTML = '<p style="color: #f5deb3; text-align: center; width: 100%; font-size: 1.5em; font-family: \'Pirata One\', cursive;">A tábla jelenleg kong az ürességtől...</p>';
     }
 }
+// === [#HEX:F.04.184.00] END ===

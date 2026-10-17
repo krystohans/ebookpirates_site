@@ -210,10 +210,14 @@
           }
         });
         
-        // Ellenőrizzük, hogy a főmenüből a nyelvválasztóra kattintva érkeztünk-e
         const urlParams = new URLSearchParams(window.location.search);
+        let savedLang = urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('ebp_language') || 'hu';
+        localStorage.setItem('ebook_pirates_language', savedLang);
+        localStorage.setItem('siteLang', savedLang);
+        applySettingsLanguage(savedLang);
+
         if (urlParams.has('langSelector') && urlParams.get('langSelector') === 'true') {
-          showLanguageSelector();
+          openLanguageMap();
         }
 
         // Hangerő csúszkák inicializálása localStorage-ből
@@ -241,19 +245,80 @@
         }
       });
 
-    function showLanguageSelector() {
-      document.getElementById('lang-modal').style.display = 'flex';
+    const SETTINGS_TRANSLATIONS = {
+      hu: {
+        title: "Beállítások",
+        music: "Zene",
+        musicTitle: "Zene hangereje",
+        sound: "Hang",
+        soundTitle: "Effektek hangereje",
+        language: "Nyelv",
+        back: "Vissza a Főmenübe",
+        langTitle: "Nyelv / Language"
+      },
+      en: {
+        title: "Settings",
+        music: "Music",
+        musicTitle: "Music volume",
+        sound: "Sound",
+        soundTitle: "Sound effects volume",
+        language: "Language",
+        back: "Back to Main Menu",
+        langTitle: "Language"
+      }
+    };
+
+    function applySettingsLanguage(lang) {
+      const t = SETTINGS_TRANSLATIONS[lang] || SETTINGS_TRANSLATIONS.hu;
+      document.title = t.title;
+      const musicLabel = document.getElementById('label-music');
+      const soundLabel = document.getElementById('label-sound');
+      const musicSlider = document.getElementById('music-slider');
+      const soundSlider = document.getElementById('sound-slider');
+      const btnLang = document.getElementById('btn-settings-lang');
+      const btnBack = document.getElementById('btn-settings-back');
+      const flagWrap = document.getElementById('quick-language-selector');
+      const flagImg = document.getElementById('current-language-flag');
+
+      if (musicLabel) musicLabel.innerText = t.music;
+      if (soundLabel) soundLabel.innerText = t.sound;
+      if (musicSlider) musicSlider.setAttribute('title', t.musicTitle);
+      if (soundSlider) soundSlider.setAttribute('title', t.soundTitle);
+      if (btnLang) btnLang.innerText = t.language;
+      if (btnBack) btnBack.innerText = t.back;
+      if (flagWrap) flagWrap.setAttribute('title', t.langTitle);
+      if (flagImg) {
+        flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${lang}-removebg-preview.png`;
+      }
+      document.documentElement.lang = lang;
     }
 
-    function closeLanguageSelector(event) {
-      if (event) {
-        event.stopPropagation();
-      }
-      document.getElementById('lang-modal').style.display = 'none';
+    function openLanguageMap() {
+      const overlay = document.getElementById('language-map-overlay');
+      if (overlay) overlay.style.display = 'flex';
+    }
+
+    function closeLanguageMap() {
+      const overlay = document.getElementById('language-map-overlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+
+    function changeLanguage(lang) {
+      localStorage.setItem('ebook_pirates_language', lang);
+      localStorage.setItem('siteLang', lang);
+      localStorage.setItem('ebp_language', lang);
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+      applySettingsLanguage(lang);
+      closeLanguageMap();
     }
 
     function goBackToMainMenu() {
-      window.location.href = 'MainMenuTutorial.html?v=' + Date.now();
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'MainMenuTutorial.html?lang=' + curLang + '&v=' + Date.now();
     }
   </script>
 </head>
@@ -274,40 +339,46 @@
     </div>
 
     <!-- Nyelvi Ikon (Pontosan azonos magasság és pozíció a Főmenü zászlójával) -->
-    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="showLanguageSelector()" title="Nyelv / Language">
+    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="openLanguageMap()" title="Nyelv / Language">
       <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
     </div>
 
     <!-- 4 Menüpont pontosan a Főmenü 4 gombjának helyén és méretében -->
     <!-- 1. Zene Csúszka -->
     <div class="menu-slider-container">
-      <div class="slider-label">Zene</div>
+      <div id="label-music" class="slider-label">Zene</div>
       <input type="range" min="0" max="100" class="steampunk-slider" id="music-slider" title="Zene hangereje">
     </div>
     
     <!-- 2. Hang Csúszka -->
     <div class="menu-slider-container">
-      <div class="slider-label">Hang</div>
+      <div id="label-sound" class="slider-label">Hang</div>
       <input type="range" min="0" max="100" class="steampunk-slider" id="sound-slider" title="Effektek hangereje">
     </div>
 
     <!-- 3. Nyelv gomb -->
-    <div class="menu-button" onclick="showLanguageSelector()">Nyelv</div>
+    <div id="btn-settings-lang" class="menu-button" onclick="openLanguageMap()">Nyelv</div>
 
     <!-- 4. Vissza a Főmenübe gomb -->
-    <div class="menu-button" onclick="goBackToMainMenu()">Vissza a Főmenübe</div>
+    <div id="btn-settings-back" class="menu-button" onclick="goBackToMainMenu()">Vissza a Főmenübe</div>
 
   </div>
 
-  <!-- A Nyelvválasztó felugró ablak -->
-  <div id="lang-modal">
-    <div class="lang-img-wrapper">
-      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Nyelvvalaszto_Abrigoval.jpg" alt="Válassz nyelvet">
-      
-      <!-- Kattintható visszanyíl hotspot (Jobb alsó sarok) -->
-      <div class="back-btn-hotspot" onclick="closeLanguageSelector(event)" title="Vissza / Back"></div>
+
+  <!-- 🌍 NYELVVÁLASZTÓ PERGAMENTÉRKÉP POPUP -->
+  <div id="language-map-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center;">
+    <div style="position: relative; width: 900px; max-width: 95vw; height: 800px; max-height: 90vh; background: transparent url('https://storage.googleapis.com/kalozsziget-assets/tutorial/language_choose.jpg') no-repeat center / contain; filter: drop-shadow(0 15px 40px rgba(0,0,0,0.9));">
+      <div id="btn-close-language-map" style="position: absolute; top: 25px; right: 35px; width: 45px; height: 45px; cursor: pointer; background: rgba(0,0,0,0.4); border: 2px solid #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffea00; font-weight: bold; font-size: 22px; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1.0)'" onclick="closeLanguageMap()" title="Bezárás / Close">✕</div>
+      <div class="lang-option-btn" data-lang="hu" style="position: absolute; top: 7%; left: 3.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('hu')" title="Magyar"></div>
+      <div class="lang-option-btn" data-lang="en" style="position: absolute; top: 7%; left: 27.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('en')" title="English"></div>
+      <div class="lang-option-btn" data-lang="de" style="position: absolute; top: 7%; left: 51.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('de')" title="Deutsch"></div>
+      <div class="lang-option-btn" data-lang="es" style="position: absolute; top: 7%; left: 75.5%; width: 23%; height: 32%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('es')" title="Español"></div>
+      <div class="lang-option-btn" data-lang="ru" style="position: absolute; top: 51%; left: 10.5%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('ru')" title="Русский"></div>
+      <div class="lang-option-btn" data-lang="pl" style="position: absolute; top: 51%; left: 38%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('pl')" title="Polski"></div>
+      <div class="lang-option-btn" data-lang="fr" style="position: absolute; top: 51%; left: 66%; width: 25%; height: 35%; cursor: pointer; border-radius: 50%;" onclick="changeLanguage('fr')" title="Français"></div>
     </div>
   </div>
+
 
 </body>
 </html>

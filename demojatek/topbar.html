@@ -404,6 +404,11 @@ A Szentelés után a Könyv ebook formában letölthetővé válik, és az a já
       });
     }
 
+    // === [#TUTOR.03.00.00] START | name: updateInfoScrollUI | lines: ~43 ===
+    // @subsystem: TUTOR.01_TopBar
+    // @summary: Fejléc pergamen infótekercs élő szerkesztő és stílusfrissítő motor.
+    // @calls: none
+    // @calledBy: #info-scroll-live-editor input események
     function updateInfoScrollUI() {
       const w = document.getElementById('is-w').value + 'px';
       const h = document.getElementById('is-h').value + 'px';
@@ -447,6 +452,7 @@ A Szentelés után a Könyv ebook formában letölthetővé válik, és az a já
       }
       styleElem.innerHTML = `#info-scroll-content::-webkit-scrollbar { width: ${sbW}; }`;
     }
+    // === [#TUTOR.03.00.00] END ===
 
     document.querySelectorAll('#info-scroll-live-editor input').forEach(function(inp) {
       inp.addEventListener('input', updateInfoScrollUI);

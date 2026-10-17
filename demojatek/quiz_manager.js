@@ -70,6 +70,11 @@ window.QuizConfig = {
 };
 
 class QuizManager {
+  // === [#TUTOR.05.00.00] START | method: constructor | lines: ~20 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: QuizManager osztály inicializálása, kérdéskövető Set-ek (answeredCorrectlyIds, missedQuestionIds).
+  // @calls: loadQuestions, loadUI / bindEvents
+  // @calledBy: window.quizManager példányosítás
   constructor() {
     this.questions = [];
     // Pedagógiai kérdéskövetés:
@@ -90,7 +95,13 @@ class QuizManager {
     this.loadQuestions();
     if (document.getElementById("quiz-overlay")) { this.uiReady = true; this.bindEvents(); this.initVisualEditor(); } else { this.loadUI(); }
   }
+  // === [#TUTOR.05.00.00] END ===
 
+  // === [#TUTOR.05.01.00] START | method: updateScale | lines: ~14 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kvízpanel aránytartó skálázása (831x768 belső arány, CSS transform scale) a képernyőmérethez.
+  // @calls: none
+  // @calledBy: window.onresize, openQuiz
   updateScale() {
     const panel = document.getElementById('quiz-panel-box');
     if (!panel) return;
@@ -105,7 +116,13 @@ class QuizManager {
     panel.style.transform = `scale(${scale})`;
     panel.style.transformOrigin = 'center center';
   }
+  // === [#TUTOR.05.01.00] END ===
 
+  // === [#TUTOR.05.02.00] START | method: loadQuestions | lines: ~37 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kvízkérdések aszinkron betöltése (quiz_questions.json vagy quiz_questions_en.json).
+  // @calls: none
+  // @calledBy: constructor
   async loadQuestions() {
     const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
     const jsonFile = (lang === 'en') ? 'quiz_questions_en.json' : 'quiz_questions.json';
@@ -143,7 +160,13 @@ class QuizManager {
 
     this.literatureQuestions = [];
   }
+  // === [#TUTOR.05.02.00] END ===
 
+  // === [#TUTOR.05.03.00] START | method: loadUI | lines: ~24 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kvíz felület betöltése (quiz_panel.html) és DOM-ba fűzése.
+  // @calls: bindEvents, initVisualEditor
+  // @calledBy: constructor
   async loadUI() {
     try {
       const res = await fetch('quiz_panel.html?t=' + Date.now());
@@ -168,7 +191,13 @@ class QuizManager {
       console.error("Hiba a kvíz UI betöltésekor:", e);
     }
   }
+  // === [#TUTOR.05.03.00] END ===
 
+  // === [#TUTOR.05.04.00] START | method: bindEvents | lines: ~15 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Eseménykezelők bekötése (ablak átméretezés, bezárás, válasz gombok).
+  // @calls: updateScale, closeQuizUI, handleAnswer
+  // @calledBy: constructor, loadUI
   bindEvents() {
     window.addEventListener('resize', () => {
       if (this.uiReady) this.updateScale();
@@ -184,15 +213,33 @@ class QuizManager {
       });
     }
   }
+  // === [#TUTOR.05.04.00] END ===
 
+  // === [#TUTOR.05.05.00] START | method: getQuestionId | lines: ~3 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kérdésazonosító ID kinyerése a kérdés objektumból.
+  // @calls: none
+  // @calledBy: openQuiz, handleAnswer
   getQuestionId(q) {
     return q.id !== undefined ? q.id : (q.Kerdes || q.question || JSON.stringify(q));
   }
+  // === [#TUTOR.05.05.00] END ===
 
+  // === [#TUTOR.05.06.00] START | method: extractQuestionText | lines: ~3 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kérdésszöveg kinyerése és tisztítása a megfelelő nyelven.
+  // @calls: none
+  // @calledBy: renderQuestion
   extractQuestionText(q) {
     return q.Kerdes || q.question || q.text || "";
   }
+  // === [#TUTOR.05.06.00] END ===
 
+  // === [#TUTOR.05.07.00] START | method: extractAnswersAndCorrect | lines: ~19 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Válaszopciók és a helyes index kinyerése.
+  // @calls: none
+  // @calledBy: renderQuestion
   extractAnswersAndCorrect(q) {
     let answers = [];
     let correctIdx = 0;
@@ -212,7 +259,13 @@ class QuizManager {
 
     return { answers, correctIdx };
   }
+  // === [#TUTOR.05.07.00] END ===
 
+  // === [#TUTOR.05.08.00] START | method: openQuiz | lines: ~87 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Léghajó Kvízpárbaj megnyitása: szigorú kérdésismétlődés-gátlás, kérdéskiválasztás és renderelés indítása.
+  // @calls: renderQuestion, updateScale
+  // @calledBy: script.js (léghajó utolérés esemény)
     openQuiz(category, onComplete) {
     if (!this.uiReady || this.questions.length === 0) {
       setTimeout(() => this.openQuiz(category, onComplete), 100);
@@ -300,7 +353,13 @@ class QuizManager {
 
     this.renderQuestion();
   }
+  // === [#TUTOR.05.08.00] END ===
 
+  // === [#TUTOR.05.09.00] START | method: renderQuestion | lines: ~169 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kettős kérdésdoboz (1 soros: 220px vs 2 soros: 199px) és a 4 független falap doboz elhelyezése és kirajzolása.
+  // @calls: extractQuestionText, extractAnswersAndCorrect
+  // @calledBy: openQuiz
   renderQuestion() {
     const overlay = document.getElementById('quiz-overlay');
     const panel = document.getElementById('quiz-panel-box');
@@ -470,13 +529,25 @@ class QuizManager {
  overlay.style.opacity = '1';
  overlay.style.zIndex = '99999999';
   }
+  // === [#TUTOR.05.09.00] END ===
 
+  // === [#TUTOR.05.0A.00] START | method: closeQuizUI | lines: ~5 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Kvíz felület bezárása és elrejtése.
+  // @calls: none
+  // @calledBy: handleAnswer, finishQuiz
   closeQuizUI() {
     const overlay = document.getElementById('quiz-overlay');
     if (overlay) overlay.style.display = 'none';
     window.isCutscenePlaying = false;
   }
+  // === [#TUTOR.05.0A.00] END ===
 
+  // === [#TUTOR.05.0B.00] START | method: handleAnswer | lines: ~75 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Válasz kiértékelése: helyes válasznál siker, hibásnál zsákmányvesztés (airship_bad) vagy üres csónak visszatérés (airship_bad_empty).
+  // @calls: closeQuizUI, onCompleteCallback, showInGameMonolog
+  // @calledBy: Válasz gomb kattintás
   handleAnswer(selectedIdx) {
     const overlay = document.getElementById('quiz-overlay');
     const isCorrect = (selectedIdx === this.currentCorrectIndex);
@@ -552,8 +623,14 @@ class QuizManager {
       finishQuiz();
     }
   }
+  // === [#TUTOR.05.0B.00] END ===
 
   // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ (AGENTS.md Felhasználói Szabály) ───
+  // === [#TUTOR.05.0C.00] START | method: initVisualEditor | lines: ~136 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Élő vizuális koordináta-szerkesztő panel a falap dobozok hajszálpontos pozicionálásához.
+  // @calls: populateVisualEditorFields, applyLiveStyles
+  // @calledBy: constructor
   initVisualEditor() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('edit') !== '1' && params.get('editor') !== '1') {
@@ -690,7 +767,13 @@ class QuizManager {
       this.openQuiz('TUTORZEP');
     };
   }
+  // === [#TUTOR.05.0C.00] END ===
 
+  // === [#TUTOR.05.0D.00] START | method: populateVisualEditorFields | lines: ~22 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: Vizuális szerkesztő beviteli mezőinek feltöltése a QuizConfig aktuális értékeivel.
+  // @calls: none
+  // @calledBy: initVisualEditor
   populateVisualEditorFields() {
     const cfg = window.QuizConfig.TUTORZEP;
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
@@ -713,7 +796,13 @@ class QuizManager {
     setVal('qve-ans-width', cfg.answers[0].width);
     setVal('qve-ans-font', cfg.answers[0].fontSize);
   }
+  // === [#TUTOR.05.0D.00] END ===
 
+  // === [#TUTOR.05.0E.00] START | method: applyLiveStyles | lines: ~32 ===
+  // @subsystem: TUTOR.04_QuizDuel
+  // @summary: A vizuális szerkesztő csúszkáinak élő ráültetése a DOM elemekre.
+  // @calls: none
+  // @calledBy: initVisualEditor input esemény
   applyLiveStyles() {
     if (this.currentMode !== 'TUTORZEP') return;
     const cfg = window.QuizConfig.TUTORZEP;
@@ -746,6 +835,7 @@ class QuizManager {
       }
     }
   }
+  // === [#TUTOR.05.0E.00] END ===
 }
 
 if (typeof window !== 'undefined') {

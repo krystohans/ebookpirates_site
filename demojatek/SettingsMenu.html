@@ -308,20 +308,87 @@
         language: "Language",
         back: "Back to Main Menu",
         langTitle: "Language"
+      },
+      de: {
+        title: "Einstellungen",
+        music: "Musik",
+        musicTitle: "Musiklautstärke",
+        sound: "Ton",
+        soundTitle: "Effektlautstärke",
+        language: "Sprache",
+        back: "Zurück zum Hauptmenü",
+        langTitle: "Sprache"
+      },
+      fr: {
+        title: "Paramètres",
+        music: "Musique",
+        musicTitle: "Volume de la musique",
+        sound: "Sons",
+        soundTitle: "Volume des effets",
+        language: "Langue",
+        back: "Retour au Menu Principal",
+        langTitle: "Langue"
+      },
+      es: {
+        title: "Configuración",
+        music: "Música",
+        musicTitle: "Volumen de música",
+        sound: "Sonido",
+        soundTitle: "Volumen de efectos",
+        language: "Idioma",
+        back: "Volver al Menú Principal",
+        langTitle: "Idioma"
+      },
+      pl: {
+        title: "Ustawienia",
+        music: "Muzyka",
+        musicTitle: "Głośność muzyki",
+        sound: "Dźwięki",
+        soundTitle: "Głośność efektów",
+        language: "Język",
+        back: "Powrót do Menu Głównego",
+        langTitle: "Język"
+      },
+      ru: {
+        title: "Настройки",
+        music: "Музыка",
+        musicTitle: "Громкость музыки",
+        sound: "Звук",
+        soundTitle: "Громкость звуков",
+        language: "Язык",
+        back: "В Главное Меню",
+        langTitle: "Язык"
       }
     };
 
+    // === [#TUTOR.02.00.00] START | name: showLanguageSelector | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó hajóablakos modal felugró megjelenítése.
+    // @calls: none
+    // @calledBy: quick-language-selector vagy Földgömb kattintás
     function showLanguageSelector() {
       const modal = document.getElementById('lang-modal');
       if (modal) modal.style.display = 'flex';
     }
+    // === [#TUTOR.02.00.00] END ===
 
+    // === [#TUTOR.02.01.00] START | name: closeLanguageSelector | lines: ~5 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó hajóablakos modal bezárása.
+    // @calls: none
+    // @calledBy: selectLanguage, X gomb, overlay háttérkattintás
     function closeLanguageSelector(event) {
       if (event) event.stopPropagation();
       const modal = document.getElementById('lang-modal');
       if (modal) modal.style.display = 'none';
     }
+    // === [#TUTOR.02.01.00] END ===
 
+    // === [#TUTOR.02.02.00] START | name: selectLanguage | lines: ~9 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Kiválasztott nyelv érvényesítése a hajóablak animáció után.
+    // @calls: [#HEX:TUTOR.02.04.00], [#HEX:TUTOR.02.01.00]
+    // @calledBy: Lőrés / hajóablak kattintás (HU vagy EN)
     function selectLanguage(lang, event) {
       if (event && event.currentTarget) {
         event.currentTarget.classList.add('porthole-clicked');
@@ -331,7 +398,13 @@
         closeLanguageSelector();
       }, 180);
     }
+    // === [#TUTOR.02.02.00] END ===
 
+    // === [#TUTOR.02.06.00] START | name: changeLanguage | lines: ~11 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvváltás mentése (localStorage, URL param) és felület frissítése.
+    // @calls: [#HEX:TUTOR.02.03.00], [#HEX:TUTOR.02.05.00]
+    // @calledBy: selectLanguage, térkép lőrés kattintás
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);
@@ -343,7 +416,13 @@
       } catch (e) {}
       applySettingsLanguage(lang);
     }
+    // === [#TUTOR.02.06.00] END ===
 
+    // === [#TUTOR.02.03.00] START | name: applySettingsLanguage | lines: ~24 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: A Beállítások menü feliratai (zene, hangeffekt, gombok, zászló) dinamikus fordítása.
+    // @calls: none
+    // @calledBy: changeLanguage, DOMContentLoaded
     function applySettingsLanguage(lang) {
       const t = SETTINGS_TRANSLATIONS[lang] || SETTINGS_TRANSLATIONS.hu;
       document.title = t.title;
@@ -355,6 +434,7 @@
       const btnBack = document.getElementById('btn-settings-back');
       const flagWrap = document.getElementById('quick-language-selector');
       const flagImg = document.getElementById('current-language-flag');
+      const backHotspot = document.querySelector('.back-btn-hotspot');
 
       if (musicLabel) musicLabel.innerText = t.music;
       if (soundLabel) soundLabel.innerText = t.sound;
@@ -366,19 +446,38 @@
       if (flagImg) {
         flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${lang}-removebg-preview.png`;
       }
+      if (backHotspot) backHotspot.setAttribute('title', t.back);
       document.documentElement.lang = lang;
     }
+    // === [#TUTOR.02.03.00] END ===
 
+    // === [#TUTOR.02.04.00] START | name: openLanguageMap | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó pergamen térkép overlay megnyitása.
+    // @calls: none
+    // @calledBy: btn-settings-lang kattintás
     function openLanguageMap() {
       const overlay = document.getElementById('language-map-overlay');
       if (overlay) overlay.style.display = 'flex';
     }
+    // === [#TUTOR.02.04.00] END ===
 
+    // === [#TUTOR.02.05.00] START | name: closeLanguageMap | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó pergamen térkép overlay bezárása.
+    // @calls: none
+    // @calledBy: changeLanguage, X gomb
     function closeLanguageMap() {
       const overlay = document.getElementById('language-map-overlay');
       if (overlay) overlay.style.display = 'none';
     }
+    // === [#TUTOR.02.05.00] END ===
 
+    // === [#TUTOR.02.06.00] START | name: changeLanguage | lines: ~12 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvváltás mentése (localStorage, URL param) és felület frissítése.
+    // @calls: [#HEX:TUTOR.02.03.00], [#HEX:TUTOR.02.05.00]
+    // @calledBy: selectLanguage, térkép lőrés kattintás
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);
@@ -391,11 +490,18 @@
       applySettingsLanguage(lang);
       closeLanguageMap();
     }
+    // === [#TUTOR.02.06.00] END ===
 
+    // === [#TUTOR.02.07.00] START | name: goBackToMainMenu | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Visszatérés a Főmenübe (MainMenuTutorial.html) az aktuális nyelv megőrzésével.
+    // @calls: none
+    // @calledBy: btn-settings-back kattintás
     function goBackToMainMenu() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       window.location.href = 'MainMenuTutorial.html?lang=' + curLang + '&v=' + Date.now();
     }
+    // === [#TUTOR.02.07.00] END ===
   </script>
 </head>
 <body>

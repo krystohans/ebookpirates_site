@@ -103,6 +103,32 @@ function hidePreloader() {
 // @calls: none | @calledBy: none
 // === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
 // @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
+// @calls: none | @calledBy: none
 async function loadDataFiles() {
   try {
     const dRes = await fetch('dialogues.json');
@@ -118,6 +144,19 @@ async function loadDataFiles() {
     console.warn('quiz_questions.json betöltési figyelmeztetés:', e);
   }
 }
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
+// === [#HEX:D.01.5B.00] END ===
 // === [#HEX:D.01.5B.00] END ===
 // === [#HEX:D.01.5B.00] END ===
 // === [#HEX:D.01.5B.00] END ===
@@ -676,6 +715,32 @@ function updateCamera() {
 // @calls: none | @calledBy: none
 // === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
 // @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
+// @calls: none | @calledBy: none
 function setupCameraControls() {
   const canvas = document.getElementById('c');
   let mDown = false, mx = 0, my = 0;
@@ -700,6 +765,19 @@ function setupCameraControls() {
     my = e.clientY;
   });
 }
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
+// === [#HEX:D.01.65.00] END ===
 // === [#HEX:D.01.65.00] END ===
 // === [#HEX:D.01.65.00] END ===
 // === [#HEX:D.01.65.00] END ===

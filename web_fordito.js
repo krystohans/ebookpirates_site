@@ -9525,6 +9525,32 @@ function bindLanguageButtons() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.191.00] START | name: t | lines: 7 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.1AD.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1AD.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BD.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BD.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BF.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1BF.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C2.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C2.00] START | name: t | lines: 7 ===
+// @calls: none | @calledBy: none
 function t(key) {
     if (translations[currentLang] && translations[currentLang][key]) {
         return translations[currentLang][key];
@@ -9532,6 +9558,19 @@ function t(key) {
     // Ha nincs fordítás, visszaadja a kulcsot, hogy lássuk, mi hiányzik
     return key; 
 }
+// === [#HEX:F.04.1C2.00] END ===
+// === [#HEX:F.04.1C2.00] END ===
+// === [#HEX:F.04.1BF.00] END ===
+// === [#HEX:F.04.1BF.00] END ===
+// === [#HEX:F.04.1BE.00] END ===
+// === [#HEX:F.04.1BE.00] END ===
+// === [#HEX:F.04.1BE.00] END ===
+// === [#HEX:F.04.1BE.00] END ===
+// === [#HEX:F.04.1BE.00] END ===
+// === [#HEX:F.04.1BD.00] END ===
+// === [#HEX:F.04.1BD.00] END ===
+// === [#HEX:F.04.1AD.00] END ===
+// === [#HEX:F.04.1AD.00] END ===
 // === [#HEX:F.04.191.00] END ===
 // === [#HEX:F.04.191.00] END ===
 // === [#HEX:F.04.180.00] END ===

@@ -8,6 +8,7 @@
 }
 
 :root {
+    --header-height: 66px;
     --bg-main: #0d1b2a;
     --bg-paper: #fdf5e6;
     /* Pergamen */
@@ -317,9 +318,12 @@ html {
 
 /* Reszponzív nézetek */
 @media (max-width: 860px) {
+    :root {
+        --header-height: 56px;
+    }
     #header {
         padding: 0 calc(12px + 17px) 0 16px;
-        height: 56px;
+        height: var(--header-height, 56px);
     }
     .header-desktop-controls {
         display: none !important;
@@ -356,8 +360,11 @@ html {
 
 /* Fekvő telefonok és kompakt fekvő képernyők (szélesvásznú mobil nézet) */
 @media (orientation: landscape) and (max-height: 500px) {
+    :root {
+        --header-height: 44px;
+    }
     #header {
-        height: 44px !important;
+        height: var(--header-height, 44px) !important;
         padding: 0 16px 0 18px !important;
         background-size: 100% 100% !important;
     }
@@ -481,21 +488,20 @@ html {
     display: none;
     /* Alapból rejtve */
     position: fixed;
-    z-index: 100;
+    z-index: 1050;
     left: 0;
-    top: 0;
+    top: var(--header-height, 66px) !important;
     width: 100%;
     width: 100vw;
-    height: 100%;
-    height: 100vh;
-    height: 100dvh;
+    height: calc(100vh - var(--header-height, 66px)) !important;
+    height: calc(100dvh - var(--header-height, 66px)) !important;
     background-color: rgba(0, 0, 0, 0.85);
     /* Sötét háttér */
     justify-content: center;
     align-items: flex-start;
     /* Fent kezdődik a tartalom */
     overflow-y: auto;
-    padding: max(20px, env(safe-area-inset-top, 20px)) max(10px, env(safe-area-inset-right, 10px)) max(20px, env(safe-area-inset-bottom, 20px)) max(10px, env(safe-area-inset-left, 10px));
+    padding: 16px max(10px, env(safe-area-inset-right, 10px)) max(24px, env(safe-area-inset-bottom, 20px)) max(10px, env(safe-area-inset-left, 10px));
     box-sizing: border-box;
     backdrop-filter: blur(3px);
     /* Modern elmosás */
@@ -511,8 +517,7 @@ html {
     padding: 25px;
     width: 90%;
     max-width: 700px;
-    max-height: calc(100vh - 40px);
-    max-height: calc(100dvh - 40px);
+    max-height: calc(100% - 32px);
     overflow-y: auto;
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -4082,14 +4087,21 @@ button.btn-close {
 
 /* 3. Fekvő Tájolás & Kis Képernyőmagasság Dinamikus Kezelése */
 @media (max-height: 550px) {
+    :root {
+        --header-height: 44px;
+    }
+
     .gamemode-modal {
+        top: var(--header-height, 44px) !important;
+        height: calc(100vh - var(--header-height, 44px)) !important;
+        height: calc(100dvh - var(--header-height, 44px)) !important;
         padding: max(4px, env(safe-area-inset-top, 4px)) max(8px, env(safe-area-inset-right, 8px)) max(4px, env(safe-area-inset-bottom, 4px)) max(8px, env(safe-area-inset-left, 8px)) !important;
         align-items: flex-start !important;
     }
 
     .gamemode-modal-content {
         margin-top: 0 !important;
-        max-height: calc(100dvh - 12px) !important;
+        max-height: calc(100% - 8px) !important;
         padding: 14px !important;
     }
 
@@ -4312,3 +4324,121 @@ body.keyboard-open #info-modal .info-modal-content {
 
 
 
+
+/* ==========================================================================
+   TAVERNA 3D INTERIOR & HUD RENDSZER (Fogadó a Rózsaszín Gyöngyhöz)
+   ========================================================================== */
+
+#content:has(#taverna_oldal-content) {
+    padding: 0 !important;
+    overflow: hidden !important;
+    height: calc(100vh - 44px) !important;
+    max-height: calc(100vh - 44px) !important;
+}
+
+.taverna-3d-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 44px);
+    overflow: hidden;
+    background-color: #0d0805;
+}
+
+#taverna-webgl-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#taverna-webgl-canvas-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    outline: none;
+}
+
+/* Taverna Szerény Sarok Infógomb */
+.taverna-corner-info-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(18, 10, 5, 0.45);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: rgba(255, 215, 0, 0.7);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    padding: 0;
+}
+
+.taverna-corner-info-btn:hover {
+    background: rgba(35, 18, 8, 0.85);
+    border-color: rgba(212, 175, 55, 0.9);
+    color: #ffd700;
+    transform: scale(1.08);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+.taverna-hud-bar,
+.taverna-hotspot-dock {
+    display: none !important;
+}
+
+/* 2D Felület Lebegő Overlay */
+.taverna-2d-overlay {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92%;
+    max-width: 780px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    z-index: 25;
+    background: rgba(18, 10, 6, 0.94);
+    border: 2px solid #d4af37;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.4);
+    backdrop-filter: blur(12px);
+    color: #fdf5e6;
+    animation: tavernaFadeIn 0.3s ease-out;
+}
+
+@keyframes tavernaFadeIn {
+    from { opacity: 0; transform: translate(-50%, -10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (max-width: 768px) {
+    .taverna-hud-title {
+        font-size: 1.15rem;
+        padding: 4px 12px;
+    }
+    .taverna-hud-btn {
+        font-size: 0.74rem;
+        padding: 6px 10px;
+    }
+    .taverna-hotspot-dock {
+        bottom: 8px;
+        gap: 5px;
+        padding: 4px 6px;
+    }
+    .taverna-dock-chip {
+        font-size: 0.70rem;
+        padding: 5px 9px;
+    }
+}

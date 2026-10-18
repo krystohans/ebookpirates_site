@@ -598,6 +598,32 @@ window.playPickupSound = function () {
 // @calls: none | @calledBy: none
 // === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.0B.00] START | name: tryStartAllAudio | lines: 9 ===
+// @calls: none | @calledBy: none
 function tryStartAllAudio() {
   if (window.isPaused) return;
   if (!window.isMusicMuted && window.bgMusicAudio && window.bgMusicAudio.paused) {
@@ -607,6 +633,19 @@ function tryStartAllAudio() {
     window.ambSoundAudio.play().catch(e => console.log('Ambience autoplay pending user click:', e));
   }
 }
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
+// === [#HEX:D.01.0B.00] END ===
 // === [#HEX:D.01.0B.00] END ===
 // === [#HEX:D.01.0B.00] END ===
 // === [#HEX:D.01.0B.00] END ===
@@ -1200,6 +1239,32 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 // @calls: none | @calledBy: none
 // === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
 // @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.13.00] START | name: buildSegment | lines: 19 ===
+// @calls: none | @calledBy: none
   const buildSegment = (x1, z1, x2, z2) => {
     const p1 = new THREE.Vector2(x1, z1);
     const p2 = new THREE.Vector2(x2, z2);
@@ -1219,6 +1284,19 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     scene.add(wallMesh);
     borderMeshes.push(wallMesh);
   };
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
+// === [#HEX:D.01.13.00] END ===
 // === [#HEX:D.01.13.00] END ===
 // === [#HEX:D.01.13.00] END ===
 // === [#HEX:D.01.13.00] END ===
@@ -1380,10 +1458,49 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 // @calls: none | @calledBy: none
 // === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
 // @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.14.00] START | name: applyDefaultBoatPos | lines: 4 ===
+// @calls: none | @calledBy: none
   function applyDefaultBoatPos(hPos) {
     boat.position.set(5, 0, -94);
     boat.rotation.y = Math.PI + (Math.PI / 4) - (3 * Math.PI / 180);
   }
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
+// === [#HEX:D.01.14.00] END ===
 // === [#HEX:D.01.14.00] END ===
 // === [#HEX:D.01.14.00] END ===
 // === [#HEX:D.01.14.00] END ===
@@ -2179,6 +2296,32 @@ window.spawnHartyaWave = function (count, originType) {
 // @calls: none | @calledBy: none
 // === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
 // @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:D.01.1A.00] START | name: createFoamTexture | lines: 21 ===
+// @calls: none | @calledBy: none
 function createFoamTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = 128; canvas.height = 128;
@@ -2200,6 +2343,19 @@ function createFoamTexture() {
   texture.needsUpdate = true;
   return texture;
 }
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
+// === [#HEX:D.01.1A.00] END ===
 // === [#HEX:D.01.1A.00] END ===
 // === [#HEX:D.01.1A.00] END ===
 // === [#HEX:D.01.1A.00] END ===

@@ -242,7 +242,46 @@ function preloadUserBaseData(user, onComplete) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.03.00.00] START | name: normalizeShipData | lines: 1 ===
+// @calls: none | @calledBy: none
                 (window.normalizeShipData ? window.normalizeShipData : function(s) { return s; });
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
+// === [#HEX:F.03.00.00] END ===
 // === [#HEX:F.03.00.00] END ===
 // === [#HEX:F.03.00.00] END ===
 // === [#HEX:F.03.00.00] END ===
@@ -633,6 +672,32 @@ var clockworkEngine = (function () {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12.00] START | name: animate | lines: 20 ===
+// @calls: none | @calledBy: none
     function animate() {
         if (!renderer || !scene || !camera) return;
         animFrameId = requestAnimationFrame(animate);
@@ -653,6 +718,19 @@ var clockworkEngine = (function () {
 
         renderer.render(scene, camera);
     }
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
+// === [#HEX:F.04.12.00] END ===
 // === [#HEX:F.04.12.00] END ===
 // === [#HEX:F.04.12.00] END ===
 // === [#HEX:F.04.12.00] END ===
@@ -1031,6 +1109,32 @@ var HexEngine = (function () {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1C.00] START | name: get | lines: 9 ===
+// @calls: none | @calledBy: none
             get: function (key) {
                 var item = _cache[key];
                 if (!item) return null;
@@ -1042,6 +1146,45 @@ var HexEngine = (function () {
             },
 // === [#HEX:F.04.1C.00] END ===
 // === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1C.00] END ===
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
+// @calls: none | @calledBy: none
 // === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.1D.00] START | name: set | lines: 7 ===
@@ -1053,6 +1196,19 @@ var HexEngine = (function () {
                     expiresAt: Date.now() + ttl
                 };
             },
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
+// === [#HEX:F.04.1D.00] END ===
 // === [#HEX:F.04.1D.00] END ===
 // === [#HEX:F.04.1D.00] END ===
 // === [#HEX:F.04.1E.00] START | name: invalidate | lines: 8 ===
@@ -1228,11 +1384,76 @@ var HexEngine = (function () {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.27.00] START | name: getTrace | lines: 3 ===
+// @calls: none | @calledBy: none
             getTrace: function () {
                 return JSON.parse(JSON.stringify(_breadcrumbs));
             },
 // === [#HEX:F.04.27.00] END ===
 // === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.27.00] END ===
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
+// @calls: none | @calledBy: none
 // === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.28.00] START | name: printTrace | lines: 7 ===
@@ -1246,6 +1467,45 @@ var HexEngine = (function () {
             },
 // === [#HEX:F.04.28.00] END ===
 // === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.28.00] END ===
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
+// @calls: none | @calledBy: none
 // === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.29.00] START | name: getDiagnosticReport | lines: 9 ===
@@ -1259,6 +1519,19 @@ var HexEngine = (function () {
                     activeGuards: Object.keys(_activeRequests).length
                 };
             }
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
+// === [#HEX:F.04.29.00] END ===
 // === [#HEX:F.04.29.00] END ===
 // === [#HEX:F.04.29.00] END ===
         }
@@ -1719,12 +1992,51 @@ var isSessionChecked = false;
 // @calls: none | @calledBy: none
 // === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.00.00] START | name: openInfoModalAuto | lines: 6 ===
+// @calls: none | @calledBy: none
 function openInfoModalAuto() {
     var modal = document.getElementById('info-modal');
     if (modal) {
         modal.style.display = 'flex';
     }
 }
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
+// === [#HEX:F.05.00.00] END ===
 // === [#HEX:F.05.00.00] END ===
 // === [#HEX:F.05.00.00] END ===
 // === [#HEX:F.05.00.00] END ===
@@ -1907,6 +2219,32 @@ function updateCreditDisplay() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.01.00] START | name: ensureCreditDisplayIsPresent | lines: 5 ===
+// @calls: none | @calledBy: none
 function ensureCreditDisplayIsPresent() {
     if (!document.getElementById('creditValue')) {
         console.warn("Hiba: A 'creditValue' HTML elem nem található a fejlécben!");
@@ -1917,11 +2255,50 @@ function ensureCreditDisplayIsPresent() {
 // === [#HEX:F.07.01.00] END ===
 // === [#HEX:F.07.01.00] END ===
 // === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
+// === [#HEX:F.07.01.00] END ===
 
 // =======================================================
 // === FEJLÉC VEZÉRLŐK (NYELVVÁLASZTÓ ÉS MOBIL MENÜ) ===
 // =======================================================
 
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
+// @calls: none | @calledBy: none
 // === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.08.01.00] START | name: toggleHeaderLangDropdown | lines: 13 ===
@@ -1950,12 +2327,51 @@ function toggleHeaderLangDropdown(event, forceState) {
 // === [#HEX:F.08.01.00] END ===
 // === [#HEX:F.08.01.00] END ===
 // === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
+// === [#HEX:F.08.01.00] END ===
 
 // === [#HEX:F.04.1F.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.1F.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.1F.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.30.00] START | name: toggleHeaderMobileSettings | lines: 13 ===
 // @calls: none | @calledBy: none
@@ -1974,6 +2390,19 @@ function toggleHeaderMobileSettings(event, forceState) {
         popup.style.display = (popup.style.display === 'none' || !popup.style.display) ? 'flex' : 'none';
     }
 }
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
+// === [#HEX:F.04.30.00] END ===
 // === [#HEX:F.04.30.00] END ===
 // === [#HEX:F.04.30.00] END ===
 // === [#HEX:F.04.1F.00] END ===
@@ -2063,6 +2492,32 @@ window.addEventListener('orientationchange', function () {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.32.00] START | name: toggleFullscreen | lines: 18 ===
+// @calls: none | @calledBy: none
 function toggleFullscreen() {
     try {
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -2083,6 +2538,19 @@ function toggleFullscreen() {
 }
 // === [#HEX:F.04.32.00] END ===
 // === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
+// === [#HEX:F.04.32.00] END ===
 // === [#HEX:F.04.21.00] END ===
 // === [#HEX:F.04.21.00] END ===
 // === [#HEX:F.04.21.00] END ===
@@ -2098,6 +2566,32 @@ window.toggleFullscreen = toggleFullscreen;
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.33.00] START | name: handleFullscreenChange | lines: 10 ===
+// @calls: none | @calledBy: none
 function handleFullscreenChange() {
     var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
     var fsBtn = document.getElementById('header-fullscreen-btn');
@@ -2108,6 +2602,19 @@ function handleFullscreenChange() {
         }
     }
 }
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
+// === [#HEX:F.04.33.00] END ===
 // === [#HEX:F.04.33.00] END ===
 // === [#HEX:F.04.33.00] END ===
 // === [#HEX:F.04.22.00] END ===
@@ -2208,6 +2715,32 @@ if (typeof window !== 'undefined') {
 // @calls: none | @calledBy: none
 // === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.01.00] START | name: triggerPwaInstall | lines: 21 ===
+// @calls: none | @calledBy: none
 function triggerPwaInstall() {
     if (deferredPwaPrompt) {
         deferredPwaPrompt.prompt();
@@ -2229,6 +2762,19 @@ function triggerPwaInstall() {
         alert(msg);
     }
 }
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
+// === [#HEX:F.09.01.00] END ===
 // === [#HEX:F.09.01.00] END ===
 // === [#HEX:F.09.01.00] END ===
 // === [#HEX:F.09.01.00] END ===
@@ -2431,6 +2977,10 @@ function loadPage(pageName) {
         try { localStorage.setItem('ebook_last_active_page', pageName); } catch (e) { }
     }
 
+    if (pageName !== 'taverna_oldal' && typeof window._taverna3DCleanup === 'function') {
+        window._taverna3DCleanup();
+    }
+
     var isFullScreenGameplay = (pageName === 'tutorial_oldal' || pageName === 'game_oldal');
 
     var headerElem = document.getElementById('header');
@@ -2556,7 +3106,7 @@ function loadPage(pageName) {
     }
     if (contentDiv) {
         contentDiv.style.display = 'block';
-        if (pageName === 'tutorial_oldal' || pageName === 'game_oldal') {
+        if (pageName === 'tutorial_oldal' || pageName === 'game_oldal' || pageName === 'taverna_oldal') {
             contentDiv.style.padding = '0';
             contentDiv.style.overflow = 'hidden';
         } else {
@@ -2761,6 +3311,32 @@ function setupAccordionListeners() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.3E.00] START | name: toggleAccordionPanel | lines: 13 ===
+// @calls: none | @calledBy: none
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     const panel = this.nextElementSibling;
@@ -2774,6 +3350,19 @@ function toggleAccordionPanel() {
         panel.style.maxHeight = (scrollHeight + 30) + "px";
     }
 }
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
+// === [#HEX:F.04.3E.00] END ===
 // === [#HEX:F.04.3E.00] END ===
 // === [#HEX:F.04.3E.00] END ===
 // === [#HEX:F.04.2D.00] END ===
@@ -2890,6 +3479,32 @@ function markPageAsSeen(pageName) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.41.00] START | name: showSplash | lines: 8 ===
+// @calls: none | @calledBy: none
 function showSplash(pageName) {
     const splash = document.getElementById(pageName + '-splash');
     const content = document.getElementById(pageName + '-content');
@@ -2898,6 +3513,19 @@ function showSplash(pageName) {
     content.style.display = 'none';
     splash.style.display = 'block';
 }
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
+// === [#HEX:F.04.41.00] END ===
 // === [#HEX:F.04.41.00] END ===
 // === [#HEX:F.04.41.00] END ===
 // === [#HEX:F.04.30.00] END ===
@@ -3523,11 +4151,50 @@ function uiPrompt(message, title, placeholder, onCommit) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.54.00] START | name: callback | lines: 5 ===
+// @calls: none | @calledBy: none
                 callback: function () {
                     // Itt olvassuk ki az értéket, még mielőtt a modal tartalma törlődne
                     const val = document.getElementById(inputId).value;
                     if (onCommit) onCommit(val);
                 }
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
+// === [#HEX:F.04.54.00] END ===
 // === [#HEX:F.04.54.00] END ===
 // === [#HEX:F.04.54.00] END ===
 // === [#HEX:F.04.43.00] END ===
@@ -3564,34 +4231,40 @@ const tavernaImageSources = {
 // @calls: [#HEX:F.04.EE.00], [#HEX:B.07.3E.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.06.0E.00]
 function preloadTavernaImages(callback) {
     // Ha már be vannak töltve a képek, nem kérjük le újra.
-    if (tavernaImageSources.kartya_hatlap) {
-        if (callback) callback(); // <--- ITT VOLT A HIBA (töröltem a "uiAlert"-et)
+    if (typeof tavernaImageSources !== 'undefined' && tavernaImageSources && tavernaImageSources.kartya_hatlap) {
+        if (callback) callback();
         return;
     }
 
-    document.getElementById('loading-overlay').style.display = 'flex';
+    var loader = document.getElementById('loading-overlay');
+    if (loader) loader.style.display = 'flex';
 
     // Hívás a callBackend-del (paraméterek nélkül, mert a Router nem kér semmit ehhez)
-    callBackend('getCardImageAssets', [],
-        function (response) {
-            if (response.success) {
-                for (const key in response.assets) {
-                    const imageData = response.assets[key];
-                    if (imageData && imageData.data) {
-                        tavernaImageSources[key] = `data:${imageData.mime};base64,${imageData.data}`;
+    if (typeof callBackend === 'function') {
+        callBackend('getCardImageAssets', [],
+            function (response) {
+                if (response && response.success) {
+                    for (const key in response.assets) {
+                        const imageData = response.assets[key];
+                        if (imageData && imageData.data) {
+                            tavernaImageSources[key] = 'data:' + imageData.mime + ';base64,' + imageData.data;
+                        }
                     }
+                    if (callback) callback();
+                } else {
+                    if (typeof uiAlert === 'function') uiAlert((typeof t === 'function' ? t('taverna_assets_error_prefix') : 'Eszköz betöltési hiba: ') + (response ? response.error : ''));
                 }
-                if (callback) callback();
-            } else {
-                if (typeof uiAlert === 'function') uiAlert(t('taverna_assets_error_prefix') + response.error);
+                if (loader) loader.style.display = 'none';
+            },
+            function (error) {
+                if (typeof uiAlert === 'function') uiAlert((typeof t === 'function' ? t('taverna_assets_error_fatal_prefix') : 'Végzetes hiba az eszközök betöltésekor: ') + (error ? error.message : ''));
+                if (loader) loader.style.display = 'none';
             }
-            document.getElementById('loading-overlay').style.display = 'none';
-        },
-        function (error) {
-            if (typeof uiAlert === 'function') uiAlert(t('taverna_assets_error_fatal_prefix') + error.message);
-            document.getElementById('loading-overlay').style.display = 'none';
-        }
-    );
+        );
+    } else {
+        if (loader) loader.style.display = 'none';
+        if (callback) callback();
+    }
 }
 // === [#HEX:F.04.44.00] END ===
 
@@ -3688,6 +4361,11 @@ function closeAllTavernaModals() {
 // === [#HEX:F.04.47.00] START | name: initializeTavernaPage | lines: 199 ===
 // @calls: [#HEX:B.07.3C.00], [#HEX:F.04.48.00], [#HEX:F.07.02.00], [#HEX:F.06.4F.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.2A.00]
 function initializeTavernaPage() {
+    // 1. Taverna 3D modul indítása ELSŐKÉNT és KÖZVETLENÜL, semmi se blokkolhassa!
+    if (typeof initTaverna3DScene === 'function') {
+        initTaverna3DScene();
+    }
+
     // --- VÁLTOZÓK FELVÉTELE ---
     const pultModal = document.getElementById('pult-modal');
     const asztalConfirmModal = document.getElementById('asztal-confirm-modal');
@@ -3718,9 +4396,8 @@ function initializeTavernaPage() {
     let gameState = 'betting';
     let currentTavernPin = null;
 
-    if (!pultBtn || !asztalBtn || !csevegBtn || !chatModal || !jatekteremBtn) {
-        console.error(t('taverna_missing_controls'));
-        return;
+    if (!pultBtn || !asztalBtn || !csevegBtn || !chatModal) {
+        console.warn((typeof t === 'function' ? t('taverna_missing_controls') : 'Hiányzó taverna vezérlők.') + ' (Nem kritikus)');
     }
 
     // Ezt az URL-t majd ellenőrizd, hogy helyes-e!
@@ -3841,55 +4518,1778 @@ function initializeTavernaPage() {
         chatIframe.src = 'about:blank';
     };
 
-    // 4. JÁTÉKTEREM (Már jó volt, de biztos ami biztos)
-    jatekteremBtn.onclick = () => {
-        if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
-
-        if (typeof requestPin !== 'function') {
-            console.error(t('taverna_request_pin_missing'));
-            return;
-        }
-
-// === [#HEX:F.06.0E.00] START | name: requestPin | lines: 32 ===
-// @calls: [#HEX:B.07.3C.00], [#HEX:F.04.48.00], [#HEX:D.01.79.00], [#HEX:D.01.77.00], [#HEX:F.04.44.00] | @calledBy: none
-        requestPin(function (pinCode) {
-            currentTavernPin = pinCode;
-
-            if (typeof preloadTavernaImages === 'function') {
-                preloadTavernaImages(() => {
-                    if (typeof tavernaImageSources !== 'undefined' && tavernaImageSources.dark_wood) {
-                        gameModalContent.style.backgroundImage = `url(${tavernaImageSources.dark_wood})`;
-                    }
-
-                    document.getElementById('loading-overlay').style.display = 'flex';
-
-                    // callBackend Helyes használata (Nincs paraméter, nincs email)
-                    callBackend('getGameInitialData', [],
-                        function (data) {
-                            document.getElementById('loading-overlay').style.display = 'none';
-                            if (data.success) {
-                                playerCredit = data.credit;
-                                prizePool = data.prizePool;
-                                if (typeof resetGame === 'function') resetGame();
-                                jatekteremModal.style.display = 'flex';
-                            } else {
-                                if (typeof uiAlert === 'function') uiAlert(t('error_prefix') + data.error);
-                            }
-                        },
-                        function (err) {
-                            document.getElementById('loading-overlay').style.display = 'none';
-                            if (typeof uiAlert === 'function') uiAlert(t('server_error_prefix') + err.message);
-                        }
-                    );
-                });
+    // 4. JÁTÉKTEREM / KÁRTYASZOBA (Biztonságos csatolás)
+    if (jatekteremBtn) {
+        jatekteremBtn.onclick = () => {
+            if (typeof enterCardRoomWithPin === 'function') {
+                enterCardRoomWithPin();
+            } else if (typeof openJatekteremDirect === 'function') {
+                openJatekteremDirect();
             }
-        }, t('taverna_game_entry_prompt'));
-// === [#HEX:F.06.0E.00] END ===
-    };
+        };
+    }
 
-    closeGameBtn.onclick = () => { jatekteremModal.style.display = 'none'; };
+    if (closeGameBtn) {
+        closeGameBtn.onclick = () => { if (jatekteremModal) jatekteremModal.style.display = 'none'; };
+    }
 }
 // === [#HEX:F.04.47.00] END ===
+
+// =========================================================================
+// === TAVERNA 3D BELSŐ TÉR ÉS INTERAKTÍV THREE.JS MOTOR ====================
+// =========================================================================
+
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.59.00] START | name: toggleTaverna2DMenu | lines: 12 ===
+// @calls: none | @calledBy: none
+function toggleTaverna2DMenu() {
+    var overlay = document.getElementById('taverna-2d-overlay');
+    var btnText = document.getElementById('taverna-view-btn-text');
+    if (!overlay) return;
+    if (overlay.style.display === 'none' || !overlay.style.display) {
+        overlay.style.display = 'block';
+        if (btnText) btnText.innerText = '3D Nézet';
+    } else {
+        overlay.style.display = 'none';
+        if (btnText) btnText.innerText = '2D Menü';
+    }
+}
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+// === [#HEX:F.04.59.00] END ===
+window.toggleTaverna2DMenu = toggleTaverna2DMenu;
+
+// === [#HEX:F.02.00.00] START | name: resetTavernaCamera | lines: 5 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+function resetTavernaCamera() {
+    if (typeof window._tavernaResetCam === 'function') {
+        window._tavernaResetCam();
+    }
+}
+// === [#HEX:F.02.00.00] END ===
+window.resetTavernaCamera = resetTavernaCamera;
+
+// === [#HEX:F.04.5A.00] START | name: focusTavernaHotspot | lines: 5 ===
+// @calls: [#HEX:F.04.70.00] | @calledBy: none
+function focusTavernaHotspot(id) {
+    if (typeof window._tavernaFocusHotspot === 'function') {
+        window._tavernaFocusHotspot(id);
+    }
+}
+// === [#HEX:F.04.5A.00] END ===
+window.focusTavernaHotspot = focusTavernaHotspot;
+
+// === [#HEX:F.04.75.00] START | name: openJatekteremDirect | lines: 48 ===
+// @calls: [#HEX:F.04.48.00], [#HEX:B.07.3C.00] | @calledBy: none
+function openJatekteremDirect() {
+    if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
+
+    const jatekteremModal = document.getElementById('jatekterem-modal');
+    if (!jatekteremModal) return;
+    const gameModalContent = document.getElementById('jatekterem-modal-content') || jatekteremModal.querySelector('.gamemode-modal-content');
+
+    if (typeof preloadTavernaImages === 'function') {
+        preloadTavernaImages(() => {
+            if (typeof tavernaImageSources !== 'undefined' && tavernaImageSources.dark_wood && gameModalContent) {
+                gameModalContent.style.backgroundImage = `url(${tavernaImageSources.dark_wood})`;
+            }
+
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+            if (typeof callBackend === 'function') {
+                callBackend('getGameInitialData', [],
+                    function (data) {
+                        if (loadingOverlay) loadingOverlay.style.display = 'none';
+                        if (data && data.success) {
+                            if (typeof playerCredit !== 'undefined') playerCredit = data.credit;
+                            if (typeof prizePool !== 'undefined') prizePool = data.prizePool;
+                            if (typeof resetGame === 'function') resetGame();
+                            jatekteremModal.style.display = 'flex';
+                        } else {
+                            if (typeof uiAlert === 'function') uiAlert((typeof t === 'function' ? t('error_prefix') : 'Hiba: ') + (data ? data.error : ''));
+                        }
+                    },
+                    function (err) {
+                        if (loadingOverlay) loadingOverlay.style.display = 'none';
+                        if (typeof uiAlert === 'function') uiAlert((typeof t === 'function' ? t('server_error_prefix') : 'Szerverhiba: ') + (err ? err.message : ''));
+                    }
+                );
+            } else {
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                if (typeof resetGame === 'function') resetGame();
+                jatekteremModal.style.display = 'flex';
+            }
+        });
+    } else {
+        if (typeof resetGame === 'function') resetGame();
+        jatekteremModal.style.display = 'flex';
+    }
+}
+// === [#HEX:F.04.75.00] END ===
+window.openJatekteremDirect = openJatekteremDirect;
+
+// === [#HEX:F.04.76.00] START | name: enterCardRoomWithPin | lines: 25 ===
+// @calls: [#HEX:F.06.0E.00], [#HEX:F.04.5A.00] | @calledBy: none
+function enterCardRoomWithPin() {
+// === [#HEX:F.04.5D.00] START | name: doEnter | lines: 6 ===
+// @calls: [#HEX:F.04.5A.00], [#HEX:F.05.02.00] | @calledBy: [#HEX:F.04.5C.00], [#HEX:F.06.0F.00]
+    function doEnter() {
+        if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
+        var overlay = document.getElementById('taverna-2d-overlay');
+        if (overlay) overlay.style.display = 'none';
+        focusTavernaHotspot('cardroom_game');
+    }
+// === [#HEX:F.04.5D.00] END ===
+
+    if (typeof currentTavernPin !== 'undefined' && currentTavernPin) {
+        doEnter();
+        return;
+    }
+
+    if (typeof requestPin === 'function') {
+// === [#HEX:F.06.0F.00] START | name: requestPin | lines: 4 ===
+// @calls: [#HEX:F.04.5D.00] | @calledBy: none
+        requestPin(function (pinCode) {
+            currentTavernPin = pinCode;
+            doEnter();
+        }, "Add meg a Titkos Kártyaszoba PIN kódját a belépéshez:");
+// === [#HEX:F.06.0F.00] END ===
+    } else {
+        doEnter();
+    }
+}
+// === [#HEX:F.04.76.00] END ===
+window.enterCardRoomWithPin = enterCardRoomWithPin;
+
+// === [#HEX:F.04.77.00] START | name: returnToMainTavern | lines: 8 ===
+// @calls: [#HEX:F.02.00.00] | @calledBy: none
+function returnToMainTavern() {
+    resetTavernaCamera();
+}
+// === [#HEX:F.04.77.00] END ===
+window.returnToMainTavern = returnToMainTavern;
+
+// === [#HEX:F.04.78.00] START | name: openBetaFromTavern | lines: 16 ===
+// @calls: [#HEX:F.04.4C.00] | @calledBy: none
+function openBetaFromTavern() {
+    if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
+    const pModal = document.getElementById('pult-modal');
+    if (pModal) {
+        const titleEl = document.getElementById('pult-modal-title');
+        if (titleEl) titleEl.innerText = '📜 Bétaolvasók Asztala';
+        pModal.style.display = 'flex';
+        if (typeof showPultView === 'function') showPultView('beta_menu');
+    }
+}
+// === [#HEX:F.04.78.00] END ===
+window.openBetaFromTavern = openBetaFromTavern;
+
+// === [#HEX:F.04.79.00] START | name: openBookAgentDialog | lines: 34 ===
+// @calls: [#HEX:F.04.78.00], [#HEX:B.05.1B.00] | @calledBy: none
+function openBookAgentDialog() {
+    if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
+    if (typeof openUniversalNPC === 'function') {
+        openUniversalNPC('book_agent', {
+            name: 'Madam Raven (Könyvügynök)',
+            role: 'Irodalmi és Kézirat Ügynök',
+            icon: '<i class="fas fa-feather-alt"></i>',
+            headerColor: '#4a154b',
+            portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+            msgIcon: '<i class="fas fa-feather-alt" style="color:#d4af37; margin-right:5px;"></i>',
+            loaderHTML: '<i class="fas fa-feather-alt fa-spin" style="color:#d4af37; margin-right:8px;"></i> <i>Madam Raven átvizsgálja a kéziratokat...</i>',
+            styles: {
+                modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
+                content: { width: '350px', height: '100%', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #4a154b', backgroundColor: '#fdf5e6', color: '#241512', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)' }
+            },
+            menu: [
+                { text: '📖 Bétázók Kéziratai', action: 'RUN_FUNCTION', payload: 'openBetaFromTavern', reply: '_' },
+                { text: '📜 Pletykák a Kiadókról', action: 'RUN_FUNCTION', payload: 'BT_listMissions', reply: '_' },
+                { text: '📌 Kocsmai Hirdetőfal', action: 'RUN_FUNCTION', payload: 'openNoticeBoard', reply: '_' }
+            ]
+        });
+    } else {
+        openBetaFromTavern();
+    }
+}
+// === [#HEX:F.04.79.00] END ===
+window.openBookAgentDialog = openBookAgentDialog;
+
+// === [#HEX:F.02.01.00] START | name: initTaverna3DScene | lines: 58 ===
+// @calls: [#HEX:F.04.5B.00], [#HEX:F.09.05.00] | @calledBy: [#HEX:F.04.58.00]
+function initTaverna3DScene() {
+    var container = document.getElementById('taverna-webgl-canvas-container');
+    if (!container) return;
+
+// === [#HEX:F.04.61.00] START | name: show2DFallback | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:F.02.01.00]
+    function show2DFallback(reason) {
+        console.warn("⚠️ Taverna 3D betöltési hiba (" + (reason || 'ismeretlen') + ")! 2D menü aktiválva.");
+        var overlay2D = document.getElementById('taverna-2d-overlay');
+        if (overlay2D) overlay2D.style.display = 'block';
+        if (container) container.style.display = 'none';
+    }
+// === [#HEX:F.04.61.00] END ===
+
+    if (typeof isWebGLAvailable !== 'function') {
+// === [#HEX:F.09.04.00] START | name: isWebGLAvailable | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.04.00] START | name: isWebGLAvailable | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.04.00] START | name: isWebGLAvailable | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.04.00] START | name: isWebGLAvailable | lines: 8 ===
+// @calls: none | @calledBy: none
+        window.isWebGLAvailable = function () {
+            try {
+                var cv = document.createElement('canvas');
+                return !!(window.WebGLRenderingContext && (cv.getContext('webgl') || cv.getContext('experimental-webgl')));
+            } catch (e) {
+                return false;
+            }
+        };
+// === [#HEX:F.09.04.00] END ===
+// === [#HEX:F.09.04.00] END ===
+// === [#HEX:F.09.04.00] END ===
+// === [#HEX:F.09.04.00] END ===
+    }
+
+    if (!isWebGLAvailable()) {
+        show2DFallback("WebGL nem elérhető");
+        return;
+    }
+
+    if (window._taverna3DInitialized && window._tavernaScene) {
+        if (typeof window._tavernaResizeHandler === 'function') {
+            window._tavernaResizeHandler();
+        }
+        return;
+    }
+
+    var timeoutWatchdog = setTimeout(function () {
+        if (!window._taverna3DInitialized) {
+            show2DFallback("Időtúllépés (Timeout)");
+        }
+    }, 4500);
+
+    Promise.all([
+        import('three'),
+        import('three/addons/controls/OrbitControls.js'),
+        import('three/addons/loaders/GLTFLoader.js')
+    ]).then(function (modules) {
+        clearTimeout(timeoutWatchdog);
+        const THREE = modules[0];
+        const { OrbitControls } = modules[1];
+        const { GLTFLoader } = modules[2];
+        window.THREE = THREE;
+        try {
+            runTaverna3DModule(THREE, OrbitControls, GLTFLoader);
+        } catch (runErr) {
+            console.error("Hiba a Taverna 3D modul indításakor:", runErr);
+            show2DFallback("Futási hiba");
+        }
+    }).catch(function (err) {
+        clearTimeout(timeoutWatchdog);
+        console.warn("Three.js modul import figyelmeztetés Taverna esetén, fallback window.THREE-re:", err);
+        if (window.THREE && window.THREE.OrbitControls && window.THREE.GLTFLoader) {
+            try {
+                runTaverna3DModule(window.THREE, window.THREE.OrbitControls, window.THREE.GLTFLoader);
+            } catch (fallbackErr) {
+                console.error("Hiba a fallback runTaverna3DModule indításakor:", fallbackErr);
+                show2DFallback("Fallback futási hiba");
+            }
+        } else {
+            show2DFallback("Three.js modulok nem elérhetők");
+        }
+    });
+}
+// === [#HEX:F.02.01.00] END ===
+window.initTaverna3DScene = initTaverna3DScene;
+
+// === [#HEX:F.04.5B.00] START | name: runTaverna3DModule | lines: 885 | action: 'RUN_FUNCTION' ===
+// @calls: [#HEX:B.05.1B.00], [#HEX:F.04.70.00], [#HEX:F.04.68.00], [#HEX:F.04.5D.00], [#HEX:D.01.0D.00] | @calledBy: [#HEX:F.02.01.00]
+function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
+    const container = document.getElementById('taverna-webgl-canvas-container');
+    const tooltipEl = document.getElementById('taverna-interactive-tooltip');
+    const tooltipTextEl = document.getElementById('taverna-tooltip-text');
+    const overlayEl = document.getElementById('taverna-scene-transition-overlay');
+    if (!container) return;
+
+    // Ha korábbi példány futna, takarítjuk
+    if (typeof window._taverna3DCleanup === 'function') {
+        window._taverna3DCleanup();
+    }
+
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || (window.innerHeight - 44);
+
+    // 1. Jelenet és Köd
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0604);
+    scene.fog = new THREE.FogExp2(0x120a06, 0.052);
+    window._tavernaScene = scene;
+
+    // 2. Kamera és Kontroll
+    const defaultCamPos = new THREE.Vector3(0, 3.0, 6.8);
+    const defaultTargetPos = new THREE.Vector3(0, 1.5, 0);
+
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 80);
+    camera.position.copy(defaultCamPos);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 1.8;
+    controls.maxDistance = 10.0;
+    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.minPolarAngle = 0.25;
+    controls.target.copy(defaultTargetPos);
+    controls.update();
+
+    // 3. Meleg kocsmai fények
+    const ambientLight = new THREE.AmbientLight(0xffecd0, 0.95);
+    scene.add(ambientLight);
+
+    const fireplaceLight = new THREE.PointLight(0xff6611, 3.2, 16, 1.2);
+    fireplaceLight.position.set(-6.8, 1.9, -1.0);
+    fireplaceLight.castShadow = true;
+    fireplaceLight.shadow.bias = -0.002;
+    scene.add(fireplaceLight);
+
+    const barLight = new THREE.PointLight(0xffaa33, 2.5, 12, 1.2);
+    barLight.position.set(3.6, 2.7, -3.0);
+    scene.add(barLight);
+
+    const gameLight = new THREE.PointLight(0xffbb44, 2.2, 9, 1.1);
+    gameLight.position.set(-3.0, 2.2, 2.2);
+    scene.add(gameLight);
+
+    const mercenaryLight = new THREE.PointLight(0xff9922, 2.2, 9, 1.1);
+    mercenaryLight.position.set(3.0, 2.2, 2.2);
+    scene.add(mercenaryLight);
+
+    const moonLight = new THREE.DirectionalLight(0x4a7095, 0.55);
+    moonLight.position.set(5.0, 7.5, -4.0);
+    scene.add(moonLight);
+
+    // 4. Procedurális textúrák generálása
+// === [#HEX:F.04.5C.00] START | name: createWoodCanvasTexture | lines: 31 ===
+// @calls: none | @calledBy: [#HEX:F.04.5B.00]
+    function createWoodCanvasTexture() {
+        const cv = document.createElement('canvas');
+        cv.width = 512;
+        cv.height = 512;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#2b190f';
+        ctx.fillRect(0, 0, 512, 512);
+
+        // Fa deszkák sávjai
+        const plankHeight = 64;
+        for (let y = 0; y < 512; y += plankHeight) {
+            ctx.fillStyle = (y / plankHeight) % 2 === 0 ? '#382013' : '#2f1a0f';
+            ctx.fillRect(0, y, 512, plankHeight - 4);
+            ctx.fillStyle = '#140a05';
+            ctx.fillRect(0, y + plankHeight - 4, 512, 4);
+
+            // Szegek a peremen
+            ctx.fillStyle = '#110b07';
+            ctx.beginPath();
+            ctx.arc(16, y + 30, 3, 0, Math.PI * 2);
+            ctx.arc(496, y + 30, 3, 0, Math.PI * 2);
+            ctx.arc(256, y + 30, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        const texture = new THREE.CanvasTexture(cv);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(4, 4);
+        return texture;
+    }
+// === [#HEX:F.04.5C.00] END ===
+
+    const woodTexture = createWoodCanvasTexture();
+    const woodMaterial = new THREE.MeshStandardMaterial({
+        map: woodTexture,
+        roughness: 0.75,
+        metalness: 0.08
+    });
+
+    const darkTimberMaterial = new THREE.MeshStandardMaterial({
+        color: 0x22130a,
+        roughness: 0.85,
+        metalness: 0.05
+    });
+
+    const stoneMaterial = new THREE.MeshStandardMaterial({
+        color: 0x3d352e,
+        roughness: 0.9,
+        metalness: 0.02
+    });
+
+    const goldTrimMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd4af37,
+        roughness: 0.35,
+        metalness: 0.85
+    });
+
+    // Procedurális Bársonykárpit Textúra a Kártyaszoba falaihoz
+// === [#HEX:F.04.63.00] START | name: createVelvetCanvasTexture | lines: 37 ===
+// @calls: none | @calledBy: [#HEX:F.04.61.00]
+    function createVelvetCanvasTexture() {
+        const cv = document.createElement('canvas');
+        cv.width = 512;
+        cv.height = 512;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#3a0812';
+        ctx.fillRect(0, 0, 512, 512);
+
+        // Bársony és damaszt szövés minta
+        ctx.fillStyle = '#4c0c19';
+        for (let y = 0; y < 512; y += 32) {
+            for (let x = 0; x < 512; x += 32) {
+                if ((x / 32 + y / 32) % 2 === 0) {
+                    ctx.fillRect(x, y, 32, 32);
+                }
+            }
+        }
+
+        // Finom arany damaszt díszítő szálak
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.18)';
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+        ctx.lineWidth = 1.5;
+        for (let y = 16; y < 512; y += 64) {
+            for (let x = 16; x < 512; x += 64) {
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+
+        const texture = new THREE.CanvasTexture(cv);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(4, 4);
+        return texture;
+    }
+// === [#HEX:F.04.63.00] END ===
+
+    const velvetTexture = createVelvetCanvasTexture();
+    const velvetMaterial = new THREE.MeshStandardMaterial({
+        map: velvetTexture,
+        roughness: 0.88,
+        metalness: 0.12
+    });
+
+    // Táblafelirat Canvas textúra készítő (Kijáratok és feliratok)
+// === [#HEX:F.04.65.00] START | name: createSignCanvasTexture | lines: 20 ===
+// @calls: none | @calledBy: [#HEX:F.04.62.00]
+    function createSignCanvasTexture(text) {
+        const cv = document.createElement('canvas');
+        cv.width = 512;
+        cv.height = 128;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#221108';
+        ctx.fillRect(0, 0, 512, 128);
+        ctx.strokeStyle = '#d4af37';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(6, 6, 500, 116);
+        ctx.fillStyle = '#f5d77f';
+        ctx.font = 'bold 38px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = '#000000';
+        ctx.shadowBlur = 6;
+        ctx.fillText(text, 256, 64);
+        const texture = new THREE.CanvasTexture(cv);
+        return texture;
+    }
+// === [#HEX:F.04.65.00] END ===
+
+    // 5. Belső Tér Felépítése (Padló, Falak, Gerendák, Kandalló)
+    const floorGeo = new THREE.PlaneGeometry(18, 16);
+    const floorMesh = new THREE.Mesh(floorGeo, woodMaterial);
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.receiveShadow = true;
+    scene.add(floorMesh);
+
+    // Hátsó fal ajtónyílással a Postapult és a Bárpult között (x = -0.6 környékén)
+    // Bal oldali falszakasz (x = -9.0 .. -1.6, szélesség: 7.4)
+    const backWallLeft = new THREE.Mesh(new THREE.BoxGeometry(7.4, 5.5, 0.4), darkTimberMaterial);
+    backWallLeft.position.set(-5.3, 2.75, -6.0);
+    backWallLeft.receiveShadow = true;
+    scene.add(backWallLeft);
+
+    // Jobb oldali falszakasz (x = 0.4 .. 9.0, szélesség: 8.6)
+    const backWallRight = new THREE.Mesh(new THREE.BoxGeometry(8.6, 5.5, 0.4), darkTimberMaterial);
+    backWallRight.position.set(4.7, 2.75, -6.0);
+    backWallRight.receiveShadow = true;
+    scene.add(backWallRight);
+
+    // Szemöldökfal az ajtónyílás felett (y = 3.0 .. 5.5, magasság: 2.5, szélesség: 2.0)
+    const doorLintel = new THREE.Mesh(new THREE.BoxGeometry(2.0, 2.5, 0.4), darkTimberMaterial);
+    doorLintel.position.set(-0.6, 4.25, -6.0);
+    doorLintel.receiveShadow = true;
+    scene.add(doorLintel);
+
+    // Díszes Kártyaszoba Ajtókeret és Ajtószárny
+    const doorFrameGroup = new THREE.Group();
+    doorFrameGroup.position.set(-0.6, 0, -6.0);
+
+    const framePostGeo = new THREE.BoxGeometry(0.18, 3.1, 0.46);
+    const frameLeft = new THREE.Mesh(framePostGeo, darkTimberMaterial);
+    frameLeft.position.set(-0.95, 1.55, 0);
+    doorFrameGroup.add(frameLeft);
+    const frameRight = new THREE.Mesh(framePostGeo, darkTimberMaterial);
+    frameRight.position.set(0.95, 1.55, 0);
+    doorFrameGroup.add(frameRight);
+
+    const frameTop = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.18, 0.46), darkTimberMaterial);
+    frameTop.position.set(0, 3.05, 0);
+    doorFrameGroup.add(frameTop);
+
+    // Díszes fa ajtószárny aranyozott veretekkel
+    const doorWingGeo = new THREE.BoxGeometry(1.8, 2.95, 0.08);
+    const doorWingMat = new THREE.MeshStandardMaterial({ color: 0x2b1509, roughness: 0.65, metalness: 0.15 });
+    const doorWingMesh = new THREE.Mesh(doorWingGeo, doorWingMat);
+    doorWingMesh.position.set(0, 1.48, 0);
+    doorWingMesh.castShadow = true;
+    doorFrameGroup.add(doorWingMesh);
+
+    // Ajtó aranyozott tábla ("🃏 VIP KÁRTYASZOBA")
+    const doorSignGeo = new THREE.BoxGeometry(1.3, 0.35, 0.12);
+    const doorSign = new THREE.Mesh(doorSignGeo, goldTrimMaterial);
+    doorSign.position.set(0, 2.3, 0.05);
+    doorFrameGroup.add(doorSign);
+
+    // Arany fogantyú / kopogtató
+    const doorHandleGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.28, 8);
+    const doorHandle = new THREE.Mesh(doorHandleGeo, goldTrimMaterial);
+    doorHandle.position.set(0.65, 1.35, 0.08);
+    doorFrameGroup.add(doorHandle);
+
+    // Meleg derengő fénycsík az ajtó körül
+    const doorGlowLight = new THREE.PointLight(0xffaa44, 1.4, 5, 1.2);
+    doorGlowLight.position.set(-0.6, 2.0, -5.7);
+    scene.add(doorGlowLight);
+
+    scene.add(doorFrameGroup);
+
+    // Kártyaszoba (Velvet Room) Belső Tér a hátsó fal mögött (z = -6.0 .. -14.5)
+    const cardroomFloorGeo = new THREE.PlaneGeometry(8.8, 8.5);
+    const cardroomFloor = new THREE.Mesh(cardroomFloorGeo, woodMaterial);
+    cardroomFloor.rotation.x = -Math.PI / 2;
+    cardroomFloor.position.set(-0.6, 0.01, -10.25);
+    cardroomFloor.receiveShadow = true;
+    scene.add(cardroomFloor);
+
+    // Kör alakú luxus bársonyszőnyeg az asztal alatt
+    const rugGeo = new THREE.CylinderGeometry(2.8, 2.8, 0.02, 32);
+    const rugMat = new THREE.MeshStandardMaterial({ color: 0x5a0b16, roughness: 0.9, metalness: 0.1 });
+    const rugMesh = new THREE.Mesh(rugGeo, rugMat);
+    rugMesh.position.set(-0.6, 0.02, -10.25);
+    rugMesh.receiveShadow = true;
+    scene.add(rugMesh);
+
+    // Bársonykárpitos falak
+    // Hátsó fal a kártyaszobában (z = -14.5)
+    const cardroomBackWall = new THREE.Mesh(new THREE.BoxGeometry(8.8, 5.5, 0.4), velvetMaterial);
+    cardroomBackWall.position.set(-0.6, 2.75, -14.5);
+    cardroomBackWall.receiveShadow = true;
+    scene.add(cardroomBackWall);
+
+    // Bal oldali bársonyfal (x = -5.0)
+    const cardroomLeftWall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 5.5, 8.5), velvetMaterial);
+    cardroomLeftWall.position.set(-5.0, 2.75, -10.25);
+    cardroomLeftWall.receiveShadow = true;
+    scene.add(cardroomLeftWall);
+
+    // Jobb oldali bársonyfal (x = 3.8)
+    const cardroomRightWall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 5.5, 8.5), velvetMaterial);
+    cardroomRightWall.position.set(3.8, 2.75, -10.25);
+    cardroomRightWall.receiveShadow = true;
+    scene.add(cardroomRightWall);
+
+    // Belső visszatérő ajtó a kártyaszobából (vissza a tavernaterembe)
+    const cardroomExitDoor = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.95, 0.08), doorWingMat);
+    cardroomExitDoor.position.set(-0.6, 1.48, -6.1);
+    scene.add(cardroomExitDoor);
+
+    // Kártyaszoba Kikötői Kijárat a hátsó falon (szemben a kártyaszoba ajtajával: z = -14.4)
+    const crExitGroup = new THREE.Group();
+    crExitGroup.position.set(-0.6, 0, -14.4);
+
+    const crFrameLeft = new THREE.Mesh(new THREE.BoxGeometry(0.18, 3.1, 0.4), darkTimberMaterial);
+    crFrameLeft.position.set(-0.95, 1.55, 0);
+    crExitGroup.add(crFrameLeft);
+
+    const crFrameRight = new THREE.Mesh(new THREE.BoxGeometry(0.18, 3.1, 0.4), darkTimberMaterial);
+    crFrameRight.position.set(0.95, 1.55, 0);
+    crExitGroup.add(crFrameRight);
+
+    const crFrameTop = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.18, 0.4), darkTimberMaterial);
+    crFrameTop.position.set(0, 3.05, 0);
+    crExitGroup.add(crFrameTop);
+
+    const crExitDoorMesh = new THREE.Mesh(doorWingGeo, doorWingMat);
+    crExitDoorMesh.position.set(0, 1.48, 0.05);
+    crExitDoorMesh.castShadow = true;
+    crExitGroup.add(crExitDoorMesh);
+
+    const crExitSignMat = new THREE.MeshStandardMaterial({
+        map: createSignCanvasTexture('⚓ KIJÁRAT A KIKÖTŐBE'),
+        roughness: 0.5,
+        metalness: 0.2
+    });
+    const crExitSign = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.38, 0.1), crExitSignMat);
+    crExitSign.position.set(0, 2.3, 0.1);
+    crExitGroup.add(crExitSign);
+
+    const crExitHandle = new THREE.Mesh(doorHandleGeo, goldTrimMaterial);
+    crExitHandle.position.set(0.65, 1.35, 0.1);
+    crExitGroup.add(crExitHandle);
+
+    const crExitLantern = new THREE.PointLight(0xffaa44, 1.5, 6, 1.2);
+    crExitLantern.position.set(0, 3.2, 0.3);
+    crExitGroup.add(crExitLantern);
+
+    scene.add(crExitGroup);
+
+    // Luxus csillár a kártyaasztal felett
+    const cardRoomLight = new THREE.PointLight(0xffa844, 3.2, 12, 1.1);
+    cardRoomLight.position.set(-0.6, 3.2, -10.25);
+    cardRoomLight.castShadow = true;
+    scene.add(cardRoomLight);
+
+    const chandelierGeo = new THREE.CylinderGeometry(0.6, 0.15, 0.35, 12);
+    const chandelier = new THREE.Mesh(chandelierGeo, goldTrimMaterial);
+    chandelier.position.set(-0.6, 3.4, -10.25);
+    scene.add(chandelier);
+
+    // Bal fal (x = -9.0)
+    const leftWallGeo = new THREE.BoxGeometry(0.4, 5.5, 16);
+    const leftWall = new THREE.Mesh(leftWallGeo, darkTimberMaterial);
+    leftWall.position.set(-9.0, 2.75, 0);
+    leftWall.receiveShadow = true;
+    scene.add(leftWall);
+
+    // Jobb fal (x = 9.0)
+    const rightWallGeo = new THREE.BoxGeometry(0.4, 5.5, 16);
+    const rightWall = new THREE.Mesh(rightWallGeo, darkTimberMaterial);
+    rightWall.position.set(9.0, 2.75, 0);
+    rightWall.receiveShadow = true;
+    scene.add(rightWall);
+
+    // Déli fal (Kijárati fal a kártyaszoba ajtajával szemben a taverna főtermében: z = 8.0)
+    // Bal oldali falszakasz (x = -9.0 .. -1.6, szélesség: 7.4)
+    const southWallLeft = new THREE.Mesh(new THREE.BoxGeometry(7.4, 5.5, 0.4), darkTimberMaterial);
+    southWallLeft.position.set(-5.3, 2.75, 8.0);
+    southWallLeft.receiveShadow = true;
+    scene.add(southWallLeft);
+
+    // Jobb oldali falszakasz (x = 0.4 .. 9.0, szélesség: 8.6)
+    const southWallRight = new THREE.Mesh(new THREE.BoxGeometry(8.6, 5.5, 0.4), darkTimberMaterial);
+    southWallRight.position.set(4.7, 2.75, 8.0);
+    southWallRight.receiveShadow = true;
+    scene.add(southWallRight);
+
+    // Szemöldökfal a kijárat felett (x = -0.6, y = 4.25, z = 8.0)
+    const southDoorLintel = new THREE.Mesh(new THREE.BoxGeometry(2.0, 2.5, 0.4), darkTimberMaterial);
+    southDoorLintel.position.set(-0.6, 4.25, 8.0);
+    southDoorLintel.receiveShadow = true;
+    scene.add(southDoorLintel);
+
+    // Díszes Taverna Kijárati Ajtó a Kikötőbe (szemben a Kártyaszoba ajtajával: x = -0.6, z = 8.0)
+    const tavernExitGroup = new THREE.Group();
+    tavernExitGroup.position.set(-0.6, 0, 8.0);
+
+    const southFrameLeft = new THREE.Mesh(new THREE.BoxGeometry(0.18, 3.1, 0.46), darkTimberMaterial);
+    southFrameLeft.position.set(-0.95, 1.55, 0);
+    tavernExitGroup.add(southFrameLeft);
+
+    const southFrameRight = new THREE.Mesh(new THREE.BoxGeometry(0.18, 3.1, 0.46), darkTimberMaterial);
+    southFrameRight.position.set(0.95, 1.55, 0);
+    tavernExitGroup.add(southFrameRight);
+
+    const southFrameTop = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.18, 0.46), darkTimberMaterial);
+    southFrameTop.position.set(0, 3.05, 0);
+    tavernExitGroup.add(southFrameTop);
+
+    // Fa ajtószárny befelé néző lappal
+    const tavernExitDoorMesh = new THREE.Mesh(doorWingGeo, doorWingMat);
+    tavernExitDoorMesh.position.set(0, 1.48, -0.05);
+    tavernExitDoorMesh.castShadow = true;
+    tavernExitGroup.add(tavernExitDoorMesh);
+
+    // Aranyozott feliratú tábla ("⚓ KIJÁRAT A KIKÖTŐBE")
+    const tavernExitSignMat = new THREE.MeshStandardMaterial({
+        map: createSignCanvasTexture('⚓ KIJÁRAT A KIKÖTŐBE'),
+        roughness: 0.5,
+        metalness: 0.2
+    });
+    const tavernExitSign = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.38, 0.1), tavernExitSignMat);
+    tavernExitSign.position.set(0, 2.3, -0.1);
+    tavernExitGroup.add(tavernExitSign);
+
+    // Kijárat fogantyú
+    const southDoorHandle = new THREE.Mesh(doorHandleGeo, goldTrimMaterial);
+    southDoorHandle.position.set(0.65, 1.35, -0.1);
+    tavernExitGroup.add(southDoorHandle);
+
+    // Kijárati lámpás meleg fénye
+    const exitLantern = new THREE.PointLight(0xffaa44, 2.0, 7, 1.2);
+    exitLantern.position.set(0, 3.2, -0.35);
+    tavernExitGroup.add(exitLantern);
+
+    scene.add(tavernExitGroup);
+
+    // Mennyezeti gerendák
+    for (let bz = -4.5; bz <= 4.5; bz += 3.0) {
+        const beamGeo = new THREE.BoxGeometry(18.2, 0.4, 0.4);
+        const beam = new THREE.Mesh(beamGeo, darkTimberMaterial);
+        beam.position.set(0, 5.3, bz);
+        scene.add(beam);
+    }
+
+    // Kandalló a bal falon
+    const fireplaceGroup = new THREE.Group();
+    fireplaceGroup.position.set(-8.4, 0, -1.0);
+
+    const hearthMantle = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.8, 3.2), stoneMaterial);
+    hearthMantle.position.set(0, 1.4, 0);
+    fireplaceGroup.add(hearthMantle);
+
+    const hearthInner = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.6, 2.0), new THREE.MeshBasicMaterial({ color: 0x080402 }));
+    hearthInner.position.set(0.2, 0.8, 0);
+    fireplaceGroup.add(hearthInner);
+
+    // Izzó parázs / tűz a kandallóban
+    const logGeo = new THREE.CylinderGeometry(0.08, 0.08, 1.2, 8);
+    const logMat = new THREE.MeshStandardMaterial({ color: 0x3a1505, roughness: 0.9 });
+    for (let li = 0; li < 3; li++) {
+        const log = new THREE.Mesh(logGeo, logMat);
+        log.position.set(0.1, 0.15 + li * 0.08, (li - 1) * 0.3);
+        log.rotation.z = Math.PI / 2;
+        log.rotation.y = (li - 1) * 0.25;
+        fireplaceGroup.add(log);
+    }
+
+    const fireGlowMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35, 12, 12),
+        new THREE.MeshBasicMaterial({ color: 0xff6611, transparent: true, opacity: 0.85 })
+    );
+    fireGlowMesh.position.set(0.1, 0.3, 0);
+    fireplaceGroup.add(fireGlowMesh);
+
+    scene.add(fireplaceGroup);
+
+    // 6. Interaktív Hotspotok és Állomások Regisztrációja
+    const tavernaHotspots = [];
+    const interactiveMeshes = [];
+
+// === [#HEX:F.01.06.00] START | name: registerHotspot | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.5B.00]
+    function registerHotspot(config) {
+        tavernaHotspots.push(config);
+        if (config.meshes) {
+            config.meshes.forEach(m => {
+                m.userData.hotspotConfig = config;
+                if (!interactiveMeshes.includes(m)) interactiveMeshes.push(m);
+            });
+        }
+    }
+// === [#HEX:F.01.06.00] END ===
+
+    // Helper: Hordó készítés
+// === [#HEX:F.04.5D.00] START | name: createBarrel | lines: 25 ===
+// @calls: none | @calledBy: [#HEX:F.04.5B.00]
+    function createBarrel(x, y, z, rotY) {
+        const barrelGroup = new THREE.Group();
+        barrelGroup.position.set(x, y, z);
+        if (rotY) barrelGroup.rotation.y = rotY;
+
+        const bodyGeo = new THREE.CylinderGeometry(0.38, 0.44, 0.95, 14);
+        const body = new THREE.Mesh(bodyGeo, woodMaterial);
+        body.position.y = 0.475;
+        body.castShadow = true;
+        body.receiveShadow = true;
+        barrelGroup.add(body);
+
+        // Fém abroncsok
+        const ringGeo = new THREE.CylinderGeometry(0.445, 0.445, 0.06, 14, 1, true);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.3 });
+        const ringTop = new THREE.Mesh(ringGeo, ringMat);
+        ringTop.position.y = 0.72;
+        barrelGroup.add(ringTop);
+        const ringBottom = new THREE.Mesh(ringGeo, ringMat);
+        ringBottom.position.y = 0.23;
+        barrelGroup.add(ringBottom);
+
+        scene.add(barrelGroup);
+        return barrelGroup;
+    }
+// === [#HEX:F.04.5D.00] END ===
+
+    // Díszítő hordók a kandalló mellett és a sarokban
+    createBarrel(-8.0, 0, -4.5);
+    createBarrel(-7.3, 0, -4.8);
+    createBarrel(-8.2, 0, 4.5);
+
+    // ─── A. BÁRPULT ÉS SZŐKE ROZMÁR ───
+    const barGroup = new THREE.Group();
+    barGroup.position.set(3.6, 0, -3.2);
+
+    const barCounterGeo = new THREE.BoxGeometry(4.2, 1.1, 0.9);
+    const barCounterMat = new THREE.MeshStandardMaterial({ color: 0x3d1c0c, roughness: 0.4, metalness: 0.1 });
+    const barCounter = new THREE.Mesh(barCounterGeo, barCounterMat);
+    barCounter.position.set(0, 0.55, 0);
+    barCounter.castShadow = true;
+    barCounter.receiveShadow = true;
+    barGroup.add(barCounter);
+
+    const barFootrestGeo = new THREE.CylinderGeometry(0.04, 0.04, 4.2, 8);
+    const barFootrest = new THREE.Mesh(barFootrestGeo, goldTrimMaterial);
+    barFootrest.rotation.z = Math.PI / 2;
+    barFootrest.position.set(0, 0.15, 0.5);
+    barGroup.add(barFootrest);
+
+    // Bárpulton lévő korsók és üvegek
+    const bottleGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.45, 10);
+    const bottleMat = new THREE.MeshStandardMaterial({ color: 0x1b4332, roughness: 0.2, transparent: true, opacity: 0.88 });
+    for (let bi = -1.2; bi <= 1.2; bi += 0.8) {
+        const bottle = new THREE.Mesh(bottleGeo, bottleMat);
+        bottle.position.set(bi, 1.32, 0.1);
+        barGroup.add(bottle);
+    }
+
+    // Szőke Rozmár Pultos figura helye
+    const bartenderDummyGeo = new THREE.CylinderGeometry(0.35, 0.38, 1.75, 12);
+    const bartenderDummyMat = new THREE.MeshStandardMaterial({ color: 0xc27a38, roughness: 0.7 });
+    const bartenderMesh = new THREE.Mesh(bartenderDummyGeo, bartenderDummyMat);
+    bartenderMesh.position.set(0, 0.88, -0.9);
+    bartenderMesh.castShadow = true;
+    barGroup.add(bartenderMesh);
+
+    scene.add(barGroup);
+
+    registerHotspot({
+        id: 'bartender',
+        label: '🍺 Szőke Rozmár (A Bárpult)',
+        sublabel: 'Itallap, pletykák és rendelés',
+        meshes: [barCounter, bartenderMesh],
+        camPos: new THREE.Vector3(3.6, 2.3, -0.6),
+        lookAt: new THREE.Vector3(3.6, 1.6, -3.2),
+// === [#HEX:F.04.5E.00] START | name: action | lines: 26 | action: 'RUN_FUNCTION' ===
+// @calls: [#HEX:B.05.1F.00], [#HEX:B.05.1B.00], [#HEX:F.04.116.00], [#HEX:B.05.21.00] | @calledBy: none
+        action: function () {
+            if (typeof openUniversalNPC === 'function') {
+                openUniversalNPC('bartender', {
+                    name: 'Szőke Rozmár',
+                    role: 'Taverna Pultosa',
+                    icon: '<i class="fas fa-beer"></i>',
+                    headerColor: '#d2691e',
+                    portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                    msgIcon: '<i class="fas fa-beer" style="color:#d2691e; margin-right:5px;"></i>',
+                    loaderHTML: '<i class="fas fa-beer fa-spin" style="color:#d2691e; margin-right:8px;"></i> <i>A Pultos keveri az italokat...</i>',
+                    styles: {
+                        modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
+                        content: { width: '350px', height: '100%', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #d2691e', backgroundColor: '#fdf5e6', color: '#241512', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)' }
+                    },
+                    menu: [
+                        { text: '🍺 Itallap (Fizetés)', action: 'RUN_FUNCTION', payload: 'BT_menuDrinks', reply: '_' },
+                        { text: '👥 Zsoldosok', action: 'RUN_FUNCTION', payload: 'BT_listMercenaries', reply: '_' },
+                        { text: '📜 Pletykák (Küldetések)', action: 'RUN_FUNCTION', payload: 'BT_listMissions', reply: '_' },
+                        { text: '📝 Bétaolvasás', action: 'CLIENT_OPEN_PULT', payload: '', reply: '_' }
+                    ]
+                });
+            } else {
+                var pBtn = document.getElementById('pult-btn');
+                if (pBtn) pBtn.click();
+            }
+        }
+// === [#HEX:F.04.5E.00] END ===
+    });
+
+    // ─── B. ZSOLDOSOK ASZTALA ───
+    const mercenaryGroup = new THREE.Group();
+    mercenaryGroup.position.set(3.2, 0, 2.4);
+
+    const mercTableGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.1, 18);
+    const mercTableTop = new THREE.Mesh(mercTableGeo, woodMaterial);
+    mercTableTop.position.y = 0.95;
+    mercTableTop.castShadow = true;
+    mercTableTop.receiveShadow = true;
+    mercenaryGroup.add(mercTableTop);
+
+    const mercLegGeo = new THREE.CylinderGeometry(0.1, 0.12, 0.95, 10);
+    const mercLeg = new THREE.Mesh(mercLegGeo, darkTimberMaterial);
+    mercLeg.position.y = 0.475;
+    mercenaryGroup.add(mercLeg);
+
+    // Kiterített térkép az asztalon
+    const mapGeo = new THREE.PlaneGeometry(0.8, 0.6);
+    const mapMat = new THREE.MeshStandardMaterial({ color: 0xdec89a, roughness: 0.9 });
+    const mapMesh = new THREE.Mesh(mapGeo, mapMat);
+    mapMesh.rotation.x = -Math.PI / 2;
+    mapMesh.rotation.z = 0.2;
+    mapMesh.position.set(0, 1.01, 0);
+    mercenaryGroup.add(mapMesh);
+
+    // Székek az asztal körül (a kapitány mellett és a vendégeknek)
+    const stoolAngles = [Math.PI * 0.55, Math.PI * 1.25];
+    stoolAngles.forEach(ang => {
+        const stoolGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.55, 10);
+        const stool = new THREE.Mesh(stoolGeo, darkTimberMaterial);
+        stool.position.set(Math.cos(ang) * 1.55, 0.275, Math.sin(ang) * 1.55);
+        stool.castShadow = true;
+        mercenaryGroup.add(stool);
+    });
+
+    // Zsoldos kapitány figura helye az asztal mellett
+    const mercCaptainGeo = new THREE.CylinderGeometry(0.32, 0.35, 1.7, 10);
+    const mercCaptainMat = new THREE.MeshStandardMaterial({ color: 0x6b1d1d, roughness: 0.7 });
+    const mercCaptainMesh = new THREE.Mesh(mercCaptainGeo, mercCaptainMat);
+    mercCaptainMesh.position.set(1.35, 0.85, -0.2);
+    mercCaptainMesh.castShadow = true;
+    mercenaryGroup.add(mercCaptainMesh);
+
+    scene.add(mercenaryGroup);
+
+    registerHotspot({
+        id: 'mercenaries',
+        label: '👥 Zsoldosok Asztala',
+        sublabel: 'Legénység toborzása és kapitányi megbízások',
+        meshes: [mercTableTop, mapMesh, mercCaptainMesh],
+        camPos: new THREE.Vector3(3.2, 2.3, 4.8),
+        lookAt: new THREE.Vector3(3.2, 1.1, 2.4),
+// === [#HEX:F.04.5F.00] START | name: action | lines: 7 ===
+// @calls: [#HEX:F.04.7D.00] | @calledBy: none
+        action: function () {
+            if (typeof openTavernJobs === 'function') {
+                openTavernJobs();
+            } else if (typeof openMercenaryMarketModal === 'function') {
+                openMercenaryMarketModal();
+            }
+        }
+// === [#HEX:F.04.5F.00] END ===
+    });
+
+    // ─── C. BÉTAOLVASÓK ASZTALA ÉS KÖNYVÜGYNÖK ───
+    const betaGroup = new THREE.Group();
+    betaGroup.position.set(-3.2, 0, 2.4);
+
+    const betaTableTopGeo = new THREE.CylinderGeometry(1.25, 1.25, 0.12, 18);
+    const betaTableMat = new THREE.MeshStandardMaterial({ color: 0x422212, roughness: 0.65 });
+    const betaTableTop = new THREE.Mesh(betaTableTopGeo, betaTableMat);
+    betaTableTop.position.y = 0.95;
+    betaTableTop.castShadow = true;
+    betaTableTop.receiveShadow = true;
+    betaGroup.add(betaTableTop);
+
+    const betaLegGeo = new THREE.CylinderGeometry(0.12, 0.14, 0.95, 10);
+    const betaLeg = new THREE.Mesh(betaLegGeo, darkTimberMaterial);
+    betaLeg.position.y = 0.475;
+    betaGroup.add(betaLeg);
+
+    // Kéziratok és tintatartó az asztalon
+    const manuscriptGeo = new THREE.BoxGeometry(0.6, 0.04, 0.8);
+    const manuscriptMat = new THREE.MeshStandardMaterial({ color: 0xf5ebd3, roughness: 0.9 });
+    const manuscript = new THREE.Mesh(manuscriptGeo, manuscriptMat);
+    manuscript.position.set(-0.2, 1.03, 0.1);
+    manuscript.rotation.y = 0.2;
+    betaGroup.add(manuscript);
+
+    const inkwellGeo = new THREE.CylinderGeometry(0.06, 0.08, 0.12, 8);
+    const inkwellMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 });
+    const inkwell = new THREE.Mesh(inkwellGeo, inkwellMat);
+    inkwell.position.set(0.35, 1.05, -0.15);
+    betaGroup.add(inkwell);
+
+    scene.add(betaGroup);
+
+    registerHotspot({
+        id: 'beta_table',
+        label: '📖 Bétázók Asztala',
+        sublabel: 'Kéziratok véleményezése és szerzői bétatesztelés',
+        meshes: [betaTableTop, manuscript, inkwell],
+        camPos: new THREE.Vector3(-3.2, 2.3, 4.8),
+        lookAt: new THREE.Vector3(-3.2, 1.1, 2.4),
+// === [#HEX:F.04.67.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.5F.00] | @calledBy: none
+        action: function () {
+            if (typeof openBetaFromTavern === 'function') {
+                openBetaFromTavern();
+            }
+        }
+// === [#HEX:F.04.67.00] END ===
+    });
+
+    // Könyvügynök (Madam Raven) Hotspot
+    const bookAgentHotspot = {
+        id: 'book_agent',
+        label: '🧙 Madam Raven (Könyvügynök)',
+        sublabel: 'Irodalmi és kézirat megbízások',
+        meshes: [],
+        camPos: new THREE.Vector3(-4.5, 1.6, 2.2),
+        lookAt: new THREE.Vector3(-6.0, 1.1, 0.8),
+// === [#HEX:F.04.68.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.60.00] | @calledBy: none
+        action: function () {
+            if (typeof openBookAgentDialog === 'function') {
+                openBookAgentDialog();
+            }
+        }
+// === [#HEX:F.04.68.00] END ===
+    };
+    registerHotspot(bookAgentHotspot);
+
+    // ─── D. KOCSMAI HIRDETŐFAL ───
+    const boardGroup = new THREE.Group();
+    boardGroup.position.set(8.75, 2.4, 0);
+
+    const boardWoodGeo = new THREE.BoxGeometry(0.2, 2.2, 3.6);
+    const boardWood = new THREE.Mesh(boardWoodGeo, woodMaterial);
+    boardWood.castShadow = true;
+    boardWood.receiveShadow = true;
+    boardGroup.add(boardWood);
+
+    // Kitűzött pergamenek a hirdetőtáblán
+    const noteGeo = new THREE.PlaneGeometry(0.65, 0.85);
+    const noteMat1 = new THREE.MeshStandardMaterial({ color: 0xf5ebd3, roughness: 0.85 });
+    const note1 = new THREE.Mesh(noteGeo, noteMat1);
+    note1.rotation.y = -Math.PI / 2;
+    note1.position.set(-0.11, 0.35, -0.9);
+    boardGroup.add(note1);
+
+    const note2 = new THREE.Mesh(noteGeo, noteMat1);
+    note2.rotation.y = -Math.PI / 2;
+    note2.position.set(-0.11, -0.25, 0.2);
+    boardGroup.add(note2);
+
+    const note3 = new THREE.Mesh(noteGeo, noteMat1);
+    note3.rotation.y = -Math.PI / 2;
+    note3.position.set(-0.11, 0.3, 0.95);
+    boardGroup.add(note3);
+
+    // Kis lámpás a tábla felett
+    const boardLampGeo = new THREE.CylinderGeometry(0.12, 0.16, 0.35, 8);
+    const boardLamp = new THREE.Mesh(boardLampGeo, goldTrimMaterial);
+    boardLamp.position.set(-0.4, 1.35, 0);
+    boardGroup.add(boardLamp);
+
+    scene.add(boardGroup);
+
+    registerHotspot({
+        id: 'notice_board',
+        label: '📌 Kocsmai Hirdetőtábla',
+        sublabel: 'Friss hírek, körözések és kalózjelentések',
+        meshes: [boardWood, note1, note2, note3],
+        camPos: new THREE.Vector3(5.8, 2.4, 0),
+        lookAt: new THREE.Vector3(8.75, 2.4, 0),
+// === [#HEX:F.04.69.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.134.00] | @calledBy: none
+        action: function () {
+            if (typeof openNoticeBoard === 'function') {
+                openNoticeBoard();
+            }
+        }
+// === [#HEX:F.04.69.00] END ===
+    });
+
+    // ─── E. KOCSMAI POSTAPULT (TISZTA LEVELEZÉS) ───
+    const postalGroup = new THREE.Group();
+    postalGroup.position.set(-4.5, 0, -3.2);
+
+    const deskGeo = new THREE.BoxGeometry(2.4, 0.95, 1.2);
+    const desk = new THREE.Mesh(deskGeo, woodMaterial);
+    desk.position.y = 0.475;
+    desk.castShadow = true;
+    desk.receiveShadow = true;
+    postalGroup.add(desk);
+
+    // Pergamen és tintatartó az íróasztalon
+    const scrollGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.7, 8);
+    const scrollMat = new THREE.MeshStandardMaterial({ color: 0xdec89a, roughness: 0.9 });
+    const scrollMesh = new THREE.Mesh(scrollGeo, scrollMat);
+    scrollMesh.rotation.z = Math.PI / 2;
+    scrollMesh.position.set(0.3, 1.02, 0.1);
+    postalGroup.add(scrollMesh);
+
+    const bookGeo = new THREE.BoxGeometry(0.4, 0.12, 0.55);
+    const bookMat = new THREE.MeshStandardMaterial({ color: 0x6b1d1d, roughness: 0.7 });
+    const bookMesh = new THREE.Mesh(bookGeo, bookMat);
+    bookMesh.position.set(-0.4, 1.02, -0.1);
+    postalGroup.add(bookMesh);
+
+    scene.add(postalGroup);
+
+    registerHotspot({
+        id: 'postal',
+        label: '📨 Kocsmai Postapult',
+        sublabel: 'Üzenetküldés és postai levelezés kalózok között',
+        meshes: [desk, scrollMesh, bookMesh],
+        camPos: new THREE.Vector3(-4.5, 2.1, -1.0),
+        lookAt: new THREE.Vector3(-4.5, 1.3, -3.2),
+// === [#HEX:F.04.6A.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.05.03.00] | @calledBy: none
+        action: function () {
+            if (typeof openPultModal === 'function') {
+                openPultModal();
+            }
+        }
+// === [#HEX:F.04.6A.00] END ===
+    });
+
+    // ─── F. ASZTALTÁRSASÁG (CHAT) ───
+    const socialGroup = new THREE.Group();
+    socialGroup.position.set(0, 0, -0.6);
+
+    const socialTableGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.1, 16);
+    const socialTable = new THREE.Mesh(socialTableGeo, woodMaterial);
+    socialTable.position.y = 0.95;
+    socialTable.castShadow = true;
+    socialTable.receiveShadow = true;
+    socialGroup.add(socialTable);
+
+    const socialLegGeo = new THREE.CylinderGeometry(0.1, 0.12, 0.95, 8);
+    const socialLeg = new THREE.Mesh(socialLegGeo, darkTimberMaterial);
+    socialLeg.position.y = 0.475;
+    socialGroup.add(socialLeg);
+
+    scene.add(socialGroup);
+
+    registerHotspot({
+        id: 'social',
+        label: '🗣️ Asztaltársaság (Chat)',
+        sublabel: 'Csatlakozz a kalózok asztalához egy sör melletti csevejre',
+        meshes: [socialTable],
+        camPos: new THREE.Vector3(0, 2.2, 1.6),
+        lookAt: new THREE.Vector3(0, 1.1, -0.6),
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6B.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6C.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6C.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6D.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.6D.00] START | name: action | lines: 9 ===
+// @calls: none | @calledBy: none
+        action: function () {
+            const asztalBtn = document.getElementById('asztal-btn');
+            if (asztalBtn) {
+                asztalBtn.click();
+            } else {
+                const asztalModal = document.getElementById('asztal-confirm-modal');
+                if (asztalModal) asztalModal.style.display = 'flex';
+            }
+        }
+// === [#HEX:F.04.6D.00] END ===
+// === [#HEX:F.04.6D.00] END ===
+// === [#HEX:F.04.6C.00] END ===
+// === [#HEX:F.04.6C.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+// === [#HEX:F.04.6B.00] END ===
+    });
+
+    // ─── G. KÁRTYASZOBA ÉS AJTÓ HOTSPOTOK ───
+    registerHotspot({
+        id: 'door_cardroom',
+        label: '🚪 Titkos Kártyaszoba (VIP)',
+        sublabel: 'Exkluzív kártyajáték - PIN kód szükséges',
+        meshes: [doorWingMesh, doorSign, doorHandle],
+        camPos: new THREE.Vector3(-0.6, 2.0, -3.2),
+        lookAt: new THREE.Vector3(-0.6, 1.8, -6.0),
+// === [#HEX:F.04.6C.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.5C.00] | @calledBy: none
+        action: function () {
+            if (typeof enterCardRoomWithPin === 'function') {
+                enterCardRoomWithPin();
+            }
+        }
+// === [#HEX:F.04.6C.00] END ===
+    });
+
+    registerHotspot({
+        id: 'cardroom_exit',
+        label: '🚪 Vissza a Tavernába',
+        sublabel: 'Visszatérés a kocsma nagytermébe',
+        meshes: [cardroomExitDoor],
+        camPos: new THREE.Vector3(-0.6, 2.0, -8.0),
+        lookAt: new THREE.Vector3(-0.6, 1.8, -5.5),
+// === [#HEX:F.04.6D.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.5E.00] | @calledBy: none
+        action: function () {
+            if (typeof returnToMainTavern === 'function') {
+                returnToMainTavern();
+            }
+        }
+// === [#HEX:F.04.6D.00] END ===
+    });
+
+    // Taverna Fő Kijárat a Kikötőbe (Déli falon, a kártyaszoba ajtajával szemben)
+    registerHotspot({
+        id: 'tavern_exit_kikoto',
+        label: '⚓ Kijárat a Kikötőbe',
+        sublabel: 'Visszatérés a kikötő forgatagába',
+        meshes: [tavernExitDoorMesh, tavernExitSign, southDoorHandle],
+        camPos: new THREE.Vector3(-0.6, 2.2, 4.8),
+        lookAt: new THREE.Vector3(-0.6, 1.6, 7.95),
+// === [#HEX:F.04.70.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.38.00] | @calledBy: none
+        action: function () {
+            if (typeof loadPage === 'function') {
+                loadPage('kikoto_oldal');
+            }
+        }
+// === [#HEX:F.04.70.00] END ===
+    });
+
+    // Kártyaszoba Kikötői Kijárat (Kártyaszoba hátsó falán, az ajtóval szemben)
+    registerHotspot({
+        id: 'cardroom_port_exit',
+        label: '⚓ Kijárat a Kikötőbe',
+        sublabel: 'Privát átjáró a kikötőbe',
+        meshes: [crExitDoorMesh, crExitSign, crExitHandle],
+        camPos: new THREE.Vector3(-0.6, 1.95, -11.5),
+        lookAt: new THREE.Vector3(-0.6, 1.5, -14.3),
+// === [#HEX:F.04.71.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.38.00] | @calledBy: none
+        action: function () {
+            if (typeof loadPage === 'function') {
+                loadPage('kikoto_oldal');
+            }
+        }
+// === [#HEX:F.04.71.00] END ===
+    });
+
+    const cardroomGameHotspot = {
+        id: 'cardroom_game',
+        label: '🃏 Nagy Tétű Kártyajáték',
+        sublabel: 'Csatlakozz az elit asztalhoz (Azonnali játék)',
+        camPos: new THREE.Vector3(-0.6, 1.95, -8.6),
+        lookAt: new THREE.Vector3(-0.6, 1.05, -10.25),
+        meshes: [rugMesh],
+// === [#HEX:F.04.6E.00] START | name: action | lines: 5 ===
+// @calls: [#HEX:F.04.5B.00] | @calledBy: [#HEX:F.04.18.00], [#HEX:F.04.1A.00], [#HEX:F.04.1B.00], [#HEX:F.04.20.00], [#HEX:F.04.21.00]
+        action: function () {
+            if (typeof openJatekteremDirect === 'function') {
+                openJatekteremDirect();
+            }
+        }
+// === [#HEX:F.04.6E.00] END ===
+    };
+    registerHotspot(cardroomGameHotspot);
+
+    // 7. GLTF 3D Modellek Aszinkron Betöltése (Helyi assets/models/ és GCS fallback)
+    if (GLTFLoader) {
+        const gltfLoader = new GLTFLoader();
+        const GCS_MODELS = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/';
+        const GCS_EXPORT = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/export_glb/';
+
+// === [#HEX:F.04.6F.00] START | name: loadModelSafe | lines: 25 ===
+// @calls: [#HEX:F.04.70.00] | @calledBy: none
+        function loadModelSafe(filename, onLoad) {
+            const paths = [
+                GCS_MODELS + filename,
+                GCS_EXPORT + filename,
+                'assets/models/' + filename,
+                'assets/models/export_glb/' + filename
+            ];
+// === [#HEX:F.04.70.00] START | name: tryNext | lines: 15 ===
+// @calls: none | @calledBy: [#HEX:F.04.61.00], [#HEX:F.04.6F.00]
+            function tryNext(idx) {
+                if (idx >= paths.length) {
+                    console.warn("Nem sikerült betölteni a 3D modellt: " + filename);
+                    return;
+                }
+                gltfLoader.load(paths[idx], function (gltf) {
+                    if (gltf && gltf.scene) {
+                        onLoad(gltf.scene);
+                    } else {
+                        tryNext(idx + 1);
+                    }
+                }, undefined, function () {
+                    tryNext(idx + 1);
+                });
+            }
+// === [#HEX:F.04.70.00] END ===
+            tryNext(0);
+        }
+// === [#HEX:F.04.6F.00] END ===
+
+        // Segédfüggvény: Modell aljának pontos padlóra (y = 0) illesztése és pozicionálása
+// === [#HEX:F.04.71.00] START | name: alignModelFloor | lines: 17 ===
+// @calls: none | @calledBy: [#HEX:F.04.61.00], [#HEX:F.04.72.00], [#HEX:F.04.73.00], [#HEX:F.04.74.00], [#HEX:F.04.75.00]
+        function alignModelFloor(model, posX, posZ, rotY) {
+            if (rotY !== undefined) model.rotation.y = rotY;
+            model.position.set(0, 0, 0);
+            model.updateMatrixWorld(true);
+
+            const initialBox = new THREE.Box3().setFromObject(model);
+            const centerX = (initialBox.min.x + initialBox.max.x) / 2;
+            const centerZ = (initialBox.min.z + initialBox.max.z) / 2;
+            const minY = initialBox.min.y;
+
+            // Belső GLB eltolás kompenzálása és padlószintre (y = 0) illesztés
+            model.position.set(posX - centerX, -minY, posZ - centerZ);
+            model.updateMatrixWorld(true);
+        }
+// === [#HEX:F.04.71.00] END ===
+
+        // A. Szőke Rozmár a bárpult mögé
+// === [#HEX:F.04.72.00] START | name: loadModelSafe | lines: 13 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Character_Pirate_First_Mate_01_4.glb', function (model) {
+            model.scale.set(0.95, 0.95, 0.95);
+            alignModelFloor(model, 0, -0.9, 0);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.userData.hotspotConfig = tavernaHotspots.find(h => h.id === 'bartender');
+                    interactiveMeshes.push(node);
+                }
+            });
+            barGroup.remove(bartenderMesh);
+            barGroup.add(model);
+        });
+// === [#HEX:F.04.72.00] END ===
+
+        // B. Kalóz kapitány a zsoldos asztalhoz (asztal mellé igazítva)
+// === [#HEX:F.04.73.00] START | name: loadModelSafe | lines: 13 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Character_Pirate_Captain_01_4.glb', function (model) {
+            model.scale.set(0.92, 0.92, 0.92);
+            alignModelFloor(model, 1.35, -0.2, -Math.PI * 0.75);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.userData.hotspotConfig = tavernaHotspots.find(h => h.id === 'mercenaries');
+                    interactiveMeshes.push(node);
+                }
+            });
+            mercenaryGroup.remove(mercCaptainMesh);
+            mercenaryGroup.add(model);
+        });
+// === [#HEX:F.04.73.00] END ===
+
+        // C. Bétázók Asztala (Tavern_betazoasztal_texture.glb) 3x méretben a főteremben
+// === [#HEX:F.04.74.00] START | name: loadModelSafe | lines: 15 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Tavern_betazoasztal_texture.glb', function (model) {
+            model.scale.set(3.0, 3.0, 3.0);
+            alignModelFloor(model, -3.2, 2.4, 0);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.receiveShadow = true;
+                    node.userData.hotspotConfig = tavernaHotspots.find(h => h.id === 'beta_table');
+                    interactiveMeshes.push(node);
+                }
+            });
+            // Eltávolítjuk az ideiglenes procedurális asztalt, és közvetlenül a színtérbe illesztjük a valódi GLB-t
+            scene.remove(betaGroup);
+            scene.add(model);
+        });
+// === [#HEX:F.04.74.00] END ===
+
+        // D. Madam Raven Könyvügynök (Tavern_konyvugynok_boszi.glb) - Felnőtt méret a kandalló mellé (0.85)
+// === [#HEX:F.04.75.00] START | name: loadModelSafe | lines: 13 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Tavern_konyvugynok_boszi.glb', function (model) {
+            model.scale.set(0.85, 0.85, 0.85);
+            alignModelFloor(model, -6.0, 0.8, Math.PI * 0.4);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.userData.hotspotConfig = bookAgentHotspot;
+                    interactiveMeshes.push(node);
+                }
+            });
+            bookAgentHotspot.meshes = [model];
+            scene.add(model);
+        });
+// === [#HEX:F.04.75.00] END ===
+
+        // E. Kártyaszoba Asztal (Tavern_kartyaasztal.glb) a Kártyaszobában
+// === [#HEX:F.04.76.00] START | name: loadModelSafe | lines: 14 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Tavern_kartyaasztal.glb', function (model) {
+            model.scale.set(1.0, 1.0, 1.0);
+            alignModelFloor(model, -0.6, -10.25, 0);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.receiveShadow = true;
+                    node.userData.hotspotConfig = cardroomGameHotspot;
+                    interactiveMeshes.push(node);
+                }
+            });
+            cardroomGameHotspot.meshes.push(model);
+            scene.add(model);
+        });
+// === [#HEX:F.04.76.00] END ===
+
+        // F. Kártyaszoba 3 modellje az asztal körül (arányos méretben, lábtávolság biztosításával):
+        // 1. Tavern_kartyazo_csaj.glb
+// === [#HEX:F.04.77.00] START | name: loadModelSafe | lines: 13 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Tavern_kartyazo_csaj.glb', function (model) {
+            model.scale.set(0.60, 0.60, 0.60);
+            alignModelFloor(model, -2.05, -10.25, Math.PI / 2);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.userData.hotspotConfig = cardroomGameHotspot;
+                    interactiveMeshes.push(node);
+                }
+            });
+            cardroomGameHotspot.meshes.push(model);
+            scene.add(model);
+        });
+// === [#HEX:F.04.77.00] END ===
+
+        // 2. Tavern_kartyazo_viking.glb
+// === [#HEX:F.04.78.00] START | name: loadModelSafe | lines: 13 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: none
+        loadModelSafe('Tavern_kartyazo_viking.glb', function (model) {
+            model.scale.set(0.60, 0.60, 0.60);
+            alignModelFloor(model, 0.85, -10.25, -Math.PI / 2);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.userData.hotspotConfig = cardroomGameHotspot;
+                    interactiveMeshes.push(node);
+                }
+            });
+            cardroomGameHotspot.meshes.push(model);
+            scene.add(model);
+        });
+// === [#HEX:F.04.78.00] END ===
+
+        // 3. Tavern_kartyazo_csuklyas.glb
+// === [#HEX:F.04.79.00] START | name: loadModelSafe | lines: 13 ===
+// @calls: [#HEX:F.04.71.00] | @calledBy: [#HEX:F.04.61.00]
+        loadModelSafe('Tavern_kartyazo_csuklyas.glb', function (model) {
+            model.scale.set(0.60, 0.60, 0.60);
+            alignModelFloor(model, -0.6, -11.70, 0);
+            model.traverse(node => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.userData.hotspotConfig = cardroomGameHotspot;
+                    interactiveMeshes.push(node);
+                }
+            });
+            cardroomGameHotspot.meshes.push(model);
+            scene.add(model);
+        });
+// === [#HEX:F.04.79.00] END ===
+    }
+
+    // 8. Raycaster, Hover és Interaktív Eseménykezelés
+    const raycaster = new THREE.Raycaster();
+    const mousePointer = new THREE.Vector2();
+    let currentHoveredHotspot = null;
+    let hoveredMeshes = [];
+    let isTransitioning = false;
+    let pointerDownPos = { x: 0, y: 0 };
+    let pointerDownTime = 0;
+
+// === [#HEX:F.04.69.00] START | name: applyHoverGlow | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.04.5B.00], [#HEX:F.04.6B.00]
+    function applyHoverGlow(meshes) {
+        meshes.forEach(m => {
+            if (m.material) {
+                if (!m.userData._origEmissive) {
+                    m.userData._origEmissive = m.material.emissive ? m.material.emissive.clone() : new THREE.Color(0x000000);
+                }
+                if (m.material.emissive) {
+                    m.material.emissive.setHex(0x3a2505);
+                }
+            }
+        });
+    }
+// === [#HEX:F.04.69.00] END ===
+
+// === [#HEX:F.04.6A.00] START | name: removeHoverGlow | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.5B.00], [#HEX:F.04.6B.00]
+    function removeHoverGlow(meshes) {
+        meshes.forEach(m => {
+            if (m.material && m.userData._origEmissive) {
+                if (m.material.emissive) {
+                    m.material.emissive.copy(m.userData._origEmissive);
+                }
+            }
+        });
+    }
+// === [#HEX:F.04.6A.00] END ===
+
+// === [#HEX:F.04.6B.00] START | name: onPointerMove | lines: 48 ===
+// @calls: [#HEX:F.04.6A.00], [#HEX:F.04.69.00] | @calledBy: none
+    function onPointerMove(e) {
+        if (isTransitioning) return;
+        const rect = renderer.domElement.getBoundingClientRect();
+        mousePointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mousePointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mousePointer, camera);
+        const intersects = raycaster.intersectObjects(interactiveMeshes, true);
+
+        if (intersects.length > 0) {
+            let hitNode = intersects[0].object;
+            let foundHotspot = null;
+            while (hitNode) {
+                if (hitNode.userData && hitNode.userData.hotspotConfig) {
+                    foundHotspot = hitNode.userData.hotspotConfig;
+                    break;
+                }
+                hitNode = hitNode.parent;
+            }
+
+            if (foundHotspot) {
+                document.body.style.cursor = 'pointer';
+                if (currentHoveredHotspot !== foundHotspot) {
+                    if (hoveredMeshes.length > 0) removeHoverGlow(hoveredMeshes);
+                    currentHoveredHotspot = foundHotspot;
+                    hoveredMeshes = foundHotspot.meshes || [intersects[0].object];
+                    applyHoverGlow(hoveredMeshes);
+                }
+
+                if (tooltipEl && tooltipTextEl) {
+                    tooltipTextEl.innerHTML = foundHotspot.label + '<br><small style="color:#d4af37; font-weight:normal;">' + (foundHotspot.sublabel || '') + '</small>';
+                    tooltipEl.style.left = e.clientX + 'px';
+                    tooltipEl.style.top = e.clientY + 'px';
+                    tooltipEl.classList.add('visible');
+                }
+                return;
+            }
+        }
+
+        // Ha nincs találat
+        document.body.style.cursor = 'default';
+        if (currentHoveredHotspot) {
+            if (hoveredMeshes.length > 0) removeHoverGlow(hoveredMeshes);
+            currentHoveredHotspot = null;
+            hoveredMeshes = [];
+        }
+        if (tooltipEl) tooltipEl.classList.remove('visible');
+    }
+// === [#HEX:F.04.6B.00] END ===
+
+// === [#HEX:F.04.7E.00] START | name: onPointerDown | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.81.00] START | name: onPointerDown | lines: 5 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.81.00] START | name: onPointerDown | lines: 5 ===
+// @calls: none | @calledBy: none
+    function onPointerDown(e) {
+        if (isTransitioning) return;
+        pointerDownPos = { x: e.clientX, y: e.clientY };
+        pointerDownTime = performance.now();
+    }
+// === [#HEX:F.04.81.00] END ===
+// === [#HEX:F.04.81.00] END ===
+// === [#HEX:F.04.7E.00] END ===
+
+// === [#HEX:F.04.6D.00] START | name: onPointerUp | lines: 9 ===
+// @calls: [#HEX:F.04.6E.00] | @calledBy: none
+    function onPointerUp(e) {
+        if (isTransitioning) return;
+        const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+        const timeDiff = performance.now() - pointerDownTime;
+
+        if (dist < 8 && timeDiff < 600 && currentHoveredHotspot) {
+            triggerHotspotTransition(currentHoveredHotspot);
+        }
+    }
+// === [#HEX:F.04.6D.00] END ===
+
+// === [#HEX:F.04.6E.00] START | name: triggerHotspotTransition | lines: 34 ===
+// @calls: [#HEX:F.04.63.00], [#HEX:F.04.6F.00], [#HEX:F.04.18D.00] | @calledBy: [#HEX:F.04.5B.00], [#HEX:F.04.6D.00], [#HEX:F.04.70.00], [#HEX:F.04.71.00]
+    function triggerHotspotTransition(hotspot) {
+        if (isTransitioning || !hotspot) return;
+        isTransitioning = true;
+        document.body.style.cursor = 'default';
+        if (tooltipEl) tooltipEl.classList.remove('visible');
+
+        const startCam = camera.position.clone();
+        const startTarget = controls.target.clone();
+        const endCam = hotspot.camPos || defaultCamPos;
+        const endTarget = hotspot.lookAt || defaultTargetPos;
+
+        const duration = 650;
+        const startTime = performance.now();
+
+// === [#HEX:F.04.6F.00] START | name: animateTween | lines: 18 ===
+// @calls: [#HEX:F.04.63.00], [#HEX:F.04.18D.00] | @calledBy: [#HEX:F.04.5B.00], [#HEX:F.04.6E.00]
+        function animateTween(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1.0);
+            const ease = 0.5 - Math.cos(progress * Math.PI) / 2;
+
+            camera.position.lerpVectors(startCam, endCam, ease);
+            controls.target.lerpVectors(startTarget, endTarget, ease);
+            controls.update();
+
+            if (progress < 1.0) {
+                requestAnimationFrame(animateTween);
+            } else {
+                isTransitioning = false;
+                if (typeof hotspot.action === 'function') {
+                    hotspot.action();
+                }
+            }
+        }
+// === [#HEX:F.04.6F.00] END ===
+        requestAnimationFrame(animateTween);
+    }
+// === [#HEX:F.04.6E.00] END ===
+
+// === [#HEX:F.04.70.00] START | name: _tavernaFocusHotspot | lines: 6 ===
+// @calls: [#HEX:F.04.6E.00] | @calledBy: [#HEX:F.04.5A.00], [#HEX:F.04.5B.00]
+    window._tavernaFocusHotspot = function (id) {
+        const found = tavernaHotspots.find(h => h.id === id);
+        if (found) {
+            triggerHotspotTransition(found);
+        }
+    };
+// === [#HEX:F.04.70.00] END ===
+
+// === [#HEX:F.04.71.00] START | name: _tavernaResetCam | lines: 7 ===
+// @calls: [#HEX:F.04.63.00], [#HEX:F.04.6E.00] | @calledBy: [#HEX:F.02.00.00], [#HEX:F.04.5B.00]
+    window._tavernaResetCam = function () {
+        triggerHotspotTransition({
+            camPos: defaultCamPos,
+            lookAt: defaultTargetPos,
+            action: null
+        });
+    };
+// === [#HEX:F.04.71.00] END ===
+
+    renderer.domElement.addEventListener('pointermove', onPointerMove, false);
+    renderer.domElement.addEventListener('pointerdown', onPointerDown, false);
+    renderer.domElement.addEventListener('pointerup', onPointerUp, false);
+
+    // 9. Méretezés kezelő
+// === [#HEX:F.04.72.00] START | name: onResize | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:F.04.5B.00], [#HEX:F.04.74.00]
+    function onResize() {
+        if (!container) return;
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || (window.innerHeight - 44);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+    }
+// === [#HEX:F.04.72.00] END ===
+    window._tavernaResizeHandler = onResize;
+    window.addEventListener('resize', onResize);
+
+    // 10. Fő Render Ciklus
+    let animFrameId = null;
+    const clock = new THREE.Clock();
+
+// === [#HEX:F.04.73.00] START | name: animate | lines: 22 ===
+// @calls: [#HEX:F.04.18D.00] | @calledBy: none
+    function animate() {
+        animFrameId = requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+        const time = clock.getElapsedTime();
+
+        // Kandalló pislákolás animáció
+        fireplaceLight.intensity = 3.0 + Math.sin(time * 8.5) * 0.28 + Math.cos(time * 19.0) * 0.16;
+
+        // Bárpult lámpás finom lebegés
+        barLight.intensity = 2.4 + Math.sin(time * 4.0) * 0.15;
+
+        controls.update();
+        renderer.render(scene, camera);
+    }
+// === [#HEX:F.04.73.00] END ===
+    animate();
+
+    window._taverna3DInitialized = true;
+
+    // 11. Takarítási függvény
+// === [#HEX:F.04.74.00] START | name: _taverna3DCleanup | lines: 15 ===
+// @calls: [#HEX:F.04.164.00], [#HEX:D.01.0D.00], [#HEX:F.04.165.00], [#HEX:F.04.72.00], [#HEX:F.04.166.00] | @calledBy: [#HEX:F.04.38.00], [#HEX:F.04.5B.00]
+    window._taverna3DCleanup = function () {
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        window.removeEventListener('resize', onResize);
+        if (renderer && renderer.domElement) {
+            renderer.domElement.removeEventListener('pointermove', onPointerMove);
+            renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+            renderer.domElement.removeEventListener('pointerup', onPointerUp);
+            if (renderer.domElement.parentNode) {
+                renderer.domElement.parentNode.removeChild(renderer.domElement);
+            }
+            renderer.dispose();
+        }
+        window._taverna3DInitialized = false;
+        window._tavernaScene = null;
+    };
+// === [#HEX:F.04.74.00] END ===
+}
+// === [#HEX:F.04.5B.00] END ===
+window.runTaverna3DModule = runTaverna3DModule;
 
 // === JÁTÉKVEZÉRLŐ FÜGGVÉNYEK ===
 
@@ -4334,6 +6734,32 @@ document.addEventListener('input', function (e) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.62.00] START | name: updateBetaCost | lines: 19 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.7E.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.7E.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8E.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8E.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8F.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8F.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8F.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8F.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.8F.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.90.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.90.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.93.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.93.00] START | name: updateBetaCost | lines: 19 ===
+// @calls: none | @calledBy: none
 function updateBetaCost() {
     const fee = 10;
     const bonusInput = document.getElementById('beta-bonus');
@@ -4353,6 +6779,19 @@ function updateBetaCost() {
     if (totalCalcEl) totalCalcEl.textContent = pool + " Kr";
     if (finalCostEl) finalCostEl.textContent = total + " Kr";
 }
+// === [#HEX:F.04.93.00] END ===
+// === [#HEX:F.04.93.00] END ===
+// === [#HEX:F.04.90.00] END ===
+// === [#HEX:F.04.90.00] END ===
+// === [#HEX:F.04.8F.00] END ===
+// === [#HEX:F.04.8F.00] END ===
+// === [#HEX:F.04.8F.00] END ===
+// === [#HEX:F.04.8F.00] END ===
+// === [#HEX:F.04.8F.00] END ===
+// === [#HEX:F.04.8E.00] END ===
+// === [#HEX:F.04.8E.00] END ===
+// === [#HEX:F.04.7E.00] END ===
+// === [#HEX:F.04.7E.00] END ===
 // === [#HEX:F.04.62.00] END ===
 // === [#HEX:F.04.62.00] END ===
 // === [#HEX:F.04.51.00] END ===
@@ -5210,6 +7649,32 @@ function initializeBankOldal() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.75.00] START | name: toggleBuyNowInput | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.91.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.91.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A1.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A1.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A3.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A3.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A6.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A6.00] START | name: toggleBuyNowInput | lines: 9 ===
+// @calls: none | @calledBy: none
 function toggleBuyNowInput(isFixedSelected) {
     document.getElementById('fixed-price-container').style.display = isFixedSelected ? 'block' : 'none';
     document.getElementById('buy-now-price-container').style.display = isFixedSelected ? 'none' : 'block';
@@ -5219,6 +7684,19 @@ function toggleBuyNowInput(isFixedSelected) {
         document.getElementById('hirdetes-ar').value = '';
     }
 }
+// === [#HEX:F.04.A6.00] END ===
+// === [#HEX:F.04.A6.00] END ===
+// === [#HEX:F.04.A3.00] END ===
+// === [#HEX:F.04.A3.00] END ===
+// === [#HEX:F.04.A2.00] END ===
+// === [#HEX:F.04.A2.00] END ===
+// === [#HEX:F.04.A2.00] END ===
+// === [#HEX:F.04.A2.00] END ===
+// === [#HEX:F.04.A2.00] END ===
+// === [#HEX:F.04.A1.00] END ===
+// === [#HEX:F.04.A1.00] END ===
+// === [#HEX:F.04.91.00] END ===
+// === [#HEX:F.04.91.00] END ===
 // === [#HEX:F.04.75.00] END ===
 // === [#HEX:F.04.75.00] END ===
 // === [#HEX:F.04.64.00] END ===
@@ -5910,7 +8388,46 @@ function initiateBuild() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.86.00] START | name: sendTransaction | lines: 1 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.A2.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B2.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B2.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B3.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B4.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B4.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B7.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B7.00] START | name: sendTransaction | lines: 1 ===
+// @calls: none | @calledBy: none
         sendTransaction('build_new', { type: type, name: name, category: category, baseHp: hp }, pin, function () {
+// === [#HEX:F.04.B7.00] END ===
+// === [#HEX:F.04.B7.00] END ===
+// === [#HEX:F.04.B4.00] END ===
+// === [#HEX:F.04.B4.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B3.00] END ===
+// === [#HEX:F.04.B2.00] END ===
+// === [#HEX:F.04.B2.00] END ===
+// === [#HEX:F.04.A2.00] END ===
+// === [#HEX:F.04.A2.00] END ===
 // === [#HEX:F.04.86.00] END ===
 // === [#HEX:F.04.86.00] END ===
 // === [#HEX:F.04.75.00] END ===
@@ -6408,6 +8925,32 @@ function openMonasteryTab(evt, tabName) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.94.00] START | name: toggleUploadType | lines: 22 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.B0.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.B0.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C0.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C0.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C1.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C1.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C1.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C1.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C1.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C2.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C2.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C5.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.C5.00] START | name: toggleUploadType | lines: 22 ===
+// @calls: none | @calledBy: none
 function toggleUploadType() {
     var type = document.querySelector('input[name="uploadType"]:checked').value;
     var titleInput = document.getElementById('monk-upload-title');
@@ -6430,6 +8973,19 @@ function toggleUploadType() {
         if (appOptions) appOptions.style.display = 'block';
     }
 }
+// === [#HEX:F.04.C5.00] END ===
+// === [#HEX:F.04.C5.00] END ===
+// === [#HEX:F.04.C2.00] END ===
+// === [#HEX:F.04.C2.00] END ===
+// === [#HEX:F.04.C1.00] END ===
+// === [#HEX:F.04.C1.00] END ===
+// === [#HEX:F.04.C1.00] END ===
+// === [#HEX:F.04.C1.00] END ===
+// === [#HEX:F.04.C1.00] END ===
+// === [#HEX:F.04.C0.00] END ===
+// === [#HEX:F.04.C0.00] END ===
+// === [#HEX:F.04.B0.00] END ===
+// === [#HEX:F.04.B0.00] END ===
 // === [#HEX:F.04.94.00] END ===
 // === [#HEX:F.04.94.00] END ===
 // === [#HEX:F.04.83.00] END ===
@@ -6446,9 +9002,48 @@ function toggleUploadType() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
+// @calls: none | @calledBy: none
 function toggleTranslatorLanguage() {
     // Deprecated since checkboxes are used now.
 }
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
+// === [#HEX:F.08.03.00] END ===
 // === [#HEX:F.08.03.00] END ===
 // === [#HEX:F.08.03.00] END ===
 // === [#HEX:F.08.03.00] END ===
@@ -8424,7 +11019,46 @@ function finalizeResignation(leaveGame) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.C4.00] START | name: encodeIdToZeroWidth | lines: 1 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.E0.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.E0.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F0.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F0.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F1.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F1.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F1.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F1.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F1.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F2.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F2.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F5.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.F5.00] START | name: encodeIdToZeroWidth | lines: 1 ===
+// @calls: none | @calledBy: none
     function encodeIdToZeroWidth(id) { var b = ''; for (var i = 0; i < id.length; i++) b += id[i].charCodeAt(0).toString(2).padStart(8, '0'); var z = ''; for (const x of b) z += (x === '0') ? '\u200b' : '\u200c'; return z + '\u200d'; }
+// === [#HEX:F.04.F5.00] END ===
+// === [#HEX:F.04.F5.00] END ===
+// === [#HEX:F.04.F2.00] END ===
+// === [#HEX:F.04.F2.00] END ===
+// === [#HEX:F.04.F1.00] END ===
+// === [#HEX:F.04.F1.00] END ===
+// === [#HEX:F.04.F1.00] END ===
+// === [#HEX:F.04.F1.00] END ===
+// === [#HEX:F.04.F1.00] END ===
+// === [#HEX:F.04.F0.00] END ===
+// === [#HEX:F.04.F0.00] END ===
+// === [#HEX:F.04.E0.00] END ===
+// === [#HEX:F.04.E0.00] END ===
 // === [#HEX:F.04.C4.00] END ===
 // === [#HEX:F.04.C4.00] END ===
 // === [#HEX:F.04.B3.00] END ===
@@ -10792,6 +13426,32 @@ let currentDashFolderId = null;
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.ED.00] START | name: openDashboardTab | lines: 10 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.109.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.109.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.119.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.119.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11A.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11A.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11A.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11A.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11A.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11B.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11B.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11E.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11E.00] START | name: openDashboardTab | lines: 10 ===
+// @calls: none | @calledBy: none
 function openDashboardTab(evt, tabName) {
     var tabs = document.querySelectorAll('#author-dashboard-modal .tab-content');
     for (var i = 0; i < tabs.length; i++) { tabs[i].style.display = 'none'; }
@@ -10802,6 +13462,19 @@ function openDashboardTab(evt, tabName) {
     document.getElementById(tabName).style.display = 'block';
     evt.currentTarget.classList.add('active');
 }
+// === [#HEX:F.04.11E.00] END ===
+// === [#HEX:F.04.11E.00] END ===
+// === [#HEX:F.04.11B.00] END ===
+// === [#HEX:F.04.11B.00] END ===
+// === [#HEX:F.04.11A.00] END ===
+// === [#HEX:F.04.11A.00] END ===
+// === [#HEX:F.04.11A.00] END ===
+// === [#HEX:F.04.11A.00] END ===
+// === [#HEX:F.04.11A.00] END ===
+// === [#HEX:F.04.119.00] END ===
+// === [#HEX:F.04.119.00] END ===
+// === [#HEX:F.04.109.00] END ===
+// === [#HEX:F.04.109.00] END ===
 // === [#HEX:F.04.ED.00] END ===
 // === [#HEX:F.04.ED.00] END ===
 // === [#HEX:F.04.DC.00] END ===
@@ -11669,12 +14342,51 @@ async function submitLogEntry() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.F8.00] START | name: toggleLogSplash | lines: 6 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.114.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.114.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.124.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.124.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.125.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.126.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.126.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.129.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.129.00] START | name: toggleLogSplash | lines: 6 ===
+// @calls: none | @calledBy: none
 function toggleLogSplash() {
     var splashText = document.getElementById('log-entry-splash-text');
     if (splashText) {
         splashText.style.display = (splashText.style.display === 'none') ? 'block' : 'none';
     }
 }
+// === [#HEX:F.04.129.00] END ===
+// === [#HEX:F.04.129.00] END ===
+// === [#HEX:F.04.126.00] END ===
+// === [#HEX:F.04.126.00] END ===
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.125.00] END ===
+// === [#HEX:F.04.124.00] END ===
+// === [#HEX:F.04.124.00] END ===
+// === [#HEX:F.04.114.00] END ===
+// === [#HEX:F.04.114.00] END ===
 // === [#HEX:F.04.F8.00] END ===
 // === [#HEX:F.04.F8.00] END ===
 // === [#HEX:F.04.E7.00] END ===
@@ -11824,7 +14536,7 @@ function openUniversalNPC(npcId, config) {
     if (iconEl) iconEl.innerHTML = icon;
     if (headerEl) headerEl.style.backgroundColor = headerColor;
 
-    modal.style.cssText = "display: flex; z-index: 1000; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background: rgba(0,0,0,0.5);";
+    modal.style.cssText = "display: flex; z-index: 1050; position: fixed; top: var(--header-height, 66px); left: 0; width: 100vw; height: calc(100vh - var(--header-height, 66px)); height: calc(100dvh - var(--header-height, 66px)); background: rgba(0,0,0,0.5);";
     if (typeof window.checkAndApplyModalScrollLock === 'function') window.checkAndApplyModalScrollLock();
     if (modalContent) {
         modalContent.style.cssText = "";
@@ -11922,10 +14634,19 @@ function openUniversalNPC(npcId, config) {
 
     if (config.styles) {
         if (config.styles.modal && modal) {
-            for (var key in config.styles.modal) { modal.style[key] = config.styles.modal[key]; }
+            for (var key in config.styles.modal) {
+                if (key === 'top' || key === 'height') continue;
+                modal.style[key] = config.styles.modal[key];
+            }
         }
         if (config.styles.content && modalContent) {
-            for (var k in config.styles.content) { modalContent.style[k] = config.styles.content[k]; }
+            for (var k in config.styles.content) {
+                if (k === 'height' && config.styles.content[k] === '100vh') {
+                    modalContent.style[k] = '100%';
+                } else {
+                    modalContent.style[k] = config.styles.content[k];
+                }
+            }
         }
     }
 
@@ -12068,6 +14789,32 @@ function addBubbleToUniversal(sender, text, type) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.FD.00] START | name: adjustColorBrightness | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.119.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.119.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.129.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.129.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12A.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12A.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12A.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12A.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12A.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12B.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12B.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12E.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12E.00] START | name: adjustColorBrightness | lines: 9 ===
+// @calls: none | @calledBy: none
 function adjustColorBrightness(col, amt) {
     if (col[0] !== "#") return col;
     var num = parseInt(col.slice(1), 16);
@@ -12077,6 +14824,19 @@ function adjustColorBrightness(col, amt) {
     var newColor = g | (b << 8) | (r << 16);
     return "#" + (0x1000000 + (newColor < 0 ? 0 : newColor > 0xFFFFFF ? 0xFFFFFF : newColor)).toString(16).slice(1);
 }
+// === [#HEX:F.04.12E.00] END ===
+// === [#HEX:F.04.12E.00] END ===
+// === [#HEX:F.04.12B.00] END ===
+// === [#HEX:F.04.12B.00] END ===
+// === [#HEX:F.04.12A.00] END ===
+// === [#HEX:F.04.12A.00] END ===
+// === [#HEX:F.04.12A.00] END ===
+// === [#HEX:F.04.12A.00] END ===
+// === [#HEX:F.04.12A.00] END ===
+// === [#HEX:F.04.129.00] END ===
+// === [#HEX:F.04.129.00] END ===
+// === [#HEX:F.04.119.00] END ===
+// === [#HEX:F.04.119.00] END ===
 // === [#HEX:F.04.FD.00] END ===
 // === [#HEX:F.04.FD.00] END ===
 // === [#HEX:F.04.EC.00] END ===
@@ -12433,6 +15193,32 @@ if (univInput) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.103.00] START | name: toggleAccordionPanel | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.11F.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.11F.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12F.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.12F.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.130.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.130.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.130.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.130.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.130.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.131.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.131.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.134.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.134.00] START | name: toggleAccordionPanel | lines: 9 ===
+// @calls: none | @calledBy: none
 function toggleAccordionPanel() {
     this.classList.toggle("active");
     var panel = this.nextElementSibling;
@@ -12442,6 +15228,19 @@ function toggleAccordionPanel() {
         panel.style.maxHeight = panel.scrollHeight + "px";
     }
 }
+// === [#HEX:F.04.134.00] END ===
+// === [#HEX:F.04.134.00] END ===
+// === [#HEX:F.04.131.00] END ===
+// === [#HEX:F.04.131.00] END ===
+// === [#HEX:F.04.130.00] END ===
+// === [#HEX:F.04.130.00] END ===
+// === [#HEX:F.04.130.00] END ===
+// === [#HEX:F.04.130.00] END ===
+// === [#HEX:F.04.130.00] END ===
+// === [#HEX:F.04.12F.00] END ===
+// === [#HEX:F.04.12F.00] END ===
+// === [#HEX:F.04.11F.00] END ===
+// === [#HEX:F.04.11F.00] END ===
 // === [#HEX:F.04.103.00] END ===
 // === [#HEX:F.04.103.00] END ===
 // === [#HEX:F.04.F2.00] END ===
@@ -12873,6 +15672,32 @@ function switchToborzoTab(tab) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.10C.00] START | name: hasRequiredRank | lines: 25 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.128.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.128.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.138.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.138.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13D.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13D.00] START | name: hasRequiredRank | lines: 25 ===
+// @calls: none | @calledBy: none
 function hasRequiredRank(playerRank, role) {
     var rankHierarchy = [
         '4. osztályú kalóz', '3. osztályú kalóz', '2. osztályú kalóz', '1. osztályú kalóz',
@@ -12898,6 +15723,19 @@ function hasRequiredRank(playerRank, role) {
 
     return playerIdx >= requiredIdx;
 }
+// === [#HEX:F.04.13D.00] END ===
+// === [#HEX:F.04.13D.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.138.00] END ===
+// === [#HEX:F.04.138.00] END ===
+// === [#HEX:F.04.128.00] END ===
+// === [#HEX:F.04.128.00] END ===
 // === [#HEX:F.04.10C.00] END ===
 // === [#HEX:F.04.10C.00] END ===
 // === [#HEX:F.04.FB.00] END ===
@@ -12980,6 +15818,32 @@ function renderSelectedShipCrew() {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.10D.00] START | name: resolvePirateName | lines: 8 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.129.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.129.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.139.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13A.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13B.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13B.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13E.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.13E.00] START | name: resolvePirateName | lines: 8 ===
+// @calls: none | @calledBy: none
     var resolvePirateName = function (email) {
         if (!email) return '';
         var lower = String(email).toLowerCase().trim();
@@ -12988,6 +15852,19 @@ function renderSelectedShipCrew() {
         if (match && match.name) return match.name;
         return email;
     };
+// === [#HEX:F.04.13E.00] END ===
+// === [#HEX:F.04.13E.00] END ===
+// === [#HEX:F.04.13B.00] END ===
+// === [#HEX:F.04.13B.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.13A.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.139.00] END ===
+// === [#HEX:F.04.129.00] END ===
+// === [#HEX:F.04.129.00] END ===
 // === [#HEX:F.04.10D.00] END ===
 // === [#HEX:F.04.10D.00] END ===
 // === [#HEX:F.04.FC.00] END ===
@@ -14119,6 +16996,32 @@ function normalizeShipData(ship, nameDict) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.125.00] START | name: resolvePirateName | lines: 22 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.141.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.141.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.151.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.151.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.152.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.152.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.152.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.152.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.152.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.153.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.153.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.156.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.156.00] START | name: resolvePirateName | lines: 22 ===
+// @calls: none | @calledBy: none
     var resolvePirateName = function (emailOrName) {
         if (!emailOrName) return '';
         var raw = String(emailOrName).trim();
@@ -14141,6 +17044,19 @@ function normalizeShipData(ship, nameDict) {
         var prefix = raw.split('@')[0];
         return prefix.charAt(0).toUpperCase() + prefix.slice(1);
     };
+// === [#HEX:F.04.156.00] END ===
+// === [#HEX:F.04.156.00] END ===
+// === [#HEX:F.04.153.00] END ===
+// === [#HEX:F.04.153.00] END ===
+// === [#HEX:F.04.152.00] END ===
+// === [#HEX:F.04.152.00] END ===
+// === [#HEX:F.04.152.00] END ===
+// === [#HEX:F.04.152.00] END ===
+// === [#HEX:F.04.152.00] END ===
+// === [#HEX:F.04.151.00] END ===
+// === [#HEX:F.04.151.00] END ===
+// === [#HEX:F.04.141.00] END ===
+// === [#HEX:F.04.141.00] END ===
 // === [#HEX:F.04.125.00] END ===
 // === [#HEX:F.04.125.00] END ===
 // === [#HEX:F.04.114.00] END ===
@@ -15458,10 +18374,49 @@ function openVehicleModal(category) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.05.17.00] START | name: closeVehicleModal | lines: 4 ===
+// @calls: none | @calledBy: none
 function closeVehicleModal() {
     var modal = document.getElementById('vehicle-modal');
     if (modal) modal.style.display = 'none';
 }
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
+// === [#HEX:F.05.17.00] END ===
 // === [#HEX:F.05.17.00] END ===
 // === [#HEX:F.05.17.00] END ===
 // === [#HEX:F.05.17.00] END ===
@@ -15734,6 +18689,32 @@ function loadGamePage(sessionData) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.07.0E.00] START | name: playMediaSequence | lines: 21 ===
+// @calls: none | @calledBy: none
                 playMediaSequence([introVid], function () {
                     if (titleEl) titleEl.textContent = "Hártyahalászat";
 
@@ -15755,6 +18736,19 @@ function loadGamePage(sessionData) {
                     var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
                     minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
                 });
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
+// === [#HEX:F.07.0E.00] END ===
 // === [#HEX:F.07.0E.00] END ===
 // === [#HEX:F.07.0E.00] END ===
 // === [#HEX:F.07.0E.00] END ===
@@ -16411,6 +19405,32 @@ let kikotoCleanupCallbacks = [];
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.144.00] START | name: cleanupKikotoOldal | lines: 24 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.160.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.160.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.170.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.170.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.171.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.171.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.171.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.171.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.171.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.172.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.172.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.175.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.175.00] START | name: cleanupKikotoOldal | lines: 24 ===
+// @calls: none | @calledBy: none
 function cleanupKikotoOldal() {
     kikoto3DRunning = false;
     if (kikotoAnimFrameId) {
@@ -16435,6 +19455,19 @@ function cleanupKikotoOldal() {
         overlay.classList.remove('active');
     }
 }
+// === [#HEX:F.04.175.00] END ===
+// === [#HEX:F.04.175.00] END ===
+// === [#HEX:F.04.172.00] END ===
+// === [#HEX:F.04.172.00] END ===
+// === [#HEX:F.04.171.00] END ===
+// === [#HEX:F.04.171.00] END ===
+// === [#HEX:F.04.171.00] END ===
+// === [#HEX:F.04.171.00] END ===
+// === [#HEX:F.04.171.00] END ===
+// === [#HEX:F.04.170.00] END ===
+// === [#HEX:F.04.170.00] END ===
+// === [#HEX:F.04.160.00] END ===
+// === [#HEX:F.04.160.00] END ===
 // === [#HEX:F.04.144.00] END ===
 // === [#HEX:F.04.144.00] END ===
 // === [#HEX:F.04.133.00] END ===
@@ -20965,6 +23998,32 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.169.00] START | name: onWindowResize | lines: 7 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.185.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.185.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.195.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.195.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.196.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.196.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.196.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.196.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.196.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.197.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.197.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.19A.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.19A.00] START | name: onWindowResize | lines: 7 ===
+// @calls: none | @calledBy: none
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -20972,6 +24031,19 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
 
     }
+// === [#HEX:F.04.19A.00] END ===
+// === [#HEX:F.04.19A.00] END ===
+// === [#HEX:F.04.197.00] END ===
+// === [#HEX:F.04.197.00] END ===
+// === [#HEX:F.04.196.00] END ===
+// === [#HEX:F.04.196.00] END ===
+// === [#HEX:F.04.196.00] END ===
+// === [#HEX:F.04.196.00] END ===
+// === [#HEX:F.04.196.00] END ===
+// === [#HEX:F.04.195.00] END ===
+// === [#HEX:F.04.195.00] END ===
+// === [#HEX:F.04.185.00] END ===
+// === [#HEX:F.04.185.00] END ===
 // === [#HEX:F.04.169.00] END ===
 // === [#HEX:F.04.169.00] END ===
 // === [#HEX:F.04.158.00] END ===
@@ -22256,10 +25328,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     function loadDeviceModel() {
         const gltfLoader = new GLTFLoader();
         const modelPaths = [
-            'assets/models/belepo_kozmosz_kutyu.glb',
             'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb',
-            'assets/models/belepooldal_kozmosz_kutyu.glb',
-            'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb'
+            'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb',
+            'assets/models/belepo_kozmosz_kutyu.glb',
+            'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb',
+            'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepooldal_kozmosz_kutyu.glb',
+            'assets/models/belepooldal_kozmosz_kutyu.glb'
         ];
 
 // === [#HEX:F.04.168.00] START | name: tryLoad | lines: 108 ===

@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=20261016_v3">
+    <link rel="stylesheet" href="styles.css?v=20261018_v2">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:,">
 
@@ -281,6 +281,13 @@
         <div id="content"></div>
     </div>
 
+    <!-- Hagyományos Betöltő Képernyő (Taverna, Játékok, Adatbázis műveletek) -->
+    <div id="loading-overlay" style="display: none;">
+        <img id="loading-gif" src="" alt="Betöltés..." style="display: none;" />
+        <div class="loader-spinner"></div>
+        <p id="loading-overlay-text" data-lang="loading">Betöltés...</p>
+    </div>
+
     <!-- Steampunk 3D Óramű & Kinetikus Karakter-Adagoló Töltőképernyő -->
     <div id="kikoto-3d-loading-overlay" style="display: none; opacity: 0; pointer-events: none;">
         <!-- 3D Three.js WebGL Óramű Színpad -->
@@ -332,12 +339,12 @@
         </form>
     </div>
 
-    <div id="author-dashboard-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 100;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="gamemode-modal-content" style="position: relative; margin-top: min(5vh, 25px); max-width: 900px; width: 95%;">
+    <div id="author-dashboard-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) this.style.display='none'">
+        <div class="gamemode-modal-content" style="position: relative; max-width: 900px; width: 95%;">
             
             <div class="gamemode-header" style="position: relative;">
                 <span id="dashboard-book-title" class="header-title" data-lang="dashboard_title">Könyv Statisztika</span>
-                <button class="btn btn-close" style="position: absolute; top: -15px; right: -15px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 0;" onclick="document.getElementById('author-dashboard-modal').style.display='none'">X</button>
+                <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 0;" onclick="document.getElementById('author-dashboard-modal').style.display='none'">X</button>
             </div>
 
             <div id="dashboard-loading" style="padding: 20px; text-align: center;" data-lang-html="dashboard_loading">
@@ -506,7 +513,7 @@
 </div>
 
     <div id="log-entry-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) closeLogEntryModal()">
-        <div class="gamemode-modal-content" style="margin-top: min(5vh, 25px); max-width: 700px;">
+        <div class="gamemode-modal-content" style="max-width: 700px;">
             <span class="close-btn" onclick="closeLogEntryModal()">&times;</span>
             <h4 id="log-modal-title" data-lang="log_entry_title">Új Hajónapló Bejegyzés</h4> 
             <div style="margin-bottom: 15px; text-align: right;">
@@ -616,8 +623,8 @@
         </div>
     </div>
 
-    <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto; z-index: 105;" onclick="if(event.target===this) closePapatReportModal()">
-        <div class="gamemode-modal-content" style="position: relative; margin-top: min(5vh, 25px); max-width: 700px; width: 95%;">
+    <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) closePapatReportModal()">
+        <div class="gamemode-modal-content" style="position: relative; max-width: 700px; width: 95%;">
             <div class="gamemode-header">
                 <span class="header-title"><i class="fas fa-robot"></i> Papát AI - Értékelő Jelentés</span>
                 <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closePapatReportModal()">X</button>
@@ -631,7 +638,7 @@
         </div>
     </div>
     <!-- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK -->
-    <div id="quiz-book-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 200;" onclick="if(event.target===this) closeQuizBookModal()">
+    <div id="quiz-book-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) closeQuizBookModal()">
         <div class="gamemode-modal-content" style="max-width: 550px; position: relative;">
             <button class="close-btn" onclick="closeQuizBookModal()">&times;</button>
             <h3 style="text-align: center;"><i class="fas fa-book"></i> Kvízkérdések Könyve</h3>
@@ -678,7 +685,7 @@
 
 </div>
 
-    <script src="web_fordito.js?v=20261016_v3"></script>
-    <script src="app.js?v=20261016_v3"></script>
+    <script src="web_fordito.js?v=20261018_v2"></script>
+    <script src="app.js?v=20261018_v2"></script>
 </body>
 </html>

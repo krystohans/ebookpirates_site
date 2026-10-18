@@ -10,6 +10,32 @@ var REGISTRATION_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.1FC.00] START | name: tt | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.218.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.218.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.228.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.228.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.229.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.229.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.229.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.229.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.229.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22A.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22A.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22D.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22D.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
 function tt(key, fallback) {
     if (typeof t === 'function') {
         var value = t(key);
@@ -19,6 +45,19 @@ function tt(key, fallback) {
     }
     return fallback || key;
 }
+// === [#HEX:F.04.22D.00] END ===
+// === [#HEX:F.04.22D.00] END ===
+// === [#HEX:F.04.22A.00] END ===
+// === [#HEX:F.04.22A.00] END ===
+// === [#HEX:F.04.229.00] END ===
+// === [#HEX:F.04.229.00] END ===
+// === [#HEX:F.04.229.00] END ===
+// === [#HEX:F.04.229.00] END ===
+// === [#HEX:F.04.229.00] END ===
+// === [#HEX:F.04.228.00] END ===
+// === [#HEX:F.04.228.00] END ===
+// === [#HEX:F.04.218.00] END ===
+// === [#HEX:F.04.218.00] END ===
 // === [#HEX:F.04.1FC.00] END ===
 // === [#HEX:F.04.1FC.00] END ===
 // === [#HEX:F.04.1EB.00] END ===
@@ -61,9 +100,48 @@ function localizeByDictionary(rawText) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.01.15.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.01.16.00] START | name: applyRegistrationPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
 function applyRegistrationPageMetaTranslation() {
     document.title = tt('reg_page_title', 'eBookPirate leszek');
 }
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
+// === [#HEX:F.01.16.00] END ===
 // === [#HEX:F.01.15.00] END ===
 // === [#HEX:F.01.15.00] END ===
 // === [#HEX:F.01.14.00] END ===

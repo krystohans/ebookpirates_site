@@ -1,9 +1,9 @@
 // ==========================================================================
 // eBookPirates - PWA Service Worker (5. Pillér)
-// Version: 20261016_v2
+// Version: 20261018_v2
 // ==========================================================================
 
-const CACHE_NAME = 'ebp-cache-v20261016_v2';
+const CACHE_NAME = 'ebp-cache-v20261018_v2';
 
 // Előre gyorstárazandó statikus alapfájlok (Core App Shell)
 const PRECACHE_ASSETS = [
@@ -29,6 +29,32 @@ const PRECACHE_ASSETS = [
 // @calls: none | @calledBy: none
 // === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
+// @calls: none | @calledBy: none
 self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
@@ -40,6 +66,19 @@ self.addEventListener('install', (event) => {
         })
     );
 });
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.09.00] END ===
 // === [#HEX:F.09.09.00] END ===
 // === [#HEX:F.09.09.00] END ===
 // === [#HEX:F.09.09.00] END ===
@@ -57,6 +96,32 @@ self.addEventListener('install', (event) => {
 // @calls: none | @calledBy: none
 // === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
+// @calls: none | @calledBy: none
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -71,6 +136,19 @@ self.addEventListener('activate', (event) => {
         }).then(() => self.clients.claim())
     );
 });
+// === [#HEX:F.09.0B.00] END ===
+// === [#HEX:F.09.0B.00] END ===
+// === [#HEX:F.09.0B.00] END ===
+// === [#HEX:F.09.0B.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0A.00] END ===
 // === [#HEX:F.09.0A.00] END ===
 // === [#HEX:F.09.0A.00] END ===
 // === [#HEX:F.09.0A.00] END ===

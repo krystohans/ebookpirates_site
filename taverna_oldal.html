@@ -4,105 +4,102 @@
   <button onclick="markPageAsSeen('taverna_oldal')">Értettem, mehet!</button>
 </div>
 
-<div id="taverna_oldal-content" style="display: none; position: relative; min-height: 100vh;">
+<div id="taverna_oldal-content" class="taverna-3d-root" style="display: none; position: relative; width: 100%; height: 100%; min-height: calc(100vh - 44px); overflow: hidden;">
     
-    <div class="info-icon-container" title="Információ megjelenítése">
-        <i class="fas fa-info-circle" onclick="showSplash('taverna_oldal')"></i>
+    <!-- 1. 3D TAVERNA CANVAS KONTÉNER (Three.js WebGL színpad) -->
+    <div id="taverna-webgl-canvas-container" class="taverna-webgl-canvas-container"></div>
+
+    <!-- 2. TAVERNA 3D INTERAKTÍV TOOLTIP (Lebegő aranybuborék) -->
+    <div id="taverna-interactive-tooltip" class="interactive-tooltip">
+        <span id="taverna-tooltip-text">🍺 Szőke Rozmár (A Bárpult)</span>
     </div>
 
-    <div class="page-container">
-        <div class="page-section" style="text-align: center;">
-            <h2 style="color: var(--color-accent); font-family: var(--font-serif); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px;">
-                Taverna a Rózsaszín Gyöngyhöz
-            </h2>
-            
-                        <div onclick="openUniversalNPC('bartender', {
-                                name: 'Szőke Rozmár',
-                                role: 'Taverna Pultosa',
-                                icon: '<i class=\'fas fa-beer\'></i>',
-                                headerColor: '#d2691e',
-                                portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
-                                msgIcon: '<i class=\'fas fa-beer\' style=\'color:#d2691e; margin-right:5px;\'></i>',
-                                loaderHTML: '<i class=\'fas fa-beer fa-spin\' style=\'color:#d2691e; margin-right:8px;\'></i> <i>A Pultos keveri az italokat...</i>',
-                                styles: {
-                                        modal: {
-                                                justifyContent: 'flex-end',
-                                                alignItems: 'stretch',
-                                                background: '',
-                                                padding: '0'
-                                        },
-                                        content: {
-                                                width: '350px',
-                                                height: '100vh',
-                                                maxWidth: '85vw',
-                                                margin: '0',
-                                                borderRadius: '2',
-                                                border: 'none',
-                                                borderLeft: '5px solid #d2691e',
-                                                backgroundColor: '#fdf5e6',
-                                                color: '#241512',
-                                                backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-                                                boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-                                        }
-                                },
-                                menu: [
-                                    {text: '🍺 Itallap (Fizetés)', action: 'RUN_FUNCTION', payload: 'BT_menuDrinks', reply: '_'},
-                                    {text: '👥 Zsoldosok', action: 'RUN_FUNCTION', payload: 'BT_listMercenaries', reply: '_'},
-                                    {text: '📜 Pletykák (Küldetések)', action: 'RUN_FUNCTION', payload: 'BT_listMissions', reply: '_'},
-                                    {text: '📝 Bétaolvasás', action: 'CLIENT_OPEN_PULT', payload: '', reply: '_'}
-                                ]
-                            })" title="Beszélek a Csapossal" 
-                 style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; 
-                         background: #d2691e; border: 3px solid var(--color-gold); border-radius: 50%; 
-                         box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer;
-                         display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-                <div style="position: relative;">
-                    <i class="fas fa-beer" style="font-size: 2em; color: white;"></i>
-                    <i class="fas fa-comment-dots" style="position: absolute; bottom: -5px; right: -8px; 
-                        font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
+    <!-- 3. TAVERNA 3D ÁTMENET OVERLAY -->
+    <div id="taverna-scene-transition-overlay" class="taverna-transition-overlay" style="display: none; opacity: 0; pointer-events: none;"></div>
+
+    <!-- 4. TAVERNA SAROK INFÓGOMB (Szerény kinézetű ikon a sarokban) -->
+    <button id="taverna-corner-info-btn" class="taverna-corner-info-btn" onclick="showSplash('taverna_oldal')" title="Információ">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <!-- Szőke Rozmár Oldalsó Panel -->
+    <div id="bartender-panel" class="page-section" 
+         style="display: none; position: fixed; top: var(--header-height, 66px); right: 0; width: 320px; height: calc(100% - var(--header-height, 66px)); height: calc(100dvh - var(--header-height, 66px)); 
+                 margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); 
+                 z-index: 2001; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
+         
+         <div style="background: #d2691e; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
+             <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
+                 <i class="fas fa-glass-cheers"></i> Szőke Rozmár
+             </span>
+             <button onclick="toggleBartender()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+         </div>
+
+         <div id="bartender-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #fdf5e6; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); display: flex; flex-direction: column;">
+         </div>
+
+         <div id="bartender-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
+             <input type="text" id="bartender-input" placeholder="Mit kérsz?" style="width: 100%; padding: 8px; margin-bottom: 5px; display: none;">
+             <button class="btn" onclick="openBartenderChat()">Indítás</button>
+         </div>
+    </div>
+
+    <!-- 6. 2D MENÜ OVERLAY KONTÉNER (Gombokkal, Kijelentkezés nélkül) -->
+    <div id="taverna-2d-overlay" class="taverna-2d-overlay" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-gold); padding-bottom: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #ffd700; font-family: var(--font-serif);"><i class="fas fa-beer"></i> Taverna Irányítópult</h3>
+            <button class="btn btn-close" onclick="toggleTaverna2DMenu()" style="padding: 4px 10px; font-size: 1.1rem; line-height: 1;">✕</button>
+        </div>
+        
+        <!-- Beszélek a Csapossal Kiemelt Gomb (Áthelyezve a 3D lebegő ikonról) -->
+        <div onclick="openUniversalNPC('bartender', {
+                name: 'Szőke Rozmár',
+                role: 'Taverna Pultosa',
+                icon: '<i class=\'fas fa-beer\'></i>',
+                headerColor: '#d2691e',
+                portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
+                msgIcon: '<i class=\'fas fa-beer\' style=\'color:#d2691e; margin-right:5px;\'></i>',
+                loaderHTML: '<i class=\'fas fa-beer fa-spin\' style=\'color:#d2691e; margin-right:8px;\'></i> <i>A Pultos keveri az italokat...</i>',
+                styles: {
+                    modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
+                    content: { width: '350px', height: '100%', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #d2691e', backgroundColor: '#fdf5e6', color: '#241512', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)' }
+                },
+                menu: [
+                    {text: '🍺 Itallap (Fizetés)', action: 'RUN_FUNCTION', payload: 'BT_menuDrinks', reply: '_'},
+                    {text: '👥 Zsoldosok', action: 'RUN_FUNCTION', payload: 'BT_listMercenaries', reply: '_'},
+                    {text: '📜 Pletykák (Küldetések)', action: 'RUN_FUNCTION', payload: 'BT_listMissions', reply: '_'}
+                ]
+            })" style="background: linear-gradient(135deg, #d2691e, #8b4513); border: 2px solid var(--color-gold); border-radius: 8px; padding: 12px 16px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: #2b1408; display: flex; align-items: center; justify-content: center; border: 2px solid var(--color-gold); position: relative;">
+                    <i class="fas fa-beer" style="font-size: 1.6rem; color: #ffd700;"></i>
+                    <i class="fas fa-comment-dots" style="position: absolute; bottom: -3px; right: -4px; font-size: 0.9rem; color: white; background: #d2691e; border-radius: 50%; padding: 2px;"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; color: #ffd700; font-family: var(--font-serif); font-size: 1.15rem;">Beszélek a Csapossal</h4>
+                    <span style="color: #fdf5e6; font-size: 0.85rem;">Szőke Rozmár &bull; Itallap, küldetések és kocsmai hírek</span>
                 </div>
             </div>
-
-            <div id="bartender-panel" class="page-section" 
-                 style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; 
-                         margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); 
-                         z-index: 2001; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
-                 
-                 <div style="background: #d2691e; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
-                     <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
-                         <i class="fas fa-glass-cheers"></i> Szőke Rozmár
-                     </span>
-                     <button onclick="toggleBartender()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-                 </div>
-
-                 <div id="bartender-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #fdf5e6; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); display: flex; flex-direction: column;">
-                     </div>
-
-                 <div id="bartender-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
-                     <input type="text" id="bartender-input" placeholder="Mit kérsz?" style="width: 100%; padding: 8px; margin-bottom: 5px; display: none;">
-                     <button class="btn" onclick="openBartenderChat()">Indítás</button>
-                 </div>
-            </div>
-
-            <p>Ülj le egy asztalhoz, vagy szólítsd meg a csapost!</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-                <button class="btn" onclick="openTavernJobs()">🗣️ Melót vagy melóst keresek</button>
-                <button class="btn" style="background-color: #5c3a21;" onclick="openNoticeBoard()">📌 Hirdetőtábla</button>
-                <button id="pult-btn" class="btn" onclick="openPultModal()">📨 Pult (Posta/Béta)</button>
-                <button id="asztal-btn" class="btn" onclick="document.getElementById('asztal-confirm-modal').style.display='flex'">🗣️ Asztal (Chat)</button>
-                <button id="jatekterem-btn" class="btn" style="background-color: #8b0000;" onclick="document.getElementById('jatekterem-modal').style.display='flex'">🃏 Játékterem</button>
-            </div>
+            <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 1.2rem;"></i>
         </div>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+        <p style="color: #e8d8c8; font-size: 0.95rem; margin-bottom: 10px;">Válassz a taverna állomásai közül:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px;">
+            <button id="jatekterem-btn" class="btn" style="background-color: #8b0000; border: 1px solid var(--color-gold);" onclick="enterCardRoomWithPin()">🃏 Kártyaszoba (VIP Belépés)</button>
+            <button class="btn" style="background-color: #5c3a21;" onclick="openBetaFromTavern()">📖 Bétázók Asztala</button>
+            <button class="btn" style="background-color: #4a154b;" onclick="openBookAgentDialog()">🧙 Könyvügynök</button>
+            <button class="btn" onclick="openTavernJobs()">🗣️ Melót vagy melóst keresek</button>
+            <button class="btn" style="background-color: #3b2818;" onclick="openNoticeBoard()">📌 Hirdetőtábla</button>
+            <button id="pult-btn" class="btn" onclick="openPultModal()">📨 Postapult (Üzenetek)</button>
+            <button id="asztal-btn" class="btn" onclick="document.getElementById('asztal-confirm-modal').style.display='flex'">🗣️ Asztal (Chat)</button>
+            <button id="taverna-kikoto-exit-btn" class="btn" style="background-color: #1a4a68; border: 1px solid var(--color-gold);" onclick="loadPage('kikoto_oldal')">⚓ Vissza a Kikötőbe</button>
         </div>
     </div>
 
     <div id="pult-modal" class="gamemode-modal" style="display: none;">
         <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 600px; width: 95%;">
             <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('pult-modal').style.display='none'">X</button>
-            <h4 id="pult-modal-title" style="color: #8b0000; border-bottom: 2px solid #8b0000; padding-bottom: 5px;">A Pultnál</h4>
+            <h4 id="pult-modal-title" style="color: #8b0000; border-bottom: 2px solid #8b0000; padding-bottom: 5px;">Kocsmai Postapult</h4>
             
             <div id="pult-view-read">
                 <p><strong>📨 Posta és Üzenetek:</strong></p>
@@ -113,13 +110,6 @@
                     <button class="btn" onclick="showPultView('compose')">Üzenetet hagyok</button>
                     <button class="btn" onclick="showPultView('check_status_init')">Keresés</button>
                 </div>
-
-                <hr style="margin: 15px 0; border-color: #8b4513;">
-
-                <p><strong>📜 Bétaolvasók Asztala:</strong></p>
-                <button class="btn" style="background-color: #a0522d; color: white; width: 100%;" onclick="showPultView('beta_menu')">
-                    Irodalmi Ügyek Intézése
-                </button>
             </div>
 
             <div id="pult-view-compose" style="display: none;">
@@ -265,7 +255,7 @@
     <!-- Notice Board Modal -->
     <div id="notice-board-modal" class="gamemode-modal" style="display: none; background: rgba(0,0,0,0.8);">
         <div class="gamemode-modal-content" style="position: relative; max-width: 1000px; width: 95%; height: 85vh; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); background-color: #8b5a2b; border: 8px solid #5c3a21; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); padding: 10px;">
-            <button class="btn btn-close" style="position: absolute; top: -15px; right: -15px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100;" onclick="document.getElementById('notice-board-modal').style.display='none'">X</button>
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100;" onclick="document.getElementById('notice-board-modal').style.display='none'">X</button>
             
             <h2 style="text-align: center; color: #f5deb3; font-family: 'Pirata One', cursive; text-shadow: 2px 2px 4px #000; margin-top: 10px; border-bottom: none;">📌 Kocsmai Hirdetőtábla</h2>
             
@@ -275,14 +265,14 @@
         </div>
     </div>
 
-    <div id="chat-modal" class="gamemode-modal" style="display: none; top: 0; left: 0; width: 100%; height: 100%; z-index: 1500;">
+    <div id="chat-modal" class="gamemode-modal" style="display: none; z-index: 1500;">
         <div class="gamemode-modal-content" style="width: 95%; height: 95%; padding: 10px; position: relative; display: flex; flex-direction: column;">
              <button id="close-chat-btn" class="btn btn-close" style="position: absolute; top: -10px; right: -10px; padding: 5px 10px; line-height: 1; z-index: 10;">X</button>
             <iframe id="chat-iframe" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
     </div>
 
-    <div id="jatekterem-modal" class="gamemode-modal" style="display: none; top: 0; left: 0; width: 100%; height: 100%; z-index: 1500; background-color: rgba(0,0,0,0.9);">
+    <div id="jatekterem-modal" class="gamemode-modal" style="display: none; z-index: 1500; background-color: rgba(0,0,0,0.9);">
         <div id="game-modal-content" class="gamemode-modal-content" style="width: 95%; max-width: 800px; height: 95%; padding: 20px; position: relative; display: flex; flex-direction: column; justify-content: space-around; text-align: center; border: 2px solid #c89b3f;">
             <button id="close-game-btn" class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1; z-index: 10;">X</button>
             
@@ -300,7 +290,7 @@
         </div>
     </div>
 
-    <div id="beta-reader-modal" class="gamemode-modal" style="display: none; width: 100%; height: 100%; top:0; left:0; background: rgba(0,0,0,0.98); z-index: 2000;">
+    <div id="beta-reader-modal" class="gamemode-modal" style="display: none; background: rgba(0,0,0,0.98); z-index: 2000;">
         <div style="display: flex; height: 100%; width: 100%; flex-direction: row;">
             
             <div style="flex: 7; background: #f4e4bc; padding: 20px; overflow-y: auto; border-right: 8px solid #5d3a1a; position: relative;">
@@ -358,7 +348,7 @@
         </div>
     </div>
 
-    <div id="beta-stats-modal" class="gamemode-modal" style="display: none; width: 100%; height: 100%; top:0; left:0; background: rgba(0,0,0,0.9); z-index: 2000;">
+    <div id="beta-stats-modal" class="gamemode-modal" style="display: none; background: rgba(0,0,0,0.9); z-index: 2000;">
         <div class="gamemode-modal-content" style="width: 90%; max-width: 1000px; height: 90%; padding: 20px; display: flex; flex-direction: column;">
             <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px;" onclick="document.getElementById('beta-stats-modal').style.display='none'">X</button>
             <h3 id="stats-modal-title" style="color: #8b0000; text-align: center; border-bottom: 2px solid #8b0000;">Béta Jelentés</h3>

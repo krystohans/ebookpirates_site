@@ -10,6 +10,32 @@ var DELETION_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpE
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.1FF.00] START | name: tt | lines: 9 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.21B.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.21B.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22B.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22B.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22D.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22D.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.230.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.230.00] START | name: tt | lines: 9 ===
+// @calls: none | @calledBy: none
 function tt(key, fallback) {
     if (typeof t === 'function') {
         var value = t(key);
@@ -19,6 +45,19 @@ function tt(key, fallback) {
     }
     return fallback || key;
 }
+// === [#HEX:F.04.230.00] END ===
+// === [#HEX:F.04.230.00] END ===
+// === [#HEX:F.04.22D.00] END ===
+// === [#HEX:F.04.22D.00] END ===
+// === [#HEX:F.04.22C.00] END ===
+// === [#HEX:F.04.22C.00] END ===
+// === [#HEX:F.04.22C.00] END ===
+// === [#HEX:F.04.22C.00] END ===
+// === [#HEX:F.04.22C.00] END ===
+// === [#HEX:F.04.22B.00] END ===
+// === [#HEX:F.04.22B.00] END ===
+// === [#HEX:F.04.21B.00] END ===
+// === [#HEX:F.04.21B.00] END ===
 // === [#HEX:F.04.1FF.00] END ===
 // === [#HEX:F.04.1FF.00] END ===
 // === [#HEX:F.04.1EE.00] END ===
@@ -58,9 +97,48 @@ function localizeByDictionary(rawText) {
 // @calls: none | @calledBy: none
 // === [#HEX:F.04.201.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
 // @calls: none | @calledBy: none
+// === [#HEX:F.04.21D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.21D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22F.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.22F.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.232.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
+// === [#HEX:F.04.232.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// @calls: none | @calledBy: none
 function applyDeletionPageMetaTranslation() {
     document.title = tt('del_page_title', 'Leléptető');
 }
+// === [#HEX:F.04.232.00] END ===
+// === [#HEX:F.04.232.00] END ===
+// === [#HEX:F.04.22F.00] END ===
+// === [#HEX:F.04.22F.00] END ===
+// === [#HEX:F.04.22E.00] END ===
+// === [#HEX:F.04.22E.00] END ===
+// === [#HEX:F.04.22E.00] END ===
+// === [#HEX:F.04.22E.00] END ===
+// === [#HEX:F.04.22E.00] END ===
+// === [#HEX:F.04.22D.00] END ===
+// === [#HEX:F.04.22D.00] END ===
+// === [#HEX:F.04.21D.00] END ===
+// === [#HEX:F.04.21D.00] END ===
 // === [#HEX:F.04.201.00] END ===
 // === [#HEX:F.04.201.00] END ===
 // === [#HEX:F.04.1F0.00] END ===

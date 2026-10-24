@@ -133,7 +133,7 @@ window.getLoggedInUserData = function () {
 // === [#HEX:D.01.04.00] END ===
 
 // === [#HEX:D.01.05.00] START | name: checkStartupAuth | lines: 38 ===
-// @calls: [#HEX:B.15.01.00], [#HEX:B.12.0F.00], [#HEX:D.01.04.00] | @calledBy: none
+// @calls: [#HEX:D.01.04.00], [#HEX:B.12.0F.00], [#HEX:B.15.01.00] | @calledBy: none
 window.checkStartupAuth = function () {
   const isLocal = window.location.hostname === 'localhost' || 
                   window.location.hostname === '127.0.0.1' || 
@@ -186,7 +186,7 @@ window.updateTopBarPlayerName = function () {
 // === [#HEX:D.01.06.00] END ===
 
 // === [#HEX:D.01.07.00] START | name: loadTopBarModule | lines: 23 ===
-// @calls: [#HEX:D.01.08.00], [#HEX:D.01.4B.00], [#HEX:D.01.06.00] | @calledBy: none
+// @calls: [#HEX:D.01.06.00], [#HEX:D.01.08.00], [#HEX:D.01.4B.00] | @calledBy: none
 async function loadTopBarModule() {
   try {
     const container = document.getElementById('topbar-container');
@@ -220,7 +220,7 @@ if (document.readyState === 'loading') {
 }
 
 // === [#HEX:D.01.08.00] START | name: setupTopBarEvents | lines: 185 ===
-// @calls: [#HEX:D.06.01.00], [#HEX:D.01.4F.00], [#HEX:D.01.01.00], [#HEX:D.01.0D.00], [#HEX:D.01.09.00] | @calledBy: [#HEX:D.01.07.00], [#HEX:D.01.4B.00]
+// @calls: [#HEX:D.06.01.00], [#HEX:D.01.09.00], [#HEX:D.01.02.00], [#HEX:D.01.4B.00], [#HEX:D.01.01.00] | @calledBy: [#HEX:D.01.07.00], [#HEX:D.01.4B.00]
 function setupTopBarEvents() {
   const btnInfo = document.getElementById('btn-tb-info');
   const infoOverlay = document.getElementById('info-scroll-overlay');
@@ -708,7 +708,7 @@ renderer.setPixelRatio(isAndroid ? 0.75 : Math.min(window.devicePixelRatio || 1,
 renderer.shadowMap.enabled = false;
 
 // === [#HEX:D.01.0D.00] START | name: resize | lines: 5 ===
-// @calls: none | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.02.0F.00], [#HEX:F.04.155.00]
+// @calls: none | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.04.233.00], [#HEX:F.04.24E.00]
 function resize() {
   const w = wrap.clientWidth, h = wrap.clientHeight;
   renderer.setSize(w, h);
@@ -732,7 +732,7 @@ window.tempOrbit = new OrbitControls(cam, renderer.domElement);
 window.tempOrbit.target.set(0, 0, 0);
 
 // === [#HEX:D.01.0E.00] START | name: getOrbH | lines: 4 ===
-// @calls: [#HEX:D.01.0F.00], [#HEX:D.01.11.00], [#HEX:D.01.10.00] | @calledBy: [#HEX:D.01.3B.00]
+// @calls: [#HEX:D.01.11.00], [#HEX:D.01.0F.00], [#HEX:D.01.10.00] | @calledBy: [#HEX:D.01.3B.00]
 window.getOrbH = () => orbH;
 // === [#HEX:D.01.0F.00] START | name: getOrbV | lines: 3 ===
 // @calls: [#HEX:D.01.11.00], [#HEX:D.01.10.00] | @calledBy: [#HEX:D.01.0E.00], [#HEX:D.01.3B.00]
@@ -1446,7 +1446,7 @@ gltfLoader.load(window.getAssetUrl('models/pirates_assets/SM_Prop_Lantern_01.glb
 // === [#HEX:D.01.16.00] END ===
 
 // === [#HEX:D.02.00.00] START | name: applyFinalRockOffsets | lines: 8 ===
-// @calls: [#HEX:D.01.15.00], [#HEX:D.01.16.00] | @calledBy: none
+// @calls: [#HEX:D.01.16.00], [#HEX:D.01.15.00] | @calledBy: none
   window.applyFinalRockOffsets = function () {
     if (window.moveRockAndLantern && window.mainTargetRock && window.mainRockLantern) {
       window.moveRockAndLantern(-10, -83.5);
@@ -1639,7 +1639,7 @@ let activeTouchId = null;
 let touchQuadrant = null;
 
 // === [#HEX:D.01.17.00] START | name: setupMobileControls | lines: 126 ===
-// @calls: [#HEX:D.05.01.00], [#HEX:D.01.18.00], [#HEX:D.01.19.00] | @calledBy: none
+// @calls: [#HEX:D.05.01.00], [#HEX:D.01.19.00], [#HEX:D.01.18.00] | @calledBy: none
 function setupMobileControls() {
   const modeBtn = document.getElementById('mobile-mode-btn');
   if (modeBtn) {
@@ -1868,7 +1868,7 @@ window.initMembranePool = function () {
 // === [#HEX:D.03.03.00] END ===
 
 // === [#HEX:D.03.04.00] START | name: getPooledMembrane | lines: 14 ===
-// @calls: [#HEX:D.03.03.00], [#HEX:D.03.02.00] | @calledBy: [#HEX:D.03.07.00], [#HEX:D.03.09.00], [#HEX:D.01.3C.00], [#HEX:D.03.0D.00]
+// @calls: [#HEX:D.03.02.00], [#HEX:D.03.03.00] | @calledBy: [#HEX:D.03.07.00], [#HEX:D.03.09.00], [#HEX:D.01.3C.00], [#HEX:D.03.0D.00]
 function getPooledMembrane() {
   window.initMembranePool();
   for (let i = 0; i < window.membranePool.length; i++) {
@@ -1886,7 +1886,7 @@ function getPooledMembrane() {
 // === [#HEX:D.03.04.00] END ===
 
 // === [#HEX:D.03.05.00] START | name: loadMembraneModel | lines: 42 ===
-// @calls: [#HEX:D.03.03.00], [#HEX:D.01.01.00], [#HEX:D.03.07.00], [#HEX:D.01.3C.00] | @calledBy: none
+// @calls: [#HEX:D.03.03.00], [#HEX:D.01.01.00], [#HEX:D.01.3C.00], [#HEX:D.03.07.00] | @calledBy: none
 function loadMembraneModel() {
   const modelUrl = window.getAssetUrl('models/hartya_golden_membrane.glb');
   new GLTFLoader().load(modelUrl, function (gltf) {
@@ -1976,7 +1976,7 @@ window.sanitizeAndAutoRecoverMembranes = function() {
 // === [#HEX:D.03.06.00] END ===
 
 // === [#HEX:D.03.07.00] START | name: spawnZeroPointMembrane | lines: 25 ===
-// @calls: [#HEX:D.03.04.00], [#HEX:D.03.03.00] | @calledBy: [#HEX:D.03.05.00], [#HEX:D.06.00.00], [#HEX:D.01.3C.00]
+// @calls: [#HEX:D.03.03.00], [#HEX:D.03.04.00] | @calledBy: [#HEX:D.03.05.00], [#HEX:D.06.00.00], [#HEX:D.01.3C.00]
 window.spawnZeroPointMembrane = function () {
   window.initMembranePool();
 
@@ -2196,7 +2196,7 @@ window.monologState = {
 let lastMonologAdvanceTime = 0;
 
 // === [#HEX:D.06.00.00] START | name: closeZozoWelcome | lines: 16 ===
-// @calls: [#HEX:D.03.07.00], [#HEX:D.01.1C.00] | @calledBy: [#HEX:D.06.03.00]
+// @calls: [#HEX:D.01.1C.00], [#HEX:D.03.07.00] | @calledBy: [#HEX:D.06.03.00]
 window.closeZozoWelcome = function () {
   const overlay = document.getElementById('zozo-welcome-overlay');
   if (overlay) overlay.style.display = 'none';
@@ -2308,7 +2308,7 @@ window.previousInGameMonolog = function (e) {
 // === [#HEX:D.01.1E.00] END ===
 
 // === [#HEX:D.01.1F.00] START | name: advanceInGameMonolog | lines: 15 ===
-// @calls: [#HEX:D.01.1D.00], [#HEX:D.01.20.00] | @calledBy: none
+// @calls: [#HEX:D.01.20.00], [#HEX:D.01.1D.00] | @calledBy: none
 window.advanceInGameMonolog = function (e) {
   if (e && e.stopPropagation) e.stopPropagation();
 
@@ -2367,7 +2367,7 @@ window.closeInGameMonolog = function () {
 window._dockDropoffLocked = false;
 
 // === [#HEX:D.01.21.00] START | name: triggerDropoffMonologs | lines: 23 ===
-// @calls: [#HEX:D.01.22.00], [#HEX:D.01.1C.00] | @calledBy: [#HEX:D.01.24.00], [#HEX:D.06.04.00]
+// @calls: [#HEX:D.01.1C.00], [#HEX:D.01.22.00] | @calledBy: [#HEX:D.01.24.00], [#HEX:D.06.04.00]
 window.triggerDropoffMonologs = function (prevStored, newStored) {
   if (window._dockDropoffLocked) return;
   window._dockDropoffLocked = true;
@@ -2442,7 +2442,7 @@ window.previousZozoWelcome = function (event) {
 // === [#HEX:D.06.02.00] END ===
 
 // === [#HEX:D.06.03.00] START | name: advanceZozoWelcome | lines: 18 ===
-// @calls: [#HEX:D.06.00.00], [#HEX:D.06.01.00] | @calledBy: none
+// @calls: [#HEX:D.06.01.00], [#HEX:D.06.00.00] | @calledBy: none
 window.advanceZozoWelcome = function (event) {
   if (event && event.stopPropagation) event.stopPropagation();
 
@@ -2464,7 +2464,7 @@ window.advanceZozoWelcome = function (event) {
 // === [#HEX:D.06.03.00] END ===
 
 // === [#HEX:D.01.22.00] START | name: showPopUp | lines: 37 ===
-// @calls: [#HEX:D.01.23.00], [#HEX:D.01.03.00] | @calledBy: [#HEX:F.06.02.00], [#HEX:D.01.21.00], [#HEX:D.01.24.00], [#HEX:D.03.0A.00], [#HEX:D.03.0B.00]
+// @calls: [#HEX:D.01.03.00], [#HEX:D.01.23.00] | @calledBy: [#HEX:F.06.02.00], [#HEX:D.01.21.00], [#HEX:D.01.24.00], [#HEX:D.03.0A.00], [#HEX:D.03.0B.00]
 window.showPopUp = function (msg, onCompleteCb) {
   if (window.isFishingMode) {
     if (onCompleteCb) onCompleteCb();
@@ -2630,7 +2630,7 @@ const FRAME_MIN_MS = 1000 / TARGET_FPS; // 16.667ms
 let _lastFrameTime = 0;
 
 // === [#HEX:D.01.24.00] START | name: frame | lines: 1217 ===
-// @calls: [#HEX:D.03.09.00], [#HEX:D.01.2C.00], [#HEX:D.04.01.00], [#HEX:D.01.1C.00], [#HEX:D.01.1B.00] | @calledBy: [#HEX:F.04.12C.00], [#HEX:F.04.228.00], [#HEX:F.04.132.00], [#HEX:D.01.8A.00], [#HEX:A.05.0F.00]
+// @calls: [#HEX:D.01.1C.00], [#HEX:D.01.1B.00], [#HEX:D.01.2D.00], [#HEX:D.01.27.00], [#HEX:D.01.28.00] | @calledBy: [#HEX:F.04.12C.00], [#HEX:F.04.228.00], [#HEX:F.04.132.00], [#HEX:D.01.8A.00], [#HEX:A.05.0F.00]
 function frame(now) {
   requestAnimationFrame(frame);
 
@@ -2815,7 +2815,7 @@ function frame(now) {
           }
 
 // === [#HEX:D.03.0A.00] START | name: executeMembranePickup | lines: 62 ===
-// @calls: [#HEX:D.01.0A.00], [#HEX:D.03.01.00], [#HEX:D.01.12.00], [#HEX:D.01.1C.00], [#HEX:D.01.25.00] | @calledBy: [#HEX:D.01.24.00]
+// @calls: [#HEX:D.01.1C.00], [#HEX:D.01.22.00], [#HEX:D.01.12.00], [#HEX:D.01.25.00], [#HEX:D.03.01.00] | @calledBy: [#HEX:D.01.24.00]
           const executeMembranePickup = (showDefaultPopup = true) => {
             window.carriedMembranes++;
             window.totalPickedUp++;
@@ -2826,7 +2826,7 @@ function frame(now) {
             if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
 
 // === [#HEX:D.01.25.00] START | name: handleMonologsAndLogic | lines: 45 ===
-// @calls: [#HEX:D.01.0A.00], [#HEX:D.03.01.00], [#HEX:D.01.1C.00] | @calledBy: [#HEX:D.01.24.00], [#HEX:D.03.0A.00]
+// @calls: [#HEX:D.01.1C.00], [#HEX:D.03.01.00], [#HEX:D.01.0A.00] | @calledBy: [#HEX:D.01.24.00], [#HEX:D.03.0A.00]
             const handleMonologsAndLogic = () => {
               if (count === 1) {
                 if (!window.monologState.hasSeen[3]) window.showInGameMonolog(3, 4);
@@ -2963,7 +2963,7 @@ function frame(now) {
       window._waitingForPierLeave = false;
 
 // === [#HEX:D.01.26.00] START | name: startWind | lines: 5 ===
-// @calls: [#HEX:D.01.0A.00], [#HEX:D.03.01.00] | @calledBy: [#HEX:D.01.24.00]
+// @calls: [#HEX:D.03.01.00], [#HEX:D.01.0A.00] | @calledBy: [#HEX:D.01.24.00]
       const startWind = () => {
         window.isWindActive = true;
         window.playSoundEffect(window.windStartAudio);
@@ -3034,7 +3034,7 @@ function frame(now) {
 
       // POPUP LÁNC: boat_fixing → monológok/homepoint/empty_boat
 // === [#HEX:D.06.04.00] START | name: step_deliver | lines: 10 ===
-// @calls: [#HEX:D.01.21.00], [#HEX:D.01.22.00] | @calledBy: [#HEX:D.01.24.00]
+// @calls: [#HEX:D.01.22.00], [#HEX:D.01.21.00] | @calledBy: [#HEX:D.01.24.00]
       const step_deliver = () => {
         if (hasMembranes) {
           const prevStored = (window.storedMembranes || 0) - arrivedCarried;
@@ -4046,7 +4046,7 @@ function startEogCinematic(sceneRef, boatRef) {
 // === [#HEX:D.01.2C.00] END ===
 
 // === [#HEX:D.01.2D.00] START | name: showChestAtPier | lines: 21 ===
-// @calls: [#HEX:D.01.2F.00], [#HEX:D.01.01.00] | @calledBy: [#HEX:D.01.24.00]
+// @calls: [#HEX:D.01.01.00], [#HEX:D.01.2F.00] | @calledBy: [#HEX:D.01.24.00]
 function showChestAtPier(sceneRef) {
   if (!window.homePos) return;
   const loader = new GLTFLoader();
@@ -4160,7 +4160,7 @@ window.exitFullscreenIfActive = function () {
 window.eogBoatName = '';
 
 // === [#HEX:D.01.32.00] START | name: startEogBoatNamingRoutine | lines: 35 ===
-// @calls: [#HEX:D.01.33.00], [#HEX:D.05.02.00], [#HEX:D.01.34.00] | @calledBy: [#HEX:D.01.30.00], [#HEX:D.01.33.00], [#HEX:D.01.34.00]
+// @calls: [#HEX:D.05.02.00], [#HEX:D.01.34.00], [#HEX:D.01.33.00] | @calledBy: [#HEX:D.01.30.00], [#HEX:D.01.33.00], [#HEX:D.01.34.00]
 window.startEogBoatNamingRoutine = function () {
   // BIZTONSÁGI LÉPÉS: A csónaknév beírása előtt a teljes képernyőből kilépünk, hogy meglegyen a normál fókusz és ablakméret!
   if (typeof window.exitFullscreenIfActive === 'function') {
@@ -4218,7 +4218,7 @@ window.showEogConfirm1 = function () {
 // === [#HEX:D.01.33.00] END ===
 
 // === [#HEX:D.01.34.00] START | name: showEogConfirm2 | lines: 19 ===
-// @calls: [#HEX:D.01.32.00], [#HEX:D.01.39.00], [#HEX:D.01.04.00] | @calledBy: [#HEX:D.01.32.00]
+// @calls: [#HEX:D.01.04.00], [#HEX:D.01.39.00], [#HEX:D.01.32.00] | @calledBy: [#HEX:D.01.32.00]
 window.showEogConfirm2 = function () {
   const c2 = document.getElementById('eog-confirm-overlay-2');
   if (!c2) return;
@@ -4298,7 +4298,7 @@ window.eogTreasureConfig = window.eogTreasureConfig || {
 };
 
 // === [#HEX:D.01.39.00] START | name: showEogSummaryPanel | lines: 35 ===
-// @calls: [#HEX:D.01.3A.00], [#HEX:D.01.7E.00], [#HEX:D.01.3F.00] | @calledBy: [#HEX:D.01.34.00], [#HEX:D.01.35.00], [#HEX:D.01.48.00]
+// @calls: [#HEX:D.01.3F.00], [#HEX:D.01.7E.00], [#HEX:D.01.3A.00] | @calledBy: [#HEX:D.01.34.00], [#HEX:D.01.35.00], [#HEX:D.01.48.00]
 window.showEogSummaryPanel = function () {
   const summaryOverlay = document.getElementById('eog-summary-overlay');
   const summaryTextEl = document.getElementById('eog-summary-text');
@@ -4414,7 +4414,7 @@ window.saveFullGameState = function () {
 
 // --- TELJES JÁTÉKÁLLAPOT VISSZATÖLTÉSE ---
 // === [#HEX:D.01.3C.00] START | name: loadFullGameState | lines: 117 ===
-// @calls: [#HEX:D.03.09.00], [#HEX:D.01.12.00], [#HEX:D.03.04.00], [#HEX:D.03.03.00], [#HEX:D.03.07.00] | @calledBy: [#HEX:D.03.05.00]
+// @calls: [#HEX:D.03.04.00], [#HEX:D.03.09.00], [#HEX:D.01.12.00], [#HEX:D.03.03.00], [#HEX:D.03.07.00] | @calledBy: [#HEX:D.03.05.00]
 window.loadFullGameState = function () {
   const saveRaw = localStorage.getItem('ebook_pirates_game_state') || localStorage.getItem('ebp_tutorial_save');
   if (!saveRaw) return false;
@@ -4610,7 +4610,7 @@ window.showEogVeteranPanel = function () {
 // === [#HEX:D.01.3E.00] END ===
 
 // === [#HEX:D.01.3F.00] START | name: showEogFinalPanel | lines: 37 | action: 'tutorial_completed' ===
-// @calls: [#HEX:F.04.6E.00], [#HEX:D.01.3E.00], [#HEX:D.01.40.00], [#HEX:D.01.3D.00] | @calledBy: [#HEX:D.01.39.00], [#HEX:D.01.3A.00]
+// @calls: [#HEX:F.04.6E.00], [#HEX:D.01.3D.00], [#HEX:D.01.40.00], [#HEX:D.01.3E.00] | @calledBy: [#HEX:D.01.39.00], [#HEX:D.01.3A.00]
 window.showEogFinalPanel = function () {
   // Ha a játékos már korábban elvégezte a tutorialt -> Veterán panel felugrása
   if (window.checkIfUserIsVeteran && window.checkIfUserIsVeteran()) {
@@ -4652,7 +4652,7 @@ window.showEogFinalPanel = function () {
 
 // --- KINCSEK SIKERES FELÍRÁSA VISSZAJELZŐ ÉS VÁLASZTÓ PANEL ---
 // === [#HEX:D.01.40.00] START | name: showEogSuccessChoicePanel | lines: 109 | action: 'start_hartyahalaszat' ===
-// @calls: [#HEX:F.04.6E.00], [#HEX:D.05.02.00], [#HEX:D.01.42.00], [#HEX:D.01.43.00], [#HEX:D.01.41.00] | @calledBy: [#HEX:D.01.3F.00], [#HEX:D.01.47.00]
+// @calls: [#HEX:B.15.04.00], [#HEX:F.04.6E.00], [#HEX:D.01.43.00], [#HEX:D.01.42.00], [#HEX:D.05.02.00] | @calledBy: [#HEX:D.01.3F.00], [#HEX:D.01.47.00]
 window.showEogSuccessChoicePanel = function () {
   const choiceOverlay = document.getElementById('eog-success-choice-overlay');
   const choiceTextEl = document.getElementById('eog-success-choice-text');
@@ -4825,7 +4825,7 @@ window.playHebokDepartureVideo = function () {
 
 // --- EoG Path Editor ---
 // === [#HEX:D.01.45.00] START | name: showEogPathEditor | lines: 146 ===
-// @calls: [#HEX:D.01.46.00], [#HEX:F.04.1CF.00] | @calledBy: none
+// @calls: [#HEX:F.04.1CF.00], [#HEX:D.01.46.00] | @calledBy: none
 window.showEogPathEditor = function (sceneRef, boatRef) {
   if (document.getElementById('eog-path-editor')) return;
 
@@ -5046,7 +5046,7 @@ window.addEventListener('keydown', function (e) {
 // ═══════════════════════════════════════════════════════════════════
 
 // === [#HEX:D.07.00.00] START | name: initFishingMode | lines: 64 ===
-// @calls: [#HEX:B.03.1D.00], [#HEX:D.07.01.00], [#HEX:D.03.0D.00], [#HEX:D.01.79.00] | @calledBy: none
+// @calls: [#HEX:B.03.1D.00], [#HEX:D.07.01.00], [#HEX:D.01.79.00], [#HEX:D.03.0D.00] | @calledBy: none
 window.initFishingMode = function () {
   console.log("⚓ [FISHING MODE] Hártyavadászat arcade motor aktiválva!");
   window.isFishingMode = true;
@@ -5155,7 +5155,7 @@ window.loadWarshipForFishing = function () {
 // === [#HEX:D.07.01.00] END ===
 
 // === [#HEX:D.03.0D.00] START | name: spawnFishingMembranes | lines: 20 ===
-// @calls: [#HEX:D.03.04.00], [#HEX:D.03.08.00] | @calledBy: [#HEX:D.07.00.00], [#HEX:D.04.01.00]
+// @calls: [#HEX:D.03.08.00], [#HEX:D.03.04.00] | @calledBy: [#HEX:D.07.00.00], [#HEX:D.04.01.00]
 window.spawnFishingMembranes = function () {
   if (typeof getPooledMembrane !== 'function') return;
   const count = (window.activeMembranes || []).filter(m => m && m.visible).length;
@@ -5179,7 +5179,7 @@ window.spawnFishingMembranes = function () {
 // === [#HEX:D.03.0D.00] END ===
 
 // === [#HEX:D.04.01.00] START | name: triggerFishingQuiz | lines: 16 ===
-// @calls: [#HEX:D.04.06.00], [#HEX:D.03.0D.00] | @calledBy: [#HEX:D.01.24.00]
+// @calls: [#HEX:D.03.0D.00], [#HEX:D.04.06.00] | @calledBy: [#HEX:D.01.24.00]
 window.triggerFishingQuiz = function () {
   if (window.quizManager) {
     window.quizManager.openQuiz('FISHING_LITERATURE', function (isCorrect) {
@@ -5199,7 +5199,7 @@ window.triggerFishingQuiz = function () {
 // === [#HEX:D.04.01.00] END ===
 
 // === [#HEX:D.07.02.00] START | name: exitFishingGame | lines: 57 ===
-// @calls: [#HEX:B.02.0C.00], [#HEX:D.01.4A.00], [#HEX:D.01.79.00], [#HEX:D.01.49.00], [#HEX:B.03.1E.00] | @calledBy: [#HEX:D.01.24.00]
+// @calls: [#HEX:D.01.49.00], [#HEX:D.01.4A.00], [#HEX:B.02.0C.00], [#HEX:D.01.79.00], [#HEX:B.03.1E.00] | @calledBy: [#HEX:D.01.24.00]
 window.exitFishingGame = function (type) {
   const exitType = type || 'NORMAL';
   let targetPage = (exitType === 'DESTROYED') ? 'MainMenuTutorial' : 'fedelzet_oldal';
@@ -5319,7 +5319,7 @@ window.UI_TRANSLATIONS = {
 };
 
 // === [#HEX:D.01.4B.00] START | name: applyLanguageToUI | lines: 74 ===
-// @calls: [#HEX:D.01.4D.00], [#HEX:D.01.08.00], [#HEX:D.01.4C.00] | @calledBy: [#HEX:D.01.07.00], [#HEX:D.01.08.00]
+// @calls: [#HEX:D.01.4C.00], [#HEX:D.01.4D.00], [#HEX:D.01.08.00] | @calledBy: [#HEX:D.01.07.00], [#HEX:D.01.08.00]
 window.applyLanguageToUI = function (lang) {
   const targetLang = lang || window.currentLanguage || 'hu';
   const dict = window.UI_TRANSLATIONS[targetLang] || window.UI_TRANSLATIONS.hu;

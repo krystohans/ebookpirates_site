@@ -874,7 +874,7 @@
 
         // --- THREE.JS INICIALIZÁLÁS ---
 // === [#HEX:F.04.1CA.00] START | name: initThree | lines: 68 ===
-// @calls: [#HEX:F.04.1EA.00], [#HEX:F.04.1D0.00], [#HEX:F.09.0F.00], [#HEX:F.04.1CB.00], [#HEX:F.04.1D6.00] | @calledBy: none
+// @calls: [#HEX:F.04.1D0.00], [#HEX:F.04.1CB.00], [#HEX:F.04.1E9.00], [#HEX:F.05.36.00], [#HEX:F.04.1D6.00] | @calledBy: none
         function initThree() {
             const container = document.getElementById('webgl-container');
 
@@ -1127,7 +1127,7 @@
 
         // Képernyő újra-rajzolása többnyelvű feliratokkal
 // === [#HEX:F.07.17.00] START | name: updateScreenDisplay | lines: 121 ===
-// @calls: [#HEX:F.04.1D3.00], [#HEX:F.04.1D2.00], [#HEX:F.04.1C9.00], [#HEX:F.04.1D1.00], [#HEX:F.04.1D4.00] | @calledBy: [#HEX:F.04.1D0.00], [#HEX:F.05.36.00], [#HEX:F.05.37.00], [#HEX:F.04.1D9.00], [#HEX:F.04.1DB.00]
+// @calls: [#HEX:F.04.1D4.00], [#HEX:F.04.1D1.00], [#HEX:F.04.1D3.00], [#HEX:F.04.1C9.00], [#HEX:F.04.1D2.00] | @calledBy: [#HEX:F.04.1D0.00], [#HEX:F.05.36.00], [#HEX:F.05.37.00], [#HEX:F.04.1D9.00], [#HEX:F.04.1DB.00]
         function updateScreenDisplay() {
             const w = screenCanvas.width;
             const h = screenCanvas.height;
@@ -1643,7 +1643,7 @@
 
         // --- GLB MODELL BETÖLTÉSE ---
 // === [#HEX:F.04.1D6.00] START | name: loadDeviceModel | lines: 126 ===
-// @calls: [#HEX:F.03.17.00], [#HEX:F.04.1D7.00], [#HEX:F.03.16.00], [#HEX:F.04.1D8.00], [#HEX:F.05.3B.00] | @calledBy: [#HEX:F.04.1CA.00]
+// @calls: [#HEX:F.03.16.00], [#HEX:F.03.15.00], [#HEX:F.05.3B.00], [#HEX:F.04.1D8.00], [#HEX:F.04.1D7.00] | @calledBy: [#HEX:F.04.1CA.00]
         function loadDeviceModel() {
             const gltfLoader = new GLTFLoader();
             const modelPaths = [
@@ -1656,7 +1656,7 @@
             ];
 
 // === [#HEX:F.04.1D7.00] START | name: tryLoad | lines: 112 ===
-// @calls: [#HEX:F.03.17.00], [#HEX:F.03.16.00], [#HEX:F.04.1D8.00], [#HEX:F.03.15.00], [#HEX:F.05.3B.00] | @calledBy: [#HEX:F.04.1D6.00]
+// @calls: [#HEX:F.03.16.00], [#HEX:F.03.15.00], [#HEX:F.05.3B.00], [#HEX:F.04.1D8.00], [#HEX:F.03.17.00] | @calledBy: [#HEX:F.04.1D6.00]
             function tryLoad(index) {
                 if (index >= modelPaths.length) {
                     console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
@@ -1797,7 +1797,7 @@
 
         // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
 // === [#HEX:F.05.36.00] START | name: setupDirectKeyboardAndRaycast | lines: 168 ===
-// @calls: [#HEX:F.04.1E0.00], [#HEX:F.07.17.00], [#HEX:F.04.1DB.00], [#HEX:F.04.1E3.00], [#HEX:F.04.1DF.00] | @calledBy: [#HEX:F.04.1CA.00]
+// @calls: [#HEX:F.08.0B.00], [#HEX:F.04.1E4.00], [#HEX:F.04.1E0.00], [#HEX:F.07.17.00], [#HEX:F.04.1E2.00] | @calledBy: [#HEX:F.04.1CA.00]
         function setupDirectKeyboardAndRaycast() {
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
@@ -1970,7 +1970,7 @@
 
         // Modal Mezők Élő Szinkronizálása a 3D Képernyővel
 // === [#HEX:F.05.37.00] START | name: setupModalInputSync | lines: 18 ===
-// @calls: [#HEX:F.04.1D9.00], [#HEX:F.01.0F.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.04.1CA.00]
+// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.1D9.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.04.1CA.00]
         function setupModalInputSync() {
 // === [#HEX:F.04.1D9.00] START | name: bindInput | lines: 8 ===
 // @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.05.37.00]
@@ -2016,7 +2016,7 @@
 // === [#HEX:F.05.38.00] END ===
 
 // === [#HEX:F.04.1DB.00] START | name: handleScreenUVClick | lines: 90 ===
-// @calls: [#HEX:F.07.17.00], [#HEX:F.04.1E3.00], [#HEX:F.04.1DC.00], [#HEX:F.04.1DD.00], [#HEX:F.09.0D.00] | @calledBy: [#HEX:F.05.36.00]
+// @calls: [#HEX:F.07.17.00], [#HEX:F.09.0D.00], [#HEX:F.09.0E.00], [#HEX:F.04.1DD.00], [#HEX:F.04.1E3.00] | @calledBy: [#HEX:F.05.36.00]
         function handleScreenUVClick(uv, clickX, clickY) {
             const pxX = uv.x * 1024;
             const pxY = (1 - uv.y) * 512;
@@ -2175,7 +2175,7 @@
 // === [#HEX:F.04.1DD.00] END ===
 
 // === [#HEX:F.04.1DF.00] START | name: handleDirectKeyInput | lines: 53 ===
-// @calls: [#HEX:F.07.17.00], [#HEX:F.04.1E3.00], [#HEX:F.05.38.00], [#HEX:F.04.1E1.00], [#HEX:F.09.0D.00] | @calledBy: [#HEX:F.05.36.00]
+// @calls: [#HEX:F.07.17.00], [#HEX:F.05.38.00], [#HEX:F.09.0D.00], [#HEX:F.04.1E1.00], [#HEX:F.04.1E3.00] | @calledBy: [#HEX:F.05.36.00]
         function handleDirectKeyInput(event) {
             if (!event || typeof event.key === 'undefined' || event.key === null) return;
             const key = event.key;
@@ -2232,7 +2232,7 @@
 // === [#HEX:F.04.1DF.00] END ===
 
 // === [#HEX:F.04.1E0.00] START | name: syncVirtualInput | lines: 8 ===
-// @calls: [#HEX:F.05.38.00], [#HEX:F.07.17.00], [#HEX:F.04.1E1.00] | @calledBy: [#HEX:F.05.36.00]
+// @calls: [#HEX:F.05.38.00], [#HEX:F.04.1E1.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.05.36.00]
         function syncVirtualInput(val) {
             let targetFieldKey = getActiveFieldKey();
             if (!targetFieldKey) return;
@@ -2261,7 +2261,7 @@
 
         // --- MÓDVÁLTÁS ---
 // === [#HEX:F.09.0D.00] START | name: switchMode | lines: 36 ===
-// @calls: [#HEX:F.07.17.00], [#HEX:F.01.0F.00], [#HEX:F.05.38.00], [#HEX:F.01.00.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00], [#HEX:F.04.1E2.00], [#HEX:F.04.1E8.00]
+// @calls: [#HEX:F.01.00.00], [#HEX:F.07.17.00], [#HEX:F.05.38.00], [#HEX:F.01.0F.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00], [#HEX:F.04.1E2.00], [#HEX:F.04.1E8.00]
         function switchMode(mode) {
             if (currentMode !== 'INFO' && mode !== 'INFO') {
                 previousMode = currentMode;
@@ -2313,7 +2313,7 @@
 // === [#HEX:F.04.1E2.00] END ===
 
 // === [#HEX:F.04.1E3.00] START | name: executeCurrentMode | lines: 5 ===
-// @calls: [#HEX:F.01.13.00], [#HEX:F.01.11.00], [#HEX:F.01.12.00] | @calledBy: [#HEX:F.05.36.00], [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00]
+// @calls: [#HEX:F.01.11.00], [#HEX:F.01.12.00], [#HEX:F.01.13.00] | @calledBy: [#HEX:F.05.36.00], [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00]
         function executeCurrentMode() {
             if (currentMode === 'LOGIN') executeLogin();
             else if (currentMode === 'REGISTER') executeRegister();
@@ -2323,7 +2323,7 @@
 
         // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
 // === [#HEX:F.08.0B.00] START | name: handleLangSwitch | lines: 16 ===
-// @calls: [#HEX:F.07.17.00], [#HEX:F.08.0A.00], [#HEX:F.05.39.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.08.0A.00], [#HEX:F.05.36.00]
+// @calls: [#HEX:F.08.0A.00], [#HEX:F.07.17.00], [#HEX:F.05.39.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.08.0A.00], [#HEX:F.05.36.00]
         function handleLangSwitch(lang) {
             window.currentLang = lang;
             if (typeof localStorage !== 'undefined') {
@@ -2376,7 +2376,7 @@
 
         // --- INFÓ MODAL KEZELŐ ---
 // === [#HEX:F.05.3A.00] START | name: toggleInfoModal | lines: 10 ===
-// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.05.3C.00]
+// @calls: [#HEX:F.05.38.00], [#HEX:F.05.39.00] | @calledBy: [#HEX:F.05.3C.00]
         function toggleInfoModal() {
             const modal = document.getElementById('info-modal');
             if (modal.style.display === 'flex') {
@@ -2390,7 +2390,7 @@
 // === [#HEX:F.05.3A.00] END ===
 
 // === [#HEX:F.05.3B.00] START | name: openInfoModalAuto | lines: 6 ===
-// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
+// @calls: [#HEX:F.05.38.00], [#HEX:F.05.39.00] | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function openInfoModalAuto() {
             const modal = document.getElementById('info-modal');
             modal.style.display = 'flex';
@@ -2482,7 +2482,7 @@
 // === [#HEX:F.06.55.00] END ===
 
 // === [#HEX:F.01.11.00] START | name: executeLogin | lines: 50 ===
-// @calls: [#HEX:F.04.1E7.00], [#HEX:F.06.55.00], [#HEX:B.07.01.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.04.1E3.00]
+// @calls: [#HEX:F.04.1E5.00], [#HEX:F.06.55.00], [#HEX:B.07.01.00], [#HEX:F.04.1E7.00] | @calledBy: [#HEX:F.04.1E3.00]
         function executeLogin() {
             const u = formValues.LOGIN.username.trim();
             const p = formValues.LOGIN.password.trim();
@@ -2536,7 +2536,7 @@
 // === [#HEX:F.01.11.00] END ===
 
 // === [#HEX:F.01.12.00] START | name: executeRegister | lines: 22 ===
-// @calls: [#HEX:F.06.55.00], [#HEX:B.07.DB.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.04.1E3.00]
+// @calls: [#HEX:B.07.DB.00], [#HEX:F.06.55.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.04.1E3.00]
         function executeRegister() {
             const em = formValues.REGISTER.email.trim();
             const un = formValues.REGISTER.username.trim();
@@ -2562,7 +2562,7 @@
 // === [#HEX:F.01.12.00] END ===
 
 // === [#HEX:F.01.13.00] START | name: executeDeregister | lines: 23 ===
-// @calls: [#HEX:F.06.55.00], [#HEX:B.07.E2.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.04.1E3.00]
+// @calls: [#HEX:F.04.1E5.00], [#HEX:B.07.E2.00], [#HEX:F.06.55.00] | @calledBy: [#HEX:F.04.1E3.00]
         function executeDeregister() {
             const un = formValues.DEREGISTER.username.trim();
             const em = formValues.DEREGISTER.email.trim();

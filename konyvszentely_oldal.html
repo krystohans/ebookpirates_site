@@ -4,172 +4,251 @@
     <button class="btn" onclick="markPageAsSeen('konyvszentely_oldal')" data-lang="ksz_splash_ack_button">Értettem, mehet!</button>
 </div>
 
-<div id="konyvszentely_oldal-content" style="display: none; position: relative;">
+<div id="konyvszentely_oldal-content" class="konyvszentely-3d-root" style="display: none; position: relative; width: 100%; height: 100%; min-height: calc(100vh - 44px); overflow: hidden;">
     
-    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
-        <i class="fas fa-info-circle" onclick="showSplash('konyvszentely_oldal')"></i>
+    <!-- 1. 3D WEBGL VÁSZON KONTÉNER (Three.js WebGL színpad) -->
+    <div id="konyvszentely-webgl-canvas-container" class="konyvszentely-webgl-canvas-container"></div>
+
+    <!-- 2. KÖNYVSZENTÉLY 3D INTERAKTÍV TOOLTIP (Lebegő smaragd/arany buborék) -->
+    <div id="konyvszentely-interactive-tooltip" class="interactive-tooltip">
+        <span id="konyvszentely-tooltip-text">✨ Paideia Főoltára</span>
     </div>
 
-    <div class="page-container">
+    <!-- 3. KÖNYVSZENTÉLY 3D ÁTMENET OVERLAY -->
+    <div id="konyvszentely-scene-transition-overlay" class="konyvszentely-transition-overlay" style="display: none; opacity: 0; pointer-events: none;"></div>
+
+    <!-- 4. KÖNYVSZENTÉLY SAROK INFÓGOMB (Szerény kinézetű ikon a jobb felső sarokban) -->
+    <button id="konyvszentely-corner-info-btn" class="konyvszentely-corner-info-btn" onclick="showSplash('konyvszentely_oldal')" title="Információ">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <!-- 5. 2D MENÜ / IRÁNYÍTÓPULT OVERLAY KONTÉNER (Gombokkal a funkciókhoz) -->
+    <div id="konyvszentely-2d-overlay" class="konyvszentely-2d-overlay" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-gold); padding-bottom: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #ffd700; font-family: var(--font-serif);"><i class="fas fa-book-open"></i> Könyvszentély Irányítópult</h3>
+            <button class="btn btn-close" onclick="toggleKonyvszentely2DMenu()" style="padding: 4px 10px; font-size: 1.1rem; line-height: 1;">✕</button>
+        </div>
         
-        <div class="page-section" style="text-align: center;">
-             <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_assets_title">Vagyonod és Áldozatok</h3>
-             
-             <div class="stat-box" style="background-color: rgba(255,255,255,0.8); border: 1px solid #d4af37; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <!-- Beszélek a Papnővel Kiemelt Kártya -->
+        <div onclick="openSzentelyPriestess()" style="background: linear-gradient(135deg, #1e3d29, #0d2116); border: 2px solid var(--color-gold); border-radius: 8px; padding: 12px 16px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: #08170e; display: flex; align-items: center; justify-content: center; border: 2px solid var(--color-gold); position: relative;">
+                    <i class="fas fa-book-open" style="font-size: 1.5rem; color: #ffd700;"></i>
+                    <i class="fas fa-sparkles" style="position: absolute; bottom: -3px; right: -4px; font-size: 0.9rem; color: #7df9ff; background: #1a3c28; border-radius: 50%; padding: 2px;"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; color: #ffd700; font-family: var(--font-serif); font-size: 1.15rem;">Beszélek a Papnővel</h4>
+                    <span style="color: #e2f0d9; font-size: 0.85rem;">Paideia Papnő &bull; Áldások, szentelés és spirituális tanácsok</span>
+                </div>
+            </div>
+            <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 1.2rem;"></i>
+        </div>
+
+        <p style="color: #e8d8c8; font-size: 0.95rem; margin-bottom: 10px;">Válassz a szentély állomásai közül:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px;">
+            <button class="btn" style="background-color: #1a4a35; border: 1px solid var(--color-gold);" onclick="openSzentelyOltarModal()">✨ Főoltár (Könyvszentelés)</button>
+            <button class="btn" style="background-color: #5b2c6f; border: 1px solid var(--color-gold);" onclick="openSzentelyAldozatModal()">💎 Áldozati Kút (Kristály & Tálentum)</button>
+            <button class="btn" style="background-color: #4a351a; border: 1px solid var(--color-gold);" onclick="openSzentelyTekercstarModal()">📜 Tekercstár (Keresés)</button>
+            <button class="btn" style="background-color: #7e3e11; border: 1px solid var(--color-gold);" onclick="openSzentelyTuzhelyModal()">🔥 Szent Tűzhely (Pihenő)</button>
+            <button class="btn" style="background-color: #1a4a68; border: 1px solid var(--color-gold);" onclick="loadPage('kikoto_oldal')">⚓ Vissza a Kikötőbe</button>
+        </div>
+    </div>
+
+    <!-- 6. INTERAKTÍV ÁLLOMÁSOK MODÁLJAI -->
+
+    <!-- A. PAIDEIA FŐOLTÁRA MODAL (Könyvszentelés & Átalakítás) -->
+    <div id="szentely-oltar-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 650px; width: 95%; background-color: #0d1a12; color: #fdf5e6; border: 2px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('szentely-oltar-modal').style.display='none'">✕</button>
+            <h4 style="color: #ffd700; border-bottom: 2px solid #ffd700; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                ✨ Paideia Főoltára – Könyvszentelés
+            </h4>
+            
+            <p style="font-size: 0.95em; color: #d4ebd9; line-height: 1.5;">
+                Helyezd a kiválasztott tekercset az oltárra, és a szent letkristályok erejével valódi, örökéletű könyvvé szenteljük.
+            </p>
+
+            <div id="ksz-action-section" style="margin-top: 15px;">
+                <h5 style="color: #7df9ff; margin-bottom: 6px;">Kiválasztott Tekercs az Oltáron:</h5>
+                <div id="ksz-selection-details" style="background: rgba(26, 60, 40, 0.7); padding: 15px; border: 1px solid #7df9ff; border-radius: 6px; margin-bottom: 15px; color: #fff;">
+                    <p style="text-align: center; color: #a9dfbf; font-style: italic; margin: 0;">
+                        Még nem választottál ki tekercset. Nyisd meg a Tekercstárat, és válassz ki egy felszentelendő művet!
+                    </p>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button class="btn btn-secondary" onclick="openSzentelyTekercstarModal()" style="font-size: 0.9em;">
+                        📜 Tekercs kiválasztása a Tekercstárból
+                    </button>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="ksz-gift-email" style="color: #ffd700; font-weight: bold;" data-lang="ksz_gift_label">Ajándékozás más kalóznak (nem kötelező):</label>
+                    <input type="text" id="ksz-gift-email" placeholder="Címzett kalóz e-mail címe..." data-lang-placeholder="ksz_gift_placeholder" style="width: 100%; padding: 10px; border: 1px solid #2e7d32; border-radius: 4px; background: #fff; color: #000; box-sizing: border-box;">
+                </div>
+                
+                <button id="ksz-upgrade-btn" class="btn" style="width: 100%; background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; font-size: 1.1em; padding: 12px; margin-top: 10px; border: 1px solid #ffd700;" data-lang="ksz_upgrade_button">
+                    ✨ Könyvvé Alakítás & Felszentelés
+                </button>
+            </div>
+            
+            <div id="ksz-message-box" style="display: none; padding: 12px; border-radius: 5px; margin-top: 15px; text-align: center; font-weight: bold;"></div>
+        </div>
+    </div>
+
+    <!-- B. ÁLDOZATI KÚT MODAL (Letkristályok & Tálentumok) -->
+    <div id="szentely-aldozat-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 550px; width: 95%; background-color: #12091d; color: #fdf5e6; border: 2px solid #9b59b6; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('szentely-aldozat-modal').style.display='none'">✕</button>
+            <h4 style="color: #d7bde2; border-bottom: 2px solid #9b59b6; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                💎 Az Áldozati Kút – Kristályok és Tálentum
+            </h4>
+            
+            <p style="font-size: 0.95em; color: #ebdcf5; line-height: 1.5;">
+                A szentély mélyén csobogó áldozati forrásban ellenőrizheted szentséges javaidat, vagy felajánlhatod letkristályaidat az istenek tetszésére.
+            </p>
+
+            <div class="stat-box" style="background: rgba(43, 20, 68, 0.7); border: 1px solid #af7ac5; padding: 15px; border-radius: 8px; margin: 15px 0;">
                 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
                     
                     <div style="text-align: center; margin: 5px;">
-                        <div id="ksz-crystal-count" style="font-family: 'Pirata One', cursive; font-size: 2em; color: #8e44ad;">...</div>
-                        <div style="font-size: 0.8em; text-transform: uppercase; color: #555;" data-lang="ksz_crystal_label">Letkristály</div>
+                        <div id="ksz-crystal-count" style="font-family: 'Pirata One', cursive; font-size: 2.4em; color: #bb8fce;">...</div>
+                        <div style="font-size: 0.85em; text-transform: uppercase; color: #e8daef; letter-spacing: 1px;" data-lang="ksz_crystal_label">Letkristály</div>
                     </div>
 
                     <div style="text-align: center; margin: 5px;">
-                        <div id="ksz-talent-count" style="font-family: 'Pirata One', cursive; font-size: 2em; color: #d35400;">...</div>
-                        <div style="font-size: 0.8em; text-transform: uppercase; color: #555;" data-lang="ksz_talent_label">Tálentum</div>
+                        <div id="ksz-talent-count" style="font-family: 'Pirata One', cursive; font-size: 2.4em; color: #f39c12;">...</div>
+                        <div style="font-size: 0.85em; text-transform: uppercase; color: #fdebd0; letter-spacing: 1px;" data-lang="ksz_talent_label">Tálentum</div>
                     </div>
 
                 </div>
                 
                 <div id="ksz-sell-container" style="margin-top: 15px;"></div>
-             </div>
-        </div>
-
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_search_title">Tekercseid Keresése</h3>
-            <div class="form-group">
-                <select id="ksz-search-type" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <option value="all" data-lang="ksz_search_all_option">Összes tekercsem</option>
-                    <option value="title" data-lang="ksz_search_title_option">Cím alapján</option>
-                    <option value="author" data-lang="ksz_search_author_option">Szerző alapján</option>
-                    <option value="code" data-lang="ksz_search_code_option">Kód alapján</option>
-                </select>
             </div>
-            <div class="form-group">
-                <input type="text" id="ksz-search-term" placeholder="Keresési kifejezés..." data-lang-placeholder="ksz_search_placeholder" disabled style="width: 100%; padding: 8px;">
-            </div>
-            <button id="ksz-search-btn" class="btn" style="width: 100%;" data-lang="ksz_search_button">Keresés</button>
-        </div>
 
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_results_title">Találatok</h3>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="btn btn-secondary" onclick="loadWalletStats(0)" style="font-size: 0.9em;">
+                    <i class="fas fa-sync-alt"></i> Egyenleg frissítése
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- C. TEKERCTÁR MODAL (Tekercseid Keresése & Válogatása) -->
+    <div id="szentely-tekercstar-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 700px; width: 95%; background-color: #1a140d; color: #fdf5e6; border: 2px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="document.getElementById('szentely-tekercstar-modal').style.display='none'">✕</button>
+            <h4 style="color: #ffd700; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                📜 A Szentély Tekercstára – Tekercseid Keresése
+            </h4>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="font-size: 0.85em; color: #ffd700;">Keresés szempontja:</label>
+                    <select id="ksz-search-type" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #8b6d34; background: #fff; color: #000;">
+                        <option value="all" data-lang="ksz_search_all_option">Összes tekercsem</option>
+                        <option value="title" data-lang="ksz_search_title_option">Cím alapján</option>
+                        <option value="author" data-lang="ksz_search_author_option">Szerző alapján</option>
+                        <option value="code" data-lang="ksz_search_code_option">Kód alapján</option>
+                    </select>
+                </div>
+                <div style="flex: 2; min-width: 200px;">
+                    <label style="font-size: 0.85em; color: #ffd700;">Kifejezés:</label>
+                    <input type="text" id="ksz-search-term" placeholder="Keresési kifejezés..." data-lang-placeholder="ksz_search_placeholder" disabled style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #8b6d34; background: #fff; color: #000; box-sizing: border-box;">
+                </div>
+            </div>
+            
+            <button id="ksz-search-btn" class="btn" style="width: 100%; background: #8b5a2b; color: white; padding: 9px; margin-bottom: 15px;" data-lang="ksz_search_button">
+                <i class="fas fa-search"></i> Keresés
+            </button>
+
+            <h5 style="color: #ffd700; margin-bottom: 8px;" data-lang="ksz_results_title">Birtokodban lévő Tekercsek:</h5>
             <div id="ksz-results-list" style="
-                background: #fff; 
+                background: #fff8dc; 
+                color: #2c1a0b;
                 padding: 10px; 
-                border: 1px solid #ccc; 
+                border: 2px solid #8b5a2b; 
                 border-radius: 5px; 
-                min-height: 50px; 
-                max-height: 300px; 
+                min-height: 120px; 
+                max-height: 280px; 
                 overflow-y: auto;
                 display: flex;
                 flex-direction: column;
-                gap: 10px;">
-                <p style="padding: 10px; color: #718096; text-align: center; font-style: italic;" data-lang="ksz_results_empty_prompt">Indíts keresést a listázáshoz...</p>
+                gap: 8px;">
+                <p style="padding: 15px; color: #718096; text-align: center; font-style: italic;" data-lang="ksz_results_empty_prompt">Tekercseid lekérése folyamatban...</p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <small style="color: #d4c5b9;">Kattints a listában egy tekercsre a kiválasztáshoz!</small>
+                <button class="btn" style="background-color: #2e7d32; color: #fff;" onclick="document.getElementById('szentely-tekercstar-modal').style.display='none'; openSzentelyOltarModal();">
+                    Átvitel az Oltárra &rarr;
+                </button>
             </div>
         </div>
+    </div>
 
-        <div id="ksz-action-section" class="page-section" style="display: none;">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);" data-lang="ksz_selected_title">Kiváltott Tekercs</h3>
-            <div id="ksz-selection-details" style="background: #e6fffa; padding: 15px; border: 1px solid #319795; border-radius: 5px; margin-bottom: 15px;"></div>
+    <!-- D. SZENT TŰZHELY MODAL (Melegedés & Pihenő) -->
+    <div id="szentely-tuzhely-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 520px; width: 95%; background-color: #1a0e08; color: #fdf5e6; border: 2px solid #e67e22; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeSzentelyTuzhelyModal()">✕</button>
+            <h4 style="color: #f39c12; border-bottom: 2px solid #e67e22; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                🔥 A Katedrális Szent Tűzhelye
+            </h4>
             
-            <div class="form-group">
-                <label for="ksz-gift-email" data-lang="ksz_gift_label">Ajándékozás más kalóznak (nem kötelező)</label>
-                <input type="text" id="ksz-gift-email" placeholder="Címzett e-mail címe..." data-lang-placeholder="ksz_gift_placeholder" style="width: 100%; padding: 8px;">
+            <p style="font-size: 0.95em; color: #fdebd0; line-height: 1.6;">
+                Leülsz a fenséges katedrális közepén lobogó szent tűz mellé. A tűzifák ropogása és a felszálló aranyló szikragömbök melegséggel töltik el a megfáradt kalózszívet. A lángok megnyugtatják a lelket egy hosszú tengeri út után.
+            </p>
+
+            <div style="background: rgba(45, 20, 10, 0.7); border: 1px solid #d35400; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center;">
+                <p style="color: #f5b041; font-style: italic; margin-bottom: 10px;">
+                    "Aki a szent lángok mellett megpihen, megújult erővel és tiszta elmével vághat neki az újabb kalandoknak."
+                </p>
+                <div id="tuzhely-status-msg" style="display: none; padding: 8px; background: rgba(39, 174, 96, 0.3); border: 1px solid #27ae60; border-radius: 4px; color: #a9dfbf; font-weight: bold; margin-top: 10px;">
+                    ✨ Megmelegedtél a szent lángoknál. A lelked megnyugodott!
+                </div>
             </div>
-            <button id="ksz-upgrade-btn" class="btn" style="width: 100%;" data-lang="ksz_upgrade_button">Könyvvé Alakítás</button>
-        </div>
-        
-        <div id="ksz-message-box" style="display: none; padding: 15px; border-radius: 5px; margin-top: 15px; text-align: center; font-weight: bold;"></div>
-    </div>
 
-    <div id="navigation" style="text-align: center; margin: 20px 0;">
-        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')" data-lang="ksz_nav_back_button">Vissza a Kikötőbe</button>
-        <button class="btn btn-danger" onclick="logout()" data-lang="ksz_nav_logout_button">Kijelentkezés</button>
-    </div>
-</div>
-
-<!-- PRIESTESS NPC CHATBOX (npc_id: 'priestess') - styled like kikoto chatbox -->
-<div onclick="openUniversalNPC('priestess', {
-    name: 'Paideia Papnő',
-    role: 'Könyvszentelő',
-    icon: '<i class=\'fas fa-book-open\'></i>',
-    headerColor: '#37474f',
-    portrait: '',
-    msgIcon: '<i class=\'fas fa-book-open\' style=\'color:#d4af37; margin-right:5px;\'></i>',
-    loaderHTML: '<i class=\'fas fa-book-open fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Papnő elmélkedik...</i>',
-    styles: {
-        modal: {
-            justifyContent: 'flex-end', 
-            alignItems: 'stretch',
-            background: '',
-            padding: '0'
-        },
-        content: {
-            width: '350px',              
-            height: '100vh',            
-            maxWidth: '85vw',           
-            margin: '0',                
-            borderRadius: '2',          
-            border: 'none',
-            borderLeft: '5px solid #d4af37', 
-            backgroundColor: '#1f0901',
-            color: '#241512',
-            backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-            boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-        }
-    }
-})" 
-    title="Papnő" 
-    style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-    <div style="position: relative;">
-        <i class="fas fa-book-open" style="font-size: 2em; color: white;"></i>
-        <i class="fas fa-user-nurse" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
-    </div>
-</div>
-
-<div id="priestess-npc-panel" class="page-section" 
-    style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); z-index: 100; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
-    <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
-        <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
-            <i class="fas fa-user-nurse"></i> <span>Paideia Papnő</span>
-        </span>
-        <button onclick="togglePriestessNPCPanel()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-    </div>
-    <div id="priestess-npc-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: var(--bg-paper); display: flex; flex-direction: column;"></div>
-    <div id="priestess-npc-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
-        <input type="text" id="priestess-npc-input" placeholder="Írj a Papnőnek..." style="flex-grow:1; margin-bottom: 0; padding: 8px; border: 1px solid #8b4513; border-radius: 4px; font-family: 'Georgia', serif;">
-        <button class="btn" id="priestess-npc-send-btn" style="background-color: var(--color-primary); color: white; border: none; padding: 0 15px; border-radius: 4px; min-width: 40px;" onclick="sendPriestessNPCMessage()">
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </div>
-</div>
-
-<!-- UNIVERSAL NPC CHATBOX MODAL (shared) -->
-<div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
-      <div id="npc-portrait-panel" class="npc-portrait-closed">
-        <img id="npc-portrait-image" src="" alt="NPC">
-      </div>
-<div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
-    
-    <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="npc-icon" style="font-size: 1.5em;">👵</span> <div>
-                <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Gabrel</h3>
-                <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;">
+                <button class="btn" style="background: linear-gradient(135deg, #d35400, #962d00); color: #fff; border: 1px solid #f39c12;" onclick="melegedesSzentTuznel()">
+                    🔥 Megmelegszem a tűznél
+                </button>
+                <button class="btn btn-secondary" onclick="closeSzentelyTuzhelyModal()">
+                    Felállás a tűztől
+                </button>
             </div>
         </div>
-        <button onclick="document.getElementById('universal-npc-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
     </div>
 
-    <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
+    <!-- E. UNIVERSAL NPC MODAL (Paideia Papnő és egyéb NPC-k számára) -->
+    <div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1050;" onclick="if(event.target===this) closeUniversalNPCModal(event)">
+        <div id="npc-portrait-panel" class="npc-portrait-closed">
+            <img id="npc-portrait-image" src="" alt="NPC" style="display: none;">
+            <video id="npc-portrait-video" playsinline muted autoplay loop style="display: none;"></video>
         </div>
+        <div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
+            <div id="npc-header" style="background: #1b382b; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #2e7d32;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="npc-icon" style="font-size: 1.5em;">👵</span>
+                    <div>
+                        <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Paideia Papnő</h3>
+                        <small id="npc-role" style="color: #a9dfbf;">Könyvszentelő</small>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('universal-npc-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
+            </div>
 
-    <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
-        <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
-            <i class="fas fa-paper-plane"></i>
-        </button>
+            <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #f1f8f4; display: flex; flex-direction: column; gap: 10px;">
+            </div>
+
+            <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
+                <input type="text" id="universal-chat-input" placeholder="Mit kérdezel a Papnőtől?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <button class="btn" onclick="sendUniversalMessage()" style="background: #1b382b; color: white; border: none; padding: 0 15px; border-radius: 4px;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <input type="hidden" id="current-npc-id" value="">
+        </div>
     </div>
-    
-    <input type="hidden" id="current-npc-id" value="">
-</div>
+
 </div>

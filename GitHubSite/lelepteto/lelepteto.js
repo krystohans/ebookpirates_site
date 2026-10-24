@@ -1,40 +1,6 @@
 var DELETION_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbliKmT_PpEi8VXztxWIAoNfaJHEaeKAjZl5gwwLkRLsY1x4PdeejtjTTEwLGDx4p_/exec";
 
-// === [#HEX:F.04.1EE.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1EE.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1EE.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1FF.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1FF.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.21B.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.21B.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22B.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22B.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22C.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22D.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22D.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.230.00] START | name: tt | lines: 9 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.230.00] START | name: tt | lines: 9 ===
+// === [#HEX:F.04.234.00] START | name: tt | lines: 9 ===
 // @calls: none | @calledBy: none
 function tt(key, fallback) {
     if (typeof t === 'function') {
@@ -45,27 +11,10 @@ function tt(key, fallback) {
     }
     return fallback || key;
 }
-// === [#HEX:F.04.230.00] END ===
-// === [#HEX:F.04.230.00] END ===
-// === [#HEX:F.04.22D.00] END ===
-// === [#HEX:F.04.22D.00] END ===
-// === [#HEX:F.04.22C.00] END ===
-// === [#HEX:F.04.22C.00] END ===
-// === [#HEX:F.04.22C.00] END ===
-// === [#HEX:F.04.22C.00] END ===
-// === [#HEX:F.04.22C.00] END ===
-// === [#HEX:F.04.22B.00] END ===
-// === [#HEX:F.04.22B.00] END ===
-// === [#HEX:F.04.21B.00] END ===
-// === [#HEX:F.04.21B.00] END ===
-// === [#HEX:F.04.1FF.00] END ===
-// === [#HEX:F.04.1FF.00] END ===
-// === [#HEX:F.04.1EE.00] END ===
-// === [#HEX:F.04.1EE.00] END ===
-// === [#HEX:F.04.1EE.00] END ===
+// === [#HEX:F.04.234.00] END ===
 
-// === [#HEX:F.04.1EF.00] START | name: localizeByDictionary | lines: 19 ===
-// @calls: none | @calledBy: [#HEX:F.06.56.00], [#HEX:F.06.57.00], [#HEX:F.06.58.00], [#HEX:F.06.59.00]
+// === [#HEX:F.0B.00.00] START | name: localizeByDictionary | lines: 19 ===
+// @calls: none | @calledBy: [#HEX:F.06.58.00], [#HEX:F.06.59.00]
 function localizeByDictionary(rawText) {
     var text = (rawText || '').toString();
     if (!text) {
@@ -85,68 +34,17 @@ function localizeByDictionary(rawText) {
     }
     return text;
 }
-// === [#HEX:F.04.1EF.00] END ===
+// === [#HEX:F.0B.00.00] END ===
 
-// === [#HEX:F.04.1F0.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1F0.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1F0.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.201.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.201.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.21D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.21D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22D.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22E.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22F.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.22F.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.232.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.232.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
+// === [#HEX:F.04.236.00] START | name: applyDeletionPageMetaTranslation | lines: 3 ===
 // @calls: none | @calledBy: none
 function applyDeletionPageMetaTranslation() {
     document.title = tt('del_page_title', 'Leléptető');
 }
-// === [#HEX:F.04.232.00] END ===
-// === [#HEX:F.04.232.00] END ===
-// === [#HEX:F.04.22F.00] END ===
-// === [#HEX:F.04.22F.00] END ===
-// === [#HEX:F.04.22E.00] END ===
-// === [#HEX:F.04.22E.00] END ===
-// === [#HEX:F.04.22E.00] END ===
-// === [#HEX:F.04.22E.00] END ===
-// === [#HEX:F.04.22E.00] END ===
-// === [#HEX:F.04.22D.00] END ===
-// === [#HEX:F.04.22D.00] END ===
-// === [#HEX:F.04.21D.00] END ===
-// === [#HEX:F.04.21D.00] END ===
-// === [#HEX:F.04.201.00] END ===
-// === [#HEX:F.04.201.00] END ===
-// === [#HEX:F.04.1F0.00] END ===
-// === [#HEX:F.04.1F0.00] END ===
-// === [#HEX:F.04.1F0.00] END ===
+// === [#HEX:F.04.236.00] END ===
 
 // === [#HEX:F.06.58.00] START | name: callBackend | lines: 46 ===
-// @calls: [#HEX:F.04.1EF.00], [#HEX:F.04.1F1.00] | @calledBy: none
+// @calls: [#HEX:F.0B.00.00], [#HEX:F.04.6E.00], [#HEX:F.04.1F1.00] | @calledBy: none
 function callBackend(funcName, params, onSuccess, onFailure) {
     var token = null;
     try {
@@ -196,7 +94,7 @@ function callBackend(funcName, params, onSuccess, onFailure) {
 // === [#HEX:F.06.58.00] END ===
 
 // === [#HEX:F.04.1F1.00] START | name: safeParseJson | lines: 20 ===
-// @calls: [#HEX:F.04.13.00] | @calledBy: [#HEX:F.06.56.00], [#HEX:F.06.58.00]
+// @calls: [#HEX:F.04.13.00] | @calledBy: [#HEX:F.06.58.00]
 function safeParseJson(text) {
     if (!text) {
         return null;
@@ -236,7 +134,7 @@ document.getElementById('deletionForm').addEventListener('submit', function(even
     };
 
 // === [#HEX:F.06.59.00] START | name: callBackend | lines: 7 ===
-// @calls: [#HEX:B.07.E2.00], [#HEX:F.04.1EF.00] | @calledBy: none
+// @calls: [#HEX:F.0B.00.00], [#HEX:B.07.E2.00] | @calledBy: [#HEX:F.05.2E.00], [#HEX:F.04.18D.00], [#HEX:F.06.4B.00], [#HEX:F.04.191.00], [#HEX:F.04.194.00]
     callBackend('submitDeletionRequest', [formData], function(response) {
         statusMessage.textContent = response.message
             ? localizeByDictionary(response.message)

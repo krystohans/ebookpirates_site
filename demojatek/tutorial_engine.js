@@ -95,40 +95,6 @@ function hidePreloader() {
 
 // === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
 // @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.5B.00] START | name: loadDataFiles | lines: 15 ===
-// @calls: none | @calledBy: none
 async function loadDataFiles() {
   try {
     const dRes = await fetch('dialogues.json');
@@ -144,23 +110,6 @@ async function loadDataFiles() {
     console.warn('quiz_questions.json betöltési figyelmeztetés:', e);
   }
 }
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
-// === [#HEX:D.01.5B.00] END ===
 // === [#HEX:D.01.5B.00] END ===
 
 // ============================================================================
@@ -253,7 +202,7 @@ async function initEngine() {
 // 4. 3D MODELLEK ÉS PÁLYA BETÖLTÉSE (Unity_Tutorial_ThreeJS)
 // ============================================================================
 // === [#HEX:D.01.5D.00] START | name: load3DModels | lines: 157 ===
-// @calls: [#HEX:D.01.59.00], [#HEX:D.01.5A.00], [#HEX:D.03.0F.00], [#HEX:D.01.5F.00], [#HEX:D.01.5E.00] | @calledBy: [#HEX:D.01.5C.00]
+// @calls: [#HEX:D.01.5F.00], [#HEX:D.01.60.00], [#HEX:D.01.5E.00], [#HEX:D.02.01.00], [#HEX:D.01.6C.00] | @calledBy: [#HEX:D.01.5C.00]
 async function load3DModels() {
   const loader = new GLTFLoader();
 
@@ -517,7 +466,7 @@ function setupBoundaryWalls() {
 // 6. HÁRTYÁK (MEMBRANES) LOGIKA
 // ============================================================================
 // === [#HEX:D.03.0E.00] START | name: createMembraneMesh | lines: 23 ===
-// @calls: none | @calledBy: [#HEX:D.03.03.00], [#HEX:D.03.04.00], [#HEX:D.03.0F.00], [#HEX:D.03.10.00]
+// @calls: none | @calledBy: [#HEX:D.03.0F.00], [#HEX:D.03.10.00]
 function createMembraneMesh(x, y, z) {
   const group = new THREE.Group();
   group.position.set(x, y, z);
@@ -544,7 +493,7 @@ function createMembraneMesh(x, y, z) {
 // === [#HEX:D.03.0E.00] END ===
 
 // === [#HEX:D.03.0F.00] START | name: spawnZeroPointMembrane | lines: 10 ===
-// @calls: [#HEX:D.03.0E.00] | @calledBy: [#HEX:D.03.05.00], [#HEX:D.06.00.00], [#HEX:D.01.3C.00], [#HEX:D.01.5D.00]
+// @calls: [#HEX:D.03.0E.00] | @calledBy: [#HEX:D.01.5D.00]
 function spawnZeroPointMembrane() {
   activeMembranes.forEach(m => scene.remove(m));
   activeMembranes = [];
@@ -558,7 +507,7 @@ function spawnZeroPointMembrane() {
 // === [#HEX:D.03.0F.00] END ===
 
 // === [#HEX:D.03.10.00] START | name: spawnHartyaWave | lines: 13 ===
-// @calls: [#HEX:D.03.0E.00] | @calledBy: [#HEX:D.03.06.00], [#HEX:D.01.24.00], [#HEX:D.01.3C.00], [#HEX:D.01.66.00]
+// @calls: [#HEX:D.03.0E.00] | @calledBy: [#HEX:D.01.66.00]
 function spawnHartyaWave(count) {
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
@@ -578,7 +527,7 @@ function spawnHartyaWave(count) {
 // 7. FIZIKA ÉS IRÁNYVEKTOROS ÜTKÖZÉSVIZSGÁLAT (Demójáték Engine)
 // ============================================================================
 // === [#HEX:D.01.62.00] START | name: updatePhysics | lines: 47 ===
-// @calls: [#HEX:D.01.66.00], [#HEX:D.03.11.00], [#HEX:D.01.63.00], [#HEX:D.04.0B.00], [#HEX:D.01.64.00] | @calledBy: none
+// @calls: [#HEX:D.01.64.00], [#HEX:D.01.63.00], [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.04.0B.00] | @calledBy: [#HEX:D.01.70.00]
 function updatePhysics(dt) {
   if (!playerBoat || isQuizActive || !gameStarted) return;
 
@@ -707,40 +656,6 @@ function updateCamera() {
 // Egér és érintéses Orbit kameravezérlés
 // === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
 // @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
-// === [#HEX:D.01.65.00] START | name: setupCameraControls | lines: 24 ===
-// @calls: none | @calledBy: none
 function setupCameraControls() {
   const canvas = document.getElementById('c');
   let mDown = false, mx = 0, my = 0;
@@ -766,29 +681,12 @@ function setupCameraControls() {
   });
 }
 // === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
-// === [#HEX:D.01.65.00] END ===
 
 // ============================================================================
 // 9. HÁRTYAGYŰJTÉS ÉS MÓLÓ LEADÁS
 // ============================================================================
 // === [#HEX:D.03.11.00] START | name: checkMembranesPickup | lines: 21 ===
-// @calls: [#HEX:D.01.68.00], [#HEX:D.01.67.00], [#HEX:D.06.09.00], [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.62.00]
+// @calls: [#HEX:D.01.6A.00], [#HEX:D.01.67.00], [#HEX:D.06.09.00], [#HEX:D.01.68.00] | @calledBy: [#HEX:D.01.62.00]
 function checkMembranesPickup() {
   for (let i = activeMembranes.length - 1; i >= 0; i--) {
     const m = activeMembranes[i];
@@ -813,7 +711,7 @@ function checkMembranesPickup() {
 // === [#HEX:D.03.11.00] END ===
 
 // === [#HEX:D.01.66.00] START | name: checkDockArrival | lines: 22 ===
-// @calls: [#HEX:D.03.10.00], [#HEX:D.01.67.00], [#HEX:D.01.68.00], [#HEX:D.06.09.00], [#HEX:D.01.6D.00] | @calledBy: [#HEX:D.01.62.00]
+// @calls: [#HEX:D.01.6A.00], [#HEX:D.03.10.00], [#HEX:D.01.6D.00], [#HEX:D.01.67.00], [#HEX:D.01.68.00] | @calledBy: [#HEX:D.01.62.00]
 function checkDockArrival() {
   const dist = playerBoat.position.distanceTo(HOME_POS);
   if (dist < 14.0 && carriedMembranes > 0) {
@@ -906,7 +804,7 @@ function updateAirship(dt) {
 // === [#HEX:D.04.0B.00] END ===
 
 // === [#HEX:D.04.0C.00] START | name: triggerAirshipQuiz | lines: 42 ===
-// @calls: [#HEX:D.06.09.00], [#HEX:D.01.67.00], [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.04.0B.00]
+// @calls: [#HEX:D.01.6A.00], [#HEX:D.01.67.00], [#HEX:D.06.09.00] | @calledBy: [#HEX:D.04.0B.00]
 function triggerAirshipQuiz() {
   isQuizActive = true;
 
@@ -1005,7 +903,7 @@ function prevWelcomeStep() {
 // === [#HEX:D.06.08.00] END ===
 
 // === [#HEX:D.01.68.00] START | name: showInGameMonolog | lines: 17 ===
-// @calls: [#HEX:D.06.09.00] | @calledBy: [#HEX:D.06.00.00], [#HEX:D.01.21.00], [#HEX:D.01.24.00], [#HEX:D.03.0A.00], [#HEX:D.01.25.00]
+// @calls: [#HEX:D.06.09.00] | @calledBy: [#HEX:D.04.09.00], [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.06.07.00], [#HEX:D.01.6B.00]
 function showInGameMonolog(index) {
   activeInGameMonologIndex = index;
   if (!hasSeenMonologs.includes(index)) hasSeenMonologs.push(index);
@@ -1026,7 +924,7 @@ function showInGameMonolog(index) {
 // === [#HEX:D.01.68.00] END ===
 
 // === [#HEX:D.01.69.00] START | name: closeInGameMonolog | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:D.01.1D.00], [#HEX:D.01.1F.00], [#HEX:D.01.6B.00]
+// @calls: none | @calledBy: [#HEX:D.01.6B.00]
 function closeInGameMonolog() {
   const container = document.getElementById('zozo-ingame-monolog-container');
   if (container) container.style.display = 'none';
@@ -1047,7 +945,7 @@ function showPopupToast(text) {
 // === [#HEX:D.01.6A.00] END ===
 
 // === [#HEX:D.01.6B.00] START | name: setupDialogueEvents | lines: 48 ===
-// @calls: [#HEX:D.06.08.00], [#HEX:D.01.68.00], [#HEX:D.06.07.00], [#HEX:D.01.69.00] | @calledBy: none
+// @calls: [#HEX:D.06.07.00], [#HEX:D.01.68.00], [#HEX:D.06.08.00], [#HEX:D.01.69.00] | @calledBy: none
 function setupDialogueEvents() {
   const welcomeBox = document.getElementById('zozo-dialogue-box');
   const welcomeBack = document.getElementById('welcome-back-btn');
@@ -1102,7 +1000,7 @@ function setupDialogueEvents() {
 // 12. ÁLLAPOTMENTÉS ÉS VISSZATÖLTÉS
 // ============================================================================
 // === [#HEX:D.06.09.00] START | name: saveTutorialState | lines: 26 | action: 'saveTutorialState' ===
-// @calls: none | @calledBy: [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.04.0C.00], [#HEX:D.01.68.00], [#HEX:D.01.6E.00]
+// @calls: [#HEX:F.04.6E.00] | @calledBy: [#HEX:D.03.11.00], [#HEX:D.01.66.00], [#HEX:D.04.0C.00], [#HEX:D.01.68.00], [#HEX:D.01.6E.00]
 function saveTutorialState(syncBackend = false) {
   const state = {
     storedMembranes,
@@ -1132,7 +1030,7 @@ function saveTutorialState(syncBackend = false) {
 // === [#HEX:D.06.09.00] END ===
 
 // === [#HEX:D.01.6C.00] START | name: checkSavedStateOrStart | lines: 29 ===
-// @calls: [#HEX:D.01.67.00], [#HEX:D.06.06.00], [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.5D.00]
+// @calls: [#HEX:D.01.6A.00], [#HEX:D.01.67.00], [#HEX:D.06.06.00] | @calledBy: [#HEX:D.01.5D.00]
 function checkSavedStateOrStart() {
   const urlParams = new URLSearchParams(window.location.search);
   const isLoad = urlParams.get('load') === '1';
@@ -1168,7 +1066,7 @@ function checkSavedStateOrStart() {
 // 13. END OF GAME (EOG) CEREMÓNIA
 // ============================================================================
 // === [#HEX:D.01.6D.00] START | name: triggerEndOfGame | lines: 28 | action: 'tutorial_completed' ===
-// @calls: [#HEX:D.01.6A.00] | @calledBy: [#HEX:D.01.66.00]
+// @calls: [#HEX:D.01.6A.00], [#HEX:F.04.6E.00] | @calledBy: [#HEX:D.01.66.00]
 function triggerEndOfGame() {
   isGameOver = true;
 
@@ -1203,7 +1101,7 @@ function triggerEndOfGame() {
 // 14. IRÁNYÍTÁS BEÁLLÍTÁSA
 // ============================================================================
 // === [#HEX:D.01.6E.00] START | name: setupControls | lines: 109 | action: 'exit_tutorial' ===
-// @calls: [#HEX:D.06.09.00], [#HEX:D.01.6F.00], [#HEX:D.05.03.00] | @calledBy: none
+// @calls: [#HEX:F.04.6E.00], [#HEX:D.05.03.00], [#HEX:D.01.6F.00], [#HEX:D.06.09.00] | @calledBy: none
 function setupControls() {
   window.addEventListener('keydown', (e) => {
     const k = e.key.toLowerCase();
@@ -1325,7 +1223,7 @@ function setupControls() {
 // 15. RENDER LOOP ÉS INDÍTÁS
 // ============================================================================
 // === [#HEX:D.01.70.00] START | name: animate | lines: 19 ===
-// @calls: [#HEX:D.01.8A.00] | @calledBy: none
+// @calls: [#HEX:D.01.62.00] | @calledBy: none
 function animate() {
   requestAnimationFrame(animate);
 

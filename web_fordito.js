@@ -1575,7 +1575,7 @@ const translations = {
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
 // === [#HEX:F.04.17E.00] START | name: does | lines: 1045 ===
-// @calls: [#HEX:A.05.12.00], [#HEX:A.05.17.00], [#HEX:D.01.7E.00], [#HEX:F.04.13.00], [#HEX:B.06.00.00] | @calledBy: none
+// @calls: [#HEX:F.04.6E.00], [#HEX:B.06.00.00], [#HEX:F.04.13.00], [#HEX:F.04.1CF.00], [#HEX:A.05.1A.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -2595,12 +2595,6 @@ const translations = {
         'vilagterkep_p_61': "A settlement located in the heart of the plain, at the junction of several important trade routes <strong>Crossroads Fair</strong> not a city in the classical sense of the word. Rather, it is a constantly pulsating, changing organism, a permanent, huge fairground made up of tents, stalls and temporary inns. Everything is available here and everything is for sale. Hegymély blacksmiths sell the masterpieces of the Vaskapu Mine, island sailors offer the treasures of the Letter Sea, and Erdővár archers exchange their bows made from the special yew trees of the Óvó Erdő for metal and salt. It is unfortunate, but a natural consequence of this frenzy at the fair is poor public security, which makes it easy for code-goers alone to become victims or even commodities after dark.",
         'vilagterkep_p_62': "It is the common sea exit of the Eastern Kingdoms and the Tu-a-ni Empire towards the Cultur Ocean, so it is also the hottest collision zone of the two power concentrations.",
         'vilagterkep_p_63': "The easternmost, separate mountain range of the continent, Tu-a-ni, is also the territory of the Tu-a-ni Empire itself. The mountain tribes, which used to be involved in endless wars, have been living in relative peace for centuries, and thanks to their alliance, they can claim a huge cultural and technological development. The achievements of their science protect their people from ice storms attacking from the Arctic, barbarian tribes trying to invade from the west, and armies coming to conquer from the southwest.",
-// === [#HEX:F.04.17F.00] START | name: to | lines: 26 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.17F.00] START | name: to | lines: 26 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.17F.00] START | name: to | lines: 26 ===
-// @calls: none | @calledBy: none
 // === [#HEX:F.04.190.00] START | name: to | lines: 26 ===
 // @calls: [#HEX:F.04.1F.00] | @calledBy: none
         'vilagterkep_p_64': "The Tu-a-ni Mountains begin east of the Dragonspine Mountains, beyond the Plains of the Eastern Kingdoms, and serve much the same function to the people who live there as the Dragonspine Mountains do to the inhabitants of the Katarakbis Plains: a climatic dividing line and a bulwark. The Tu-a-nias expanded along the line of this mountain range and built a developed empire. They represent a different culture than the people living along the Dragon's Ridge Mountains, and in recent centuries they have become more and more distant from the other peoples of the continent in all areas, both socially and technically.",
@@ -2629,11 +2623,8 @@ const translations = {
 
     },
     'de': {
-// === [#HEX:F.04.190.00] END ===
-// === [#HEX:F.04.17F.00] END ===
-// === [#HEX:F.04.17F.00] END ===
 // === [#HEX:F.04.17E.00] END ===
-// === [#HEX:F.04.17F.00] END ===
+// === [#HEX:F.04.190.00] END ===
         // --- Steampunk-Uhrwerk-Ladebildschirm (SÓT) (DE) ---
         'sot_init_clockwork': '3D-UHRWERK WIRD INITIALISIERT...',
         'sot_preload_island': 'PIRATENINSEL WIRD VORPOSITIONIERT...',
@@ -9382,7 +9373,7 @@ Object.keys(registrationDeletionTranslations).forEach(function(langKey) {
  * Megkeres minden 'data-lang' attribútummal rendelkező elemet a HTML-ben.
  */
 // === [#HEX:F.08.07.00] START | name: updateLanguageUI | lines: 80 ===
-// @calls: [#HEX:F.08.08.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2A.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00]
+// @calls: [#HEX:F.08.08.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.17F.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00]
 function updateLanguageUI() {
     var storedLang = localStorage.getItem('siteLang');
     if ((!currentLang || !translations[currentLang]) && storedLang && translations[storedLang]) {
@@ -9477,7 +9468,7 @@ function updateActiveLangButtons() {
 // === [#HEX:F.08.08.00] END ===
 
 // === [#HEX:F.08.09.00] START | name: bindLanguageButtons | lines: 31 ===
-// @calls: [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.04.27.00], [#HEX:F.04.28.00], [#HEX:F.04.2A.00]
+// @calls: [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.17F.00], [#HEX:B.12.F1.00]
 function bindLanguageButtons() {
     if (typeof window !== 'undefined' && !window._langButtonDelegated) {
         document.addEventListener('click', function(event) {
@@ -9515,41 +9506,7 @@ function bindLanguageButtons() {
  * Segédfüggvény a JavaScript kódban lévő dinamikus szövegekhez (pl. alert, generált HTML).
  * Használat: alert(t('error_auth'));
  */
-// === [#HEX:F.04.180.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.180.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.180.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.191.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.191.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1AD.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1AD.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BD.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BD.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BE.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BF.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1BF.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1C2.00] START | name: t | lines: 7 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.04.1C2.00] START | name: t | lines: 7 ===
+// === [#HEX:F.04.1C6.00] START | name: t | lines: 7 ===
 // @calls: none | @calledBy: none
 function t(key) {
     if (translations[currentLang] && translations[currentLang][key]) {
@@ -9558,31 +9515,14 @@ function t(key) {
     // Ha nincs fordítás, visszaadja a kulcsot, hogy lássuk, mi hiányzik
     return key; 
 }
-// === [#HEX:F.04.1C2.00] END ===
-// === [#HEX:F.04.1C2.00] END ===
-// === [#HEX:F.04.1BF.00] END ===
-// === [#HEX:F.04.1BF.00] END ===
-// === [#HEX:F.04.1BE.00] END ===
-// === [#HEX:F.04.1BE.00] END ===
-// === [#HEX:F.04.1BE.00] END ===
-// === [#HEX:F.04.1BE.00] END ===
-// === [#HEX:F.04.1BE.00] END ===
-// === [#HEX:F.04.1BD.00] END ===
-// === [#HEX:F.04.1BD.00] END ===
-// === [#HEX:F.04.1AD.00] END ===
-// === [#HEX:F.04.1AD.00] END ===
-// === [#HEX:F.04.191.00] END ===
-// === [#HEX:F.04.191.00] END ===
-// === [#HEX:F.04.180.00] END ===
-// === [#HEX:F.04.180.00] END ===
-// === [#HEX:F.04.180.00] END ===
+// === [#HEX:F.04.1C6.00] END ===
 
 /**
  * Nyelvváltó gomb funkciója.
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
 // === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
-// @calls: [#HEX:F.08.0B.00], [#HEX:F.08.07.00], [#HEX:F.04.2B.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
+// @calls: [#HEX:F.08.07.00], [#HEX:F.08.0B.00], [#HEX:F.04.180.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;

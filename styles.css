@@ -1871,7 +1871,7 @@ html.ebp-authenticated #app-view {
     height: 100vh;
     height: 100dvh;
     background: rgba(2, 6, 12, 0.85);
-    z-index: 50;
+    z-index: 10000;
     display: none;
     align-items: center;
     justify-content: center;
@@ -2568,7 +2568,7 @@ html.ebp-authenticated #app-view {
    ========================================================== */
 
 .loading-orientation-hint {
-    display: flex;
+    display: none; /* Szigorúan rejtve mindenhol, asztali PC-n soha nem jelenik meg */
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -2579,6 +2579,13 @@ html.ebp-authenticated #app-view {
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Szigorúan CSAKIS kis érintőképernyős mobiltelefon álló (portrait) tájolásában jelenhet meg opcionálisan */
+@media (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
+    .loading-orientation-hint.mobile-portrait-active {
+        display: flex;
+    }
 }
 
 .orientation-hint-text {
@@ -4441,4 +4448,25 @@ body.keyboard-open #info-modal .info-modal-content {
         font-size: 0.70rem;
         padding: 5px 9px;
     }
+}
+
+/* ==========================================================
+   === KIKÖTŐ 3D / 2D ELKÜLÖNÍTÉSI ÉS SZIGETELÉSI SZABÁLYOK ===
+   ========================================================== */
+
+#persistent-kikoto-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    pointer-events: auto;
+}
+
+#persistent-kikoto-container.kikoto-inactive {
+    display: none !important;
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+#persistent-kikoto-container.kikoto-inactive * {
+    pointer-events: none !important;
 }

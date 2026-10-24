@@ -19,41 +19,7 @@ const PRECACHE_ASSETS = [
 ];
 
 // 1. INSTALL ESEMÉNY: Alapfájlok letöltése és gyorstárazása
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.09.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_install | lines: 11 ===
+// === [#HEX:F.09.0B.00] START | name: on_install | lines: 11 ===
 // @calls: none | @calledBy: none
 self.addEventListener('install', (event) => {
     self.skipWaiting();
@@ -66,61 +32,10 @@ self.addEventListener('install', (event) => {
         })
     );
 });
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
-// === [#HEX:F.09.09.00] END ===
+// === [#HEX:F.09.0B.00] END ===
 
 // 2. ACTIVATE ESEMÉNY: Korábbi, elavult cache-ek törlése
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0A.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
-// @calls: none | @calledBy: none
-// === [#HEX:F.09.0B.00] START | name: on_activate | lines: 14 ===
+// === [#HEX:F.09.0C.00] START | name: on_activate | lines: 14 ===
 // @calls: none | @calledBy: none
 self.addEventListener('activate', (event) => {
     event.waitUntil(
@@ -136,24 +51,7 @@ self.addEventListener('activate', (event) => {
         }).then(() => self.clients.claim())
     );
 });
-// === [#HEX:F.09.0B.00] END ===
-// === [#HEX:F.09.0B.00] END ===
-// === [#HEX:F.09.0B.00] END ===
-// === [#HEX:F.09.0B.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
-// === [#HEX:F.09.0A.00] END ===
+// === [#HEX:F.09.0C.00] END ===
 
 // 3. FETCH ESEMÉNY: Intelligens Kettős Stratégia
 // === [#HEX:F.06.49.00] START | name: on_fetch | lines: 69 ===

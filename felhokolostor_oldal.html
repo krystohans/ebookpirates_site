@@ -5,54 +5,115 @@
     <button class="btn" onclick="markPageAsSeen('felhokolostor_oldal')" data-lang="monastery_splash_enter_button">Belépés a Kolostorba</button>
 </div>
 
-<div id="felhokolostor_oldal-content" style="display: none; position: relative;">
+<div id="felhokolostor_oldal-content" class="felhokolostor-3d-root" style="display: none; position: relative; width: 100%; height: 100%; min-height: calc(100vh - var(--header-height, 66px)); overflow: hidden;">
     
-    <div class="info-icon-container" title="Információ megjelenítése" data-lang-title="info_show_title">
-        <i class="fas fa-info-circle" onclick="showSplash('felhokolostor_oldal')"></i>
+    <!-- 1. 3D WEBGL VÁSZON KONTÉNER (Three.js WebGL színpad) -->
+    <div id="felhokolostor-webgl-canvas-container" class="felhokolostor-webgl-canvas-container"></div>
+
+    <!-- 2. FELHŐKOLOSTOR 3D INTERAKTÍV TOOLTIP (Lebegő arany/pergamen buborék) -->
+    <div id="felhokolostor-interactive-tooltip" class="interactive-tooltip">
+        <span id="felhokolostor-tooltip-text">📜 Szkriptórium Munkapad</span>
+        <div class="tooltip-arrow"></div>
     </div>
 
-        <!-- Removed redundant monk-toggle-btn button -->
+    <!-- 3. FELHŐKOLOSTOR 3D ÁTMENET OVERLAY -->
+    <div id="felhokolostor-scene-transition-overlay" class="felhokolostor-transition-overlay" style="display: none; opacity: 0; pointer-events: none;"></div>
 
-    <div id="monk-panel" class="side-panel" style="position: fixed; top: 0; right: -450px; width: 400px; height: 100%; background-image: url('https://www.transparenttextures.com/patterns/parchment.png'); background-color: #fdfbf7; border-left: 5px double #5d3a1a; z-index: 5000; transition: right 0.4s ease-in-out; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5);">
-        
-        <div style="background: #5d3a1a; color: #fdfbf7; padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d2b48c;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-scroll" style="font-size: 1.2em;"></i>
-                <span style="font-family: 'Pirata One', cursive; font-size: 1.4em;" data-lang="monastery_panel_title">Anonymus Testvér</span>
-            </div>
-            <span onclick="toggleMonkPanel()" style="cursor: pointer; font-size: 1.5em; font-weight: bold;">&times;</span>
+    <!-- 4. FELHŐKOLOSTOR HUD BAL FELSŐ IRÁNYÍTÓPULT GOMB -->
+    <button id="felhokolostor-corner-menu-btn" class="felhokolostor-corner-menu-btn" onclick="toggleFelhokolostor2DMenu()" title="Irányítópult megnyitása / bezárása">
+        <i class="fas fa-feather-alt"></i>
+        <span data-lang="monastery_hud_menu">Kolostor Irányítópult</span>
+    </button>
+
+    <!-- 5. FELHŐKOLOSTOR HUD JOBB FELSŐ INFÓGOMB -->
+    <button id="felhokolostor-corner-info-btn" class="felhokolostor-corner-info-btn" onclick="showSplash('felhokolostor_oldal')" title="Információ">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <!-- 6. FELHŐKOLOSTOR 2D IRÁNYÍTÓPULT OVERLAY KONTÉNER -->
+    <div id="felhokolostor-2d-overlay" class="felhokolostor-2d-overlay" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-gold); padding-bottom: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #ffd700; font-family: var(--font-serif);"><i class="fas fa-feather-alt"></i> Felhőkolostor Irányítópult</h3>
+            <button class="btn btn-close" onclick="toggleFelhokolostor2DMenu()" style="padding: 4px 10px; font-size: 1.1rem; line-height: 1;">✕</button>
         </div>
 
-        <div id="monk-chat-area" style="flex-grow: 1; padding: 15px; overflow-y: auto; font-family: 'Georgia', serif; font-size: 0.95em; color: #333;">
+        <!-- Anonymus Testvér Kiemelt Kártya -->
+        <div onclick="openMonasteryAnonymusNPC()" style="background: linear-gradient(135deg, #2d1e12, #1a120b); border: 2px solid var(--color-gold); border-radius: 8px; padding: 12px 16px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: #0c0805; display: flex; align-items: center; justify-content: center; border: 2px solid var(--color-gold); position: relative;">
+                    <i class="fas fa-user-secret" style="font-size: 1.5rem; color: #ffd700;"></i>
+                    <i class="fas fa-scroll" style="position: absolute; bottom: -3px; right: -4px; font-size: 0.9rem; color: #ffeb3b; background: #3e2723; border-radius: 50%; padding: 2px;"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; color: #ffd700; font-family: var(--font-serif); font-size: 1.15rem;">Beszélek Anonymus Testvérrel</h4>
+                    <span style="color: #fdf5e6; font-size: 0.85rem;">Rendi Írnok &bull; Kéziratok, tanácsok és rendi beavatás</span>
+                </div>
             </div>
+            <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 1.2rem;"></i>
+        </div>
 
-        <div style="padding: 15px; background: rgba(93, 58, 26, 0.1); border-top: 1px solid #d2b48c; display: flex; gap: 5px;">
-            <input type="text" id="monk-chat-input" placeholder="Kérdezz a Szerzetestől..." data-lang-placeholder="monastery_chat_placeholder" style="flex-grow: 1; padding: 10px; border: 1px solid #8b4513; border-radius: 4px; font-family: 'Georgia', serif;">
-            <button class="btn" onclick="sendMonkMessage()" style="background-color: #5d3a1a; color: white; border: none; padding: 0 15px; border-radius: 4px;">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+        <!-- Szerzetesi Stat Box -->
+        <div class="stat-box" style="background: rgba(30, 20, 12, 0.75); border: 1px solid #d4af37; padding: 14px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <div id="monk-order-rank" style="font-family: 'Pirata One', cursive; font-size: 2.0em; color: #ffd700;">Rendi Testvér</div>
+                    <div style="text-transform: uppercase; font-size: 0.8em; color: #ecd9c6; letter-spacing: 1px;">Kolostori Méltóság</div>
+                </div>
+                <div>
+                    <div id="monk-active-works-stat" style="font-family: 'Pirata One', cursive; font-size: 2.0em; color: #7df9ff;">...</div>
+                    <div style="text-transform: uppercase; font-size: 0.8em; color: #ecd9c6; letter-spacing: 1px;">Folyamatban Lévő Munkák</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gyorsgombok a kolostor állomásaihoz -->
+        <p style="color: #e8d8c8; font-size: 0.95rem; margin-bottom: 10px;">Válassz a kolostori állomások közül:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+            <button class="btn" style="background-color: #5d3a1a; border: 1px solid var(--color-gold);" onclick="openMonasteryWorkbenchModal()"><i class="fas fa-feather-alt"></i> 📜 Szkriptórium Munkapad</button>
+            <button class="btn" style="background-color: #b38600; border: 1px solid var(--color-gold);" onclick="openQuizBookModal()"><i class="fas fa-book"></i> 📖 Kvízkérdések Könyve</button>
+            <button class="btn" style="background-color: #37474f; border: 1px solid var(--color-gold);" onclick="openMonasteryForumModal()"><i class="fas fa-users"></i> 🏛️ Közös Terem</button>
+            <button class="btn" style="background-color: #4a235a; border: 1px solid var(--color-gold);" onclick="openMonasteryWhisperModal()"><i class="fas fa-comment-dots"></i> 🤫 Suttogó Sarok</button>
+            <button class="btn" style="background-color: #1a4a68; border: 1px solid var(--color-gold);" onclick="confirmFelhokolostorExitToKikoto()"><i class="fas fa-anchor"></i> ⚓ Vissza a Kikötőbe</button>
+        </div>
+
+        <div id="personnel-panel" style="display: none; border: 2px solid #8b0000; background-color: #fff5f5; color: #333; padding: 15px; margin-top: 15px; border-radius: 6px;">
+            <h3 style="color: #8b0000; margin-top: 0;" data-lang="monastery_personnel_title">☠️ Személyzeti Állománykezelő (Admin)</h3>
+            <p data-lang="monastery_personnel_warning">Vigyázat! Az itt végzett műveletek (Kizárás, Visszavétel) azonnaliak és véglegesek.</p>
+            <div id="personnel-list-container" data-lang="monastery_personnel_loading">Töltés...</div>
+            <button class="btn btn-secondary" onclick="document.getElementById('personnel-panel').style.display='none'" style="margin-top: 15px;" data-lang="monastery_personnel_close">Bezárás</button>
+        </div>
+
+        <button id="open-personnel-btn" class="btn btn-danger" style="display: none; margin-top: 15px; width: 100%;" onclick="loadPersonnelData()" data-lang="monastery_personnel_open_button">Személyzeti Ügyek & Vészleállítás</button>
+
+        <div id="navigation" style="margin-top: 25px; text-align: center;">
+            <button class="btn btn-secondary" onclick="confirmFelhokolostorExitToKikoto()" data-lang="monastery_nav_back_button">Vissza a kikötőbe</button>
+            <button class="btn btn-danger" onclick="logout()" data-lang="monastery_nav_logout_button">Kijelentkezés</button>
+            <button onclick="resignFromOrder()" class="btn btn-danger" style="margin-top:10px; font-size:0.8em; background-color: #555;" data-lang="monastery_nav_resign_button">Kilépés a Rendből</button>
         </div>
     </div>
 
-    <div class="page-container">
-        <div class="tab-container" style="display: flex; gap: 5px; border-bottom: 2px solid #8b4513; margin-bottom: 20px;">
-            <button class="tab-button active" onclick="openMonasteryTab(event, 'Munkapad')" style="background:transparent; border:none; border-bottom: 3px solid #8b4513; cursor:pointer; padding:10px; font-weight:bold; color: #8b4513; margin-top:0;" data-lang="monastery_tab_workbench">📜 Munkapad</button>
-            <button class="tab-button" onclick="openMonasteryTab(event, 'Forum')" style="background:transparent; border:none; border-bottom: 3px solid transparent; cursor:pointer; padding:10px; font-weight:bold; color: #333; margin-top:0;" data-lang="monastery_tab_forum">🏛️ Közös Terem</button>
-            <button class="tab-button" onclick="openMonasteryTab(event, 'Suttogo')" style="background:transparent; border:none; border-bottom: 3px solid transparent; cursor:pointer; padding:10px; font-weight:bold; color: #333; margin-top:0;" data-lang="monastery_tab_whisper">🤫 Suttogó</button>
-        </div>
+    <!-- 7. INTERAKTÍV ÁLLOMÁSOK FÓKUSZÁLT MODÁLJAI -->
 
-        <div id="Munkapad" class="tab-content" style="display: block;">
-            
+    <!-- A. SZKRIPTÓRIUM MUNKAPAD MODAL -->
+    <div id="monastery-workbench-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 680px; width: 95%; max-height: 85vh; overflow-y: auto; background-color: #1a120b; color: #fdf5e6; border: 2px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.85); border-radius: 8px; padding: 20px;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeMonasteryWorkbenchModal()">✕</button>
+            <h3 style="color: #ffd700; border-bottom: 2px solid var(--color-gold); padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                <i class="fas fa-feather-alt"></i> 📜 Szkriptórium Munkapad – Kéziratok és Lektorálás
+            </h3>
+
             <!-- Kvízkérdés Jóváhagyó Panel (Szerzeteseknek) -->
-            <div id="monk-quiz-approval-panel" style="display: none; background: #fffde6; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e6b800; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <h4 style="margin-top:0; color: #b38600; display: flex; align-items: center; gap: 8px;"><i class="fas fa-question-circle"></i> <span data-lang="monk_quiz_approval_title">Jóváhagyásra váró kvízkérdések</span></h4>
+            <div id="monk-quiz-approval-panel" style="display: none; background: rgba(50, 40, 10, 0.8); padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #ffd700;">
+                <h4 style="margin-top:0; color: #ffd700; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-question-circle"></i> <span data-lang="monk_quiz_approval_title">Jóváhagyásra váró kvízkérdések</span>
+                </h4>
                 <div id="monk-quiz-approval-list"></div>
             </div>
 
-            <div style="background: #f0f4f8; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #d9e2ec;">
-                <h4 style="margin-top:0; color: #2c3e50;" data-lang="monastery_upload_title">📜 Beküldés a Kolostorba (Ár: 10 Tálentum)</h4>
+            <div style="background: rgba(30, 20, 12, 0.7); padding: 15px; border-radius: 6px; margin-bottom: 18px; border: 1px solid rgba(212, 175, 55, 0.4);">
+                <h4 style="margin-top:0; color: #ffd700;" data-lang="monastery_upload_title">📜 Beküldés a Kolostorba (Ár: 10 Tálentum)</h4>
                 
-                <div class="form-group" style="margin-bottom: 15px; display: flex; gap: 20px;">
+                <div class="form-group" style="margin-bottom: 12px; display: flex; gap: 20px;">
                     <label style="cursor: pointer;">
                         <input type="radio" name="uploadType" value="work" checked onchange="toggleUploadType()"> 
                         <span data-lang="monastery_upload_type_work">Új mű (Regény/Novella)</span>
@@ -63,189 +124,110 @@
                     </label>
                 </div>
 
-                <div id="monk-application-options" style="display: none; background: #fff5e6; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #ffcc80;">
-                    <label style="font-weight:bold; margin-bottom:5px; display:block;">Megpályázott Munkakörök (több is választható):</label>
-                    <details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin-bottom:10px; cursor:pointer;">
-                        <summary style="padding:8px 10px; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása (kattints a lenyitáshoz)...</summary>
-                        <div id="monk-application-roles-container" style="display: flex; flex-direction: column; padding: 10px; max-height: 250px; overflow-y: auto;">
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Lektor</span><input type="checkbox" class="monk-role-checkbox" value="editor" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Szkriptor</span><input type="checkbox" class="monk-role-checkbox" value="szkriptor" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Piktor</span><input type="checkbox" class="monk-role-checkbox" value="piktor" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Inspektor</span><input type="checkbox" class="monk-role-checkbox" value="inspektor" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Fordító (Angol)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Angol" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Fordító (Spanyol)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Spanyol" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Fordító (Német)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Német" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Fordító (Francia)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Francia" style="margin:0; width:16px; height:16px;"></label>
-                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;"><span>Fordító (Orosz)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Orosz" style="margin:0; width:16px; height:16px;"></label>
+                <div id="monk-application-options" style="display: none; background: #26160d; padding: 10px; border-radius: 5px; margin-bottom: 12px; border: 1px solid #d4af37;">
+                    <label style="font-weight:bold; margin-bottom:5px; display:block; color:#ffd700;">Megpályázott Munkakörök (több is választható):</label>
+                    <details style="background:#120904; border:1px solid #d4af37; border-radius:4px; margin-bottom:10px; cursor:pointer;">
+                        <summary style="padding:8px 10px; font-weight:bold; outline:none; background:#1f1108; border-bottom:1px solid #3d2314; color:#fdf5e6;">Munkakörök kiválasztása (kattints a lenyitáshoz)...</summary>
+                        <div id="monk-application-roles-container" style="display: flex; flex-direction: column; padding: 10px; max-height: 200px; overflow-y: auto;">
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Lektor</span><input type="checkbox" class="monk-role-checkbox" value="editor" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Szkriptor</span><input type="checkbox" class="monk-role-checkbox" value="szkriptor" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Piktor</span><input type="checkbox" class="monk-role-checkbox" value="piktor" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Inspektor</span><input type="checkbox" class="monk-role-checkbox" value="inspektor" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Fordító (Angol)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Angol" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Fordító (Spanyol)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Spanyol" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Fordító (Német)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Német" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Fordító (Francia)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Francia" style="margin:0; width:16px; height:16px;"></label>
+                            <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0; border-bottom: 1px solid #2a160a;"><span>Fordító (Orosz)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Orosz" style="margin:0; width:16px; height:16px;"></label>
                             <label style="cursor:pointer; display:grid; grid-template-columns: 1fr auto; align-items:center; padding: 6px 0;"><span>Fordító (Lengyel)</span><input type="checkbox" class="monk-role-checkbox" value="translator_Lengyel" style="margin:0; width:16px; height:16px;"></label>
                         </div>
                     </details>
                 </div>
 
-                <p id="upload-description" style="font-size:0.9em; color:#666;" data-lang-html="monastery_upload_desc">
-                    Támogatott szerkeszthető formátumok: <b>.docx, .doc, .txt, .rtf</b> (automatikus konverzió GDoc-ká).
+                <p id="upload-description" style="font-size:0.88em; color:#d4c5b9;" data-lang-html="monastery_upload_desc">
+                    Támogatott formátumok: <b>.docx, .doc, .txt, .rtf</b> (automatikus konverzió GDoc-ká).
                 </p>
                 
-                <input type="text" id="monk-upload-title" placeholder="A mű címe" data-lang-placeholder="monastery_upload_title_placeholder" style="width: 100%; box-sizing: border-box; padding: 8px; margin-bottom: 10px;">
+                <input type="text" id="monk-upload-title" placeholder="A mű címe" data-lang-placeholder="monastery_upload_title_placeholder" style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 10px; border-radius:4px; border:1px solid #d4af37; background:#fff; color:#000;">
                 
-                <div class="form-group">
-                    <label for="monk-upload-file" id="upload-file-label" style="display:block; margin-bottom:5px; font-weight:bold;" data-lang="monastery_upload_file_label">Kézirat fájl:</label>
-                    <input type="file" id="monk-upload-file" accept=".docx,.doc,.txt,.rtf,.odt" style="width: 100%;">
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label for="monk-upload-file" id="upload-file-label" style="display:block; margin-bottom:4px; font-weight:bold; color:#ffd700;" data-lang="monastery_upload_file_label">Kézirat fájl:</label>
+                    <input type="file" id="monk-upload-file" accept=".docx,.doc,.txt,.rtf,.odt" style="width: 100%; color:#fdf5e6;">
                 </div>
 
-                <div class="form-group" id="cover-upload-container">
-                    <label for="monk-upload-cover" style="display:block; margin-bottom:5px; font-weight:bold;" data-lang="monastery_upload_cover_label">Borítókép (PNG) - Opcionális:</label>
-                    <input type="file" id="monk-upload-cover" accept="image/png" style="width: 100%;">
-                    <small style="color: #666;" data-lang="monastery_upload_cover_note">Ha nem töltesz fel, a 'Borítókészítés' feladat automatikusan aktív lesz.</small>
+                <div class="form-group" id="cover-upload-container" style="margin-bottom:10px;">
+                    <label for="monk-upload-cover" style="display:block; margin-bottom:4px; font-weight:bold; color:#ffd700;" data-lang="monastery_upload_cover_label">Borítókép (PNG) - Opcionális:</label>
+                    <input type="file" id="monk-upload-cover" accept="image/png" style="width: 100%; color:#fdf5e6;">
+                    <small style="color: #ecd9c6;" data-lang="monastery_upload_cover_note">Ha nem töltesz fel, a 'Borítókészítés' feladat automatikusan aktív lesz.</small>
                 </div>
-                <button class="btn" style="margin-top:10px; width: 100%; background-color: #2c3e50;" onclick="submitMonasteryWork()" data-lang="monastery_upload_submit_button">Áldozat bemutatása és Beküldés</button>
+                <button class="btn" style="margin-top:10px; width: 100%; background: linear-gradient(135deg, #5d3a1a, #3d2314); border:1px solid #ffd700; color:#ffd700; font-weight:bold; padding:12px;" onclick="submitMonasteryWork()" data-lang="monastery_upload_submit_button">Áldozat bemutatása és Beküldés (10 Tálentum)</button>
             </div>
 
-            <div style="text-align: center; margin: 15px 0;">
-                <button class="btn" style="background-color: #b38600; width: 100%;" onclick="openQuizBookModal()"><i class="fas fa-book"></i> Kvízkérdések Könyve</button>
-            </div>
-
-            <h3 style="color: #8b4513; border-bottom: 1px solid #ccc;" data-lang="monastery_active_works_title">Folyamatban lévő munkák</h3>
-            <div id="monastery-work-list">
+            <h4 style="color: #ffd700; border-bottom: 1px solid rgba(212,175,55,0.4); padding-bottom: 4px;" data-lang="monastery_active_works_title">Folyamatban lévő munkák</h4>
+            <div id="monastery-work-list" style="max-height: 240px; overflow-y: auto; background: rgba(20,12,6,0.6); border: 1px solid #3d2314; border-radius: 4px; padding: 10px;">
                 <p><i data-lang="monastery_loading_data">Adatok betöltése...</i></p>
             </div>
-            <div style="margin-top: 10px; text-align: center;">
-                <button class="btn btn-secondary" onclick="refreshMonasteryWork()" data-lang="monastery_refresh_button">Lista Frissítése</button>
+            <div style="margin-top: 12px; text-align: center;">
+                <button class="btn btn-secondary" onclick="refreshMonasteryWork()" data-lang="monastery_refresh_button"><i class="fas fa-sync-alt"></i> Lista Frissítése</button>
             </div>
         </div>
+    </div>
 
-        <div id="Forum" class="tab-content" style="display: none;">
-            <h3 style="color: #8b4513;" data-lang="monastery_forum_title">Testvéri Eszmecsere</h3>
-            <div class="form-group">
-                <textarea id="forum-post-input" rows="3" style="width: 100%; box-sizing: border-box; padding: 8px;" placeholder="Oszd meg gondolataidat, vagy kérj tanácsot..." data-lang-placeholder="monastery_forum_placeholder"></textarea>
-                <button class="btn" style="margin-top:5px;" onclick="submitForumPost()" data-lang="monastery_forum_submit">Közzététel</button>
+    <!-- B. TESTVÉRI ESZMECSERE (FÓRUM) MODAL -->
+    <div id="monastery-forum-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 650px; width: 95%; max-height: 85vh; overflow-y: auto; background-color: #161a1d; color: #fdf5e6; border: 2px solid #546e7a; box-shadow: 0 10px 30px rgba(0,0,0,0.85); border-radius: 8px; padding: 20px;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeMonasteryForumModal()">✕</button>
+            <h3 style="color: #90a4ae; border-bottom: 2px solid #546e7a; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                <i class="fas fa-users"></i> 🏛️ Testvéri Eszmecsere (Közös Terem)
+            </h3>
+            <p style="color: #cfd8dc; font-size: 0.95em; margin-bottom: 15px;">
+                Oszd meg gondolataidat a kolostor testvéreivel, kérj szakmai lektori tanácsot, vagy vitass meg írástudói kérdéseket!
+            </p>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <textarea id="forum-post-input" rows="3" style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 4px; border: 1px solid #546e7a; background: #fff; color: #000;" placeholder="Oszd meg gondolataidat, vagy kérj tanácsot..." data-lang-placeholder="monastery_forum_placeholder"></textarea>
+                <button class="btn" style="margin-top: 8px; width: 100%; background: #37474f; border: 1px solid #90a4ae;" onclick="submitForumPost()" data-lang="monastery_forum_submit"><i class="fas fa-paper-plane"></i> Közzététel</button>
             </div>
-            <hr style="border: 0; border-top: 1px dashed #ccc; margin: 20px 0;">
-            <div id="monastery-forum-posts">
+            <h4 style="color: #b0bec5; border-bottom: 1px solid #37474f; padding-bottom: 4px; margin-top: 20px;">Bejegyzések a testvérektől:</h4>
+            <div id="monastery-forum-posts" style="max-height: 260px; overflow-y: auto; background: rgba(10,15,18,0.7); border: 1px solid #37474f; border-radius: 4px; padding: 10px;">
                 <p><i data-lang="monastery_forum_empty">A csendet még senki nem törte meg...</i></p>
             </div>
         </div>
+    </div>
 
-        <div id="Suttogo" class="tab-content" style="display: none;">
-            <h3 style="color: #8b4513;" data-lang="monastery_whisper_title">Személyes Üzenetek</h3>
-            <div class="chat-interface" style="display: flex; height: 400px; border: 1px solid #ccc; border-radius: 5px;">
-                <div class="chat-users-list" id="chat-partners-list" style="width: 30%; border-right: 1px solid #ccc; overflow-y: auto; background: #f9f9f9;">
-                    <p style="padding:10px; font-size:0.8em; color:#666;" data-lang="monastery_whisper_empty">Nincsenek aktív beszélgetések.</p>
+    <!-- C. SUTTOGÓ SAROK (SZEMÉLYES ÜZENETEK) MODAL -->
+    <div id="monastery-whisper-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 720px; width: 95%; height: 75vh; display: flex; flex-direction: column; background-color: #1a0f1d; color: #fdf5e6; border: 2px solid #9c27b0; box-shadow: 0 10px 30px rgba(0,0,0,0.85); border-radius: 8px; padding: 20px;">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeMonasteryWhisperModal()">✕</button>
+            <h3 style="color: #ce93d8; border-bottom: 2px solid #9c27b0; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                <i class="fas fa-comment-dots"></i> 🤫 Suttogó Sarok – Személyes Üzenetek
+            </h3>
+            <div class="chat-interface" style="display: flex; flex: 1; border: 1px solid #6a1b9a; border-radius: 6px; overflow: hidden; min-height: 0;">
+                <div class="chat-users-list" id="chat-partners-list" style="width: 32%; border-right: 1px solid #6a1b9a; overflow-y: auto; background: #120914; padding: 8px;">
+                    <p style="padding:10px; font-size:0.85em; color:#ba68c8;" data-lang="monastery_whisper_empty">Nincsenek aktív beszélgetések.</p>
                 </div>
                 
-                <div class="chat-window" style="width: 70%; display: flex; flex-direction: column;">
-                    <div class="chat-messages-area" id="chat-messages-area" style="flex-grow: 1; padding: 10px; overflow-y: auto; background: #fff;">
-                        <p style="text-align:center; color:#999; margin-top:20px;" data-lang="monastery_whisper_select_prompt">Válassz egy partnert a listából!</p>
+                <div class="chat-window" style="width: 68%; display: flex; flex-direction: column; background: #0c050e;">
+                    <div class="chat-messages-area" id="chat-messages-area" style="flex: 1; padding: 12px; overflow-y: auto; background: #140817;">
+                        <p style="text-align:center; color:#ab47bc; margin-top:20px;" data-lang="monastery_whisper_select_prompt">Válassz egy partnert a listából!</p>
                     </div>
-                    <div class="chat-input-area" style="padding: 10px; border-top: 1px solid #ccc; background: #f0f0f0; display: flex; gap: 5px;">
-                        <input type="text" id="chat-message-input" style="flex-grow:1; margin-bottom: 0; padding: 8px;" placeholder="Írj üzenetet..." data-lang-placeholder="monastery_whisper_input_placeholder" disabled>
-                        <button class="btn" id="chat-send-btn" style="margin-top: 0;" onclick="sendPrivateMessage()" disabled data-lang="monastery_whisper_send_button">Küldés</button>
+                    <div class="chat-input-area" style="padding: 10px; border-top: 1px solid #6a1b9a; background: #1f0b24; display: flex; gap: 6px;">
+                        <input type="text" id="chat-message-input" style="flex-grow:1; margin-bottom: 0; padding: 8px; border-radius: 4px; border: 1px solid #ab47bc; background:#fff; color:#000;" placeholder="Írj üzenetet..." data-lang-placeholder="monastery_whisper_input_placeholder" disabled>
+                        <button class="btn" id="chat-send-btn" style="margin-top: 0; background: #7b1fa2; border: 1px solid #ba68c8;" onclick="sendPrivateMessage()" disabled data-lang="monastery_whisper_send_button"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="personnel-panel" style="display: none; border: 2px solid #8b0000; background-color: #fff5f5; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-        <h3 style="color: #8b0000; margin-top: 0;" data-lang="monastery_personnel_title">☠️ Személyzeti Állománykezelő (Admin)</h3>
-        <p data-lang="monastery_personnel_warning">Vigyázat! Az itt végzett műveletek (Kizárás, Visszavétel) azonnaliak és véglegesek.</p>
-        <div id="personnel-list-container" data-lang="monastery_personnel_loading">Töltés...</div>
-        <button class="btn btn-secondary" onclick="document.getElementById('personnel-panel').style.display='none'" style="margin-top: 15px;" data-lang="monastery_personnel_close">Bezárás</button>
-    </div>
-
-    <button id="open-personnel-btn" class="btn btn-danger" style="display: none; margin-bottom: 15px; width: 100%;" onclick="loadPersonnelData()" data-lang="monastery_personnel_open_button">Személyzeti Ügyek & Vészleállítás</button>
-
-    <div id="navigation" style="margin-top: 30px; text-align: center;">
-        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')" data-lang="monastery_nav_back_button">Vissza a kikötőbe</button>
-        <button class="btn btn-danger" onclick="logout()" data-lang="monastery_nav_logout_button">Kijelentkezés</button>
-        <button onclick="resignFromOrder()" class="btn btn-danger" style="margin-top:20px; font-size:0.8em; background-color: #555;" data-lang="monastery_nav_resign_button">Kilépés a Rendből</button>
-    </div>
-</div>
-
-<!-- UNIVERSAL NPC CHATBOX (Anonymus Testvér, npc_id: 'monk') - styled like harbormaster -->
-<div onclick="openUniversalNPC('monk', {
-    name: 'Anonymus Testvér',
-    role: 'Rendi Írnok',
-    icon: '<i class=\'fas fa-scroll\'></i>',
-    headerColor: '#37474f',
-    portrait: 'https://img.index.hu/imgfrm/2/5/4/1/THM_0000922541.jpg',
-    msgIcon: '<i class=\'fas fa-scroll\' style=\'color:#d4af37; margin-right:5px;\'></i>',
-    loaderHTML: '<i class=\'fas fa-scroll fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>A Testvér gondolkodik...</i>',
-    styles: {
-        modal: {
-            justifyContent: 'flex-end', 
-            alignItems: 'stretch',
-            background: '',
-            padding: '0'
-        },
-        content: {
-            width: '350px',              
-            height: '100vh',            
-            maxWidth: '85vw',           
-            margin: '0',                
-            borderRadius: '2',          
-            border: 'none',
-            borderLeft: '5px solid #d4af37', 
-            backgroundColor: '#1f0901',
-            color: '#241512',
-            backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png',
-            boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-        }
-    }
-})" 
-    title="Anonymus Testvér" 
-    style="position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-    <div style="position: relative;">
-        <i class="fas fa-scroll" style="font-size: 2em; color: white;"></i>
-        <i class="fas fa-user-secret" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #d2b48c; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
-    </div>
-</div>
-
-<!-- NPC CHAT PANEL (styled like harbormaster) -->
-<div id="monk-npc-panel" class="page-section" 
-    style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); z-index: 100; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
-    <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
-        <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
-            <i class="fas fa-user-secret"></i> <span>Anonymus Testvér</span>
-        </span>
-        <button onclick="toggleMonkNPCPanel()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-    </div>
-    <div id="monk-npc-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: var(--bg-paper); display: flex; flex-direction: column;"></div>
-    <div id="monk-npc-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
-        <input type="text" id="monk-npc-input" placeholder="Írj a Testvérnek..." style="flex-grow:1; margin-bottom: 0; padding: 8px; border: 1px solid #8b4513; border-radius: 4px; font-family: 'Georgia', serif;">
-        <button class="btn" id="monk-npc-send-btn" style="background-color: var(--color-primary); color: white; border: none; padding: 0 15px; border-radius: 4px; min-width: 40px;" onclick="sendMonkNPCMessage()">
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </div>
-</div>
-
-<!-- UNIVERSAL NPC CHATBOX MODAL (shared) -->
-<div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
-      <div id="npc-portrait-panel" class="npc-portrait-closed">
-        <img id="npc-portrait-image" src="" alt="NPC">
-      </div>
-<div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
-    
-    <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="npc-icon" style="font-size: 1.5em;">👵</span> <div>
-                <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Gabrel</h3>
-                <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+    <!-- D. KIKÖTŐ MEGERŐSÍTŐ MODAL -->
+    <div id="felhokolostor-kikoto-confirm-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="gamemode-modal-content" style="width: 90%; max-width: 420px; background: #1a120b; border: 2px solid var(--color-gold); border-radius: 8px; padding: 20px; text-align: center; color: #fdf5e6; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            <h3 style="color: #ffd700; font-family: var(--font-serif); margin-top: 0;"><i class="fas fa-compass"></i> Visszatérés a Kikötőbe</h3>
+            <p style="margin: 15px 0;">Biztosan elhagyod a Felhőkolostor békés falait, és visszatérsz a nyüzsgő kalózkikötőbe?</p>
+            <div style="display: flex; justify-content: center; gap: 12px; margin-top: 20px;">
+                <button class="btn" style="background-color: #27ae60; border: 1px solid #ffd700;" onclick="executeFelhokolostorExitToKikoto()">Igen, visszatérek</button>
+                <button class="btn btn-secondary" onclick="cancelFelhokolostorExitToKikoto()">Maradok még</button>
             </div>
         </div>
-        <button onclick="document.getElementById('universal-npc-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
     </div>
 
-    <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
-        </div>
-
-    <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
-        <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </div>
-    
-    <input type="hidden" id="current-npc-id" value="">
-</div>
 </div>

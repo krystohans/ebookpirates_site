@@ -44,7 +44,7 @@ function applyRegistrationPageMetaTranslation() {
 // === [#HEX:F.01.16.00] END ===
 
 // === [#HEX:F.06.56.00] START | name: callBackend | lines: 56 ===
-// @calls: [#HEX:F.04.6E.00], [#HEX:F.04.1ED.00], [#HEX:F.04.1EC.00] | @calledBy: none
+// @calls: [#HEX:F.04.1ED.00], [#HEX:F.04.2C1.00], [#HEX:F.04.1EC.00] | @calledBy: none
 function callBackend(funcName, params, onSuccess, onFailure) {
     var token = null;
     try {
@@ -148,7 +148,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     });
 
 // === [#HEX:F.06.57.00] START | name: callBackend | lines: 21 ===
-// @calls: [#HEX:B.07.DB.00], [#HEX:F.04.1EC.00] | @calledBy: none
+// @calls: [#HEX:F.04.1EC.00], [#HEX:B.07.DB.00] | @calledBy: none
     callBackend('submitRegistrationRequest', [formData], function(response) {
         if (!response || response.success === false) {
             var backendError = '';

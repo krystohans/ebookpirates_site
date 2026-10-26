@@ -4,262 +4,251 @@
   <button class="btn" onclick="markPageAsSeen('piac_oldal')">Értettem, mehet!</button>
 </div>
 
+<div id="piac_oldal-content" class="piac-3d-root" style="display: none; position: relative; width: 100%; height: 100%; min-height: calc(100vh - 44px); overflow: hidden;">
 
-<!-- NPC CHATBOX BUTTONS (Piacfőnök & Bankár) -->
-<div style="position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: row; gap: 15px;">
-  <div onclick="openUniversalNPC('market_boss', {
-      name: 'Hortenzi Mama',
-      role: 'Piacfőnök',
-      icon: '<i class=\'fas fa-balance-scale\'></i>',
-      headerColor: '#37474f',
-      portrait: '',
-      msgIcon: '<i class=\'fas fa-balance-scale\' style=\'color:#d4af37; margin-right:5px;\'></i>',
-      loaderHTML: '<i class=\'fas fa-balance-scale fa-spin\' style=\'color:#d4af37; margin-right:8px;\'></i> <i>Hortenzi Mama számol...</i>',
-      styles: {
-          modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
-          content: {
-              width: '350px', height: '100vh', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #d4af37', backgroundColor: '#1f0901', color: '#241512', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-          }
-      }
-  })"
-      title="Piacfőnök" 
-      style="width: 65px; height: 65px; background: var(--color-primary); border: 3px solid var(--color-gold); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-      <div style="position: relative;">
-          <i class="fas fa-balance-scale" style="font-size: 2em; color: white;"></i>
-          <i class="fas fa-user-friends" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: var(--color-gold); border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
-      </div>
-  </div>
-  <div onclick="openUniversalNPC('bankar', {
-      name: 'Loan Shark',
-      role: 'Bankár',
-      icon: '<i class=\'fas fa-coins\'></i>',
-      headerColor: '#2e7d32',
-      portrait: '',
-      msgIcon: '<i class=\'fas fa-coins\' style=\'color:#ffd700; margin-right:5px;\'></i>',
-      loaderHTML: '<i class=\'fas fa-coins fa-spin\' style=\'color:#ffd700; margin-right:8px;\'></i> <i>A Bankár számol...</i>',
-      styles: {
-          modal: { justifyContent: 'flex-end', alignItems: 'stretch', background: '', padding: '0' },
-          content: {
-              width: '350px', height: '100vh', maxWidth: '85vw', margin: '0', borderRadius: '2', border: 'none', borderLeft: '5px solid #ffd700', backgroundColor: '#0d2f1b', color: '#1b2f0d', backgroundImage: 'https://www.transparenttextures.com/patterns/wood-pattern.png', boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
-          }
-      }
-  })"
-      title="Bankár (Loan Shark)" 
-      style="width: 65px; height: 65px; background: #2e7d32; border: 3px solid #ffd700; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
-      <div style="position: relative;">
-          <i class="fas fa-coins" style="font-size: 2em; color: white;"></i>
-          <i class="fas fa-user-tie" style="position: absolute; bottom: -5px; right: -8px; font-size: 1em; background: #333; color: #ffd700; border-radius: 50%; padding: 3px; border: 1px solid white;"></i>
-      </div>
-  </div>
-</div>
+  <!-- 1. 3D WEBGL VÁSZON KONTÉNER (Three.js WebGL színpad) -->
+  <div id="piac-webgl-canvas-container" class="piac-webgl-canvas-container"></div>
 
-<div id="market_boss-npc-panel" class="page-section" 
-    style="display: none; position: fixed; top: 0; right: 0; width: 320px; height: 100%; margin: 0; border-radius: 0; border-left: 4px solid var(--color-gold); z-index: 100; padding: 0; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);">
-    <div style="background: var(--color-primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent);">
-        <span style="font-family: var(--font-serif); font-size: 1.2em; font-weight: bold;">
-            <i class="fas fa-user-friends"></i> <span>Hortenzi Mama</span>
-        </span>
-        <button onclick="toggleMarketBossNPCPanel()" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-    </div>
-    <div id="market_boss-npc-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: var(--bg-paper); display: flex; flex-direction: column;"></div>
-    <div id="market_boss-npc-controls" style="padding: 15px; background: #e8e8e8; border-top: 1px solid #ccc; min-height: 60px; display: flex; flex-direction: column; gap: 5px;">
-        <input type="text" id="market_boss-npc-input" placeholder="Írj Hortenzi Mamának..." style="flex-grow:1; margin-bottom: 0; padding: 8px; border: 1px solid #8b4513; border-radius: 4px; font-family: 'Georgia', serif;">
-        <button class="btn" id="market_boss-npc-send-btn" style="background-color: var(--color-primary); color: white; border: none; padding: 0 15px; border-radius: 4px; min-width: 40px;" onclick="sendMarketBossNPCMessage()">
-            <i class="fas fa-paper-plane"></i>
+  <!-- 2. PIAC 3D INTERAKTÍV TOOLTIP (Lebegő buborék) -->
+  <div id="piac-interactive-tooltip" class="interactive-tooltip">
+    <span id="piac-tooltip-text">Minden Portékák Piaca</span>
+    <div class="tooltip-arrow"></div>
+  </div>
+
+  <!-- 3. PIAC 3D ÁTMENET OVERLAY -->
+  <div id="piac-scene-transition-overlay" class="hajomuhely-transition-overlay" style="display: none; opacity: 0; pointer-events: none;"></div>
+
+  <!-- 4. PIAC SAROK GOMBOK -->
+  <div class="info-icon-container" title="Piac Útmutató" style="position: absolute; top: 15px; left: 15px; z-index: 50;">
+    <i class="fas fa-info-circle" onclick="showSplash('piac_oldal')" style="font-size: 1.8em; color: var(--color-gold); cursor: pointer; text-shadow: 0 2px 8px rgba(0,0,0,0.8);"></i>
+  </div>
+
+  <div style="position: absolute; top: 15px; right: 20px; z-index: 50; display: flex; gap: 10px;">
+    <button class="btn btn-secondary hajomuhely-2d-toggle-btn" onclick="togglePiac2DMenu()" title="Hagyományos táblázatos felület megnyitása">
+      <i class="fas fa-scroll"></i> Piac Irányítópult
+    </button>
+    <button class="btn btn-secondary hajomuhely-2d-toggle-btn" onclick="openPiacExitPrompt()" title="Visszatérés a Kikötőbe">
+      <i class="fas fa-anchor"></i> Vissza a Kikötőbe
+    </button>
+  </div>
+
+  <!-- 5. KIKÖTŐBE VISSZALÉPÉST MEGERŐSÍTŐ MODÁL -->
+  <div id="piac-kikoto-confirm-modal" class="gamemode-modal" style="display: none;">
+    <div class="gamemode-modal-content" style="max-width: 440px; text-align: center; border: 3px solid var(--color-gold); background: #1a0f07; color: #f5e6d3; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+      <h3 style="color: var(--color-gold); font-family: 'Pirata One', cursive; font-size: 1.8em; margin-top: 5px; margin-bottom: 15px;">
+        ⚓ Visszamész a Kikötőbe?
+      </h3>
+      <p style="font-size: 1.05em; line-height: 1.5; color: #dcd0be; margin-bottom: 25px;">
+        A piactér déli kijáratához értél. Visszatérsz a kikötői mólóra, vagy folytatod a böngészést a bazárban?
+      </p>
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button class="btn" style="background: #2e7d32; color: #fff; min-width: 120px; font-weight: bold;" onclick="confirmPiacExitToKikoto()">
+          <i class="fas fa-check"></i> Igen
         </button>
+        <button class="btn btn-secondary" style="min-width: 120px;" onclick="cancelPiacExitToKikoto()">
+          <i class="fas fa-times"></i> Nem
+        </button>
+      </div>
     </div>
-</div>
+  </div>
 
-<div id="piac_oldal-content" style="display: none; position: relative;">
-    
-    <div class="info-icon-container" title="Információ megjelenítése">
-        <i class="fas fa-info-circle" onclick="showSplash('piac_oldal')"></i>
+  <!-- 6. 2D PIAC MENÜ / IRÁNYÍTÓPULT OVERLAY (ÖSSZECSUKHATÓ / LENYITHATÓ) -->
+  <div id="piac-2d-overlay" class="hajomuhely-2d-overlay" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #b87333; padding-bottom: 8px; margin-bottom: 15px;">
+      <h3 style="margin: 0; color: #ffd700; font-family: var(--font-serif);"><i class="fas fa-balance-scale"></i> Minden Portékák Piaca – Irányítópult</h3>
+      <button class="btn btn-close" onclick="togglePiac2DMenu()" style="padding: 4px 10px; font-size: 1.1rem; line-height: 1;">✕</button>
     </div>
 
-    <div class="page-container">
-        
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Piactér - Aktuális kínálat</h3>
-            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
-                <input type="text" id="piac-kereso" placeholder="Keress a hirdetések között..." style="flex-grow: 1; margin-bottom: 0;">
-                <button id="piac-kereso-gomb" class="btn" style="margin-top: 0; display: none;">Keresés</button>
-            </div>
-            <div id="piaci-lista-loader"><p>Kínálat betöltése...</p></div>
-            <div id="piaci-lista"></div>
+    <!-- Gyors NPC kártyák -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 15px;">
+      <div onclick="openUniversalNPC('market_boss', { name: 'Hortenzi Mama', role: 'Piacfőnök', icon: '<i class=\'fas fa-balance-scale\'></i>', headerColor: '#37474f', msgIcon: '<i class=\'fas fa-balance-scale\' style=\'color:#d4af37; margin-right:5px;\'></i>', loaderHTML: '<i>Hortenzi Mama számol...</i>' })"
+           style="background: linear-gradient(135deg, #3d2618, #1f120a); border: 2px solid #d4af37; border-radius: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+        <div>
+          <h4 style="margin: 0; color: #ffd700; font-size: 1.05rem;"><i class="fas fa-balance-scale"></i> Hortenzi Mama</h4>
+          <span style="color: #ecd9c6; font-size: 0.8rem;">Piacfőnök &bull; Szabályok, panaszok, pletykák</span>
         </div>
-
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Jelenleg meghirdetett tételeim</h3>
-            <div id="meghirdetett-lista-loader"><p>Keresés...</p></div>
-            <div id="meghirdetett-lista"></div>
+        <i class="fas fa-chevron-right" style="color: #ffd700;"></i>
+      </div>
+      <div onclick="openUniversalNPC('bankar', { name: 'Loan Shark', role: 'Bankár', icon: '<i class=\'fas fa-coins\'></i>', headerColor: '#2e7d32', msgIcon: '<i class=\'fas fa-coins\' style=\'color:#ffd700; margin-right:5px;\'></i>', loaderHTML: '<i>A Bankár számol...</i>' })"
+           style="background: linear-gradient(135deg, #1b3d26, #0e2416); border: 2px solid #2e7d32; border-radius: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+        <div>
+          <h4 style="margin: 0; color: #2ecc71; font-size: 1.05rem;"><i class="fas fa-coins"></i> Loan Shark</h4>
+          <span style="color: #ecd9c6; font-size: 0.8rem;">eBankPirates Bankár &bull; Váltás és átutalás</span>
         </div>
-
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Eladásra szánt tételeim</h3>
-            <div class="form-group">
-                <label for="sell-item-type-select" style="font-weight: bold;">Típus kiválasztása:</label>
-                <select id="sell-item-type-select">
-                    <option value="">Válassz típust...</option>
-                    <option value="masolat">Másolat</option>
-                    <option value="tekercs">Tekercs</option>
-                    <option value="kincs">Kincs</option>
-                    <option value="terkep">Térkép</option>
-                    <option value="hajok">Hajó (Felszíni)</option> 
-                    <option value="buvarhajok">Hajó (Búvár)</option> 
-                    <option value="leghajok">Hajó (Légi)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="sell-item-select" style="display: none; font-weight: bold;">Tétel kiválasztása:</label>
-                <select id="sell-item-select" style="display: none;"></select>
-            </div>
-            <div id="sell-item-details" style="margin-bottom: 15px; display: none;"></div>
-            
-            <button id="sell-selected-item-button" class="btn" style="display: none;">Kiválasztott tétel meghirdetése</button>
-            <div id="sajat-eladhato-lista-loader" style="display: none;"><p>Tételek betöltése...</p></div>
-            <div id="sajat-eladhato-lista-status"></div> 
-        </div>
-
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Aktív ajánlataim</h3>
-            <div id="aktiv-ajanlatok-loader"><p>Keresés...</p></div>
-            <div id="aktiv-ajanlatok-lista"></div>
-        </div>
-
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">eBankPirates</h3>
-            <div class="bank-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
-                
-                <div class="bank-section" style="flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; background: #fff;">
-                    <h4 style="margin-top: 0;">Tálentum váltása Kreditre (1:100)</h4>
-                    <p>Itt válthatod át a megszerzett Tálentumaidat a piacon használható Kreditre.</p>
-                    <form onsubmit="return false;">
-                        <input type="number" id="bank-exchange-amount" placeholder="Átváltandó Tálentum">
-                        <input type="password" id="bank-exchange-pin" placeholder="PIN kódod a megerősítéshez">
-                        <button id="bank-exchange-btn" class="btn">Váltás</button>
-                    </form>  
-                </div>
-                
-                <div class="bank-section" style="flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; background: #fff;">
-                    <h4 style="margin-top: 0;">Tétel küldése más kalóznak</h4>
-                    <p style="font-size: 0.9em;">A tranzakció díja 1 kredit.</p>
-                    <form onsubmit="return false;">
-                        <input type="email" id="bank-send-recipient" placeholder="Címzett kalóz e-mail címe">
-                        <select id="bank-send-item-type">
-                            <option value="">Válassz típust...</option>
-                            <option value="kredit">Kredit</option>
-                            <option value="talentum">Tálentum</option>
-                            <option value="masolat">Másolat</option>
-                            <option value="tekercs">Tekercs</option>
-                            <option value="kincs">Kincs</option>
-                            <option value="terkep">Térkép</option>
-                            <option value="hajok">Hajó (Felszíni)</option> 
-                            <option value="buvarhajok">Hajó (Búvár)</option> 
-                            <option value="leghajok">Hajó (Légi)</option> 
-                        </select>
-                        <div id="bank-send-item-selector" style="margin-top: 5px;"></div>
-                        <input type="password" id="bank-send-pin" placeholder="PIN kódod a megerősítéshez" style="margin-top: 5px;">
-                        <button id="bank-send-btn" class="btn">Küldés</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
-
-    <div id="navigation" style="text-align: center; margin: 20px 0;">
-        <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Vissza a Kikötőbe</button>
-        <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
+        <i class="fas fa-chevron-right" style="color: #2ecc71;"></i>
+      </div>
     </div>
-</div>
 
-<div id="ajanlat-modal" class="gamemode-modal">
-  <div class="gamemode-modal-content">
-    <button class="btn btn-close" onclick="document.getElementById('ajanlat-modal').style.display='none'">X</button>
-    <h4 id="ajanlat-modal-title">Ajánlat tétele</h4>
-    <p id="ajanlat-modal-item-name" style="font-weight: bold; margin-bottom: 15px;"></p>
-    
-    <form onsubmit="return false;"> 
-        <div style="margin-bottom: 15px;">
-            <label for="ajanlat-kredit">Felajánlott kredit:</label>
-            <input type="number" id="ajanlat-kredit" placeholder="Pl. 50">
+    <div class="page-container" style="padding: 0;">
+      <!-- Kínálat -->
+      <div class="page-section">
+        <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Piactér - Aktuális kínálat</h3>
+        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+          <input type="text" id="piac-kereso" placeholder="Keress a hirdetések között..." style="flex-grow: 1; margin-bottom: 0;">
+          <button id="piac-kereso-gomb" class="btn" style="margin-top: 0; display: none;">Keresés</button>
         </div>
-        
-        <div style="margin-bottom: 15px;">
-            <label>Felajánlott kincsek:</label>
-            <div id="ajanlat-kincsek-lista" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #fff;"></div>
-        </div>
+        <div id="piaci-lista-loader"><p>Kínálat betöltése...</p></div>
+        <div id="piaci-lista"></div>
+      </div>
 
-        <div style="margin-bottom: 15px;">
-            <label for="ajanlat-pin">PIN kód a megerősítéshez</label>
-            <input type="password" id="ajanlat-pin" placeholder="PIN kódod">
+      <!-- Meghirdetett tételeim -->
+      <div class="page-section">
+        <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Jelenleg meghirdetett tételeim</h3>
+        <div id="meghirdetett-lista-loader"><p>Keresés...</p></div>
+        <div id="meghirdetett-lista"></div>
+      </div>
+
+      <!-- Eladásra szánt tételeim -->
+      <div class="page-section">
+        <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Eladásra szánt tételeim</h3>
+        <div class="form-group">
+          <label for="sell-item-type-select" style="font-weight: bold;">Típus kiválasztása:</label>
+          <select id="sell-item-type-select">
+            <option value="">Válassz típust...</option>
+            <option value="masolat">Másolat</option>
+            <option value="tekercs">Tekercs</option>
+            <option value="kincs">Kincs</option>
+            <option value="terkep">Térkép</option>
+            <option value="hajok">Hajó (Felszíni)</option> 
+            <option value="buvarhajok">Hajó (Búvár)</option> 
+            <option value="leghajok">Hajó (Légi)</option>
+          </select>
         </div>
-        
+        <div class="form-group">
+          <label for="sell-item-select" style="display: none; font-weight: bold;">Tétel kiválasztása:</label>
+          <select id="sell-item-select" style="display: none;"></select>
+        </div>
+        <div id="sell-item-details" style="margin-bottom: 15px; display: none;"></div>
+        <button id="sell-selected-item-button" class="btn" style="display: none;">Kiválasztott tétel meghirdetése</button>
+        <div id="sajat-eladhato-lista-loader" style="display: none;"><p>Tételek betöltése...</p></div>
+        <div id="sajat-eladhato-lista-status"></div> 
+      </div>
+
+      <!-- Aktív ajánlataim -->
+      <div class="page-section">
+        <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Aktív ajánlataim</h3>
+        <div id="aktiv-ajanlatok-loader"><p>Keresés...</p></div>
+        <div id="aktiv-ajanlatok-lista"></div>
+      </div>
+
+      <!-- eBankPirates -->
+      <div class="page-section">
+        <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">eBankPirates</h3>
+        <div class="bank-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+          <div class="bank-section" style="flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; background: #fff;">
+            <h4 style="margin-top: 0;">Tálentum váltása Kreditre (1:100)</h4>
+            <p>Itt válthatod át a megszerzett Tálentumaidat a piacon használható Kreditre.</p>
+            <form onsubmit="return false;">
+              <input type="number" id="bank-exchange-amount" placeholder="Átváltandó Tálentum">
+              <input type="password" id="bank-exchange-pin" placeholder="PIN kódod a megerősítéshez">
+              <button id="bank-exchange-btn" class="btn">Váltás</button>
+            </form>  
+          </div>
+          <div class="bank-section" style="flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; background: #fff;">
+            <h4 style="margin-top: 0;">Tétel küldése más kalóznak</h4>
+            <p style="font-size: 0.9em;">A tranzakció díja 1 kredit.</p>
+            <form onsubmit="return false;">
+              <input type="email" id="bank-send-recipient" placeholder="Címzett kalóz e-mail címe">
+              <select id="bank-send-item-type">
+                <option value="">Válassz típust...</option>
+                <option value="kredit">Kredit</option>
+                <option value="talentum">Tálentum</option>
+                <option value="masolat">Másolat</option>
+                <option value="tekercs">Tekercs</option>
+                <option value="kincs">Kincs</option>
+                <option value="terkep">Térkép</option>
+                <option value="hajok">Hajó (Felszíni)</option> 
+                <option value="buvarhajok">Hajó (Búvár)</option> 
+                <option value="leghajok">Hajó (Légi)</option> 
+              </select>
+              <div id="bank-send-item-selector" style="margin-top: 5px;"></div>
+              <input type="password" id="bank-send-pin" placeholder="PIN kódod a megerősítéshez" style="margin-top: 5px;">
+              <button id="bank-send-btn" class="btn">Küldés</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. AJÁNLAT ÉS HIRDETÉS MODÁLOK -->
+  <div id="ajanlat-modal" class="gamemode-modal">
+    <div class="gamemode-modal-content">
+      <button class="btn btn-close" onclick="document.getElementById('ajanlat-modal').style.display='none'">X</button>
+      <h4 id="ajanlat-modal-title">Ajánlat tétele</h4>
+      <p id="ajanlat-modal-item-name" style="font-weight: bold; margin-bottom: 15px;"></p>
+      <form onsubmit="return false;"> 
+        <div style="margin-bottom: 15px;">
+          <label for="ajanlat-kredit">Felajánlott kredit:</label>
+          <input type="number" id="ajanlat-kredit" placeholder="Pl. 50">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label>Felajánlott kincsek:</label>
+          <div id="ajanlat-kincsek-lista" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #fff;"></div>
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label for="ajanlat-pin">PIN kód a megerősítéshez</label>
+          <input type="password" id="ajanlat-pin" placeholder="PIN kódod">
+        </div>
         <button id="ajanlat-submit-btn" class="btn" style="width: 100%;">Ajánlat elküldése</button>
         <button class="btn btn-secondary" onclick="document.getElementById('ajanlat-modal').style.display='none'" style="width: 100%;">Mégse</button>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-<div id="hirdetes-modal" class="gamemode-modal">
-  <div class="gamemode-modal-content">
-    <button class="btn btn-close" onclick="document.getElementById('hirdetes-modal').style.display='none'">X</button>
-    <h4>Hirdetés feladása</h4>
-    <p id="hirdetes-modal-item-name" style="font-weight: bold; margin-bottom: 15px;"></p>
-
-    <form onsubmit="return false;">
+  <div id="hirdetes-modal" class="gamemode-modal">
+    <div class="gamemode-modal-content">
+      <button class="btn btn-close" onclick="document.getElementById('hirdetes-modal').style.display='none'">X</button>
+      <h4>Hirdetés feladása</h4>
+      <p id="hirdetes-modal-item-name" style="font-weight: bold; margin-bottom: 15px;"></p>
+      <form onsubmit="return false;">
         <div style="margin-bottom: 15px;">
-            <label style="margin-right: 15px;"><input type="radio" name="priceType" value="offer" checked onchange="toggleBuyNowInput(false)"> Ajánlat alapú</label>
-            <label><input type="radio" name="priceType" value="fixed" onchange="toggleBuyNowInput(true)"> Fixáras</label>
+          <label style="margin-right: 15px;"><input type="radio" name="priceType" value="offer" checked onchange="toggleBuyNowInput(false)"> Ajánlat alapú</label>
+          <label><input type="radio" name="priceType" value="fixed" onchange="toggleBuyNowInput(true)"> Fixáras</label>
         </div>
-
         <div id="fixed-price-container" style="display: none; margin-bottom: 15px;">
-            <label for="hirdetes-ar">Fix ár (kreditben)</label>
-            <input type="number" id="hirdetes-ar" placeholder="Pl. 100">
+          <label for="hirdetes-ar">Fix ár (kreditben)</label>
+          <input type="number" id="hirdetes-ar" placeholder="Pl. 100">
         </div>
-
         <div id="buy-now-price-container" style="display: block; margin-bottom: 15px;">
-            <label for="hirdetes-buy-now-ar">Azonnali Vétel Ár (opcionális)</label>
-            <input type="number" id="hirdetes-buy-now-ar" placeholder="Pl. 150 (üresen hagyható)">
+          <label for="hirdetes-buy-now-ar">Azonnali Vétel Ár (opcionális)</label>
+          <input type="number" id="hirdetes-buy-now-ar" placeholder="Pl. 150 (üresen hagyható)">
         </div>
-
         <div style="margin-bottom: 15px;">
-            <label for="hirdetes-pin">PIN kód a megerősítéshez</label>
-            <input type="password" id="hirdetes-pin" placeholder="PIN kódod">
+          <label for="hirdetes-pin">PIN kód a megerősítéshez</label>
+          <input type="password" id="hirdetes-pin" placeholder="PIN kódod">
         </div>
-
         <button id="hirdetes-submit-btn" class="btn" style="width: 100%;">Meghirdetem</button>
         <button class="btn btn-secondary" onclick="document.getElementById('hirdetes-modal').style.display='none'" style="width: 100%;">Mégse</button>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- UNIVERSAL NPC CHATBOX MODAL (shared) -->
-<div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
-      <div id="npc-portrait-panel" class="npc-portrait-closed">
-        <img id="npc-portrait-image" src="" alt="NPC">
-      </div>
-<div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
-    
-    <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
+  <!-- 8. UNIVERSAL NPC CHATBOX MODAL (shared) -->
+  <div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;">
+    <div id="npc-portrait-panel" class="npc-portrait-closed">
+      <img id="npc-portrait-image" src="" alt="NPC">
+    </div>
+    <div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: 80vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
+      <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="npc-icon" style="font-size: 1.5em;">👵</span> <div>
-                <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Gabrel</h3>
-                <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
-            </div>
+          <span id="npc-icon" style="font-size: 1.5em;">👵</span>
+          <div>
+            <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Mama</h3>
+            <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+          </div>
         </div>
         <button onclick="document.getElementById('universal-npc-modal').style.display='none'" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;">&times;</button>
-    </div>
-
-    <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
-        </div>
-
-    <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
+      </div>
+      <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;"></div>
+      <div style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
         <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
         <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
-            <i class="fas fa-paper-plane"></i>
+          <i class="fas fa-paper-plane"></i>
         </button>
+      </div>
+      <input type="hidden" id="current-npc-id" value="">
     </div>
-    
-    <input type="hidden" id="current-npc-id" value="">
-</div>
+  </div>
+
 </div>

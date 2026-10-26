@@ -4,47 +4,174 @@
   <button class="btn" onclick="markPageAsSeen('tekercsmester_oldal')">Értettem, mehet!</button>
 </div>
 
-<div id="tekercsmester_oldal-content" style="display: none; position: relative;">
-    
-    <div class="info-icon-container" title="Információ megjelenítése">
-        <i class="fas fa-info-circle" onclick="showSplash('tekercsmester_oldal')"></i>
+<div id="tekercsmester_oldal-content" class="tekercsmester-3d-root" style="display: none; position: relative; width: 100%; height: 100%; min-height: calc(100vh - 44px); overflow: hidden;">
+
+    <!-- 1. 3D THREE.JS WEBGL VÁSZON KONTÉNER -->
+    <div id="tekercsmester-webgl-canvas-container" class="tekercsmester-webgl-canvas-container"></div>
+
+    <!-- 2. TEKERCSMESTER 3D INTERAKTÍV TOOLTIP (Lebegő pergamen/arany buborék) -->
+    <div id="tekercsmester-interactive-tooltip" class="interactive-tooltip">
+        <span id="tekercsmester-tooltip-text">📜 Tekercsprés & Hártyaváltó</span>
+        <div class="tooltip-arrow"></div>
     </div>
 
-    <div class="page-container">
-        
-        <div class="page-section" style="text-align: center;">
-    <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Tekercs Piac</h3>
-    
-    <div class="stat-box" style="background-color: rgba(255,255,255,0.5); border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <div id="hartya-count" style="font-family: 'Pirata One', cursive; font-size: 2.5em; color: var(--color-accent);">...</div>
-        <div style="text-transform: uppercase; font-size: 0.9em; color: #555;">Hártyád</div>
-        
+    <!-- 3. TEKERCSMESTER 3D ÁTMENET OVERLAY -->
+    <div id="tekercsmester-scene-transition-overlay" class="tekercsmester-transition-overlay" style="display: none; opacity: 0; pointer-events: none;"></div>
+
+    <!-- 4. SAROK GOMBOK (Irányítópult és Infó) -->
+    <button id="tekercsmester-corner-menu-btn" class="tekercsmester-corner-menu-btn" onclick="toggleTekercsmester2DMenu()" title="Tekercsmester Irányítópult">
+        <i class="fas fa-scroll"></i> <span>Műhely Irányítópult</span>
+    </button>
+
+    <button id="tekercsmester-corner-info-btn" class="tekercsmester-corner-info-btn" onclick="showSplash('tekercsmester_oldal')" title="Tekercsmester Információ">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <!-- 5. ÖSSZECSUKHATÓ 2D VEZÉRLŐPULT OVERLAY -->
+    <div id="tekercsmester-2d-overlay" class="tekercsmester-2d-overlay" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0; color: #ffd700; font-family: var(--font-serif); font-size: 1.25rem;">
+                <i class="fas fa-scroll"></i> Tekercsmester Pult
+            </h3>
+            <button class="btn btn-close" onclick="toggleTekercsmester2DMenu()" style="padding: 4px 10px; font-size: 1.1rem; line-height: 1;">✕</button>
         </div>
 
-    <hr style="border-color: #d2b48c; margin: 20px 0;">
-    
-    <div class="form-group" style="text-align: left;">
-        <label for="elado-tekercs-lista" style="font-weight: bold;">Eladó Tekercsek a Piacon</label>
-        <select id="elado-tekercs-lista"></select>
+        <!-- Tekercsprés Kiemelt Kártya -->
+        <div onclick="openTekercsmesterPressModal()" style="background: linear-gradient(135deg, #3d2414, #1f1108); border: 2px solid #d4af37; border-radius: 8px; padding: 12px 16px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.45); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: #120904; display: flex; align-items: center; justify-content: center; border: 2px solid #d4af37; position: relative;">
+                    <i class="fas fa-scroll" style="font-size: 1.5rem; color: #ffd700;"></i>
+                    <i class="fas fa-compress-arrows-alt" style="position: absolute; bottom: -3px; right: -4px; font-size: 0.9rem; color: #b87333; background: #120904; border-radius: 50%; padding: 2px;"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; color: #ffd700; font-family: var(--font-serif); font-size: 1.15rem;">Tekercsprés & Hártyaváltás</h4>
+                    <span style="color: #ecd9c6; font-size: 0.85rem;">Hártyákból fejezettekercs sajtolása vagy eladása</span>
+                </div>
+            </div>
+            <i class="fas fa-chevron-right" style="color: #ffd700; font-size: 1.2rem;"></i>
+        </div>
+
+        <!-- Hártya Kincstár Stat Box -->
+        <div class="stat-box" style="background: rgba(43, 24, 13, 0.7); border: 1px solid #d4af37; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+            <div id="hartya-count" style="font-family: 'Pirata One', cursive; font-size: 2.3em; color: #ffd700;">...</div>
+            <div style="text-transform: uppercase; font-size: 0.85em; color: #ecd9c6; letter-spacing: 1px;">Birtokodban lévő Hártya</div>
+        </div>
+
+        <!-- Gyors Gombok a 3D Állomásokhoz -->
+        <p style="color: #f5deb3; font-size: 0.95rem; margin-bottom: 10px;">Válassz a műhely opciói közül:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+            <button class="btn" style="background-color: #5c381e; border: 1px solid #d4af37;" onclick="openTekercsmesterPressModal()"><i class="fas fa-compress-arrows-alt"></i> 📜 Tekercsprés & Hártyaváltó</button>
+            <button class="btn" style="background-color: #4a2810; border: 1px solid #d4af37;" onclick="openTekercsmesterMarketModal()"><i class="fas fa-shopping-basket"></i> 🛒 Tekercs Piac (11 Kr)</button>
+            <button class="btn" style="background-color: #1a4a35; border: 1px solid #d4af37;" onclick="openTekercsmesterAssembleModal()"><i class="fas fa-book-reader"></i> 📖 Összefűző Katedra</button>
+            <button class="btn" style="background-color: #2b3d52; border: 1px solid #d4af37;" onclick="openTekercsmesterArchiveModal()"><i class="fas fa-archive"></i> 🗄️ Saját Tekercseim</button>
+            <button class="btn" style="background-color: #1a3a5c; border: 1px solid #d4af37;" onclick="openTekercsmesterExitPrompt()"><i class="fas fa-anchor"></i> ⚓ Vissza a Kikötőbe</button>
+        </div>
     </div>
-    <button id="buy-tekercs-btn" class="btn">Megveszem (11 kredit)</button>
-</div>
 
-        <div class="page-section" id="masolatta-fuzes-section" style="display: none; background: rgba(210,180,140,0.2);">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Összefűzhető Másolatok!</h3>
-            <p style="font-size: 0.9em; color: #555;">Gratulálok! Ezekhez a könyvekhez az összes fejezetet összegyűjtötted. Fűzd össze őket egy teljes Másolattá!</p>
-            <div id="completable-scrolls-list"></div>
-        </div>
+    <!-- 6. INTERAKTÍV ÁLLOMÁSOK MODÁLJAI -->
 
-        <div class="page-section">
-            <h3 style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent);">Saját Tekercseid</h3>
-            <div id="sajat-tekercs-lista-loader"><p>Keresés...</p></div>
-            <div id="sajat-tekercs-lista"></div>
+    <!-- A. TEKERCSMESTER PRÉS & HÁRTYAVÁLTÓ MODAL -->
+    <div id="tekercsmester-press-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 580px; width: 95%; background-color: #1a1008; color: #fdf5e6; border: 2px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeTekercsmesterPressModal()">✕</button>
+            <h4 style="color: #ffd700; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                <i class="fas fa-compress-arrows-alt"></i> 📜 Tekercsprés & Hártyaváltás
+            </h4>
+            <p style="font-size: 0.95em; color: #ecd9c6; margin-bottom: 15px;">
+                A hártyahalászat során kimentett nyers hártyákból a Tekercsmester orsós présgépe új fejezettekerest sajtol, vagy a felesleges hártyákat azonnal kalózkreditre váltja.
+            </p>
+            <div style="background: #26160d; padding: 15px; border-radius: 6px; border: 1px solid #d4af37; text-align: center; margin-bottom: 15px;">
+                <span style="font-size: 0.9em; color: #ecd9c6;">Jelenlegi egyenleged:</span>
+                <div style="font-size: 1.8em; font-family: 'Pirata One', cursive; color: #ffd700;" id="press-modal-hartya-display">... hártya</div>
+            </div>
+            <div id="press-modal-actions-container" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Ide csatolódik dinamikusan a press-scroll-btn és sell-hartya-btn -->
+            </div>
         </div>
     </div>
 
-    <div id="navigation" style="text-align: center; margin: 20px 0;">
+    <!-- B. TEKERCS PIAC MODAL (VÁSÁRLÁS 11 KR) -->
+    <div id="tekercsmester-market-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 600px; width: 95%; background-color: #1a1008; color: #fdf5e6; border: 2px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeTekercsmesterMarketModal()">✕</button>
+            <h4 style="color: #ffd700; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                <i class="fas fa-shopping-basket"></i> 🛒 Tekercs Piac - Eladó Tekercsek
+            </h4>
+            <p style="font-size: 0.95em; color: #ecd9c6; margin-bottom: 15px;">
+                Itt megvásárolhatod a hiányzó tekercseket a gyűjteményedhez (egységesen 11 kalózkredit áron).
+            </p>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="elado-tekercs-lista" style="font-weight: bold; color: #ffd700;">Válassz egy eladó tekercset:</label>
+                <select id="elado-tekercs-lista" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #d4af37; background: #26160d; color: white;"></select>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button id="buy-tekercs-btn" class="btn" style="flex: 2; background: #8b4513; border: 1px solid #ffd700; color: white; font-weight: bold; padding: 12px;">Megveszem (11 kredit)</button>
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeTekercsmesterMarketModal()">Mégse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- C. ÖSSZEFŰZŐ KATEDRA MODAL (ÖSSZEFŰZHETŐ MÁSOLATOK) -->
+    <div id="tekercsmester-assemble-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 650px; width: 95%; background-color: #1a1008; color: #fdf5e6; border: 2px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closeTekercsmesterAssembleModal()">✕</button>
+            <h4 style="color: #ffd700; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                <i class="fas fa-book-reader"></i> 📖 Összefűző Katedra - Kódex Kötészet
+            </h4>
+            <div class="page-section" id="masolatta-fuzes-section" style="display: none; background: rgba(38, 22, 13, 0.7); border: 1px solid #d4af37; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+                <h5 style="color: #ffd700; margin-top: 0;">Gratulálunk! Összefűzhető Másolatok!</h5>
+                <p style="font-size: 0.9em; color: #ecd9c6;">Ezekhez a művekhez az összes fejezetet megszerezted. Kattints az összefűzésre, hogy teljes, olvasható másolattá váljanak!</p>
+                <div id="completable-scrolls-list"></div>
+            </div>
+            <div id="assemble-modal-fallback-info" style="color: #ecd9c6; font-size: 0.95em;">
+                <p>Ha egy mű összes tekercse a birtokodban van (legalább 48 tekercs), itt varrja őket a mester egységes, teljes kódex másolattá.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- D. SAJÁT TEKERCSEK ARCHÍVUMA MODAL -->
+    <div id="tekercsmester-archive-modal" class="gamemode-modal" style="display: none;">
+        <div class="gamemode-modal-content" style="position: relative; text-align: left; max-width: 680px; width: 95%; max-height: 85vh; display: flex; flex-direction: column; background-color: #1a1008; color: #fdf5e6; border: 2px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.85);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-bottom: 15px;">
+                <h4 style="color: #ffd700; margin: 0; font-family: var(--font-serif); font-size: 1.3em;">
+                    <i class="fas fa-archive"></i> 🗄️ Saját Tekercseid Archívuma
+                </h4>
+                <button class="btn btn-close" style="padding: 5px 10px; line-height: 1;" onclick="closeTekercsmesterArchiveModal()">✕</button>
+            </div>
+            <div style="flex: 1; overflow-y: auto; padding-right: 5px;">
+                <div id="sajat-tekercs-lista-loader"><p><i class="fas fa-spinner fa-spin"></i> Tekercsek keresése...</p></div>
+                <div id="sajat-tekercs-lista"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- E. KIKÖTŐBE VISSZALÉPTETŐ MEGERŐSÍTŐ MODAL -->
+    <div id="tekercsmester-kikoto-confirm-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 105;">
+        <div class="gamemode-modal-content" style="max-width: 440px; width: 90%; background: #1a1008; border: 2px solid #d4af37; border-radius: 8px; padding: 25px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.85);">
+            <div style="font-size: 3rem; color: #ffd700; margin-bottom: 15px;">
+                <i class="fas fa-anchor"></i>
+            </div>
+            <h3 style="color: #ffd700; font-family: var(--font-serif); margin-top: 0; margin-bottom: 10px; font-size: 1.4rem;">
+                Visszamész a Kikötőbe?
+            </h3>
+            <p style="color: #ecd9c6; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.4;">
+                Elhagyod a Tekercsmester műhelyének csendjét, és visszatérsz a kikötő forgatagába.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn" style="background: #8b4513; border: 1px solid #ffd700; color: white; padding: 10px 24px; font-weight: bold;" onclick="confirmTekercsmesterExitToKikoto()">
+                    <i class="fas fa-check"></i> Igen, visszamegyek
+                </button>
+                <button class="btn btn-secondary" style="padding: 10px 24px;" onclick="cancelTekercsmesterExitToKikoto()">
+                    <i class="fas fa-times"></i> Nem, maradok
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alsó tartalék navigáció rejtve -->
+    <div id="navigation" style="display: none;">
         <button class="btn btn-secondary" onclick="loadPage('kikoto_oldal')">Vissza a Kikötőbe</button>
         <button class="btn btn-danger" onclick="logout()">Kijelentkezés</button>
     </div>
+
 </div>

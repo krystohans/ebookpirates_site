@@ -17,7 +17,11 @@
     <!-- 3. TAVERNA 3D ÁTMENET OVERLAY -->
     <div id="taverna-scene-transition-overlay" class="taverna-transition-overlay" style="display: none; opacity: 0; pointer-events: none;"></div>
 
-    <!-- 4. TAVERNA SAROK INFÓGOMB (Szerény kinézetű ikon a sarokban) -->
+    <!-- 4. SAROK GOMBOK (Irányítópult és Infó) -->
+    <button id="taverna-corner-menu-btn" class="taverna-corner-menu-btn" onclick="toggleTaverna2DMenu()" title="Taverna Irányítópult">
+        <i class="fas fa-beer"></i> <span>Taverna Irányítópult</span>
+    </button>
+
     <button id="taverna-corner-info-btn" class="taverna-corner-info-btn" onclick="showSplash('taverna_oldal')" title="Információ">
         <i class="fas fa-info"></i>
     </button>
@@ -91,8 +95,30 @@
             <button class="btn" onclick="openTavernJobs()">🗣️ Melót vagy melóst keresek</button>
             <button class="btn" style="background-color: #3b2818;" onclick="openNoticeBoard()">📌 Hirdetőtábla</button>
             <button id="pult-btn" class="btn" onclick="openPultModal()">📨 Postapult (Üzenetek)</button>
-            <button id="asztal-btn" class="btn" onclick="document.getElementById('asztal-confirm-modal').style.display='flex'">🗣️ Asztal (Chat)</button>
-            <button id="taverna-kikoto-exit-btn" class="btn" style="background-color: #1a4a68; border: 1px solid var(--color-gold);" onclick="loadPage('kikoto_oldal')">⚓ Vissza a Kikötőbe</button>
+            <button id="taverna-kikoto-exit-btn" class="btn" style="background-color: #1a4a68; border: 1px solid var(--color-gold);" onclick="document.getElementById('taverna-kikoto-confirm-modal').style.display='flex'">⚓ Vissza a Kikötőbe</button>
+        </div>
+    </div>
+
+    <!-- 7. KIKÖTŐBE VISSZALÉPTETŐ MEGERŐSÍTŐ MODAL -->
+    <div id="taverna-kikoto-confirm-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 105;">
+        <div class="gamemode-modal-content" style="max-width: 440px; width: 90%; background: #1a1008; border: 2px solid #d4af37; border-radius: 8px; padding: 25px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.85);">
+            <div style="font-size: 3rem; color: #ffd700; margin-bottom: 15px;">
+                <i class="fas fa-anchor"></i>
+            </div>
+            <h3 style="color: #ffd700; font-family: var(--font-serif); margin-top: 0; margin-bottom: 10px; font-size: 1.4rem;">
+                Visszamész a Kikötőbe?
+            </h3>
+            <p style="color: #ecd9c6; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.4;">
+                Elhagyod a Rózsaszín Gyöngy tavernát, és visszatérsz a kikötő forgatagába.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn" style="background: #8b4513; border: 1px solid #ffd700; color: white; padding: 10px 24px; font-weight: bold;" onclick="confirmTavernaExitToKikoto()">
+                    <i class="fas fa-check"></i> Igen, visszamegyek
+                </button>
+                <button class="btn btn-secondary" style="padding: 10px 24px;" onclick="cancelTavernaExitToKikoto()">
+                    <i class="fas fa-times"></i> Nem, maradok
+                </button>
+            </div>
         </div>
     </div>
 

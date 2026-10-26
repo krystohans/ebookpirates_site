@@ -44,7 +44,7 @@ function applyDeletionPageMetaTranslation() {
 // === [#HEX:F.04.236.00] END ===
 
 // === [#HEX:F.06.58.00] START | name: callBackend | lines: 46 ===
-// @calls: [#HEX:F.04.6E.00], [#HEX:F.04.1F1.00], [#HEX:F.0B.00.00] | @calledBy: none
+// @calls: [#HEX:F.04.1F1.00], [#HEX:F.04.2C1.00], [#HEX:F.0B.00.00] | @calledBy: none
 function callBackend(funcName, params, onSuccess, onFailure) {
     var token = null;
     try {
@@ -134,7 +134,7 @@ document.getElementById('deletionForm').addEventListener('submit', function(even
     };
 
 // === [#HEX:F.06.59.00] START | name: callBackend | lines: 7 ===
-// @calls: [#HEX:B.07.E2.00], [#HEX:F.0B.00.00] | @calledBy: [#HEX:F.05.2E.00], [#HEX:F.04.18D.00], [#HEX:F.06.4B.00], [#HEX:F.04.191.00], [#HEX:F.04.194.00]
+// @calls: [#HEX:F.0B.00.00], [#HEX:B.07.E2.00] | @calledBy: [#HEX:F.05.2E.00], [#HEX:F.04.18D.00], [#HEX:F.06.4B.00], [#HEX:F.04.191.00], [#HEX:F.04.194.00]
     callBackend('submitDeletionRequest', [formData], function(response) {
         statusMessage.textContent = response.message
             ? localizeByDictionary(response.message)

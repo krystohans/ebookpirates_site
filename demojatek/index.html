@@ -1661,7 +1661,7 @@
         let victoryZoneTriggered = false;
 
 // === [#HEX:D.01.71.00] START | name: triggerGameOver | lines: 33 ===
-// @calls: [#HEX:D.04.10.00], [#HEX:D.05.05.00], [#HEX:D.01.72.00] | @calledBy: [#HEX:D.01.8A.00]
+// @calls: [#HEX:D.01.72.00], [#HEX:D.04.10.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.01.8A.00]
         function triggerGameOver(reasonText) {
             isGameOver = true;
             gameStarted = false;
@@ -1704,7 +1704,7 @@
         // UNIVERZÁLIS KÉTUJJAS CSÍPÉS-ZOOM ÉS PÁSZTÁZÓ MOTOR (SZÖVEG- ÉS KVÍZDOBOZOK)
         // =========================================================================
 // === [#HEX:D.05.04.00] START | name: makePinchZoomable | lines: 157 ===
-// @calls: [#HEX:D.05.0A.00], [#HEX:D.05.05.00], [#HEX:D.01.74.00], [#HEX:D.01.73.00] | @calledBy: [#HEX:D.05.07.00]
+// @calls: [#HEX:D.01.73.00], [#HEX:D.01.74.00], [#HEX:D.05.05.00], [#HEX:D.05.0A.00] | @calledBy: [#HEX:D.05.07.00]
         function makePinchZoomable(containerEl, contentEl, options) {
             if (!containerEl || !contentEl) return null;
 
@@ -1898,7 +1898,7 @@
 // === [#HEX:D.04.0D.00] END ===
 
 // === [#HEX:D.05.07.00] START | name: initModalPinchZoom | lines: 41 ===
-// @calls: [#HEX:D.05.05.00], [#HEX:F.04.13.00], [#HEX:D.05.04.00], [#HEX:D.04.0D.00] | @calledBy: [#HEX:D.01.95.00]
+// @calls: [#HEX:D.05.05.00], [#HEX:F.04.13.00], [#HEX:D.04.0D.00], [#HEX:D.05.04.00] | @calledBy: [#HEX:D.01.95.00]
         function initModalPinchZoom() {
             var quizOverlay = document.getElementById('quiz-overlay');
             var quizPanel = document.getElementById('quiz-panel');
@@ -1947,7 +1947,7 @@
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
         // ==========================================
 // === [#HEX:D.01.75.00] START | name: showProjectDialog | lines: 31 ===
-// @calls: [#HEX:D.05.05.00], [#HEX:B.15.BB.00], [#HEX:D.01.76.00] | @calledBy: [#HEX:D.01.77.00], [#HEX:D.01.78.00], [#HEX:D.04.0F.00]
+// @calls: [#HEX:D.01.76.00], [#HEX:D.05.05.00], [#HEX:B.15.BB.00] | @calledBy: [#HEX:D.01.77.00], [#HEX:D.01.78.00], [#HEX:D.04.0F.00]
         function showProjectDialog(title, text, btnText, isSuccess, callback) {
             if (gameDialogPinchController) gameDialogPinchController.resetZoom(false);
             const overlay = document.getElementById('game-dialog-overlay');
@@ -2124,7 +2124,7 @@
 // === [#HEX:D.04.0E.00] END ===
 
 // === [#HEX:D.04.0F.00] START | name: showAirshipQuizModal | lines: 74 ===
-// @calls: [#HEX:D.05.05.00], [#HEX:D.01.75.00] | @calledBy: [#HEX:D.04.0E.00]
+// @calls: [#HEX:D.01.75.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.04.0E.00]
         function showAirshipQuizModal(qData) {
             if (quizPinchController) quizPinchController.resetZoom(false);
             console.log("DEBUG: showAirshipQuizModal indítása, kérdés:", qData.question);
@@ -2247,7 +2247,7 @@
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
 
 // === [#HEX:D.01.79.00] START | name: callBackend | lines: 25 ===
-// @calls: [#HEX:F.04.6E.00] | @calledBy: [#HEX:D.07.00.00], [#HEX:D.07.02.00], [#HEX:D.04.02.00], [#HEX:D.01.7A.00], [#HEX:D.04.14.00]
+// @calls: [#HEX:F.04.2C1.00] | @calledBy: [#HEX:D.07.00.00], [#HEX:D.07.02.00], [#HEX:D.04.02.00], [#HEX:D.01.7A.00], [#HEX:D.04.14.00]
         function callBackend(action, params) {
             return new Promise((resolve, reject) => {
                 if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
@@ -2564,7 +2564,7 @@
         const rng = new PRNG(12345); // Fix seed!
 
 // === [#HEX:D.01.7F.00] START | name: buildScene | lines: 465 ===
-// @calls: [#HEX:D.04.10.00], [#HEX:D.01.80.00], [#HEX:D.03.12.00], [#HEX:D.04.11.00], [#HEX:D.01.7E.00] | @calledBy: none
+// @calls: [#HEX:D.04.11.00], [#HEX:D.01.80.00], [#HEX:D.01.7E.00], [#HEX:D.03.12.00], [#HEX:D.04.10.00] | @calledBy: none
         async function buildScene() {
             // 1. Külön csoport létrehozása a Bázis elemei (sziget henger + dekorációk + fények) számára
             harborDecorationsGroup = new THREE.Group();
@@ -3052,7 +3052,7 @@
 // === [#HEX:D.04.11.00] END ===
 
 // === [#HEX:D.01.80.00] START | name: loadHarborDecorations | lines: 316 ===
-// @calls: [#HEX:D.01.83.00], [#HEX:D.01.81.00], [#HEX:D.01.7E.00], [#HEX:D.01.82.00] | @calledBy: [#HEX:D.01.7F.00]
+// @calls: [#HEX:D.01.83.00], [#HEX:D.01.82.00], [#HEX:D.01.81.00], [#HEX:D.01.7E.00] | @calledBy: [#HEX:D.01.7F.00]
         function loadHarborDecorations(topY) {
             if (!baseHarbor || !harborDecorationsGroup) return;
             
@@ -3491,7 +3491,7 @@
 
         // Indítás gomb/tábla funkciója (mobilon és asztalin is működik)
 // === [#HEX:D.06.0A.00] START | name: startGameFromInstruction | lines: 12 ===
-// @calls: [#HEX:D.01.85.00], [#HEX:F.04.13.00], [#HEX:D.01.90.00], [#HEX:D.01.84.00] | @calledBy: none
+// @calls: [#HEX:D.01.84.00], [#HEX:D.01.90.00], [#HEX:D.01.85.00], [#HEX:F.04.13.00] | @calledBy: none
         function startGameFromInstruction() {
             if (typeof requestLandscapeMode === 'function') {
                 requestLandscapeMode();
@@ -3761,7 +3761,7 @@
 // === [#HEX:D.01.89.00] END ===
 
 // === [#HEX:D.01.8A.00] START | name: updatePhysics | lines: 431 ===
-// @calls: [#HEX:D.04.10.00], [#HEX:D.01.8C.00], [#HEX:D.01.85.00], [#HEX:D.04.12.00], [#HEX:D.03.12.00] | @calledBy: [#HEX:D.01.8E.00]
+// @calls: [#HEX:D.01.71.00], [#HEX:D.04.12.00], [#HEX:D.01.91.00], [#HEX:D.01.8C.00], [#HEX:D.01.7B.00] | @calledBy: [#HEX:D.01.8E.00]
         function updatePhysics() {
             if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
             if (!isAndroid) scene.updateMatrixWorld(true);
@@ -4201,7 +4201,7 @@
         let currentAnswers = [];
 
 // === [#HEX:D.04.12.00] START | name: triggerQuiz | lines: 59 ===
-// @calls: [#HEX:D.04.14.00], [#HEX:D.05.05.00], [#HEX:D.04.13.00], [#HEX:D.01.8B.00] | @calledBy: [#HEX:D.01.8A.00]
+// @calls: [#HEX:D.04.14.00], [#HEX:D.05.05.00], [#HEX:D.01.8B.00], [#HEX:D.04.13.00] | @calledBy: [#HEX:D.01.8A.00]
         function triggerQuiz() {
             isQuizActive = true;
             if (quizQuestions.length === 0) {
@@ -4301,7 +4301,7 @@
         }
 
 // === [#HEX:D.04.14.00] START | name: handleAnswer | lines: 12 ===
-// @calls: [#HEX:D.01.79.00], [#HEX:D.01.8B.00], [#HEX:B.01.06.00] | @calledBy: [#HEX:D.04.12.00], [#HEX:D.04.13.00]
+// @calls: [#HEX:D.01.8B.00], [#HEX:D.01.79.00], [#HEX:B.01.06.00] | @calledBy: [#HEX:D.04.12.00], [#HEX:D.04.13.00]
         async function handleAnswer(isCorrect) {
             clearInterval(timerInterval);
             document.getElementById('quiz-overlay').style.display = 'none';
@@ -4317,7 +4317,7 @@
 // === [#HEX:D.04.14.00] END ===
 
 // === [#HEX:D.01.8B.00] START | name: resumeGame | lines: 27 ===
-// @calls: [#HEX:D.04.10.00], [#HEX:D.03.12.00] | @calledBy: [#HEX:D.04.12.00], [#HEX:D.04.14.00]
+// @calls: [#HEX:D.03.12.00], [#HEX:D.04.10.00] | @calledBy: [#HEX:D.04.12.00], [#HEX:D.04.14.00]
         function resumeGame(isCorrect, wasDoubleOrNothing) {
             if (isCorrect) {
                 if (wasDoubleOrNothing) {
@@ -4348,7 +4348,7 @@
 // === [#HEX:D.01.8B.00] END ===
 
 // === [#HEX:D.01.8C.00] START | name: exitMinigame | lines: 62 ===
-// @calls: [#HEX:D.01.78.00], [#HEX:D.05.05.00], [#HEX:D.01.8D.00] | @calledBy: [#HEX:D.01.8A.00]
+// @calls: [#HEX:D.05.05.00], [#HEX:D.01.8D.00], [#HEX:D.01.78.00] | @calledBy: [#HEX:D.01.8A.00]
         function exitMinigame(type) {
             console.log("DEBUG: exitMinigame meghívva, típus:", type);
             if (type === 'AIRSHIP') {
@@ -4425,7 +4425,7 @@
         // 5. RENDER LOOP
         // ==========================================
 // === [#HEX:D.01.8E.00] START | name: animate | lines: 56 ===
-// @calls: [#HEX:D.04.0E.00], [#HEX:D.01.8A.00], [#HEX:D.01.7C.00] | @calledBy: none
+// @calls: [#HEX:D.01.7C.00], [#HEX:D.01.8A.00], [#HEX:D.04.0E.00] | @calledBy: none
         function animate() {
             requestAnimationFrame(animate);
             let elapsedTime = Date.now() * 0.001; // Idő másodpercben (a THREE.Clock helyett)
@@ -4606,7 +4606,7 @@
 // === [#HEX:D.01.91.00] END ===
 
 // === [#HEX:D.01.92.00] START | name: setupMobileControls | lines: 164 ===
-// @calls: [#HEX:D.05.0A.00], [#HEX:D.01.93.00], [#HEX:D.01.91.00], [#HEX:D.01.94.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.95.00]
+// @calls: [#HEX:D.01.91.00], [#HEX:D.01.93.00], [#HEX:D.05.0A.00], [#HEX:F.04.13.00], [#HEX:D.01.94.00] | @calledBy: [#HEX:D.01.95.00]
         function setupMobileControls() {
             const overlay = document.getElementById('mobile-overlay');
             if (overlay && isAndroid) overlay.style.display = 'block';
@@ -4784,7 +4784,7 @@
 
         // Automatikus indítás mobilon és asztali böngészőben (Live Server teszteléshez)
 // === [#HEX:D.01.95.00] START | name: initAppControls | lines: 26 ===
-// @calls: [#HEX:D.05.07.00], [#HEX:D.01.8F.00], [#HEX:D.01.92.00] | @calledBy: none
+// @calls: [#HEX:D.01.92.00], [#HEX:D.01.8F.00], [#HEX:D.05.07.00] | @calledBy: none
         function initAppControls() {
             setupMobileControls();
             if (typeof initModalPinchZoom === 'function') {

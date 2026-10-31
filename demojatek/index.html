@@ -1397,12 +1397,93 @@
             box-shadow: 0 4px 15px rgba(212,175,55,0.4);
         }
 
-        /* Álló (portrait) mobilkijelzőn automatikusan megjelenik */
-        @media screen and (orientation: portrait) and (max-width: 1100px),
-               screen and (max-aspect-ratio: 13/12) and (max-width: 1100px) {
-            #orientation-guard {
-                display: flex !important;
-            }
+        /* Álló (portrait) mobilkijelzőn NEM blokkoljuk a betöltést, hanem automatikusan 90 fokkal fekvőbe (horizontálisba) forgatjuk a teljes játékteret! */
+        #orientation-guard {
+            display: none !important;
+        }
+
+        body.force-landscape-rotated {
+            position: fixed !important;
+            top: 0 !important;
+            left: 100vw !important;
+            width: 100vh !important;
+            height: 100vw !important;
+            transform: rotate(90deg) !important;
+            transform-origin: 0 0 !important;
+            overflow: hidden !important;
+        }
+
+        body.force-landscape-rotated #game-container,
+        body.force-landscape-rotated #ui-layer,
+        body.force-landscape-rotated #quiz-overlay,
+        body.force-landscape-rotated #info-overlay,
+        body.force-landscape-rotated #game-dialog-overlay,
+        body.force-landscape-rotated #demo-subscription-overlay,
+        body.force-landscape-rotated #demo-exit-overlay,
+        body.force-landscape-rotated #mobile-overlay {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        body.force-landscape-rotated #top-bar {
+            max-width: 94% !important;
+        }
+
+        .mobile-hud #start-instruction,
+        body.force-landscape-rotated #start-instruction {
+            width: 88% !important;
+            max-width: 620px !important;
+            padding: 18px 32px 14px 32px !important;
+        }
+
+        .mobile-hud #start-instruction .hero-portrait-badge img,
+        body.force-landscape-rotated #start-instruction .hero-portrait-badge img {
+            width: 44px !important;
+            height: 44px !important;
+        }
+
+        .mobile-hud #start-instruction .hero-title,
+        body.force-landscape-rotated #start-instruction .hero-title {
+            font-size: 17px !important;
+        }
+
+        .mobile-hud #start-instruction .hero-desc,
+        body.force-landscape-rotated #start-instruction .hero-desc {
+            font-size: 12.5px !important;
+            line-height: 1.3 !important;
+            margin: 4px 0 8px 0 !important;
+        }
+
+        .mobile-hud #start-instruction .hero-loot-box,
+        body.force-landscape-rotated #start-instruction .hero-loot-box {
+            padding: 5px 4px !important;
+            margin-bottom: 8px !important;
+            gap: 4px !important;
+        }
+
+        .mobile-hud #start-instruction .hero-loot-item,
+        body.force-landscape-rotated #start-instruction .hero-loot-item {
+            font-size: 11px !important;
+        }
+
+        .mobile-hud #start-instruction .hero-loot-item span,
+        body.force-landscape-rotated #start-instruction .hero-loot-item span {
+            font-size: 12px !important;
+        }
+
+        .mobile-hud #start-instruction .hero-btn-start,
+        body.force-landscape-rotated #start-instruction .hero-btn-start {
+            padding: 8px 22px !important;
+            font-size: 16px !important;
+        }
+
+        body.force-landscape-rotated #quiz-panel,
+        body.force-landscape-rotated #info-panel,
+        body.force-landscape-rotated .game-dialog-panel,
+        body.force-landscape-rotated #game-message {
+            width: 90% !important;
+            max-width: 640px !important;
+            max-height: 92% !important;
         }
 
         /* ─── KÉTUJJAS CSÍPÉS-ZOOM TÁMOGATÁS A SZÖVEG- ÉS KVÍZDOBOZOKRA ─── */
@@ -1434,7 +1515,7 @@
     style="margin: 0; overflow: hidden; background-color: #000; touch-action: none; user-select: none;">
 
     <!-- ─── KÖTELEZŐ FEKVŐ TÁJOLÁS KIKÉNYSZERÍTŐ RÉTEG ─── -->
-    <div id="orientation-guard" onclick="requestLandscapeMode()" ontouchstart="requestLandscapeMode()">
+    <div id="orientation-guard" style="display: none !important;" onclick="requestLandscapeMode(event)">
         <svg class="rotate-phone-anim" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
             <line x1="12" y1="18" x2="12.01" y2="18"></line>
@@ -1443,7 +1524,7 @@
         </svg>
         <div class="orientation-title">⚓ VITORLABONTÁS FEKVŐ MÓDBAN!</div>
         <div class="orientation-desc">A tengeri hajózás és a 3D kaland fekvő képernyőre lett tervezve.<br><strong>Kérlek, fordítsd el a telefonodat oldalra!</strong></div>
-        <button class="force-landscape-btn" onclick="requestLandscapeMode()">🔄 Fekvő mód kényszerítése</button>
+        <button type="button" class="force-landscape-btn" onclick="requestLandscapeMode(event)">🔄 Fekvő mód kényszerítése</button>
     </div>
     <audio id="bg-music" loop>
         <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3" type="audio/mpeg">
@@ -1655,13 +1736,77 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // ==========================================
+        // PLATFORM ÉS AUTOMATIKUS HORIZONTÁLIS (FEKVŐ) TÁJOLÁS MOTOR
+        // ==========================================
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                               (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) ||
+                               window.location.search.includes('mobile=1') ||
+                               window.location.hash === '#mobile';
+        const isAndroid = isMobileDevice;
+        window.isMobileDevice = isMobileDevice;
+        window.isAndroid = isAndroid;
+
+// === [#HEX:D.05.0B.00] START | name: getLandscapeViewport | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:D.05.0C.00], [#HEX:D.05.0D.00], [#HEX:D.05.04.00], [#HEX:D.04.0D.00], [#HEX:D.01.91.00]
+        function getLandscapeViewport() {
+            var rawW = window.innerWidth || document.documentElement.clientWidth || 800;
+            var rawH = window.innerHeight || document.documentElement.clientHeight || 600;
+            var isPortraitRaw = rawH > rawW;
+            var shouldForceRotate = isPortraitRaw && (isMobileDevice || rawW <= 1100);
+            if (shouldForceRotate) {
+                return { width: rawH, height: rawW, isRotated90: true, rawW: rawW, rawH: rawH };
+            }
+            return { width: rawW, height: rawH, isRotated90: false, rawW: rawW, rawH: rawH };
+        }
+// === [#HEX:D.05.0B.00] END ===
+        window.getLandscapeViewport = getLandscapeViewport;
+
+// === [#HEX:D.05.0C.00] START | name: toLandscapePoint | lines: 10 ===
+// @calls: [#HEX:D.05.0B.00] | @calledBy: [#HEX:D.05.04.00], [#HEX:D.01.92.00], [#HEX:D.05.0A.00]
+        function toLandscapePoint(clientX, clientY) {
+            var vp = getLandscapeViewport();
+            if (vp.isRotated90) {
+                return {
+                    x: clientY,
+                    y: vp.rawW - clientX
+                };
+            }
+            return { x: clientX, y: clientY };
+        }
+// === [#HEX:D.05.0C.00] END ===
+        window.toLandscapePoint = toLandscapePoint;
+
+// === [#HEX:D.05.0D.00] START | name: syncForcedLandscapeClass | lines: 17 ===
+// @calls: [#HEX:D.05.0B.00] | @calledBy: [#HEX:D.01.8F.00], [#HEX:D.01.95.00]
+        function syncForcedLandscapeClass() {
+            if (!document.body) return getLandscapeViewport();
+            var vp = getLandscapeViewport();
+            if (vp.isRotated90) {
+                document.body.classList.add('force-landscape-rotated');
+            } else {
+                document.body.classList.remove('force-landscape-rotated');
+            }
+            if (isAndroid) {
+                document.body.classList.add('mobile-hud');
+            }
+            var guard = document.getElementById('orientation-guard');
+            if (guard) {
+                guard.style.setProperty('display', 'none', 'important');
+            }
+            return vp;
+        }
+// === [#HEX:D.05.0D.00] END ===
+        window.syncForcedLandscapeClass = syncForcedLandscapeClass;
+        syncForcedLandscapeClass();
+
+        // ==========================================
         // DEMÓ JÁTÉK ÉS FELIRATKOZÁSI LOGIKA
         // ==========================================
         let airshipQuizActive = false;
         let victoryZoneTriggered = false;
 
 // === [#HEX:D.01.71.00] START | name: triggerGameOver | lines: 33 ===
-// @calls: [#HEX:D.01.72.00], [#HEX:D.05.05.00], [#HEX:D.04.10.00] | @calledBy: [#HEX:D.01.8A.00]
+// @calls: [#HEX:D.05.05.00], [#HEX:D.01.72.00], [#HEX:D.04.10.00] | @calledBy: [#HEX:D.01.8A.00]
         function triggerGameOver(reasonText) {
             isGameOver = true;
             gameStarted = false;
@@ -1703,8 +1848,8 @@
         // =========================================================================
         // UNIVERZÁLIS KÉTUJJAS CSÍPÉS-ZOOM ÉS PÁSZTÁZÓ MOTOR (SZÖVEG- ÉS KVÍZDOBOZOK)
         // =========================================================================
-// === [#HEX:D.05.04.00] START | name: makePinchZoomable | lines: 157 ===
-// @calls: [#HEX:D.01.73.00], [#HEX:D.05.05.00], [#HEX:D.01.74.00], [#HEX:D.05.0A.00] | @calledBy: [#HEX:D.05.07.00]
+// === [#HEX:D.05.04.00] START | name: makePinchZoomable | lines: 160 ===
+// @calls: [#HEX:D.05.0B.00], [#HEX:D.01.74.00], [#HEX:D.01.73.00], [#HEX:D.05.0C.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.05.07.00]
         function makePinchZoomable(containerEl, contentEl, options) {
             if (!containerEl || !contentEl) return null;
 
@@ -1776,8 +1921,9 @@
                     e.stopPropagation();
                     if (e.cancelable) e.preventDefault();
                 } else if (e.touches.length === 1) {
-                    singleTouchStart.x = e.touches[0].clientX;
-                    singleTouchStart.y = e.touches[0].clientY;
+                    var ptStart = toLandscapePoint(e.touches[0].clientX, e.touches[0].clientY);
+                    singleTouchStart.x = ptStart.x;
+                    singleTouchStart.y = ptStart.y;
                     totalSingleMoveDist = 0;
                     if (currentScale > 1.05) {
                         isPanning = true;
@@ -1807,12 +1953,14 @@
                     e.stopPropagation();
                     if (e.cancelable) e.preventDefault();
                 } else if (e.touches.length === 1 && isPanning && currentScale > 1.05) {
-                    var dx = e.touches[0].clientX - singleTouchStart.x;
-                    var dy = e.touches[0].clientY - singleTouchStart.y;
+                    var ptMove = toLandscapePoint(e.touches[0].clientX, e.touches[0].clientY);
+                    var dx = ptMove.x - singleTouchStart.x;
+                    var dy = ptMove.y - singleTouchStart.y;
                     totalSingleMoveDist = Math.hypot(dx, dy);
 
-                    var maxPanX = Math.max(60, (window.innerWidth * (currentScale - 1)) / 1.5);
-                    var maxPanY = Math.max(60, (window.innerHeight * (currentScale - 1)) / 1.5);
+                    var vpPan = getLandscapeViewport();
+                    var maxPanX = Math.max(60, (vpPan.width * (currentScale - 1)) / 1.5);
+                    var maxPanY = Math.max(60, (vpPan.height * (currentScale - 1)) / 1.5);
                     currentPanX = Math.min(Math.max(startPanX + dx, -maxPanX), maxPanX);
                     currentPanY = Math.min(Math.max(startPanY + dy, -maxPanY), maxPanY);
                     applyTransform(false);
@@ -1883,22 +2031,23 @@
         var gameMsgPinchController = null;
         var demoSubPinchController = null;
 
-// === [#HEX:D.04.0D.00] START | name: updateQuizPanelScale | lines: 10 ===
-// @calls: none | @calledBy: [#HEX:D.05.07.00]
+// === [#HEX:D.04.0D.00] START | name: updateQuizPanelScale | lines: 11 ===
+// @calls: [#HEX:D.05.0B.00] | @calledBy: [#HEX:D.05.07.00]
         function updateQuizPanelScale() {
             if (!isAndroid) return 1.0;
             var panel = document.getElementById('quiz-panel');
             if (!panel) return 1.0;
+            var vpQ = getLandscapeViewport();
             var baseW = 640;
             var baseH = panel.offsetHeight || 150;
-            var availW = window.innerWidth * 0.94;
-            var availH = window.innerHeight * 0.94;
+            var availW = vpQ.width * 0.94;
+            var availH = vpQ.height * 0.94;
             return Math.min(1.0, availW / baseW, availH / baseH);
         }
 // === [#HEX:D.04.0D.00] END ===
 
 // === [#HEX:D.05.07.00] START | name: initModalPinchZoom | lines: 41 ===
-// @calls: [#HEX:D.05.04.00], [#HEX:F.04.13.00], [#HEX:D.05.05.00], [#HEX:D.04.0D.00] | @calledBy: [#HEX:D.01.95.00]
+// @calls: [#HEX:D.05.04.00], [#HEX:D.04.0D.00], [#HEX:D.05.05.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.95.00]
         function initModalPinchZoom() {
             var quizOverlay = document.getElementById('quiz-overlay');
             var quizPanel = document.getElementById('quiz-panel');
@@ -1947,7 +2096,7 @@
         // STÍLUSOS PROJEKT FELUGRÓ ABLAK (MODAL) KEZELŐ
         // ==========================================
 // === [#HEX:D.01.75.00] START | name: showProjectDialog | lines: 31 ===
-// @calls: [#HEX:D.01.76.00], [#HEX:B.15.BB.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.01.77.00], [#HEX:D.01.78.00], [#HEX:D.04.0F.00]
+// @calls: [#HEX:D.01.76.00], [#HEX:D.05.05.00], [#HEX:B.15.BB.00] | @calledBy: [#HEX:D.01.77.00], [#HEX:D.01.78.00], [#HEX:D.04.0F.00]
         function showProjectDialog(title, text, btnText, isSuccess, callback) {
             if (gameDialogPinchController) gameDialogPinchController.resetZoom(false);
             const overlay = document.getElementById('game-dialog-overlay');
@@ -2124,7 +2273,7 @@
 // === [#HEX:D.04.0E.00] END ===
 
 // === [#HEX:D.04.0F.00] START | name: showAirshipQuizModal | lines: 74 ===
-// @calls: [#HEX:D.01.75.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.04.0E.00]
+// @calls: [#HEX:D.05.05.00], [#HEX:D.01.75.00] | @calledBy: [#HEX:D.04.0E.00]
         function showAirshipQuizModal(qData) {
             if (quizPinchController) quizPinchController.resetZoom(false);
             console.log("DEBUG: showAirshipQuizModal indítása, kérdés:", qData.question);
@@ -2206,13 +2355,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Water.js"></script>
 
     <script>
-        // Határozott platform elválasztás: Érintőképernyős / Mobil vs. Asztali PC
-        // (A maxTouchPoints > 0 kivéve, mert az érintőképernyős/tollas PC laptopokat tévesen mobilnak azonosította!)
-        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                               (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) ||
-                               window.location.search.includes('mobile=1') || 
-                               window.location.hash === '#mobile';
-        const isAndroid = isMobileDevice; // Kompatibilitási alias
+        // Platform változók az első script blokkból inicializálva (isMobileDevice, isAndroid)
         let mobileMode = 'boat'; // 'boat' vagy 'camera'
 
         // ==========================================
@@ -2403,8 +2546,9 @@
         // A köd sűrűségét 0.0022-re emeljük, hogy szép légköri takarást adjon a hegyeknek és a messzeségnek
         scene.fog = new THREE.FogExp2(0x87CEEB, 0.0022);
 
-        // Kamera beállítások
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2500);
+        // Kamera beállítások (automatikus fekvő tájolású méretekkel)
+        const initVp = syncForcedLandscapeClass();
+        const camera = new THREE.PerspectiveCamera(60, initVp.width / initVp.height, 0.1, 2500);
         let cameraDistance = 30; // Zoom szint
         let cameraAngle = Math.PI / 4; // Orbit szög (kezdésnek 45 fok hátulról)
         const CAMERA_PITCH = Math.PI / 4; // 45 fokos dőlésszög lefelé
@@ -2413,7 +2557,7 @@
         const renderer = new THREE.WebGLRenderer({ antialias: !isAndroid });
         // Mobilon a pixelRatio-t 0.75-re csökkentjük a gyenge GPU-k tehermentesítésére, asztalin max 2-re korlátozzuk a 4K lag ellen
         renderer.setPixelRatio(isAndroid ? 0.75 : Math.min(window.devicePixelRatio, 2));
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(initVp.width, initVp.height);
         // Mobilon letiltjuk az árnyékokat a folyamatos, laggolásmentes futásért
         renderer.shadowMap.enabled = !isAndroid;
         container.appendChild(renderer.domElement);
@@ -2564,7 +2708,7 @@
         const rng = new PRNG(12345); // Fix seed!
 
 // === [#HEX:D.01.7F.00] START | name: buildScene | lines: 465 ===
-// @calls: [#HEX:D.01.7E.00], [#HEX:D.04.10.00], [#HEX:D.01.80.00], [#HEX:D.03.12.00], [#HEX:D.04.11.00] | @calledBy: none
+// @calls: [#HEX:D.01.80.00], [#HEX:D.04.11.00], [#HEX:D.04.10.00], [#HEX:D.01.7E.00], [#HEX:D.03.12.00] | @calledBy: none
         async function buildScene() {
             // 1. Külön csoport létrehozása a Bázis elemei (sziget henger + dekorációk + fények) számára
             harborDecorationsGroup = new THREE.Group();
@@ -3052,7 +3196,7 @@
 // === [#HEX:D.04.11.00] END ===
 
 // === [#HEX:D.01.80.00] START | name: loadHarborDecorations | lines: 316 ===
-// @calls: [#HEX:D.01.7E.00], [#HEX:D.01.81.00], [#HEX:D.01.82.00], [#HEX:D.01.83.00] | @calledBy: [#HEX:D.01.7F.00]
+// @calls: [#HEX:D.01.83.00], [#HEX:D.01.81.00], [#HEX:D.01.7E.00], [#HEX:D.01.82.00] | @calledBy: [#HEX:D.01.7F.00]
         function loadHarborDecorations(topY) {
             if (!baseHarbor || !harborDecorationsGroup) return;
             
@@ -3277,7 +3421,7 @@
             // === Teljes rámpasor lerakó függvény ===
             // rotationOffset: a csoport Y forgatása radiánban a bázis középpont körül (0 = eredeti pozíció)
 // === [#HEX:D.01.82.00] START | name: placeDockChain | lines: 88 ===
-// @calls: [#HEX:D.01.83.00], [#HEX:D.01.81.00] | @calledBy: [#HEX:D.01.80.00]
+// @calls: [#HEX:D.01.81.00], [#HEX:D.01.83.00] | @calledBy: [#HEX:D.01.80.00]
             function placeDockChain(rotationOffset) {
                 var chainGroup = new THREE.Group();
                 // A csoport a bázis középpontba kerül (BASE_POS), onnan forgatjuk
@@ -3491,7 +3635,7 @@
 
         // Indítás gomb/tábla funkciója (mobilon és asztalin is működik)
 // === [#HEX:D.06.0A.00] START | name: startGameFromInstruction | lines: 12 ===
-// @calls: [#HEX:D.01.84.00], [#HEX:F.04.13.00], [#HEX:D.01.90.00], [#HEX:D.01.85.00] | @calledBy: none
+// @calls: [#HEX:D.01.84.00], [#HEX:D.01.90.00], [#HEX:D.01.85.00], [#HEX:F.04.13.00] | @calledBy: none
         function startGameFromInstruction() {
             if (typeof requestLandscapeMode === 'function') {
                 requestLandscapeMode();
@@ -3761,7 +3905,7 @@
 // === [#HEX:D.01.89.00] END ===
 
 // === [#HEX:D.01.8A.00] START | name: updatePhysics | lines: 431 ===
-// @calls: [#HEX:D.01.7B.00], [#HEX:D.01.84.00], [#HEX:D.01.91.00], [#HEX:F.04.13.00], [#HEX:D.01.24.00] | @calledBy: [#HEX:D.01.8E.00]
+// @calls: [#HEX:D.01.84.00], [#HEX:D.04.12.00], [#HEX:D.01.24.00], [#HEX:D.01.7B.00], [#HEX:D.04.10.00] | @calledBy: [#HEX:D.01.8E.00]
         function updatePhysics() {
             if (isGameOver || !playerBoat || !baseHarbor || isQuizActive) return;
             if (!isAndroid) scene.updateMatrixWorld(true);
@@ -4201,7 +4345,7 @@
         let currentAnswers = [];
 
 // === [#HEX:D.04.12.00] START | name: triggerQuiz | lines: 59 ===
-// @calls: [#HEX:D.04.13.00], [#HEX:D.01.8B.00], [#HEX:D.05.05.00], [#HEX:D.04.14.00] | @calledBy: [#HEX:D.01.8A.00]
+// @calls: [#HEX:D.04.13.00], [#HEX:D.04.14.00], [#HEX:D.05.05.00], [#HEX:D.01.8B.00] | @calledBy: [#HEX:D.01.8A.00]
         function triggerQuiz() {
             isQuizActive = true;
             if (quizQuestions.length === 0) {
@@ -4348,7 +4492,7 @@
 // === [#HEX:D.01.8B.00] END ===
 
 // === [#HEX:D.01.8C.00] START | name: exitMinigame | lines: 62 ===
-// @calls: [#HEX:D.01.78.00], [#HEX:D.05.05.00], [#HEX:D.01.8D.00] | @calledBy: [#HEX:D.01.8A.00]
+// @calls: [#HEX:D.01.8D.00], [#HEX:D.01.78.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.01.8A.00]
         function exitMinigame(type) {
             console.log("DEBUG: exitMinigame meghívva, típus:", type);
             if (type === 'AIRSHIP') {
@@ -4425,7 +4569,7 @@
         // 5. RENDER LOOP
         // ==========================================
 // === [#HEX:D.01.8E.00] START | name: animate | lines: 56 ===
-// @calls: [#HEX:D.01.7C.00], [#HEX:D.04.0E.00], [#HEX:D.01.8A.00] | @calledBy: none
+// @calls: [#HEX:D.01.8A.00], [#HEX:D.01.7C.00], [#HEX:D.04.0E.00] | @calledBy: none
         function animate() {
             requestAnimationFrame(animate);
             let elapsedTime = Date.now() * 0.001; // Idő másodpercben (a THREE.Clock helyett)
@@ -4484,20 +4628,13 @@
         }
 // === [#HEX:D.01.8E.00] END ===
 
-// === [#HEX:D.01.8F.00] START | name: handleResize | lines: 21 ===
-// @calls: [#HEX:D.01.73.00], [#HEX:D.01.74.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.01.95.00]
+// === [#HEX:D.01.8F.00] START | name: handleResize | lines: 14 ===
+// @calls: [#HEX:D.05.0D.00], [#HEX:D.01.74.00], [#HEX:D.01.73.00], [#HEX:D.05.05.00] | @calledBy: [#HEX:D.01.90.00], [#HEX:D.01.95.00]
         function handleResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const vp = syncForcedLandscapeClass();
+            camera.aspect = vp.width / vp.height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            // Tájolás ellenőrzése mobilon és tableten (Orientation Guard)
-            const isPortrait = (window.innerHeight > window.innerWidth) || (screen.orientation && screen.orientation.type && screen.orientation.type.startsWith('portrait'));
-            const isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
-            const guard = document.getElementById('orientation-guard');
-            if (guard) {
-                guard.style.display = (isPortrait && (window.innerWidth <= 1100 || isMobileOrTablet)) ? 'flex' : 'none';
-            }
+            renderer.setSize(vp.width, vp.height);
 
             if (quizPinchController) {
                 if (quizPinchController.getScale() <= 1.05) {
@@ -4508,25 +4645,35 @@
             }
         }
 // === [#HEX:D.01.8F.00] END ===
-// === [#HEX:D.01.90.00] START | name: requestLandscapeMode | lines: 20 ===
-// @calls: none | @calledBy: [#HEX:D.06.0A.00], [#HEX:D.05.09.00]
-        window.requestLandscapeMode = function() {
+// === [#HEX:D.01.90.00] START | name: requestLandscapeMode | lines: 30 ===
+// @calls: [#HEX:D.01.8F.00] | @calledBy: [#HEX:D.06.0A.00], [#HEX:D.05.09.00]
+        window.requestLandscapeMode = function(evt) {
+            if (evt && evt.stopPropagation) {
+                evt.stopPropagation();
+            }
+            const guard = document.getElementById('orientation-guard');
+            if (guard) {
+                guard.style.setProperty('display', 'none', 'important');
+            }
+            handleResize();
             try {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').then(() => {
+                        setTimeout(handleResize, 120);
+                    }).catch(() => {});
+                }
                 const el = document.documentElement;
                 const requestFs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-                if (requestFs) {
+                if (requestFs && !document.fullscreenElement && !document.webkitFullscreenElement) {
                     const promise = requestFs.call(el);
                     if (promise && promise.then) {
                         promise.then(() => {
                             if (screen.orientation && screen.orientation.lock) {
                                 screen.orientation.lock('landscape').catch(() => {});
                             }
+                            setTimeout(handleResize, 150);
                         }).catch(() => {});
-                    } else if (screen.orientation && screen.orientation.lock) {
-                        screen.orientation.lock('landscape').catch(() => {});
                     }
-                } else if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(() => {});
                 }
             } catch(e) {}
         };
@@ -4579,11 +4726,12 @@
         window.addEventListener('contextmenu', e => e.preventDefault());
 
         // ---- KÖZVETLEN ÉRINTŐKÉPERNYŐS VEZÉRLÉS (KONZOL ÉS GOMBOK NÉLKÜL) ----
-// === [#HEX:D.01.91.00] START | name: steerShipToScreenPoint | lines: 22 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:D.01.84.00], [#HEX:D.01.85.00] | @calledBy: [#HEX:D.01.8A.00], [#HEX:D.01.92.00]
+// === [#HEX:D.01.91.00] START | name: steerShipToScreenPoint | lines: 23 ===
+// @calls: [#HEX:D.05.0B.00], [#HEX:D.01.84.00], [#HEX:D.01.85.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.8A.00], [#HEX:D.01.92.00]
         function steerShipToScreenPoint(screenX, screenY) {
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
+            const vp = getLandscapeViewport();
+            const centerX = vp.width / 2;
+            const centerY = vp.height / 2;
             const dx = screenX - centerX;
             const dy = screenY - centerY;
 
@@ -4605,18 +4753,19 @@
         }
 // === [#HEX:D.01.91.00] END ===
 
-// === [#HEX:D.01.92.00] START | name: setupMobileControls | lines: 164 ===
-// @calls: [#HEX:D.01.91.00], [#HEX:F.04.13.00], [#HEX:D.01.94.00], [#HEX:D.01.93.00], [#HEX:D.05.0A.00] | @calledBy: [#HEX:D.01.95.00]
+// === [#HEX:D.01.92.00] START | name: setupMobileControls | lines: 168 ===
+// @calls: [#HEX:D.05.0C.00], [#HEX:D.01.94.00], [#HEX:D.01.93.00], [#HEX:D.01.91.00], [#HEX:D.05.0A.00] | @calledBy: [#HEX:D.01.95.00]
         function setupMobileControls() {
             const overlay = document.getElementById('mobile-overlay');
             if (overlay && isAndroid) overlay.style.display = 'block';
 
-// === [#HEX:D.01.93.00] START | name: isInteractiveElement | lines: 12 ===
+// === [#HEX:D.01.93.00] START | name: isInteractiveElement | lines: 13 ===
 // @calls: [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.92.00]
             function isInteractiveElement(target) {
                 if (!target) return false;
                 return target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'A' ||
                        target.closest('button') || target.closest('input') || target.closest('a') ||
+                       target.closest('#orientation-guard') ||
                        target.closest('#top-bar') || target.closest('#info-toggle') ||
                        target.closest('#info-panel') || target.closest('#info-overlay') ||
                        target.closest('#quiz-panel') || target.closest('#quiz-overlay') ||
@@ -4645,22 +4794,23 @@
                     return;
                 }
 
-                // 2. EGY UJJ: Érintés indítása
+                // 2. EGY UJJ: Érintés indítása (forgatott horizontális koordinátákra leképezve)
                 if (e.touches.length === 1) {
                     isPinchZooming = false;
                     isTouchActive = true;
                     isDraggingCamera = false;
                     const t = e.touches[0];
-                    touchStartAnchorPos.x = t.clientX;
-                    touchStartAnchorPos.y = t.clientY;
-                    lastTouchPos.x = t.clientX;
-                    lastTouchPos.y = t.clientY;
-                    currentTouchScreenPos.x = t.clientX;
-                    currentTouchScreenPos.y = t.clientY;
+                    const pt = toLandscapePoint(t.clientX, t.clientY);
+                    touchStartAnchorPos.x = pt.x;
+                    touchStartAnchorPos.y = pt.y;
+                    lastTouchPos.x = pt.x;
+                    lastTouchPos.y = pt.y;
+                    currentTouchScreenPos.x = pt.x;
+                    currentTouchScreenPos.y = pt.y;
                     lastTouchMoveTime = performance.now();
 
                     // Kezdeti érintésre a hajó már megkapja a célirányt
-                    steerShipToScreenPoint(t.clientX, t.clientY);
+                    steerShipToScreenPoint(pt.x, pt.y);
                     e.preventDefault();
                 }
             }, { passive: false });
@@ -4688,11 +4838,12 @@
                 // 2. EGY UJJAS KEZELÉS: Svenkelés (kamera mozog) vs. Álló ujj (hajó mozog)
                 if (e.touches.length === 1 && !isPinchZooming) {
                     const t = e.touches[0];
-                    currentTouchScreenPos.x = t.clientX;
-                    currentTouchScreenPos.y = t.clientY;
+                    const pt = toLandscapePoint(t.clientX, t.clientY);
+                    currentTouchScreenPos.x = pt.x;
+                    currentTouchScreenPos.y = pt.y;
 
-                    const stepDist = Math.hypot(t.clientX - lastTouchPos.x, t.clientY - lastTouchPos.y);
-                    const distFromAnchor = Math.hypot(t.clientX - touchStartAnchorPos.x, t.clientY - touchStartAnchorPos.y);
+                    const stepDist = Math.hypot(pt.x - lastTouchPos.x, pt.y - lastTouchPos.y);
+                    const distFromAnchor = Math.hypot(pt.x - touchStartAnchorPos.x, pt.y - touchStartAnchorPos.y);
 
                     // Ha a horgonytól kimozdult az ujj (> 12px) vagy már svenk módban vagyunk:
                     if (isDraggingCamera || distFromAnchor > 12) {
@@ -4701,18 +4852,18 @@
 
                         // Csak valós, határozott mozgásra forgatunk (1.8px felett), a nyugalmi remegést kiszűrjük
                         if (stepDist >= 1.8) {
-                            const deltaX = t.clientX - lastTouchPos.x;
+                            const deltaX = pt.x - lastTouchPos.x;
                             cameraAngle -= deltaX * 0.008; // Horizontális kamerakörbeforgatás
                             lastTouchMoveTime = performance.now();
-                            lastTouchPos.x = t.clientX;
-                            lastTouchPos.y = t.clientY;
+                            lastTouchPos.x = pt.x;
+                            lastTouchPos.y = pt.y;
                         }
                     } else {
                         // Ha az ujj még nem érte el a svenk küszöböt (álló/követő ujj mód):
                         if (stepDist >= 1.8) {
-                            steerShipToScreenPoint(t.clientX, t.clientY);
-                            lastTouchPos.x = t.clientX;
-                            lastTouchPos.y = t.clientY;
+                            steerShipToScreenPoint(pt.x, pt.y);
+                            lastTouchPos.x = pt.x;
+                            lastTouchPos.y = pt.y;
                         }
                     }
 
@@ -4720,8 +4871,8 @@
                 }
             }, { passive: false });
 
-// === [#HEX:D.05.0A.00] START | name: handleTouchEnd | lines: 22 ===
-// @calls: none | @calledBy: [#HEX:D.05.04.00], [#HEX:D.01.92.00]
+// === [#HEX:D.05.0A.00] START | name: handleTouchEnd | lines: 23 ===
+// @calls: [#HEX:D.05.0C.00] | @calledBy: [#HEX:D.05.04.00], [#HEX:D.01.92.00]
             function handleTouchEnd(e) {
                 if (e.touches.length < 2) {
                     isPinchZooming = false;
@@ -4733,12 +4884,13 @@
                     isDraggingCamera = false;
                 } else if (e.touches.length === 1) {
                     const t = e.touches[0];
-                    currentTouchScreenPos.x = t.clientX;
-                    currentTouchScreenPos.y = t.clientY;
-                    lastTouchPos.x = t.clientX;
-                    lastTouchPos.y = t.clientY;
-                    touchStartAnchorPos.x = t.clientX;
-                    touchStartAnchorPos.y = t.clientY;
+                    const pt = toLandscapePoint(t.clientX, t.clientY);
+                    currentTouchScreenPos.x = pt.x;
+                    currentTouchScreenPos.y = pt.y;
+                    lastTouchPos.x = pt.x;
+                    lastTouchPos.y = pt.y;
+                    touchStartAnchorPos.x = pt.x;
+                    touchStartAnchorPos.y = pt.y;
                     lastTouchMoveTime = performance.now();
                     isTouchActive = true;
                     isDraggingCamera = false;
@@ -4783,15 +4935,19 @@
 // === [#HEX:D.01.92.00] END ===
 
         // Automatikus indítás mobilon és asztali böngészőben (Live Server teszteléshez)
-// === [#HEX:D.01.95.00] START | name: initAppControls | lines: 26 ===
-// @calls: [#HEX:D.05.07.00], [#HEX:D.01.8F.00], [#HEX:D.01.92.00] | @calledBy: none
+// === [#HEX:D.01.95.00] START | name: initAppControls | lines: 30 ===
+// @calls: [#HEX:D.05.0D.00], [#HEX:D.05.07.00], [#HEX:D.01.92.00], [#HEX:D.01.8F.00] | @calledBy: none
         function initAppControls() {
+            syncForcedLandscapeClass();
             setupMobileControls();
             if (typeof initModalPinchZoom === 'function') {
                 initModalPinchZoom();
             }
             if (typeof handleResize === 'function') {
                 handleResize();
+            }
+            if (isAndroid && window.screen && window.screen.orientation && window.screen.orientation.lock) {
+                window.screen.orientation.lock('landscape').catch(() => {});
             }
             if (isAndroid) {
                 document.body.classList.add('mobile-hud');

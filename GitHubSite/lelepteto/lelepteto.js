@@ -44,7 +44,7 @@ function applyDeletionPageMetaTranslation() {
 // === [#HEX:F.04.236.00] END ===
 
 // === [#HEX:F.06.58.00] START | name: callBackend | lines: 46 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.1F1.00], [#HEX:F.0B.00.00] | @calledBy: none
+// @calls: [#HEX:F.04.1F1.00], [#HEX:F.04.2C1.00], [#HEX:F.0B.00.00] | @calledBy: none
 function callBackend(funcName, params, onSuccess, onFailure) {
     var token = null;
     try {

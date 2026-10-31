@@ -1,7 +1,7 @@
 
 // === KOCSMAI HIRDETOTABLA ===
 // === [#HEX:F.04.183.00] START | name: openNoticeBoard | lines: 18 ===
-// @calls: [#HEX:F.04.184.00], [#HEX:F.06.4A.00], [#HEX:B.07.B8.00] | @calledBy: none
+// @calls: [#HEX:B.07.B8.00], [#HEX:F.04.184.00], [#HEX:F.06.4A.00] | @calledBy: none
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
     if(modal) modal.style.display = 'flex';
@@ -10,7 +10,7 @@ function openNoticeBoard() {
 
     if (typeof callBackend === 'function') {
 // === [#HEX:F.06.4A.00] START | name: callBackend | lines: 7 ===
-// @calls: [#HEX:F.04.184.00], [#HEX:B.07.B8.00] | @calledBy: [#HEX:F.04.183.00]
+// @calls: [#HEX:B.07.B8.00], [#HEX:F.04.184.00] | @calledBy: [#HEX:F.04.183.00]
         callBackend("getNoticeBoardData", [], function(response) {
             if (response && response.success && response.data) {
                 renderNoticeBoard(response.data);

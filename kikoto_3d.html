@@ -1001,7 +1001,7 @@
              * Kurzor mozgatás & Épület Raycast Hover Eseménykezelő
              */
 // === [#HEX:F.04.186.00] START | name: onPointerMove | lines: 69 ===
-// @calls: [#HEX:F.02.08.00], [#HEX:F.05.2C.00], [#HEX:F.02.09.00], [#HEX:F.04.185.00] | @calledBy: [#HEX:F.04.1C4.00]
+// @calls: [#HEX:F.05.2C.00], [#HEX:F.02.09.00], [#HEX:F.02.08.00], [#HEX:F.04.185.00] | @calledBy: [#HEX:F.04.1C4.00]
             function onPointerMove(e) {
                 if (isCinematicTransitioning || isAnyModalOpen()) {
                     if (currentHoveredLocation) {
@@ -1142,7 +1142,7 @@
              * Cél aloldal vagy funkció meghívása a központi rendszeren keresztül
              */
 // === [#HEX:F.04.18A.00] START | name: navigateToSubpage | lines: 116 ===
-// @calls: [#HEX:F.05.2E.00], [#HEX:F.04.1A6.00], [#HEX:F.05.5D.00], [#HEX:F.05.34.00], [#HEX:F.04.1CF.00] | @calledBy: [#HEX:F.04.189.00]
+// @calls: [#HEX:F.05.2E.00], [#HEX:F.05.5D.00], [#HEX:F.04.FC.00], [#HEX:F.04.1A6.00], [#HEX:F.05.34.00] | @calledBy: [#HEX:F.04.189.00]
             function navigateToSubpage(target) {
                 const pageId = (typeof target === 'object' && target.id) ? target.id : target;
                 // 0. Kikötőmester / Barba Negra egyedi multimédiás SVG modál megnyitása
@@ -1322,7 +1322,7 @@
 // === [#HEX:F.05.2D.00] END ===
 
 // === [#HEX:F.05.2E.00] START | name: openHarbormasterModal | lines: 110 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.07.15.00], [#HEX:B.01.03.00], [#HEX:F.05.5D.00], [#HEX:F.04.18B.00] | @calledBy: [#HEX:F.04.18A.00], [#HEX:F.0A.01.00]
+// @calls: [#HEX:F.04.193.00], [#HEX:F.05.5D.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.0A.00.00] | @calledBy: [#HEX:F.04.18A.00], [#HEX:F.0A.01.00]
             window.openHarbormasterModal = function () {
                 var modal = document.getElementById('harbormaster-modal');
                 if (!modal) return;
@@ -1582,7 +1582,7 @@
 // === [#HEX:F.04.18C.00] END ===
 
 // === [#HEX:F.04.18D.00] START | name: handleHarbormasterChipClick | lines: 56 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.191.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.18C.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.191.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.18C.00]
             window.handleHarbormasterChipClick = function (btn) {
                 var replyText = btn.reply || btn.payload || btn.text;
                 window.addBubbleToHarbormaster('Te', replyText, 'outgoing');
@@ -1600,7 +1600,7 @@
 
                     if (typeof requestPin === 'function') {
 // === [#HEX:F.06.4B.00] START | name: requestPin | lines: 16 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.04.18F.00], [#HEX:F.04.18C.00] | @calledBy: none
+// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.04.18F.00], [#HEX:B.01.03.00], [#HEX:F.04.18E.00] | @calledBy: none
                         requestPin(function (pinCode) {
                             var loaderId = 'hb-load-' + Date.now();
                             window.addHarbormasterLoader(loaderId, 'PIN hitelesítés...');
@@ -1679,7 +1679,7 @@
 // === [#HEX:F.0A.00.00] END ===
 
 // === [#HEX:F.04.191.00] START | name: sendHarbormasterMessageText | lines: 22 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.04.18F.00], [#HEX:F.04.18C.00] | @calledBy: [#HEX:F.04.18D.00], [#HEX:F.0A.00.00]
+// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.04.18F.00], [#HEX:B.01.03.00], [#HEX:F.04.18E.00] | @calledBy: [#HEX:F.04.18D.00], [#HEX:F.0A.00.00]
             window.sendHarbormasterMessageText = function (msg) {
                 window.addBubbleToHarbormaster('Te', msg, 'outgoing');
                 var loaderId = 'hb-load-' + Date.now();
@@ -1727,7 +1727,7 @@
 // === [#HEX:F.04.193.00] END ===
 
 // === [#HEX:F.04.194.00] START | name: triggerHarbormasterAction | lines: 118 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.19B.00], [#HEX:B.05.10.00], [#HEX:F.04.195.00], [#HEX:F.04.197.00] | @calledBy: none
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.0D.00], [#HEX:F.04.195.00], [#HEX:B.05.0B.00], [#HEX:F.06.59.00] | @calledBy: none
             window.triggerHarbormasterAction = function (monitorId) {
                 if (monitorId === 'balfelso_monitor') {
                     window.addBubbleToHarbormaster('Te', 'Van bérelhető ladik?', 'outgoing');
@@ -1874,11 +1874,11 @@
 // === [#HEX:F.04.195.00] END ===
 
 // === [#HEX:F.04.196.00] START | name: executeRentFromConsole | lines: 21 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.06.4F.00], [#HEX:F.04.18F.00] | @calledBy: [#HEX:F.04.195.00]
+// @calls: [#HEX:F.04.193.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:B.05.0A.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.195.00]
             window.executeRentFromConsole = function (shipId, fee) {
                 if (typeof requestPin === 'function') {
 // === [#HEX:F.06.4C.00] START | name: requestPin | lines: 17 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.04.18F.00], [#HEX:F.04.18C.00] | @calledBy: none
+// @calls: [#HEX:F.04.193.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:B.05.0A.00], [#HEX:F.04.18F.00] | @calledBy: none
                     requestPin(function (pinCode) {
                         window.closeHarbormasterConsole();
                         var loaderId = 'hb-load-' + Date.now();
@@ -1902,7 +1902,7 @@
 // === [#HEX:F.04.196.00] END ===
 
 // === [#HEX:F.04.197.00] START | name: renderMapsConsole | lines: 18 ===
-// @calls: [#HEX:F.04.198.00], [#HEX:F.04.2C1.00], [#HEX:F.04.192.00] | @calledBy: [#HEX:F.04.194.00]
+// @calls: [#HEX:F.04.198.00], [#HEX:F.04.192.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.194.00]
             window.renderMapsConsole = function (buttons) {
                 var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
                 buttons.forEach(function (btn) {
@@ -1924,11 +1924,11 @@
 // === [#HEX:F.04.197.00] END ===
 
 // === [#HEX:F.04.198.00] START | name: executeMapBuyFromConsole | lines: 21 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.06.4F.00], [#HEX:F.04.18F.00] | @calledBy: [#HEX:F.04.197.00]
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.11.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.197.00]
             window.executeMapBuyFromConsole = function (mapRowIndex) {
                 if (typeof requestPin === 'function') {
 // === [#HEX:F.06.4D.00] START | name: requestPin | lines: 17 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.04.18F.00], [#HEX:B.05.11.00] | @calledBy: none
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.11.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.04.18F.00] | @calledBy: none
                     requestPin(function (pinCode) {
                         window.closeHarbormasterConsole();
                         var loaderId = 'hb-load-' + Date.now();
@@ -1952,7 +1952,7 @@
 // === [#HEX:F.04.198.00] END ===
 
 // === [#HEX:F.04.199.00] START | name: renderReturnRentalConsole | lines: 16 ===
-// @calls: [#HEX:F.04.192.00], [#HEX:F.04.2C1.00], [#HEX:F.04.19A.00] | @calledBy: [#HEX:F.04.194.00]
+// @calls: [#HEX:F.04.192.00], [#HEX:F.04.19A.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.194.00]
             window.renderReturnRentalConsole = function (buttons) {
                 var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
                 buttons.forEach(function (btn) {
@@ -1972,11 +1972,11 @@
 // === [#HEX:F.04.199.00] END ===
 
 // === [#HEX:F.04.19A.00] START | name: executeReturnFromConsole | lines: 21 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.06.4F.00], [#HEX:F.04.18F.00] | @calledBy: [#HEX:F.04.199.00]
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.0C.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.199.00]
             window.executeReturnFromConsole = function (shipId) {
                 if (typeof requestPin === 'function') {
 // === [#HEX:F.06.4E.00] START | name: requestPin | lines: 17 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:F.04.18F.00], [#HEX:F.04.18C.00] | @calledBy: none
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.0C.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.04.18F.00] | @calledBy: none
                     requestPin(function (pinCode) {
                         window.closeHarbormasterConsole();
                         var loaderId = 'hb-load-' + Date.now();
@@ -2048,7 +2048,7 @@
 // === [#HEX:F.04.19C.00] END ===
 
 // === [#HEX:F.04.19D.00] START | name: submitAdminForm | lines: 37 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:B.05.0F.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.19B.00]
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.0F.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.06.4F.00] | @calledBy: [#HEX:F.04.19B.00]
             window.submitAdminForm = function () {
                 var input = document.getElementById('harbormaster-admin-input');
                 if (!input || !input.value.trim()) {
@@ -2067,7 +2067,7 @@
 
                 if (typeof requestPin === 'function') {
 // === [#HEX:F.06.4F.00] START | name: requestPin | lines: 18 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.18E.00], [#HEX:B.01.03.00], [#HEX:B.05.0F.00], [#HEX:F.04.18F.00] | @calledBy: [#HEX:F.04.18D.00], [#HEX:F.04.196.00], [#HEX:F.04.198.00], [#HEX:F.04.19A.00], [#HEX:F.04.19D.00]
+// @calls: [#HEX:F.04.193.00], [#HEX:B.05.0F.00], [#HEX:F.06.59.00], [#HEX:F.04.18C.00], [#HEX:F.04.18F.00] | @calledBy: [#HEX:F.04.18D.00], [#HEX:F.04.196.00], [#HEX:F.04.198.00], [#HEX:F.04.19A.00], [#HEX:F.04.19D.00]
                     requestPin(function (pinCode) {
                         window.closeHarbormasterConsole();
                         var loaderId = 'hb-load-' + Date.now();
@@ -2122,7 +2122,7 @@
 // === [#HEX:F.05.30.00] END ===
 
 // === [#HEX:F.0A.01.00] START | name: openUniversalNPC | lines: 160 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.05.2E.00], [#HEX:F.07.15.00], [#HEX:B.01.03.00], [#HEX:F.04.1A0.00] | @calledBy: [#HEX:F.04.18A.00]
+// @calls: [#HEX:F.04.1A1.00], [#HEX:F.05.2E.00], [#HEX:F.06.59.00], [#HEX:F.04.1A0.00], [#HEX:B.01.03.00] | @calledBy: [#HEX:F.04.18A.00]
             window.openUniversalNPC = function (npcId, config) {
                 if (npcId === 'harbormaster') {
                     if (typeof window.openHarbormasterModal === 'function') {
@@ -2286,7 +2286,7 @@
 // === [#HEX:F.0A.01.00] END ===
 
 // === [#HEX:F.04.19F.00] START | name: sendUniversalMessage | lines: 56 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:B.01.03.00], [#HEX:F.04.1A0.00], [#HEX:F.04.1A1.00] | @calledBy: none
+// @calls: [#HEX:F.04.1A1.00], [#HEX:F.06.59.00], [#HEX:F.04.1A0.00], [#HEX:B.01.03.00] | @calledBy: none
             window.sendUniversalMessage = function () {
                 var input = document.getElementById('universal-chat-input');
                 if (!input) return;
@@ -2545,7 +2545,7 @@
 // === [#HEX:F.04.1A5.00] END ===
 
 // === [#HEX:F.04.1A6.00] START | name: openToborzoBarakk | lines: 69 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.59.00], [#HEX:F.04.13.00], [#HEX:F.04.1A8.00], [#HEX:F.04.1A7.00] | @calledBy: [#HEX:F.04.18A.00], [#HEX:F.07.16.00], [#HEX:F.04.1AA.00], [#HEX:F.04.1AB.00], [#HEX:F.04.1AD.00]
+// @calls: [#HEX:F.04.1A8.00], [#HEX:F.04.1A7.00], [#HEX:F.06.59.00], [#HEX:B.03.15.00], [#HEX:F.04.1A4.00] | @calledBy: [#HEX:F.04.18A.00], [#HEX:F.07.16.00], [#HEX:F.04.1AA.00], [#HEX:F.04.1AB.00], [#HEX:F.04.1AD.00]
             window.openToborzoBarakk = function () {
                 var modal = document.getElementById('toborzo-modal');
                 if (modal) modal.style.display = 'flex';
@@ -2570,7 +2570,7 @@
 
                 if (typeof window.callBackend === 'function') {
 // === [#HEX:F.04.1A7.00] START | name: loadFallback | lines: 20 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.59.00], [#HEX:F.04.1A8.00], [#HEX:F.03.0E.00] | @calledBy: [#HEX:F.04.1A6.00]
+// @calls: [#HEX:F.04.1A8.00], [#HEX:F.06.59.00], [#HEX:B.03.15.00], [#HEX:F.03.0E.00] | @calledBy: [#HEX:F.04.1A6.00]
                     var loadFallback = function () {
                         window.callBackend('getToborzoData', [],
                             function (fbData) {
@@ -2621,7 +2621,7 @@
 // === [#HEX:F.04.1A6.00] END ===
 
 // === [#HEX:F.04.1A8.00] START | name: renderToborzoFullMarket | lines: 201 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:F.04.1AE.00], [#HEX:F.04.1B0.00], [#HEX:F.05.33.00], [#HEX:F.04.1AF.00] | @calledBy: [#HEX:F.04.1A6.00], [#HEX:F.04.1A7.00]
+// @calls: [#HEX:F.04.1AE.00], [#HEX:F.04.13.00], [#HEX:F.04.1AF.00], [#HEX:F.05.33.00], [#HEX:F.04.1B0.00] | @calledBy: [#HEX:F.04.1A6.00], [#HEX:F.04.1A7.00]
             window.renderToborzoFullMarket = function (data) {
                 if (!data) return;
 
@@ -2826,7 +2826,7 @@
 // === [#HEX:F.04.1A8.00] END ===
 
 // === [#HEX:F.07.16.00] START | name: savePlayerJobStatus | lines: 57 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:B.07.BC.00], [#HEX:F.04.1EE.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1A4.00] | @calledBy: none
+// @calls: [#HEX:B.07.BC.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1A4.00], [#HEX:F.04.1EE.00] | @calledBy: none
             window.savePlayerJobStatus = function () {
                 var stSelect = document.getElementById('toborzo-status-select');
                 var rSelect = document.getElementById('toborzo-role-select');
@@ -2887,7 +2887,7 @@
 // === [#HEX:F.07.16.00] END ===
 
 // === [#HEX:F.03.0E.00] START | name: renderSelectedShipCrew | lines: 183 ===
-// @calls: [#HEX:F.04.1B2.00], [#HEX:F.05.32.00], [#HEX:F.04.1A5.00], [#HEX:F.04.1AA.00] | @calledBy: [#HEX:F.04.1A3.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1A7.00]
+// @calls: [#HEX:F.05.32.00], [#HEX:F.04.1B2.00], [#HEX:F.04.1AA.00], [#HEX:F.04.1A5.00] | @calledBy: [#HEX:F.04.1A3.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1A7.00]
             window.renderSelectedShipCrew = function () {
                 var select = document.getElementById('toborzo-myships-select');
                 var detailsDiv = document.getElementById('toborzo-myship-details');
@@ -3077,7 +3077,7 @@
 // === [#HEX:F.03.0E.00] END ===
 
 // === [#HEX:F.04.1AA.00] START | name: submitBulkCrewAssignment | lines: 51 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.1EE.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.03.0E.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.03.0E.00]
             window.submitBulkCrewAssignment = function (shipId) {
                 var assignmentsMap = {
                     "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [],
@@ -3180,7 +3180,7 @@
 // === [#HEX:F.05.32.00] END ===
 
 // === [#HEX:F.04.1AB.00] START | name: submitPostJobOpening | lines: 39 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.1EE.00], [#HEX:F.04.1A6.00], [#HEX:B.03.20.00], [#HEX:F.05.31.00] | @calledBy: none
+// @calls: [#HEX:B.03.20.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1EE.00], [#HEX:F.05.31.00] | @calledBy: none
             window.submitPostJobOpening = function () {
                 var shipId = document.getElementById('post-job-ship-id').value;
                 var role = document.getElementById('post-job-role').value;
@@ -3283,7 +3283,7 @@
 // === [#HEX:F.04.1AC.00] END ===
 
 // === [#HEX:F.04.1AD.00] START | name: submitDirectJobOffer | lines: 43 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.1EE.00], [#HEX:F.04.1A6.00], [#HEX:F.05.31.00], [#HEX:B.07.D2.00] | @calledBy: none
+// @calls: [#HEX:B.07.D2.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1EE.00], [#HEX:F.05.31.00] | @calledBy: none
             window.submitDirectJobOffer = function () {
                 var targetMatrozEmail = document.getElementById('direct-offer-matroz-email').value;
                 var shipSelect = document.getElementById('direct-offer-ship-select');
@@ -3330,7 +3330,7 @@
 // === [#HEX:F.04.1AD.00] END ===
 
 // === [#HEX:F.04.1AE.00] START | name: applyForJobOpening | lines: 29 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.1EE.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.04.1A8.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.04.1A8.00]
             window.applyForJobOpening = function (hirdetesId) {
                 if (!confirm("Biztosan jelentkezni szeretnél erre a hajós pozícióra?")) return;
 
@@ -3363,7 +3363,7 @@
 // === [#HEX:F.04.1AE.00] END ===
 
 // === [#HEX:F.04.1AF.00] START | name: reviewJobApplicant | lines: 30 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.1A6.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.1A8.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.04.1A8.00]
             window.reviewJobApplicant = function (jelentkezesId, isApproved) {
                 var actionName = isApproved ? "elfogadni és ajánlatot tenni a pozícióra" : "elutasítani ezt a jelentkezést";
                 if (!confirm("Biztosan szeretnéd " + actionName + "?")) return;
@@ -3397,7 +3397,7 @@
 // === [#HEX:F.04.1AF.00] END ===
 
 // === [#HEX:F.04.1B0.00] START | name: respondToJobOffer | lines: 32 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.04.1EE.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.04.1A8.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.59.00], [#HEX:F.04.1A6.00] | @calledBy: [#HEX:F.04.1A8.00]
             window.respondToJobOffer = function (ajanlatId, isAccepted) {
                 var promptMsg = isAccepted ?
                     "Biztosan ELFOGADOD az állásajánlatot? Ezzel a szerződés azonnal megkötésre kerül, és szolgálatba lépsz a hajón!" :
@@ -3483,7 +3483,7 @@
 // === [#HEX:F.04.1B1.00] END ===
 
 // === [#HEX:F.05.34.00] START | name: openFedelzetModal | lines: 106 ===
-// @calls: [#HEX:F.07.15.00], [#HEX:F.05.5D.00], [#HEX:F.04.1B4.00] | @calledBy: [#HEX:F.04.18A.00], [#HEX:F.01.15.00]
+// @calls: [#HEX:F.04.1B4.00], [#HEX:F.05.5D.00], [#HEX:F.07.15.00] | @calledBy: [#HEX:F.04.18A.00], [#HEX:F.01.15.00]
             window.openFedelzetModal = function () {
                 console.log("🚢 3D Kikötő: Fedélzet modal megnyitása (Opálos háttér)");
                 var modal = document.getElementById('fedelzet-modal');
@@ -3883,7 +3883,7 @@ window.normalizeShipData = normalizeShipData;
             }
 
 // === [#HEX:F.03.10.00] START | name: loadDeckShips | lines: 48 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.59.00], [#HEX:F.04.1B6.00], [#HEX:F.06.54.00], [#HEX:F.03.0F.00] | @calledBy: [#HEX:F.04.1B4.00]
+// @calls: [#HEX:F.04.1B6.00], [#HEX:F.03.11.00], [#HEX:F.06.59.00], [#HEX:B.03.15.00], [#HEX:F.06.54.00] | @calledBy: [#HEX:F.04.1B4.00]
             window.loadDeckShips = function (onComplete) {
                 if ((!window.userShips || window.userShips.length === 0) && window.parent && window.parent !== window && window.parent.userShips && window.parent.userShips.length > 0) {
                     window.userShips = window.parent.userShips;
@@ -3912,7 +3912,7 @@ window.normalizeShipData = normalizeShipData;
                 }
 
 // === [#HEX:F.06.50.00] START | name: backendCaller | lines: 15 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.04.1B6.00], [#HEX:F.03.0F.00], [#HEX:F.03.11.00] | @calledBy: none
+// @calls: [#HEX:F.04.1B6.00], [#HEX:F.03.11.00], [#HEX:B.03.15.00], [#HEX:F.03.0F.00] | @calledBy: none
                 backendCaller('getToborzoData', [], function (response) {
                     if (response && response.success && Array.isArray(response.ownedShips)) {
                         window.toborzoMarketData = response;
@@ -3938,7 +3938,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.03.10.00] END ===
 
 // === [#HEX:F.04.1B4.00] START | name: initFedelzetOldal | lines: 10 ===
-// @calls: [#HEX:F.03.10.00], [#HEX:F.04.1B5.00] | @calledBy: [#HEX:F.05.34.00]
+// @calls: [#HEX:F.04.1B5.00], [#HEX:F.03.10.00] | @calledBy: [#HEX:F.05.34.00]
             window.initFedelzetOldal = function () {
                 var bgVid = document.getElementById('fedelzet-video-player');
                 if (bgVid) {
@@ -3968,7 +3968,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.04.1B5.00] END ===
 
 // === [#HEX:F.04.1B6.00] START | name: populateDeckCrewRecipients | lines: 124 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.04.1B8.00], [#HEX:F.04.1B7.00] | @calledBy: [#HEX:F.03.10.00], [#HEX:F.06.50.00], [#HEX:F.03.11.00], [#HEX:F.03.13.00], [#HEX:F.04.1BC.00]
+// @calls: [#HEX:F.04.1B7.00], [#HEX:F.04.1B8.00], [#HEX:B.03.15.00] | @calledBy: [#HEX:F.03.10.00], [#HEX:F.06.50.00], [#HEX:F.03.11.00], [#HEX:F.03.13.00], [#HEX:F.04.1BC.00]
             window.populateDeckCrewRecipients = function () {
                 var crewSelect = document.getElementById('deck-msg-recipient-select');
                 if (!crewSelect) return;
@@ -4102,7 +4102,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.04.1B6.00] END ===
 
 // === [#HEX:F.03.11.00] START | name: renderDeckShipCards | lines: 77 ===
-// @calls: [#HEX:F.04.1B6.00], [#HEX:F.03.12.00], [#HEX:F.03.13.00] | @calledBy: [#HEX:F.03.10.00], [#HEX:F.06.50.00], [#HEX:F.03.13.00], [#HEX:F.04.1BC.00]
+// @calls: [#HEX:F.03.12.00], [#HEX:F.03.13.00], [#HEX:F.04.1B6.00] | @calledBy: [#HEX:F.03.10.00], [#HEX:F.06.50.00], [#HEX:F.03.13.00], [#HEX:F.04.1BC.00]
             window.renderDeckShipCards = function () {
                 var list = document.getElementById('deck-ship-cards-list');
                 if (!list) return;
@@ -4198,7 +4198,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.03.12.00] END ===
 
 // === [#HEX:F.03.13.00] START | name: selectDeckShip | lines: 21 ===
-// @calls: [#HEX:F.04.1BD.00], [#HEX:F.04.1B6.00], [#HEX:F.03.11.00] | @calledBy: [#HEX:F.03.11.00]
+// @calls: [#HEX:F.03.11.00], [#HEX:F.04.1B6.00], [#HEX:F.04.1BD.00] | @calledBy: [#HEX:F.03.11.00]
             window.selectDeckShip = function (shipId, isInitial) {
                 if (!window.userShips) return;
                 var targetId = String(shipId || '').trim();
@@ -4281,7 +4281,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.04.1BA.00] END ===
 
 // === [#HEX:F.04.1BB.00] START | name: handleDeckElementClick | lines: 112 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:F.06.54.00], [#HEX:F.04.1C1.00], [#HEX:F.04.1B5.00], [#HEX:B.07.24.00] | @calledBy: none
+// @calls: [#HEX:F.04.FC.00], [#HEX:F.04.1C1.00], [#HEX:F.06.59.00], [#HEX:B.07.24.00], [#HEX:F.04.1B5.00] | @calledBy: none
             window.handleDeckElementClick = function (elemId) {
                 if (elemId === 'auto_gomb') {
                     if (window.parent && typeof window.parent.loadPage === 'function') {
@@ -4439,7 +4439,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.04.1BD.00] END ===
 
 // === [#HEX:F.04.1BE.00] START | name: setupDeckLogImagePreview | lines: 32 ===
-// @calls: [#HEX:F.04.F3.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.1BB.00], [#HEX:F.06.51.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.F3.00] | @calledBy: [#HEX:F.04.1BB.00], [#HEX:F.06.51.00]
             window.setupDeckLogImagePreview = function () {
                 var imageInput = document.getElementById('deck-log-image');
                 var imagePreview = document.getElementById('deck-log-image-preview');
@@ -4520,7 +4520,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.04.1C0.00] END ===
 
 // === [#HEX:F.04.1C1.00] START | name: loadDeckLogEntry | lines: 209 ===
-// @calls: [#HEX:F.04.1C0.00], [#HEX:F.06.59.00], [#HEX:D.01.7E.00], [#HEX:F.06.54.00], [#HEX:B.07.24.00] | @calledBy: [#HEX:F.04.1BB.00], [#HEX:F.06.51.00], [#HEX:F.04.1BF.00], [#HEX:F.06.52.00], [#HEX:F.06.53.00]
+// @calls: [#HEX:F.04.1C0.00], [#HEX:B.07.21.00], [#HEX:F.06.59.00], [#HEX:B.07.24.00], [#HEX:F.06.54.00] | @calledBy: [#HEX:F.04.1BB.00], [#HEX:F.06.51.00], [#HEX:F.04.1BF.00], [#HEX:F.06.52.00], [#HEX:F.06.53.00]
             window.loadDeckLogEntry = function (entryId) {
                 var entryIdInput = document.getElementById('deck-log-entry-id');
                 var dateInput = document.getElementById('deck-log-date');
@@ -4576,7 +4576,7 @@ window.normalizeShipData = normalizeShipData;
                 }
 
 // === [#HEX:F.06.52.00] START | name: backendCaller | lines: 152 ===
-// @calls: [#HEX:F.04.1C0.00], [#HEX:F.04.1C1.00], [#HEX:B.07.24.00], [#HEX:B.07.21.00] | @calledBy: none
+// @calls: [#HEX:F.04.1C0.00], [#HEX:B.07.21.00], [#HEX:F.04.1C1.00], [#HEX:B.07.24.00] | @calledBy: none
                 backendCaller('checkLogWritePermission', [], function (currentLogId) {
                     if (!currentLogId || typeof currentLogId !== 'string') {
                         if (statusDiv) statusDiv.textContent = 'Nem található írható hajónapló azonosító.';
@@ -4620,7 +4620,7 @@ window.normalizeShipData = normalizeShipData;
                         }
                     } else {
 // === [#HEX:F.06.53.00] START | name: backendCaller | lines: 106 ===
-// @calls: [#HEX:F.04.1C0.00], [#HEX:B.07.21.00], [#HEX:F.04.1C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.1C1.00], [#HEX:F.04.1C0.00], [#HEX:B.07.21.00] | @calledBy: none
                         backendCaller('getLogEntry', [currentLogId, entryId || 'last'], function (entry) {
                             if (!entry || entry.error) {
                                 if (statusDiv) statusDiv.textContent = 'Hiba a bejegyzés betöltésekor: ' + (entry ? entry.error : 'Ismeretlen hiba');
@@ -4755,7 +4755,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.04.1C2.00] END ===
 
 // === [#HEX:F.04.1C3.00] START | name: executeDeckSaveLogEntry | lines: 111 ===
-// @calls: [#HEX:F.06.59.00], [#HEX:D.01.00.00], [#HEX:F.06.54.00], [#HEX:B.07.1E.00], [#HEX:F.04.1C1.00] | @calledBy: none
+// @calls: [#HEX:D.01.00.00], [#HEX:F.04.1C1.00], [#HEX:F.06.59.00], [#HEX:F.04.1B5.00], [#HEX:F.06.54.00] | @calledBy: none
             window.executeDeckSaveLogEntry = async function () {
                 var dateEl = document.getElementById('deck-log-date');
                 var timeEl = document.getElementById('deck-log-time');
@@ -4829,7 +4829,7 @@ window.normalizeShipData = normalizeShipData;
 
                     if (backendCaller) {
 // === [#HEX:F.06.54.00] START | name: backendCaller | lines: 18 ===
-// @calls: [#HEX:F.04.1C1.00], [#HEX:B.07.1E.00], [#HEX:F.04.1B5.00] | @calledBy: [#HEX:F.03.10.00], [#HEX:F.04.1BB.00], [#HEX:F.04.1C1.00], [#HEX:F.04.1C3.00]
+// @calls: [#HEX:F.04.1B5.00], [#HEX:B.07.1E.00], [#HEX:F.04.1C1.00] | @calledBy: [#HEX:F.03.10.00], [#HEX:F.04.1BB.00], [#HEX:F.04.1C1.00], [#HEX:F.04.1C3.00]
                         backendCaller('saveLogEntry', [entryData], function (response) {
                             if (saveBtn) saveBtn.disabled = false;
                             if (response && response.success) {
@@ -5055,7 +5055,7 @@ window.normalizeShipData = normalizeShipData;
 
             // 1. Háromdimenziós Tér Inicializálása
 // === [#HEX:F.04.1C4.00] START | name: init | lines: 116 ===
-// @calls: [#HEX:F.04.1C7.00], [#HEX:D.01.0D.00], [#HEX:F.02.0A.00], [#HEX:F.02.0B.00], [#HEX:F.04.188.00] | @calledBy: none
+// @calls: [#HEX:F.04.188.00], [#HEX:D.01.0D.00], [#HEX:F.02.0A.00], [#HEX:F.02.0B.00], [#HEX:F.04.187.00] | @calledBy: none
             function init() {
                 const container = document.getElementById('webgl-canvas-container');
 
@@ -5408,7 +5408,7 @@ window.normalizeShipData = normalizeShipData;
 
             // Modell Betöltő (GLTFLoader)
 // === [#HEX:F.04.1C5.00] START | name: loadHarborModel | lines: 1481 ===
-// @calls: [#HEX:F.03.14.00], [#HEX:F.02.0C.00], [#HEX:F.04.1A6.00], [#HEX:F.04.2C1.00], [#HEX:F.02.0B.00] | @calledBy: [#HEX:F.04.1C4.00]
+// @calls: [#HEX:F.02.0B.00], [#HEX:F.0A.02.00], [#HEX:F.04.1A6.00], [#HEX:F.03.14.00], [#HEX:F.01.15.00] | @calledBy: [#HEX:F.04.1C4.00]
             function loadHarborModel() {
                 const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb';
                 const loader = new GLTFLoader();

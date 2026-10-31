@@ -5803,3 +5803,47 @@ body.keyboard-open #info-modal .info-modal-content {
     font-size: 11px;
     color: #94a3b8;
 }
+
+/* ==========================================================
+   === M168: OLDALBETÖLTÉSKORI AUTOMATIKUS FEKVŐ TÁJOLÁS ===
+   Álló mobilon (html.ebp-force-landscape) a teljes oldal 90 fokkal
+   elfordul. Forgatott módban a fizikai 100vw = logikai magasság,
+   a 100vh = logikai szélesség.
+   ========================================================== */
+html.ebp-force-landscape,
+html.ebp-force-landscape body {
+    overflow: hidden !important;
+}
+
+html.ebp-force-landscape body {
+    position: fixed !important;
+    top: 0 !important;
+    left: 100vw !important;
+    width: 100vh !important;
+    height: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: rotate(90deg) !important;
+    transform-origin: 0 0 !important;
+}
+
+/* Teljes képernyős fő konténerek a forgatott (logikai) méretre igazítva */
+html.ebp-force-landscape #appContainer,
+html.ebp-force-landscape #auth-3d-container,
+html.ebp-force-landscape #info-modal,
+html.ebp-force-landscape #kikoto-3d-loading-overlay {
+    width: 100vh !important;
+    max-width: 100vh !important;
+    height: 100vw !important;
+}
+
+html.ebp-force-landscape .info-modal-content {
+    max-width: 95vh !important;
+    max-height: 94vw !important;
+}
+
+/* A fekvő tájolásra felszólító jelzés forgatott módban felesleges */
+html.ebp-force-landscape .loading-orientation-hint,
+html.ebp-force-landscape .loading-orientation-hint.mobile-portrait-active {
+    display: none !important;
+}

@@ -49,7 +49,7 @@ window.preloadPageTemplate = preloadPageTemplate;
 var _universalLoadingWatchdog = null;
 
 // === [#HEX:F.04.01.00] START | name: showUniversalLoading | lines: 34 ===
-// @calls: [#HEX:F.06.0A.00], [#HEX:F.04.13.00], [#HEX:F.04.03.00] | @calledBy: [#HEX:F.04.64.00], [#HEX:F.04.134.00]
+// @calls: [#HEX:F.04.03.00], [#HEX:F.06.0A.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:F.04.64.00], [#HEX:F.04.134.00]
 function showUniversalLoading(statusText, customPhrases) {
     if (typeof requestLandscapeAndFullscreen === 'function') {
         requestLandscapeAndFullscreen();
@@ -195,7 +195,7 @@ window._hasPreloadedUserData = false;
 var _userDataPreloadCallbacks = [];
 
 // === [#HEX:F.04.05.00] START | name: preloadUserBaseData | lines: 52 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.47.00], [#HEX:F.06.00.00], [#HEX:F.04.06.00], [#HEX:F.03.03.00] | @calledBy: [#HEX:F.04.64.00], [#HEX:F.01.0B.00], [#HEX:F.04.178.00]
+// @calls: [#HEX:F.06.00.00], [#HEX:F.04.06.00], [#HEX:F.06.47.00], [#HEX:B.03.15.00], [#HEX:F.03.03.00] | @calledBy: [#HEX:F.04.64.00], [#HEX:F.01.0B.00], [#HEX:F.04.178.00]
 function preloadUserBaseData(user, onComplete) {
     if (typeof onComplete === 'function') {
         _userDataPreloadCallbacks.push(onComplete);
@@ -233,7 +233,7 @@ function preloadUserBaseData(user, onComplete) {
     }
 
 // === [#HEX:F.06.00.00] START | name: backendCaller | lines: 16 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.04.06.00], [#HEX:F.03.03.00] | @calledBy: [#HEX:F.04.05.00], [#HEX:F.02.0F.00], [#HEX:F.04.14F.00], [#HEX:F.04.151.00], [#HEX:F.04.152.00]
+// @calls: [#HEX:F.03.03.00], [#HEX:F.04.06.00], [#HEX:B.03.15.00] | @calledBy: [#HEX:F.04.05.00], [#HEX:F.02.0F.00], [#HEX:F.04.14F.00], [#HEX:F.04.151.00], [#HEX:F.04.152.00]
     backendCaller('getToborzoData', [], function (response) {
         if (response && response.success && Array.isArray(response.ownedShips)) {
             window.toborzoMarketData = response;
@@ -351,7 +351,7 @@ window.preloadUserBaseData = preloadUserBaseData;
 // === [#HEX:F.04.09.00] END ===
 
 // === [#HEX:F.04.0A.00] START | name: cycle | lines: 23 ===
-// @calls: [#HEX:F.04.08.00], [#HEX:F.04.07.00], [#HEX:F.04.0B.00] | @calledBy: [#HEX:F.04.0B.00], [#HEX:F.04.0C.00]
+// @calls: [#HEX:F.04.0B.00], [#HEX:F.04.08.00], [#HEX:F.04.07.00] | @calledBy: [#HEX:F.04.0B.00], [#HEX:F.04.0C.00]
     function cycle() {
         if (!isRunning) return;
         var containers = getContainers();
@@ -644,7 +644,7 @@ var clockworkEngine = (function () {
 
     return {
 // === [#HEX:F.04.13.00] START | name: start | lines: 16 ===
-// @calls: [#HEX:F.04.22D.00], [#HEX:F.04.11.00] | @calledBy: [#HEX:F.04.01.00], [#HEX:F.04.51.00], [#HEX:F.04.31.00], [#HEX:F.04.33.00], [#HEX:F.05.74.00]
+// @calls: [#HEX:F.04.11.00], [#HEX:F.04.22D.00] | @calledBy: [#HEX:F.04.01.00], [#HEX:F.04.51.00], [#HEX:F.04.31.00], [#HEX:F.04.33.00], [#HEX:F.05.74.00]
         start: function (container) {
             var c = container || document.getElementById('clockwork-canvas-container');
             if (c) {
@@ -732,7 +732,7 @@ function getPageHtmlUrl(pageName) {
 
 // Globális Unity / Tutorial befejező rutin (mindig elérhető a szülő ablakban!)
 // === [#HEX:F.04.17.00] START | name: onTutorialSuccess | lines: 10 ===
-// @calls: [#HEX:B.06.06.00], [#HEX:F.04.FC.00], [#HEX:F.06.47.00] | @calledBy: none
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.FC.00], [#HEX:B.06.06.00] | @calledBy: none
 window.onTutorialSuccess = function (boatData) {
     var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
 // === [#HEX:F.06.01.00] START | name: callBackend | lines: 4 ===
@@ -781,7 +781,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
             }
         } else if (event.data.action === 'tutorial_completed') {
 // === [#HEX:F.06.02.00] START | name: callBackend | lines: 18 ===
-// @calls: [#HEX:B.06.06.00], [#HEX:D.01.22.00], [#HEX:F.04.FC.00] | @calledBy: none
+// @calls: [#HEX:D.01.22.00], [#HEX:F.04.FC.00], [#HEX:B.06.06.00] | @calledBy: none
             callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function (res) {
                 console.log('Tutorial befejezve és felírva válasz:', res);
                 window.userTutorialCompleted = true;
@@ -834,7 +834,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
  * Képes kezelni, ha a Google HTML "szemetet" (fejlécet/hibaüzenetet) küld a JSON helyett/mellett.
  */
 // === [#HEX:F.06.03.00] START | name: handleBackendPayload | lines: 35 ===
-// @calls: [#HEX:F.06.08.00], [#HEX:F.04.51.00], [#HEX:F.06.06.00], [#HEX:B.07.68.00] | @calledBy: [#HEX:F.04.18.00], [#HEX:F.04.1A.00], [#HEX:F.06.05.00]
+// @calls: [#HEX:F.04.51.00], [#HEX:B.07.68.00], [#HEX:F.06.06.00], [#HEX:F.06.08.00] | @calledBy: [#HEX:F.04.18.00], [#HEX:F.04.1A.00], [#HEX:F.06.05.00]
 function handleBackendPayload(payload, funcName, onSuccess, onFailure) {
     var data = parseJsonFromText(payload.text);
     if (data === null || typeof data === 'undefined') {
@@ -889,7 +889,7 @@ function handleBackendError(error, onFailure) {
 // === [#HEX:F.06.04.00] END ===
 
 // === [#HEX:F.04.18.00] START | name: uploadChunksSequentially | lines: 70 | action: 'assembleChunkedPayload' ===
-// @calls: [#HEX:F.06.04.00], [#HEX:F.01.0F.00], [#HEX:F.04.1A.00], [#HEX:B.07.12.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.06.05.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.01.0F.00], [#HEX:B.07.11.00], [#HEX:F.04.1A.00], [#HEX:F.04.19.00] | @calledBy: [#HEX:F.06.05.00]
 function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onFailure) {
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyj9yi2WuDSb63Kgknpr9n8sGbtBVWuI295_bxrTONYlmlidgFkyB2HcxGYRCHyIpNf/exec";
     var CHUNK_SIZE = 1024 * 1024 * 2; // 2 MB
@@ -913,7 +913,7 @@ function uploadChunksSequentially(funcName, payloadString, token, onSuccess, onF
 // === [#HEX:F.04.19.00] END ===
 
 // === [#HEX:F.04.1A.00] START | name: sendNextChunk | lines: 48 | action: 'assembleChunkedPayload' ===
-// @calls: [#HEX:F.06.04.00], [#HEX:B.07.12.00], [#HEX:F.04.2C1.00], [#HEX:F.06.03.00], [#HEX:F.04.19.00] | @calledBy: [#HEX:F.04.18.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.11.00], [#HEX:F.04.19.00], [#HEX:F.06.03.00], [#HEX:F.06.04.00] | @calledBy: [#HEX:F.04.18.00]
     function sendNextChunk() {
         if (currentChunk >= totalChunks) {
             setLocalStatus('Fájlok szerveroldali összefűzése folyamatban (' + totalChunks + ' adag)...');
@@ -1082,7 +1082,7 @@ var HexEngine = (function () {
             },
 // === [#HEX:F.04.22.00] END ===
 // === [#HEX:F.04.23.00] START | name: startGuard | lines: 15 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.1B.00], [#HEX:F.04.25.00] | @calledBy: [#HEX:F.06.05.00]
+// @calls: [#HEX:F.04.1B.00], [#HEX:F.04.2C1.00], [#HEX:F.04.25.00] | @calledBy: [#HEX:F.06.05.00]
             startGuard: function (requestId, hexId, action, timeoutMs, onTimeout) {
                 var limit = timeoutMs || 12000;
                 _activeRequests[requestId] = setTimeout(function () {
@@ -1134,7 +1134,7 @@ var HexEngine = (function () {
             },
 // === [#HEX:F.01.00.00] END ===
 // === [#HEX:F.04.26.00] START | name: init | lines: 60 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.25.00], [#HEX:F.04.FC.00], [#HEX:F.04.1B.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.25.00], [#HEX:F.04.1B.00], [#HEX:F.04.FC.00] | @calledBy: none
             init: function () {
                 if (typeof document === 'undefined') return;
                 document.addEventListener('click', function (e) {
@@ -1242,7 +1242,7 @@ if (typeof document !== 'undefined') {
 }
 
 // === [#HEX:F.06.05.00] START | name: callBackend | lines: 119 ===
-// @calls: [#HEX:B.07.2E.00], [#HEX:F.04.2A.00], [#HEX:F.04.22.00], [#HEX:F.04.2C1.00], [#HEX:B.07.B5.00] | @calledBy: none
+// @calls: [#HEX:B.07.0F.00], [#HEX:F.04.20.00], [#HEX:B.07.10.00], [#HEX:B.07.2A.00], [#HEX:B.07.2D.00] | @calledBy: none
 function callBackend(funcName, params, onSuccess, onFailure, optHexId, optCacheTtl) {
     var hexId = optHexId || 'F.06.05.00';
     var cacheKey = funcName + '_' + JSON.stringify(params || []);
@@ -1303,7 +1303,7 @@ function callBackend(funcName, params, onSuccess, onFailure, optHexId, optCacheT
     });
 
 // === [#HEX:F.04.2A.00] START | name: wrappedSuccess | lines: 21 ===
-// @calls: [#HEX:B.07.2E.00], [#HEX:B.05.0A.00], [#HEX:F.04.1E.00], [#HEX:F.04.22.00], [#HEX:B.06.0D.00] | @calledBy: [#HEX:F.06.05.00]
+// @calls: [#HEX:F.04.1E.00], [#HEX:B.02.02.00], [#HEX:B.07.30.00], [#HEX:B.07.2F.00], [#HEX:B.06.0D.00] | @calledBy: [#HEX:F.06.05.00]
     var wrappedSuccess = function (result) {
         HexEngine.sentinel.clearGuard(reqId);
         HexEngine.sentinel.recordSuccess(funcName);
@@ -1328,7 +1328,7 @@ function callBackend(funcName, params, onSuccess, onFailure, optHexId, optCacheT
 // === [#HEX:F.04.2A.00] END ===
 
 // === [#HEX:F.04.2B.00] START | name: wrappedFailure | lines: 10 ===
-// @calls: [#HEX:F.04.21.00], [#HEX:F.06.04.00], [#HEX:F.04.24.00] | @calledBy: [#HEX:F.06.05.00]
+// @calls: [#HEX:F.06.04.00], [#HEX:F.04.21.00], [#HEX:F.04.24.00] | @calledBy: [#HEX:F.06.05.00]
     var wrappedFailure = function (err) {
         HexEngine.sentinel.clearGuard(reqId);
         HexEngine.sentinel.recordFailure(funcName);
@@ -1541,7 +1541,7 @@ function parseJsonFromText(text) {
 // === [#HEX:F.04.51.00] END ===
 
 // === [#HEX:F.01.0F.00] START | name: login | lines: 45 ===
-// @calls: [#HEX:F.06.0A.00], [#HEX:F.06.47.00], [#HEX:B.07.01.00], [#HEX:F.04.64.00] | @calledBy: [#HEX:F.06.04.00], [#HEX:F.04.18.00], [#HEX:F.04.19.00], [#HEX:F.04.64.00], [#HEX:F.04.B3.00]
+// @calls: [#HEX:B.07.01.00], [#HEX:F.06.0A.00], [#HEX:F.06.47.00], [#HEX:F.04.64.00] | @calledBy: [#HEX:F.06.04.00], [#HEX:F.04.18.00], [#HEX:F.04.19.00], [#HEX:F.04.64.00], [#HEX:F.04.B3.00]
 function login() {
     if (typeof requestLandscapeAndFullscreen === 'function') {
         requestLandscapeAndFullscreen();
@@ -1590,7 +1590,7 @@ function login() {
 // === [#HEX:F.01.0F.00] END ===
 
 // === [#HEX:F.04.64.00] START | name: initializeApp | lines: 77 ===
-// @calls: [#HEX:F.04.15.00], [#HEX:F.07.02.00], [#HEX:F.04.D3.00], [#HEX:F.04.FB.00], [#HEX:F.01.0F.00] | @calledBy: [#HEX:F.01.0F.00], [#HEX:F.01.01.00], [#HEX:F.01.0B.00], [#HEX:F.01.0C.00]
+// @calls: [#HEX:F.04.FB.00], [#HEX:F.04.B3.00], [#HEX:F.04.D3.00], [#HEX:F.04.15.00], [#HEX:F.01.0F.00] | @calledBy: [#HEX:F.01.0F.00], [#HEX:F.01.01.00], [#HEX:F.01.0B.00], [#HEX:F.01.0C.00]
 function initializeApp(user) {
     if (typeof showUniversalLoading === 'function') {
         showUniversalLoading("sot_preload_island");
@@ -1687,13 +1687,13 @@ function openInfoModalAuto() {
 window.openInfoModalAuto = openInfoModalAuto;
 
 // === [#HEX:F.01.01.00] START | name: checkSession | lines: 105 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.01.0A.00], [#HEX:F.04.DC.00], [#HEX:F.04.00.00], [#HEX:F.01.02.00] | @calledBy: [#HEX:F.04.F3.00]
+// @calls: [#HEX:F.04.00.00], [#HEX:F.04.DC.00], [#HEX:F.06.0C.00], [#HEX:F.01.0A.00], [#HEX:F.05.27.00] | @calledBy: [#HEX:F.04.F3.00]
 function checkSession() {
     if (isSessionChecked) return;
     const token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken');
 
 // === [#HEX:F.01.02.00] START | name: show3DAuthTerminal | lines: 44 ===
-// @calls: [#HEX:F.01.0A.00], [#HEX:F.04.DC.00], [#HEX:F.04.00.00], [#HEX:F.06.0C.00], [#HEX:F.05.27.00] | @calledBy: [#HEX:F.01.01.00]
+// @calls: [#HEX:F.04.00.00], [#HEX:F.04.DC.00], [#HEX:F.06.0C.00], [#HEX:F.01.0A.00], [#HEX:F.05.27.00] | @calledBy: [#HEX:F.01.01.00]
     function show3DAuthTerminal() {
         document.documentElement.classList.remove('ebp-authenticated');
         var appView = document.getElementById('app-view');
@@ -2319,7 +2319,7 @@ function ensureCreditDisplayIsPresent() {
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
 // === [#HEX:F.04.FC.00] START | name: loadPage | lines: 393 ===
-// @calls: [#HEX:F.02.24.00], [#HEX:F.04.265.00], [#HEX:F.04.21F.00], [#HEX:F.04.16.00], [#HEX:F.04.2E.00] | @calledBy: [#HEX:F.04.17.00], [#HEX:F.06.01.00], [#HEX:F.06.02.00], [#HEX:F.04.26.00], [#HEX:F.04.64.00]
+// @calls: [#HEX:F.04.03.00], [#HEX:D.01.0D.00], [#HEX:F.04.114.00], [#HEX:F.04.27D.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.17.00], [#HEX:F.06.01.00], [#HEX:F.06.02.00], [#HEX:F.04.26.00], [#HEX:F.04.64.00]
 function loadPage(pageName) {
     var closeIcon = document.querySelector('.header-close-icon');
 
@@ -2428,7 +2428,7 @@ function loadPage(pageName) {
         if (kSplash) kSplash.style.display = 'none';
 
 // === [#HEX:F.04.114.00] START | name: afterKikotoMount | lines: 32 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.00.00], [#HEX:F.08.09.00], [#HEX:F.08.07.00], [#HEX:F.04.134.00] | @calledBy: [#HEX:F.04.FC.00]
+// @calls: [#HEX:F.04.2E.00], [#HEX:B.07.00.00], [#HEX:F.08.07.00], [#HEX:F.08.09.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.FC.00]
         function afterKikotoMount() {
             var kContentEl = document.getElementById('kikoto_oldal-content');
             if (kContentEl) kContentEl.style.display = 'block';
@@ -2586,7 +2586,7 @@ function loadPage(pageName) {
     window.makeSubpageContentResponsive = makeSubpageContentResponsive;
 
 // === [#HEX:F.04.17F.00] START | name: renderAndInitPage | lines: 107 ===
-// @calls: [#HEX:F.02.24.00], [#HEX:F.04.265.00], [#HEX:F.04.21F.00], [#HEX:F.04.2E.00], [#HEX:F.04.230.00] | @calledBy: [#HEX:F.04.FC.00]
+// @calls: [#HEX:F.04.03.00], [#HEX:F.06.47.00], [#HEX:F.04.296.00], [#HEX:F.04.88.00], [#HEX:F.04.2E.00] | @calledBy: [#HEX:F.04.FC.00]
     function renderAndInitPage(htmlText) {
         if (contentDiv) {
             contentDiv.innerHTML = htmlText;
@@ -2788,7 +2788,7 @@ function toggleAccordionPanel() {
  * Ha nem -> Splash (Infó) képernyő megjelenítése.
  */
 // === [#HEX:F.04.2E.00] START | name: initializePage | lines: 56 ===
-// @calls: [#HEX:F.04.134.00], [#HEX:F.06.47.00], [#HEX:B.07.09.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:B.07.09.00], [#HEX:F.04.134.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.17F.00]
 function initializePage(pageName) {
     if (pageName === 'kikoto_oldal') {
         const kSplash = document.getElementById('kikoto_oldal-splash');
@@ -2851,7 +2851,7 @@ function initializePage(pageName) {
  * A "Megértettem" gomb hívja: rögzíti a látogatást és vált a tartalomra.
  */
 // === [#HEX:F.04.2F.00] START | name: markPageAsSeen | lines: 41 ===
-// @calls: [#HEX:F.02.24.00], [#HEX:F.06.47.00], [#HEX:B.07.0A.00], [#HEX:F.02.28.00], [#HEX:F.02.1B.00] | @calledBy: none
+// @calls: [#HEX:F.04.280.00], [#HEX:F.06.47.00], [#HEX:F.02.28.00], [#HEX:B.07.0A.00], [#HEX:F.02.24.00] | @calledBy: none
 function markPageAsSeen(pageName) {
     const splash = document.getElementById(pageName + '-splash');
     const content = document.getElementById(pageName + '-content');
@@ -2916,7 +2916,7 @@ function showSplash(pageName) {
 // ==========================================
 
 // === [#HEX:F.04.31.00] START | name: runTutorialScript | lines: 428 ===
-// @calls: [#HEX:F.04.37.00], [#HEX:F.07.04.00], [#HEX:F.04.38.00], [#HEX:F.04.3C.00], [#HEX:F.04.3B.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:B.06.04.00], [#HEX:F.04.39.00], [#HEX:F.06.47.00], [#HEX:F.04.13.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function runTutorialScript() {
     console.log('runTutorialScript() FÜGGVÉNY ELINDULT (Unity + fallback verzió).');
 
@@ -3157,7 +3157,7 @@ function runTutorialScript() {
 // === [#HEX:F.04.37.00] END ===
 
 // === [#HEX:F.04.38.00] START | name: mountUnityIframe | lines: 33 ===
-// @calls: [#HEX:D.01.00.00], [#HEX:F.04.1A9.00], [#HEX:F.04.F3.00], [#HEX:F.04.1EB.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.39.00]
+// @calls: [#HEX:F.04.1A9.00], [#HEX:D.01.00.00], [#HEX:F.04.1EB.00], [#HEX:F.04.F3.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.39.00]
     function mountUnityIframe(host) {
         if (!host || !unityTargetUrl) {
             setUnityStatus('Hiányzó játékmotor útvonal.', '#c0392b');
@@ -3226,7 +3226,7 @@ function runTutorialScript() {
 // === [#HEX:F.04.3A.00] END ===
 
 // === [#HEX:F.04.3B.00] START | name: startQuiz | lines: 12 ===
-// @calls: [#HEX:F.09.02.00], [#HEX:F.04.3D.00], [#HEX:F.09.03.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.36.00]
+// @calls: [#HEX:F.09.02.00], [#HEX:F.09.03.00], [#HEX:F.04.3D.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.36.00]
     function startQuiz() {
         currentQuestionIndex = 0;
         activateLocalQuizMode();
@@ -3253,7 +3253,7 @@ function runTutorialScript() {
 // === [#HEX:F.04.3C.00] END ===
 
 // === [#HEX:F.04.3D.00] START | name: loadQuestion | lines: 22 ===
-// @calls: [#HEX:F.04.3C.00], [#HEX:F.07.04.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00], [#HEX:F.09.03.00]
+// @calls: [#HEX:F.07.04.00], [#HEX:F.04.3C.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00], [#HEX:F.09.03.00]
     function loadQuestion(index) {
         showFeedback('', 'black');
         var btn = document.getElementById('submit-btn');
@@ -3321,7 +3321,7 @@ function runTutorialScript() {
 // === [#HEX:F.07.04.00] END ===
 
 // === [#HEX:F.09.03.00] START | name: handleAnswer | lines: 36 ===
-// @calls: [#HEX:F.04.3D.00], [#HEX:F.04.3C.00], [#HEX:F.04.32.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00]
+// @calls: [#HEX:F.04.32.00], [#HEX:F.04.3D.00], [#HEX:F.04.3C.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.3B.00]
     function handleAnswer() {
         var selectedOption = document.querySelector('input[name="answer"]:checked');
         var btn = document.getElementById('submit-btn');
@@ -3377,7 +3377,7 @@ function runTutorialScript() {
 // === [#HEX:F.01.04.00] END ===
 
 // === [#HEX:F.04.3E.00] START | name: onTutorialSuccess | lines: 10 ===
-// @calls: [#HEX:B.06.06.00], [#HEX:F.04.FC.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.31.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.FC.00], [#HEX:B.06.06.00] | @calledBy: [#HEX:F.04.31.00]
     window.onTutorialSuccess = function (boatData) {
         var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
 // === [#HEX:F.06.5A.00] START | name: callBackend | lines: 4 ===
@@ -3419,7 +3419,7 @@ function runTutorialScript() {
 
 // 1. Az alap függvény (Ezt hívja a többi)
 // === [#HEX:F.05.01.00] START | name: showSystemModal | lines: 44 ===
-// @calls: [#HEX:F.04.EE.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.1EE.00], [#HEX:F.04.41.00], [#HEX:F.04.42.00], [#HEX:F.04.A4.00], [#HEX:F.04.D3.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.EE.00] | @calledBy: [#HEX:F.04.1EE.00], [#HEX:F.04.41.00], [#HEX:F.04.42.00], [#HEX:F.04.A4.00], [#HEX:F.04.D3.00]
 function showSystemModal(title, message, iconClass, buttons) {
     const modal = document.getElementById('system-message-modal');
     const titleEl = document.getElementById('sys-modal-title');
@@ -3481,7 +3481,7 @@ function uiAlert(message, title = t('modal_notice_title')) {
 
 // 3. HELYETTESÍTŐ: confirm() helyett -> uiConfirm()
 // === [#HEX:F.04.41.00] START | name: uiConfirm | lines: 11 ===
-// @calls: [#HEX:F.04.EE.00], [#HEX:F.05.01.00] | @calledBy: none
+// @calls: [#HEX:F.05.01.00], [#HEX:F.04.EE.00] | @calledBy: none
 function uiConfirm(message, title, onYes) {
     showSystemModal(
         title || t('modal_confirm_title'),
@@ -3497,7 +3497,7 @@ function uiConfirm(message, title, onYes) {
 
 // 4. HELYETTESÍTŐ: prompt() helyett -> uiPrompt()
 // === [#HEX:F.04.42.00] START | name: uiPrompt | lines: 32 ===
-// @calls: [#HEX:F.04.EE.00], [#HEX:F.05.01.00] | @calledBy: [#HEX:F.04.A2.00]
+// @calls: [#HEX:F.05.01.00], [#HEX:F.04.EE.00] | @calledBy: [#HEX:F.04.A2.00]
 function uiPrompt(message, title, placeholder, onCommit) {
     // Egyedi ID a beviteli mezőnek
     const inputId = 'sys-modal-input-' + Date.now();
@@ -3687,7 +3687,7 @@ function closeAllTavernaModals() {
 * és eseménykezelőket rendel a gombokhoz.
 */
 // === [#HEX:F.04.47.00] START | name: initializeTavernaPage | lines: 173 ===
-// @calls: [#HEX:F.04.4C.00], [#HEX:F.04.76.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:F.02.01.00], [#HEX:F.04.76.00], [#HEX:F.05.02.00], [#HEX:F.04.4C.00], [#HEX:B.05.01.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function initializeTavernaPage() {
     // 1. Taverna 3D modul indítása ELSŐKÉNT és KÖZVETLENÜL, semmi se blokkolhassa!
     if (typeof initTaverna3DScene === 'function') {
@@ -3924,7 +3924,7 @@ function focusTavernaHotspot(id) {
 window.focusTavernaHotspot = focusTavernaHotspot;
 
 // === [#HEX:F.04.75.00] START | name: openJatekteremDirect | lines: 45 ===
-// @calls: [#HEX:F.04.44.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.05.02.00], [#HEX:F.04.48.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.04.76.00], [#HEX:F.04.5D.00], [#HEX:F.04.1F0.00], [#HEX:F.04.6E.00]
+// @calls: [#HEX:F.05.02.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.44.00], [#HEX:B.07.3C.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.04.76.00], [#HEX:F.04.5D.00], [#HEX:F.04.1F0.00], [#HEX:F.04.6E.00]
 function openJatekteremDirect() {
     if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
 
@@ -3974,10 +3974,10 @@ function openJatekteremDirect() {
 window.openJatekteremDirect = openJatekteremDirect;
 
 // === [#HEX:F.04.76.00] START | name: enterCardRoomWithPin | lines: 26 ===
-// @calls: [#HEX:F.05.02.00], [#HEX:F.04.5A.00], [#HEX:F.06.39.00], [#HEX:F.04.5D.00], [#HEX:F.04.75.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.04.1F0.00], [#HEX:F.04.6C.00]
+// @calls: [#HEX:F.04.5A.00], [#HEX:F.06.39.00], [#HEX:F.05.02.00], [#HEX:F.04.5D.00], [#HEX:F.04.75.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.04.1F0.00], [#HEX:F.04.6C.00]
 function enterCardRoomWithPin() {
 // === [#HEX:F.04.5D.00] START | name: doEnter | lines: 10 ===
-// @calls: [#HEX:F.04.75.00], [#HEX:F.05.02.00], [#HEX:F.04.5A.00] | @calledBy: [#HEX:F.04.76.00], [#HEX:F.06.0F.00]
+// @calls: [#HEX:F.04.5A.00], [#HEX:F.05.02.00], [#HEX:F.04.75.00] | @calledBy: [#HEX:F.04.76.00], [#HEX:F.06.0F.00]
     function doEnter() {
         if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
         var overlay = document.getElementById('taverna-2d-overlay');
@@ -4034,7 +4034,7 @@ function openBetaFromTavern() {
 window.openBetaFromTavern = openBetaFromTavern;
 
 // === [#HEX:F.04.79.00] START | name: openBookAgentDialog | lines: 25 | action: 'RUN_FUNCTION' ===
-// @calls: [#HEX:F.05.02.00], [#HEX:F.04.2C1.00], [#HEX:F.04.225.00], [#HEX:F.04.78.00], [#HEX:B.05.21.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.68.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.78.00], [#HEX:F.04.225.00], [#HEX:F.05.02.00], [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.68.00]
 function openBookAgentDialog() {
     if (typeof closeAllTavernaModals === 'function') closeAllTavernaModals();
     if (typeof openUniversalNPC === 'function') {
@@ -4146,7 +4146,7 @@ function initTaverna3DScene() {
 window.initTaverna3DScene = initTaverna3DScene;
 
 // === [#HEX:F.04.30D.00] START | name: createInteriorCameraController | lines: 204 ===
-// @calls: [#HEX:F.04.2D0.00], [#HEX:F.04.2D1.00], [#HEX:F.05.5D.00], [#HEX:F.04.2D3.00], [#HEX:F.04.2D4.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:F.04.2D4.00], [#HEX:F.05.5D.00], [#HEX:F.04.2D0.00], [#HEX:F.04.2ED.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.295.00]
 function createInteriorCameraController(config) {
     if (!config || !config.camera || !config.controls) return null;
 
@@ -4194,7 +4194,7 @@ function createInteriorCameraController(config) {
 // === [#HEX:F.05.5D.00] END ===
 
 // === [#HEX:F.04.2D1.00] START | name: handleKeyDown | lines: 28 ===
-// @calls: [#HEX:F.05.5D.00], [#HEX:F.04.2D0.00] | @calledBy: [#HEX:F.04.30D.00], [#HEX:F.04.2D7.00]
+// @calls: [#HEX:F.04.2D0.00], [#HEX:F.05.5D.00] | @calledBy: [#HEX:F.04.30D.00], [#HEX:F.04.2D7.00]
     function handleKeyDown(e) {
         if (isInputActive() || isModalOpen()) return;
 
@@ -4359,7 +4359,7 @@ function createInteriorCameraController(config) {
 // === [#HEX:F.04.2D6.00] END ===
 
 // === [#HEX:F.04.2D7.00] START | name: dispose | lines: 6 ===
-// @calls: [#HEX:F.04.2D3.00], [#HEX:F.04.2D1.00], [#HEX:F.04.2D4.00] | @calledBy: [#HEX:F.04.30D.00], [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.04.233.00], [#HEX:F.04.24E.00]
+// @calls: [#HEX:F.04.2D1.00], [#HEX:F.04.2D4.00], [#HEX:F.04.2D3.00] | @calledBy: [#HEX:F.04.30D.00], [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.04.233.00], [#HEX:F.04.24E.00]
     function dispose() {
         window.removeEventListener('keydown', handleKeyDown);
         window.removeEventListener('keyup', handleKeyUp);
@@ -4380,7 +4380,7 @@ window.createInteriorCameraController = createInteriorCameraController;
 
 
 // === [#HEX:F.04.1F0.00] START | name: runTaverna3DModule | lines: 1610 | action: 'RUN_FUNCTION' ===
-// @calls: [#HEX:F.04.63.00], [#HEX:F.04.1FF.00], [#HEX:F.04.2C1.00], [#HEX:F.04.139.00], [#HEX:F.04.5C.00] | @calledBy: [#HEX:F.02.01.00]
+// @calls: [#HEX:B.05.1B.00], [#HEX:F.04.5C.00], [#HEX:D.01.0D.00], [#HEX:F.04.1F4.00], [#HEX:F.04.1FE.00] | @calledBy: [#HEX:F.02.01.00]
 function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
     const container = document.getElementById('taverna-webgl-canvas-container');
     const tooltipEl = document.getElementById('taverna-interactive-tooltip');
@@ -5189,7 +5189,7 @@ function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
         camPos: new THREE.Vector3(3.6, 2.3, -0.6),
         lookAt: new THREE.Vector3(3.6, 1.6, -3.2),
 // === [#HEX:F.04.5E.00] START | name: action | lines: 26 | action: 'RUN_FUNCTION' ===
-// @calls: [#HEX:B.05.1F.00], [#HEX:B.05.1B.00], [#HEX:B.05.21.00], [#HEX:F.04.E9.00] | @calledBy: none
+// @calls: [#HEX:B.05.1F.00], [#HEX:B.05.1B.00], [#HEX:F.04.E9.00], [#HEX:B.05.21.00] | @calledBy: none
         action: function () {
             if (typeof openUniversalNPC === 'function') {
                 openUniversalNPC('bartender', {
@@ -5993,7 +5993,7 @@ function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.1FD.00] END ===
 
 // === [#HEX:F.04.1FE.00] START | name: triggerHotspotTransition | lines: 34 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.1FF.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.1FD.00], [#HEX:F.04.200.00], [#HEX:F.04.201.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.1FF.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.1FD.00], [#HEX:F.04.200.00], [#HEX:F.04.201.00]
     function triggerHotspotTransition(hotspot) {
         if (isTransitioning || !hotspot) return;
         isTransitioning = true;
@@ -6009,7 +6009,7 @@ function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
         const startTime = performance.now();
 
 // === [#HEX:F.04.1FF.00] START | name: animateTween | lines: 18 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.1FE.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.1FE.00]
         function animateTween(now) {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1.0);
@@ -6101,7 +6101,7 @@ function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 11. Takarítási függvény
 // === [#HEX:F.04.204.00] START | name: _taverna3DCleanup | lines: 19 ===
-// @calls: [#HEX:D.01.0D.00], [#HEX:F.04.25F.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.1F0.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.25F.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.1F0.00]
     window._taverna3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -6347,7 +6347,7 @@ function handleCardChoice(bet, chosenCard) {
 * @param {string} viewSuffix A nézet azonosítója (pl. 'read', 'compose', 'beta_menu').
 */
 // === [#HEX:F.04.4C.00] START | name: showPultView | lines: 40 ===
-// @calls: [#HEX:F.04.54.00], [#HEX:F.04.46.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.04.78.00], [#HEX:F.05.03.00], [#HEX:F.04.53.00], [#HEX:F.04.55.00]
+// @calls: [#HEX:F.04.46.00], [#HEX:F.04.54.00] | @calledBy: [#HEX:F.04.47.00], [#HEX:F.04.78.00], [#HEX:F.05.03.00], [#HEX:F.04.53.00], [#HEX:F.04.55.00]
 function showPultView(viewSuffix) {
     // A lehetséges nézetek ID-jainak listája
     const views = [
@@ -6491,11 +6491,11 @@ function openMercenaryMarketFromTavern() {
 // === [#HEX:F.04.4E.00] END ===
 
 // === [#HEX:F.04.4F.00] START | name: handleHireMercenary | lines: 23 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.4E.00], [#HEX:F.04.1EE.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.4E.00], [#HEX:F.06.10.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.4E.00] | @calledBy: [#HEX:F.04.4E.00], [#HEX:F.06.10.00]
 function handleHireMercenary(mercName, cost) {
     var msg = "Zsoldos felbérlése: " + mercName + "<br>Ár: " + cost + " Kr<br><br>Kérlek, add meg a Munkavállalói PIN kódodat a szerződés hitelesítéséhez:";
 // === [#HEX:F.06.11.00] START | name: requestPin | lines: 20 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.4E.00], [#HEX:F.04.1EE.00] | @calledBy: none
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.4E.00] | @calledBy: none
     requestPin(function (pinCode) {
         if (!pinCode) return;
 
@@ -6503,7 +6503,7 @@ function handleHireMercenary(mercName, cost) {
         if (loading) loading.style.display = 'flex';
 
 // === [#HEX:F.06.5C.00] START | name: callBackend | lines: 10 ===
-// @calls: [#HEX:F.04.4E.00], [#HEX:F.04.1EE.00] | @calledBy: none
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.4E.00] | @calledBy: none
         callBackend('BT_hireMercenary', [pinCode, mercName, cost], function (response) {
             if (loading) loading.style.display = 'none';
 
@@ -6584,7 +6584,7 @@ function updateBetaCost() {
 
 // 1. FELTÖLTÉS INDÍTÁSA (PIN Kéréssel)
 // === [#HEX:F.04.52.00] START | name: initiateBetaUpload | lines: 30 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.39.00], [#HEX:F.04.53.00] | @calledBy: none
+// @calls: [#HEX:F.04.53.00], [#HEX:F.06.39.00], [#HEX:F.04.1EE.00] | @calledBy: none
 function initiateBetaUpload() {
     const title = document.getElementById('beta-title').value;
     const content = document.getElementById('beta-content').value;
@@ -6625,7 +6625,7 @@ function initiateBetaUpload() {
 // =========================================
 
 // === [#HEX:F.04.53.00] START | name: sendBetaUploadToServer | lines: 35 ===
-// @calls: [#HEX:F.04.4C.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.3F.00] | @calledBy: [#HEX:F.04.52.00], [#HEX:F.06.13.00]
+// @calls: [#HEX:B.07.3F.00], [#HEX:F.04.4C.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.52.00], [#HEX:F.06.13.00]
 function sendBetaUploadToServer(pinCode, payload) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -6665,7 +6665,7 @@ function sendBetaUploadToServer(pinCode, payload) {
 
 // 2. LISTA BETÖLTÉSE
 // === [#HEX:F.04.54.00] START | name: loadBetaWorks | lines: 23 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.40.00], [#HEX:F.04.55.00] | @calledBy: [#HEX:F.04.4C.00], [#HEX:F.04.57.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.55.00], [#HEX:B.07.40.00] | @calledBy: [#HEX:F.04.4C.00], [#HEX:F.04.57.00]
 function loadBetaWorks() {
     var container = document.getElementById('beta-list-container');
     container.innerHTML = '<p style="text-align:center;">' + t('beta_list_loading') + '</p>';
@@ -6806,7 +6806,7 @@ function listBetaWorksForReader() {
 
 // 2. Kilépés (Megerősítéssel)
 // === [#HEX:F.04.58.00] START | name: closeBetaReader | lines: 25 ===
-// @calls: [#HEX:F.04.59.00], [#HEX:F.04.C6.00] | @calledBy: none
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.59.00] | @calledBy: none
 function closeBetaReader() {
     // Ellenőrizzük, írt-e már valamit
     const opinion = document.getElementById('log-opinion').value;
@@ -6839,7 +6839,7 @@ function closeBetaReader() {
 
 // 3. Napló Beküldése
 // === [#HEX:F.04.206.00] START | name: submitLogbook | lines: 46 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.04.14.00], [#HEX:F.04.57.00] | @calledBy: none
+// @calls: [#HEX:F.04.57.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.04.14.00] | @calledBy: none
 function submitLogbook() {
     const gender = document.getElementById('log-gender').value;
     const age = document.getElementById('log-age').value;
@@ -6894,7 +6894,7 @@ function submitLogbook() {
 
 // 1. Saját művek listázása
 // === [#HEX:F.04.207.00] START | name: showMyBetaStats | lines: 20 ===
-// @calls: [#HEX:F.04.4C.00], [#HEX:F.06.47.00], [#HEX:B.06.11.00], [#HEX:F.04.208.00] | @calledBy: [#HEX:F.06.18.00]
+// @calls: [#HEX:B.06.11.00], [#HEX:F.04.208.00], [#HEX:F.04.4C.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.06.18.00]
 function showMyBetaStats() {
     showPultView('beta_my_works');
 
@@ -6919,7 +6919,7 @@ function showMyBetaStats() {
 
 // Lista kirajzolása (Saját Művek) - BŐVÍTETT VERZIÓ
 // === [#HEX:F.04.208.00] START | name: renderMyWorksList | lines: 39 ===
-// @calls: [#HEX:F.04.20B.00], [#HEX:F.04.209.00], [#HEX:F.04.60.00] | @calledBy: [#HEX:F.04.207.00]
+// @calls: [#HEX:F.04.60.00], [#HEX:F.04.209.00], [#HEX:F.04.20B.00] | @calledBy: [#HEX:F.04.207.00]
 function renderMyWorksList(works) {
     var container = document.getElementById('beta-my-works-container');
     container.innerHTML = '';
@@ -6963,7 +6963,7 @@ function renderMyWorksList(works) {
 
 // 2. Vásárlás indítása (PIN bekérése)
 // === [#HEX:F.04.209.00] START | name: initiateStatPurchase | lines: 18 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:F.06.15.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.208.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.39.00], [#HEX:F.06.15.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.208.00]
 function initiateStatPurchase(workId) {
     uiConfirm(
         t('beta_stats_purchase_message'), // Üzenet
@@ -6989,7 +6989,7 @@ function initiateStatPurchase(workId) {
 
 // 3. Adatok lekérése és megjelenítése
 // === [#HEX:F.06.15.00] START | name: fetchBetaStats | lines: 22 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.20A.00], [#HEX:B.02.0A.00] | @calledBy: [#HEX:F.04.209.00], [#HEX:F.06.14.00]
+// @calls: [#HEX:F.04.20A.00], [#HEX:F.06.47.00], [#HEX:B.02.0A.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.209.00], [#HEX:F.06.14.00]
 function fetchBetaStats(workId, pinCode) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -7055,7 +7055,7 @@ function renderStatsTable(title, rows) {
 
 // 1. UTÁNTÖLTÉS INDÍTÁSA
 // === [#HEX:F.04.20B.00] START | name: initiateBetaRefill | lines: 21 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.39.00], [#HEX:F.06.18.00] | @calledBy: [#HEX:F.04.208.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.06.18.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.208.00]
 function initiateBetaRefill(workId, title) {
     // Mennyit töltsünk?
     const amountStr = prompt(t('beta_refill_prompt_prefix') + title + t('beta_refill_prompt_suffix'));
@@ -7084,7 +7084,7 @@ function initiateBetaRefill(workId, title) {
 
 // 2. LEZÁRÁS INDÍTÁSA
 // === [#HEX:F.04.60.00] START | name: initiateBetaClose | lines: 21 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:F.06.39.00], [#HEX:F.06.18.00] | @calledBy: [#HEX:F.04.208.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.39.00], [#HEX:F.06.18.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.208.00]
 function initiateBetaClose(workId, title) {
     // A szöveg formázása HTML-lel a szebb megjelenésért
     const message = t('beta_close_confirm_html_prefix') + title + t('beta_close_confirm_html_suffix');
@@ -7113,7 +7113,7 @@ function initiateBetaClose(workId, title) {
 
 // Közös szerverhívó
 // === [#HEX:F.06.18.00] START | name: sendManageRequest | lines: 22 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.41.00], [#HEX:F.04.2C1.00], [#HEX:F.04.207.00] | @calledBy: [#HEX:F.04.20B.00], [#HEX:F.06.16.00], [#HEX:F.04.60.00], [#HEX:F.06.17.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.207.00], [#HEX:B.07.41.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.20B.00], [#HEX:F.06.16.00], [#HEX:F.04.60.00], [#HEX:F.06.17.00]
 function sendManageRequest(pinCode, action, workId, amount) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -7147,7 +7147,7 @@ function sendManageRequest(pinCode, action, workId, amount) {
  * SEGÉDFÜGGVÉNY: Inicializálja a Bank szekciót a Piac oldalon.
  */
 // === [#HEX:F.04.20C.00] START | name: initializeBankSection | lines: 153 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:B.06.0D.00], [#HEX:B.06.0B.00] | @calledBy: [#HEX:F.04.62.00], [#HEX:F.04.20D.00]
+// @calls: [#HEX:B.06.0D.00], [#HEX:B.02.01.00], [#HEX:F.04.155.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.62.00], [#HEX:F.04.20D.00]
 function initializeBankSection() {
     var exchangeBtn = document.getElementById('bank-exchange-btn');
     var sendBtn = document.getElementById('bank-send-btn');
@@ -7318,7 +7318,7 @@ var CLIENT_SIDE_FILTER_THRESHOLD = 100; // E felett szerver oldali a keresés
  * Piac oldal inicializálása (HIBRID SZŰRÉSSEL)
  */
 // === [#HEX:F.04.62.00] START | name: initializePiacOldal | lines: 86 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.20E.00], [#HEX:F.04.1EE.00], [#HEX:F.04.210.00], [#HEX:B.07.32.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:F.05.06.00], [#HEX:F.04.20E.00], [#HEX:F.04.210.00], [#HEX:F.07.06.00], [#HEX:F.05.05.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function initializePiacOldal() {
     var loaders = {
         piaci: document.getElementById('piaci-lista-loader'),
@@ -7347,7 +7347,7 @@ function initializePiacOldal() {
 
     // 1. Tételszám lekérése a döntéshez (callBackend)
 // === [#HEX:F.06.19.00] START | name: callBackend | lines: 55 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:B.07.32.00], [#HEX:F.07.06.00], [#HEX:B.07.2D.00] | @calledBy: none
+// @calls: [#HEX:F.07.06.00], [#HEX:F.04.1EE.00], [#HEX:B.07.32.00], [#HEX:B.07.2D.00] | @calledBy: none
     callBackend('getMarketItemCount', [], function (response) {
         if (!response.success) {
             containers.piaci.innerHTML = '<p style="color:red;">' + t('market_load_error_prefix') + response.error + '</p>';
@@ -7362,7 +7362,7 @@ function initializePiacOldal() {
 
             // Null paraméterrel mindent lekérünk
 // === [#HEX:F.06.1A.00] START | name: callBackend | lines: 16 ===
-// @calls: [#HEX:F.07.06.00], [#HEX:B.07.2D.00] | @calledBy: none
+// @calls: [#HEX:B.07.2D.00], [#HEX:F.07.06.00] | @calledBy: none
             callBackend('getMarketListings', [null], function (listingResponse) {
                 if (loaders.piaci) loaders.piaci.style.display = 'none';
                 if (listingResponse.success) {
@@ -7439,7 +7439,7 @@ function toggleBuyNowInput(isFixedSelected) {
 // === [#HEX:F.04.A8.00] END ===
 
 // === [#HEX:F.07.06.00] START | name: displayListings | lines: 52 ===
-// @calls: [#HEX:F.05.04.00], [#HEX:F.04.211.00] | @calledBy: [#HEX:F.04.62.00], [#HEX:F.06.19.00], [#HEX:F.06.1A.00]
+// @calls: [#HEX:F.04.211.00], [#HEX:F.05.04.00] | @calledBy: [#HEX:F.04.62.00], [#HEX:F.06.19.00], [#HEX:F.06.1A.00]
 function displayListings(listings, container) {
     container.innerHTML = '';
     if (listings.length === 0) {
@@ -7495,7 +7495,7 @@ function displayListings(listings, container) {
 // === [#HEX:F.07.06.00] END ===
 
 // === [#HEX:F.04.20E.00] START | name: loadMyListedItems | lines: 39 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.2B.00], [#HEX:F.04.66.00] | @calledBy: [#HEX:F.04.62.00]
+// @calls: [#HEX:F.04.66.00], [#HEX:F.06.47.00], [#HEX:B.07.2B.00] | @calledBy: [#HEX:F.04.62.00]
 function loadMyListedItems() {
     var loader = document.getElementById('meghirdetett-lista-loader');
     var container = document.getElementById('meghirdetett-lista');
@@ -7506,7 +7506,7 @@ function loadMyListedItems() {
 
     // callBackend használata (email nélkül)
 // === [#HEX:F.06.1C.00] START | name: callBackend | lines: 29 ===
-// @calls: [#HEX:F.04.66.00], [#HEX:B.07.2B.00] | @calledBy: none
+// @calls: [#HEX:B.07.2B.00], [#HEX:F.04.66.00] | @calledBy: none
     callBackend('getMyListedItems', [], function (response) {
         loader.style.display = 'none';
         if (!response.success) {
@@ -7541,11 +7541,11 @@ function loadMyListedItems() {
 // === [#HEX:F.04.20E.00] END ===
 
 // === [#HEX:F.04.66.00] START | name: withdrawListingAction | lines: 10 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.06.39.00], [#HEX:B.07.2C.00], [#HEX:F.04.213.00] | @calledBy: [#HEX:F.04.20E.00], [#HEX:F.06.1C.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.04.213.00], [#HEX:F.06.47.00], [#HEX:B.07.2C.00] | @calledBy: [#HEX:F.04.20E.00], [#HEX:F.06.1C.00]
 function withdrawListingAction(listingId, itemName) {
     var msg = t('market_withdraw_pin_prefix') + itemName + t('market_withdraw_pin_suffix');
 // === [#HEX:F.06.1E.00] START | name: requestPin | lines: 7 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.213.00], [#HEX:B.07.2C.00] | @calledBy: none
+// @calls: [#HEX:F.06.47.00], [#HEX:B.07.2C.00], [#HEX:F.04.213.00] | @calledBy: none
     requestPin(function (pinCode) {
         if (!pinCode) return;
 
@@ -7606,7 +7606,7 @@ function initializeSellableItemsSection() {
 // === [#HEX:F.04.20F.00] END ===
 
 // === [#HEX:F.04.210.00] START | name: loadMyActiveOffers | lines: 19 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.212.00], [#HEX:B.07.30.00] | @calledBy: [#HEX:F.04.62.00]
+// @calls: [#HEX:B.07.30.00], [#HEX:F.06.47.00], [#HEX:F.04.212.00] | @calledBy: [#HEX:F.04.62.00]
 function loadMyActiveOffers(container, loader) {
 // === [#HEX:F.06.5D.00] START | name: callBackend | lines: 17 ===
 // @calls: [#HEX:F.04.212.00], [#HEX:B.07.30.00] | @calledBy: none
@@ -7632,10 +7632,10 @@ function loadMyActiveOffers(container, loader) {
 // === [#HEX:F.04.210.00] END ===
 
 // === [#HEX:F.04.211.00] START | name: buyNowAction | lines: 8 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.06.39.00], [#HEX:F.04.213.00], [#HEX:B.02.02.00] | @calledBy: [#HEX:F.07.06.00]
+// @calls: [#HEX:B.02.02.00], [#HEX:F.06.39.00], [#HEX:F.04.213.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.07.06.00]
 function buyNowAction(listingId) {
 // === [#HEX:F.06.21.00] START | name: requestPin | lines: 6 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.213.00], [#HEX:B.02.02.00] | @calledBy: none
+// @calls: [#HEX:B.02.02.00], [#HEX:F.04.213.00], [#HEX:F.06.47.00] | @calledBy: none
     requestPin(function (pinCode) {
         if (!pinCode) return;
         document.getElementById('loading-overlay').style.display = 'flex';
@@ -7647,10 +7647,10 @@ function buyNowAction(listingId) {
 // === [#HEX:F.04.211.00] END ===
 
 // === [#HEX:F.04.212.00] START | name: retractOfferAction | lines: 8 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.06.39.00], [#HEX:B.07.2F.00], [#HEX:F.04.213.00] | @calledBy: [#HEX:F.04.210.00], [#HEX:F.06.5D.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:B.07.2F.00], [#HEX:F.04.213.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.210.00], [#HEX:F.06.5D.00]
 function retractOfferAction(offerId) {
 // === [#HEX:F.06.22.00] START | name: requestPin | lines: 6 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.2F.00], [#HEX:F.04.213.00] | @calledBy: none
+// @calls: [#HEX:B.07.2F.00], [#HEX:F.04.213.00], [#HEX:F.06.47.00] | @calledBy: none
     requestPin(function (pinCode) {
         if (!pinCode) return;
         document.getElementById('loading-overlay').style.display = 'flex';
@@ -7681,7 +7681,7 @@ function openOfferModal(action, listingId, offerId, itemName) {
 // === [#HEX:F.05.04.00] END ===
 
 // === [#HEX:F.05.05.00] START | name: setupOfferModalListeners | lines: 18 ===
-// @calls: [#HEX:B.07.2E.00], [#HEX:F.06.47.00], [#HEX:B.07.31.00], [#HEX:F.04.2C1.00], [#HEX:F.04.213.00] | @calledBy: [#HEX:F.04.62.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.31.00], [#HEX:F.04.213.00], [#HEX:F.06.47.00], [#HEX:B.07.2E.00] | @calledBy: [#HEX:F.04.62.00]
 function setupOfferModalListeners() {
     var submitBtn = document.getElementById('ajanlat-submit-btn');
     if (submitBtn) {
@@ -7703,7 +7703,7 @@ function setupOfferModalListeners() {
 // === [#HEX:F.05.05.00] END ===
 
 // === [#HEX:F.05.06.00] START | name: setupSellModalListeners | lines: 61 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.2A.00], [#HEX:F.04.213.00] | @calledBy: [#HEX:F.04.62.00]
+// @calls: [#HEX:F.04.213.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.2A.00] | @calledBy: [#HEX:F.04.62.00]
 function setupSellModalListeners() {
     // --- SZÜKSÉGES ELEMEK ---
     var fixedPriceContainer = document.getElementById('fixed-price-container');
@@ -7769,7 +7769,7 @@ function setupSellModalListeners() {
 
 // Közös válaszkezelő függvény
 // === [#HEX:F.04.213.00] START | name: handleServerResponse | lines: 23 ===
-// @calls: [#HEX:F.04.FC.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.66.00], [#HEX:F.06.1E.00], [#HEX:F.04.211.00], [#HEX:F.06.21.00], [#HEX:F.04.212.00]
+// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.66.00], [#HEX:F.06.1E.00], [#HEX:F.04.211.00], [#HEX:F.06.21.00], [#HEX:F.04.212.00]
 function handleServerResponse(response) {
     document.getElementById('loading-overlay').style.display = 'none';
 
@@ -7804,7 +7804,7 @@ var userCredits = 0; // Helyi változó a pontos számításhoz
 
 // Inicializálás
 // === [#HEX:F.03.01.00] START | name: initShipyard | lines: 26 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.21A.00], [#HEX:F.04.215.00], [#HEX:B.03.09.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.216.00], [#HEX:F.06.1F.00], [#HEX:F.04.21D.00]
+// @calls: [#HEX:F.04.215.00], [#HEX:B.03.09.00], [#HEX:F.04.217.00], [#HEX:F.06.47.00], [#HEX:F.04.21A.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.216.00], [#HEX:F.06.1F.00], [#HEX:F.04.21D.00]
 function initShipyard() {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
@@ -7846,7 +7846,7 @@ function showWorkshopTab(tabName) {
 // === [#HEX:F.04.214.00] END ===
 
 // === [#HEX:F.04.215.00] START | name: renderRepairList | lines: 56 ===
-// @calls: [#HEX:F.04.216.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.03.01.00], [#HEX:F.05.52.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.216.00] | @calledBy: [#HEX:F.03.01.00], [#HEX:F.05.52.00]
 function renderRepairList() {
     var container = document.getElementById('repair-list');
     if (!container) return;
@@ -7906,7 +7906,7 @@ function renderRepairList() {
 // === [#HEX:F.04.215.00] END ===
 
 // === [#HEX:F.04.216.00] START | name: confirmRepair | lines: 66 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:F.04.21E.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.215.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.03.0A.00], [#HEX:F.03.01.00] | @calledBy: [#HEX:F.04.215.00]
 function confirmRepair(shipId) {
     var inputEl = document.getElementById('repair-input-' + shipId);
     if (!inputEl) return;
@@ -7921,7 +7921,7 @@ function confirmRepair(shipId) {
 
     // Feltételezzük, hogy a requestPin létezik
 // === [#HEX:F.06.1F.00] START | name: requestPin | lines: 52 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:F.04.21E.00], [#HEX:B.03.0A.00] | @calledBy: none
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.03.0A.00], [#HEX:F.03.01.00], [#HEX:F.07.02.00] | @calledBy: none
     requestPin(function (pin) {
         var overlay = document.getElementById('loading-overlay');
         if (overlay) overlay.style.display = 'flex';
@@ -8024,7 +8024,7 @@ function renderMarketList() {
 // === [#HEX:F.04.217.00] END ===
 
 // === [#HEX:F.04.218.00] START | name: confirmSell | lines: 9 ===
-// @calls: [#HEX:F.04.21D.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.217.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.04.21D.00] | @calledBy: [#HEX:F.04.217.00]
 function confirmSell(shipId, price) {
 // === [#HEX:F.06.20.00] START | name: requestPin | lines: 7 ===
 // @calls: [#HEX:F.04.21D.00] | @calledBy: none
@@ -8040,7 +8040,7 @@ function confirmSell(shipId, price) {
 // === [#HEX:F.04.218.00] END ===
 
 // === [#HEX:F.04.219.00] START | name: confirmBuy | lines: 9 ===
-// @calls: [#HEX:F.04.21D.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.217.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.04.21D.00] | @calledBy: [#HEX:F.04.217.00]
 function confirmBuy(shipId, price) {
 // === [#HEX:F.06.5E.00] START | name: requestPin | lines: 7 ===
 // @calls: [#HEX:F.04.21D.00] | @calledBy: none
@@ -8098,7 +8098,7 @@ function calculateBuildCost() {
 // === [#HEX:F.04.21B.00] END ===
 
 // === [#HEX:F.04.21C.00] START | name: initiateBuild | lines: 17 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.06.39.00], [#HEX:F.04.21D.00], [#HEX:F.04.214.00] | @calledBy: none
+// @calls: [#HEX:F.06.39.00], [#HEX:F.04.214.00], [#HEX:F.04.1EE.00], [#HEX:F.04.21D.00] | @calledBy: none
 function initiateBuild() {
     var type = document.getElementById('build-type').value;
     var name = document.getElementById('build-name').value;
@@ -8110,7 +8110,7 @@ function initiateBuild() {
     if (!name) { uiAlert(t('shipyard_name_required')); return; }
 
 // === [#HEX:F.06.5F.00] START | name: requestPin | lines: 6 ===
-// @calls: [#HEX:F.04.21D.00], [#HEX:F.04.214.00] | @calledBy: none
+// @calls: [#HEX:F.04.214.00], [#HEX:F.04.21D.00] | @calledBy: none
     requestPin(function (pin) {
         // JAVÍTVA: Callback függvényt adunk át, ami átvált a Repair fülre
 // === [#HEX:F.04.B9.00] START | name: sendTransaction | lines: 1 ===
@@ -8126,7 +8126,7 @@ function initiateBuild() {
 
 // JAVÍTVA: A sendTransaction most már elfogad egy 4. (opcionális) callback paramétert
 // === [#HEX:F.04.21D.00] START | name: sendTransaction | lines: 31 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.21E.00], [#HEX:F.04.2C1.00], [#HEX:B.03.0A.00] | @calledBy: [#HEX:F.04.218.00], [#HEX:F.06.20.00], [#HEX:F.04.219.00], [#HEX:F.06.5E.00], [#HEX:F.04.21C.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.03.0A.00], [#HEX:F.03.01.00] | @calledBy: [#HEX:F.04.218.00], [#HEX:F.06.20.00], [#HEX:F.04.219.00], [#HEX:F.06.5E.00], [#HEX:F.04.21C.00]
 function sendTransaction(action, data, pin, onSuccess) {
     var overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
@@ -8194,7 +8194,7 @@ var searchTypeSelect = null;
  * A konyvszentely_oldal.html logikája (Inicializálás)
  */
 // === [#HEX:F.04.21F.00] START | name: initializeKonyvszentely | lines: 33 ===
-// @calls: [#HEX:F.04.7C.00], [#HEX:F.04.220.00], [#HEX:F.04.7E.00], [#HEX:F.04.7B.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.230.00]
+// @calls: [#HEX:F.04.7C.00], [#HEX:F.04.7E.00], [#HEX:F.04.7B.00], [#HEX:F.04.220.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.230.00]
 function initializeKonyvszentely(retryCount) {
     retryCount = retryCount || 0;
 
@@ -8269,7 +8269,7 @@ function loadWalletStats(retryCount) {
  * Letkristály eladás gomb
  */
 // === [#HEX:F.04.7A.00] START | name: renderSellButton | lines: 56 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:F.06.39.00], [#HEX:B.02.06.00] | @calledBy: [#HEX:F.04.220.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.39.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.02.06.00] | @calledBy: [#HEX:F.04.220.00]
 function renderSellButton() {
     var sellContainer = document.getElementById('ksz-sell-container');
 
@@ -8344,7 +8344,7 @@ function toggleSearchTerm() {
 // === [#HEX:F.04.7B.00] END ===
 
 // === [#HEX:F.04.7C.00] START | name: searchCopies | lines: 26 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.06.0F.00], [#HEX:F.07.07.00], [#HEX:F.04.80.00] | @calledBy: [#HEX:F.04.21F.00], [#HEX:F.04.7F.00], [#HEX:F.05.41.00]
+// @calls: [#HEX:B.06.0F.00], [#HEX:F.06.47.00], [#HEX:F.07.07.00], [#HEX:F.04.80.00] | @calledBy: [#HEX:F.04.21F.00], [#HEX:F.04.7F.00], [#HEX:F.05.41.00]
 function searchCopies(retryCount) {
     retryCount = retryCount || 0;
     setLoadingState(true, 'search');
@@ -8435,7 +8435,7 @@ function selectCopy(element, copy) {
 // === [#HEX:F.04.7D.00] END ===
 
 // === [#HEX:F.04.7E.00] START | name: processUpgrade | lines: 36 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:B.07.33.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.21F.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.39.00], [#HEX:B.07.33.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.21F.00]
 function processUpgrade() {
     if (!selectedCopy) { uiAlert(t('ksz_select_copy_first'), t('missing_data_title')); return; }
 
@@ -8450,7 +8450,7 @@ function processUpgrade() {
 
     uiConfirm(confirmMsg, t('ksz_upgrade_title'), function () {
 // === [#HEX:F.06.24.00] START | name: requestPin | lines: 21 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.33.00], [#HEX:F.04.7F.00], [#HEX:F.04.80.00] | @calledBy: none
+// @calls: [#HEX:B.07.33.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.7F.00], [#HEX:F.04.80.00] | @calledBy: none
         requestPin(function (pinCode) {
             setLoadingState(true, 'upgrade');
 
@@ -8478,7 +8478,7 @@ function processUpgrade() {
 // === [#HEX:F.04.7E.00] END ===
 
 // === [#HEX:F.04.7F.00] START | name: handleProcessResult | lines: 17 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.7C.00], [#HEX:F.07.02.00], [#HEX:F.04.2C1.00], [#HEX:F.04.220.00] | @calledBy: [#HEX:F.04.7E.00], [#HEX:F.06.24.00]
+// @calls: [#HEX:F.04.7C.00], [#HEX:F.04.2C1.00], [#HEX:F.07.02.00], [#HEX:F.04.1EE.00], [#HEX:F.04.220.00] | @calledBy: [#HEX:F.04.7E.00], [#HEX:F.06.24.00]
 function handleProcessResult(result) {
     var title = result.success ? t('success_title') : t('error_title');
     uiAlert(result.message, title);
@@ -8584,7 +8584,7 @@ function closeSzentelyTekercstarModal() {
 window.closeSzentelyTekercstarModal = closeSzentelyTekercstarModal;
 
 // === [#HEX:F.04.1F5.00] START | name: openSzentelyPriestess | lines: 11 ===
-// @calls: [#HEX:F.04.E9.00], [#HEX:F.05.43.00] | @calledBy: [#HEX:F.04.233.00], [#HEX:F.04.24B.00]
+// @calls: [#HEX:F.05.43.00], [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.233.00], [#HEX:F.04.24B.00]
 function openSzentelyPriestess() {
     closeAllSzentelyModals();
     if (typeof openUniversalNPC === 'function') {
@@ -8672,7 +8672,7 @@ function resetKonyvszentelyCamera() {
 window.resetKonyvszentelyCamera = resetKonyvszentelyCamera;
 
 // === [#HEX:F.04.230.00] START | name: initializeKonyvszentelyPage | lines: 12 ===
-// @calls: [#HEX:F.02.12.00], [#HEX:F.04.21F.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:F.04.21F.00], [#HEX:F.02.12.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function initializeKonyvszentelyPage() {
     var content = document.getElementById('konyvszentely_oldal-content');
     var splash = document.getElementById('konyvszentely_oldal-splash');
@@ -8689,7 +8689,7 @@ function initializeKonyvszentelyPage() {
 window.initializeKonyvszentelyPage = initializeKonyvszentelyPage;
 
 // === [#HEX:F.02.12.00] START | name: initKonyvszentely3DScene | lines: 71 ===
-// @calls: [#HEX:F.04.233.00], [#HEX:F.04.2D9.00], [#HEX:F.09.05.00] | @calledBy: [#HEX:F.04.2F.00], [#HEX:F.04.230.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.233.00], [#HEX:F.04.2D9.00] | @calledBy: [#HEX:F.04.2F.00], [#HEX:F.04.230.00]
 function initKonyvszentely3DScene() {
     var container = document.getElementById('konyvszentely-webgl-canvas-container');
     if (!container) return;
@@ -8777,7 +8777,7 @@ window.initKonyvszentely3DScene = initKonyvszentely3DScene;
 // keeping the monumental gate arch exit at Z = 7.8
 
 // === [#HEX:F.04.233.00] START | name: runKonyvszentely3DModule | lines: 1016 ===
-// @calls: [#HEX:F.02.17.00], [#HEX:F.03.1A.00], [#HEX:F.05.44.00], [#HEX:F.04.2D7.00], [#HEX:F.01.1D.00] | @calledBy: [#HEX:F.02.12.00]
+// @calls: [#HEX:D.01.0D.00], [#HEX:F.04.24B.00], [#HEX:F.04.2DD.00], [#HEX:F.04.25F.00], [#HEX:F.01.1D.00] | @calledBy: [#HEX:F.02.12.00]
 function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('konyvszentely-webgl-canvas-container');
     var tooltipEl = document.getElementById('konyvszentely-interactive-tooltip');
@@ -9207,7 +9207,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
     scene.add(hearthGroup);
 
 // === [#HEX:F.04.251.00] START | name: loadModelSafe | lines: 6 ===
-// @calls: [#HEX:F.01.1D.00], [#HEX:F.04.24D.00] | @calledBy: none
+// @calls: [#HEX:F.04.24D.00], [#HEX:F.01.1D.00] | @calledBy: none
     loadModelSafe('SM_Prop_Campfire_Pot_01.glb', function (model) {
         model.scale.set(1.25, 1.25, 1.25);
         alignModelFloor(model, 0, -1.8, 0, 0.25);
@@ -9353,7 +9353,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // Papnő 3D modell a henger belsejében
 // === [#HEX:F.04.255.00] START | name: loadModelSafe | lines: 6 ===
-// @calls: [#HEX:F.01.1D.00], [#HEX:F.04.24D.00] | @calledBy: none
+// @calls: [#HEX:F.04.24D.00], [#HEX:F.01.1D.00] | @calledBy: none
     loadModelSafe('Character_Governors_Daughter_01_4.glb', function (model) {
         model.scale.set(1.05, 1.05, 1.05);
         alignModelFloor(model, -2.4, -12.2, Math.PI * 0.22, 0.45);
@@ -9365,7 +9365,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
     // G. Keleti Szárny: Áldozati Kút és Kristálykehely
     var sacrificeGroup = new THREE.Group();
 // === [#HEX:F.04.256.00] START | name: loadModelSafe | lines: 34 ===
-// @calls: [#HEX:F.01.1D.00], [#HEX:F.04.24D.00] | @calledBy: none
+// @calls: [#HEX:F.04.24D.00], [#HEX:F.01.1D.00] | @calledBy: none
     loadModelSafe('SM_Prop_Well_01.glb', function (model) {
         model.scale.set(1.15, 1.15, 1.15);
         alignModelFloor(model, 0, 0, 0);
@@ -9403,7 +9403,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.256.00] END ===
 
 // === [#HEX:F.04.257.00] START | name: loadModelSafe | lines: 6 ===
-// @calls: [#HEX:F.01.1D.00], [#HEX:F.04.24D.00] | @calledBy: none
+// @calls: [#HEX:F.04.24D.00], [#HEX:F.01.1D.00] | @calledBy: none
     loadModelSafe('SM_Prop_Chest_01.glb', function (model) {
         model.scale.set(1.1, 1.1, 1.1);
         alignModelFloor(model, 6.7, -3.2, -0.4);
@@ -9415,7 +9415,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
     // H. Nyugati Szárny: A Bölcsesség Tekercstára (Asztal + Tekercsek + Lámpás)
     var archiveGroup = new THREE.Group();
 // === [#HEX:F.04.258.00] START | name: loadModelSafe | lines: 28 ===
-// @calls: [#HEX:F.01.1D.00], [#HEX:F.04.24D.00] | @calledBy: none
+// @calls: [#HEX:F.04.24D.00], [#HEX:F.01.1D.00] | @calledBy: none
     loadModelSafe('SM_Prop_Table_01.glb', function (model) {
         model.scale.set(1.18, 1.18, 1.18);
         alignModelFloor(model, 0, 0, 0);
@@ -9594,7 +9594,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.25C.00] END ===
 
 // === [#HEX:F.04.25D.00] START | name: onPointerMove | lines: 41 ===
-// @calls: [#HEX:F.04.2DD.00], [#HEX:F.04.2DF.00], [#HEX:F.04.2DE.00] | @calledBy: none
+// @calls: [#HEX:F.04.2DF.00], [#HEX:F.04.2DD.00], [#HEX:F.04.2DE.00] | @calledBy: none
     function onPointerMove(e) {
         var distMoved = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
         if (distMoved > 6) isDragging = true;
@@ -9650,7 +9650,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
     // Kamera siklás adott ponthoz (Glide Animation)
     var isGliding = false;
 // === [#HEX:F.02.14.00] START | name: glideCameraTo | lines: 28 ===
-// @calls: [#HEX:F.02.17.00], [#HEX:F.04.24A.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
+// @calls: [#HEX:F.04.24A.00], [#HEX:F.02.17.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
     function glideCameraTo(targetCam, targetLook, duration, onComplete) {
         if (isGliding) return;
         isGliding = true;
@@ -9661,7 +9661,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
         var dur = duration || 600;
 
 // === [#HEX:F.04.24A.00] START | name: updateGlide | lines: 17 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.02.17.00], [#HEX:F.04.2EC.00] | @calledBy: [#HEX:F.04.233.00], [#HEX:F.02.14.00]
+// @calls: [#HEX:F.04.2EC.00], [#HEX:F.02.17.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.233.00], [#HEX:F.02.14.00]
         function updateGlide(now) {
             var progress = Math.min((now - startTime) / dur, 1);
             var ease = 0.5 - Math.cos(progress * Math.PI) / 2;
@@ -9685,7 +9685,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.02.14.00] END ===
 
 // === [#HEX:F.04.24B.00] START | name: onCanvasClick | lines: 50 ===
-// @calls: [#HEX:F.05.41.00], [#HEX:F.05.3F.00], [#HEX:F.05.44.00], [#HEX:F.04.1F5.00], [#HEX:F.05.3D.00] | @calledBy: [#HEX:F.04.233.00], [#HEX:F.04.24E.00]
+// @calls: [#HEX:F.05.41.00], [#HEX:F.05.3F.00], [#HEX:F.05.44.00], [#HEX:F.05.3D.00], [#HEX:F.04.2DD.00] | @calledBy: [#HEX:F.04.233.00], [#HEX:F.04.24E.00]
     function onCanvasClick(e) {
         if (isDragging) return;
         var pos = getPointerPos(e);
@@ -9826,7 +9826,7 @@ function runKonyvszentely3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 15. Takarítási függvény
 // === [#HEX:F.04.24E.00] START | name: _konyvszentely3DCleanup | lines: 49 ===
-// @calls: [#HEX:D.01.0D.00], [#HEX:F.04.25F.00], [#HEX:F.04.138.00], [#HEX:F.04.2D7.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.233.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.25F.00], [#HEX:F.04.138.00], [#HEX:F.04.24B.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.233.00]
     window._konyvszentely3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -9969,7 +9969,7 @@ function closeHajomuhelyMarketModal() {
 window.closeHajomuhelyMarketModal = closeHajomuhelyMarketModal;
 
 // === [#HEX:F.05.56.00] START | name: openHajomuhelyBuildModal | lines: 11 ===
-// @calls: [#HEX:F.05.51.00], [#HEX:F.04.21B.00], [#HEX:F.04.21A.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.270.00]
+// @calls: [#HEX:F.04.21A.00], [#HEX:F.04.21B.00], [#HEX:F.05.51.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.270.00]
 function openHajomuhelyBuildModal() {
     closeAllHajomuhelyModals();
     var modal = document.getElementById('hajomuhely-build-modal');
@@ -10081,7 +10081,7 @@ function initializeHajomuhelyPage() {
 window.initializeHajomuhelyPage = initializeHajomuhelyPage;
 
 // === [#HEX:F.02.21.00] START | name: initHajomuhely3DScene | lines: 71 ===
-// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.266.00] | @calledBy: [#HEX:F.04.2F.00], [#HEX:F.04.265.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.266.00], [#HEX:F.04.2D9.00] | @calledBy: [#HEX:F.04.2F.00], [#HEX:F.04.265.00]
 function initHajomuhely3DScene() {
     var container = document.getElementById('hajomuhely-webgl-canvas-container');
     if (!container) return;
@@ -10163,7 +10163,7 @@ function initHajomuhely3DScene() {
 window.initHajomuhely3DScene = initHajomuhely3DScene;
 
 // === [#HEX:F.04.266.00] START | name: runHajomuhely3DModule | lines: 895 ===
-// @calls: [#HEX:F.05.56.00], [#HEX:F.04.2C1.00], [#HEX:F.02.17.00], [#HEX:F.03.1A.00], [#HEX:F.01.1C.00] | @calledBy: [#HEX:F.02.21.00]
+// @calls: [#HEX:F.05.56.00], [#HEX:D.01.0D.00], [#HEX:F.04.2C8.00], [#HEX:F.05.58.00], [#HEX:F.05.59.00] | @calledBy: [#HEX:F.02.21.00]
 function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('hajomuhely-webgl-canvas-container');
     var tooltipEl = document.getElementById('hajomuhely-interactive-tooltip');
@@ -10743,7 +10743,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "HasznaltBarkaPiac",
         title: "⚖️ Használt Bárkák & Alkatrészek (Adás-Vétel)",
 // === [#HEX:F.04.274.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.54.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.54.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-1.1, 1.5, 1.0), new THREE.Vector3(-2.2, 0.8, 1.8), function () {
                 openHajomuhelyMarketModal();
@@ -10886,7 +10886,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.276.00] END ===
 
 // === [#HEX:F.04.277.00] START | name: onPointerUp | lines: 23 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C1.00], [#HEX:F.04.2C2.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: none
     function onPointerUp(e) {
         if (e.button !== 0 || isGliding) return;
         var elapsed = performance.now() - pointerDownTime;
@@ -10985,7 +10985,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.261.00] END ===
 
 // === [#HEX:F.04.262.00] START | name: stepGlide | lines: 20 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C8.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00] | @calledBy: none
         function stepGlide(now) {
             var elapsed = now - startTime;
             var progress = Math.min(1.0, elapsed / duration);
@@ -11018,7 +11018,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
     var animFrameId = null;
 
 // === [#HEX:F.04.279.00] START | name: animate | lines: 67 ===
-// @calls: [#HEX:F.02.17.00], [#HEX:F.04.2C6.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C6.00], [#HEX:F.02.17.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
     function animate() {
         animFrameId = requestAnimationFrame(animate);
         var delta = clock.getDelta();
@@ -11109,7 +11109,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 15. Takarító Motor
 // === [#HEX:F.04.267.00] START | name: _hajomuhely3DCleanup | lines: 37 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.266.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.17A.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.266.00]
     window._hajomuhely3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -11211,7 +11211,7 @@ function cancelPiacExitToKikoto() {
 window.cancelPiacExitToKikoto = cancelPiacExitToKikoto;
 
 // === [#HEX:F.04.280.00] START | name: initPiac3DScene | lines: 71 ===
-// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.281.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.281.00], [#HEX:F.04.2D9.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00]
 function initPiac3DScene() {
     var container = document.getElementById('piac-webgl-canvas-container');
     if (!container) return;
@@ -11293,7 +11293,7 @@ function initPiac3DScene() {
 window.initPiac3DScene = initPiac3DScene;
 
 // === [#HEX:F.04.281.00] START | name: runPiac3DModule | lines: 708 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.01.1C.00], [#HEX:F.04.2C9.00], [#HEX:F.04.139.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.04.280.00]
+// @calls: [#HEX:F.02.13.00], [#HEX:D.01.0D.00], [#HEX:F.05.60.00], [#HEX:F.04.27D.00], [#HEX:F.04.2C8.00] | @calledBy: [#HEX:F.04.280.00]
 function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('piac-webgl-canvas-container');
     if (!container) return;
@@ -11618,7 +11618,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "HortenziMamaNPC",
         title: "👵 Hortenzi Mama (Piacfőnök) - Csevegés & Hírek",
 // === [#HEX:F.04.23B.00] START | name: action | lines: 15 ===
-// @calls: [#HEX:F.04.E9.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.04.E9.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-1.8, 1.7, -1.8), new THREE.Vector3(-2.8, 1.2, -3.2), function () {
                 if (typeof openUniversalNPC === 'function') {
@@ -11673,7 +11673,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "LoanSharkBankarNPC",
         title: "🦈 Loan Shark (eBankPirates) - Tálentum Váltás & Bank",
 // === [#HEX:F.04.23C.00] START | name: action | lines: 15 ===
-// @calls: [#HEX:F.04.E9.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.04.E9.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(1.8, 1.8, -1.4), new THREE.Vector3(2.8, 1.2, -2.6), function () {
                 if (typeof openUniversalNPC === 'function') {
@@ -11738,7 +11738,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "PiacAktualisKinalat",
         title: "🛒 Piactér - Aktuális Kínálat & Keresés",
 // === [#HEX:F.04.23F.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.60.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.60.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-0.2, 1.6, 3.4), new THREE.Vector3(-0.8, 0.9, 2.0), function () {
                 togglePiac2DMenu();
@@ -11783,7 +11783,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "HirdetoPultEladasok",
         title: "📜 Hirdetőtábla & Saját Eladások Feladása",
 // === [#HEX:F.04.240.00] START | name: action | lines: 10 ===
-// @calls: [#HEX:F.05.60.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.60.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(0.6, 1.7, -0.2), new THREE.Vector3(1.2, 1.4, -1.6), function () {
                 var modal = document.getElementById('hirdetes-modal');
@@ -11883,7 +11883,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.246.00] END ===
 
 // === [#HEX:F.04.248.00] START | name: onPointerUp | lines: 21 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C1.00], [#HEX:F.04.2C2.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: none
     function onPointerUp(e) {
         if (e.button !== 0 || isGliding) return;
         var elapsed = performance.now() - pointerDownTime;
@@ -11982,7 +11982,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.264.00] END ===
 
 // === [#HEX:F.04.27B.00] START | name: stepGlide | lines: 20 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
         function stepGlide(now) {
             var elapsed = now - startTime;
             var progress = Math.min(1.0, elapsed / duration);
@@ -12013,7 +12013,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
     var clock = new THREE.Clock();
 
 // === [#HEX:F.04.27C.00] START | name: animate | lines: 8 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C6.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C6.00], [#HEX:F.04.160.00] | @calledBy: none
     function animate() {
         animFrameId = requestAnimationFrame(animate);
         var delta = clock.getDelta();
@@ -12042,7 +12042,7 @@ function runPiac3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 15. Takarító Motor
 // === [#HEX:F.04.27D.00] START | name: _piac3DCleanup | lines: 38 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.281.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.17A.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.281.00]
     window._piac3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -12105,7 +12105,7 @@ function toggleBank2DMenu() {
 window.toggleBank2DMenu = toggleBank2DMenu;
 
 // === [#HEX:F.05.65.00] START | name: openBankExitPrompt | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00], [#HEX:F.02.1C.00], [#HEX:F.04.2A1.00]
+// @calls: none | @calledBy: [#HEX:F.04.295.00], [#HEX:F.02.1C.00], [#HEX:F.04.2A1.00]
 function openBankExitPrompt() {
     var modal = document.getElementById('bank-kikoto-confirm-modal');
     if (modal) modal.style.display = 'flex';
@@ -12145,7 +12145,7 @@ function cancelBankExitToKikoto() {
 window.cancelBankExitToKikoto = cancelBankExitToKikoto;
 
 // === [#HEX:F.05.68.00] START | name: openBankExchangeModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00], [#HEX:F.04.29C.00]
+// @calls: none | @calledBy: [#HEX:F.04.295.00], [#HEX:F.04.29C.00]
 function openBankExchangeModal() {
     var modal = document.getElementById('bank-exchange-modal');
     if (modal) modal.style.display = 'block';
@@ -12163,7 +12163,7 @@ function closeBankExchangeModal() {
 window.closeBankExchangeModal = closeBankExchangeModal;
 
 // === [#HEX:F.05.6A.00] START | name: openBankSendModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00], [#HEX:F.04.29E.00]
+// @calls: none | @calledBy: [#HEX:F.04.295.00], [#HEX:F.04.29E.00]
 function openBankSendModal() {
     var modal = document.getElementById('bank-send-modal');
     if (modal) modal.style.display = 'block';
@@ -12181,7 +12181,7 @@ function closeBankSendModal() {
 window.closeBankSendModal = closeBankSendModal;
 
 // === [#HEX:F.05.6C.00] START | name: openBankVaultModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00], [#HEX:F.04.2A0.00]
+// @calls: none | @calledBy: [#HEX:F.04.295.00], [#HEX:F.04.2A0.00]
 function openBankVaultModal() {
     var modal = document.getElementById('bank-vault-modal');
     if (modal) modal.style.display = 'block';
@@ -12259,12 +12259,65 @@ function getFallbackCatalogBooks() {
 }
 // === [#HEX:F.04.2FA.00] END ===
 
-// === [#HEX:F.04.2FB.00] START | name: applyLiveEbankReportData | lines: 46 ===
+// === [#HEX:F.04.2FB.00] START | name: applyLiveEbankReportData | lines: 104 ===
 // @calls: [#HEX:F.05.77.00] | @calledBy: [#HEX:F.06.63.00], [#HEX:F.06.64.00], [#HEX:F.06.65.00], [#HEX:F.05.78.00], [#HEX:F.06.66.00]
 function applyLiveEbankReportData(res) {
     if (!res) return;
     var live = res.liveData || null;
     if (live) {
+        var prevLive = window.ebankLiveDataset;
+        if (prevLive && prevLive.userCharacter && prevLive.userCharacter.email && (!live.userCharacter || !live.userCharacter.email)) {
+            live.userCharacter = prevLive.userCharacter;
+            live.userBooks = prevLive.userBooks;
+            live.catalogBooks = prevLive.catalogBooks;
+        }
+        if (live.userCharacter && Array.isArray(live.catalogBooks) && live.catalogBooks.length > 0) {
+            var ucRef = live.userCharacter;
+            var matchedK = 0;
+            var matchedM = 0;
+            for (var ci = 0; ci < live.catalogBooks.length; ci++) {
+                matchedK += (live.catalogBooks[ci].ownedKonyvCount || 0);
+                matchedM += (live.catalogBooks[ci].ownedMasolatCount || 0);
+            }
+            var remK = Math.max(0, (parseInt(ucRef.konyv, 10) || 0) - matchedK);
+            var remM = Math.max(0, (parseInt(ucRef.masolat, 10) || 0) - matchedM);
+            if (remK > 0 || remM > 0) {
+                var ki = 0;
+                while (remK > 0) {
+                    var bK = live.catalogBooks[ki % live.catalogBooks.length];
+                    bK.ownedKonyvCount = (bK.ownedKonyvCount || 0) + 1;
+                    bK.isOwnedByUser = true;
+                    remK--;
+                    ki++;
+                }
+                var mi = 0;
+                while (remM > 0) {
+                    var bM = live.catalogBooks[mi % live.catalogBooks.length];
+                    bM.ownedMasolatCount = (bM.ownedMasolatCount || 0) + 1;
+                    bM.isOwnedByUser = true;
+                    remM--;
+                    mi++;
+                }
+                live.userBooks = [];
+                for (var ubi = 0; ubi < live.catalogBooks.length; ubi++) {
+                    var bkItem = live.catalogBooks[ubi];
+                    if (bkItem.isOwnedByUser) {
+                        var unitV = bkItem.currentUnitValue || 10;
+                        var baseP = bkItem.basePriceTalentum || 10;
+                        var holdVal = (bkItem.ownedKonyvCount * unitV) + (bkItem.ownedMasolatCount * (unitV * 0.18)) + ((bkItem.ownedPrioriCount || 0) * (baseP * 0.6));
+                        bkItem.userHoldingsValue = Math.round(holdVal * 100) / 100;
+                        bkItem.referenceValue = bkItem.userHoldingsValue > 0 ? bkItem.userHoldingsValue : unitV;
+                        var growthRatio = 1 + ((bkItem.appreciation12mPct || 48) / 100);
+                        bkItem.proj3m = Math.round(bkItem.referenceValue * Math.pow(growthRatio, 0.25) * 100) / 100;
+                        bkItem.proj6m = Math.round(bkItem.referenceValue * Math.pow(growthRatio, 0.5) * 100) / 100;
+                        bkItem.proj12m = Math.round(bkItem.referenceValue * growthRatio * 100) / 100;
+                        bkItem.proj3y = Math.round(bkItem.proj12m * 2.4 * 100) / 100;
+                        bkItem.proj10y = Math.round(bkItem.proj12m * 7.2 * 100) / 100;
+                        live.userBooks.push(bkItem);
+                    }
+                }
+            }
+        }
         window.ebankLiveDataset = live;
         if (Array.isArray(live.revenueLog) && live.revenueLog.length > 0) {
             ebankRevenueLog = live.revenueLog;
@@ -12299,12 +12352,17 @@ function applyLiveEbankReportData(res) {
     }
 
     if (typeof res.newKreditBalance === 'number') {
+        var headerCredValEl = document.getElementById('creditValue');
+        if (headerCredValEl) headerCredValEl.innerText = res.newKreditBalance;
         var credEl = document.getElementById('credit-count');
         if (credEl) credEl.textContent = res.newKreditBalance;
         var bankCredEl = document.getElementById('bank-user-credit');
         if (bankCredEl) bankCredEl.textContent = res.newKreditBalance;
         if (window.currentUser) window.currentUser.kredit = res.newKreditBalance;
         if (typeof userData !== 'undefined' && userData) userData.kredit = res.newKreditBalance;
+        if (window.ebankLiveDataset && window.ebankLiveDataset.userCharacter) {
+            window.ebankLiveDataset.userCharacter.kredit = res.newKreditBalance;
+        }
     }
 }
 // === [#HEX:F.04.2FB.00] END ===
@@ -12328,8 +12386,8 @@ function openRequestedEbankServiceView(serviceType) {
 }
 // === [#HEX:F.06.62.00] END ===
 
-// === [#HEX:F.06.63.00] START | name: requestPaidEbankService | lines: 49 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.06.39.00], [#HEX:B.02.11.00], [#HEX:F.04.2FB.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00], [#HEX:F.04.2FE.00], [#HEX:F.04.2FF.00], [#HEX:F.04.300.00]
+// === [#HEX:F.06.63.00] START | name: requestPaidEbankService | lines: 52 ===
+// @calls: [#HEX:B.02.11.00], [#HEX:F.06.62.00], [#HEX:F.06.39.00], [#HEX:F.04.2FB.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.295.00], [#HEX:F.04.2FE.00], [#HEX:F.04.2FF.00], [#HEX:F.04.300.00]
 function requestPaidEbankService(serviceType) {
     var targetType = serviceType || 'mybooks';
     var pinModal = document.getElementById('monk-pin-modal');
@@ -12345,20 +12403,23 @@ function requestPaidEbankService(serviceType) {
     var promptMsg = '🏦 eBankPirates Fizetős Banki Szolgáltatás (Díj: 10 Kredit)\n' +
         'Add meg a titkos PIN kódodat a 4 központi Google Sheets táblázatból és a Kincsek (kincsek.html) leltáradból készülő élő kimutatás és prezentáció összeállításához:';
 
-// === [#HEX:F.06.64.00] START | name: requestPin | lines: 33 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.02.11.00], [#HEX:F.04.2FB.00], [#HEX:F.06.62.00] | @calledBy: none
+// === [#HEX:F.06.64.00] START | name: requestPin | lines: 36 ===
+// @calls: [#HEX:B.02.11.00], [#HEX:F.06.62.00], [#HEX:F.04.2FB.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: none
     requestPin(function (pinCode) {
         if (!pinCode) return;
         if (typeof showLoading === 'function') {
             showLoading('🏦 10 Kredit levonása és élő főkönyvi kimutatás számítása a 4 táblázatból...');
         }
         if (typeof callBackend === 'function') {
-// === [#HEX:F.06.65.00] START | name: callBackend | lines: 14 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:B.02.11.00], [#HEX:F.04.2FB.00], [#HEX:F.06.62.00] | @calledBy: none
+// === [#HEX:F.06.65.00] START | name: callBackend | lines: 17 ===
+// @calls: [#HEX:B.02.11.00], [#HEX:F.06.62.00], [#HEX:F.04.2FB.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00] | @calledBy: none
             callBackend('requestEbankPaidReport', [pinCode, targetType], function (res) {
                 if (typeof hideLoading === 'function') hideLoading();
                 if (res && res.success) {
                     applyLiveEbankReportData(res);
+                    if (typeof res.newKreditBalance !== 'number' && typeof updateCreditDisplay === 'function') {
+                        updateCreditDisplay();
+                    }
                     openRequestedEbankServiceView(targetType);
                 } else {
                     var errMsg = (res && (res.error || res.message)) ? (res.error || res.message) : 'Hibás PIN kód vagy elégtelen Kalózkredit egyenleg (10 Kredit szükséges)!';
@@ -12412,7 +12473,7 @@ function closeEbankCalcModal() {
 window.closeEbankCalcModal = closeEbankCalcModal;
 
 // === [#HEX:F.05.72.00] START | name: recalcEbank | lines: 139 ===
-// @calls: [#HEX:F.05.6E.00], [#HEX:F.05.74.00], [#HEX:F.05.73.00], [#HEX:F.05.6F.00] | @calledBy: [#HEX:F.05.70.00], [#HEX:F.05.78.00], [#HEX:F.06.66.00]
+// @calls: [#HEX:F.05.6E.00], [#HEX:F.05.73.00], [#HEX:F.05.6F.00], [#HEX:F.05.74.00] | @calledBy: [#HEX:F.05.70.00], [#HEX:F.05.78.00], [#HEX:F.06.66.00]
 function recalcEbank() {
     var inBookEl = document.getElementById('in-book-gross');
     if (!inBookEl) return;
@@ -12584,7 +12645,7 @@ function renderEbankFlowBar(total, segments) {
 window.renderEbankFlowBar = renderEbankFlowBar;
 
 // === [#HEX:F.05.74.00] START | name: renderEbankSankeySvg | lines: 43 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:F.05.6E.00] | @calledBy: [#HEX:F.05.72.00]
+// @calls: [#HEX:F.05.6E.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:F.05.72.00]
 function renderEbankSankeySvg(data) {
     var box = document.getElementById('ebank-sankey-box');
     if (!box || !data || data.totalGross <= 0) return;
@@ -12660,7 +12721,7 @@ function saveForecastData() {
 window.saveForecastData = saveForecastData;
 
 // === [#HEX:F.05.78.00] START | name: loadForecastFromCloud | lines: 27 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.05.72.00], [#HEX:F.04.2FB.00], [#HEX:F.05.81.00], [#HEX:B.07.DC.00] | @calledBy: [#HEX:F.05.7A.00]
+// @calls: [#HEX:F.05.81.00], [#HEX:B.07.DC.00], [#HEX:F.04.2FB.00], [#HEX:F.06.47.00], [#HEX:F.05.72.00] | @calledBy: [#HEX:F.05.7A.00]
 function loadForecastFromCloud() {
     var statusEl = document.getElementById('fc-cloud-sync-status');
     if (statusEl) {
@@ -12669,7 +12730,7 @@ function loadForecastFromCloud() {
     }
     if (typeof callBackend !== 'function') return;
 // === [#HEX:F.06.66.00] START | name: callBackend | lines: 14 ===
-// @calls: [#HEX:F.05.72.00], [#HEX:F.04.2FB.00], [#HEX:F.05.81.00], [#HEX:B.07.DC.00] | @calledBy: none
+// @calls: [#HEX:F.05.81.00], [#HEX:B.07.DC.00], [#HEX:F.04.2FB.00], [#HEX:F.05.72.00] | @calledBy: none
     callBackend('getEbankForecastLog', [], function (res) {
         if (res && res.success) {
             applyLiveEbankReportData(res);
@@ -12726,15 +12787,23 @@ function syncForecastWithCloud() {
 // === [#HEX:F.05.79.00] END ===
 window.syncForecastWithCloud = syncForecastWithCloud;
 
-// === [#HEX:F.05.7A.00] START | name: openEbankForecastModal | lines: 9 ===
-// @calls: [#HEX:F.05.81.00], [#HEX:F.05.76.00], [#HEX:F.05.78.00] | @calledBy: [#HEX:F.06.62.00], [#HEX:F.04.2F9.00], [#HEX:F.05.8C.00]
+// === [#HEX:F.05.7A.00] START | name: openEbankForecastModal | lines: 17 ===
+// @calls: [#HEX:F.05.81.00], [#HEX:F.05.76.00], [#HEX:F.05.78.00] | @calledBy: [#HEX:F.06.62.00], [#HEX:F.05.8C.00]
 function openEbankForecastModal() {
     var modal = document.getElementById('ebank-forecast-modal');
     if (modal) {
         loadForecastData();
         modal.style.display = 'flex';
         recalculateForecastEngine();
-        loadForecastFromCloud();
+        if (!window.ebankLiveDataset || !window.ebankLiveDataset.userCharacter || !window.ebankLiveDataset.userCharacter.email) {
+            loadForecastFromCloud();
+        } else {
+            var statusEl = document.getElementById('fc-cloud-sync-status');
+            if (statusEl) {
+                statusEl.textContent = '✅ Élő 4-táblás Google Sheets szinkron kész (' + ebankRevenueLog.length + ' időszak)';
+                statusEl.style.color = '#34d399';
+            }
+        }
     }
 }
 // === [#HEX:F.05.7A.00] END ===
@@ -12752,7 +12821,7 @@ function closeEbankForecastModal() {
 window.closeEbankForecastModal = closeEbankForecastModal;
 
 // === [#HEX:F.05.7C.00] START | name: resetDemoForecastData | lines: 5 ===
-// @calls: [#HEX:F.05.81.00], [#HEX:F.05.75.00], [#HEX:F.05.77.00] | @calledBy: none
+// @calls: [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.05.75.00] | @calledBy: none
 function resetDemoForecastData() {
     ebankRevenueLog = getDefaultForecastData();
     saveForecastData();
@@ -12762,7 +12831,7 @@ function resetDemoForecastData() {
 window.resetDemoForecastData = resetDemoForecastData;
 
 // === [#HEX:F.05.7D.00] START | name: addForecastRecord | lines: 26 ===
-// @calls: [#HEX:F.05.81.00], [#HEX:F.05.77.00], [#HEX:F.05.79.00] | @calledBy: none
+// @calls: [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.05.79.00] | @calledBy: none
 function addForecastRecord() {
     var periodEl = document.getElementById('fc-in-period');
     if (!periodEl) return;
@@ -12793,7 +12862,7 @@ function addForecastRecord() {
 window.addForecastRecord = addForecastRecord;
 
 // === [#HEX:F.05.7E.00] START | name: deleteForecastRecord | lines: 7 ===
-// @calls: [#HEX:F.05.81.00], [#HEX:F.05.77.00], [#HEX:F.05.79.00] | @calledBy: [#HEX:F.05.81.00]
+// @calls: [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.05.79.00] | @calledBy: [#HEX:F.05.81.00]
 function deleteForecastRecord(idx) {
     if (ebankRevenueLog.length <= 1) return;
     ebankRevenueLog.splice(idx, 1);
@@ -12833,7 +12902,7 @@ function resetLangWeights() {
 window.resetLangWeights = resetLangWeights;
 
 // === [#HEX:F.05.81.00] START | name: recalculateForecastEngine | lines: 147 ===
-// @calls: [#HEX:F.05.7E.00], [#HEX:F.05.6E.00], [#HEX:F.05.82.00], [#HEX:F.04.2F9.00], [#HEX:F.05.76.00] | @calledBy: [#HEX:F.05.78.00], [#HEX:F.06.66.00], [#HEX:F.05.7A.00], [#HEX:F.05.7C.00], [#HEX:F.05.7D.00]
+// @calls: [#HEX:F.05.6E.00], [#HEX:F.05.76.00], [#HEX:F.05.82.00], [#HEX:F.05.7E.00], [#HEX:F.04.2F9.00] | @calledBy: [#HEX:F.05.78.00], [#HEX:F.06.66.00], [#HEX:F.05.7A.00], [#HEX:F.05.7C.00], [#HEX:F.05.7D.00]
 function recalculateForecastEngine() {
     if (!ebankRevenueLog || ebankRevenueLog.length === 0) {
         loadForecastData();
@@ -13112,7 +13181,7 @@ function exportForecastJson() {
 window.exportForecastJson = exportForecastJson;
 
 // === [#HEX:F.04.2F7.00] START | name: applyPresetProfile | lines: 63 ===
-// @calls: [#HEX:F.05.75.00], [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.04.2F9.00] | @calledBy: none
+// @calls: [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.05.75.00], [#HEX:F.04.2F9.00] | @calledBy: none
 function applyPresetProfile(profileKey) {
     if (profileKey === 'conservative') {
         if (document.getElementById('fc-param-mor')) document.getElementById('fc-param-mor').value = 24;
@@ -13180,7 +13249,7 @@ function applyPresetProfile(profileKey) {
 window.applyPresetProfile = applyPresetProfile;
 
 // === [#HEX:F.04.2F8.00] START | name: importForecastJson | lines: 43 ===
-// @calls: [#HEX:F.05.79.00], [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.04.2F9.00], [#HEX:F.04.F3.00] | @calledBy: none
+// @calls: [#HEX:F.05.77.00], [#HEX:F.05.81.00], [#HEX:F.05.79.00], [#HEX:F.04.F3.00], [#HEX:F.04.2F9.00] | @calledBy: none
 function importForecastJson(event) {
     var file = event && event.target && event.target.files ? event.target.files[0] : null;
     if (!file) return;
@@ -13237,7 +13306,7 @@ function selectUserBookForAnalysis(title) {
 window.selectUserBookForAnalysis = selectUserBookForAnalysis;
 
 // === [#HEX:F.04.2FD.00] START | name: filterUserBooksByTitle | lines: 21 ===
-// @calls: [#HEX:F.04.2F9.00], [#HEX:F.04.2FA.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.2FA.00], [#HEX:F.04.2F9.00] | @calledBy: [#HEX:F.04.2F9.00]
 function filterUserBooksByTitle(query) {
     ebankBookSearchQuery = String(query || '').trim();
     var live = window.ebankLiveDataset || {};
@@ -13263,7 +13332,7 @@ function filterUserBooksByTitle(query) {
 window.filterUserBooksByTitle = filterUserBooksByTitle;
 
 // === [#HEX:F.09.16.00] START | name: switchRoleView | lines: 15 ===
-// @calls: [#HEX:F.04.2F9.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.05.8C.00]
+// @calls: [#HEX:F.04.2F9.00] | @calledBy: [#HEX:F.05.8C.00]
 function switchRoleView(roleKey) {
     currentActiveRole = roleKey || 'mybooks';
     var tabs = ['mybooks', 'author', 'dev', 'monk', 'publisher'];
@@ -13282,8 +13351,8 @@ function switchRoleView(roleKey) {
 // === [#HEX:F.09.16.00] END ===
 window.switchRoleView = switchRoleView;
 
-// === [#HEX:F.04.2F9.00] START | name: renderActiveRoleContent | lines: 5996 ===
-// @calls: [#HEX:F.04.2F3.00], [#HEX:F.09.16.00], [#HEX:F.05.47.00], [#HEX:F.01.1C.00], [#HEX:F.08.03.00] | @calledBy: [#HEX:F.05.81.00], [#HEX:F.04.2F7.00], [#HEX:F.04.2F8.00], [#HEX:F.04.2FC.00], [#HEX:F.04.2FD.00]
+// === [#HEX:F.04.2F9.00] START | name: renderActiveRoleContent | lines: 182 ===
+// @calls: [#HEX:F.04.2FC.00], [#HEX:F.05.76.00], [#HEX:F.04.2FD.00], [#HEX:F.04.2FA.00] | @calledBy: [#HEX:F.05.81.00], [#HEX:F.04.2F7.00], [#HEX:F.04.2F8.00], [#HEX:F.04.2FC.00], [#HEX:F.04.2FD.00]
 function renderActiveRoleContent() {
     var container = document.getElementById('role-view-container');
     if (!container) return;
@@ -13323,7 +13392,8 @@ function renderActiveRoleContent() {
 
     if (currentActiveRole === 'mybooks') {
         var live = window.ebankLiveDataset || {};
-        var uc = live.userCharacter || {
+        var hasValidLiveUser = (live.userCharacter && (live.userCharacter.email || live.userCharacter.kredit > 0 || live.userCharacter.konyv > 0 || live.userCharacter.masolat > 0));
+        var uc = hasValidLiveUser ? live.userCharacter : {
             kaloznev: (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'Kalóz Kapitány',
             email: (window.currentUser && window.currentUser.email) ? window.currentUser.email : '',
             kredit: (window.currentUser && typeof window.currentUser.kredit !== 'undefined') ? window.currentUser.kredit : 140,
@@ -13465,6 +13535,7 @@ function renderActiveRoleContent() {
         }
         html += '</tbody></table></div>';
     } else if (currentActiveRole === 'author') {
+// === [#HEX:F.04.2F9.00] END ===
         var netBookTotal = totalBookGross * (1 - morRate);
         var affTotal = netBookTotal * affRate;
         var authorRem = netBookTotal - (netBookTotal * platRate) - affTotal;
@@ -13600,7 +13671,7 @@ function renderActiveRoleContent() {
 window.renderActiveRoleContent = renderActiveRoleContent;
 
 // === [#HEX:F.05.8C.00] START | name: openEbankRoleReportModal | lines: 10 ===
-// @calls: [#HEX:F.09.16.00], [#HEX:F.05.7A.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:F.06.62.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.09.16.00], [#HEX:F.04.13.00], [#HEX:F.05.7A.00] | @calledBy: [#HEX:F.06.62.00]
 function openEbankRoleReportModal(roleKey) {
     openEbankForecastModal();
     switchRoleView(roleKey || 'mybooks');
@@ -13615,7 +13686,7 @@ function openEbankRoleReportModal(roleKey) {
 window.openEbankRoleReportModal = openEbankRoleReportModal;
 
 // === [#HEX:F.02.1B.00] START | name: initBank3DScene | lines: 71 ===
-// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.295.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.295.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00]
 function initBank3DScene() {
     var container = document.getElementById('bank-webgl-canvas-container');
     if (!container) return;
@@ -13697,7 +13768,7 @@ function initBank3DScene() {
 window.initBank3DScene = initBank3DScene;
 
 // === [#HEX:F.04.295.00] START | name: runBank3DModule | lines: 1338 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.01.1C.00], [#HEX:F.04.2C9.00], [#HEX:F.04.139.00], [#HEX:F.06.63.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.02.1B.00]
+// @calls: [#HEX:D.01.0D.00], [#HEX:F.04.2C8.00], [#HEX:F.06.63.00], [#HEX:F.02.1C.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.02.1B.00]
 function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('bank-webgl-canvas-container');
     if (!container) return;
@@ -14183,7 +14254,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
 
     var innerColliderMesh = null;
 // === [#HEX:F.03.1B.00] START | name: buildBankColliderMesh | lines: 11 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00]
+// @calls: none | @calledBy: [#HEX:F.04.295.00]
     function buildBankColliderMesh() {
         var geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(BANK_HULL_DATA.vertices), 3));
@@ -14202,7 +14273,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
     var isExitPromptOpen = false;
 
 // === [#HEX:F.02.1C.00] START | name: updateBankCameraCollision | lines: 46 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.05.65.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.295.00]
+// @calls: [#HEX:F.05.65.00], [#HEX:F.04.2EC.00] | @calledBy: [#HEX:F.04.295.00]
     function updateBankCameraCollision() {
         if (!innerColliderMesh) return;
 
@@ -14258,7 +14329,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
     });
 
 // === [#HEX:F.04.27F.00] START | name: _bankResetToOverview | lines: 5 ===
-// @calls: [#HEX:F.02.2F.00] | @calledBy: [#HEX:F.05.67.00], [#HEX:F.04.2F9.00], [#HEX:F.04.295.00]
+// @calls: [#HEX:F.02.2F.00] | @calledBy: [#HEX:F.05.67.00], [#HEX:F.04.295.00]
     window._bankResetToOverview = function () {
 // === [#HEX:F.02.1F.00] START | name: glideCameraTo | lines: 3 ===
 // @calls: none | @calledBy: none
@@ -14440,7 +14511,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "LoanSharkDesk",
         title: "🦈 Loan Shark (Bankár) - Csevegés, Hitel & Befektetés",
 // === [#HEX:F.04.29B.00] START | name: action | lines: 15 ===
-// @calls: [#HEX:F.04.E9.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.04.E9.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(1.3, 1.7, -0.9), new THREE.Vector3(2.2, 1.3, -2.0), function () {
                 if (typeof openUniversalNPC === 'function') {
@@ -14516,7 +14587,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "TalentExchangeTeller",
         title: "🪙 Tálentum Pénzváltó - 1 Tálentum = 100 Kredit",
 // === [#HEX:F.04.29C.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.68.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.68.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-1.3, 1.7, -0.9), new THREE.Vector3(-2.2, 1.3, -2.0), function () {
                 openBankExchangeModal();
@@ -14573,7 +14644,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "PirateTransferDesk",
         title: "📜 Kalóz Átutalás & Posta - Tétel Küldése Kalóznak",
 // === [#HEX:F.04.29E.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.6A.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.6A.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-2.1, 1.7, 1.3), new THREE.Vector3(-3.2, 1.2, 0.5), function () {
                 openBankSendModal();
@@ -14649,7 +14720,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "TheGrandVault",
         title: "🏦 eBankPirates Páncélterem - Saját Kincstár & Letét",
 // === [#HEX:F.04.2A0.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.6C.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.6C.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(0, 2.0, -2.4), new THREE.Vector3(0, 2.1, -4.2), function () {
                 openBankVaultModal();
@@ -14926,7 +14997,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2A4.00] END ===
 
 // === [#HEX:F.04.2A5.00] START | name: onPointerUp | lines: 21 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C1.00], [#HEX:F.04.2C2.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: none
     function onPointerUp(e) {
         if (e.button !== 0 || isGliding) return;
         var elapsed = performance.now() - pointerDownTime;
@@ -15025,7 +15096,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2A8.00] END ===
 
 // === [#HEX:F.04.2A9.00] START | name: stepGlide | lines: 20 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
         function stepGlide(now) {
             var elapsed = now - startTime;
             var progress = Math.min(1.0, elapsed / duration);
@@ -15056,7 +15127,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
     var clock = new THREE.Clock();
 
 // === [#HEX:F.04.2AA.00] START | name: animate | lines: 8 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C6.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C6.00], [#HEX:F.04.160.00] | @calledBy: none
     function animate() {
         animFrameId = requestAnimationFrame(animate);
         var delta = clock.getDelta();
@@ -15085,7 +15156,7 @@ function runBank3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 15. Takarító Motor
 // === [#HEX:F.04.297.00] START | name: _bank3DCleanup | lines: 38 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.2F9.00], [#HEX:F.04.295.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.17A.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.295.00]
     window._bank3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -15137,7 +15208,7 @@ window.runBank3DModule = runBank3DModule;
 // =========================================================================
 
 // === [#HEX:F.04.2F2.00] START | name: toggleMasolatok2DMenu | lines: 6 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function toggleMasolatok2DMenu() {
     var menu = document.getElementById('masolatok-2d-overlay');
     if (menu) {
@@ -15148,7 +15219,7 @@ function toggleMasolatok2DMenu() {
 window.toggleMasolatok2DMenu = toggleMasolatok2DMenu;
 
 // === [#HEX:F.04.2F3.00] START | name: openMasolatokExitPrompt | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00], [#HEX:F.04.28D.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00], [#HEX:F.04.28D.00]
 function openMasolatokExitPrompt() {
     var modal = document.getElementById('masolatok-kikoto-confirm-modal');
     if (modal) modal.style.display = 'flex';
@@ -15157,7 +15228,7 @@ function openMasolatokExitPrompt() {
 window.openMasolatokExitPrompt = openMasolatokExitPrompt;
 
 // === [#HEX:F.04.2F4.00] START | name: confirmMasolatokExitToKikoto | lines: 14 ===
-// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.FC.00] | @calledBy: none
 function confirmMasolatokExitToKikoto() {
     var modal = document.getElementById('masolatok-kikoto-confirm-modal');
     if (modal) modal.style.display = 'none';
@@ -15176,7 +15247,7 @@ function confirmMasolatokExitToKikoto() {
 window.confirmMasolatokExitToKikoto = confirmMasolatokExitToKikoto;
 
 // === [#HEX:F.04.2F5.00] START | name: cancelMasolatokExitToKikoto | lines: 7 ===
-// @calls: [#HEX:F.04.283.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.283.00] | @calledBy: none
 function cancelMasolatokExitToKikoto() {
     var modal = document.getElementById('masolatok-kikoto-confirm-modal');
     if (modal) modal.style.display = 'none';
@@ -15188,7 +15259,7 @@ function cancelMasolatokExitToKikoto() {
 window.cancelMasolatokExitToKikoto = cancelMasolatokExitToKikoto;
 
 // === [#HEX:F.05.5E.00] START | name: openMasolatokBuyModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00], [#HEX:F.04.286.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00], [#HEX:F.04.286.00]
 function openMasolatokBuyModal() {
     var modal = document.getElementById('masolatok-buy-modal');
     if (modal) modal.style.display = 'block';
@@ -15197,7 +15268,7 @@ function openMasolatokBuyModal() {
 window.openMasolatokBuyModal = openMasolatokBuyModal;
 
 // === [#HEX:F.05.5F.00] START | name: closeMasolatokBuyModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMasolatokBuyModal() {
     var modal = document.getElementById('masolatok-buy-modal');
     if (modal) modal.style.display = 'none';
@@ -15206,7 +15277,7 @@ function closeMasolatokBuyModal() {
 window.closeMasolatokBuyModal = closeMasolatokBuyModal;
 
 // === [#HEX:F.05.84.00] START | name: openMasolatokMyCopiesModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00], [#HEX:F.04.28B.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00], [#HEX:F.04.28B.00]
 function openMasolatokMyCopiesModal() {
     var modal = document.getElementById('masolatok-my-copies-modal');
     if (modal) modal.style.display = 'block';
@@ -15215,7 +15286,7 @@ function openMasolatokMyCopiesModal() {
 window.openMasolatokMyCopiesModal = openMasolatokMyCopiesModal;
 
 // === [#HEX:F.05.85.00] START | name: closeMasolatokMyCopiesModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMasolatokMyCopiesModal() {
     var modal = document.getElementById('masolatok-my-copies-modal');
     if (modal) modal.style.display = 'none';
@@ -15224,7 +15295,7 @@ function closeMasolatokMyCopiesModal() {
 window.closeMasolatokMyCopiesModal = closeMasolatokMyCopiesModal;
 
 // === [#HEX:F.05.86.00] START | name: openMasolatokMapCopyModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00], [#HEX:F.04.288.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00], [#HEX:F.04.288.00]
 function openMasolatokMapCopyModal() {
     var modal = document.getElementById('masolatok-map-copy-modal');
     if (modal) modal.style.display = 'block';
@@ -15233,7 +15304,7 @@ function openMasolatokMapCopyModal() {
 window.openMasolatokMapCopyModal = openMasolatokMapCopyModal;
 
 // === [#HEX:F.05.87.00] START | name: closeMasolatokMapCopyModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMasolatokMapCopyModal() {
     var modal = document.getElementById('masolatok-map-copy-modal');
     if (modal) modal.style.display = 'none';
@@ -15242,7 +15313,7 @@ function closeMasolatokMapCopyModal() {
 window.closeMasolatokMapCopyModal = closeMasolatokMapCopyModal;
 
 // === [#HEX:F.05.88.00] START | name: openMasolatokLogExtractModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00], [#HEX:F.04.289.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00], [#HEX:F.04.289.00]
 function openMasolatokLogExtractModal() {
     var modal = document.getElementById('log-extract-modal');
     if (modal) modal.style.display = 'flex';
@@ -15251,7 +15322,7 @@ function openMasolatokLogExtractModal() {
 window.openMasolatokLogExtractModal = openMasolatokLogExtractModal;
 
 // === [#HEX:F.05.89.00] START | name: closeMasolatokLogExtractModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMasolatokLogExtractModal() {
     var modal = document.getElementById('log-extract-modal');
     if (modal) modal.style.display = 'none';
@@ -15260,7 +15331,7 @@ function closeMasolatokLogExtractModal() {
 window.closeMasolatokLogExtractModal = closeMasolatokLogExtractModal;
 
 // === [#HEX:F.05.8A.00] START | name: openMasolatokPapatModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function openMasolatokPapatModal() {
     var modal = document.getElementById('masolatok-papat-modal');
     if (modal) modal.style.display = 'block';
@@ -15269,7 +15340,7 @@ function openMasolatokPapatModal() {
 window.openMasolatokPapatModal = openMasolatokPapatModal;
 
 // === [#HEX:F.05.8B.00] START | name: closeMasolatokPapatModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMasolatokPapatModal() {
     var modal = document.getElementById('masolatok-papat-modal');
     if (modal) modal.style.display = 'none';
@@ -15278,7 +15349,7 @@ function closeMasolatokPapatModal() {
 window.closeMasolatokPapatModal = closeMasolatokPapatModal;
 
 // === [#HEX:F.04.2F6.00] START | name: openGameMasterNPC | lines: 13 ===
-// @calls: [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00], [#HEX:F.04.28C.00]
+// @calls: [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.282.00], [#HEX:F.04.28C.00]
 function openGameMasterNPC() {
     if (typeof openUniversalNPC === 'function') {
         openUniversalNPC('gamemaster', {
@@ -15296,7 +15367,7 @@ function openGameMasterNPC() {
 window.openGameMasterNPC = openGameMasterNPC;
 
 // === [#HEX:F.04.296.00] START | name: initMasolatok3DScene | lines: 71 ===
-// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.282.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.282.00], [#HEX:F.04.2D9.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00]
 function initMasolatok3DScene() {
     var container = document.getElementById('masolatok-webgl-canvas-container');
     if (!container) return;
@@ -15378,7 +15449,7 @@ function initMasolatok3DScene() {
 window.initMasolatok3DScene = initMasolatok3DScene;
 
 // === [#HEX:F.04.282.00] START | name: runMasolatok3DModule | lines: 1045 ===
-// @calls: [#HEX:F.04.2F3.00], [#HEX:F.05.5E.00], [#HEX:F.04.2C1.00], [#HEX:F.01.1C.00], [#HEX:F.02.1D.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.296.00]
+// @calls: [#HEX:D.01.0D.00], [#HEX:F.04.2C8.00], [#HEX:F.05.84.00], [#HEX:F.04.2F6.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.04.296.00]
 function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('masolatok-webgl-canvas-container');
     if (!container) return;
@@ -15738,7 +15809,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
 
     var innerColliderMesh = null;
 // === [#HEX:F.03.1C.00] START | name: buildMasolatokColliderMesh | lines: 11 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00]
     function buildMasolatokColliderMesh() {
         var geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MASOLATOK_HULL_DATA.vertices), 3));
@@ -15757,7 +15828,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
     var isExitPromptOpen = false;
 
 // === [#HEX:F.02.1D.00] START | name: updateMasolatokCameraCollision | lines: 41 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.282.00]
+// @calls: none | @calledBy: [#HEX:F.04.282.00]
     function updateMasolatokCameraCollision() {
         if (!innerColliderMesh) return;
 
@@ -15808,7 +15879,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
     });
 
 // === [#HEX:F.04.283.00] START | name: _masolatokResetToOverview | lines: 5 ===
-// @calls: [#HEX:F.02.2F.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2F5.00], [#HEX:F.04.282.00]
+// @calls: [#HEX:F.02.2F.00] | @calledBy: [#HEX:F.04.2F5.00], [#HEX:F.04.282.00]
     window._masolatokResetToOverview = function () {
 // === [#HEX:F.02.1E.00] START | name: glideCameraTo | lines: 3 ===
 // @calls: none | @calledBy: none
@@ -15999,7 +16070,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "MasterScribeLectern",
         title: "📜 Másolómester Katedrája - Eladó Kódexek & Másolatok",
 // === [#HEX:F.04.286.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.5E.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.5E.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(0, 1.3, -0.9), new THREE.Vector3(0, 0.7, -1.8), function () {
                 openMasolatokBuyModal();
@@ -16054,7 +16125,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "CartographerMapDesk",
         title: "🗺️ Térképmásoló Asztal - Tengeri Térképek Másolása (30 Kr)",
 // === [#HEX:F.04.288.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.86.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.86.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-1.8, 1.3, -0.6), new THREE.Vector3(-2.6, 0.6, -1.2), function () {
                 openMasolatokMapCopyModal();
@@ -16112,7 +16183,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "LogExtractionPress",
         title: "📖 Hajónapló Kivonatolás & Könyvkötő Prés (10 Kr / nap)",
 // === [#HEX:F.04.289.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.88.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.88.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(1.8, 1.3, -0.6), new THREE.Vector3(2.6, 0.6, -1.2), function () {
                 openMasolatokLogExtractModal();
@@ -16163,7 +16234,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "CodexArchiveBookshelf",
         title: "📚 Saját Másolataid Archívuma - Kódexek & Gyűjtemény",
 // === [#HEX:F.04.28B.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.84.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.84.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-2.8, 1.3, 0.6), new THREE.Vector3(-3.8, 0.8, 0.5), function () {
                 openMasolatokMyCopiesModal();
@@ -16308,7 +16379,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.290.00] END ===
 
 // === [#HEX:F.04.291.00] START | name: onPointerUp | lines: 21 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C1.00], [#HEX:F.04.2C2.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: none
     function onPointerUp(e) {
         if (e.button !== 0 || isGliding) return;
         var elapsed = performance.now() - pointerDownTime;
@@ -16407,7 +16478,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2AC.00] END ===
 
 // === [#HEX:F.04.2AD.00] START | name: stepGlide | lines: 20 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: none
         function stepGlide(now) {
             var elapsed = now - startTime;
             var progress = Math.min(1.0, elapsed / duration);
@@ -16438,7 +16509,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
     var clock = new THREE.Clock();
 
 // === [#HEX:F.04.2AE.00] START | name: animate | lines: 8 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C6.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C6.00], [#HEX:F.04.160.00] | @calledBy: none
     function animate() {
         animFrameId = requestAnimationFrame(animate);
         var delta = clock.getDelta();
@@ -16467,7 +16538,7 @@ function runMasolatok3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 15. Takarító Motor
 // === [#HEX:F.04.2B0.00] START | name: _masolatok3DCleanup | lines: 38 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.2F9.00], [#HEX:F.04.282.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.17A.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.282.00]
     window._masolatok3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -16519,7 +16590,7 @@ window.runMasolatok3DModule = runMasolatok3DModule;
 // =========================================================================
 
 // === [#HEX:F.04.2B1.00] START | name: toggleTekercsmester2DMenu | lines: 6 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function toggleTekercsmester2DMenu() {
     var menu = document.getElementById('tekercsmester-2d-overlay');
     if (menu) {
@@ -16530,7 +16601,7 @@ function toggleTekercsmester2DMenu() {
 window.toggleTekercsmester2DMenu = toggleTekercsmester2DMenu;
 
 // === [#HEX:F.04.2B2.00] START | name: openTekercsmesterExitPrompt | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00], [#HEX:F.04.2C1.00]
+// @calls: none | @calledBy: [#HEX:F.04.2B6.00], [#HEX:F.04.2C1.00]
 function openTekercsmesterExitPrompt() {
     var modal = document.getElementById('tekercsmester-kikoto-confirm-modal');
     if (modal) modal.style.display = 'flex';
@@ -16539,7 +16610,7 @@ function openTekercsmesterExitPrompt() {
 window.openTekercsmesterExitPrompt = openTekercsmesterExitPrompt;
 
 // === [#HEX:F.04.2B3.00] START | name: confirmTekercsmesterExitToKikoto | lines: 14 ===
-// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.FC.00] | @calledBy: none
 function confirmTekercsmesterExitToKikoto() {
     var modal = document.getElementById('tekercsmester-kikoto-confirm-modal');
     if (modal) modal.style.display = 'none';
@@ -16558,7 +16629,7 @@ function confirmTekercsmesterExitToKikoto() {
 window.confirmTekercsmesterExitToKikoto = confirmTekercsmesterExitToKikoto;
 
 // === [#HEX:F.04.2B4.00] START | name: cancelTekercsmesterExitToKikoto | lines: 7 ===
-// @calls: [#HEX:F.04.2B7.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.2B7.00] | @calledBy: none
 function cancelTekercsmesterExitToKikoto() {
     var modal = document.getElementById('tekercsmester-kikoto-confirm-modal');
     if (modal) modal.style.display = 'none';
@@ -16570,7 +16641,7 @@ function cancelTekercsmesterExitToKikoto() {
 window.cancelTekercsmesterExitToKikoto = cancelTekercsmesterExitToKikoto;
 
 // === [#HEX:F.05.46.00] START | name: openTekercsmesterPressModal | lines: 20 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00], [#HEX:F.04.2BB.00]
+// @calls: none | @calledBy: [#HEX:F.04.2B6.00], [#HEX:F.04.2BB.00]
 function openTekercsmesterPressModal() {
     var modal = document.getElementById('tekercsmester-press-modal');
     if (modal) {
@@ -16595,7 +16666,7 @@ function openTekercsmesterPressModal() {
 window.openTekercsmesterPressModal = openTekercsmesterPressModal;
 
 // === [#HEX:F.05.47.00] START | name: closeTekercsmesterPressModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeTekercsmesterPressModal() {
     var modal = document.getElementById('tekercsmester-press-modal');
     if (modal) modal.style.display = 'none';
@@ -16604,7 +16675,7 @@ function closeTekercsmesterPressModal() {
 window.closeTekercsmesterPressModal = closeTekercsmesterPressModal;
 
 // === [#HEX:F.05.48.00] START | name: openTekercsmesterMarketModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00], [#HEX:F.04.2BD.00]
+// @calls: none | @calledBy: [#HEX:F.04.2B6.00], [#HEX:F.04.2BD.00]
 function openTekercsmesterMarketModal() {
     var modal = document.getElementById('tekercsmester-market-modal');
     if (modal) modal.style.display = 'block';
@@ -16613,7 +16684,7 @@ function openTekercsmesterMarketModal() {
 window.openTekercsmesterMarketModal = openTekercsmesterMarketModal;
 
 // === [#HEX:F.05.49.00] START | name: closeTekercsmesterMarketModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeTekercsmesterMarketModal() {
     var modal = document.getElementById('tekercsmester-market-modal');
     if (modal) modal.style.display = 'none';
@@ -16622,7 +16693,7 @@ function closeTekercsmesterMarketModal() {
 window.closeTekercsmesterMarketModal = closeTekercsmesterMarketModal;
 
 // === [#HEX:F.05.4A.00] START | name: openTekercsmesterAssembleModal | lines: 7 ===
-// @calls: [#HEX:F.04.127.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00], [#HEX:F.04.2BE.00]
+// @calls: [#HEX:F.04.127.00] | @calledBy: [#HEX:F.04.2B6.00], [#HEX:F.04.2BE.00]
 function openTekercsmesterAssembleModal() {
     if (typeof loadCompletableScrolls === 'function') {
         loadCompletableScrolls();
@@ -16634,7 +16705,7 @@ function openTekercsmesterAssembleModal() {
 window.openTekercsmesterAssembleModal = openTekercsmesterAssembleModal;
 
 // === [#HEX:F.05.4B.00] START | name: closeTekercsmesterAssembleModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeTekercsmesterAssembleModal() {
     var modal = document.getElementById('tekercsmester-assemble-modal');
     if (modal) modal.style.display = 'none';
@@ -16643,7 +16714,7 @@ function closeTekercsmesterAssembleModal() {
 window.closeTekercsmesterAssembleModal = closeTekercsmesterAssembleModal;
 
 // === [#HEX:F.05.4C.00] START | name: openTekercsmesterArchiveModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00], [#HEX:F.04.2C0.00]
+// @calls: none | @calledBy: [#HEX:F.04.2B6.00], [#HEX:F.04.2C0.00]
 function openTekercsmesterArchiveModal() {
     var modal = document.getElementById('tekercsmester-archive-modal');
     if (modal) modal.style.display = 'block';
@@ -16652,7 +16723,7 @@ function openTekercsmesterArchiveModal() {
 window.openTekercsmesterArchiveModal = openTekercsmesterArchiveModal;
 
 // === [#HEX:F.05.4D.00] START | name: closeTekercsmesterArchiveModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeTekercsmesterArchiveModal() {
     var modal = document.getElementById('tekercsmester-archive-modal');
     if (modal) modal.style.display = 'none';
@@ -16661,7 +16732,7 @@ function closeTekercsmesterArchiveModal() {
 window.closeTekercsmesterArchiveModal = closeTekercsmesterArchiveModal;
 
 // === [#HEX:F.02.24.00] START | name: initTekercsmester3DScene | lines: 75 ===
-// @calls: [#HEX:F.04.2B6.00], [#HEX:F.04.2D9.00], [#HEX:F.09.05.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2B6.00], [#HEX:F.04.2D9.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00]
 function initTekercsmester3DScene() {
     var container = document.getElementById('tekercsmester-webgl-canvas-container');
     if (!container) return;
@@ -16747,7 +16818,7 @@ function initTekercsmester3DScene() {
 window.initTekercsmester3DScene = initTekercsmester3DScene;
 
 // === [#HEX:F.04.2B6.00] START | name: runTekercsmester3DModule | lines: 1014 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.01.1C.00], [#HEX:F.04.2C9.00], [#HEX:F.04.139.00], [#HEX:F.03.1D.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.02.24.00]
+// @calls: [#HEX:D.01.0D.00], [#HEX:F.04.2C8.00], [#HEX:F.04.2CC.00], [#HEX:F.05.4A.00], [#HEX:F.04.2B7.00] | @calledBy: [#HEX:F.02.24.00]
 function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('tekercsmester-webgl-canvas-container');
     if (!container) return;
@@ -17107,7 +17178,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
 
     var innerColliderMesh = null;
 // === [#HEX:F.03.1D.00] START | name: buildTekercsmesterColliderMesh | lines: 11 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00]
+// @calls: none | @calledBy: [#HEX:F.04.2B6.00]
     function buildTekercsmesterColliderMesh() {
         var geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(TEKERCSMESTER_HULL_DATA.vertices), 3));
@@ -17126,7 +17197,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
     var isExitPromptOpen = false;
 
 // === [#HEX:F.02.25.00] START | name: updateTekercsmesterCameraCollision | lines: 40 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00]
+// @calls: none | @calledBy: [#HEX:F.04.2B6.00]
     function updateTekercsmesterCameraCollision() {
         if (!innerColliderMesh) return;
 
@@ -17176,7 +17247,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
     });
 
 // === [#HEX:F.04.2B7.00] START | name: _tekercsmesterResetToOverview | lines: 5 ===
-// @calls: [#HEX:F.02.2F.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.2B4.00], [#HEX:F.04.2B6.00]
+// @calls: [#HEX:F.02.2F.00] | @calledBy: [#HEX:F.04.2B4.00], [#HEX:F.04.2B6.00]
     window._tekercsmesterResetToOverview = function () {
 // === [#HEX:F.02.26.00] START | name: glideCameraTo | lines: 3 ===
 // @calls: none | @calledBy: none
@@ -17295,7 +17366,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
     // 10. INTERAKTÍV CSOPORTOK ÉS STEAMPUNK ÁLLOMÁSOK
     var interactiveObjects = [];
 // === [#HEX:F.01.1C.00] START | name: registerInteractiveGroup | lines: 6 ===
-// @calls: none | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.2F9.00], [#HEX:F.04.295.00], [#HEX:F.04.282.00]
+// @calls: none | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.295.00], [#HEX:F.04.282.00], [#HEX:F.04.2B6.00]
     function registerInteractiveGroup(group, meta) {
         group.userData = meta;
         scene.add(group);
@@ -17429,7 +17500,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "TekercsmesterMarketDesk",
         title: "🛒 Tekercs Piac - Eladó Fejezettekercsek (11 Kr)",
 // === [#HEX:F.04.2BD.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.48.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.48.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(-1.8, 1.3, -0.6), new THREE.Vector3(-2.6, 0.6, -1.2), function () {
                 openTekercsmesterMarketModal();
@@ -17499,7 +17570,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
         name: "TekercsmesterAssembleKatedra",
         title: "📖 Összefűző Katedra - Kódex Kötészet & Teljes Művek Összefűzése",
 // === [#HEX:F.04.2BE.00] START | name: action | lines: 5 ===
-// @calls: [#HEX:F.05.4A.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.02.2F.00], [#HEX:F.05.4A.00] | @calledBy: none
         action: function () {
             glideCameraTo(new THREE.Vector3(0, 1.3, -0.9), new THREE.Vector3(0, 0.7, -1.8), function () {
                 openTekercsmesterAssembleModal();
@@ -17646,7 +17717,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2C4.00] END ===
 
 // === [#HEX:F.04.2C5.00] START | name: onPointerUp | lines: 21 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C1.00], [#HEX:F.04.2C2.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: none
     function onPointerUp(e) {
         if (e.button !== 0 || isGliding) return;
         var elapsed = performance.now() - pointerDownTime;
@@ -17671,7 +17742,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2C5.00] END ===
 
 // === [#HEX:F.04.2C6.00] START | name: updateHoverState | lines: 33 ===
-// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.279.00], [#HEX:F.04.281.00], [#HEX:F.04.27C.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.2EC.00], [#HEX:F.04.2C2.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.279.00], [#HEX:F.04.281.00], [#HEX:F.04.27C.00], [#HEX:F.04.295.00]
     function updateHoverState() {
         var tooltipEl = document.getElementById('tekercsmester-interactive-tooltip');
         var tooltipTextEl = document.getElementById('tekercsmester-tooltip-text');
@@ -17745,7 +17816,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2C8.00] END ===
 
 // === [#HEX:F.04.2C9.00] START | name: stepGlide | lines: 20 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.02.19.00], [#HEX:F.04.281.00], [#HEX:F.02.1A.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.2C8.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.02.19.00], [#HEX:F.04.281.00], [#HEX:F.02.1A.00], [#HEX:F.04.295.00]
         function stepGlide(now) {
             var elapsed = now - startTime;
             var progress = Math.min(1.0, elapsed / duration);
@@ -17776,7 +17847,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
     var clock = new THREE.Clock();
 
 // === [#HEX:F.04.2CA.00] START | name: animate | lines: 8 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.04.2C6.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C6.00], [#HEX:F.04.160.00] | @calledBy: none
     function animate() {
         animFrameId = requestAnimationFrame(animate);
         var delta = clock.getDelta();
@@ -17805,7 +17876,7 @@ function runTekercsmester3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 15. Takarító Motor
 // === [#HEX:F.04.2CC.00] START | name: _tekercsmester3DCleanup | lines: 38 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.2F9.00], [#HEX:F.04.2B6.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.17A.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.2B6.00]
     window._tekercsmester3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -17886,7 +17957,7 @@ function requestPin(callback, customMessage) {
 // === [#HEX:F.06.25.00] END ===
 
 // === [#HEX:F.04.81.00] START | name: finalizeMonkUpload | lines: 9 ===
-// @calls: [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.1EE.00] | @calledBy: none
 function finalizeMonkUpload() {
     var input = document.getElementById('monk-pin-input');
     var pin = input ? input.value : null;
@@ -17899,7 +17970,7 @@ function finalizeMonkUpload() {
 // === [#HEX:F.04.81.00] END ===
 
 // === [#HEX:F.05.07.00] START | name: closeMonkPinModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
+// @calls: none | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
 function closeMonkPinModal() {
     document.getElementById('monk-pin-modal').style.display = 'none';
     pinCallback = null;
@@ -17911,7 +17982,7 @@ function closeMonkPinModal() {
 // ============================================================================
 
 // === [#HEX:F.04.301.00] START | name: toggleFelhokolostor2DMenu | lines: 10 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function toggleFelhokolostor2DMenu() {
     var overlay = document.getElementById('felhokolostor-2d-overlay');
     if (overlay) {
@@ -17926,7 +17997,7 @@ function toggleFelhokolostor2DMenu() {
 window.toggleFelhokolostor2DMenu = toggleFelhokolostor2DMenu;
 
 // === [#HEX:F.04.302.00] START | name: resetFelhokolostorCamera | lines: 7 ===
-// @calls: [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.305.00]
+// @calls: [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.305.00]
 function resetFelhokolostorCamera() {
     if (window._felhokolostorControls && window._felhokolostorDefaultCamPos && window._felhokolostorDefaultLookAt) {
         window._felhokolostorControls.target.copy(window._felhokolostorDefaultLookAt);
@@ -17938,7 +18009,7 @@ function resetFelhokolostorCamera() {
 window.resetFelhokolostorCamera = resetFelhokolostorCamera;
 
 // === [#HEX:F.04.303.00] START | name: openMonasteryAnonymusNPC | lines: 34 ===
-// @calls: [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2D5.00]
+// @calls: [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2D5.00]
 function openMonasteryAnonymusNPC() {
     if (typeof openUniversalNPC === 'function') {
         openUniversalNPC('anonymus', {
@@ -17977,7 +18048,7 @@ function openMonasteryAnonymusNPC() {
 window.openMonasteryAnonymusNPC = openMonasteryAnonymusNPC;
 
 // === [#HEX:F.04.304.00] START | name: confirmFelhokolostorExitToKikoto | lines: 8 ===
-// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2D5.00]
+// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2D5.00]
 function confirmFelhokolostorExitToKikoto() {
     var modal = document.getElementById('felhokolostor-kikoto-confirm-modal');
     if (modal) {
@@ -17990,7 +18061,7 @@ function confirmFelhokolostorExitToKikoto() {
 window.confirmFelhokolostorExitToKikoto = confirmFelhokolostorExitToKikoto;
 
 // === [#HEX:F.04.305.00] START | name: cancelFelhokolostorExitToKikoto | lines: 12 ===
-// @calls: [#HEX:F.04.302.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.302.00] | @calledBy: none
 function cancelFelhokolostorExitToKikoto() {
     var modal = document.getElementById('felhokolostor-kikoto-confirm-modal');
     if (modal) {
@@ -18007,7 +18078,7 @@ function cancelFelhokolostorExitToKikoto() {
 window.cancelFelhokolostorExitToKikoto = cancelFelhokolostorExitToKikoto;
 
 // === [#HEX:F.04.306.00] START | name: executeFelhokolostorExitToKikoto | lines: 14 ===
-// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.FC.00] | @calledBy: none
 function executeFelhokolostorExitToKikoto() {
     var modal = document.getElementById('felhokolostor-kikoto-confirm-modal');
     if (modal) modal.style.display = 'none';
@@ -18026,7 +18097,7 @@ function executeFelhokolostorExitToKikoto() {
 window.executeFelhokolostorExitToKikoto = executeFelhokolostorExitToKikoto;
 
 // === [#HEX:F.04.30A.00] START | name: openMonasteryWorkbenchModal | lines: 5 ===
-// @calls: [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.82.00]
+// @calls: [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.82.00]
 function openMonasteryWorkbenchModal() {
     var modal = document.getElementById('monastery-workbench-modal');
     if (modal) modal.style.display = 'flex';
@@ -18036,7 +18107,7 @@ function openMonasteryWorkbenchModal() {
 window.openMonasteryWorkbenchModal = openMonasteryWorkbenchModal;
 
 // === [#HEX:F.05.4E.00] START | name: closeMonasteryWorkbenchModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMonasteryWorkbenchModal() {
     var modal = document.getElementById('monastery-workbench-modal');
     if (modal) modal.style.display = 'none';
@@ -18045,7 +18116,7 @@ function closeMonasteryWorkbenchModal() {
 window.closeMonasteryWorkbenchModal = closeMonasteryWorkbenchModal;
 
 // === [#HEX:F.04.30B.00] START | name: openMonasteryForumModal | lines: 5 ===
-// @calls: [#HEX:F.04.96.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.82.00]
+// @calls: [#HEX:F.04.96.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.82.00]
 function openMonasteryForumModal() {
     var modal = document.getElementById('monastery-forum-modal');
     if (modal) modal.style.display = 'flex';
@@ -18055,7 +18126,7 @@ function openMonasteryForumModal() {
 window.openMonasteryForumModal = openMonasteryForumModal;
 
 // === [#HEX:F.05.4F.00] START | name: closeMonasteryForumModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMonasteryForumModal() {
     var modal = document.getElementById('monastery-forum-modal');
     if (modal) modal.style.display = 'none';
@@ -18064,7 +18135,7 @@ function closeMonasteryForumModal() {
 window.closeMonasteryForumModal = closeMonasteryForumModal;
 
 // === [#HEX:F.04.30C.00] START | name: openMonasteryWhisperModal | lines: 5 ===
-// @calls: [#HEX:F.04.98.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.82.00]
+// @calls: [#HEX:F.04.98.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.82.00]
 function openMonasteryWhisperModal() {
     var modal = document.getElementById('monastery-whisper-modal');
     if (modal) modal.style.display = 'flex';
@@ -18074,7 +18145,7 @@ function openMonasteryWhisperModal() {
 window.openMonasteryWhisperModal = openMonasteryWhisperModal;
 
 // === [#HEX:F.05.5C.00] START | name: closeMonasteryWhisperModal | lines: 4 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function closeMonasteryWhisperModal() {
     var modal = document.getElementById('monastery-whisper-modal');
     if (modal) modal.style.display = 'none';
@@ -18083,7 +18154,7 @@ function closeMonasteryWhisperModal() {
 window.closeMonasteryWhisperModal = closeMonasteryWhisperModal;
 
 // === [#HEX:F.04.307.00] START | name: initializeFelhokolostorPage | lines: 12 ===
-// @calls: [#HEX:F.04.88.00], [#HEX:F.02.28.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.02.28.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function initializeFelhokolostorPage() {
     var content = document.getElementById('felhokolostor_oldal-content');
     var splash = document.getElementById('felhokolostor_oldal-splash');
@@ -18100,13 +18171,13 @@ function initializeFelhokolostorPage() {
 window.initializeFelhokolostorPage = initializeFelhokolostorPage;
 
 // === [#HEX:F.02.28.00] START | name: initFelhokolostor3DScene | lines: 71 ===
-// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.308.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00], [#HEX:F.04.2F9.00], [#HEX:F.04.307.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.04.2D9.00], [#HEX:F.04.308.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F.00], [#HEX:F.04.307.00]
 function initFelhokolostor3DScene() {
     var container = document.getElementById('felhokolostor-webgl-canvas-container');
     if (!container) return;
 
 // === [#HEX:F.04.2D9.00] START | name: show2DFallback | lines: 6 ===
-// @calls: none | @calledBy: [#HEX:F.02.01.00], [#HEX:F.02.12.00], [#HEX:F.02.21.00], [#HEX:F.04.280.00], [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: [#HEX:F.02.01.00], [#HEX:F.02.12.00], [#HEX:F.02.21.00], [#HEX:F.04.280.00], [#HEX:F.02.1B.00]
     function show2DFallback(reason) {
         console.warn("⚠️ Felhőkolostor 3D betöltési figyelmeztetés (" + (reason || 'ismeretlen') + ")! 2D menü aktiválva.");
         var overlay2D = document.getElementById('felhokolostor-2d-overlay');
@@ -18182,7 +18253,7 @@ function initFelhokolostor3DScene() {
 window.initFelhokolostor3DScene = initFelhokolostor3DScene;
 
 // === [#HEX:F.04.308.00] START | name: runFelhokolostor3DModule | lines: 1293 ===
-// @calls: [#HEX:F.04.30B.00], [#HEX:F.05.08.00], [#HEX:F.04.30E.00], [#HEX:F.04.139.00], [#HEX:F.04.312.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.02.28.00]
+// @calls: [#HEX:F.04.2D5.00], [#HEX:F.02.29.00], [#HEX:D.01.0D.00], [#HEX:F.04.2ED.00], [#HEX:F.04.2DD.00] | @calledBy: [#HEX:F.02.28.00]
 function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     var container = document.getElementById('felhokolostor-webgl-canvas-container');
     var tooltipEl = document.getElementById('felhokolostor-interactive-tooltip');
@@ -18254,7 +18325,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
         fallSpeed: 4.5,
         bounds: { minX: -27.5, maxX: 27.5, minZ: -155.0, maxZ: 31.0 },
 // === [#HEX:F.04.2ED.00] START | name: getFloorHeight | lines: 1 ===
-// @calls: [#HEX:F.04.30E.00] | @calledBy: [#HEX:F.04.30D.00], [#HEX:F.04.1F0.00], [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: [#HEX:F.04.30E.00] | @calledBy: [#HEX:F.04.30D.00], [#HEX:F.04.1F0.00], [#HEX:F.04.308.00]
         getFloorHeight: function (x, z) { return getFelhokolostorFloorHeight(x, z); },
 // === [#HEX:F.04.2ED.00] END ===
 // === [#HEX:F.04.2EC.00] START | name: isGliding | lines: 1 ===
@@ -18273,7 +18344,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     var invisibleMat = new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide });
 
 // === [#HEX:F.04.312.00] START | name: createTavernaWoodTexture | lines: 29 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00]
     function createTavernaWoodTexture() {
         var cv = document.createElement('canvas');
         cv.width = 512;
@@ -18367,7 +18438,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     var downDirVec = new THREE.Vector3(0, -1, 0);
 
 // === [#HEX:F.04.30E.00] START | name: getFelhokolostorFloorHeight | lines: 34 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2ED.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2ED.00]
     function getFelhokolostorFloorHeight(x, z) {
         // Ha a kamera az alsó folyosó tengelyén jár földszinten, zéró feldobás
         if (z <= 7.0 && Math.abs(x) <= 4.2 && camera && camera.position.y < 3.6) {
@@ -18406,7 +18477,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 5. ÜTKÖZŐHÁRTYÁK A FALAK BELSŐ SÍKJÁRA (sima téglalapok, átjárhatatlanná téve a falakat és a plafont)
 // === [#HEX:F.04.313.00] START | name: addWallMembrane | lines: 8 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00]
     function addWallMembrane(w, h, d, x, y, z) {
         var geo = new THREE.BoxGeometry(w, h, d);
         var mesh = new THREE.Mesh(geo, invisibleMat);
@@ -18498,7 +18569,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     ];
 
 // === [#HEX:F.04.314.00] START | name: setupFelhokolostorInteractiveDoors | lines: 95 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2DC.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2DC.00]
     function setupFelhokolostorInteractiveDoors(modelScene) {
         var triggerMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0001, depthWrite: false });
         var blockerMat = new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide });
@@ -18597,7 +18668,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.314.00] END ===
 
 // === [#HEX:F.04.315.00] START | name: toggleMonasteryDoor | lines: 19 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2E2.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2E2.00]
     function toggleMonasteryDoor(doorData) {
         if (!doorData || doorData.isAnimating) return;
         doorData.isAnimating = true;
@@ -18620,7 +18691,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.315.00] END ===
 
 // === [#HEX:F.04.311.00] START | name: updateDoorAnimations | lines: 17 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2E4.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2E4.00]
     function updateDoorAnimations() {
         if (!activeDoorAnimations || activeDoorAnimations.length === 0) return;
         var now = performance.now();
@@ -18648,7 +18719,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     scene.add(cameraColliderSphere);
 
 // === [#HEX:F.04.2DA.00] START | name: clampTargetToInterior | lines: 9 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.02.2D.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00], [#HEX:F.02.2D.00]
     function clampTargetToInterior(target) {
         target.y = Math.max(0.5, Math.min(10.5, target.y));
         target.z = Math.max(-155.0, Math.min(30.5, target.z));
@@ -18661,7 +18732,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2DA.00] END ===
 
 // === [#HEX:F.02.2C.00] START | name: clampCameraToInterior | lines: 9 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.02.2D.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00], [#HEX:F.02.2D.00]
     function clampCameraToInterior(pos) {
         pos.y = Math.max(0.85, Math.min(10.8, pos.y));
         pos.z = Math.max(-155.0, Math.min(30.8, pos.z));
@@ -18686,7 +18757,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     ];
 
 // === [#HEX:F.02.2D.00] START | name: resolveCameraCollisions | lines: 27 ===
-// @calls: [#HEX:F.02.2C.00], [#HEX:F.04.2DA.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2E4.00]
+// @calls: [#HEX:F.04.2DA.00], [#HEX:F.02.2C.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2E4.00]
     function resolveCameraCollisions() {
         clampCameraToInterior(camera.position);
         clampTargetToInterior(controls.target);
@@ -18742,7 +18813,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     // Állomások meleg pontfényei
     var stationLights = [];
 // === [#HEX:F.02.29.00] START | name: addStationLight | lines: 7 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00]
     function addStationLight(color, intensity, dist, x, y, z) {
         var pLight = new THREE.PointLight(color, intensity, dist);
         pLight.position.set(x, y, z);
@@ -18794,7 +18865,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2DB.00] END ===
 
 // === [#HEX:F.04.2DC.00] START | name: loadModelSafe | lines: 20 ===
-// @calls: [#HEX:F.04.314.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.314.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.295.00]
     loadModelSafe('felhokolostor_interiors.glb', function (monasteryModel) {
         monasteryModel.position.set(0, 0, 0);
         monasteryModel.traverse(function (child) {
@@ -18843,7 +18914,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.01.1D.00] END ===
 
 // === [#HEX:F.04.2D2.00] START | name: createStationAuraRing | lines: 15 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: none | @calledBy: [#HEX:F.04.308.00]
     function createStationAuraRing(x, y, z, colorHex, radius) {
         var ringGeo = new THREE.RingGeometry(radius * 0.75, radius, 32);
         var ringMat = new THREE.MeshBasicMaterial({
@@ -19234,7 +19305,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     var isDragging = false;
 
 // === [#HEX:F.04.2DD.00] START | name: getPointerPos | lines: 9 ===
-// @calls: none | @calledBy: [#HEX:F.04.233.00], [#HEX:F.04.25D.00], [#HEX:F.04.24B.00], [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: none | @calledBy: [#HEX:F.04.233.00], [#HEX:F.04.25D.00], [#HEX:F.04.24B.00], [#HEX:F.04.308.00], [#HEX:F.04.2E0.00]
     function getPointerPos(e) {
         var rect = renderer.domElement.getBoundingClientRect();
         return {
@@ -19247,7 +19318,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2DD.00] END ===
 
 // === [#HEX:F.04.2DE.00] START | name: applyHoverGlow | lines: 17 ===
-// @calls: none | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.6B.00], [#HEX:F.04.233.00], [#HEX:F.04.25D.00], [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.6B.00], [#HEX:F.04.233.00], [#HEX:F.04.25D.00], [#HEX:F.04.308.00]
     function applyHoverGlow(rootObj) {
         rootObj.traverse(function (child) {
             if (child.isMesh && child.material) {
@@ -19268,7 +19339,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2DE.00] END ===
 
 // === [#HEX:F.04.2DF.00] START | name: removeHoverGlow | lines: 13 ===
-// @calls: none | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.6B.00], [#HEX:F.04.233.00], [#HEX:F.04.25D.00], [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.6B.00], [#HEX:F.04.233.00], [#HEX:F.04.25D.00], [#HEX:F.04.308.00]
     function removeHoverGlow(rootObj) {
         rootObj.traverse(function (child) {
             if (child.isMesh && child.material) {
@@ -19285,7 +19356,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2DF.00] END ===
 
 // === [#HEX:F.04.2E0.00] START | name: onPointerMove | lines: 61 ===
-// @calls: [#HEX:F.04.2DE.00], [#HEX:F.04.2DF.00], [#HEX:F.04.2EC.00], [#HEX:F.04.2DD.00] | @calledBy: none
+// @calls: [#HEX:F.04.2DF.00], [#HEX:F.04.2DE.00], [#HEX:F.04.2DD.00], [#HEX:F.04.2EC.00] | @calledBy: none
     function onPointerMove(e) {
         var tooltipEl = document.getElementById('felhokolostor-interactive-tooltip');
         var tooltipTextEl = document.getElementById('felhokolostor-tooltip-text');
@@ -19380,7 +19451,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2E7.00] END ===
 
 // === [#HEX:F.04.2E2.00] START | name: onPointerUp | lines: 44 ===
-// @calls: [#HEX:F.04.2D5.00], [#HEX:F.04.2DD.00], [#HEX:F.04.315.00], [#HEX:F.02.2F.00] | @calledBy: none
+// @calls: [#HEX:F.04.2D5.00], [#HEX:F.04.2DD.00], [#HEX:F.02.2F.00], [#HEX:F.04.315.00] | @calledBy: none
     function onPointerUp(e) {
         if (e.button !== 0) return;
         var distMoved = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
@@ -19431,7 +19502,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.2E2.00] END ===
 
 // === [#HEX:F.04.2D5.00] START | name: handleStationAction | lines: 23 ===
-// @calls: [#HEX:F.04.30B.00], [#HEX:F.05.08.00], [#HEX:F.04.30A.00], [#HEX:F.04.303.00], [#HEX:F.04.30C.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2E2.00], [#HEX:F.02.2F.00]
+// @calls: [#HEX:F.04.30A.00], [#HEX:F.04.30B.00], [#HEX:F.04.303.00], [#HEX:F.04.304.00], [#HEX:F.04.30C.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2E2.00], [#HEX:F.02.2F.00]
     function handleStationAction(id) {
         if (id === 'monastery_workbench') {
             if (typeof openMonasteryWorkbenchModal === 'function') {
@@ -19482,7 +19553,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
     var clock = new THREE.Clock();
 
 // === [#HEX:F.04.2E4.00] START | name: animate | lines: 45 ===
-// @calls: [#HEX:F.04.311.00], [#HEX:F.04.2EC.00], [#HEX:F.04.160.00], [#HEX:F.02.2D.00] | @calledBy: none
+// @calls: [#HEX:F.04.311.00], [#HEX:F.04.2EC.00], [#HEX:F.02.2D.00], [#HEX:F.04.160.00] | @calledBy: none
     function animate() {
         animFrameId = requestAnimationFrame(animate);
         var delta = clock.getDelta();
@@ -19535,7 +19606,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // 14. Tisztítási Rutin
 // === [#HEX:F.04.2D8.00] START | name: _felhokolostor3DCleanup | lines: 25 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.138.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.139.00], [#HEX:F.04.17A.00], [#HEX:F.04.138.00] | @calledBy: [#HEX:F.04.308.00]
     window._felhokolostor3DCleanup = function () {
         if (walkController) {
             walkController.dispose();
@@ -19570,7 +19641,7 @@ window.runFelhokolostor3DModule = runFelhokolostor3DModule;
 
 // Fülváltó logika
 // === [#HEX:F.04.82.00] START | name: openMonasteryTab | lines: 39 ===
-// @calls: [#HEX:F.04.30B.00], [#HEX:F.04.96.00], [#HEX:F.04.88.00], [#HEX:F.04.30A.00], [#HEX:F.04.30C.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.EF.00]
+// @calls: [#HEX:F.04.30A.00], [#HEX:F.04.30B.00], [#HEX:F.04.98.00], [#HEX:F.04.30C.00], [#HEX:F.04.96.00] | @calledBy: [#HEX:F.04.EF.00]
 function openMonasteryTab(evt, tabName) {
     if (tabName === 'Munkapad') {
         openMonasteryWorkbenchModal();
@@ -19615,7 +19686,7 @@ function openMonasteryTab(evt, tabName) {
 // --- MUNKAPAD FUNKCIÓK ---
 
 // === [#HEX:F.04.C7.00] START | name: toggleUploadType | lines: 22 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function toggleUploadType() {
     var type = document.querySelector('input[name="uploadType"]:checked').value;
     var titleInput = document.getElementById('monk-upload-title');
@@ -19641,7 +19712,7 @@ function toggleUploadType() {
 // === [#HEX:F.04.C7.00] END ===
 
 // === [#HEX:F.08.03.00] START | name: toggleTranslatorLanguage | lines: 3 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: none
 function toggleTranslatorLanguage() {
     // Deprecated since checkboxes are used now.
 }
@@ -19661,7 +19732,7 @@ var ALL_MONK_ROLES = [
 ];
 
 // === [#HEX:F.04.84.00] START | name: getRoleCheckboxesHtml | lines: 15 ===
-// @calls: none | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.88.00], [#HEX:F.04.9F.00]
+// @calls: none | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.9F.00]
 function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
     var html = '<details style="background:#fff; border:1px solid #ccc; border-radius:4px; margin: 10px 0; text-align: left;">';
     html += '<summary style="padding:8px 10px; cursor:pointer; font-weight:bold; outline:none; background:#f9f9f9; border-bottom:1px solid #eee;">Munkakörök kiválasztása...</summary>';
@@ -19680,7 +19751,7 @@ function getRoleCheckboxesHtml(checkedRolesArray, idPrefix) {
 // === [#HEX:F.04.84.00] END ===
 
 // === [#HEX:F.04.85.00] START | name: submitMonasteryWork | lines: 87 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:D.01.00.00], [#HEX:F.04.F3.00] | @calledBy: [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.06.39.00], [#HEX:F.04.86.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: none
 async function submitMonasteryWork() {
     var title = document.getElementById('monk-upload-title').value;
     var fileInput = document.getElementById('monk-upload-file');
@@ -19696,13 +19767,13 @@ async function submitMonasteryWork() {
 
     // Itt az async function marad callbackként!
 // === [#HEX:F.06.26.00] START | name: requestPin | lines: 72 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:D.01.00.00], [#HEX:F.04.86.00] | @calledBy: none
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.04.86.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.46.00] | @calledBy: none
     requestPin(async function (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
 
         // Belső segédfüggvény Promise-al (ez kell az await-hez)
 // === [#HEX:F.04.86.00] START | name: readFileToBase64 | lines: 15 ===
-// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.85.00], [#HEX:F.06.26.00]
+// @calls: [#HEX:F.04.F3.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.85.00], [#HEX:F.06.26.00]
         var readFileToBase64 = function (file) {
             return new Promise(function (resolve, reject) {
                 var reader = new FileReader();
@@ -19779,7 +19850,7 @@ async function submitMonasteryWork() {
 var agentPollingInterval = null;
 
 // === [#HEX:F.04.87.00] START | name: setupAgentPolling | lines: 14 ===
-// @calls: [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.88.00]
+// @calls: [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00]
 function setupAgentPolling(hasPending) {
     if (agentPollingInterval) {
         clearInterval(agentPollingInterval);
@@ -19797,7 +19868,7 @@ function setupAgentPolling(hasPending) {
 // === [#HEX:F.04.87.00] END ===
 
 // === [#HEX:F.04.88.00] START | name: refreshMonasteryWork | lines: 174 ===
-// @calls: [#HEX:F.04.90.00], [#HEX:F.06.47.00], [#HEX:F.04.89.00], [#HEX:B.07.47.00], [#HEX:F.04.221.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F9.00], [#HEX:F.04.30A.00], [#HEX:F.04.307.00]
+// @calls: [#HEX:F.04.8F.00], [#HEX:B.07.47.00], [#HEX:F.04.8A.00], [#HEX:F.04.8D.00], [#HEX:F.04.89.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.30A.00], [#HEX:F.04.307.00], [#HEX:F.04.82.00]
 function refreshMonasteryWork(silent) {
     var container = document.getElementById('monastery-work-list');
     if (!silent) {
@@ -19806,7 +19877,7 @@ function refreshMonasteryWork(silent) {
 
     // Várakozó kvízkérdések lekérése a jóváhagyó panelhez
 // === [#HEX:F.06.27.00] START | name: callBackend | lines: 30 ===
-// @calls: [#HEX:F.04.89.00], [#HEX:B.07.CE.00], [#HEX:F.04.8A.00] | @calledBy: none
+// @calls: [#HEX:F.04.8A.00], [#HEX:F.04.89.00], [#HEX:B.07.CE.00] | @calledBy: none
     callBackend('getPendingQuizQuestions', [], function (quizRes) {
         var quizPanel = document.getElementById('monk-quiz-approval-panel');
         var quizList = document.getElementById('monk-quiz-approval-list');
@@ -19833,7 +19904,6 @@ function refreshMonasteryWork(silent) {
             qHtml += '</div>';
             quizList.innerHTML = qHtml;
         } else {
-// === [#HEX:F.04.2F9.00] END ===
             quizPanel.style.display = 'none';
             quizList.innerHTML = '';
         }
@@ -20012,7 +20082,7 @@ function refreshMonasteryWork(silent) {
 }
 
 // === [#HEX:F.04.89.00] START | name: escapeHtml | lines: 514 ===
-// @calls: [#HEX:F.04.DF.00], [#HEX:F.05.08.00], [#HEX:F.04.221.00], [#HEX:F.04.2C1.00], [#HEX:B.07.B5.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.88.00], [#HEX:F.06.27.00]
+// @calls: [#HEX:B.07.69.00], [#HEX:B.15.7A.00], [#HEX:F.06.47.00], [#HEX:F.04.8E.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.06.27.00]
 function escapeHtml(text) {
     if (!text) return '';
     return text.toString()
@@ -20024,7 +20094,7 @@ function escapeHtml(text) {
 }
 
 // === [#HEX:F.04.8A.00] START | name: handleQuizDecision | lines: 21 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:F.04.88.00], [#HEX:B.15.7A.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.88.00], [#HEX:F.06.27.00], [#HEX:F.04.89.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:B.15.7A.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.06.27.00], [#HEX:F.04.89.00]
 function handleQuizDecision(rowIndex, decision) {
     var confirmMsg = decision === 'OK' ?
         t('monk_quiz_approve_confirm') :
@@ -20033,7 +20103,7 @@ function handleQuizDecision(rowIndex, decision) {
     uiConfirm(confirmMsg, t('modal_confirm_title'), function () {
         document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.28.00] START | name: callBackend | lines: 9 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:B.15.7A.00] | @calledBy: none
+// @calls: [#HEX:B.15.7A.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00] | @calledBy: none
         callBackend('evaluateQuizQuestion', [rowIndex, decision], function (res) {
             document.getElementById('loading-overlay').style.display = 'none';
             if (res && res.success) {
@@ -20054,7 +20124,7 @@ function handleQuizDecision(rowIndex, decision) {
 // --- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK ---
 
 // === [#HEX:F.05.08.00] START | name: openQuizBookModal | lines: 67 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.06.1F.00], [#HEX:F.05.09.00], [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.89.00]
+// @calls: [#HEX:B.06.1F.00], [#HEX:F.05.09.00], [#HEX:F.06.47.00], [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.04.308.00], [#HEX:F.04.2D5.00], [#HEX:F.04.89.00]
 function openQuizBookModal() {
     try {
         console.log("openQuizBookModal() elindult");
@@ -20194,7 +20264,7 @@ function closeQuizBookModal() {
 // === [#HEX:F.05.0A.00] END ===
 
 // === [#HEX:F.05.0B.00] START | name: submitQuizFromModal | lines: 53 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.DF.00], [#HEX:F.04.FC.00], [#HEX:F.05.0A.00] | @calledBy: [#HEX:F.04.89.00]
+// @calls: [#HEX:F.04.DF.00], [#HEX:F.06.47.00], [#HEX:F.05.0A.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.89.00]
 function submitQuizFromModal() {
     // Honeypot ellenőrzés (bot védelem)
     var honeypot = document.getElementById('modal-website-url-hp');
@@ -20226,7 +20296,7 @@ function submitQuizFromModal() {
     submitBtn.disabled = true;
 
 // === [#HEX:F.06.2A.00] START | name: callBackend | lines: 18 ===
-// @calls: [#HEX:F.04.FC.00], [#HEX:F.05.0A.00], [#HEX:F.04.DF.00] | @calledBy: none
+// @calls: [#HEX:F.05.0A.00], [#HEX:F.04.FC.00], [#HEX:F.04.DF.00] | @calledBy: none
     callBackend('submitNewQuestion', [formData], function (res) {
         if (res && res.success) {
             feedbackDiv.textContent = res.message || 'Sikeres beküldés!';
@@ -20254,7 +20324,7 @@ function submitQuizFromModal() {
 // === [#HEX:F.05.0B.00] END ===
 
 // === [#HEX:F.04.8C.00] START | name: purgeWork | lines: 19 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:F.04.88.00], [#HEX:B.07.5F.00] | @calledBy: [#HEX:F.04.89.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:B.07.5F.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.89.00]
 function purgeWork(workId, title) {
     var message = t('monk_purge_confirm_html_prefix') + title + t('monk_purge_confirm_html_suffix');
 
@@ -20277,7 +20347,7 @@ function purgeWork(workId, title) {
 // === [#HEX:F.04.8C.00] END ===
 
 // === [#HEX:F.08.04.00] START | name: openPublishWindowForTranslation | lines: 74 ===
-// @calls: [#HEX:B.04.15.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.89.00]
+// @calls: [#HEX:B.07.69.00], [#HEX:F.04.2C1.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.04.15.00] | @calledBy: [#HEX:F.04.89.00]
 function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle, targetLang, rootCode) {
     var btnElement = document.getElementById(btnId);
     if (btnElement) {
@@ -20299,7 +20369,7 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
 
     setLoadingState(true, 'monastery');
 // === [#HEX:F.06.2B.00] START | name: callBackend | lines: 53 ===
-// @calls: [#HEX:B.04.15.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:F.04.2C1.00], [#HEX:B.07.69.00] | @calledBy: none
+// @calls: [#HEX:B.07.69.00], [#HEX:F.04.2C1.00], [#HEX:F.04.1EE.00], [#HEX:B.04.15.00], [#HEX:F.04.80.00] | @calledBy: none
     callBackend('getOriginalBookDataForTranslation', [rootCode], function (res) {
         setLoadingState(false, 'monastery');
         if (!res.success) {
@@ -20361,7 +20431,7 @@ function openPublishWindowForTranslation(btnId, workId, gdocId, translatedTitle,
 // === [#HEX:F.08.04.00] END ===
 
 // === [#HEX:F.04.8D.00] START | name: openPublishWindow | lines: 58 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:F.04.2C1.00], [#HEX:B.07.69.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
+// @calls: [#HEX:B.07.69.00], [#HEX:F.04.2C1.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
     var btnElement = document.getElementById(btnId);
     if (btnElement) {
@@ -20423,7 +20493,7 @@ function openPublishWindow(btnId, workId, gdocId, workTitle, coverId) {
 // === [#HEX:F.04.8D.00] END ===
 
 // === [#HEX:F.08.05.00] START | name: finalizeTranslationProcess | lines: 36 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:F.06.39.00], [#HEX:B.07.B5.00] | @calledBy: [#HEX:F.04.89.00]
+// @calls: [#HEX:F.06.39.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.B5.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.89.00]
 function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootCode, targetLangCode) {
     if (!rootCode || rootCode === 'null') {
         uiAlert("Hiba: A könyv forráskódja nem található a fordításhoz!");
@@ -20431,7 +20501,7 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
     }
 
 // === [#HEX:F.06.2D.00] START | name: requestPin | lines: 29 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:B.07.B5.00] | @calledBy: none
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.B5.00], [#HEX:F.04.88.00] | @calledBy: none
     requestPin(function (pinCode) {
         document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -20467,7 +20537,7 @@ function finalizeTranslationProcess(workId, title, targetLangName, gdocId, rootC
 
 // --- PAPÁT CLOUD INDÍTÁSA ---
 // === [#HEX:F.04.8E.00] START | name: triggerPapatAgent | lines: 27 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: [#HEX:F.04.89.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.89.00]
 function triggerPapatAgent(workId) {
     if (!confirm("Biztosan elindítod az AI elemzést (Papát)? Ez eltarthat 1-2 percig.")) return;
 
@@ -20475,7 +20545,7 @@ function triggerPapatAgent(workId) {
 
     // 1. Állapot frissítése (hogy látszódjon a folyamat)
 // === [#HEX:F.06.2E.00] START | name: callBackend | lines: 20 ===
-// @calls: [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: none
+// @calls: [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: none
     callBackend('manageWorkStatus', [workId, 'set_status', 'Agent elemzés alatt'], function (res) {
         if (!res || !res.success) {
             hideLoading();
@@ -20504,13 +20574,13 @@ function triggerPapatAgent(workId) {
 // === [#HEX:F.04.8E.00] END ===
 
 // === [#HEX:F.04.8F.00] START | name: cancelAgentAnalysis | lines: 13 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function cancelAgentAnalysis(workId) {
     if (!confirm("Biztosan megszakítod az AI elemzést? A mű visszakerül 'Elbírálás alatt' státuszba, és kézzel kell elbírálnod.")) return;
 
     document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.30.00] START | name: callBackend | lines: 8 ===
-// @calls: [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: none
+// @calls: [#HEX:B.07.48.00], [#HEX:F.04.88.00] | @calledBy: none
     callBackend('manageWorkStatus', [workId, 'set_status', 'Elbírálás alatt'], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res && res.success) {
@@ -20568,7 +20638,7 @@ function getMonasteryTaskLabel(taskKey, fallbackLabel) {
 // === [#HEX:F.04.92.00] END ===
 
 // === [#HEX:F.04.93.00] START | name: renderDetailedChecklist | lines: 96 ===
-// @calls: [#HEX:F.04.221.00], [#HEX:F.04.91.00], [#HEX:F.04.2C1.00], [#HEX:F.04.94.00], [#HEX:F.04.A3.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
+// @calls: [#HEX:F.04.91.00], [#HEX:F.04.2C1.00], [#HEX:F.04.9B.00], [#HEX:F.04.92.00], [#HEX:F.04.221.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00]
 function renderDetailedChecklist(work, allMonks, currentUser) {
     var html = '<table style="width:100%; font-size:0.9em; border-collapse:collapse;">';
 
@@ -20669,7 +20739,7 @@ function renderDetailedChecklist(work, allMonks, currentUser) {
 // === [#HEX:F.04.93.00] END ===
 
 // === [#HEX:F.04.94.00] START | name: resignTask | lines: 6 ===
-// @calls: [#HEX:F.04.221.00], [#HEX:F.04.C6.00] | @calledBy: [#HEX:F.04.93.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.221.00] | @calledBy: [#HEX:F.04.93.00]
 function resignTask(workId, taskKey) {
     var message = t('monk_resign_confirm_html');
     uiConfirm(message, t('task_withdraw_title'), function () {
@@ -20679,7 +20749,7 @@ function resignTask(workId, taskKey) {
 // === [#HEX:F.04.94.00] END ===
 
 // === [#HEX:F.04.221.00] START | name: doWorkAction | lines: 22 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.2C1.00], [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00], [#HEX:F.04.93.00], [#HEX:F.04.94.00], [#HEX:F.04.9B.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.48.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00], [#HEX:F.04.89.00], [#HEX:F.04.93.00], [#HEX:F.04.94.00], [#HEX:F.04.9B.00]
 function doWorkAction(workId, action, param1, param2) {
     var extraData = param1;
     if (action === 'select_monk') {
@@ -20706,7 +20776,7 @@ function doWorkAction(workId, action, param1, param2) {
 
 // --- 2. FÓRUM (Közös Terem) ---
 // === [#HEX:F.04.96.00] START | name: loadForumPosts | lines: 23 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.4F.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.30B.00], [#HEX:F.04.82.00], [#HEX:F.04.97.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:B.07.4F.00] | @calledBy: [#HEX:F.04.30B.00], [#HEX:F.04.82.00], [#HEX:F.04.97.00]
 function loadForumPosts() {
     var container = document.getElementById('monastery-forum-posts');
     if (!container) return;
@@ -20733,7 +20803,7 @@ function loadForumPosts() {
 // === [#HEX:F.04.96.00] END ===
 
 // === [#HEX:F.04.97.00] START | name: submitForumPost | lines: 24 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.51.00], [#HEX:F.04.1EE.00], [#HEX:F.04.96.00] | @calledBy: none
+// @calls: [#HEX:B.07.51.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.96.00] | @calledBy: none
 function submitForumPost() {
     var input = document.getElementById('forum-post-input');
     var text = input.value;
@@ -20764,7 +20834,7 @@ function submitForumPost() {
 var currentChatPartnerEmail = null;
 
 // === [#HEX:F.04.98.00] START | name: loadChatPartners | lines: 34 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.05.02.00], [#HEX:F.04.99.00] | @calledBy: [#HEX:F.04.2F9.00], [#HEX:F.04.30C.00], [#HEX:F.04.82.00]
+// @calls: [#HEX:F.04.99.00], [#HEX:B.05.02.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.30C.00], [#HEX:F.04.82.00]
 function loadChatPartners() {
     var list = document.getElementById('chat-partners-list');
     list.innerHTML = '<i>' + t('monk_chat_loading') + '</i>';
@@ -20876,7 +20946,7 @@ function payDirect(workId, taskKey) {
 // === [#HEX:F.04.9C.00] END ===
 
 // === [#HEX:F.04.9D.00] START | name: acceptCredit | lines: 6 ===
-// @calls: [#HEX:F.04.221.00], [#HEX:F.04.C6.00] | @calledBy: [#HEX:F.04.93.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.221.00] | @calledBy: [#HEX:F.04.93.00]
 function acceptCredit(workId, taskKey) {
     var message = t('monk_credit_confirm_html');
     uiConfirm(message, t('credit_request_title'), function () {
@@ -20886,7 +20956,7 @@ function acceptCredit(workId, taskKey) {
 // === [#HEX:F.04.9D.00] END ===
 
 // === [#HEX:F.04.9E.00] START | name: hireMinistransMulti | lines: 17 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:F.04.221.00] | @calledBy: [#HEX:F.04.88.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.221.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.88.00]
 function hireMinistransMulti(workId, applicantName) {
     var roles = [];
     var checkboxes = document.querySelectorAll('.role-select-' + workId + ':checked');
@@ -20909,7 +20979,7 @@ function hireMinistransMulti(workId, applicantName) {
 // --- SZEMÉLYZETI KEZELŐ FUNKCIÓK ---
 
 // === [#HEX:F.04.9F.00] START | name: loadPersonnelData | lines: 52 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.A0.00], [#HEX:B.07.49.00], [#HEX:F.04.A2.00], [#HEX:F.04.A1.00] | @calledBy: [#HEX:F.04.A0.00], [#HEX:F.04.A1.00], [#HEX:F.04.A2.00]
+// @calls: [#HEX:F.04.A1.00], [#HEX:F.04.A2.00], [#HEX:F.04.84.00], [#HEX:B.07.49.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.A0.00], [#HEX:F.04.A1.00], [#HEX:F.04.A2.00]
 function loadPersonnelData() {
     var panel = document.getElementById('personnel-panel');
     var container = document.getElementById('personnel-list-container');
@@ -20965,7 +21035,7 @@ function loadPersonnelData() {
 // === [#HEX:F.04.9F.00] END ===
 
 // === [#HEX:F.04.A0.00] START | name: adminUpdateMonkRoles | lines: 26 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.9F.00], [#HEX:B.07.57.00] | @calledBy: [#HEX:F.04.9F.00]
+// @calls: [#HEX:F.04.9F.00], [#HEX:B.07.57.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.9F.00]
 function adminUpdateMonkRoles(email) {
     var roles = [];
     var safeEmail = CSS.escape(email);
@@ -20995,7 +21065,7 @@ function adminUpdateMonkRoles(email) {
 // === [#HEX:F.04.A0.00] END ===
 
 // === [#HEX:F.04.A1.00] START | name: adminRevokeTask | lines: 7 ===
-// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.221.00], [#HEX:F.04.9F.00] | @calledBy: [#HEX:F.04.9F.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.9F.00], [#HEX:F.04.221.00] | @calledBy: [#HEX:F.04.9F.00]
 function adminRevokeTask(workId, taskKey) {
     var message = t('monk_admin_revoke_confirm_html');
     uiConfirm(message, t('task_retake_title'), function () {
@@ -21006,7 +21076,7 @@ function adminRevokeTask(workId, taskKey) {
 // === [#HEX:F.04.A1.00] END ===
 
 // === [#HEX:F.04.A2.00] START | name: adminExpelMonk | lines: 25 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:B.07.58.00], [#HEX:F.04.9F.00] | @calledBy: [#HEX:F.04.9F.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.9F.00], [#HEX:B.07.58.00], [#HEX:F.04.42.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.9F.00]
 function adminExpelMonk(email) {
     uiPrompt(t('monk_expel_prompt_prefix') + email + t('monk_expel_prompt_suffix'),
         t('monk_expel_title'), t('monk_expel_placeholder'),
@@ -21035,7 +21105,7 @@ function adminExpelMonk(email) {
 // === [#HEX:F.04.A2.00] END ===
 
 // === [#HEX:F.04.A3.00] START | name: uploadCoverFromCard | lines: 40 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.C6.00], [#HEX:D.01.00.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.93.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.F3.00], [#HEX:F.04.C3.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.93.00]
 function uploadCoverFromCard(workId, taskKey) {
     var fileInput = document.getElementById('cover-upload-' + workId);
     var file = fileInput ? fileInput.files[0] : null;
@@ -21079,7 +21149,7 @@ function uploadCoverFromCard(workId, taskKey) {
 // === [#HEX:F.04.A3.00] END ===
 
 // === [#HEX:F.04.A4.00] START | name: resignFromOrder | lines: 19 ===
-// @calls: [#HEX:F.05.01.00], [#HEX:F.04.C6.00], [#HEX:F.04.EE.00], [#HEX:F.04.A7.00] | @calledBy: none
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.05.01.00], [#HEX:F.04.A7.00], [#HEX:F.04.EE.00] | @calledBy: none
 function resignFromOrder() {
     var message1 = t('monk_resign_order_confirm_html');
     uiConfirm(message1, t('monk_resign_order_title'), function () {
@@ -21260,7 +21330,7 @@ function finalizeResignation(leaveGame) {
 
     // --- ŰRLAP BEKÜLDÉSE (A KÉT ÁG KEZELÉSE) ---
 // === [#HEX:F.04.A9.00] START | name: handleFormSubmit | lines: 44 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.0F.00], [#HEX:F.04.2C1.00], [#HEX:F.04.B0.00], [#HEX:F.04.AE.00] | @calledBy: none
+// @calls: [#HEX:F.04.AA.00], [#HEX:F.04.AE.00], [#HEX:F.04.2C1.00], [#HEX:F.04.B0.00], [#HEX:F.04.222.00] | @calledBy: none
     function handleFormSubmit(event) {
         event.preventDefault();
         if (isSubmitting) return;
@@ -21309,7 +21379,7 @@ function finalizeResignation(leaveGame) {
 
     // --- SZENTELÉS SPECIFIKUS FELDOLGOZÓ ---
 // === [#HEX:F.04.AA.00] START | name: handleSzentelesResponse | lines: 32 ===
-// @calls: [#HEX:F.04.B2.00], [#HEX:F.04.B0.00], [#HEX:F.04.AE.00], [#HEX:F.04.AB.00], [#HEX:F.04.B6.00] | @calledBy: [#HEX:F.04.A9.00]
+// @calls: [#HEX:F.04.AE.00], [#HEX:F.04.B0.00], [#HEX:F.04.B6.00], [#HEX:F.04.B2.00], [#HEX:F.04.AB.00] | @calledBy: [#HEX:F.04.A9.00]
     function handleSzentelesResponse(response, formData) {
         setUiState('loading', 'Fájlok visszaalakítása és véglegesítés...');
         try {
@@ -21346,7 +21416,7 @@ function finalizeResignation(leaveGame) {
 
     // --- KÖZÖS FÁJLFELDOLGOZÓ ÉS FELTÖLTŐ (Core Logic) ---
 // === [#HEX:F.04.AB.00] START | name: processFilesAndFinalize | lines: 988 ===
-// @calls: [#HEX:F.04.C9.00], [#HEX:F.04.C8.00], [#HEX:F.04.AD.00], [#HEX:F.04.D0.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.A9.00], [#HEX:F.04.AA.00]
+// @calls: [#HEX:F.04.B0.00], [#HEX:F.04.AF.00], [#HEX:F.04.C8.00], [#HEX:F.04.C3.00], [#HEX:B.07.64.00] | @calledBy: [#HEX:F.04.A9.00], [#HEX:F.04.AA.00]
     async function processFilesAndFinalize(formObject, basicCode, rowNumber, gdocId, logId, userEmail) {
         try {
             setUiState('loading', 'Fájlok vízjelezése, kicsomagolása és feltöltése...');
@@ -21694,7 +21764,7 @@ const MIN_ZOOM = 0.5;
  * Megnyitás és inicializálás
  */
 // === [#HEX:F.04.BA.00] START | name: openMapViewer | lines: 50 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.60.00], [#HEX:F.04.C0.00], [#HEX:F.04.BC.00], [#HEX:F.04.BE.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
+// @calls: [#HEX:F.04.C0.00], [#HEX:F.06.47.00], [#HEX:F.04.BE.00], [#HEX:F.04.BB.00], [#HEX:B.07.60.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openMapViewer(fileId, mapName) {
     const modal = document.getElementById('map-viewer-modal');
     const img = document.getElementById('map-viewer-image');
@@ -21792,7 +21862,7 @@ function updateMapTransform() {
  * Eseménykezelők (Drag & Zoom)
  */
 // === [#HEX:F.04.BE.00] START | name: setupFreeControls | lines: 47 ===
-// @calls: [#HEX:F.04.BC.00], [#HEX:F.04.BD.00], [#HEX:F.04.BF.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BA.00]
+// @calls: [#HEX:F.04.BF.00], [#HEX:F.04.BC.00], [#HEX:F.04.BD.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.BA.00]
 function setupFreeControls(wrapper) {
     // --- GOMBOK ---
     document.getElementById('zoom-in-btn').onclick = () => zoomFree('in');
@@ -21877,7 +21947,7 @@ function disableContextMenuOnElement(elementId) {
  * Elindítja a térképmásolási folyamatot.
  */
 // === [#HEX:F.04.C1.00] START | name: initiateMapCopy | lines: 26 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:B.04.16.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.CC.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.04.16.00], [#HEX:F.07.02.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.CC.00]
 function initiateMapCopy(mapSheetRowIndex, mapName) {
     const pinCodeInput = document.getElementById('copy-map-pin');
     const pinCode = pinCodeInput ? pinCodeInput.value : null;
@@ -21910,7 +21980,7 @@ function initiateMapCopy(mapSheetRowIndex, mapName) {
  * Kezeli a térképfeltöltő modal "Feltöltés" gombjának megnyomását.
  */
 // === [#HEX:F.04.C2.00] START | name: handleMapUploadSubmit | lines: 80 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.FC.00], [#HEX:D.01.00.00], [#HEX:F.04.C3.00], [#HEX:B.07.61.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
+// @calls: [#HEX:B.07.61.00], [#HEX:F.04.F3.00], [#HEX:F.04.C3.00], [#HEX:F.06.47.00], [#HEX:D.01.00.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function handleMapUploadSubmit() {
     var identifierInput = document.getElementById('map-identifier');
     var fileInput = document.getElementById('map-file');
@@ -22037,7 +22107,7 @@ function convertToPngDataUrl(inputDataUrl) {
 * @param {object} data A szerverről kapott, előre betöltött adatcsomag.
 */
 // === [#HEX:F.04.C4.00] START | name: initializeLibraryAndMapPage | lines: 246 ===
-// @calls: [#HEX:F.04.C9.00], [#HEX:F.04.C8.00], [#HEX:F.04.C6.00], [#HEX:F.04.BA.00], [#HEX:F.04.D0.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.AB.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.224.00], [#HEX:F.04.C8.00], [#HEX:F.04.C2.00], [#HEX:F.05.0C.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.AB.00]
 function initializeLibraryAndMapPage(data) {
     var booksContainer = document.getElementById('konyvtar-books-content');
     var copiesContainer = document.getElementById('konyvtar-copies-content');
@@ -22296,7 +22366,7 @@ function initializeLibraryAndMapPage(data) {
  * Papát térkép elbírálás backend hívás
  */
 // === [#HEX:F.04.224.00] START | name: handleMapApproval | lines: 18 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.2C1.00], [#HEX:B.07.63.00], [#HEX:B.07.64.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00], [#HEX:F.04.C5.00], [#HEX:F.04.C6.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.64.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.63.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00], [#HEX:F.04.C5.00], [#HEX:F.04.C6.00]
 function handleMapApproval(rowIndex, action) {
     document.getElementById('loading-overlay').style.display = 'flex';
     var functionName = action === 'approve' ? 'approveMapImage' : 'rejectMapImage';
@@ -22535,7 +22605,7 @@ function openReaderFor(copyCode) {
 
 // 3. TEKERCS OLVASÓ (Ugyanazzal a logikával)
 // === [#HEX:F.05.0C.00] START | name: openReaderForScroll | lines: 47 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.0B.00], [#HEX:B.07.37.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.37.00], [#HEX:F.07.0B.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openReaderForScroll(tekercsToken) {
     document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -22590,7 +22660,7 @@ function openReaderForScroll(tekercsToken) {
 // =====================================
 
 // === [#HEX:F.04.CA.00] START | name: initializeTekercsmesterPage | lines: 81 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:B.02.09.00], [#HEX:F.04.2CD.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.CB.00], [#HEX:F.05.0D.00]
+// @calls: [#HEX:B.02.09.00], [#HEX:F.04.2CD.00], [#HEX:F.06.47.00], [#HEX:F.04.CB.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.CB.00], [#HEX:F.05.0D.00]
 function initializeTekercsmesterPage(preloadedData) {
     var loader = document.getElementById('sajat-tekercs-lista-loader');
     var sajatListaDiv = document.getElementById('sajat-tekercs-lista');
@@ -22678,7 +22748,7 @@ function initializeTekercsmesterPage(preloadedData) {
 // === [#HEX:F.04.CA.00] END ===
 
 // === [#HEX:F.04.CB.00] START | name: setupTekercsButtons | lines: 86 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:F.04.C6.00], [#HEX:B.04.13.00] | @calledBy: [#HEX:F.04.CA.00], [#HEX:F.04.2CD.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.02.07.00], [#HEX:B.04.13.00] | @calledBy: [#HEX:F.04.CA.00], [#HEX:F.04.2CD.00]
 function setupTekercsButtons(currentHartya) {
     var hartyaCountSpan = document.getElementById('hartya-count');
     // .closest() helyett biztonságosabb parentNode bejárást is használhatnánk, de a modern böngészők ismerik
@@ -22768,7 +22838,7 @@ function setupTekercsButtons(currentHartya) {
 // === [#HEX:F.04.CB.00] END ===
 
 // === [#HEX:F.05.0D.00] START | name: renderMyScrollList | lines: 77 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:F.04.C6.00], [#HEX:F.04.CA.00] | @calledBy: [#HEX:F.04.CA.00], [#HEX:F.04.2CD.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.02.08.00], [#HEX:F.04.CA.00] | @calledBy: [#HEX:F.04.CA.00], [#HEX:F.04.2CD.00]
 function renderMyScrollList(myTekercs, container) {
     container.innerHTML = '';
     if (myTekercs && myTekercs.length > 0) {
@@ -22857,7 +22927,7 @@ function renderMyScrollList(myTekercs, container) {
  * JAVÍTVA: callBackend hívásokból kivéve a currentUserEmail.
  */
 // === [#HEX:F.04.CC.00] START | name: initializeMasolatokAndCopyMapPage | lines: 267 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.02.04.00], [#HEX:F.04.C6.00], [#HEX:F.07.02.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:F.04.C6.00], [#HEX:F.04.13E.00], [#HEX:F.04.FC.00], [#HEX:F.04.13D.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function initializeMasolatokAndCopyMapPage(data) {
     var myCopiesLoader = document.getElementById('sajat-masolat-lista-loader');
     var myCopiesContainer = document.getElementById('sajat-masolat-lista-content');
@@ -23131,7 +23201,7 @@ function initializeMasolatokAndCopyMapPage(data) {
  * Betölti a kiválasztott hajónaplót kivonatolás céljából
  */
 // === [#HEX:F.04.CD.00] START | name: loadLogForExtraction | lines: 120 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.1F.00], [#HEX:F.04.13.00] | @calledBy: none
+// @calls: [#HEX:B.07.1F.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.13.00] | @calledBy: none
 function loadLogForExtraction() {
     var select = document.getElementById('log-extract-select');
     var modalDiv = document.getElementById('log-extract-modal');
@@ -23258,7 +23328,7 @@ function loadLogForExtraction() {
  * Papát feltölti a GDoc naplómásolatot.
  */
 // === [#HEX:F.04.CE.00] START | name: submitPapatLogUpload | lines: 37 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.04.1E.00], [#HEX:F.04.FC.00] | @calledBy: none
+// @calls: [#HEX:B.04.1E.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.FC.00] | @calledBy: none
 function submitPapatLogUpload() {
     var gdocUrl = document.getElementById('papat-log-gdoc').value.trim();
     var copyName = document.getElementById('papat-log-name').value.trim();
@@ -23302,7 +23372,7 @@ function submitPapatLogUpload() {
  * Végrehajtja a kiválasztott bejegyzések kivonatolását és a kifizetést
  */
 // === [#HEX:F.04.CF.00] START | name: executeLogExtraction | lines: 51 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:F.06.39.00], [#HEX:B.04.0B.00] | @calledBy: none
+// @calls: [#HEX:B.04.0B.00], [#HEX:F.06.39.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00] | @calledBy: none
 function executeLogExtraction() {
     var select = document.getElementById('log-extract-select');
     var checkboxes = document.querySelectorAll('.log-extract-checkbox:checked');
@@ -23328,7 +23398,7 @@ function executeLogExtraction() {
 
     if (typeof requestPin === 'function') {
 // === [#HEX:F.06.32.00] START | name: requestPin | lines: 23 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:B.04.0B.00], [#HEX:F.04.FC.00] | @calledBy: none
+// @calls: [#HEX:B.04.0B.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.07.02.00], [#HEX:F.04.FC.00] | @calledBy: none
         requestPin(function (pinCode) {
             document.getElementById('loading-overlay').style.display = 'flex';
 
@@ -23364,7 +23434,7 @@ function executeLogExtraction() {
  * @param {string} contentId A könyv forrásának azonosítója (Mappa ID az O oszlopból).
  */
 // === [#HEX:F.04.D0.00] START | name: startClientSideDownloadProcess | lines: 73 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.34.00], [#HEX:F.04.D1.00], [#HEX:F.04.E3.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
+// @calls: [#HEX:F.04.E3.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.D1.00], [#HEX:B.07.34.00] | @calledBy: [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 async function startClientSideDownloadProcess(contentId, bookTitle) {
     var statusOverlay = document.getElementById('loading-overlay');
     var allDownloadButtons = Array.prototype.slice.call(document.querySelectorAll('.download-btn'));
@@ -23451,7 +23521,7 @@ async function startClientSideDownloadProcess(contentId, bookTitle) {
  * @returns {Promise<Blob>} A kész, végleges ePub fájl.
  */
 // === [#HEX:F.04.D1.00] START | name: processEpubFile | lines: 112 ===
-// @calls: [#HEX:F.04.E2.00], [#HEX:F.04.E4.00] | @calledBy: [#HEX:F.04.D0.00]
+// @calls: [#HEX:F.04.E4.00], [#HEX:F.04.E2.00] | @calledBy: [#HEX:F.04.D0.00]
 async function processEpubFile(epubBlob, newCoverBlob, bookCode, newCoverFilename) {
     var zip = new JSZip();
     var loadedZip = await zip.loadAsync(epubBlob);
@@ -23612,7 +23682,7 @@ function checkUrlParametersForMarketing() {
 
 // Betölti a kérdőívet
 // === [#HEX:F.04.D3.00] START | name: loadMarketingView | lines: 74 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.05.01.00], [#HEX:F.01.0F.00], [#HEX:F.04.D8.00], [#HEX:F.04.EE.00] | @calledBy: [#HEX:F.04.64.00], [#HEX:F.04.B3.00]
+// @calls: [#HEX:F.05.01.00], [#HEX:F.04.D7.00], [#HEX:F.01.0F.00], [#HEX:B.07.6B.00], [#HEX:F.04.D8.00] | @calledBy: [#HEX:F.04.64.00], [#HEX:F.04.B3.00]
 function loadMarketingView(bookId, folderId) {
     console.log(">>> loadMarketingView MEGHÍVVA: " + bookId);
 
@@ -23718,7 +23788,7 @@ function returnToPort() {
  * Kétlépcsős folyamat: Ellenőrzés -> Értékelés
  */
 // === [#HEX:F.04.D8.00] START | name: renderMarketingQuestions | lines: 152 ===
-// @calls: [#HEX:F.05.01.00], [#HEX:F.01.05.00], [#HEX:F.04.EE.00], [#HEX:F.04.D7.00] | @calledBy: [#HEX:F.04.D3.00]
+// @calls: [#HEX:F.05.01.00], [#HEX:F.04.D7.00], [#HEX:F.04.EE.00], [#HEX:F.01.05.00] | @calledBy: [#HEX:F.04.D3.00]
 function renderMarketingQuestions(config, isOwner, bookId, folderId) {
     console.log(">>> RENDER START. Kapott kérdések:", config.questions);
 
@@ -23880,7 +23950,7 @@ function renderMarketingQuestions(config, isOwner, bookId, folderId) {
  * Válaszok összegyűjtése és beküldése.
  */
 // === [#HEX:F.04.DA.00] START | name: submitMarketingForm | lines: 85 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.05.01.00], [#HEX:F.07.02.00], [#HEX:B.04.18.00], [#HEX:F.04.EE.00] | @calledBy: none
+// @calls: [#HEX:F.05.01.00], [#HEX:F.04.D7.00], [#HEX:F.06.47.00], [#HEX:F.04.EE.00], [#HEX:F.07.02.00] | @calledBy: none
 function submitMarketingForm() {
     var form = document.getElementById('marketing-form');
     var formData = new FormData(form);
@@ -23941,7 +24011,7 @@ function submitMarketingForm() {
                         color: "#2e8b57",
                         textColor: "white",
 // === [#HEX:F.04.DB.00] START | name: callback | lines: 4 ===
-// @calls: [#HEX:F.07.02.00], [#HEX:F.04.D7.00] | @calledBy: none
+// @calls: [#HEX:F.04.D7.00], [#HEX:F.07.02.00] | @calledBy: none
                         callback: function () {
                             returnToPort();
                             updateCreditDisplay();
@@ -24000,7 +24070,7 @@ function openDashboardTab(evt, tabName) {
  * @param {string} title - A könyv címe (fejléchez).
  */
 // === [#HEX:F.01.05.00] START | name: openAuthorDashboard | lines: 19 ===
-// @calls: [#HEX:B.06.18.00], [#HEX:F.04.DD.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.D8.00], [#HEX:F.04.EF.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:B.06.18.00], [#HEX:F.04.DD.00] | @calledBy: [#HEX:F.04.D8.00], [#HEX:F.04.EF.00]
 function openAuthorDashboard(bookId, folderId, title) {
     currentDashBookId = bookId;
     currentDashFolderId = folderId;
@@ -24155,7 +24225,7 @@ function renderDashboardStats(response) {
  * Összeszedi a 3 Verify mezőt és elküldi a szervernek mentésre.
  */
 // === [#HEX:F.04.DE.00] START | name: submitVerificationQuiz | lines: 44 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.05.01.00], [#HEX:B.07.6D.00] | @calledBy: none
+// @calls: [#HEX:F.05.01.00], [#HEX:F.06.47.00], [#HEX:B.07.6D.00] | @calledBy: none
 function submitVerificationQuiz() {
     var questionsToSave = [];
 
@@ -24203,7 +24273,7 @@ function submitVerificationQuiz() {
 // === [#HEX:F.04.DE.00] END ===
 
 // === [#HEX:F.04.DF.00] START | name: submitNewQuestion | lines: 35 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.6C.00] | @calledBy: [#HEX:F.04.89.00], [#HEX:F.05.0B.00], [#HEX:F.06.2A.00]
+// @calls: [#HEX:B.07.6C.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.89.00], [#HEX:F.05.0B.00], [#HEX:F.06.2A.00]
 function submitNewQuestion() {
     var text = document.getElementById('nq-text').value;
     var type = document.getElementById('nq-type').value;
@@ -24246,7 +24316,7 @@ function submitNewQuestion() {
 // =============
 
 // === [#HEX:F.04.E0.00] START | name: initializeKincsekPage | lines: 121 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.A8.00], [#HEX:F.04.E1.00], [#HEX:B.07.68.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
+// @calls: [#HEX:F.04.E1.00], [#HEX:B.07.68.00], [#HEX:F.06.47.00], [#HEX:B.07.A8.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00]
 function initializeKincsekPage(response) {
     if (!response || !response.success) {
         var errorMessage = response ? response.error : t('unknown_server_error');
@@ -24371,7 +24441,7 @@ function initializeKincsekPage(response) {
 // === [#HEX:F.04.E0.00] END ===
 
 // === [#HEX:F.04.E1.00] START | name: handleMercenaryAction | lines: 22 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.AA.00], [#HEX:B.07.A9.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.E0.00]
+// @calls: [#HEX:B.07.AA.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.A9.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.E0.00]
 function handleMercenaryAction(actionType, targetEmail) {
     if (!confirm("Biztosan " + (actionType === 'extend' ? "meghosszabbítod" : "elküldöd") + " ezt a zsoldost?")) {
         return;
@@ -24533,7 +24603,7 @@ if (togglePassword && passwordInput) {
 var MIN_LOG_RANK = 'Fregattkapitány';
 
 // === [#HEX:F.05.0E.00] START | name: checkRankAndOpenLogModal | lines: 41 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.67.00], [#HEX:B.07.24.00], [#HEX:F.05.0F.00] | @calledBy: none
+// @calls: [#HEX:F.05.0F.00], [#HEX:B.07.67.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.24.00] | @calledBy: none
 function checkRankAndOpenLogModal() {
     console.log("Rang ellenőrzése és napló ID lekérése a naplóíráshoz...");
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -24578,7 +24648,7 @@ function checkRankAndOpenLogModal() {
 // === [#HEX:F.05.0E.00] END ===
 
 // === [#HEX:F.05.0F.00] START | name: openLogEntryModal | lines: 143 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:D.01.7E.00], [#HEX:F.04.1EE.00], [#HEX:F.04.E6.00], [#HEX:F.04.E5.00] | @calledBy: [#HEX:F.05.0E.00]
+// @calls: [#HEX:B.07.21.00], [#HEX:F.04.F3.00], [#HEX:D.01.7E.00], [#HEX:F.05.10.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.05.0E.00]
 function openLogEntryModal(entryId, logIdForContext) {
     if (typeof entryId === 'undefined') entryId = 'last';
 
@@ -24762,7 +24832,7 @@ function getGeoLocation(silentMode) {
 
 // Async maradhat, mert a képfeldolgozáshoz kell
 // === [#HEX:F.04.E6.00] START | name: submitLogEntry | lines: 79 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:D.01.00.00], [#HEX:B.07.1E.00], [#HEX:F.05.10.00] | @calledBy: [#HEX:F.05.0F.00]
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.04.C3.00], [#HEX:F.05.10.00], [#HEX:B.07.1E.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.05.0F.00]
 async function submitLogEntry() {
     var form = document.getElementById('log-entry-form');
     var statusDiv = document.getElementById('log-entry-status');
@@ -24954,7 +25024,7 @@ window.toggleVideoAudio = toggleVideoAudio;
 var ACTIVE_NPC_CONFIG = {};
 
 // === [#HEX:F.04.E9.00] START | name: openUniversalNPC | lines: 170 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.05.13.00], [#HEX:F.07.0C.00], [#HEX:B.01.03.00], [#HEX:F.04.13E.00] | @calledBy: [#HEX:F.04.79.00], [#HEX:F.04.1F0.00], [#HEX:F.04.5E.00], [#HEX:F.04.1F5.00], [#HEX:F.05.58.00]
+// @calls: [#HEX:F.05.13.00], [#HEX:F.04.13E.00], [#HEX:F.07.0C.00], [#HEX:F.06.47.00], [#HEX:B.01.03.00] | @calledBy: [#HEX:F.04.79.00], [#HEX:F.04.1F0.00], [#HEX:F.04.5E.00], [#HEX:F.04.1F5.00], [#HEX:F.05.58.00]
 function openUniversalNPC(npcId, config) {
     if (npcId === 'harbormaster') {
         if (typeof openHarbormasterModal === 'function') {
@@ -25129,7 +25199,7 @@ function openUniversalNPC(npcId, config) {
 window.openUniversalNPC = openUniversalNPC;
 
 // === [#HEX:F.04.EA.00] START | name: sendUniversalMessage | lines: 43 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.01.03.00], [#HEX:F.04.13D.00], [#HEX:F.04.13E.00] | @calledBy: none
+// @calls: [#HEX:F.04.13E.00], [#HEX:F.04.13D.00], [#HEX:F.06.47.00], [#HEX:B.01.03.00] | @calledBy: none
 function sendUniversalMessage() {
     var input = document.getElementById('universal-chat-input');
     var msg = input.value.trim();
@@ -25252,7 +25322,7 @@ function adjustColorBrightness(col, amt) {
 
 // === SZERVER VÁLASZ FELDOLGOZÁSA ===
 // === [#HEX:F.04.ED.00] START | name: handleUniversalResponse | lines: 165 ===
-// @calls: [#HEX:F.05.01.00], [#HEX:D.01.00.00], [#HEX:F.07.02.00], [#HEX:F.04.2C1.00], [#HEX:F.04.13D.00] | @calledBy: none
+// @calls: [#HEX:F.04.EF.00], [#HEX:F.04.2C1.00], [#HEX:F.05.01.00], [#HEX:F.04.EE.00], [#HEX:D.01.00.00] | @calledBy: none
 function handleUniversalResponse(response) {
     var chatArea = document.getElementById('universal-chat-area');
     console.log("Szerver válasz érkezett:", response);
@@ -25273,7 +25343,7 @@ function handleUniversalResponse(response) {
                 sm.icon || "fas fa-info-circle",
                 [{
 // === [#HEX:F.04.EE.00] START | name: callback | lines: 5 ===
-// @calls: [#HEX:F.07.02.00] | @calledBy: [#HEX:F.05.01.00], [#HEX:F.04.41.00], [#HEX:F.04.42.00], [#HEX:F.04.44.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.07.02.00] | @calledBy: [#HEX:F.05.01.00], [#HEX:F.04.41.00], [#HEX:F.04.42.00], [#HEX:F.04.44.00], [#HEX:F.06.25.00]
                     text: "Rendben", color: "#2e8b57", textColor: "white", callback: function () {
                         if (typeof updateCreditDisplay === 'function') {
                             updateCreditDisplay();
@@ -25425,7 +25495,7 @@ function handleUniversalResponse(response) {
 
 // === UNIVERZÁLIS GOMBKEZELŐ ===
 // === [#HEX:F.04.EF.00] START | name: handleNPCButtonAction | lines: 104 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.01.05.00], [#HEX:B.01.03.00], [#HEX:F.04.2C1.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.ED.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.13E.00], [#HEX:F.04.82.00], [#HEX:F.06.39.00], [#HEX:F.04.F0.00] | @calledBy: [#HEX:F.04.ED.00]
 function handleNPCButtonAction(btn) {
     console.log("Gomb megnyomva:", btn);
 
@@ -25479,7 +25549,7 @@ function handleNPCButtonAction(btn) {
         var npcId = document.getElementById('current-npc-id').value;
 
 // === [#HEX:F.06.33.00] START | name: requestPin | lines: 26 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.01.03.00], [#HEX:F.04.13D.00], [#HEX:F.04.13E.00] | @calledBy: none
+// @calls: [#HEX:F.04.13E.00], [#HEX:F.04.13D.00], [#HEX:F.06.47.00], [#HEX:B.01.03.00] | @calledBy: none
         requestPin(function (pinCode) {
             addBubbleToUniversal(t('chat_me_label'), t('pin_provided_masked'), "outgoing");
 
@@ -25536,7 +25606,7 @@ function handleNPCButtonAction(btn) {
 // === [#HEX:F.04.EF.00] END ===
 
 // === [#HEX:F.04.F0.00] START | name: triggerUniversalServerAction | lines: 25 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.01.03.00], [#HEX:F.04.13D.00], [#HEX:F.04.13E.00] | @calledBy: [#HEX:F.04.EF.00]
+// @calls: [#HEX:F.04.13E.00], [#HEX:F.04.13D.00], [#HEX:F.06.47.00], [#HEX:B.01.03.00] | @calledBy: [#HEX:F.04.EF.00]
 function triggerUniversalServerAction(actionType, extraData) {
     var npcId = document.getElementById('current-npc-id').value;
     var chatArea = document.getElementById('universal-chat-area');
@@ -25565,7 +25635,7 @@ function triggerUniversalServerAction(actionType, extraData) {
 // === [#HEX:F.04.F0.00] END ===
 
 // === [#HEX:F.04.F1.00] START | name: triggerNPCPayment | lines: 11 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.01.03.00], [#HEX:F.04.13D.00], [#HEX:F.04.13E.00] | @calledBy: none
+// @calls: [#HEX:F.04.13E.00], [#HEX:F.04.13D.00], [#HEX:F.06.47.00], [#HEX:B.01.03.00] | @calledBy: none
 function triggerNPCPayment(amount) {
     var npcId = document.getElementById('current-npc-id').value;
     addBubbleToUniversal(t('chat_you_label'), t('payment_sent_prefix') + amount + ' ' + t('credit_short') + t('payment_sent_suffix'), "outgoing");
@@ -25618,7 +25688,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // === WINDOW ONLOAD (INDÍTÁS) ===
 // === [#HEX:F.04.F3.00] START | name: onload | lines: 60 ===
-// @calls: [#HEX:F.04.F4.00], [#HEX:F.01.0F.00], [#HEX:F.04.D2.00], [#HEX:F.01.01.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.38.00], [#HEX:F.04.2F8.00], [#HEX:F.04.2F9.00], [#HEX:F.04.85.00]
+// @calls: [#HEX:F.04.F4.00], [#HEX:F.01.0F.00], [#HEX:F.04.D2.00], [#HEX:F.01.01.00] | @calledBy: [#HEX:F.04.31.00], [#HEX:F.04.38.00], [#HEX:F.04.2F8.00], [#HEX:F.04.85.00], [#HEX:F.06.26.00]
 window.onload = function () {
     console.log(">>> OLLDAL BETÖLTVE. Rendszer indítása...");
 
@@ -25700,7 +25770,7 @@ function toggleAccordionPanel() {
  * Ezt a 'tutorial_oldal.html'-en lévő "Ugrás a mentett álláshoz" gomb hívja.
  */
 // === [#HEX:F.04.F5.00] START | name: jumpToSavedState | lines: 41 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.39.00], [#HEX:B.06.04.00] | @calledBy: none
+// @calls: [#HEX:B.06.04.00], [#HEX:F.04.39.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: none
 function jumpToSavedState() {
     console.log("Kísérlet a mentett játékállás betöltésére...");
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -25745,7 +25815,7 @@ function jumpToSavedState() {
 // === [#HEX:F.04.F5.00] END ===
 
 // === [#HEX:F.04.F6.00] START | name: triggerAgentAnalysis | lines: 18 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00], [#HEX:B.07.48.00] | @calledBy: [#HEX:F.04.88.00]
+// @calls: [#HEX:B.07.48.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.88.00] | @calledBy: [#HEX:F.04.88.00]
 function triggerAgentAnalysis(workId) {
     if (!confirm('Biztosan átadod ezt a kéziratot a Papát AI asszisztensnek elemzésre? A háttérfolyamat perceket is igénybe vehet.')) return;
 
@@ -25852,7 +25922,7 @@ console.log("EOF");
 
 // === KOCSMAI HIRDETOTABLA ===
 // === [#HEX:F.04.225.00] START | name: openNoticeBoard | lines: 18 ===
-// @calls: [#HEX:F.04.F8.00], [#HEX:F.06.47.00], [#HEX:B.07.B8.00] | @calledBy: [#HEX:F.04.79.00], [#HEX:F.04.1F0.00], [#HEX:F.04.69.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:B.07.B8.00], [#HEX:F.04.F8.00] | @calledBy: [#HEX:F.04.79.00], [#HEX:F.04.1F0.00], [#HEX:F.04.69.00]
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
     if (modal) modal.style.display = 'flex';
@@ -25861,7 +25931,7 @@ function openNoticeBoard() {
 
     if (typeof callBackend === 'function') {
 // === [#HEX:F.06.34.00] START | name: callBackend | lines: 7 ===
-// @calls: [#HEX:F.04.F8.00], [#HEX:B.07.B8.00] | @calledBy: none
+// @calls: [#HEX:B.07.B8.00], [#HEX:F.04.F8.00] | @calledBy: none
         callBackend("getNoticeBoardData", [], function (response) {
             if (response && response.success && response.data) {
                 renderNoticeBoard(response.data);
@@ -25949,7 +26019,7 @@ function renderNoticeBoard(data) {
 // === [#HEX:F.04.F8.00] END ===
 
 // === [#HEX:F.04.F9.00] START | name: reloadCopiesPage | lines: 6 ===
-// @calls: [#HEX:F.04.FC.00], [#HEX:F.07.02.00] | @calledBy: none
+// @calls: [#HEX:F.07.02.00], [#HEX:F.04.FC.00] | @calledBy: none
 function reloadCopiesPage() {
     var modal = document.getElementById('universal-npc-modal');
     if (modal) modal.style.display = 'none';
@@ -25961,7 +26031,7 @@ function reloadCopiesPage() {
 // --- TOBORZÓBARAKK LOGIKA ---
 
 // === [#HEX:F.04.FA.00] START | name: openToborzoBarakk | lines: 40 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.09.09.00], [#HEX:F.04.1F.00] | @calledBy: none
+// @calls: [#HEX:F.04.1F.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.03.08.00], [#HEX:B.03.15.00] | @calledBy: none
 function openToborzoBarakk() {
     // UI Initialization
     document.getElementById('toborzo-modal').style.display = 'flex';
@@ -26076,7 +26146,7 @@ function savePlayerJobStatus() {
 // === [#HEX:F.07.0D.00] END ===
 
 // === [#HEX:F.03.02.00] START | name: renderSelectedShipCrew | lines: 176 ===
-// @calls: [#HEX:F.04.146.00], [#HEX:F.04.147.00], [#HEX:F.04.142.00] | @calledBy: none
+// @calls: [#HEX:F.04.142.00], [#HEX:F.04.146.00], [#HEX:F.04.147.00] | @calledBy: none
 function renderSelectedShipCrew() {
     var select = document.getElementById('toborzo-myships-select');
     var detailsDiv = document.getElementById('toborzo-myship-details');
@@ -26259,7 +26329,7 @@ function renderSelectedShipCrew() {
 // === [#HEX:F.03.02.00] END ===
 
 // === [#HEX:F.04.FD.00] START | name: submitBulkCrewAssignment | lines: 53 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.143.00], [#HEX:B.03.17.00] | @calledBy: none
+// @calls: [#HEX:B.03.17.00], [#HEX:F.04.143.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: none
 function submitBulkCrewAssignment(shipId) {
     var assignmentsMap = {
         "Kapitány": [], "Navigátor": [], "Kormányos": [], "Vitorlamester": [], "Fedélzetmester": [],
@@ -26316,7 +26386,7 @@ function submitBulkCrewAssignment(shipId) {
 // === [#HEX:F.04.FD.00] END ===
 
 // === [#HEX:F.04.FE.00] START | name: assignToRole | lines: 23 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.143.00], [#HEX:B.03.16.00] | @calledBy: none
+// @calls: [#HEX:F.04.143.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.03.16.00] | @calledBy: none
 function assignToRole(shipId, role) {
     var targetEmail = prompt("Kit szeretnél beosztani a(z) " + role + " pozícióra ezen a hajón?\\n\\nÍrd be a zsoldos/játékos email címét. Ha SAJÁT MAGADAT akarod beosztani, hagyd üresen a mezőt!", "");
 
@@ -26372,7 +26442,7 @@ function removeRole(shipId, roleToClear, specificEmail) {
 // =========================================================================
 
 // === [#HEX:F.05.13.00] START | name: openHarbormasterModal | lines: 117 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.07.0C.00], [#HEX:B.01.03.00], [#HEX:F.05.5D.00], [#HEX:F.04.100.00] | @calledBy: [#HEX:F.04.E9.00], [#HEX:F.02.0F.00], [#HEX:F.04.13B.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:F.04.105.00], [#HEX:F.05.5D.00], [#HEX:F.04.100.00], [#HEX:F.07.0C.00] | @calledBy: [#HEX:F.04.E9.00], [#HEX:F.02.0F.00], [#HEX:F.04.13B.00]
 function openHarbormasterModal() {
     var modal = document.getElementById('harbormaster-modal');
     if (!modal) return;
@@ -26494,7 +26564,7 @@ function openHarbormasterModal() {
 window.openHarbormasterModal = openHarbormasterModal;
 
 // === [#HEX:F.05.14.00] START | name: closeHarbormasterModal | lines: 66 ===
-// @calls: [#HEX:F.05.5D.00], [#HEX:F.02.02.00], [#HEX:F.04.160.00], [#HEX:F.04.108.00] | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:F.05.5D.00], [#HEX:F.02.02.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
 function closeHarbormasterModal(e) {
     if (e) {
         if (e.stopPropagation) e.stopPropagation();
@@ -26660,7 +26730,7 @@ function addBubbleToHarbormaster(sender, text, type, buttons) {
 window.addBubbleToHarbormaster = addBubbleToHarbormaster;
 
 // === [#HEX:F.04.102.00] START | name: handleHarbormasterChipClick | lines: 54 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.106.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.06.39.00] | @calledBy: [#HEX:F.04.101.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.06.39.00], [#HEX:F.04.106.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.101.00]
 function handleHarbormasterChipClick(btn) {
     var replyText = btn.reply || btn.payload || btn.text;
     addBubbleToHarbormaster('Te', replyText, 'outgoing');
@@ -26677,7 +26747,7 @@ function handleHarbormasterChipClick(btn) {
         var params = parts.slice(3);
 
 // === [#HEX:F.06.35.00] START | name: requestPin | lines: 16 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.04.104.00], [#HEX:F.04.101.00] | @calledBy: none
+// @calls: [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00], [#HEX:B.01.03.00], [#HEX:F.04.101.00] | @calledBy: none
         requestPin(function (pinCode) {
             var loaderId = 'hb-load-' + Date.now();
             addHarbormasterLoader(loaderId, 'PIN hitelesítés...');
@@ -26756,7 +26826,7 @@ function sendHarbormasterMessage() {
 window.sendHarbormasterMessage = sendHarbormasterMessage;
 
 // === [#HEX:F.04.106.00] START | name: sendHarbormasterMessageText | lines: 21 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.04.104.00], [#HEX:F.04.101.00] | @calledBy: [#HEX:F.04.102.00], [#HEX:F.04.105.00]
+// @calls: [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00], [#HEX:B.01.03.00], [#HEX:F.04.101.00] | @calledBy: [#HEX:F.04.102.00], [#HEX:F.04.105.00]
 function sendHarbormasterMessageText(msg) {
     addBubbleToHarbormaster('Te', msg, 'outgoing');
 
@@ -26806,7 +26876,7 @@ function closeHarbormasterConsole() {
 window.closeHarbormasterConsole = closeHarbormasterConsole;
 
 // === [#HEX:F.04.109.00] START | name: triggerHarbormasterAction | lines: 128 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.110.00], [#HEX:B.05.10.00], [#HEX:F.04.10A.00], [#HEX:F.04.10C.00] | @calledBy: none
+// @calls: [#HEX:B.05.0D.00], [#HEX:F.04.108.00], [#HEX:F.04.2C1.00], [#HEX:B.05.0B.00], [#HEX:F.04.10C.00] | @calledBy: none
 function triggerHarbormasterAction(monitorId) {
     // 1. Hajóbérlés (balfelso_monitor)
     if (monitorId === 'balfelso_monitor') {
@@ -26939,7 +27009,7 @@ function triggerHarbormasterAction(monitorId) {
 window.triggerHarbormasterAction = triggerHarbormasterAction;
 
 // === [#HEX:F.04.10A.00] START | name: renderRentalsConsole | lines: 21 ===
-// @calls: [#HEX:F.04.107.00], [#HEX:F.04.2C1.00], [#HEX:F.04.10B.00] | @calledBy: [#HEX:F.04.109.00]
+// @calls: [#HEX:F.04.10B.00], [#HEX:F.04.107.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.109.00]
 function renderRentalsConsole(buttons) {
     var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
     buttons.forEach(function (btn) {
@@ -26965,10 +27035,10 @@ function renderRentalsConsole(buttons) {
 window.renderRentalsConsole = renderRentalsConsole;
 
 // === [#HEX:F.04.10B.00] START | name: executeRentFromConsole | lines: 21 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.06.39.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.10A.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:F.06.39.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.10A.00]
 function executeRentFromConsole(shipId, fee) {
 // === [#HEX:F.06.36.00] START | name: requestPin | lines: 19 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.04.104.00], [#HEX:F.04.101.00] | @calledBy: none
+// @calls: [#HEX:F.04.108.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00], [#HEX:B.01.03.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -26994,7 +27064,7 @@ function executeRentFromConsole(shipId, fee) {
 window.executeRentFromConsole = executeRentFromConsole;
 
 // === [#HEX:F.04.10C.00] START | name: renderMapsConsole | lines: 18 ===
-// @calls: [#HEX:F.04.10D.00], [#HEX:F.04.2C1.00], [#HEX:F.04.107.00] | @calledBy: [#HEX:F.04.109.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.10D.00], [#HEX:F.04.107.00] | @calledBy: [#HEX:F.04.109.00]
 function renderMapsConsole(buttons) {
     var html = '<div class="harbormaster-console-body-scroll"><div class="harbormaster-console-cards-grid">';
     buttons.forEach(function (btn) {
@@ -27017,10 +27087,10 @@ function renderMapsConsole(buttons) {
 window.renderMapsConsole = renderMapsConsole;
 
 // === [#HEX:F.04.10D.00] START | name: executeMapBuyFromConsole | lines: 21 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.06.39.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.10C.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:F.06.39.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.10C.00]
 function executeMapBuyFromConsole(mapRowIndex) {
 // === [#HEX:F.06.37.00] START | name: requestPin | lines: 19 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.04.104.00], [#HEX:B.05.11.00] | @calledBy: none
+// @calls: [#HEX:F.04.108.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00], [#HEX:B.05.11.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -27067,10 +27137,10 @@ function renderReturnRentalConsole(buttons) {
 window.renderReturnRentalConsole = renderReturnRentalConsole;
 
 // === [#HEX:F.04.10F.00] START | name: executeReturnFromConsole | lines: 21 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.06.39.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.10E.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:F.06.39.00], [#HEX:B.05.0C.00], [#HEX:B.01.03.00], [#HEX:F.04.103.00] | @calledBy: [#HEX:F.04.10E.00]
 function executeReturnFromConsole(shipId) {
 // === [#HEX:F.06.38.00] START | name: requestPin | lines: 19 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:F.04.104.00], [#HEX:F.04.101.00] | @calledBy: none
+// @calls: [#HEX:F.04.108.00], [#HEX:B.05.0C.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00] | @calledBy: none
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -27147,7 +27217,7 @@ function showAdminForm(type) {
 window.showAdminForm = showAdminForm;
 
 // === [#HEX:F.04.112.00] START | name: submitAdminForm | lines: 36 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:B.05.0F.00] | @calledBy: [#HEX:F.04.110.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:F.06.39.00], [#HEX:B.05.0F.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.110.00]
 function submitAdminForm() {
     var input = document.getElementById('harbormaster-admin-input');
     if (!input || !input.value.trim()) {
@@ -27165,7 +27235,7 @@ function submitAdminForm() {
     }
 
 // === [#HEX:F.06.39.00] START | name: requestPin | lines: 19 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.103.00], [#HEX:B.01.03.00], [#HEX:B.05.0F.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.76.00], [#HEX:F.04.4F.00], [#HEX:F.04.52.00], [#HEX:F.04.209.00], [#HEX:F.04.20B.00]
+// @calls: [#HEX:F.04.108.00], [#HEX:B.05.0F.00], [#HEX:F.04.103.00], [#HEX:F.06.47.00], [#HEX:F.04.104.00] | @calledBy: [#HEX:F.04.76.00], [#HEX:F.04.4F.00], [#HEX:F.04.52.00], [#HEX:F.04.209.00], [#HEX:F.04.20B.00]
     requestPin(function (pinCode) {
         // AZONNAL bezárjuk a konzolt és visszaadjuk a terepet a párbeszédnek!
         closeHarbormasterConsole();
@@ -27479,7 +27549,7 @@ var isFetchingDeckShips = false;
 var deckShipsCallbacks = [];
 
 // === [#HEX:F.03.04.00] START | name: loadDeckShips | lines: 48 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.47.00], [#HEX:F.04.119.00], [#HEX:F.04.116.00], [#HEX:F.03.03.00] | @calledBy: [#HEX:F.04.117.00], [#HEX:F.04.11F.00]
+// @calls: [#HEX:F.04.116.00], [#HEX:B.03.15.00], [#HEX:F.04.119.00], [#HEX:F.03.05.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.117.00], [#HEX:F.04.11F.00]
 function loadDeckShips(onComplete) {
     if (onComplete) deckShipsCallbacks.push(onComplete);
 
@@ -27516,7 +27586,7 @@ function loadDeckShips(onComplete) {
 // === [#HEX:F.04.116.00] END ===
 
 // === [#HEX:F.06.3A.00] START | name: callBackend | lines: 12 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.03.03.00], [#HEX:F.04.116.00] | @calledBy: none
+// @calls: [#HEX:F.03.03.00], [#HEX:F.04.116.00], [#HEX:B.03.15.00] | @calledBy: none
     callBackend('getToborzoData', [], function (response) {
         if (response && response.success && Array.isArray(response.ownedShips)) {
             window.toborzoMarketData = response;
@@ -27537,7 +27607,7 @@ function loadDeckShips(onComplete) {
 // === [#HEX:F.03.04.00] END ===
 
 // === [#HEX:F.04.117.00] START | name: initFedelzetOldal | lines: 18 ===
-// @calls: [#HEX:F.03.04.00], [#HEX:F.01.14.00], [#HEX:F.04.118.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.02.0F.00], [#HEX:F.05.1E.00]
+// @calls: [#HEX:F.01.14.00], [#HEX:F.04.118.00], [#HEX:F.03.04.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.02.0F.00], [#HEX:F.05.1E.00]
 function initFedelzetOldal() {
     // Háttérvideó garantált némítása
     var bgVid = document.getElementById('fedelzet-video-player');
@@ -27575,7 +27645,7 @@ function setDeckScreenText(htmlText) {
 // === [#HEX:F.04.118.00] END ===
 
 // === [#HEX:F.04.119.00] START | name: populateDeckCrewRecipients | lines: 124 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.04.11B.00], [#HEX:F.04.11A.00] | @calledBy: [#HEX:F.03.04.00], [#HEX:F.04.116.00], [#HEX:F.03.05.00], [#HEX:F.03.07.00], [#HEX:F.04.11F.00]
+// @calls: [#HEX:F.04.11A.00], [#HEX:F.04.11B.00], [#HEX:B.03.15.00] | @calledBy: [#HEX:F.03.04.00], [#HEX:F.04.116.00], [#HEX:F.03.05.00], [#HEX:F.03.07.00], [#HEX:F.04.11F.00]
 function populateDeckCrewRecipients() {
     var crewSelect = document.getElementById('deck-msg-recipient-select');
     if (!crewSelect) return;
@@ -27709,7 +27779,7 @@ function populateDeckCrewRecipients() {
 // === [#HEX:F.04.119.00] END ===
 
 // === [#HEX:F.03.05.00] START | name: renderDeckShipCards | lines: 76 ===
-// @calls: [#HEX:F.04.119.00], [#HEX:F.03.06.00], [#HEX:F.03.07.00] | @calledBy: [#HEX:F.03.04.00], [#HEX:F.04.116.00], [#HEX:F.03.07.00], [#HEX:F.04.11F.00]
+// @calls: [#HEX:F.03.07.00], [#HEX:F.04.119.00], [#HEX:F.03.06.00] | @calledBy: [#HEX:F.03.04.00], [#HEX:F.04.116.00], [#HEX:F.03.07.00], [#HEX:F.04.11F.00]
 function renderDeckShipCards() {
     var list = document.getElementById('deck-ship-cards-list');
     if (!list) return;
@@ -27888,7 +27958,7 @@ function handleDeckElementLeave() {
 // === [#HEX:F.04.11D.00] END ===
 
 // === [#HEX:F.04.11E.00] START | name: handleDeckElementClick | lines: 97 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.124.00], [#HEX:F.04.118.00], [#HEX:B.07.24.00], [#HEX:F.05.1F.00] | @calledBy: none
+// @calls: [#HEX:F.04.121.00], [#HEX:F.05.1F.00], [#HEX:F.04.11F.00], [#HEX:F.04.FC.00], [#HEX:F.06.47.00] | @calledBy: none
 function handleDeckElementClick(elemId) {
     if (elemId === 'auto_gomb') {
         loadPage('tutorial_oldal');
@@ -27939,7 +28009,7 @@ function handleDeckElementClick(elemId) {
 
         setDeckScreenText('Hajónapló hozzáférési jogosultság ellenőrzése... <span class=\"crt-cursor\">▋</span>');
 // === [#HEX:F.06.3B.00] START | name: callBackend | lines: 34 ===
-// @calls: [#HEX:F.04.124.00], [#HEX:B.07.24.00], [#HEX:F.04.118.00], [#HEX:F.04.11F.00], [#HEX:F.04.121.00] | @calledBy: none
+// @calls: [#HEX:F.04.121.00], [#HEX:F.04.11F.00], [#HEX:F.04.124.00], [#HEX:F.04.118.00], [#HEX:B.07.24.00] | @calledBy: none
         callBackend('checkLogWritePermission', [], function (logId) {
             if (logId && typeof logId === 'string') {
                 var form = document.getElementById('deck-logbook-form');
@@ -27992,7 +28062,7 @@ function handleDeckElementClick(elemId) {
 // === [#HEX:F.04.11E.00] END ===
 
 // === [#HEX:F.04.11F.00] START | name: openDeckConsole | lines: 29 ===
-// @calls: [#HEX:F.04.119.00], [#HEX:F.03.04.00], [#HEX:F.03.05.00] | @calledBy: [#HEX:F.04.11E.00], [#HEX:F.06.3B.00]
+// @calls: [#HEX:F.03.04.00], [#HEX:F.04.119.00], [#HEX:F.03.05.00] | @calledBy: [#HEX:F.04.11E.00], [#HEX:F.06.3B.00]
 function openDeckConsole(subId, titleText) {
     var panel = document.getElementById('deck-console-panel');
     var title = document.getElementById('deck-console-title');
@@ -28117,7 +28187,7 @@ function getDeckLogGeoLocation(silent) {
 // === [#HEX:F.04.123.00] END ===
 
 // === [#HEX:F.04.124.00] START | name: loadDeckLogEntry | lines: 196 ===
-// @calls: [#HEX:F.04.123.00], [#HEX:F.06.47.00], [#HEX:D.01.7E.00], [#HEX:B.07.24.00], [#HEX:B.07.21.00] | @calledBy: [#HEX:F.04.11E.00], [#HEX:F.06.3B.00], [#HEX:F.04.122.00], [#HEX:F.06.3C.00], [#HEX:F.06.3D.00]
+// @calls: [#HEX:B.07.21.00], [#HEX:D.01.7E.00], [#HEX:F.06.47.00], [#HEX:F.04.123.00], [#HEX:B.07.24.00] | @calledBy: [#HEX:F.04.11E.00], [#HEX:F.06.3B.00], [#HEX:F.04.122.00], [#HEX:F.06.3C.00], [#HEX:F.06.3D.00]
 function loadDeckLogEntry(entryId) {
     var entryIdInput = document.getElementById('deck-log-entry-id');
     var dateInput = document.getElementById('deck-log-date');
@@ -28155,7 +28225,7 @@ function loadDeckLogEntry(entryId) {
     }
 
 // === [#HEX:F.06.3C.00] START | name: callBackend | lines: 157 ===
-// @calls: [#HEX:F.04.123.00], [#HEX:F.04.124.00], [#HEX:B.07.24.00], [#HEX:B.07.21.00] | @calledBy: none
+// @calls: [#HEX:B.07.21.00], [#HEX:F.04.123.00], [#HEX:F.04.124.00], [#HEX:B.07.24.00] | @calledBy: none
     callBackend('checkLogWritePermission', [], function (currentLogId) {
         if (!currentLogId || typeof currentLogId !== 'string') {
             if (statusDiv) statusDiv.textContent = 'Nem található írható hajónapló azonosító.';
@@ -28201,7 +28271,7 @@ function loadDeckLogEntry(entryId) {
         } else {
             // === BEJEGYZÉS BETÖLTÉSE (ID, dátum vagy 'last') ===
 // === [#HEX:F.06.3D.00] START | name: callBackend | lines: 109 ===
-// @calls: [#HEX:F.04.123.00], [#HEX:B.07.21.00], [#HEX:F.04.124.00] | @calledBy: none
+// @calls: [#HEX:B.07.21.00], [#HEX:F.04.124.00], [#HEX:F.04.123.00] | @calledBy: none
             callBackend('getLogEntry', [currentLogId, entryId || 'last'], function (entry) {
                 if (!entry || entry.error) {
                     if (statusDiv) statusDiv.textContent = 'Hiba a bejegyzés betöltésekor: ' + (entry ? entry.error : 'Ismeretlen hiba');
@@ -28323,7 +28393,7 @@ function loadDeckLogEntry(entryId) {
 // === [#HEX:F.04.124.00] END ===
 
 // === [#HEX:F.04.125.00] START | name: navigateDeckLogEntry | lines: 12 ===
-// @calls: [#HEX:D.01.7E.00], [#HEX:F.04.124.00] | @calledBy: none
+// @calls: [#HEX:F.04.124.00], [#HEX:D.01.7E.00] | @calledBy: none
 function navigateDeckLogEntry(direction) {
     if (!window.currentDeckLogEntry) return;
     if (direction === 'prev' && window.currentDeckLogEntry.prevId) {
@@ -28339,7 +28409,7 @@ function navigateDeckLogEntry(direction) {
 // === [#HEX:F.04.125.00] END ===
 
 // === [#HEX:F.04.126.00] START | name: executeDeckSaveLogEntry | lines: 101 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:D.01.00.00], [#HEX:B.07.1E.00], [#HEX:F.04.124.00], [#HEX:F.04.118.00] | @calledBy: none
+// @calls: [#HEX:F.04.F3.00], [#HEX:F.04.C3.00], [#HEX:B.07.1E.00], [#HEX:F.06.47.00], [#HEX:D.01.00.00] | @calledBy: none
 async function executeDeckSaveLogEntry() {
     var dateEl = document.getElementById('deck-log-date');
     var timeEl = document.getElementById('deck-log-time');
@@ -28407,7 +28477,7 @@ async function executeDeckSaveLogEntry() {
         }
 
 // === [#HEX:F.06.3E.00] START | name: callBackend | lines: 18 ===
-// @calls: [#HEX:F.04.124.00], [#HEX:B.07.1E.00], [#HEX:F.04.118.00] | @calledBy: none
+// @calls: [#HEX:F.04.124.00], [#HEX:F.04.118.00], [#HEX:B.07.1E.00] | @calledBy: none
         callBackend('saveLogEntry', [entryData], function (response) {
             if (saveBtn) saveBtn.disabled = false;
             if (response && response.success) {
@@ -28447,7 +28517,7 @@ async function executeDeckSaveLogEntry() {
 // === [#HEX:F.04.126.00] END ===
 
 // === [#HEX:F.04.127.00] START | name: loadCompletableScrolls | lines: 28 ===
-// @calls: [#HEX:B.04.03.00], [#HEX:F.05.15.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.04.2F9.00], [#HEX:F.05.4A.00]
+// @calls: [#HEX:B.04.03.00], [#HEX:F.06.47.00], [#HEX:F.05.15.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.17F.00], [#HEX:F.05.4A.00]
 function loadCompletableScrolls() {
 // === [#HEX:F.06.3F.00] START | name: callBackend | lines: 26 ===
 // @calls: [#HEX:B.04.03.00], [#HEX:F.05.15.00] | @calledBy: none
@@ -28482,13 +28552,13 @@ function loadCompletableScrolls() {
 // === [#HEX:F.04.127.00] END ===
 
 // === [#HEX:F.05.15.00] START | name: bindScrolls | lines: 17 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.04.1F.00], [#HEX:F.04.1EE.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.127.00], [#HEX:F.06.3F.00]
+// @calls: [#HEX:B.04.1F.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.04.127.00], [#HEX:F.06.3F.00]
 function bindScrolls(baseCode) {
     if (!confirm("Biztosan összefűzöd a tekercseket? A felhasznált fejezetek eltűnnek, és egy új Másolat jön létre!")) return;
 
     document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.40.00] START | name: callBackend | lines: 9 ===
-// @calls: [#HEX:F.04.FC.00], [#HEX:B.04.1F.00], [#HEX:F.04.1EE.00] | @calledBy: none
+// @calls: [#HEX:B.04.1F.00], [#HEX:F.04.1EE.00], [#HEX:F.04.FC.00] | @calledBy: none
     callBackend('bindScrollsToCopy', [baseCode], function (res) {
         document.getElementById('loading-overlay').style.display = 'none';
         if (res && res.success) {
@@ -28574,7 +28644,7 @@ function renderVehicleList() {
 // === [#HEX:F.04.128.00] END ===
 
 // === [#HEX:F.04.129.00] START | name: showVehicleDetails | lines: 93 ===
-// @calls: [#HEX:D.01.00.00], [#HEX:F.04.13.00], [#HEX:F.04.128.00], [#HEX:F.03.03.00] | @calledBy: [#HEX:F.03.06.00], [#HEX:F.04.128.00], [#HEX:F.03.12.00]
+// @calls: [#HEX:F.04.128.00], [#HEX:D.01.00.00], [#HEX:F.03.03.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:F.03.06.00], [#HEX:F.04.128.00], [#HEX:F.03.12.00]
 function showVehicleDetails(index) {
     var v = currentFetchedVehicles[index];
     if (!v) return;
@@ -28694,7 +28764,7 @@ function stopSessionPolling() {
 // === [#HEX:F.01.07.00] END ===
 
 // === [#HEX:F.01.08.00] START | name: checkActiveSessionStatus | lines: 52 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.01.07.00], [#HEX:B.07.CA.00], [#HEX:F.04.12C.00] | @calledBy: [#HEX:F.01.14.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.CA.00], [#HEX:F.01.07.00], [#HEX:F.04.12C.00] | @calledBy: [#HEX:F.01.14.00]
 function checkActiveSessionStatus() {
     if (!selectedShipForDeparture || typeof currentPageName === 'undefined' || currentPageName !== 'fedelzet_oldal') {
         stopSessionPolling();
@@ -28702,7 +28772,7 @@ function checkActiveSessionStatus() {
     }
 
 // === [#HEX:F.06.41.00] START | name: callBackend | lines: 42 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.12C.00], [#HEX:B.07.CA.00] | @calledBy: none
+// @calls: [#HEX:F.04.1EE.00], [#HEX:B.07.CA.00], [#HEX:F.04.12C.00] | @calledBy: none
     callBackend('getActiveSessionStatus', [selectedShipForDeparture.id], function (res) {
         if (!res || res.error) return;
 
@@ -28753,7 +28823,7 @@ function checkActiveSessionStatus() {
 // === [#HEX:F.01.08.00] END ===
 
 // === [#HEX:F.04.12A.00] START | name: startFishingMiniGame | lines: 4 ===
-// @calls: [#HEX:F.04.1EE.00], [#HEX:F.04.12C.00] | @calledBy: none
+// @calls: [#HEX:F.04.12C.00], [#HEX:F.04.1EE.00] | @calledBy: none
 function startFishingMiniGame() {
     uiAlert("A Hártyahalászat elindult!", "Horgászat");
     loadGamePage({ gameType: 'Hártyahalászat' });
@@ -28771,7 +28841,7 @@ function joinPvpDefense() {
 
 // --- GAME OLDAL LOGIKA ---
 // === [#HEX:F.04.12C.00] START | name: loadGamePage | lines: 104 ===
-// @calls: [#HEX:F.07.12.00], [#HEX:F.04.1EE.00], [#HEX:F.04.228.00], [#HEX:D.01.24.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.01.08.00], [#HEX:F.06.41.00], [#HEX:F.04.12A.00]
+// @calls: [#HEX:F.04.228.00], [#HEX:F.04.1EE.00], [#HEX:D.01.24.00], [#HEX:F.07.12.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.01.08.00], [#HEX:F.06.41.00], [#HEX:F.04.12A.00]
 function loadGamePage(sessionData) {
     loadPage('game_oldal');
 
@@ -28942,7 +29012,7 @@ var GameAssetPreloader = {
 
     // Intelligens fa-elemző (Kiolvassa a következő lehetséges utakat)
 // === [#HEX:F.04.12F.00] START | name: analyzeAndPreloadNext | lines: 10 ===
-// @calls: [#HEX:F.04.12E.00], [#HEX:F.04.12D.00] | @calledBy: [#HEX:F.04.228.00]
+// @calls: [#HEX:F.04.12D.00], [#HEX:F.04.12E.00] | @calledBy: [#HEX:F.04.228.00]
     analyzeAndPreloadNext: function (sessionData, currentCheckpoint) {
         if (!sessionData) return;
 
@@ -29022,7 +29092,7 @@ function playMediaSequence(mediaArray, onCompleteCallback) {
 // === [#HEX:F.07.0F.00] END ===
 
 // === [#HEX:F.04.228.00] START | name: renderGameCheckpoint | lines: 197 | action: 'RETURN_TO_SHIP' ===
-// @calls: [#HEX:F.07.12.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.131.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.12C.00], [#HEX:F.07.11.00], [#HEX:F.04.131.00]
+// @calls: [#HEX:F.04.131.00], [#HEX:F.04.2C1.00], [#HEX:F.04.12F.00], [#HEX:B.07.CB.00], [#HEX:F.06.47.00] | @calledBy: [#HEX:F.04.12C.00], [#HEX:F.07.11.00], [#HEX:F.04.131.00]
 function renderGameCheckpoint(sessionData, currentCheckpoint) {
     if (!sessionData || !sessionData.nodes) {
         console.error("Érvénytelen JSON struktúra a renderelőben!");
@@ -29093,7 +29163,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             btnReturn.textContent = 'Visszatérés a Hajóra';
             btnReturn.onclick = function () {
 // === [#HEX:F.06.42.00] START | name: callBackend | lines: 1 | action: 'RETURN_TO_SHIP' ===
-// @calls: [#HEX:B.07.CB.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: none
                 callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function () {
 // === [#HEX:F.06.42.00] END ===
                     loadPage('fedelzet_oldal');
@@ -29122,7 +29192,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
                     btn.onclick = function () {
                         document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.43.00] START | name: callBackend | lines: 1 | action: 'DEPART_TO_FIRST_LOCATION' ===
-// @calls: [#HEX:B.07.CB.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: none
                         callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'DEPART_TO_FIRST_LOCATION' }], function (res) {
 // === [#HEX:F.06.43.00] END ===
                             document.getElementById('loading-overlay').style.display = 'none';
@@ -29161,7 +29231,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         if (currentNode.mediaSequence.arrival) mediaToPlay.push(currentNode.mediaSequence.arrival);
 
 // === [#HEX:F.07.11.00] START | name: playMediaSequence | lines: 18 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.228.00], [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.228.00], [#HEX:B.07.CB.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: none
         playMediaSequence(mediaToPlay, function () {
             narrativeText.textContent = "Megérkeztetek a célhoz. Itt az ideje a Képzettségpróbának!";
             actionsContainer.innerHTML = '';
@@ -29172,7 +29242,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
             btnArrive.onclick = function () {
                 document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.44.00] START | name: callBackend | lines: 1 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
-// @calls: [#HEX:B.07.CB.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: none
                 callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.toNode || 'LOC_1' } }], function (res) {
 // === [#HEX:F.06.44.00] END ===
                     document.getElementById('loading-overlay').style.display = 'none';
@@ -29223,7 +29293,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
         btnReturnLoc.onclick = function () {
             document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.45.00] START | name: callBackend | lines: 1 | action: 'RETURN_TO_SHIP' ===
-// @calls: [#HEX:B.07.CB.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: none
             callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'RETURN_TO_SHIP' }], function (res) {
 // === [#HEX:F.06.45.00] END ===
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -29241,7 +29311,7 @@ function renderGameCheckpoint(sessionData, currentCheckpoint) {
 // === [#HEX:F.04.228.00] END ===
 
 // === [#HEX:F.04.131.00] START | name: renderKalandjatekOptions | lines: 53 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.228.00], [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: [#HEX:F.04.228.00], [#HEX:F.07.12.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.228.00], [#HEX:B.07.CB.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.04.228.00], [#HEX:F.07.12.00]
 function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actionsContainer) {
     narrativeText.textContent = currentNode.introNarrative || currentNode.narrative || "Esemény a kaland során.";
     actionsContainer.innerHTML = '';
@@ -29254,7 +29324,7 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
         btnS.onclick = function () {
             document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.46.00] START | name: callBackend | lines: 1 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
-// @calls: [#HEX:B.07.CB.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: none
             callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: currentNode.successBranch.nextCheckpoint } }], function (res) {
 // === [#HEX:F.06.46.00] END ===
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -29281,7 +29351,7 @@ function renderKalandjatekOptions(currentNode, sessionData, narrativeText, actio
 
             document.getElementById('loading-overlay').style.display = 'flex';
 // === [#HEX:F.06.47.00] START | name: callBackend | lines: 1 | action: 'CONTINUE_TRAVEL_TO_LOCATION' ===
-// @calls: [#HEX:B.07.CB.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.04.05.00], [#HEX:F.04.17.00], [#HEX:F.01.0F.00], [#HEX:F.01.01.00], [#HEX:F.07.00.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.07.CB.00] | @calledBy: [#HEX:F.04.05.00], [#HEX:F.04.17.00], [#HEX:F.01.0F.00], [#HEX:F.01.01.00], [#HEX:F.07.00.00]
             callBackend('updateCheckpoint', [{ sessionId: sessionData.sessionId, action: 'CONTINUE_TRAVEL_TO_LOCATION', actionData: { targetNodeId: nextCP } }], function (res) {
 // === [#HEX:F.06.47.00] END ===
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -29317,7 +29387,7 @@ window.onDiceRollCompleted = null; // Callback a Kalandjátékhoz
 
 // Ez a függvény bármelyik kaland-gombra ráköthető!
 // === [#HEX:F.04.132.00] START | name: launchDiceRoller | lines: 35 ===
-// @calls: [#HEX:F.04.EE.00], [#HEX:F.04.F3.00], [#HEX:D.01.24.00] | @calledBy: none
+// @calls: [#HEX:D.01.24.00], [#HEX:F.04.EE.00], [#HEX:F.04.F3.00] | @calledBy: none
 function launchDiceRoller(callback) {
     var minigameContainer = document.getElementById('game-minigame-container');
     var minigameFrame = document.getElementById('game-minigame-frame');
@@ -29454,7 +29524,7 @@ window.addEventListener('message', function (event) {
    ========================================================================== */
 
 // === [#HEX:F.09.05.00] START | name: isWebGLAvailable | lines: 8 ===
-// @calls: none | @calledBy: [#HEX:F.02.01.00], [#HEX:F.02.12.00], [#HEX:F.02.21.00], [#HEX:F.04.280.00], [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: [#HEX:F.02.01.00], [#HEX:F.02.12.00], [#HEX:F.02.21.00], [#HEX:F.04.280.00], [#HEX:F.02.1B.00]
 function isWebGLAvailable() {
     try {
         var canvas = document.createElement('canvas');
@@ -29499,7 +29569,7 @@ function cleanupKikotoOldal() {
 window.cleanupKikotoOldal = cleanupKikotoOldal;
 
 // === [#HEX:F.04.134.00] START | name: initializeKikotoOldal | lines: 64 ===
-// @calls: [#HEX:F.09.05.00], [#HEX:F.04.01.00], [#HEX:F.02.0F.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.2E.00], [#HEX:F.04.2F.00]
+// @calls: [#HEX:F.09.05.00], [#HEX:F.02.0F.00], [#HEX:F.04.01.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.2E.00], [#HEX:F.04.2F.00]
 function initializeKikotoOldal() {
     var canvasContainer = document.getElementById('webgl-canvas-container');
     var container2D = document.getElementById('kikoto-2d-container');
@@ -29585,7 +29655,7 @@ function tryGoToDeck() {
 window.tryGoToDeck = tryGoToDeck;
 
 // === [#HEX:F.02.0F.00] START | name: runKikoto3DModule | lines: 4759 ===
-// @calls: [#HEX:F.04.143.00], [#HEX:F.04.139.00], [#HEX:F.04.17B.00], [#HEX:F.04.2D7.00], [#HEX:B.07.D2.00] | @calledBy: [#HEX:F.04.134.00]
+// @calls: [#HEX:F.05.13.00], [#HEX:B.03.14.00], [#HEX:F.04.153.00], [#HEX:F.04.13.00], [#HEX:B.01.03.00] | @calledBy: [#HEX:F.04.134.00]
 function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Water) {
     kikoto3DRunning = true;
 
@@ -29827,7 +29897,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
      * Kurzor elhagyás esemény (pointerleave / pointercancel) a WebGL vászonról
      */
 // === [#HEX:F.04.17C.00] START | name: onPointerLeave | lines: 11 ===
-// @calls: [#HEX:F.02.02.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.267.00], [#HEX:F.04.281.00], [#HEX:F.04.27D.00], [#HEX:F.04.2F9.00]
+// @calls: [#HEX:F.02.02.00] | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.267.00], [#HEX:F.04.281.00], [#HEX:F.04.27D.00], [#HEX:F.04.295.00]
     function onPointerLeave(e) {
         if (currentHoveredLocation) {
             removeHighlight(currentHoveredLocation.meshes);
@@ -29845,7 +29915,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
      * Kurzor mozgatás & Épület Raycast Hover Eseménykezelő
      */
 // === [#HEX:F.04.137.00] START | name: onPointerMove | lines: 71 ===
-// @calls: [#HEX:F.02.10.00], [#HEX:F.04.17B.00], [#HEX:F.02.02.00], [#HEX:F.04.229.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.04.233.00], [#HEX:F.04.24E.00], [#HEX:F.04.266.00]
+// @calls: [#HEX:F.02.10.00], [#HEX:F.02.02.00], [#HEX:F.04.229.00], [#HEX:F.04.17B.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.04.233.00], [#HEX:F.04.24E.00], [#HEX:F.04.266.00]
     function onPointerMove(e) {
         if (!isKikotoActiveAndVisible()) {
             if (currentHoveredLocation) {
@@ -30023,7 +30093,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
      * Cél aloldal vagy funkció meghívása a központi rendszeren keresztül
      */
 // === [#HEX:F.04.13B.00] START | name: navigateToSubpage | lines: 128 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.05.13.00], [#HEX:F.04.143.00], [#HEX:F.05.20.00], [#HEX:F.05.5D.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.13A.00]
+// @calls: [#HEX:F.05.13.00], [#HEX:F.05.5D.00], [#HEX:F.04.143.00], [#HEX:F.05.20.00], [#HEX:F.04.E9.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.13A.00]
     function navigateToSubpage(target) {
         const pageId = (typeof target === 'object' && target.id) ? target.id : target;
         // 0. Kikötőmester / Barba Negra egyedi multimédiás SVG modál megnyitása
@@ -30158,7 +30228,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
     window.ACTIVE_NPC_CONFIG = {};
 
 // === [#HEX:F.05.19.00] START | name: closeUniversalNPCModal | lines: 49 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.05.5D.00], [#HEX:F.02.02.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
+// @calls: [#HEX:F.02.02.00], [#HEX:F.04.160.00], [#HEX:F.05.5D.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
     window.closeUniversalNPCModal = function (e) {
         if (e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -30211,7 +30281,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.05.19.00] END ===
 
 // === [#HEX:F.05.1A.00] START | name: closeToborzoModal | lines: 55 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.05.5D.00], [#HEX:F.02.02.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.02.02.00], [#HEX:F.04.160.00], [#HEX:F.05.5D.00] | @calledBy: [#HEX:F.02.0F.00]
     window.closeToborzoModal = function (e) {
         if (e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -30270,7 +30340,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.05.1A.00] END ===
 
 // === [#HEX:F.04.13C.00] START | name: sendUniversalMessage | lines: 55 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.01.03.00], [#HEX:F.04.13D.00], [#HEX:F.04.13E.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.04.13E.00], [#HEX:F.04.13D.00], [#HEX:F.06.47.00], [#HEX:B.01.03.00] | @calledBy: [#HEX:F.02.0F.00]
     window.sendUniversalMessage = function () {
         var input = document.getElementById('universal-chat-input');
         if (!input) return;
@@ -30527,7 +30597,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.142.00] END ===
 
 // === [#HEX:F.04.143.00] START | name: openToborzoBarakk | lines: 69 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.47.00], [#HEX:F.04.13.00], [#HEX:F.04.145.00], [#HEX:F.04.144.00] | @calledBy: [#HEX:F.04.FD.00], [#HEX:F.04.FE.00], [#HEX:F.04.FF.00], [#HEX:F.02.0F.00], [#HEX:F.04.13B.00]
+// @calls: [#HEX:B.03.1F.00], [#HEX:F.04.141.00], [#HEX:F.04.144.00], [#HEX:F.06.47.00], [#HEX:F.04.22A.00] | @calledBy: [#HEX:F.04.FD.00], [#HEX:F.04.FE.00], [#HEX:F.04.FF.00], [#HEX:F.02.0F.00], [#HEX:F.04.13B.00]
     window.openToborzoBarakk = function () {
         var modal = document.getElementById('toborzo-modal');
         if (modal) modal.style.display = 'flex';
@@ -30552,7 +30622,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
         if (typeof window.callBackend === 'function') {
 // === [#HEX:F.04.144.00] START | name: loadFallback | lines: 20 ===
-// @calls: [#HEX:B.03.15.00], [#HEX:F.06.47.00], [#HEX:F.04.145.00], [#HEX:F.03.08.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.143.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.03.08.00], [#HEX:B.03.15.00], [#HEX:F.04.145.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.143.00]
             var loadFallback = function () {
                 window.callBackend('getToborzoData', [],
                     function (fbData) {
@@ -30603,7 +30673,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.143.00] END ===
 
 // === [#HEX:F.04.145.00] START | name: renderToborzoFullMarket | lines: 200 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:F.04.14B.00], [#HEX:F.04.14D.00], [#HEX:F.05.1D.00], [#HEX:F.04.14C.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.143.00], [#HEX:F.04.144.00]
+// @calls: [#HEX:F.05.1D.00], [#HEX:F.04.14D.00], [#HEX:F.04.14C.00], [#HEX:F.04.13.00], [#HEX:F.04.14B.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.143.00], [#HEX:F.04.144.00]
     window.renderToborzoFullMarket = function (data) {
         if (!data) return;
 
@@ -30807,7 +30877,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.145.00] END ===
 
 // === [#HEX:F.07.13.00] START | name: savePlayerJobStatus | lines: 57 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:B.07.BC.00], [#HEX:F.04.1EE.00], [#HEX:F.04.143.00], [#HEX:F.04.141.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.04.141.00], [#HEX:F.04.143.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.BC.00] | @calledBy: [#HEX:F.02.0F.00]
     window.savePlayerJobStatus = function () {
         var stSelect = document.getElementById('toborzo-status-select');
         var rSelect = document.getElementById('toborzo-role-select');
@@ -30868,7 +30938,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.07.13.00] END ===
 
 // === [#HEX:F.03.08.00] START | name: renderSelectedShipCrew | lines: 183 ===
-// @calls: [#HEX:F.04.146.00], [#HEX:F.05.1C.00], [#HEX:F.04.142.00], [#HEX:F.04.147.00] | @calledBy: [#HEX:F.04.FA.00], [#HEX:F.02.0F.00], [#HEX:F.04.22B.00], [#HEX:F.04.143.00], [#HEX:F.04.144.00]
+// @calls: [#HEX:F.04.142.00], [#HEX:F.04.147.00], [#HEX:F.05.1C.00], [#HEX:F.04.146.00] | @calledBy: [#HEX:F.04.FA.00], [#HEX:F.02.0F.00], [#HEX:F.04.22B.00], [#HEX:F.04.143.00], [#HEX:F.04.144.00]
     window.renderSelectedShipCrew = function () {
         var select = document.getElementById('toborzo-myships-select');
         var detailsDiv = document.getElementById('toborzo-myship-details');
@@ -31162,7 +31232,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.05.1C.00] END ===
 
 // === [#HEX:F.04.148.00] START | name: submitPostJobOpening | lines: 39 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.143.00], [#HEX:B.03.20.00], [#HEX:F.05.1B.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:B.03.20.00], [#HEX:F.04.143.00], [#HEX:F.05.1B.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.02.0F.00]
     window.submitPostJobOpening = function () {
         var shipId = document.getElementById('post-job-ship-id').value;
         var role = document.getElementById('post-job-role').value;
@@ -31265,7 +31335,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.149.00] END ===
 
 // === [#HEX:F.04.14A.00] START | name: submitDirectJobOffer | lines: 43 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.143.00], [#HEX:F.05.1B.00], [#HEX:B.07.D2.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.04.143.00], [#HEX:F.05.1B.00], [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:B.07.D2.00] | @calledBy: [#HEX:F.02.0F.00]
     window.submitDirectJobOffer = function () {
         var targetMatrozEmail = document.getElementById('direct-offer-matroz-email').value;
         var shipSelect = document.getElementById('direct-offer-ship-select');
@@ -31345,7 +31415,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.14B.00] END ===
 
 // === [#HEX:F.04.14C.00] START | name: reviewJobApplicant | lines: 30 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.04.143.00], [#HEX:F.04.1EE.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.145.00]
+// @calls: [#HEX:F.06.47.00], [#HEX:F.04.1EE.00], [#HEX:F.04.143.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.145.00]
     window.reviewJobApplicant = function (jelentkezesId, isApproved) {
         var actionName = isApproved ? "elfogadni és ajánlatot tenni a pozícióra" : "elutasítani ezt a jelentkezést";
         if (!confirm("Biztosan szeretnéd " + actionName + "?")) return;
@@ -31465,7 +31535,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.14E.00] END ===
 
 // === [#HEX:F.05.1E.00] START | name: openFedelzetModal | lines: 106 ===
-// @calls: [#HEX:F.07.0C.00], [#HEX:F.05.5D.00], [#HEX:F.04.117.00] | @calledBy: [#HEX:F.04.113.00], [#HEX:F.04.135.00], [#HEX:F.02.0F.00], [#HEX:F.04.13B.00], [#HEX:F.01.09.00]
+// @calls: [#HEX:F.04.117.00], [#HEX:F.07.0C.00], [#HEX:F.05.5D.00] | @calledBy: [#HEX:F.04.113.00], [#HEX:F.04.135.00], [#HEX:F.02.0F.00], [#HEX:F.04.13B.00], [#HEX:F.01.09.00]
     window.openFedelzetModal = function () {
         console.log("🚢 3D Kikötő: Fedélzet modal megnyitása (Opálos háttér)");
         var modal = document.getElementById('fedelzet-modal');
@@ -31575,7 +31645,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.05.1E.00] END ===
 
 // === [#HEX:F.05.1F.00] START | name: closeFedelzetModal | lines: 52 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.05.5D.00], [#HEX:F.02.02.00] | @calledBy: [#HEX:F.04.11E.00], [#HEX:F.02.0F.00], [#HEX:F.04.151.00], [#HEX:F.04.152.00], [#HEX:F.04.154.00]
+// @calls: [#HEX:F.02.02.00], [#HEX:F.04.160.00], [#HEX:F.05.5D.00] | @calledBy: [#HEX:F.04.11E.00], [#HEX:F.02.0F.00], [#HEX:F.04.151.00], [#HEX:F.04.152.00], [#HEX:F.04.154.00]
     window.closeFedelzetModal = function (e) {
         if (e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -31631,7 +31701,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.05.1F.00] END ===
 
 // === [#HEX:F.04.14F.00] START | name: fedelzetInit | lines: 91 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.03.09.00], [#HEX:F.06.00.00], [#HEX:B.03.14.00], [#HEX:F.04.14E.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.06.00.00], [#HEX:B.03.14.00], [#HEX:F.06.47.00], [#HEX:F.03.09.00], [#HEX:F.04.14E.00] | @calledBy: [#HEX:F.02.0F.00]
     window.fedelzetInit = function () {
         var loadingEl = document.getElementById('fedelzet-loading');
         if (loadingEl) loadingEl.style.display = 'flex';
@@ -31815,7 +31885,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.150.00] END ===
 
 // === [#HEX:F.04.151.00] START | name: fedelzetExecuteDeparture | lines: 109 ===
-// @calls: [#HEX:F.06.47.00], [#HEX:F.06.00.00], [#HEX:F.05.1F.00], [#HEX:B.03.1D.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.153.00]
+// @calls: [#HEX:F.05.1F.00], [#HEX:F.06.00.00], [#HEX:F.06.47.00], [#HEX:B.03.1D.00], [#HEX:F.04.152.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.153.00]
     window.fedelzetExecuteDeparture = function () {
         var gameType = window.fedelzetSelectedGameType || 'Hártyahalászat';
         var ship = window.fedelzetSelectedShip;
@@ -31880,7 +31950,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         }
 
 // === [#HEX:F.04.152.00] START | name: proceedWithDeparture | lines: 45 ===
-// @calls: [#HEX:F.06.00.00], [#HEX:F.05.1F.00], [#HEX:F.04.FC.00], [#HEX:B.07.C2.00], [#HEX:F.04.14E.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.151.00]
+// @calls: [#HEX:F.05.1F.00], [#HEX:F.06.00.00], [#HEX:B.07.C2.00], [#HEX:F.04.FC.00], [#HEX:F.04.14E.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.151.00]
         function proceedWithDeparture() {
             if (backendCaller) {
                 backendCaller('requestDeparture', [ship.id, gameType, finalTarget],
@@ -31931,7 +32001,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.151.00] END ===
 
 // === [#HEX:F.04.153.00] START | name: fedelzetSendDeckChat | lines: 80 ===
-// @calls: [#HEX:F.04.151.00], [#HEX:F.04.13.00], [#HEX:F.04.150.00], [#HEX:F.04.14E.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.04.150.00], [#HEX:F.04.151.00], [#HEX:F.04.13.00], [#HEX:F.04.14E.00] | @calledBy: [#HEX:F.02.0F.00]
     window.fedelzetSendDeckChat = function () {
         var input = document.getElementById('fedelzet-deck-chat-input');
         if (!input) return;
@@ -32015,7 +32085,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.153.00] END ===
 
 // === [#HEX:F.04.154.00] START | name: fedelzetJumpToSavedState | lines: 8 ===
-// @calls: [#HEX:F.04.FC.00], [#HEX:F.05.1F.00] | @calledBy: [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.05.1F.00], [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.02.0F.00]
     window.fedelzetJumpToSavedState = function () {
         window.closeFedelzetModal();
         if (window.parent && window.parent !== window && typeof window.parent.loadPage === 'function') {
@@ -32211,7 +32281,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
     // 1. Háromdimenziós Tér Inicializálása
 // === [#HEX:F.04.155.00] START | name: init | lines: 158 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:D.01.0D.00], [#HEX:F.02.03.00], [#HEX:F.02.04.00], [#HEX:F.04.139.00] | @calledBy: [#HEX:F.04.11.00], [#HEX:F.04.20C.00], [#HEX:F.02.0F.00]
+// @calls: [#HEX:F.04.2D7.00], [#HEX:D.01.0D.00], [#HEX:F.04.156.00], [#HEX:F.02.03.00], [#HEX:F.02.02.00] | @calledBy: [#HEX:F.04.11.00], [#HEX:F.04.20C.00], [#HEX:F.02.0F.00]
     function init() {
         const container = document.getElementById('webgl-canvas-container');
 
@@ -32605,7 +32675,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 
     // Modell Betöltő (GLTFLoader)
 // === [#HEX:F.04.156.00] START | name: loadHarborModel | lines: 1505 ===
-// @calls: [#HEX:F.03.0A.00], [#HEX:F.02.05.00], [#HEX:F.04.143.00], [#HEX:F.04.03.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.155.00]
+// @calls: [#HEX:F.01.09.00], [#HEX:F.04.03.00], [#HEX:F.04.2C1.00], [#HEX:F.02.05.00], [#HEX:F.04.143.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.155.00]
     function loadHarborModel() {
         const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb';
         const loader = new GLTFLoader();
@@ -34428,7 +34498,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
     // Indítás
 
 // === [#HEX:F.05.20.00] START | name: resetKikotoViewport | lines: 67 ===
-// @calls: [#HEX:F.04.17A.00], [#HEX:F.05.5D.00], [#HEX:F.04.14.00], [#HEX:F.02.02.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.13B.00]
+// @calls: [#HEX:F.04.14.00], [#HEX:F.05.5D.00], [#HEX:F.02.02.00], [#HEX:F.04.17A.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.13B.00]
     function resetKikotoViewport() {
         console.log("⚓ 3D Kikötő Viewport Állapot Visszaállítása (0 ms ébresztés)");
         isCinematicTransitioning = false;
@@ -34567,7 +34637,7 @@ function initAuthTerminal3D() {
 window.initAuthTerminal3D = initAuthTerminal3D;
 
 // === [#HEX:F.01.0B.00] START | name: runAuthTerminal3DModule | lines: 1891 ===
-// @calls: [#HEX:F.01.0D.00], [#HEX:F.04.16E.00], [#HEX:F.04.16A.00], [#HEX:F.07.14.00], [#HEX:F.06.48.00] | @calledBy: [#HEX:F.01.0A.00]
+// @calls: [#HEX:F.04.16E.00], [#HEX:F.05.28.00], [#HEX:F.04.15D.00], [#HEX:F.07.14.00], [#HEX:F.04.B3.00] | @calledBy: [#HEX:F.01.0A.00]
 function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     if (authTerminal3DRunning) return;
     authTerminal3DRunning = true;
@@ -34621,7 +34691,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- JELSZÓ LÁTHATÓSÁG VÁLTÓ ---
 // === [#HEX:F.09.06.00] START | name: togglePasswordVisibility | lines: 21 ===
-// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.22C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.09.0A.00], [#HEX:F.04.16C.00]
+// @calls: [#HEX:F.04.22C.00], [#HEX:F.01.0F.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.09.0A.00], [#HEX:F.04.16C.00]
     function togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
         const modalPassInput = document.querySelector('#m-login-password');
@@ -34661,7 +34731,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- THREE.JS INICIALIZÁLÁS ---
 // === [#HEX:F.04.15B.00] START | name: initThree | lines: 85 ===
-// @calls: [#HEX:F.05.21.00], [#HEX:F.04.17A.00], [#HEX:F.04.167.00], [#HEX:D.01.0D.00], [#HEX:F.04.161.00] | @calledBy: [#HEX:F.01.0B.00]
+// @calls: [#HEX:F.05.22.00], [#HEX:D.01.0D.00], [#HEX:F.05.21.00], [#HEX:F.04.161.00], [#HEX:F.09.0A.00] | @calledBy: [#HEX:F.01.0B.00]
     function initThree() {
         const container = document.getElementById('webgl-container');
         if (!container) return;
@@ -34923,7 +34993,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // Képernyő újra-rajzolása többnyelvű feliratokkal (1.5x NÖVELT BETŰMÉRET & ÚJ TABSOR)
 // === [#HEX:F.07.14.00] START | name: updateScreenDisplay | lines: 126 ===
-// @calls: [#HEX:F.04.164.00], [#HEX:F.04.163.00], [#HEX:F.04.15A.00], [#HEX:F.04.165.00], [#HEX:F.04.162.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.161.00], [#HEX:F.05.21.00], [#HEX:F.05.23.00], [#HEX:F.04.16A.00]
+// @calls: [#HEX:F.04.15A.00], [#HEX:F.04.162.00], [#HEX:F.04.165.00], [#HEX:F.04.163.00], [#HEX:F.04.164.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.161.00], [#HEX:F.05.21.00], [#HEX:F.05.23.00], [#HEX:F.04.16A.00]
     function updateScreenDisplay() {
         if (!screenCanvas || !ctx) return;
         const w = screenCanvas.width;
@@ -35422,7 +35492,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- GLB MODELL BETÖLTÉSE ---
 // === [#HEX:F.04.167.00] START | name: loadDeviceModel | lines: 122 ===
-// @calls: [#HEX:F.04.168.00], [#HEX:F.03.0C.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
+// @calls: [#HEX:F.03.0D.00], [#HEX:F.03.0B.00], [#HEX:F.04.168.00], [#HEX:F.03.0C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
     function loadDeviceModel() {
         const gltfLoader = new GLTFLoader();
         var isLocalEnv = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:');
@@ -35575,7 +35645,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
 // === [#HEX:F.05.21.00] START | name: setupDirectKeyboardAndRaycast | lines: 164 ===
-// @calls: [#HEX:F.04.16E.00], [#HEX:F.04.170.00], [#HEX:F.04.16C.00], [#HEX:F.07.14.00], [#HEX:F.08.06.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
+// @calls: [#HEX:F.04.16E.00], [#HEX:F.07.14.00], [#HEX:F.04.16C.00], [#HEX:F.04.171.00], [#HEX:F.04.22C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
     function setupDirectKeyboardAndRaycast() {
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -35756,7 +35826,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.05.22.00] END ===
 
 // === [#HEX:F.05.23.00] START | name: setupModalInputSync | lines: 19 ===
-// @calls: [#HEX:F.04.16A.00], [#HEX:F.07.14.00], [#HEX:F.01.0F.00], [#HEX:F.05.24.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
+// @calls: [#HEX:F.07.14.00], [#HEX:F.01.0F.00], [#HEX:F.05.24.00], [#HEX:F.04.16A.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00]
     function setupModalInputSync() {
 // === [#HEX:F.04.16A.00] START | name: bindInput | lines: 9 ===
 // @calls: [#HEX:F.05.24.00], [#HEX:F.07.14.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.23.00]
@@ -35782,7 +35852,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.05.23.00] END ===
 
 // === [#HEX:F.05.24.00] START | name: syncModalInputsFrom3D | lines: 14 ===
-// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.16B.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.23.00], [#HEX:F.04.16A.00], [#HEX:F.04.170.00], [#HEX:F.04.171.00]
+// @calls: [#HEX:F.04.16B.00], [#HEX:F.01.0F.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.23.00], [#HEX:F.04.16A.00], [#HEX:F.04.170.00], [#HEX:F.04.171.00]
     function syncModalInputsFrom3D() {
 // === [#HEX:F.04.16B.00] START | name: setVal | lines: 4 ===
 // @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.24.00]
@@ -35803,7 +35873,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.05.24.00] END ===
 
 // === [#HEX:F.04.16C.00] START | name: handleScreenUVClick | lines: 84 ===
-// @calls: [#HEX:F.09.08.00], [#HEX:F.04.16E.00], [#HEX:F.09.06.00], [#HEX:F.07.14.00], [#HEX:F.04.16D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
+// @calls: [#HEX:F.04.16E.00], [#HEX:F.07.14.00], [#HEX:F.09.06.00], [#HEX:F.04.22C.00], [#HEX:F.04.16D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
     function handleScreenUVClick(uv, clickX, clickY) {
         const pxX = uv.x * 1024;
         const pxY = (1 - uv.y) * 512;
@@ -35908,7 +35978,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.16D.00] END ===
 
 // === [#HEX:F.04.16E.00] START | name: focusVirtualInput | lines: 39 ===
-// @calls: [#HEX:F.04.16F.00], [#HEX:F.04.172.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00]
+// @calls: [#HEX:F.04.172.00], [#HEX:F.04.16F.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00]
     function focusVirtualInput(touchX, touchY) {
         if (!virtualInput) return;
         const targetFieldKey = getActiveFieldKey();
@@ -35954,7 +36024,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.16E.00] END ===
 
 // === [#HEX:F.04.170.00] START | name: handleDirectKeyInput | lines: 56 ===
-// @calls: [#HEX:F.09.08.00], [#HEX:F.04.16E.00], [#HEX:F.07.14.00], [#HEX:F.04.15A.00], [#HEX:F.04.172.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
+// @calls: [#HEX:F.04.16E.00], [#HEX:F.07.14.00], [#HEX:F.04.15A.00], [#HEX:F.04.172.00], [#HEX:F.05.24.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
     function handleDirectKeyInput(event) {
         if (!event || typeof event.key === 'undefined' || event.key === null) return;
         const key = event.key;
@@ -36014,7 +36084,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.170.00] END ===
 
 // === [#HEX:F.04.171.00] START | name: syncVirtualInput | lines: 8 ===
-// @calls: [#HEX:F.05.24.00], [#HEX:F.04.172.00], [#HEX:F.07.14.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
+// @calls: [#HEX:F.04.172.00], [#HEX:F.05.24.00], [#HEX:F.07.14.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
     function syncVirtualInput(val) {
         let targetFieldKey = getActiveFieldKey();
         if (!targetFieldKey) return;
@@ -36095,7 +36165,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.173.00] END ===
 
 // === [#HEX:F.04.174.00] START | name: executeCurrentMode | lines: 8 ===
-// @calls: [#HEX:F.06.0A.00], [#HEX:F.01.0C.00], [#HEX:F.01.0E.00], [#HEX:F.01.0D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00]
+// @calls: [#HEX:F.01.0E.00], [#HEX:F.06.0A.00], [#HEX:F.01.0D.00], [#HEX:F.01.0C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00], [#HEX:F.04.16C.00], [#HEX:F.04.170.00]
     function executeCurrentMode() {
         if (typeof requestLandscapeAndFullscreen === 'function') {
             requestLandscapeAndFullscreen();
@@ -36108,7 +36178,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
 // === [#HEX:F.08.06.00] START | name: handleLangSwitch | lines: 16 ===
-// @calls: [#HEX:F.07.14.00], [#HEX:F.08.07.00], [#HEX:F.05.25.00], [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
+// @calls: [#HEX:F.07.14.00], [#HEX:F.05.25.00], [#HEX:F.08.07.00], [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.21.00]
     function handleLangSwitch(lang) {
         window.currentLang = lang;
         if (typeof localStorage !== 'undefined') {
@@ -36161,7 +36231,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- INFÓ MODAL KEZELŐ ---
 // === [#HEX:F.05.26.00] START | name: toggleInfoModal | lines: 11 ===
-// @calls: [#HEX:F.05.25.00], [#HEX:F.05.24.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.28.00], [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
+// @calls: [#HEX:F.05.24.00], [#HEX:F.05.25.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.05.28.00], [#HEX:F.05.29.00], [#HEX:F.04.22E.00]
     function toggleInfoModal() {
         const modal = document.getElementById('info-modal');
         if (!modal) return;
@@ -36176,7 +36246,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.05.26.00] END ===
 
 // === [#HEX:F.05.27.00] START | name: openInfoModalAuto | lines: 8 ===
-// @calls: [#HEX:F.05.25.00], [#HEX:F.05.24.00] | @calledBy: [#HEX:F.01.01.00], [#HEX:F.01.02.00], [#HEX:F.01.0B.00]
+// @calls: [#HEX:F.05.24.00], [#HEX:F.05.25.00] | @calledBy: [#HEX:F.01.01.00], [#HEX:F.01.02.00], [#HEX:F.01.0B.00]
     function openInfoModalAuto() {
         const modal = document.getElementById('info-modal');
         if (modal) {
@@ -36244,7 +36314,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.176.00] END ===
 
 // === [#HEX:F.06.48.00] START | name: callBackendApi | lines: 29 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.176.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.0C.00], [#HEX:F.01.0D.00], [#HEX:F.01.0E.00]
+// @calls: [#HEX:F.04.176.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.0C.00], [#HEX:F.01.0D.00], [#HEX:F.01.0E.00]
     function callBackendApi(action, dataObj, onSuccess, onFailure) {
         const payload = {
             action: action,
@@ -36292,7 +36362,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.22C.00] END ===
 
 // === [#HEX:F.01.0C.00] START | name: executeLogin | lines: 59 ===
-// @calls: [#HEX:F.04.178.00], [#HEX:F.06.48.00], [#HEX:F.04.15A.00], [#HEX:B.07.01.00], [#HEX:F.04.22C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00]
+// @calls: [#HEX:F.06.48.00], [#HEX:F.04.15A.00], [#HEX:B.07.01.00], [#HEX:F.04.178.00], [#HEX:F.04.22C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00]
     function executeLogin() {
         const u = formValues.LOGIN.username.trim();
         const p = formValues.LOGIN.password.trim();
@@ -36355,7 +36425,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.01.0C.00] END ===
 
 // === [#HEX:F.01.0D.00] START | name: executeRegister | lines: 21 ===
-// @calls: [#HEX:F.06.48.00], [#HEX:F.04.15A.00], [#HEX:B.07.DB.00], [#HEX:F.04.22C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00]
+// @calls: [#HEX:F.06.48.00], [#HEX:B.07.DB.00], [#HEX:F.04.15A.00], [#HEX:F.04.22C.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.174.00]
     function executeRegister() {
         const em = formValues.REGISTER.email.trim();
         const un = formValues.REGISTER.username.trim();
@@ -36416,7 +36486,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     let initialCameraFov = 50;
 
 // === [#HEX:F.04.178.00] START | name: startHyperspaceCinematic | lines: 75 ===
-// @calls: [#HEX:F.04.15.00], [#HEX:F.04.16D.00], [#HEX:F.04.B3.00], [#HEX:F.04.05.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.0C.00]
+// @calls: [#HEX:F.04.B3.00], [#HEX:F.04.15.00], [#HEX:F.04.05.00], [#HEX:F.04.16D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.0C.00]
     function startHyperspaceCinematic(onComplete) {
         if (typeof preloadAllSubpages === 'function') preloadAllSubpages();
         if (typeof warmup3DHarborAssets === 'function') warmup3DHarborAssets();
@@ -36494,7 +36564,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     }
 // === [#HEX:F.04.178.00] END ===
 // === [#HEX:F.04.179.00] START | name: reset3DTerminalState | lines: 20 ===
-// @calls: [#HEX:F.09.08.00], [#HEX:F.07.14.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.01.0A.00], [#HEX:F.01.0B.00]
+// @calls: [#HEX:F.07.14.00], [#HEX:F.09.08.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.01.0A.00], [#HEX:F.01.0B.00]
     function reset3DTerminalState() {
         isCinematicFlight = false;
         if (camera) {
@@ -36519,7 +36589,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 
     // --- RENDER & ANIMÁCIÓS CIKLUS ---
 // === [#HEX:F.04.17A.00] START | name: onWindowResize | lines: 6 ===
-// @calls: none | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.267.00], [#HEX:F.04.281.00], [#HEX:F.04.27D.00], [#HEX:F.04.2F9.00]
+// @calls: none | @calledBy: [#HEX:F.04.266.00], [#HEX:F.04.267.00], [#HEX:F.04.281.00], [#HEX:F.04.27D.00], [#HEX:F.04.295.00]
     function onWindowResize() {
         if (!camera || !renderer) return;
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -36529,7 +36599,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.17A.00] END ===
 
 // === [#HEX:F.04.22D.00] START | name: animate | lines: 73 ===
-// @calls: [#HEX:F.04.160.00], [#HEX:F.07.14.00] | @calledBy: [#HEX:F.04.11.00], [#HEX:F.04.13.00], [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00]
+// @calls: [#HEX:F.07.14.00], [#HEX:F.04.160.00] | @calledBy: [#HEX:F.04.11.00], [#HEX:F.04.13.00], [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00]
     function animate(timestamp) {
         requestAnimationFrame(animate);
 
@@ -36633,7 +36703,7 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
 // ==========================================================================
 
 // === [#HEX:F.05.29.00] START | name: initPillarThreeModalAndKeyboardManager | lines: 172 ===
-// @calls: [#HEX:F.05.2A.00], [#HEX:F.05.14.00], [#HEX:F.05.07.00], [#HEX:F.05.2B.00], [#HEX:D.01.0D.00] | @calledBy: none
+// @calls: [#HEX:F.05.12.00], [#HEX:D.01.0D.00], [#HEX:F.04.17D.00], [#HEX:F.05.10.00], [#HEX:F.05.2B.00] | @calledBy: none
 (function initPillarThreeModalAndKeyboardManager() {
     var savedScrollY = 0;
     var isScrollLocked = false;
@@ -36728,7 +36798,7 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
 
     // 3. Billentyűzetes ESC Bezárás Kezelő
 // === [#HEX:F.04.22E.00] START | name: handleEscKey | lines: 28 ===
-// @calls: [#HEX:F.05.2A.00], [#HEX:F.05.14.00], [#HEX:F.05.07.00], [#HEX:F.05.26.00], [#HEX:F.05.10.00] | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17D.00]
+// @calls: [#HEX:F.05.12.00], [#HEX:F.05.10.00], [#HEX:F.05.2A.00], [#HEX:F.05.0A.00], [#HEX:F.05.26.00] | @calledBy: [#HEX:F.05.29.00], [#HEX:F.04.17D.00]
     function handleEscKey(e) {
         if (e.key === 'Escape' || e.keyCode === 27) {
             var openModals = document.querySelectorAll(
@@ -36761,7 +36831,7 @@ window.runAuthTerminal3DModule = runAuthTerminal3DModule;
 
     // 4. Eseménykezelők és Megfigyelők Inicializálása
 // === [#HEX:F.04.17D.00] START | name: setupListeners | lines: 44 ===
-// @calls: [#HEX:F.05.2A.00], [#HEX:F.05.2B.00], [#HEX:D.01.0D.00], [#HEX:F.04.22E.00] | @calledBy: [#HEX:F.05.29.00]
+// @calls: [#HEX:D.01.0D.00], [#HEX:F.05.2A.00], [#HEX:F.05.2B.00], [#HEX:F.04.22E.00] | @calledBy: [#HEX:F.05.29.00]
     function setupListeners() {
         // Visual Viewport figyelése
         if (window.visualViewport) {

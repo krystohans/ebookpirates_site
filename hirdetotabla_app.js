@@ -1,7 +1,7 @@
 
 // === KOCSMAI HIRDETOTABLA ===
 // === [#HEX:F.04.183.00] START | name: openNoticeBoard | lines: 18 ===
-// @calls: [#HEX:F.04.184.00], [#HEX:F.06.4A.00], [#HEX:B.07.B8.00] | @calledBy: none
+// @calls: [#HEX:F.06.4A.00], [#HEX:F.04.184.00], [#HEX:B.07.B8.00] | @calledBy: none
 function openNoticeBoard() {
     var modal = document.getElementById('notice-board-modal');
     if(modal) modal.style.display = 'flex';

@@ -71,7 +71,7 @@ window.QuizConfig = {
 
 class QuizManager {
 // === [#HEX:D.01.4E.00] START | name: constructor | lines: 20 ===
-// @calls: [#HEX:D.01.54.00], [#HEX:D.04.02.00], [#HEX:D.01.52.00], [#HEX:D.01.50.00] | @calledBy: none
+// @calls: [#HEX:D.01.54.00], [#HEX:D.01.50.00], [#HEX:D.04.02.00], [#HEX:D.01.52.00] | @calledBy: none
   constructor() {
     this.questions = [];
     // Pedagógiai kérdéskövetés:
@@ -113,7 +113,7 @@ class QuizManager {
 // === [#HEX:D.01.4F.00] END ===
 
 // === [#HEX:D.04.02.00] START | name: loadQuestions | lines: 37 ===
-// @calls: [#HEX:B.07.D4.00], [#HEX:D.01.79.00] | @calledBy: [#HEX:D.01.4E.00]
+// @calls: [#HEX:D.01.79.00], [#HEX:B.07.D4.00] | @calledBy: [#HEX:D.01.4E.00]
   async loadQuestions() {
     const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
     const jsonFile = (lang === 'en') ? 'quiz_questions_en.json' : 'quiz_questions.json';
@@ -185,7 +185,7 @@ class QuizManager {
 // === [#HEX:D.01.50.00] END ===
 
 // === [#HEX:D.01.52.00] START | name: bindEvents | lines: 15 ===
-// @calls: [#HEX:D.01.4F.00], [#HEX:D.04.09.00], [#HEX:D.01.0D.00] | @calledBy: [#HEX:D.01.4E.00], [#HEX:D.01.50.00], [#HEX:D.01.51.00]
+// @calls: [#HEX:D.04.09.00], [#HEX:D.01.0D.00], [#HEX:D.01.4F.00] | @calledBy: [#HEX:D.01.4E.00], [#HEX:D.01.50.00], [#HEX:D.01.51.00]
   bindEvents() {
     window.addEventListener('resize', () => {
       if (this.uiReady) this.updateScale();
@@ -332,7 +332,7 @@ class QuizManager {
 // === [#HEX:D.04.06.00] END ===
 
 // === [#HEX:D.04.07.00] START | name: renderQuestion | lines: 169 ===
-// @calls: [#HEX:D.04.05.00], [#HEX:D.04.04.00], [#HEX:D.01.4F.00], [#HEX:D.04.09.00] | @calledBy: [#HEX:D.04.06.00]
+// @calls: [#HEX:D.04.09.00], [#HEX:D.01.4F.00], [#HEX:D.04.05.00], [#HEX:D.04.04.00] | @calledBy: [#HEX:D.04.06.00]
   renderQuestion() {
     const overlay = document.getElementById('quiz-overlay');
     const panel = document.getElementById('quiz-panel-box');
@@ -514,7 +514,7 @@ class QuizManager {
 // === [#HEX:D.04.08.00] END ===
 
 // === [#HEX:D.04.09.00] START | name: handleAnswer | lines: 75 ===
-// @calls: [#HEX:D.01.53.00], [#HEX:D.04.08.00], [#HEX:D.04.03.00], [#HEX:D.04.0A.00], [#HEX:B.15.BB.00] | @calledBy: [#HEX:D.01.52.00], [#HEX:D.04.07.00]
+// @calls: [#HEX:D.04.08.00], [#HEX:D.01.22.00], [#HEX:D.04.0A.00], [#HEX:B.15.BB.00], [#HEX:D.04.03.00] | @calledBy: [#HEX:D.01.52.00], [#HEX:D.04.07.00]
   handleAnswer(selectedIdx) {
     const overlay = document.getElementById('quiz-overlay');
     const isCorrect = (selectedIdx === this.currentCorrectIndex);
@@ -600,7 +600,7 @@ class QuizManager {
 
   // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ (AGENTS.md Felhasználói Szabály) ───
 // === [#HEX:D.01.54.00] START | name: initVisualEditor | lines: 136 ===
-// @calls: [#HEX:D.01.58.00], [#HEX:D.01.55.00], [#HEX:D.01.56.00], [#HEX:D.04.06.00] | @calledBy: [#HEX:D.01.4E.00], [#HEX:D.01.50.00], [#HEX:D.01.51.00]
+// @calls: [#HEX:D.04.06.00], [#HEX:D.01.55.00], [#HEX:D.01.56.00], [#HEX:D.01.58.00] | @calledBy: [#HEX:D.01.4E.00], [#HEX:D.01.50.00], [#HEX:D.01.51.00]
   initVisualEditor() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('edit') !== '1' && params.get('editor') !== '1') {

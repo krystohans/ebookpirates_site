@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBankPirates — Makrogazdasági Prezentáció, Osztalék Kalkulátor &amp; 10 Éves Prognosztizáló</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=20261030">
+</head>
+<body style="background: #0b0f17; color: #e6edf3; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; overflow-y: auto;" onload="recalcEbank(); loadForecastData(); recalculateForecastEngine(); switchRoleView('mybooks'); loadForecastFromCloud();">
+
+    <!-- FELSŐ PREZENTÁCIÓS FEJLÉC -->
+    <div style="background: linear-gradient(180deg, #161f30 0%, #0b0f17 100%); border-bottom: 2px solid #d4af37; padding: 28px 20px;">
+        <div style="max-width: 1380px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #f3c623; font-weight: 700; margin-bottom: 6px;">
+                    🏴‍☠️ eBookPirates Virtuális Makrogazdaság &amp; Jegybanki Architektúra
+                </div>
+                <h1 style="margin: 0 0 8px 0; font-size: 28px; color: #ffffff;">
+                    Bevételkimutató Prezentáció, Jutalék-Kalkulátor &amp; 10 Éves Prognózis
+                </h1>
+                <p style="margin: 0; color: #94a3b8; font-size: 14px; max-width: 900px;">
+                    Zárt hurkú háromcsatornás főkönyvi modell: Fix számlás elszámolások (Könyvszentelés &amp; 100% átfolyó B2B Escrow), Súlyozott Kalózkredit Pool visszaszorzás, valamint Zárt Karantén Tárcák (0% inflációs hígulás).
+                </p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="#sec-prezentacio" class="fc-reset-btn" style="text-decoration: none; padding: 10px 14px; font-size: 13px; color: #e2e8f0;">📘 Gazdasági Modell</a>
+                <a href="#sec-kalkulator" class="ebank-trigger-btn" style="text-decoration: none; padding: 10px 16px; font-size: 13px;">⚖️ Osztalék Kalkulátor</a>
+                <a href="#sec-prognozis" class="ebank-forecast-trigger-btn" style="text-decoration: none; padding: 10px 16px; font-size: 13px;">📈 10 Éves Prognosztizáló</a>
+                <a href="#sec-kimutatasok" class="fc-reset-btn" style="text-decoration: none; padding: 10px 16px; font-size: 13px; background: linear-gradient(135deg, #a855f7, #7e22ce); color: #fff; font-weight: 700; border-color: #d8b4fe;">👥 Szereplői Kimutatások</a>
+                <a href="index.html" class="fc-reset-btn" style="text-decoration: none; padding: 10px 14px; font-size: 13px; color: #fde047; border-color: #d4af37;">⚓ Vissza a Játékba</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. SZEKCIÓ: MAKROGAZDASÁGI PREZENTÁCIÓ & CÉLKÖZÖNSÉG MÁTRIX -->
+    <div id="sec-prezentacio" class="ebank-calc-container" style="margin-top: 24px;">
+        <div class="ebank-header">
+            <div>
+                <h2>🏛️ I. A Három Elszámolási Csatorna &amp; Piaci Skálázódási Modell</h2>
+                <p>Szigorú könyvelési és matematikai fal a fix euró-alapú elszámolások, a súlyozott Kalózkredit-pool és a belső nem-számlás Tálentumok között</p>
+            </div>
+        </div>
+
+        <div class="ebank-main-grid" style="margin-bottom: 20px;">
+            <div class="ebank-panel" style="border-top: 3px solid #f3c623;">
+                <h3>1. Fix Kifizetési Csatorna (Számlaképes B2B / Szerzők / Monkok)</h3>
+                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.55;">
+                    <strong>Forrás:</strong> Könyvszentelés (B2C könyveladás), Kiadói NJK-ügynök megbízások és egyedi világépítés.<br>
+                    <strong>Mechanika:</strong> A MoR + ÁFA levonás után a nettó könyvbevételből leválik a terjesztő-olvasói jutalék, a Felhőkolostor/fejlesztői előleg-törlesztés (Hitel-mellékcsatorna), a maradék pedig számla ellenében közvetlenül a szerzőhöz/kiadóhoz kerül. A Kiadói B2B megbízások <strong>100%-ban átfolyó (Escrow)</strong> tételként (0 € platformmarzs-torzítással) a megbízott fejlesztőket és monkokat illetik.
+                </p>
+            </div>
+
+            <div class="ebank-panel" style="border-top: 3px solid #06b6d4;">
+                <h3>2. Súlyozott Kalózkredit Pool (eBankPirates Jegybank)</h3>
+                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.55;">
+                    <strong>Forrás:</strong> Az eBankPirates-ben valós, külső euróból átváltott Tálentumok + a terjesztői tárcákból ténylegesen Kalózkreditre váltott (euró-fedezett) hányad.<br>
+                    <strong>Képlet:</strong> <code>1 KK Valós Értéke (€) = Minijáték Osztalék Pool (€) / Összes Elégetett KK</code>.<br>
+                    Az egyes minijátékok fejlesztői a játékukban elégetett Kalózkreditek arányában kapják meg a valós euró-osztalékot, miközben a kibocsátott vs. elégetett KK aránya élőben mutatja az inflációs vagy deflációs nyomást.
+                </p>
+            </div>
+
+            <div class="ebank-panel" style="border-top: 3px solid #a855f7;">
+                <h3>3. Zárt Hurkú (Karantén) Tárcák (Nem számlás játékosok)</h3>
+                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.55;">
+                    <strong>Forrás:</strong> Nem számlaképes olvasók könyvterjesztési jutaléka és a P2P Lélekristály kereskedelem.<br>
+                    <strong>Inflációvédelem:</strong> Ezek a Tálentumok vásárlóerő-utalványként (deferred revenue) zárt főkönyvben pihennek. Fiat kifizetésből kizárva: játékon belül költhetők el vagy P2P átküldhetők, így <strong>0%-ban hígítják</strong> a fejlesztők euró-osztalékát. Amikor a terjesztő Kalózkreditre váltja, a könyvszenteléskor félretett euró-fedezete automatikusan átvezetődik a 2. csatornába!
+                </p>
+            </div>
+        </div>
+
+        <div class="ebank-main-grid">
+            <div class="ebank-panel">
+                <h3>🎯 Prezentációs Fókusz Célközönségenként</h3>
+                <table class="fc-table">
+                    <thead>
+                        <tr>
+                            <th>Célközönség</th>
+                            <th>Kulcskérdés</th>
+                            <th>Bemutatandó Mechanizmus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color:#fde047;">Kiadók és Szerzők</strong></td>
+                            <td>Hogyan hoz az NJK-beszélgetés piackutatási adatot és könyveladást?</td>
+                            <td>Marketingkérdést feltevő NJK-párbeszéd ingyenes felmérése + Saját könyvügynök és világépítés (100% átfolyó B2B fejlesztői megbízással).</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color:#38bdf8;">Fejlesztők és Monkok</strong></td>
+                            <td>Mennyi pénzt keresnek egy minijátékkal vagy megszerkesztett könyvvel?</td>
+                            <td>Élő Osztalék Kalkulátor + Sankey-diagram: a játékuk várható kreditforgalmából visszaszorzott euró és a Felhőkolostor hitel-mellékcsatorna.</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color:#34d399;">Befektetők / Partnerek</strong></td>
+                            <td>Skálázhatóság, inflációkontroll és 10 éves bevételi görbe?</td>
+                            <td>MoR/ÁFA 8–30% kényszerpálya, Karantén tárca védelem, 12 hónapos LSR gördülő prognózis és 7 nyelvű PPP + Churn mátrix.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ebank-panel">
+                <h3>🛡️ MoR (Paddle / Patreon), ÁFA &amp; Kifizetési Kopás Határértékek (Cap 8–30%)</h3>
+                <table class="fc-table">
+                    <thead>
+                        <tr>
+                            <th>Költségtípus</th>
+                            <th>Minimum (Optimális)</th>
+                            <th>Maximum (Kedvezőtlen)</th>
+                            <th>Gazdasági háttér</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ÁFA (VAT / Sales Tax)</strong></td>
+                            <td>0% – 7%</td>
+                            <td>20% – 27%</td>
+                            <td>Kedvezményes e-könyv kulcs vs. sztenderd EU digitális szolgáltatás ÁFA.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MoR Jutalék (Paddle / Patreon)</strong></td>
+                            <td>5% + 0,50 €</td>
+                            <td>8% – 10% + 0,50 €</td>
+                            <td>Mikrovásárlásoknál a fix 0,50 € díj %-osan magasabb; csomagoknál ~6%.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kifizetési díj (Wise / SEPA / PayPal)</strong></td>
+                            <td>0,5% – 1%</td>
+                            <td>2% – 3,5%</td>
+                            <td>Csak a ténylegesen kifizetett számlás összegeket terheli (B2B direkt: ~1%).</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color:#fde047;">ÖSSZESÍTETT KOPÁS (Kényszerpálya)</strong></td>
+                            <td><strong style="color:#34d399;">~8% – 12%</strong></td>
+                            <td><strong style="color:#f87171;">~28% – 30%</strong></td>
+                            <td>Matematikailag a B2C bevételhez kötve (nem szakadhat el a forgalomtól).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SZEKCIÓ: KÉPLET-VEZÉRELT FŐKÖNYVI & OSZTALÉK SZIMULÁTOR -->
+    <div id="sec-kalkulator" class="ebank-calc-container">
+        <div class="ebank-header">
+            <div>
+                <h2>🏴‍☠️ II. eBankPirates — Képlet-vezérelt Főkönyvi &amp; Osztalék Szimulátor</h2>
+                <p>1 Tálentum = 1.00 € | Automatikus MoR/ÁFA levonás, 100% átfolyó B2B és zárt tárcás inflációvédelem</p>
+            </div>
+        </div>
+
+        <div class="ebank-kpi-grid">
+            <div class="ebank-kpi-card gold">
+                <span class="kpi-title">Bruttó Bejövő Forgalom</span>
+                <span class="kpi-value" id="kpi-gross-total">0 €</span>
+                <span class="kpi-sub" id="kpi-mor-loss">MoR &amp; ÁFA kopás: 0 €</span>
+            </div>
+            <div class="ebank-kpi-card cyan">
+                <span class="kpi-title">1 Kalózkredit Valós Értéke</span>
+                <span class="kpi-value" id="kpi-credit-value">0.0000 €</span>
+                <span class="kpi-sub" id="kpi-inflation-status">Egyensúlyi állapot</span>
+            </div>
+            <div class="ebank-kpi-card purple">
+                <span class="kpi-title">Zárt Tárca (Karantén Fedezet)</span>
+                <span class="kpi-value" id="kpi-locked-wallet">0 €</span>
+                <span class="kpi-sub">Nem számlás terjesztők &amp; Lélekristály</span>
+            </div>
+            <div class="ebank-kpi-card green">
+                <span class="kpi-title">eBookPirates Központi Nettó Marzs</span>
+                <span class="kpi-value" id="kpi-platform-margin">0 €</span>
+                <span class="kpi-sub">B2B átfolyás (0 € marzs) leválasztva</span>
+            </div>
+        </div>
+
+        <div class="ebank-main-grid">
+            <div class="ebank-panel">
+                <h3>🎛️ 1. Bejövő Csatornák &amp; Kényszerfeltételek</h3>
+
+                <div class="slider-group">
+                    <label>Könyvszentelés (Bruttó B2C könyveladás): <strong id="val-book-gross">25 000 €</strong></label>
+                    <input type="range" id="in-book-gross" min="1000" max="150000" step="1000" value="25000" oninput="recalcEbank()">
+                </div>
+
+                <div class="slider-group">
+                    <label>eBank Kalózkredit Váltás (Valós € befizetés): <strong id="val-credit-gross">20 000 €</strong></label>
+                    <input type="range" id="in-credit-gross" min="1000" max="150000" step="1000" value="20000" oninput="recalcEbank()">
+                </div>
+
+                <div class="slider-group">
+                    <label>Kiadói B2B Megbízások (100% Átfolyó Escrow): <strong id="val-b2b-gross">15 000 €</strong></label>
+                    <input type="range" id="in-b2b-gross" min="0" max="150000" step="1000" value="15000" oninput="recalcEbank()">
+                </div>
+
+                <hr class="ebank-divider">
+                <h4>🔒 Százalékos Korlátok (Képlet-kényszerek)</h4>
+
+                <div class="slider-group">
+                    <label>MoR (Paddle/Patreon) + ÁFA + Kifizetési kopás (Cap 8–30%): <strong id="val-mor-pct">22%</strong></label>
+                    <input type="range" id="in-mor-pct" min="8" max="30" step="1" value="22" oninput="recalcEbank()">
+                </div>
+
+                <div class="slider-group">
+                    <label>Terjesztő-olvasói jutalék (Könyv nettóból): <strong id="val-aff-pct">15%</strong></label>
+                    <input type="range" id="in-aff-pct" min="5" max="35" step="1" value="15" oninput="recalcEbank()">
+                </div>
+
+                <div class="slider-group">
+                    <label>Szerzői Hitel-törlesztés (Monk/Fejl. előlegre): <strong id="val-loan-pct">25%</strong></label>
+                    <input type="range" id="in-loan-pct" min="0" max="60" step="5" value="25" oninput="recalcEbank()">
+                </div>
+
+                <div class="slider-group">
+                    <label>eBank / Platform jutalék (Könyv + Kredit nettóból): <strong id="val-plat-pct">15%</strong></label>
+                    <input type="range" id="in-plat-pct" min="5" max="30" step="1" value="15" oninput="recalcEbank()">
+                </div>
+
+                <div class="slider-group">
+                    <label>Terjesztői Tálentumokból Kalózkreditre váltott arány: <strong id="val-aff-convert">30%</strong></label>
+                    <input type="range" id="in-aff-convert" min="0" max="100" step="5" value="30" oninput="recalcEbank()">
+                </div>
+            </div>
+
+            <div class="ebank-panel">
+                <h3>📊 2. Automatikus Csatorna-Elszámolás</h3>
+
+                <div class="channel-box ch-fixed">
+                    <h4>1. Fix Elszámolási Csatorna (Számlás kifizetések)</h4>
+                    <div class="ledger-row"><span>Könyvszentelés Nettó (MoR/ÁFA után):</span><strong id="out-book-net">0 €</strong></div>
+                    <div class="ledger-row"><span>↳ eBank Platform Jutalék (Könyvből):</span><strong id="out-book-plat">0 €</strong></div>
+                    <div class="ledger-row"><span>↳ Hitel-mellékcsatorna (Monkok/Fejlesztők):</span><strong id="out-loan-pay">0 €</strong></div>
+                    <div class="ledger-row highlight"><span>↳ Szerző / Kiadó Tiszta Kifizetés:</span><strong id="out-author-pay">0 €</strong></div>
+                    <div class="ledger-row highlight-b2b"><span>↳ Kiadói B2B Fejlesztői Kifizetés (99% átfolyó):</span><strong id="out-b2b-pay">0 €</strong></div>
+                </div>
+
+                <div class="channel-box ch-weighted">
+                    <h4>2. Súlyozott Kalózkredit Pool (eBank Jegybank)</h4>
+                    <div class="ledger-row"><span>Valós €-ból váltott Nettó Tálentum:</span><strong id="out-credit-net">0 €</strong></div>
+                    <div class="ledger-row"><span>+ Terjesztői tárcából átvezetett € fedezet:</span><strong id="out-aff-backed">0 €</strong></div>
+                    <div class="ledger-row"><span>- eBank Platform Jutalék (Kreditből):</span><strong id="out-credit-plat">0 €</strong></div>
+                    <div class="ledger-row highlight-cyan"><span>= Minijátékok Szétosztható Osztalék Alapja:</span><strong id="out-minigame-pool">0 €</strong></div>
+                </div>
+
+                <div class="channel-box ch-quarantine">
+                    <h4>3. Zárt Tárcák (Nem számlás / Karantén Főkönyv)</h4>
+                    <div class="ledger-row"><span>Terjesztő-olvasóknál maradó Tálentum (Fedezett):</span><strong id="out-aff-locked">0 T (0 €)</strong></div>
+                    <div class="ledger-row">
+                        <span>P2P Lélekristály &amp; belső Tálentum forgalom:</span>
+                        <input type="number" id="in-p2p-crystal" value="4500" min="0" step="500" class="inline-num" oninput="recalcEbank()">
+                    </div>
+                    <p class="quarantine-note">ℹ️ A P2P Lélekristály és a bent tartott terjesztői Tálentum ki van zárva a számlás kifizetésekből, így 0%-ban inflálja a fejlesztői osztalékpoolt.</p>
+                </div>
+            </div>
+
+            <div class="ebank-panel">
+                <h3>🎮 3. Kalózkredit Forgalom &amp; Minijáték Osztalék</h3>
+                <p class="panel-sub">Állítsd be a váltási arányt és a játékokban elégetett krediteket a visszaszorzáshoz:</p>
+
+                <div class="slider-group">
+                    <label>1 Nettó Tálentum (1€) = <strong id="val-exchange-rate">100</strong> Kalózkredit</label>
+                    <input type="range" id="in-exchange-rate" min="10" max="1000" step="10" value="100" oninput="recalcEbank()">
+                </div>
+
+                <div class="credit-balance-bar">
+                    <div>Kibocsátott: <strong id="out-minted-credits">0 KK</strong></div>
+                    <div>Elégetett: <strong id="out-burned-credits">0 KK</strong></div>
+                </div>
+
+                <hr class="ebank-divider">
+                <h4>Elégetett Kalózkreditek Minijátékonként:</h4>
+
+                <div class="slider-group">
+                    <label>⚔️ 1. Minijáték (Alaprendszer / Tengeri csata): <strong id="val-mg1">650 000 KK</strong></label>
+                    <input type="range" id="in-mg1" min="0" max="3000000" step="50000" value="650000" oninput="recalcEbank()">
+                    <div class="mg-payout">Kifizethető osztalék: <strong id="pay-mg1">0 €</strong> (<span id="pct-mg1">0%</span>)</div>
+                </div>
+
+                <div class="slider-group">
+                    <label>🎲 2. Minijáték (Kiadói Világ / Kocsmai kocka): <strong id="val-mg2">450 000 KK</strong></label>
+                    <input type="range" id="in-mg2" min="0" max="3000000" step="50000" value="450000" oninput="recalcEbank()">
+                    <div class="mg-payout">Kifizethető osztalék: <strong id="pay-mg2">0 €</strong> (<span id="pct-mg2">0%</span>)</div>
+                </div>
+
+                <div class="slider-group">
+                    <label>🧭 3. Minijáték (Külsős Fejlesztő / Sziget-felfedező): <strong id="val-mg3">300 000 KK</strong></label>
+                    <input type="range" id="in-mg3" min="0" max="3000000" step="50000" value="300000" oninput="recalcEbank()">
+                    <div class="mg-payout">Kifizethető osztalék: <strong id="pay-mg3">0 €</strong> (<span id="pct-mg3">0%</span>)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ebank-flow-footer">
+            <h4>📐 Teljes Mérleg-ellenőrzés (100%-os Szétosztási Garancia) &amp; Interaktív Sankey Pénzáramlási Diagram</h4>
+            <div class="flow-bar-container" id="ebank-flow-bar"></div>
+            <div class="flow-legend" id="ebank-flow-legend"></div>
+            <div class="sankey-svg-box" id="ebank-sankey-box"></div>
+        </div>
+    </div>
+
+    <!-- 3. SZEKCIÓ: ÖNTANULÓ ÉVES ÉS 10 ÉVES BEVÉTEL-PROGNOSZTIZÁLÓ -->
+    <div id="sec-prognozis" class="ebank-forecast-container" style="margin-bottom: 50px;">
+        <div class="ebank-header">
+            <div>
+                <h2>🧭 III. eBankPirates — Öntanuló Éves &amp; 10 Éves Bevétel-Prognosztizáló</h2>
+                <p>Valós idejű éves (LSR regressziós) és 10 éves (7 nyelvű PPP + Regény-élettartam &amp; Churn) előrejelzés</p>
+            </div>
+            <div>
+                <span id="fc-cloud-sync-status" style="font-size: 13px; color: #38bdf8;">☁️ Helyi + Google Sheets szinkron</span>
+            </div>
+        </div>
+
+        <!--GYORS PROFILOK & JSON SZINKRON SÁV -->
+        <div class="forecast-profile-bar">
+            <div class="profile-btn-group">
+                <span class="profile-label">⚡ Gyors Szimulációs Profilok:</span>
+                <button class="fc-preset-btn" onclick="loadForecastFromCloud()" style="border-color:#34d399; color:#34d399; font-weight:700;">🟢 Élő 4 Táblázat + Kincsek</button>
+                <button class="fc-preset-btn" onclick="applyPresetProfile('conservative')">🛡️ Konzervatív (Induló)</button>
+                <button class="fc-preset-btn active" onclick="applyPresetProfile('realistic')">⚖️ Reális (Alfa Bázis)</button>
+                <button class="fc-preset-btn" onclick="applyPresetProfile('enterprise')">🚀 Kiadói B2B &amp; Nemzetközi</button>
+            </div>
+            <div class="profile-btn-group">
+                <button class="fc-reset-btn" onclick="exportForecastJson()">⬇️ Profil Mentés (JSON)</button>
+                <button class="fc-reset-btn" onclick="document.getElementById('fc-json-upload').click()">⬆️ Profil Betöltés (JSON)</button>
+                <input type="file" id="fc-json-upload" accept=".json" style="display:none" onchange="importForecastJson(event)">
+                <button class="fc-reset-btn" onclick="window.print()">🖨️ PDF / Nyomtatás</button>
+            </div>
+        </div>
+
+        <div class="forecast-input-bar">
+            <h4>➕ Új időszaki bevétel-kimutatás rögzítése (Folyamatos korrekció)</h4>
+            <div class="forecast-form-grid">
+                <div>
+                    <label>Időszak (Év-Hó)</label>
+                    <input type="text" id="fc-in-period" value="2026-04" placeholder="pl. 2026-04">
+                </div>
+                <div>
+                    <label>Könyvszentelés (€)</label>
+                    <input type="number" id="fc-in-book" value="3200" min="0" step="100">
+                </div>
+                <div>
+                    <label>Kredit Váltás (€)</label>
+                    <input type="number" id="fc-in-credit" value="2400" min="0" step="100">
+                </div>
+                <div>
+                    <label>B2B Megbízás (€)</label>
+                    <input type="number" id="fc-in-b2b" value="1500" min="0" step="100">
+                </div>
+                <div>
+                    <label>Könyvek (db)</label>
+                    <input type="number" id="fc-in-books-cnt" value="4" min="1" step="1">
+                </div>
+                <div>
+                    <label>Aktív Játékosok</label>
+                    <input type="number" id="fc-in-players" value="850" min="1" step="50">
+                </div>
+                <div class="fc-btn-col">
+                    <button class="fc-add-btn" onclick="addForecastRecord()">📥 Rögzítés &amp; Újraszámolás</button>
+                    <button class="fc-sync-btn" onclick="pullFromMainCalculator()" title="Átemeli a fenti kalkulátor csúszkáinak értékét">🔄 Átemelés a kalkulátorból</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ebank-kpi-grid">
+            <div class="ebank-kpi-card gold">
+                <span class="kpi-title">Eddig Rögzített Tény (YTD)</span>
+                <span class="kpi-value" id="fc-kpi-ytd">0 €</span>
+                <span class="kpi-sub" id="fc-kpi-months">0 lezárt hónap alapján</span>
+            </div>
+            <div class="ebank-kpi-card cyan">
+                <span class="kpi-title">Várható Éves Bruttó (Trend-korrigált)</span>
+                <span class="kpi-value" id="fc-kpi-annual-gross">0 €</span>
+                <span class="kpi-sub" id="fc-kpi-conservative">Konzervatív (átlag): 0 €</span>
+            </div>
+            <div class="ebank-kpi-card green">
+                <span class="kpi-title">Várható Éves Platform Nettó Marzs</span>
+                <span class="kpi-value" id="fc-kpi-annual-margin">0 €</span>
+                <span class="kpi-sub" id="fc-kpi-trend-badge">Havi dinamika: 0%</span>
+            </div>
+            <div class="ebank-kpi-card purple">
+                <span class="kpi-title">1 Könyvre / 1 Játékosra Jutó Éves Hozam</span>
+                <span class="kpi-value" id="fc-kpi-unit-book">0 € / könyv</span>
+                <span class="kpi-sub" id="fc-kpi-unit-player">ARPU: 0.00 € / játékos / év</span>
+            </div>
+        </div>
+
+        <div class="ebank-main-grid">
+            <div class="ebank-panel">
+                <div class="panel-header-flex">
+                    <h3>📊 12 Hónapos gördülő előrejelzés (Tény vs. Prognózis)</h3>
+                    <div class="chart-legend-inline">
+                        <span class="dot-actual"></span> Rögzített Tényadat
+                        <span class="dot-proj"></span> Korrigált Becsült Hónap
+                    </div>
+                </div>
+                <div class="fc-bars-wrapper" id="fc-monthly-bars"></div>
+                <div class="fc-params-mini">
+                    <label>MoR + ÁFA levonás: <strong id="fc-lbl-mor">22%</strong>
+                        <input type="range" id="fc-param-mor" min="8" max="30" value="22" oninput="recalculateForecastEngine()">
+                    </label>
+                    <label>Platform Nettó Jutalék: <strong id="fc-lbl-plat">15%</strong>
+                        <input type="range" id="fc-param-plat" min="5" max="30" value="15" oninput="recalculateForecastEngine()">
+                    </label>
+                    <label>Trend-súlyozás erőssége: <strong id="fc-lbl-damp">60%</strong>
+                        <input type="range" id="fc-param-damp" min="0" max="100" step="10" value="60" oninput="recalculateForecastEngine()">
+                    </label>
+                </div>
+                <div class="fc-params-mini" style="grid-template-columns: repeat(2, 1fr); margin-top: 10px; border-top: 1px dashed #2d3648; padding-top: 10px;">
+                    <label>📖 Regény aktív bevétszerezési ideje: <strong id="fc-lbl-lifespan">12 hónap</strong>
+                        <input type="range" id="fc-param-lifespan" min="3" max="36" step="1" value="12" oninput="recalculateForecastEngine()">
+                    </label>
+                    <label>⚡ Játékos olvasási tempó: <strong id="fc-lbl-speed">0.75 könyv / hó</strong>
+                        <input type="range" id="fc-param-speed" min="0.25" max="2.0" step="0.25" value="0.75" oninput="recalculateForecastEngine()">
+                    </label>
+                </div>
+            </div>
+
+            <div class="ebank-panel">
+                <div class="panel-header-flex">
+                    <h3>📋 Felvitt Bevétel-Kimutatások (Adatbázis)</h3>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button class="fc-reset-btn" onclick="loadForecastFromCloud()">☁️ Betöltés Sheets-ből</button>
+                        <button class="fc-reset-btn" onclick="syncForecastWithCloud()">💾 Mentés Sheets-be</button>
+                        <button class="fc-reset-btn" onclick="exportForecastJson()">⬇️ JSON Export</button>
+                        <button class="fc-reset-btn" onclick="resetDemoForecastData()">🔄 Alfa demó adatok</button>
+                    </div>
+                </div>
+                <div class="fc-table-scroll">
+                    <table class="fc-table">
+                        <thead>
+                            <tr>
+                                <th>Időszak</th>
+                                <th>Könyv (€)</th>
+                                <th>Kredit (€)</th>
+                                <th>B2B (€)</th>
+                                <th>Bruttó Össz.</th>
+                                <th>Platform Nettó</th>
+                                <th>Könyv / Játékos</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="fc-log-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="ebank-flow-footer">
+            <div class="panel-header-flex">
+                <h4>🌍 10 Éves, 7 Nyelvű Vásárlóerő-Súlyozott (PPP ARPU) &amp; Churn-Védett Prognózis</h4>
+                <button class="fc-reset-btn" onclick="resetLangWeights()">Alapértelmezett PPP szorzók</button>
+            </div>
+
+            <div class="lang-weights-grid">
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇭🇺 Magyar (Bázis)</span><strong id="lbl-w-hu">1.00x</strong></div>
+                    <input type="range" id="in-w-hu" min="0.5" max="2.0" step="0.05" value="1.00" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-hu">0 € / fő / év</span>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇬🇧🇺🇸 Angol (EN)</span><strong id="lbl-w-en">2.20x</strong></div>
+                    <input type="range" id="in-w-en" min="0.5" max="3.5" step="0.05" value="2.20" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-en">0 € / fő / év</span>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇩🇪 Német (DE)</span><strong id="lbl-w-de">1.95x</strong></div>
+                    <input type="range" id="in-w-de" min="0.5" max="3.5" step="0.05" value="1.95" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-de">0 € / fő / év</span>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇫🇷 Francia (FR)</span><strong id="lbl-w-fr">1.70x</strong></div>
+                    <input type="range" id="in-w-fr" min="0.5" max="3.0" step="0.05" value="1.70" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-fr">0 € / fő / év</span>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇪🇸 Spanyol (ES)</span><strong id="lbl-w-es">1.15x</strong></div>
+                    <input type="range" id="in-w-es" min="0.5" max="2.5" step="0.05" value="1.15" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-es">0 € / fő / év</span>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇵🇱 Lengyel (PL)</span><strong id="lbl-w-pl">1.10x</strong></div>
+                    <input type="range" id="in-w-pl" min="0.5" max="2.5" step="0.05" value="1.10" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-pl">0 € / fő / év</span>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-top"><span>🇷🇺 Orosz (RU)</span><strong id="lbl-w-ru">0.75x</strong></div>
+                    <input type="range" id="in-w-ru" min="0.3" max="2.0" step="0.05" value="0.75" oninput="recalculateForecastEngine()">
+                    <span class="lang-arpu" id="arpu-w-ru">0 € / fő / év</span>
+                </div>
+            </div>
+
+            <div class="fc-table-scroll" style="max-height: 440px; margin-top: 14px;">
+                <table class="fc-table">
+                    <thead>
+                        <tr>
+                            <th>Év &amp; Mérföldkő</th>
+                            <th>Könyvek (Katalógus &amp; Churn)</th>
+                            <th>Játékosok (HU vs. Nemzetközi)</th>
+                            <th>Nyelvi Megoszlás &amp; Súlyozott Szorzó</th>
+                            <th>Súlyozott Bruttó B2C (€)</th>
+                            <th>Átfolyó B2B &amp; Alkotói (€)</th>
+                            <th>Platform Nettó Marzs (€)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fc-10yr-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- EGYÉNILEG LEHÍVHATÓ SZEREPLŐI ÉS SAJÁT KÖNYV KIMUTATÁSOK (ROLE SWITCHER) -->
+        <div id="sec-kimutatasok" class="ebank-flow-footer" style="margin-top: 22px; border-color: #a855f7;">
+            <div id="ebank-role-report-section">
+                <div class="panel-header-flex">
+                    <div>
+                        <h4 style="margin-bottom: 4px; color: #e9d5ff;">👥 IV. Egyénileg Lehívható Szereplői, Partneri &amp; Saját Könyv Kimutatások (4 Élő Táblázat + Kincsek.html)</h4>
+                        <p class="panel-sub" style="margin: 0;">Válaszd ki a saját könyveid cím szerinti értéknövekedési és lemorzsolódási elemzését, vagy a szerepkör-specifikus pénzügyi kimutatást:</p>
+                    </div>
+                    <div class="role-switcher-bar">
+                        <button class="role-tab-btn active" id="tab-btn-mybooks" onclick="switchRoleView('mybooks')" style="border-color:#fde047; color:#fde047;">📚 Saját Könyveim &amp; Kincseim (Cím Szerint)</button>
+                        <button class="role-tab-btn" id="tab-btn-author" onclick="switchRoleView('author')">✍️ Szerzői &amp; Kiadói</button>
+                        <button class="role-tab-btn" id="tab-btn-dev" onclick="switchRoleView('dev')">⚔️ Minijáték Fejlesztői</button>
+                        <button class="role-tab-btn" id="tab-btn-monk" onclick="switchRoleView('monk')">📜 Felhőkolostor (Monk)</button>
+                        <button class="role-tab-btn" id="tab-btn-publisher" onclick="switchRoleView('publisher')">🏛️ Kiadói B2B &amp; NJK</button>
+                    </div>
+                </div>
+
+                <div id="role-view-container" class="role-view-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+

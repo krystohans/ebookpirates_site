@@ -1,0 +1,195 @@
+[welcomeTexts.0]
+Alors, c'est toi le petit nouveau ? Un marin d'eau douce ?
+
+[welcomeTexts.1]
+Tu cherches de la lecture pour la Bibliothèque ? Eh bien, mon ami, ici les livres reliés ne flottent pas tout seuls sur l'eau !
+
+[welcomeTexts.2]
+Écoute-moi bien, matelot ! Si tu veux voir des lettres,
+il va falloir trimer dur.
+
+[welcomeTexts.3]
+Laisse-moi te montrer comment nous gagnons notre croûte. Monte ! Qu'est-ce que tu attends ? Je n'ai pas toute la journée devant moi !
+
+[gameMonologues.1]
+J'ai repéré une membrane qui dérive tout près.
+Allons d'abord repêcher celle-là !
+
+[gameMonologues.2]
+Voici les fameuses Membranes. La mer des Lettres
+les a poussées dans la baie. C'est notre trésor. Et tu n'as plus qu'à les repêcher.
+
+[gameMonologues.3]
+Bien joué ! Mais n'oublie pas : ta membrane n'est en sécurité qu'une fois rapportée au port ! En route, fissa !
+
+[gameMonologues.4]
+ATTENTION ! Si tu percuteras un récif,
+tu perdras toutes tes membranes.
+
+[gameMonologues.5]
+Il t'en faudra écumer trente de ces merveilles avant que le Maître des Rouleaux daigne te parler.
+
+[gameMonologues.6]
+Pour onze Crédits Pirates, bien entendu. Rien n'est gratuit par ici.
+
+[gameMonologues.7]
+Ce ne sont là que les membranes ordinaires. Au-delà de la baie, vers les récifs, tu en trouveras de couleur. Bleues, rouges, vertes... chacune vouée à un genre littéraire.
+
+[gameMonologues.8]
+Mais seuls de vieux loups de mer comme moi peuvent s'y aventurer. Et les îles lointaines... ce n'est pas encore ton niveau.
+
+[gameMonologues.9]
+Bon sang... des Pirates du Ciel ! QU'EST-CE QUE TU FABRIQUES ? RAPIDE! ! Retournons au port !
+
+[gameMonologues.11]
+Maintenant, laisse-moi t'expliquer comment tourne le monde ici, puisque tu as l'air complètement dépassé par les événements.
+
+[gameMonologues.12]
+Deux choses comptent : les Crédits Pirates et les Talents. Tu reçois un Crédit par jour en te connectant. Un seul. Mais ce n'est que de la menue monnaie.
+
+[gameMonologues.13]
+Le Maître des Rouleaux t'en donne un aussi pour trente membranes.
+
+[gameMonologues.14]
+Le vrai travail t'attend à la Taverne. C'est là que tombent les expéditions, quand tu auras mérité ta place.
+
+[gameMonologues.15]
+Tes parchemins, tu peux les lire dans la Bibliothèque.
+Ou bien les revendre pour 10 crédits, ou au Marché.
+
+[gameMonologues.16]
+Ou alors, collectionne les parchemins jusqu'au récit complet. Tu pourras alors commander une Copie reliée.
+
+[gameMonologues.17]
+Ou apporte un livre réel à la bibliothèque pour le consacrer. C'est la seule façon de poser la main sur un Livre authentique.
+
+[gameMonologues.18]
+Consacrer un Livre réclame des Talents. Et ça, tu ne le repêcheras pas dans l'eau.
+
+[gameMonologues.19]
+On ne les obtient que des Grands Mécènes, via Patreon ou PayPal.
+
+[gameMonologues.20]
+Ou si tu déterres un trésor qu'un autre joueur est prêt à t'acheter en Talents sur le Marché.
+
+[gameMonologues.21]
+Il y a une Banque, mais le change ne marche que vers le bas. Vendre des Talents contre des Crédits, oui, mais l'inverse... oublie !
+
+[gameMonologues.22]
+Voilà, tu commences à prendre le pli. Si tu continues à si bien bosser, je t'emmènerai peut-être un jour à Hebok, le repaire pirate.
+
+[gameMonologues.23]
+Là-bas, tu pourras louer ou acheter un navire, ou même te faire embaucher sur d'autres ponts. Ou chez les pirates.
+
+[gameMonologues.24]
+C'est à Hebok que se dresse le Sanctuaire, là où les Copies reçoivent la consécration.
+
+[gameMonologues.25]
+Si tu obtiens un nouveau livre, l'Édition Originale est à toi, et tu reçois dix Copies en prime que tu peux offrir à qui tu veux.
+
+[gameMonologues.26]
+Et si tu l'offres à quelqu'un qui consacre sa Copie, une coquette somme pourrait tinter dans ta poche.
+
+[gameMonologues.27]
+Tu peux même lancer une Chasse aux Livres dessus. Ah, c'est là que commence la vraie fête !
+
+[gameMonologues.28]
+Plus tu accumules de livres, plus tu gagnes en envergure. Tu pourrais même finir Capitaine !
+
+[gameMonologues.29]
+En revanche, si tu dérobes un livre ou laisses des gens extérieurs le lire, la sanction sera sans appel !
+
+[gameMonologues.30]
+On ne te fera pas passer sous la quille, mais ton nom sera placardé sur le mur de la honte aux yeux de tous.
+
+[gameMonologues.31]
+Et quand bien même tu aurais consacré le livre, il perdra toute valeur en jeu : il finira enfermé dans la Prison des Livres.
+
+[gameMonologues.32]
+Moi, j'ai faim, alors tu te débrouilles tout seul à partir d'ici. Rapporte-moi d'autres membranes. Et prends soin de mon bateau !
+
+[gameMonologues.33]
+Et si tu as écrit quelque chose que tu veux introduire en jeu, il faudra le soumettre au jugement des Sages.
+
+[gameMonologues.34]
+Ils résident là-haut dans le Monastère des Nuages,
+au-dessus du Sanctuaire.
+
+[gameMonologues.airship_bad_empty]
+Mieux vaut disparaître de leur vue illico,
+avant qu'ils ne nous balancent par-dessus bord.
+
+[gameMonologues.controls]
+Utilise Z, Q, S, D ou les flèches pour diriger le bateau. Fais pivoter la caméra en maintenant le clic gauche ou droit. Fais défiler les fenêtres d'information avec Espace.
+
+[gameMonologues.wind]
+Surveille la direction du vent et oriente la voile en conséquence !
+
+[popups.airship_bad]
+Ils viennent de nous piller.
+On n'a plus qu'à repartir pêcher.
+
+[popups.airship_bad_empty]
+Mieux vaut disparaître de leur vue illico,
+avant qu'ils ne nous balancent par-dessus bord.
+
+[popups.airship_catch]
+ILS NOUS ONT RATTRAPÉS ! Ils vont nous interroger.
+Réponds bien et on s'en sort,
+mais trompe-toi et ils confisqueront nos membranes.
+
+[popups.airship_good]
+Joli coup. Continue ton boulot !
+
+[popups.beach]
+Il ne faudrait pas s'échouer sur le rivage !
+
+[popups.boat_crash]
+Collision avec le récif !
+
+[popups.boat_fixing]
+J'ai rafistolé la coque pour cette fois, mais fais plus attention !
+
+[popups.boat_lowHP]
+On ne survivra pas à un choc de plus.
+Rappelle vite le bateau au port !
+
+[popups.boat_totalcar]
+Tu as sombré. Tu ne feras jamais un marin.
+
+[popups.empty_boat]
+Tu es revenu avec un bateau vide.
+
+[popups.eog_empty_water]
+L'eau est suspecte de calme,
+viens, allons explorer l'entrée de la baie !
+
+[popups.homepoint]
+J'ai tout déchargé, c'est parti.
+
+[popups.membrane_bad]
+Cette membrane vient de dériver au loin !
+
+[popups.membrane_good]
+Celle-là est dans la poche !
+
+[popups.new_membrane]
+Tu as récolté une autre membrane !
+Retourne vite au port !
+
+[popups.out_of_range]
+Impossible de s'aventurer en haute mer
+avec cette vieille carcasse.
+
+[eogMonologues.chestFound]
+C'est moi qui ramène le bateau au quai maintenant.
+Pas question que tu me gâches cette trouvaille !
+
+[eogMonologues.pointA]
+Hé, matelot ! L'eau est suspecte de calme...
+Allons voir ce qui se trame à l'embouchure de la baie !
+
+[eogMonologues.pointB]
+Qu'est-ce qu'il y a là-bas sur la grève ?
+Ce n'est pas une membrane, c'est... Se pourrait-il... ?
+C'est un COFFRE ! UN COFFRE ! Vite, récupérons-le !

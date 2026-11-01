@@ -9,49 +9,7 @@
       "Garas és Krajcár",
       "Fabatka és tallér"
     ],
-    "correctIndex": 0,
-    "question_en": "What currencies exist in the game?",
-    "answers_en": [
-      "Pirate Credit and Talent",
-      "Gold and Silver",
-      "Groat and Farthing",
-      "Pennies and Thalers"
-    ],
-    "question_de": "Welche Währungen gibt es im Spiel?",
-    "answers_de": [
-      "Piratenkredit und Talent",
-      "Gold und Silber",
-      "Groschen und Heller",
-      "Pfennig und Taler"
-    ],
-    "question_fr": "Quelles sont les monnaies utilisées dans le jeu ?",
-    "answers_fr": [
-      "Crédit Pirate et Talent",
-      "Or et Argent",
-      "Sous et Deniers",
-      "Pièces et Thalers"
-    ],
-    "question_es": "¿Qué monedas existen en el juego?",
-    "answers_es": [
-      "Crédito Pirata y Talento",
-      "Oro y Plata",
-      "Maravedíes y Reales",
-      "Centavos y Doblones"
-    ],
-    "question_pl": "Jakie waluty występują w grze?",
-    "answers_pl": [
-      "Kredyt Piracki i Talent",
-      "Złoto i Srebro",
-      "Grosze i Krajcary",
-      "Talary i Pensy"
-    ],
-    "question_ru": "Какая валюта используется в игре?",
-    "answers_ru": [
-      "Пиратский кредит и Талант",
-      "Золото и Серебро",
-      "Гроши и Крейцеры",
-      "Медяки и Талеры"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 2,
@@ -63,49 +21,7 @@
       "200 kalózkredit",
       "Áldozat"
     ],
-    "correctIndex": 0,
-    "question_en": "What is required for book consecration at the Book Shrine besides the Copy?",
-    "answers_en": [
-      "Talent",
-      "Prayer",
-      "200 pirate credits",
-      "Sacrifice"
-    ],
-    "question_de": "Was wird für die Bücherweihe im Bücherheiligtum neben der Kopie benötigt?",
-    "answers_de": [
-      "Talent",
-      "Gebet",
-      "200 Piratenkredite",
-      "Opfergabe"
-    ],
-    "question_fr": "Que faut-il pour la consécration d'un livre au Sanctuaire en plus de la Copie ?",
-    "answers_fr": [
-      "Talent",
-      "Prière",
-      "200 crédits pirates",
-      "Sacrifice"
-    ],
-    "question_es": "¿Qué se requiere para consagrar un libro en el Santuario además de la Copia?",
-    "answers_es": [
-      "Talento",
-      "Oración",
-      "200 créditos piratas",
-      "Sacrificio"
-    ],
-    "question_pl": "Co jest potrzebne do wyświęcenia książki w Sanktuarium oprócz Kopii?",
-    "answers_pl": [
-      "Talent",
-      "Modlitwa",
-      "200 kredytów pirackich",
-      "Ofiara"
-    ],
-    "question_ru": "Что требуется для освящения книги в Святилище помимо Копии?",
-    "answers_ru": [
-      "Талант",
-      "Молитва",
-      "200 пиратских кредитов",
-      "Жертвоприношение"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 3,
@@ -117,49 +33,7 @@
       "Reklámok megnézésével",
       "Véráldozattal"
     ],
-    "correctIndex": 0,
-    "question_en": "How can you support the eBookPirates game?",
-    "answers_en": [
-      "Patreon, PayPal",
-      "With praise",
-      "By watching ads",
-      "With a blood sacrifice"
-    ],
-    "question_de": "Wie können Sie das Spiel eBookPirates unterstützen?",
-    "answers_de": [
-      "Patreon, PayPal",
-      "Mit Lob",
-      "Durch Anschauen von Werbung",
-      "Mit Blutopfern"
-    ],
-    "question_fr": "Comment pouvez-vous soutenir le jeu eBookPirates ?",
-    "answers_fr": [
-      "Patreon, PayPal",
-      "Avec des compliments",
-      "En regardant des publicités",
-      "Avec un sacrifice de sang"
-    ],
-    "question_es": "¿Cómo puedes apoyar el juego eBookPirates?",
-    "answers_es": [
-      "Patreon, PayPal",
-      "Con elogios",
-      "Viendo anuncios",
-      "Con un sacrificio de sangre"
-    ],
-    "question_pl": "Jak możesz wesprzeć grę eBookPirates?",
-    "answers_pl": [
-      "Patreon, PayPal",
-      "Pochwałami",
-      "Oglądaniem reklam",
-      "Krwawą ofiarą"
-    ],
-    "question_ru": "Как вы можете поддержать проект eBookPirates?",
-    "answers_ru": [
-      "Patreon, PayPal",
-      "Похвалой",
-      "Просмотром рекламы",
-      "Кровавой жертвой"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 4,
@@ -171,49 +45,7 @@
       "Bekezdésenként egy",
       "Tizenkettő"
     ],
-    "correctIndex": 0,
-    "question_en": "How many membranes are needed for a scroll?",
-    "answers_en": [
-      "Thirty",
-      "Fifty",
-      "One per paragraph",
-      "Twelve"
-    ],
-    "question_de": "Wie viele Membranen werden für eine Schriftrolle benötigt?",
-    "answers_de": [
-      "Dreißig",
-      "Fünfzig",
-      "Eine pro Absatz",
-      "Zwölf"
-    ],
-    "question_fr": "Combien de membranes faut-il pour un parchemin ?",
-    "answers_fr": [
-      "Trente",
-      "Cinquante",
-      "Une par paragraphe",
-      "Douze"
-    ],
-    "question_es": "¿Cuántas membranas se necesitan para un pergamino?",
-    "answers_es": [
-      "Treinta",
-      "Cincuenta",
-      "Una por párrafo",
-      "Doce"
-    ],
-    "question_pl": "Ile membran potrzeba na jeden zwój?",
-    "answers_pl": [
-      "Trzydzieści",
-      "Pięćdziesiąt",
-      "Jedna na akapit",
-      "Dwanaście"
-    ],
-    "question_ru": "Сколько мембран нужно для создания одного свитка?",
-    "answers_ru": [
-      "Тридцать",
-      "Пятьдесят",
-      "По одной на абзац",
-      "Двенадцать"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 5,
@@ -225,49 +57,7 @@
       "Tizenkettő",
       "Ötven"
     ],
-    "correctIndex": 0,
-    "question_en": "How many scrolls are needed for a copy?",
-    "answers_en": [
-      "All scrolls of the book",
-      "Thirty",
-      "Twelve",
-      "Fifty"
-    ],
-    "question_de": "Wie viele Schriftrollen werden für eine Kopie benötigt?",
-    "answers_de": [
-      "Alle Schriftrollen des Buches",
-      "Dreißig",
-      "Zwölf",
-      "Fünfzig"
-    ],
-    "question_fr": "Combien de parchemins faut-il pour une copie ?",
-    "answers_fr": [
-      "Tous les parchemins du livre",
-      "Trente",
-      "Douze",
-      "Cinquante"
-    ],
-    "question_es": "¿Cuántos pergaminos se necesitan para una copia?",
-    "answers_es": [
-      "Todos los pergaminos del libro",
-      "Treinta",
-      "Doce",
-      "Cincuenta"
-    ],
-    "question_pl": "Ile zwojów potrzeba na jedną kopię?",
-    "answers_pl": [
-      "Wszystkie zwoje danej książki",
-      "Trzydzieści",
-      "Dwanaście",
-      "Pięćdziesiąt"
-    ],
-    "question_ru": "Сколько свитков требуется для сборки одной Копии?",
-    "answers_ru": [
-      "Все свитки этой книги",
-      "Тридцать",
-      "Двенадцать",
-      "Пятьдесят"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 6,
@@ -279,49 +69,7 @@
       "A Könyvszentélyben",
       "A Könyvtárban"
     ],
-    "correctIndex": 0,
-    "question_en": "Where can you obtain quests?",
-    "answers_en": [
-      "At the Tavern",
-      "At the Harbormaster",
-      "At the Book Shrine",
-      "At the Library"
-    ],
-    "question_de": "Wo erhalten Sie Missionen und Aufträge?",
-    "answers_de": [
-      "In der Taverne",
-      "Beim Hafenmeister",
-      "Im Bücherheiligtum",
-      "In der Bibliothek"
-    ],
-    "question_fr": "Où pouvez-vous obtenir des quêtes ?",
-    "answers_fr": [
-      "À la Taverne",
-      "Chez le Maître du Port",
-      "Au Sanctuaire des Livres",
-      "À la Bibliothèque"
-    ],
-    "question_es": "¿Dónde puedes conseguir misiones y encargos?",
-    "answers_es": [
-      "En la Taberna",
-      "Con el Capitán del Puerto",
-      "En el Santuario del Libro",
-      "En la Biblioteca"
-    ],
-    "question_pl": "Gdzie możesz zdobyć misje i zlecenia?",
-    "answers_pl": [
-      "W Tawernie",
-      "U Bosmana Portu",
-      "W Sanktuarium Ksiąg",
-      "W Bibliotece"
-    ],
-    "question_ru": "Где вы можете получить задания и квесты?",
-    "answers_ru": [
-      "В Таверне",
-      "У Начальника Гавани",
-      "В Книжном Святилище",
-      "В Библиотеке"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 7,
@@ -333,49 +81,7 @@
       "A Kikötőmesternél",
       "A Könyvszentélyben"
     ],
-    "correctIndex": 0,
-    "question_en": "Where can you read your scrolls?",
-    "answers_en": [
-      "In the Library",
-      "In the Tavern",
-      "At the Harbormaster",
-      "In the Book Shrine"
-    ],
-    "question_de": "Wo können Sie Ihre Schriftrollen lesen?",
-    "answers_de": [
-      "In der Bibliothek",
-      "In der Taverne",
-      "Beim Hafenmeister",
-      "Im Bücherheiligtum"
-    ],
-    "question_fr": "Où pouvez-vous lire vos parchemins ?",
-    "answers_fr": [
-      "Dans la Bibliothèque",
-      "À la Taverne",
-      "Chez le Maître du Port",
-      "Au Sanctuaire des Livres"
-    ],
-    "question_es": "¿Dónde puedes leer tus pergaminos?",
-    "answers_es": [
-      "En la Biblioteca",
-      "En la Taberna",
-      "Con el Capitán del Puerto",
-      "En el Santuario del Libro"
-    ],
-    "question_pl": "Gdzie możesz czytać swoje zwoje?",
-    "answers_pl": [
-      "W Bibliotece",
-      "W Tawernie",
-      "U Bosmana Portu",
-      "W Sanktuarium Ksiąg"
-    ],
-    "question_ru": "Где вы можете читать собранные свитки?",
-    "answers_ru": [
-      "В Библиотеке",
-      "В Таверне",
-      "У Начальника Гавани",
-      "В Книжном Святилище"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 8,
@@ -387,49 +93,7 @@
       "A játékos szintet lép",
       "1000 kalózkreditet"
     ],
-    "correctIndex": 0,
-    "question_en": "What is the result of consecration?",
-    "answers_en": [
-      "Downloadable .ePub + 10 copies",
-      "The book can be sold afterwards",
-      "The player levels up",
-      "1,000 pirate credits"
-    ],
-    "question_de": "Was ist das Ergebnis der Weihe eines Buches?",
-    "answers_de": [
-      "Herunterladbares .ePub + 10 Kopien",
-      "Das Buch kann danach verkauft werden",
-      "Der Spieler steigt eine Stufe auf",
-      "1.000 Piratenkredite"
-    ],
-    "question_fr": "Quel est le résultat de la consécration d'un livre ?",
-    "answers_fr": [
-      ".ePub téléchargeable + 10 copies",
-      "Le livre peut ensuite être vendu",
-      "Le joueur monte de niveau",
-      "1 000 crédits pirates"
-    ],
-    "question_es": "¿Cuál es el resultado de consagrar un libro?",
-    "answers_es": [
-      ".ePub descargable + 10 copias",
-      "El libro se puede vender después",
-      "El jugador sube de nivel",
-      "1.000 créditos piratas"
-    ],
-    "question_pl": "Co jest rezultatem wyświęcenia książki?",
-    "answers_pl": [
-      "Pobieralny plik .ePub + 10 kopii",
-      "Książkę można potem sprzedać",
-      "Gracz awansuje na wyższy poziom",
-      "1000 kredytów pirackich"
-    ],
-    "question_ru": "Что дает игроку освящение книги?",
-    "answers_ru": [
-      "Скачиваемый .ePub + 10 копий",
-      "Книгу после этого можно продать",
-      "Игрок повышает уровень",
-      "1000 пиратских кредитов"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 9,
@@ -441,49 +105,7 @@
       "Azonnali letiltás",
       "Pénzbüntetés"
     ],
-    "correctIndex": 0,
-    "question_en": "What is the punishment for book thieves?",
-    "answers_en": [
-      "Book Prison, Wall of Shame",
-      "Keelhauling",
-      "Immediate ban",
-      "A fine"
-    ],
-    "question_de": "Wie lautet die Strafe für Buchdiebe?",
-    "answers_de": [
-      "Büchergefängnis, Schandmauer",
-      "Kielholen",
-      "Sofortige Kontosperre",
-      "Geldstrafe"
-    ],
-    "question_fr": "Quelle est la punition pour les voleurs de livres ?",
-    "answers_fr": [
-      "Prison des Livres, Mur de la Honte",
-      "Supplice de la cale",
-      "Bannissement immédiat",
-      "Une amende"
-    ],
-    "question_es": "¿Cuál es el castigo para los ladrones de libros?",
-    "answers_es": [
-      "Prisión de Libros, Muro de la Vergüenza",
-      "Pasar por la quilla",
-      "Bloqueo inmediato",
-      "Una multa"
-    ],
-    "question_pl": "Jaka jest kara dla złodziei książek?",
-    "answers_pl": [
-      "Książkowe Więzienie, Ściana Wstydu",
-      "Przeciąganie pod kilem",
-      "Natychmiastowy ban",
-      "Grzywna"
-    ],
-    "question_ru": "Какое наказание ждет книжных воров?",
-    "answers_ru": [
-      "Книжная Тюрьма, Стена Позора",
-      "Протаскивание под килем",
-      "Мгновенный бан",
-      "Денежный штраф"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 10,
@@ -495,49 +117,7 @@
       "Fekete Szikla",
       "Koponya Sziget"
     ],
-    "correctIndex": 0,
-    "question_en": "What is the name of the Pirate Port on the Letter Sea?",
-    "answers_en": [
-      "Hebok",
-      "Pirate Island",
-      "Black Rock",
-      "Skull Island"
-    ],
-    "question_de": "Wie heißt der geheime Piratenhafen am Buchstabenmeer?",
-    "answers_de": [
-      "Hebok",
-      "Pirateninsel",
-      "Schwarzer Felsen",
-      "Totenkopfinsel"
-    ],
-    "question_fr": "Quel est le nom du Port Pirate sur la Mer des Lettres ?",
-    "answers_fr": [
-      "Hebok",
-      "Île des Pirates",
-      "Roc Noir",
-      "Île du Crâne"
-    ],
-    "question_es": "¿Cuál es el nombre del Puerto Pirata en el Mar de las Letras?",
-    "answers_es": [
-      "Hebok",
-      "Isla Pirata",
-      "Roca Negra",
-      "Isla Calavera"
-    ],
-    "question_pl": "Jak nazywa się Port Piracki na Morzu Liter?",
-    "answers_pl": [
-      "Hebok",
-      "Wyspa Piratów",
-      "Czarna Skała",
-      "Wyspa Czaszek"
-    ],
-    "question_ru": "Как называется Пиратская Гавань на Море Букв?",
-    "answers_ru": [
-      "Хебок",
-      "Пиратский Остров",
-      "Черная Скала",
-      "Остров Черепа"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 11,
@@ -549,49 +129,7 @@
       "Kidobod a tengerbe",
       "Elzárod a csónak aljában"
     ],
-    "correctIndex": 0,
-    "question_en": "How can you keep your acquired membranes safe while on a raid?",
-    "answers_en": [
-      "You return to the port Base",
-      "You hide it from the airship",
-      "You throw it into the sea",
-      "You lock it away in the bottom of the boat"
-    ],
-    "question_de": "Wie bringen Sie Ihre gesammelten Membranen während des Beutezugs in Sicherheit?",
-    "answers_de": [
-      "Rückkehr zur Hafenbasis",
-      "Vor dem Luftschiff verstecken",
-      "Ins Meer werfen",
-      "Im Schiffsboden wegschließen"
-    ],
-    "question_fr": "Comment mettez-vous vos membranes en sécurité pendant une expédition ?",
-    "answers_fr": [
-      "En retournant à la Base du port",
-      "En les cachant du dirigeable",
-      "En les jetant à la mer",
-      "En les enfermant au fond du bateau"
-    ],
-    "question_es": "¿Cómo proteges tus membranas recolectadas durante la incursión?",
-    "answers_es": [
-      "Regresando a la Base del puerto",
-      "Ocultándolas del dirigible",
-      "Arrojándolas al mar",
-      "Encerrándolas en el fondo del barco"
-    ],
-    "question_pl": "Jak zabezpieczyć zebrane membrany podczas rejsu?",
-    "answers_pl": [
-      "Wracasz do Bazy w porcie",
-      "Chowasz je przed sterowcem",
-      "Wyrzucasz je do morza",
-      "Zamykasz na dnie łodzi"
-    ],
-    "question_ru": "Как сохранить собранные мембраны в безопасности во время рейда?",
-    "answers_ru": [
-      "Вернуться на Базу в порт",
-      "Спрятать от дирижабля",
-      "Выбросить в море",
-      "Запереть на дне лодки"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 12,
@@ -603,49 +141,7 @@
       "Szóköz és Enter gombbal",
       "F1 és F2 billentyűkkel"
     ],
-    "correctIndex": 0,
-    "question_en": "Which control keys do you use to navigate your boat?",
-    "answers_en": [
-      "With W, A, S, D keys",
-      "Only with mouse clicks",
-      "With Space and Enter keys",
-      "With F1 and F2 keys"
-    ],
-    "question_de": "Mit welchen Tasten steuern Sie Ihr Segelboot?",
-    "answers_de": [
-      "Mit den Tasten W, A, S, D",
-      "Nur mit Mausklicks",
-      "Mit Leertaste und Eingabetaste",
-      "Mit den Tasten F1 und F2"
-    ],
-    "question_fr": "Quelles touches de contrôle utilisez-vous pour naviguer en bateau ?",
-    "answers_fr": [
-      "Avec les touches W, A, S, D",
-      "Uniquement avec les clics de souris",
-      "Avec Espace et Entrée",
-      "Avec les touches F1 et F2"
-    ],
-    "question_es": "¿Con qué teclas navegas tu barco de vela?",
-    "answers_es": [
-      "Con las teclas W, A, S, D",
-      "Solo con clics de ratón",
-      "Con Espacio y Enter",
-      "Con las teclas F1 y F2"
-    ],
-    "question_pl": "Którymi klawiszami sterujesz swoją łodzią?",
-    "answers_pl": [
-      "Klawiszami W, A, S, D",
-      "Tylko kliknięciami myszy",
-      "Spacją i klawiszem Enter",
-      "Klawiszami F1 i F2"
-    ],
-    "question_ru": "С помощью каких клавиш осуществляется управление парусной лодкой?",
-    "answers_ru": [
-      "Клавишами W, A, S, D",
-      "Только кликами мыши",
-      "Пробелом и Enter",
-      "Клавишами F1 и F2"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 13,
@@ -657,49 +153,7 @@
       "Le kell lőnöd a léghajót",
       "Be kell ugranod a vízbe"
     ],
-    "correctIndex": 0,
-    "question_en": "What must you do to escape when the Airship catches you?",
-    "answers_en": [
-      "You must answer the Quiz question correctly",
-      "You must row faster",
-      "You must shoot down the airship",
-      "You must jump into the water"
-    ],
-    "question_de": "Was müssen Sie tun, wenn das Luftschiff Sie einholt, um zu entkommen?",
-    "answers_de": [
-      "Die gestellte Quizfrage richtig beantworten",
-      "Schneller rudern",
-      "Das Luftschiff abschießen",
-      "Ins Wasser springen"
-    ],
-    "question_fr": "Que devez-vous faire pour échapper au dirigeable s'il vous rattrape ?",
-    "answers_fr": [
-      "Répondre correctement à la question du Quiz",
-      "Ramer plus vite",
-      "Abattre le dirigeable",
-      "Sauter dans l'eau"
-    ],
-    "question_es": "¿Qué debes hacer para escapar cuando el Dirigible te alcanza?",
-    "answers_es": [
-      "Responder correctamente la pregunta del Quiz",
-      "Remar más rápido",
-      "Derribar el dirigible",
-      "Saltar al agua"
-    ],
-    "question_pl": "Co musisz zrobić, aby uciec, gdy dogoni cię Sterowiec?",
-    "answers_pl": [
-      "Prawidłowo odpowiedzieć na pytanie Quizu",
-      "Wiosłować szybciej",
-      "Zestrzelić sterowiec",
-      "Wskoczyć do wody"
-    ],
-    "question_ru": "Что нужно сделать, чтобы спастись, если вас настигнет Дирижабль?",
-    "answers_ru": [
-      "Правильно ответить на вопрос Квиза",
-      "Грести быстрее",
-      "Сбить дирижабль",
-      "Прыгнуть в воду"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 14,
@@ -711,49 +165,7 @@
       "A Patreon oldalra ellátogatva",
       "A Facebook oldalon"
     ],
-    "correctIndex": 0,
-    "question_en": "How can I read the rules of the tutorial game?",
-    "answers_en": [
-      "By opening the info panel",
-      "By opening the main page",
-      "By visiting the Patreon page",
-      "On the Facebook page"
-    ],
-    "question_de": "Wo können Sie die Regeln des Tutorial-Spiels nachlesen?",
-    "answers_de": [
-      "Durch Öffnen des Infopanels",
-      "Auf der Hauptseite",
-      "Auf der Patreon-Seite",
-      "Auf der Facebook-Seite"
-    ],
-    "question_fr": "Comment pouvez-vous consulter les règles du tutoriel ?",
-    "answers_fr": [
-      "En ouvrant le panneau d'information",
-      "En ouvrant la page principale",
-      "En visitant la page Patreon",
-      "Sur la page Facebook"
-    ],
-    "question_es": "¿Dónde puedes consultar las reglas del juego tutorial?",
-    "answers_es": [
-      "Abriendo el panel de información",
-      "En la página principal",
-      "En la página de Patreon",
-      "En la página de Facebook"
-    ],
-    "question_pl": "Gdzie możesz zapoznać się z zasadami gry szkoleniowej?",
-    "answers_pl": [
-      "Otwierając panel informacyjny",
-      "Otwierając stronę główną",
-      "Na stronie Patronite",
-      "Na stronie Facebook"
-    ],
-    "question_ru": "Где можно ознакомиться с правилами обучающей игры?",
-    "answers_ru": [
-      "Открыв информационную панель",
-      "На главной странице",
-      "На странице Patreon",
-      "В социальной сети"
-    ]
+    "correctIndex": 0
   },
   {
     "id": 15,
@@ -1354,17 +766,4 @@
       "Első"
     ],
     "correctIndex": 0
-  },
-  {
-    "id": 65,
-    "category": "TUTORZEP",
-    "question": "Mit zártak be <br>Victor Hugo halálakor a tiszteletére?",
-    "answers": [
-      "Párizs összes bordélyházát",
-      "A kedvenc kávéházát",
-      "A lóversenypályát",
-      "A kedvenc kocsmáját"
-    ],
-    "correctIndex": 0
-  }
-]
+  ]

@@ -1,5 +1,5 @@
 window.QuizConfig = {
-                TUTORZEP: {
+  TUTORZEP: {
     panelWidth: 831,
     panelHeight: 768,
     // 1 soros kérdés koordinátái (AMIKOR NINCS SORTÖRÉS)
@@ -10,21 +10,22 @@ window.QuizConfig = {
       height: 59,
       fontSize: 20
     },
-  // 2 soros kérdés koordinátái (AMIKOR VAN SORTÖRÉS: \n vagy <br>)
+    // 2 soros kérdés koordinátái (AMIKOR VAN SORTÖRÉS: \n vagy <br> vagy > 50 karakter)
+    // 220px magasságban mindkét sor a fa deszka belsejében, tökéletesen középre igazítva jelenik meg (16px a rézkerettől, 13px a válaszoktól)!
     question_multiline: {
-      top: 199,
-      left: 122,
+      top: 220,
+      left: 121,
       width: 589,
-      height: 70,
-      fontSize: 20
+      height: 59,
+      fontSize: 19
     },
     // Alapértelmezett kompatibilitási mező
     question: {
-      top: 199,
-      left: 122,
+      top: 220,
+      left: 121,
       width: 589,
-      height: 70,
-      fontSize: 20
+      height: 59,
+      fontSize: 19
     },
     answers: [
       {
@@ -124,14 +125,9 @@ class QuizManager {
   // @calls: none
   // @calledBy: constructor
   async loadQuestions() {
-    const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
-    const jsonFile = (lang === 'en') ? 'quiz_questions_en.json' : 'quiz_questions.json';
-
+    const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
     try {
-      let res = await fetch(jsonFile + '?t=' + Date.now());
-      if (!res.ok && lang === 'en') {
-        res = await fetch('quiz_questions.json?t=' + Date.now());
-      }
+      let res = await fetch('quiz_questions.json?t=' + Date.now());
       if (res.ok) {
         this.questions = await res.json();
       }
@@ -231,18 +227,36 @@ class QuizManager {
   // @calls: none
   // @calledBy: renderQuestion
   extractQuestionText(q) {
+    const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+    if (lang !== 'hu') {
+      const localized = q['question_' + lang];
+      if (localized) return localized;
+      if (lang === 'en' && q.question_en) return q.question_en;
+    }
     return q.Kerdes || q.question || q.text || "";
   }
   // === [#TUTOR.05.06.00] END ===
 
-  // === [#TUTOR.05.07.00] START | method: extractAnswersAndCorrect | lines: ~19 ===
+  // === [#TUTOR.05.07.00] START | method: extractAnswersAndCorrect | lines: ~28 ===
   // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Válaszopciók és a helyes index kinyerése.
+  // @summary: Válaszopciók és a helyes index kinyerése a megfelelő nyelven.
   // @calls: none
   // @calledBy: renderQuestion
   extractAnswersAndCorrect(q) {
+    const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
     let answers = [];
     let correctIdx = 0;
+
+    if (lang !== 'hu' && Array.isArray(q['answers_' + lang])) {
+      answers = [...q['answers_' + lang]];
+      correctIdx = typeof q.correctIndex === 'number' ? q.correctIndex : 0;
+      return { answers, correctIdx };
+    }
+    if (lang === 'en' && Array.isArray(q.answers_en)) {
+      answers = [...q.answers_en];
+      correctIdx = typeof q.correctIndex === 'number' ? q.correctIndex : 0;
+      return { answers, correctIdx };
+    }
 
     if (Array.isArray(q.answers)) {
       answers = [...q.answers];
@@ -394,7 +408,8 @@ class QuizManager {
       // 1. Kérdés falap doboz (Dinamikus választás: 1 soros vs 2 soros sortöréses kérdés)
       const rawQText = this.extractQuestionText(this.currentQuestion);
       const hasLineBreak = rawQText.includes('\n') || rawQText.includes('<br>') || rawQText.includes('<br/>') || rawQText.includes('<BR>') || rawQText.includes('<BR/>');
-      const qCfg = hasLineBreak ? (cfg.question_multiline || cfg.question) : (cfg.question_singleline || cfg.question);
+      const isEffectivelyMultiline = hasLineBreak || rawQText.replace(/<[^>]*>/g, '').length > 50;
+      const qCfg = isEffectivelyMultiline ? (cfg.question_multiline || cfg.question) : (cfg.question_singleline || cfg.question);
 
       qText.style.position = "absolute";
       qText.style.top = qCfg.top + "px";
@@ -403,7 +418,11 @@ class QuizManager {
       qText.style.height = qCfg.height + "px";
       qText.style.color = "#ffea00";
       qText.style.fontFamily = "'Briskb', 'Courier New', monospace";
-      qText.style.fontSize = qCfg.fontSize + "px";
+      const qLen = rawQText.length;
+      let qFSize = qCfg.fontSize || 20;
+      if (qLen > 80) { qFSize = Math.max(15, qFSize - 4); }
+      else if (qLen > 65) { qFSize = Math.max(17, qFSize - 2); }
+      qText.style.fontSize = qFSize + "px";
       qText.style.fontWeight = "bold";
       qText.style.display = "flex";
       qText.style.alignItems = "center";
@@ -443,7 +462,11 @@ class QuizManager {
         btn.style.boxShadow = "none";
         btn.style.color = "#ffea00";
         btn.style.fontFamily = "'Briskb', 'Courier New', monospace";
-        btn.style.fontSize = ansCfg.fontSize + "px";
+        const aLen = (answers[actualAnsIdx] || '').length;
+        let aFSize = ansCfg.fontSize || 19;
+        if (aLen > 45) { aFSize = Math.max(13, aFSize - 4); }
+        else if (aLen > 35) { aFSize = Math.max(15, aFSize - 2); }
+        btn.style.fontSize = aFSize + "px";
         btn.style.fontWeight = "bold";
         btn.style.padding = "0px 20px";
         btn.style.margin = "0px";
@@ -728,11 +751,37 @@ class QuizManager {
 
     const updateLive = () => {
       const cfg = window.QuizConfig.TUTORZEP;
-      cfg.question.top = parseInt(document.getElementById('qve-q-top').value, 10) || cfg.question.top;
-      cfg.question.height = parseInt(document.getElementById('qve-q-height').value, 10) || cfg.question.height;
-      cfg.question.left = parseInt(document.getElementById('qve-q-left').value, 10) || cfg.question.left;
-      cfg.question.width = parseInt(document.getElementById('qve-q-width').value, 10) || cfg.question.width;
-      cfg.question.fontSize = parseInt(document.getElementById('qve-q-font').value, 10) || cfg.question.fontSize;
+      const qTop = parseInt(document.getElementById('qve-q-top').value, 10);
+      const qH = parseInt(document.getElementById('qve-q-height').value, 10);
+      const qL = parseInt(document.getElementById('qve-q-left').value, 10);
+      const qW = parseInt(document.getElementById('qve-q-width').value, 10);
+      const qF = parseInt(document.getElementById('qve-q-font').value, 10);
+
+      if (!isNaN(qTop)) {
+        cfg.question.top = qTop;
+        if (cfg.question_multiline) cfg.question_multiline.top = qTop;
+        if (cfg.question_singleline) cfg.question_singleline.top = qTop;
+      }
+      if (!isNaN(qH)) {
+        cfg.question.height = qH;
+        if (cfg.question_multiline) cfg.question_multiline.height = qH;
+        if (cfg.question_singleline) cfg.question_singleline.height = qH;
+      }
+      if (!isNaN(qL)) {
+        cfg.question.left = qL;
+        if (cfg.question_multiline) cfg.question_multiline.left = qL;
+        if (cfg.question_singleline) cfg.question_singleline.left = qL;
+      }
+      if (!isNaN(qW)) {
+        cfg.question.width = qW;
+        if (cfg.question_multiline) cfg.question_multiline.width = qW;
+        if (cfg.question_singleline) cfg.question_singleline.width = qW;
+      }
+      if (!isNaN(qF)) {
+        cfg.question.fontSize = qF;
+        if (cfg.question_multiline) cfg.question_multiline.fontSize = qF;
+        if (cfg.question_singleline) cfg.question_singleline.fontSize = qF;
+      }
 
       const ansLeft = parseInt(document.getElementById('qve-ans-left').value, 10) || 135;
       const ansWidth = parseInt(document.getElementById('qve-ans-width').value, 10) || 560;
@@ -776,12 +825,16 @@ class QuizManager {
   // @calledBy: initVisualEditor
   populateVisualEditorFields() {
     const cfg = window.QuizConfig.TUTORZEP;
+    const rawQText = this.currentQuestion ? this.extractQuestionText(this.currentQuestion) : '';
+    const hasLineBreak = rawQText.includes('\n') || rawQText.includes('<br>') || rawQText.includes('<br/>') || rawQText.includes('<BR>') || rawQText.includes('<BR/>');
+    const qCfg = hasLineBreak ? (cfg.question_multiline || cfg.question) : (cfg.question_singleline || cfg.question);
+
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-    setVal('qve-q-top', cfg.question.top);
-    setVal('qve-q-height', cfg.question.height);
-    setVal('qve-q-left', cfg.question.left);
-    setVal('qve-q-width', cfg.question.width);
-    setVal('qve-q-font', cfg.question.fontSize);
+    setVal('qve-q-top', qCfg.top);
+    setVal('qve-q-height', qCfg.height);
+    setVal('qve-q-left', qCfg.left);
+    setVal('qve-q-width', qCfg.width);
+    setVal('qve-q-font', qCfg.fontSize);
 
     setVal('qve-a0-top', cfg.answers[0].top);
     setVal('qve-a0-height', cfg.answers[0].height);

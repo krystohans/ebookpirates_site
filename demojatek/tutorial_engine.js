@@ -797,7 +797,7 @@ function showWelcomeStep(step) {
   document.body.className = `welcome-mode step-${step}`;
 
   const texts = dialoguesData.welcomeTexts || [
-    "Na, te vagy az új jövevény? Egy Szárazföldi Patkány?",
+    "Na, te vagy az új jövevény? Egy szárazföldi Patkány.",
     "Olvasnivalót akarsz a Könyvtárba? Hát, barátom, itt nem a kész könyvek lebegnek ám a vízben!",
     "Ide figyelj, Patkány! Ha betűt akarsz látni, azért meg kell dolgozni.",
     "Megmutatom, miből élünk mi, parti népek. Szállj be! Nincs rád egy egész napom!"

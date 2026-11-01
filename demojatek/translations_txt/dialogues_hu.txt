@@ -1,0 +1,234 @@
+# ========================================================
+# KALÓZ SZIGET DIALÓGUSOK ÉS POPUPOK - NYELV: HU
+# Formátum: Minden bejegyzés [kategória.azonosító] fejléccel kezdődik.
+# A fejléc alatti sorok jelentik a szöveget, úgy és olyan sortörésekkel,
+# ahogyan a szövegdobozban meg kell jelenniük.
+# ========================================================
+
+# --- WELCOME TEXTS (Kezdő bevezető dialógusok) ---
+
+[welcomeTexts.0]
+Na, te vagy az új jövevény? Egy szárazföldi Patkány.
+
+[welcomeTexts.1]
+Olvasnivalót akarsz a Könyvtárba? Hát, barátom,
+itt nem a kész könyvek lebegnek ám a vízben!
+
+[welcomeTexts.2]
+Ide figyelj, Patkány! Ha betűt akarsz látni, 
+azért meg kell dolgozni.
+
+[welcomeTexts.3]
+Megmutatom, miből élünk mi, parti népek. Szállj be! Mire vársz még? Nincs rád egy egész napom!
+
+# --- GAME MONOLOGUES (Játék közbeni monológok: 1-34, controls, wind) ---
+
+[gameMonologues.1]
+Úgy láttam egy hártya egész közel sodródott. 
+Szedjük össze azt először!
+
+[gameMonologues.2]
+Ezek a Hártyák. A Letter-tenger sodorta őket az öbölbe.
+Ez a mi kincsünk. És neked csak le kell halásznod őket.
+
+[gameMonologues.3]
+Szép volt! De ne feledd, csak akkor van a Hártyád
+biztonságban, ha elviszed a kikötőbe! Nyomás vissza!
+
+[gameMonologues.4]
+VIGYÁZZ! Ha zátonynak ütközöl, elveszted a Hártyáidat.
+
+[gameMonologues.5]
+Harminc ilyen csillogó csodát kell kikanalaznod, hogy a
+Tekercsmester egyáltalán szóba álljon veled.
+
+[gameMonologues.6]
+Tizenegy Kalózkreditért, persze. Itt semmi sincs ingyen.
+
+[gameMonologues.7]
+Ezek csak az alap Hártyák. Az öblön túl, a zátonyoknál
+már színeseket is találsz. Kék, vörös, zöld... mind más zsáner.
+
+[gameMonologues.8]
+De oda csak olyan vén tengeri medvék jutnak ki, mint én. A
+távoli szigeteken meg... na mindegy. Az még nem a te szinted.
+
+[gameMonologues.9]
+A fene... a Légi Kalózok.
+MIT BÁMULSZ? MENEKÜLJÜNK! Vissza a kikötőbe!
+
+[gameMonologues.11]
+Most pedig elmagyarázom,
+hogy működik itt az élet, ha már ennyire hülye vagy hozzá.
+
+[gameMonologues.12]
+Két dolog számít: a Kalózkredit és a Tálentum. Kreditet kapsz
+minden nap, amikor belépsz. Egyet. De ez csak alamizsna.
+
+[gameMonologues.13]
+A Tekercsmester is ad egyet harminc Hártyáért. 
+De az aprópénz.
+
+[gameMonologues.14]
+Az igazi meló a Tavernában van. Ott kaphatsz
+küldetéseket is, ha már megérdemled.
+
+[gameMonologues.15]
+A Tekercseidet azt a Könyvtárban tudod elolvasni.
+De eladhatod 10 kreditért, vagy a Piacon.
+
+[gameMonologues.16]
+De, gyűjtheted a Tekercseket, amíg meglesz a könyv
+összes tekercse. Azokból készíttetheted a Másolatot.
+
+[gameMonologues.17]
+Ha van Másolatod, azt beviheted a Szentélybe és
+felszentelheted. Így juthatsz hozzá igazi Könyvhöz.
+
+[gameMonologues.18]
+A Könyvszenteléshez Tálentum kell.
+Azt pedig nem halászod ki a vízből.
+
+[gameMonologues.19]
+Azt csak a Nagy Mecénások adják, a 
+Patreonon vagy PayPalen keresztül.
+
+[gameMonologues.20]
+Vagy ha olyan kincset találsz, amiért
+egy másik játékos Tálentummal fizet neked a Piacon.
+
+[gameMonologues.21]
+Van ugyan Bank is, de az csak lefelé vált.
+Tálentumot adhatsz el Kreditért, de visszafelé... felejtsd el!
+
+[gameMonologues.22]
+Na, kezdesz belejönni. Ha ilyen jól dolgozol,
+egyszer talán elviszlek a Kalózkikötőbe, Hebokba.
+
+[gameMonologues.23]
+Ott bérelhetsz vagy vehetsz hajót, de akár
+más hajók legénységéhez csatlakozhatsz. Vagy a kalózokhoz.
+
+[gameMonologues.24]
+Hebokban van a Szentély is, 
+ahol a Másolatot felszentelik.
+
+[gameMonologues.25]
+A felszentelés után a könyvet letöltheted,
+és még tíz Másolatot is kapsz hozzá, amit elajándékozhatsz.
+
+[gameMonologues.26]
+És, ha olyan embernek adod, aki felszenteli
+a tőled kapott Másolatot, akkor még pénz is ütheti a markodat
+
+[gameMonologues.27]
+Vagy akár Könyvvadászatot is indíthatsz rá.
+Na, az az igazán jó móka!
+
+[gameMonologues.28]
+Minél több könyved van, annál
+nagyobb emberré válsz itt. Még akár kapitány is lehet belőled!
+
+[gameMonologues.29]
+Viszont, ha ellopod valamelyik könyvet, vagy hagyod, hogy
+játékon kívüliek is olvassák, akkor súlyos lesz a büntetésed!
+
+[gameMonologues.30]
+Nem húznak ugyan át a hajógerinc alatt, de kikerül
+ a neved a szégyenfalra, hogy mindenki lássa, mit tettél.
+
+[gameMonologues.31]
+És hiába szenteltetted fel a könyvet, az
+elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül.
+
+[gameMonologues.32]
+Én megéheztem, úgyhogy innentől egyedül folytatod.
+Hozz nekem még több Hártyát. És vigyázz a hajómra!
+
+[gameMonologues.33]
+És, ha te is írtál valamit, amit behoznál a játékba,
+akkor a monkokhoz kell elmenned.
+
+[gameMonologues.34]
+Fent élnek a Felhőkolostorban, a Szentély felett.
+Ők felügyelik a betűt.
+
+[gameMonologues.airship_bad_empty]
+Most jobb lesz, ha eltűnünk a szemük elől,
+mielőtt a tengerbe hajítanak minket.
+
+[gameMonologues.controls]
+A W,A,S,D vagy az iránynyíl gombokkal tudod irányítani a hajót. A kamerát akkor tudod forgatni, ha lenyomva tartod akár a jobb, akár a bal gombot az egéren. Az információs ablakokat a space lenyomásával tudod léptetni / bezárni.
+
+[gameMonologues.wind]
+Figyelj a szélirányra, úgy forgasd a vitorlát!
+
+# --- POPUPS (Rövid értesítő üzenetek) ---
+
+[popups.airship_bad]
+Ezek most kiraboltak. 
+Most mehetünk ki tovább halászni.
+
+[popups.airship_bad_empty]
+Most jobb lesz, ha eltűnünk a szemük elől,
+mielőtt a tengerbe hajítanak minket.
+
+[popups.airship_catch]
+UTOLÉRTEK! Kérdezni fognak. Ha jól válaszolsz, megússzuk, 
+de ha hibázol, elveszik a hártyáinkat.
+
+[popups.airship_good]
+Szép volt. Folytasd a melót!
+
+[popups.beach]
+A partra nem kéne felfutni!
+
+[popups.boat_crash]
+Óvatosan! Összetöröd a csónakot!
+
+[popups.boat_fixing]
+Ezt most megjavítottam, de vigyázz jobban!
+
+[popups.boat_lowHP]
+Még egy ütközést nem élünk túl.
+Vidd vissza a csónakot!
+
+[popups.boat_totalcar]
+Elsüllyedtél. Belőled nem lesz hajós.
+
+[popups.empty_boat]
+Üres csónakkal tértél vissza
+
+[popups.eog_empty_water]
+Gyanúsan üres a víz, gyere, nézzünk szét az öböl bejáratánál!
+
+[popups.homepoint]
+Kipakoltam, mehetünk.
+
+[popups.membrane_bad]
+Ez a hártya most elúszott!
+
+[popups.membrane_good]
+Ezt felszedtük
+
+[popups.new_membrane]
+Újabb hártyát gyűjtöttél be! 
+Nyomás vissza a kikötőbe!
+
+[popups.out_of_range]
+Ezzel a ronccsal nem mehetünk ki a nyílt tengerre.
+
+# --- EOG MONOLOGUES (End-of-Game monológok) ---
+
+[eogMonologues.chestFound]
+Most én viszem vissza a csónakot a mólóra.
+Nem hagyom, hogy ezt elszúrd nekem!
+
+[eogMonologues.pointA]
+Te, Patkány! Gyanúsan üres a víz...
+Nézzük meg, hogy mi a helyzet az öböl szájánál!
+
+[eogMonologues.pointB]
+Mi az ott a parton? Az nem hártya, hanem...Csak nem...? 
+Az ott egy LÁDA! EGY LÁDA! Gyorsan, fel kell szednünk!
+

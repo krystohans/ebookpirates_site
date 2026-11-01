@@ -1,5 +1,15 @@
 window.INFO_SCROLL_EN = "You landlubber! Didn't you come here to read?! Or is paying attention to me some kind of luxury?!\nIt's because of people like you that I keep this piece of junk on me.\nHere, take it, everything you need to know is written right down here.\n\nGoal of the Game:\n• You must collect 30 glowing Membranes floating on the water and bring them back to the port. The storm lantern marks the way back.\n• Your ship has 10 durability points. You lose one point each time you hit a rock. When this value drops to one, you will receive a warning. If the boat's durability drops to zero, the ship breaks and sinks; you will have to restart the game from the main menu, and all membranes collected up to that point will be lost.\n• During your collection run, quiz questions regarding the rules of the game will pop up from time to time. If you answer correctly, you scoop up the membrane; if you answer incorrectly, you do not.\n\nControls:\n• You steer the sailing boat using the W, A, S, D and arrow keys.\n• The camera can be rotated with the mouse. As long as you hold down the left mouse button, your ship will turn in the direction the camera is facing.\n• The main menu can be accessed via the Menu icon (top menu bar, the icon next to the skull).\n• You can advance through text bubbles by pressing Space.\n• The info scroll can be closed by clicking on the skull (bottom right corner).\n• In the Settings menu, you can adjust the sounds, music, fullscreen mode, and game language.\n• After picking up the third membrane, an airship takes off, which will be anchored at the mouth of the bay until then. From that point on, it follows you throughout the tutorial. If it catches up to you, it will ask you a question. If you answer correctly, you can move on; if you answer incorrectly, you lose the membranes currently on your ship (membranes already delivered to the port remain safe). If you had no membranes on your ship, the tutorial restarts from the port.\n\nThe World:\nThe Pirate Port is called Hebok. This is where you can find the Market, the Book Shrine, and the Tavern, where you can accept quests.\nYou can rent or buy a ship there, or you can even join the crew of other ships. Or join the pirates.\nThe more Books you have, the higher your rank will be.\n\nCurrencies:\nWe use Pirate Credits and Talent in the game.\n• You can earn Pirate Credits through adventures; plus, the system automatically credits you with one point every day upon logging in. You can also sell your items for Pirate Credits, except for Books.\n• You can obtain Talent by supporting our work via PayPal or Patreon, or if you are lucky enough to find a Let-crystal and sell it at the Shrine.\n• You can exchange Talent for Pirate Credits at the Bank, but not the other way around.\n\nMembrane\n• The raw material for Scrolls; it cannot be read on its own.\n\nScroll\n• Scrolls can be crafted from Membranes. You can read your Scrolls, Copies, and Books in the Library.\n• The Scrollmaster crafts one Scroll from 30 Membranes for 11 Pirate Credits.\n• You can buy and sell Scrolls at the Scrollmaster or on the Market.\n\nCopy\n• To craft a Copy, you need all the Scrolls of a book, but you can also receive Copies from other players or purchase them on the Market. If you are lucky.\n\nBook\nConsecration\n• In the Book Shrine, a Copy is consecrated into a Book upon paying Talent.\n• After Consecration, the Book becomes downloadable as an ebook, and the player to whom the Book is registered receives 10 Copies to do with as they please.\n• If any player illegally shares the downloaded ebook, the Book will lose its value in the game despite having been consecrated, meaning it goes into Book Prison, and the culprit's name will be put up on the Wall of Shame.";
 window.INFO_SCROLL_HU = 'Te patkány! Hát nem olvasni jöttél?! Vagy csak rám figyelni luxus?! \nA hozzád hasonlók miatt tartom ezt a szart magamnál. \nNesze, itt van minden leírva, amit tudnod kell.\n\nA játék célja:\n- 30 darab, vizen lebegő, világító Hártyát kell összeszedéned és eljuttatnod a kikötőbe. Oda az utat a viharlámpa mutatja. \n- A hajódnak 10 életereje van. Minden egyes sziklának ütközéskor elveszítesz ezekből egyet. Ha ez az érték eléri az egyet, figyelmeztetést kapsz. Ha a csónak életereje nullára csökken, akkor a hajó összetörik és elsüllyed, te pedig kezdheted a játékot elölről a főmenüből és minden addig szerzett hártyád elvész.  \n- A gyűjtögetés során időről időre kvízkédések ugranak fel a játék szabályaival kapcsolatban. Helyes válasz esetén felszeded a hártyát, hibás válasz esetén nem.\n\nAz irányításról:\n- Te irányítod a vitorlás csónakot w, a, s, d és az iránynyíl billentyűkkel. \n- Az egérrel a kamerát lehet forgatni. Amíg lenyomva tartod a bal egérgombot, addig a hajód arra fordul, amerre a kamera néz.\n- A főmenüt a Menü ikonnal tudod elérni (felső menüsor, a halálfej melletti ikon). \n- A szövegbuborékokat a space-el tudod léptetni. \n- Az info scrollt a halálfejre kattintva (jobb alsó sarok) tudod összezárni.\n- A Beállítások menüben a hangokat, zenét, teljes képernyőt és játék nyelvét beállítani.\n- A harmadik hártya felvétele után felszáll léghajó, ami addig az öböl bejáratában fog horgonyozni. Ezt követően a tutorial során végig követ. Ha utolér, akkor feltesz egy kérdést. Ha jó válaszolsz, tovéábbmehetsz, ha rosszul, a hajón levő hártyákat elveszíted (a kikötőben leadott hártyák megmaradnak). Ha nem volt hártyád a hajón, akkor a tutorial újraindul a kikötőből.\n\nA világról:\nA Kalózkikötőt Heboknak hívják. Itt találod a Piacot, a Könyvszentélyt és a Tavernát, ott vállalhatsz küldetéseket .\nOtt bérelhetsz vagy vehetsz hajót, de akár más hajók legénységéhez is  csatlakozhatsz. Vagy a kalózokhoz. \nMinél több Könyved van, annál nagyobb lesz a rangod. \n\nPénzek: \nA játékban Kalózkreditet és Tálentumot használunk.\n- Kalózkreditet kalandokkal tudsz szerezni, plusz a rendszer automatikusan jóváír neked minden nap a belépéskor egyet. Eladhatod a tárgyaidat is Kalózkreditért, kivéve a Könyveket.\n- Tálentumhoz úgy juthatsz, ha támogatod a munkánkat PayPal-en vagy Patreonon keresztül, vagy ha olyan mázlis vagy, hogy találsz egy letkristályt és eladod a Szentélyben. \n- A Bankban tudsz váltani Tálentumot Kalózkreditre, de visszafelé nem.\n\nHártya\n- A Tekercsek alapanyaga, önmagában nem olvasható.\n\nTekercs\n- Tekercset Hártyából lehet készíttetni. A Tekercseidet, a Másolatot és a Könyveidet a Könyvtárban tudod elolvasni.\n- A Tekercsmester 30 db Hártyából 11 Kalózkreditért készít neked egy Tekercset. \n- Tekercset eladni és venni a Tekercsmesternél vagy a Piacon lehet.\n\nMásolat\n- Másolat készítéséhez a Könyv összes Tekercsére szükséged van, de kaphatsz Másolatot más játékosoktól is, vagy megvásárolhatod őket a Piacon. Ha szerencséd van.\n\nKönyv\nFelszentelés\n- A Könyvszentélyben a Másolatot Tálentum befizetésével Könyvvé szentelik.\nA Szentelés után a Könyv ebook formában letölthetővé válik, és az a játékos, akinek a nevére íródik a Könyv, kap 10 db Másolatot, amivel szabadon rendelkezhet. \n- Ha a letöltött ebookot bármelyik játékos illegálisan megosztja, akkor hiába szenteltette fel a Könyvet, az elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül, a bűnös neve pedig felkerül a Szégyenfalra.';
+window.INFO_SCROLL_TRANSLATIONS = {
+  hu: window.INFO_SCROLL_HU,
+  en: window.INFO_SCROLL_EN,
+  de: "Du Landratte! Bist du nicht hergekommen, um zu lesen?! Oder ist es etwa ein Luxus, mir zuzuhören?!\nWegen Leuten wie dir schleppe ich diesen Wisch überhaupt mit mir herum.\nHier, nimm, hier steht alles schwarz auf weiß, was du wissen musst.\n\nZiel des Spiels:\n• Du musst 30 leuchtende Membranen einsammeln, die auf dem Wasser treiben, und sie in den Hafen zurückbringen. Die Sturmleuchte weist dir den Rückweg.\n• Dein Schiff hat 10 Haltbarkeitspunkte. Bei jedem Felsenaufprall verlierst du einen Punkt. Sinkt dieser Wert auf eins, erhältst du eine Warnung. Fällt die Haltbarkeit auf null, zerschellt das Schiff und sinkt; du musst das Spiel im Hauptmenü von vorn beginnen, und alle bisher gesammelten Membranen gehen verloren.\n• Während des Sammelns tauchen von Zeit zu Zeit Quizfragen zu den Spielregeln auf. Bei richtiger Antwort fischst du die Membran heraus, bei falscher Antwort nicht.\n\nSteuerung:\n• Du steuerst das Segelboot mit W, A, S, D und den Pfeiltasten.\n• Die Kamera lässt sich mit der Maus drehen. Solange du die linke Maustaste gedrückt hältst, dreht sich dein Schiff in die Blickrichtung der Kamera.\n• Das Hauptmenü erreichst du über das Menü-Symbol (obere Menüleiste, das Symbol neben dem Totenkopf).\n• Textblasen kannst du mit der Leertaste weiterschalten.\n• Die Schriftrolle schließt du durch Klick auf den Totenkopf (unten rechts).\n• Im Menü Einstellungen kannst du Töne, Musik, Vollbild und die Sprache anpassen.\n• Nach dem Aufnehmen der dritten Membran hebt ein Luftschiff ab, das bis dahin an der Buchtmündung vor Anker lag. Von da an verfolgt es dich durch das gesamte Tutorial. Wenn es dich einholt, stellt es dir eine Frage. Antwortest du richtig, darfst du weitersegeln; antwortest du falsch, verlierst du die Membranen an Bord deines Bootes (im Hafen abgelieferte Membranen bleiben sicher). Wenn du keine Membranen an Bord hattest, startet das Tutorial vom Hafen neu.\n\nDie Welt:\nDer Piratenhafen heißt Hebok. Hier findest du den Markt, das Buchheiligtum und die Taverne, wo du Aufträge annehmen kannst.\nDort kannst du ein Schiff mieten oder kaufen, oder dich der Mannschaft anderer Schiffe anschließen. Oder den Piraten.\nJe mehr Bücher du besitzt, desto höher steigt dein Rang.\n\nWährungen:\nIm Spiel verwenden wir Piratenkredite und Talente.\n• Piratenkredite verdienst du durch Abenteuer; außerdem schreibt dir das System täglich beim Einloggen einen Punkt gut. Du kannst deine Gegenstände auch gegen Kredite verkaufen, mit Ausnahme von Büchern.\n• Talente erhältst du, indem du unsere Arbeit über PayPal oder Patreon unterstützt, oder wenn du das Glück hast, einen Letkristall zu finden und im Heiligtum zu verkaufen.\n• In der Bank kannst du Talente in Piratenkredite umtauschen, aber nicht umgekehrt.\n\nMembran\n• Das Rohmaterial für Schriftrollen; für sich allein ist sie unlesbar.\n\nSchriftrolle\n• Schriftrollen werden aus Membranen gepresst. Deine Schriftrollen, Abschriften und Bücher kannst du in der Bibliothek lesen.\n• Der Schriftrollenmeister fertigt aus 30 Membranen für 11 Piratenkredite eine Schriftrolle an.\n• Schriftrollen können beim Meister oder auf dem Markt gehandelt werden.\n\nAbschrift\n• Um eine Abschrift zu binden, benötigst du alle Schriftrollen eines Buches; du kannst Abschriften aber auch von anderen Spielern erhalten oder auf dem Markt erwerben. Wenn du Glück hast.\n\nBuch & Weihe\n• Im Buchheiligtum wird eine Abschrift gegen Talente zu einem Buch geweiht.\n• Nach der Weihe wird das Buch als E-Book herunterladbar, und der eingetragene Eigentümer erhält 10 Abschriften zur freien Verfügung.\n• Wenn ein Spieler das heruntergeladene E-Book illegal weiterverbreitet, verliert das geweihte Buch seinen Wert im Spiel, wandert ins Buchgefängnis, und der Name des Missetäters prangt an der Schandmauer.",
+  fr: "Espèce de marin d'eau douce ! Tu n'es pas venu ici pour lire ?! Ou alors m'écouter est un luxe pour toi ?!\nC'est à cause de gens comme toi que je trimbale ce chiffon sur moi.\nTiens, prends-le, tout ce que tu dois savoir est écrit noir sur blanc.\n\nBut du jeu :\n• Tu dois ramasser 30 Membranes lumineuses flottant sur l'eau et les ramener au port. La lanterne tempête t'indique le chemin du retour.\n• Ton navire possède 10 points de durabilité. À chaque collision contre un rocher, tu en perds un. Lorsque cette valeur tombe à un, tu reçois un avertissement. Si la durabilité tombe à zéro, le navire se brise et coule ; tu devras recommencer depuis le menu principal et toutes les membranes collectées jusque-là seront perdues.\n• Durant ta collecte, des questions de quiz sur les règles du jeu apparaîtront de temps à autre. Si tu réponds correctement, tu repêches la membrane ; en cas de mauvaise réponse, elle t'échappe.\n\nCommandes :\n• Tu diriges le voilier à l'aide des touches W, A, S, D et des flèches directionnelles.\n• La caméra pivote avec la souris. Tant que tu maintiens le bouton gauche enfoncé, ton bateau s'oriente dans la direction regardée par la caméra.\n• Le menu principal est accessible via l'icône Menu (barre supérieure, à côté du crâne).\n• Fais défiler les bulles de dialogue avec la touche Espace.\n• Le parchemin se referme en cliquant sur le crâne (en bas à droite).\n• Dans les Paramètres, tu peux régler les sons, la musique, le plein écran et la langue.\n• Après avoir ramassé la troisième membrane, un dirigeable décolle de l'embouchure de la baie où il était amarré. Dès lors, il te prend en chasse tout au long du didacticiel. S'il te rattrape, il te posera une question. Si tu réponds bien, tu peux poursuivre ta route ; si tu te trompes, tu perds les membranes présentes sur ton bateau (celles déposées au port restent en sécurité). Si ton bateau était vide, le didacticiel redémarre depuis le port.\n\nLe Monde :\nLe port pirate se nomme Hebok. C'est ici que se trouvent le Marché, le Sanctuaire du Livre et la Taverne, où tu peux accepter des expéditions.\nTu peux y louer ou acheter un navire, ou rejoindre l'équipage d'autres capitaines. Ou grossir les rangs des pirates.\nPlus tu possèdes de Livres, plus ton rang sera prestigieux.\n\nMonnaies :\nNous utilisons les Crédits Pirates et les Talents.\n• Tu gagnes des Crédits Pirates grâce aux aventures ; de plus, le système t'en crédite un chaque jour lors de ta connexion. Tu peux aussi vendre tes objets contre des crédits, sauf les Livres.\n• Tu obtiens des Talents en soutenant notre projet via PayPal ou Patreon, ou si tu as la chance de dénicher un Cristal de Let et de le vendre au Sanctuaire.\n• À la Banque, tu peux échanger des Talents contre des Crédits, mais jamais l'inverse.\n\nMembrane\n• La matière première des Parchemins ; illisible à l'état brut.\n\nParchemin\n• Les Parchemins sont confectionnés à partir de Membranes. Tu peux consulter tes Parchemins, Copies et Livres dans la Bibliothèque.\n• Le Maître des Rouleaux compresse 30 Membranes en un Parchemin lisible pour 11 Crédits.\n• Les Parchemins se négocient auprès du Maître ou sur le Marché.\n\nCopie\n• Pour relier une Copie, tu as besoin de tous les Parchemins d'un récit, mais tu peux aussi en recevoir d'autres joueurs ou en acquérir au Marché. Si la chance te sourit.\n\nLivre & Consécration\n• Au Sanctuaire du Livre, une Copie est consacrée en Livre en échange de Talents.\n• Après consécration, le Livre devient téléchargeable sous forme d'ebook, et le propriétaire enregistré reçoit 10 Copies dont il dispose librement.\n• Si un joueur partage illégalement l'ebook téléchargé, le Livre perd toute valeur en jeu malgré sa consécration : il est jeté dans la Prison des Livres, et le nom du coupable est cloué au Mur de la Honte.",
+  es: "¡Maldita rata de agua dulce! ¿Acaso no viniste aquí a leer? ¿O es que prestarme atención es un lujo para ti?\nPor culpa de gente como tú llevo este pergamino encima.\nToma, aquí tienes todo lo que necesitas saber por escrito.\n\nObjetivo del juego:\n• Debes recolectar 30 Membranas brillantes que flotan en el agua y llevarlas de regreso al puerto. La linterna de tormenta marca el camino.\n• Tu barco tiene 10 puntos de durabilidad. Pierdes un punto cada vez que chocas contra una roca. Cuando el valor caiga a uno, recibirás una advertencia. Si la durabilidad llega a cero, el barco se romperá y se hundirá; tendrás que reiniciar desde el menú principal y perderás todas las membranas recolectadas.\n• Durante tu travesía, aparecerán preguntas de quiz sobre las reglas del juego. Si respondes bien, recogerás la membrana; si fallas, se te escapará.\n\nControles:\n• Manejas el velero con las teclas W, A, S, D y las flechas direccionales.\n• La cámara se rota con el ratón. Mientras mantengas presionado el botón izquierdo, tu barco virará hacia donde apunte la cámara.\n• Accedes al menú principal con el icono de Menú (barra superior, junto a la calavera).\n• Avanza los diálogos pulsando la barra Espaciadora.\n• El pergamino se cierra haciendo clic en la calavera (esquina inferior derecha).\n• En Ajustes puedes configurar el sonido, la música, la pantalla completa y el idioma.\n• Tras recoger la tercera membrana, despegará un dirigible que hasta entonces descansaba en la boca de la bahía. A partir de ese momento, te perseguirá durante el tutorial. Si te alcanza, te hará una pregunta. Si aciertas, podrás seguir navegando; si fallas, perderás las membranas que lleves en el barco (las entregadas en el puerto permanecen a salvo). Si no llevabas membranas, el tutorial se reiniciará desde el muelle.\n\nEl Mundo:\nEl puerto pirata se llama Hebok. Aquí se encuentran el Mercado, el Santuario del Libro y la Taberna, donde podrás aceptar misiones.\nPuedes alquilar o comprar un barco, o unirte a la tripulación de otros capitanes. O a los piratas.\nCuantos más Libros poseas, mayor será tu rango y fortuna.\n\nMonedas:\nEn el juego usamos Créditos Pirata y Talentos.\n• Ganas Créditos Pirata en tus aventuras; además, el sistema te otorga uno cada día al iniciar sesión. Puedes vender tus posesiones por créditos, excepto los Libros.\n• Consigues Talentos apoyando nuestro trabajo en PayPal o Patreon, o si tienes la suerte de hallar un Cristal de Let y venderlo en el Santuario.\n• En el Banco puedes canjear Talentos por Créditos Pirata, pero nunca a la inversa.\n\nMembrana\n• Materia prima para los Pergaminos; no se puede leer por sí sola.\n\nPergamino\n• Se prensan a partir de Membranas. Puedes leer tus Pergaminos, Copias y Libros en la Biblioteca.\n• El Maestro de Pergaminos prensa 30 Membranas en un Pergamino por 11 Créditos Pirata.\n• Puedes comprar y vender Pergaminos con el Maestro o en el Mercado.\n\nCopia\n• Para encuadernar una Copia necesitas todos los Pergaminos de una obra, pero también puedes recibirlas de otros jugadores o comprarlas en el Mercado. Si tienes suerte.\n\nLibro y Consagración\n• En el Santuario del Libro, una Copia se consagra en Libro a cambio de Talentos.\n• Tras la consagración, el Libro se puede descargar en formato ebook y su dueño recibe 10 Copias para disponer de ellas libremente.\n• Si un jugador comparte ilegalmente el ebook descargado, el Libro pierde su valor en el juego a pesar de estar consagrado: va a parar a la Prisión de Libros y el nombre del infractor se exhibe en el Muro de la Vergüenza.",
+  pl: "Ty szczurze lądowy! Nie przyszedłeś tu czytać?! Czy słuchanie mnie to jakiś luksus?!\nWłaśnie przez takich jak ty trzymam ten kawałek pergaminu przy sobie.\nMasz, bierz, wszystko co musisz wiedzieć jest tu jasno spisane.\n\nCel gry:\n• Musisz zebrać 30 świecących Membran dryfujących na wodzie i dostarczyć je do portu. Latarnia sztormowa wskazuje drogę powrotną.\n• Twój statek ma 10 punktów wytrzymałości. Przy każdym uderzeniu w skałę tracisz jeden punkt. Gdy spadnie do jednego, otrzymasz ostrzeżenie. Jeśli spadnie do zera, statek rozbije się i zatonie; musisz zacząć od nowa z menu głównego, a zebrane membrany przepadną.\n• Podczas zbierania co jakiś czas pojawią się pytania quizowe dotyczące zasad gry. Przy poprawnej odpowiedzi wyławiasz membranę, przy błędnej – odpływa ci z rąk.\n\nSterowanie:\n• Sterujesz łodzią żaglową za pomocą klawiszy W, A, S, D oraz strzałek.\n• Kamerę obracasz myszą. Dopóki trzymasz wciśnięty lewy przycisk myszy, łódź skręca w stronę, w którą patrzy kamera.\n• Menu główne otworzysz ikoną Menu (górny pasek, obok czaszki).\n• Dymki dialogowe przewijasz klawiszem Spacji.\n• Zwój informacyjny zamykasz klikając na czaszkę (prawy dolny róg).\n• W Ustawieniach dostosujesz dźwięk, muzykę, pełny ekran i język gry.\n• Po zebraniu trzeciej membrany z wejścia do zatoki wystartuje sterowiec. Od tej chwili będzie cię ścigać przez cały samouczek. Jeśli cię dogoni, zada pytanie. Dobra odpowiedź pozwoli ci płynąć dalej; zła odpowiedź sprawi, że stracisz membrany na pokładzie (membrany oddane w porcie są bezpieczne). Jeśli nie miałeś membran, samouczek zrestartuje się z molo.\n\nŚwiat:\nPort piracki nazywa się Hebok. Znajdziesz tu Rynek, Świątynię Ksiąg i Tawernę, w której podejmiesz się wypraw.\nMożesz wynająć lub kupić statek, albo dołączyć do załogi innych kapitanów. Lub do samych piratów.\nIm więcej Ksiąg zgromadzisz, tym wyższą rangę osiągniesz.\n\nWaluty:\nW grze posługujemy się Kredytami Pirackimi i Talentami.\n• Kredyty zdobywasz podczas przygód; ponadto system przyznaje jeden punkt każdego dnia po zalogowaniu. Możesz też sprzedawać przedmioty za Kredyty, z wyjątkiem Ksiąg.\n• Talenty zyskujesz wspierając nas przez PayPal lub Patreon, albo gdy dopisze ci szczęście i znajdziesz Kryształ Let, by sprzedać go w Świątyni.\n• W Banku możesz wymienić Talenty na Kredyty Pirackie, lecz nigdy w drugą stronę.\n\nMembrana\n• Surowiec do Zwojów; w stanie surowym jest nieczytelna.\n\nZwój\n• Zwoje wytwarza się z Membran. Zwoje, Kopie i Księgi przeczytasz w Bibliotece.\n• Mistrz Zwojów wytłacza czytelny Zwój z 30 Membran za 11 Kredytów.\n• Zwoje możesz sprzedawać i kupować u Mistrza lub na Rynku.\n\nKopia\n• Do zszycia Kopii potrzebujesz wszystkich Zwojów danej księgi, ale możesz też otrzymać Kopię od innych graczy lub kupić na Rynku. Jeśli masz szczęście.\n\nKsięga i Konsekracja\n• W Świątyni Ksiąg Kopia zostaje wyświęcona na Księgę za Talenty.\n• Po konsekracji Księga staje się dostępna do pobrania jako ebook, a właściciel otrzymuje 10 Kopii do swobodnego rozporządzania.\n• Jeśli gracz nielegalnie udostępni pobrany ebook, Księga traci wartość w grze pomimo konsekracji: trafia do Więzienia Ksiąg, a imię sprawcy zawiśnie na Ścianie Hańby.",
+  ru: "Ах ты, сухопутная крыса! Ты разве не читать сюда пришел?! Или слушать меня для тебя роскошь?!\nИменно из-за таких, как ты, я таскаю эту макулатуру с собой.\nНа, держи, здесь черным по белому написано всё, что тебе нужно знать.\n\nЦель игры:\n• Тебе предстоит собрать 30 светящихся Мембран, плавающих на воде, и доставить их в порт. Штормовой фонарь укажет обратный путь.\n• У твоего судна 10 очков прочности. При каждом столкновении со скалой ты теряешь одно очко. Если прочность упадет до единицы, ты получишь предупреждение. Если прочность упадет до нуля, лодка разобьется и пойдет ко дну; придется начинать заново из главного меню, а все собранные мембраны пропадут.\n• Во время сбора периодически будут появляться вопросы викторины по правилам игры. Ответишь правильно — заберешь мембрану, ошибешься — она уплывет.\n\nУправление:\n• Ты управляешь парусной лодкой с помощью клавиш W, A, S, D и стрелок.\n• Камера вращается мышью. Пока удерживаешь левую кнопку мыши, лодка поворачивает туда, куда направлена камера.\n• В главное меню можно выйти через иконку Меню (верхняя панель, рядом с черепом).\n• Реплики переключаются клавишей Пробел.\n• Свиток информации закрывается нажатием на череп (правый нижний угол).\n• В Настройках можно отрегулировать звуки, музыку, полноэкранный режим и язык.\n• После сбора третьей мембраны взлетит дирижабль, который до этого стоял на якоре у входа в бухту. С этого момента он будет преследовать тебя всё обучение. Если он настигнет тебя, то задаст вопрос. Ответишь верно — плыви дальше; ошибешься — потеряешь мембраны на борту (сданные в порту останутся в сохранности). Если лодка была пуста, обучение перезапустится от пирса.\n\nО мире игры:\nПиратский порт зовется Хебок. Здесь находятся Рынок, Святилище Книг и Таверна, где можно брать задания.\nТам ты сможешь арендовать или купить корабль, либо наняться в команду других капитанов. Или примкнуть к пиратам.\nЧем больше у тебя Книг, тем выше твой ранг и богатство.\n\nВалюта:\nВ игре используются Пиратские кредиты и Таланты.\n• Кредиты зарабатываются в приключениях; кроме того, система начисляет по одному баллу каждый день при входе. Также можно продавать вещи за кредиты, кроме Книг.\n• Таланты можно получить за поддержку проекта через PayPal или Patreon, либо если тебе повезет найти Кристалл Лета и продать его в Святилище.\n• В Банке можно обменять Таланты на Пиратские кредиты, но не наоборот.\n\nМембрана\n• Сырье для Свитков; сама по себе не читаема.\n\nСвиток\n• Свитки прессуются из Мембран. Читать свои Свитки, Копии и Книги можно в Библиотеке.\n• Мастер свитков делает читаемый Свиток из 30 Мембран за 11 Пиратских кредитов.\n• Свитками можно торговать у Мастера или на Рynku.\n\nКопия\n• Чтобы сшить Копию, нужны все Свитки произведения, но Копию можно также получить от других игроков или купить на Рynku. Если улыбнется удача.\n\nКнига и Освящение\n• В Святилище Книг Копию освящают в Книгу за Таланты.\n• После освящения Книга становится доступна для скачивания в формате электронной книги, а владелец получает 10 Копий в полное распоряжение.\n• Если игрок нелегально распространит скачанную книгу, она потеряет ценность в игре, несмотря на освящение: Книга отправится в Книжную Тюрьму, а имя нарушителя попадет на Доску Позора."
+};
+
 
 // === [#TUTOR.04.00.00] START | name: onerror | lines: ~8 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
@@ -52,8 +62,15 @@ async function loadDialogues() {
     const urlParams = new URLSearchParams(window.location.search);
     const lang = window.currentLanguage || urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || 'hu';
     window.currentLanguage = lang;
-    const filename = (lang === 'en') ? 'dialogues_en.json' : 'dialogues.json';
-    const res = await fetch(filename + '?t=' + Date.now());
+    if (document.body) {
+      document.body.setAttribute('data-lang', lang);
+      document.body.classList.toggle('lang-ru', lang === 'ru');
+    }
+    const filename = (lang === 'hu') ? 'dialogues.json' : `dialogues_${lang}.json`;
+    let res = await fetch(filename + '?t=' + Date.now());
+    if (!res.ok) {
+      res = await fetch('dialogues.json?t=' + Date.now());
+    }
     if (res.ok) {
       const data = await res.json();
       window.zozoWelcomeTexts = data.welcomeTexts || [];
@@ -61,10 +78,43 @@ async function loadDialogues() {
       window.gamePopups = data.popups || {};
       window.eogMonologues = data.eogMonologues || {};
       console.log('🌐 Párbeszédek sikeresen betöltve:', filename);
+      if (typeof window.selectZozoTextStep === 'function') { window.selectZozoTextStep(window.zozoTextStep || 0); }
+
+      window.getReefCrashText = function() {
+        const curLang = (typeof window.getGameLanguage === 'function') 
+          ? window.getGameLanguage() 
+          : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu');
+        const crashMap = {
+          hu: '💥 Zátonyra futottál!',
+          en: '💥 Reef collision!',
+          de: '💥 Riff-Kollision!',
+          fr: '💥 Collision avec le récif !',
+          es: '💥 ¡Colisión con el arrecife!',
+          pl: '💥 Zderzenie z rafą!',
+          ru: '💥 Столкновение с рифом!'
+        };
+        return crashMap[curLang] || crashMap.hu;
+      };
+
+      window.getOpenSeaText = function() {
+        const curLang = (typeof window.getGameLanguage === 'function') 
+          ? window.getGameLanguage() 
+          : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu');
+        const map = {
+          hu: '⚓ Nyílt tenger: Utazás Hebok kikötőbe...',
+          en: '⚓ Open sea: Journey to Hebok port...',
+          de: '⚓ Offenes Meer: Reise zum Hafen von Hebok...',
+          fr: '⚓ Mer ouverte : voyage vers le port d\'Hebok...',
+          es: '⚓ Mar abierto: viaje al puerto de Hebok...',
+          pl: '⚓ Otwarte morze: podróż do portu Hebok...',
+          ru: '⚓ Открытое море: Путешествие в порт Хебок...'
+        };
+        return map[curLang] || map.hu;
+      };
 
       const crashSpan = document.querySelector('#crash-overlay span');
       if (crashSpan) {
-        crashSpan.innerText = (lang === 'en') ? '💥 Reef collision!' : '💥 Zátonyra futottál!';
+        crashSpan.innerText = window.getReefCrashText();
       }
     }
   } catch (e) {
@@ -72,38 +122,2225 @@ async function loadDialogues() {
   }
 }
 // === [#TUTOR.04.02.00] END ===
+window.loadDialogues = loadDialogues;
 loadDialogues();
 
-// === [#TUTOR.04.03.00] START | name: fitDialogueText | lines: ~32 ===
-// @subsystem: TUTOR.03_HartyaVadaszat
-// @summary: 3D Hártyavadászat funkció: fitDialogueText.
-window.fitDialogueText = function (el, defaultMaxFs = 23, minFs = 16, customMaxH = null) {
-  if (!el) return;
-  const isEn = (window.currentLanguage || localStorage.getItem('siteLang') || localStorage.getItem('ebp_language')) === 'en';
-  let maxCap = (defaultMaxFs >= 28) ? 22 : 20;
-  let currentFs = isEn ? Math.min(defaultMaxFs, maxCap) : defaultMaxFs;
-  el.style.fontSize = currentFs + 'px';
-  el.style.lineHeight = '1.25';
-  
-  let targetMaxH = customMaxH;
-  if (!targetMaxH) {
-    if (el.parentElement) {
-      const parentH = el.parentElement.clientHeight;
-      if (parentH > 50) {
-        targetMaxH = parentH * 0.75;
-      }
+// ================================================================================
+// 📜 DEDIKÁLT MASTER TIPOGRÁFIA & GEOMETRIA ADATBÁZIS (253 ELEM, MIND A 7 NYELV)
+// Rögzítve az AGENTS.md és a felhasználó által a Hangolóban kimért pontos értékekből.
+// ================================================================================
+window.dialogueTypography = {
+  "hu": {
+    "welcome_0": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 76,
+      "width": 665,
+      "left": 0
+    },
+    "welcome_1": {
+      "fontSize": 26.5,
+      "lineHeight": 1.24,
+      "top": 56,
+      "height": 72,
+      "width": 665,
+      "left": 0
+    },
+    "welcome_2": {
+      "fontSize": 28.5,
+      "lineHeight": 1.25,
+      "top": 56,
+      "height": 72,
+      "width": 665,
+      "left": 0
+    },
+    "welcome_3": {
+      "fontSize": 27.5,
+      "lineHeight": 1.25,
+      "top": 56,
+      "height": 70,
+      "width": 675,
+      "left": 0
+    },
+    "controls": {
+      "fontSize": 22.0,
+      "lineHeight": 1.27
+    },
+    "1": {
+      "fontSize": 28.5,
+      "lineHeight": 1.25,
+      "top": 56,
+      "height": 66,
+      "width": 675,
+      "left": 0
+    },
+    "2": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 78,
+      "width": 670,
+      "left": 0
+    },
+    "5": {
+      "fontSize": 26.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 78,
+      "width": 670,
+      "left": 0
+    },
+    "6": {
+      "fontSize": 27.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 74,
+      "width": 670,
+      "left": 0
+    },
+    "7": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 74,
+      "width": 670,
+      "left": 0
+    },
+    "9": {
+      "fontSize": 24.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "8": {
+      "fontSize": 22.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "12": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "11": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "14": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "15": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "16": {
+      "fontSize": 26.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "17": {
+      "fontSize": 24.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "18": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "19": {
+      "fontSize": 28.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "21": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "22": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "23": {
+      "fontSize": 25.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "24": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "25": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "30": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "26": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "27": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "28": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "29": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "31": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "32": {
+      "fontSize": 26.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "34": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "wind": {
+      "fontSize": 28.0,
+      "lineHeight": 1.29
+    }
+  },
+  "en": {
+    "welcome_0": {
+      "fontSize": 29.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_1": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_3": {
+      "fontSize": 24.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "1": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "2": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "3": {
+      "fontSize": 26.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "4": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "5": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "6": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "7": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "8": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "9": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "11": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "12": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "14": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "15": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "16": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "21": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "22": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "23": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "24": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "25": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "26": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "34": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "controls": {
+      "fontSize": 22.0,
+      "lineHeight": 1.27
+    },
+    "welcome_2": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 46,
+      "height": 86,
+      "width": 670,
+      "left": 0
+    }
+  },
+  "ru": {
+    "controls": {
+      "fontSize": 22.0,
+      "lineHeight": 1.27
+    },
+    "wind": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25
+    },
+    "welcome_1": {
+      "fontSize": 25.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_2": {
+      "fontSize": 28.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_3": {
+      "fontSize": 25.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "1": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "2": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "3": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "4": {
+      "fontSize": 26.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "5": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "6": {
+      "fontSize": 25.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "7": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "8": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "9": {
+      "fontSize": 25.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "11": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "12": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "14": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "15": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "16": {
+      "fontSize": 26.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "17": {
+      "fontSize": 24.5,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "18": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "19": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "20": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "21": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "22": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "25": {
+      "fontSize": 23.5,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "26": {
+      "fontSize": 25.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "27": {
+      "fontSize": 26.5,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "28": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "29": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "30": {
+      "fontSize": 25.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "31": {
+      "fontSize": 26.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "32": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "33": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "34": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "24": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "23": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 44,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    }
+  },
+  "de": {
+    "controls": {
+      "fontSize": 24.0,
+      "lineHeight": 1.27
+    },
+    "welcome_0": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_1": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_2": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_3": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 42,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "1": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25,
+      "top": 42,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "2": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 51,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "3": {
+      "fontSize": 25.0,
+      "lineHeight": 1.23,
+      "top": 51,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "4": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 51,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "5": {
+      "fontSize": 23.5,
+      "lineHeight": 1.23,
+      "top": 51,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "6": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 51,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "7": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 51,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "8": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "9": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "11": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "12": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 53,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "14": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "15": {
+      "fontSize": 24.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "16": {
+      "fontSize": 24.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "17": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "18": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "19": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 88,
+      "width": 685,
+      "left": 0
+    },
+    "20": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "21": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "22": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "23": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "24": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "25": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "26": {
+      "fontSize": 24.5,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "29": {
+      "fontSize": 24.0,
+      "lineHeight": 1.23,
+      "top": 50,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "30": {
+      "fontSize": 22.5,
+      "lineHeight": 1.23,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "31": {
+      "fontSize": 23.0,
+      "lineHeight": 1.23,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "32": {
+      "fontSize": 24.0,
+      "lineHeight": 1.23,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "33": {
+      "fontSize": 26.0,
+      "lineHeight": 1.23,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "34": {
+      "fontSize": 27.0,
+      "lineHeight": 1.23,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "wind": {
+      "fontSize": 29.0,
+      "lineHeight": 1.25
+    }
+  },
+  "fr": {
+    "controls": {
+      "fontSize": 24.0,
+      "lineHeight": 1.27
+    },
+    "9": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_0": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_1": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_2": {
+      "fontSize": 26.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "welcome_3": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "1": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "2": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "3": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "4": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "5": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "6": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "7": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "8": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "11": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 51,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "12": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "14": {
+      "fontSize": 24.5,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "15": {
+      "fontSize": 24.5,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "16": {
+      "fontSize": 24.5,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 685,
+      "left": 0
+    },
+    "17": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 670,
+      "left": 0
+    },
+    "18": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 670,
+      "left": 0
+    },
+    "19": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 670,
+      "left": 0
+    },
+    "20": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 670,
+      "left": 0
+    },
+    "21": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "22": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "23": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "24": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "25": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "26": {
+      "fontSize": 26.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "27": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "28": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "29": {
+      "fontSize": 26.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "30": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "31": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "32": {
+      "fontSize": 23.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "33": {
+      "fontSize": 24.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "34": {
+      "fontSize": 27.0,
+      "lineHeight": 1.21,
+      "top": 54,
+      "height": 80,
+      "width": 680,
+      "left": 0
+    },
+    "wind": {
+      "fontSize": 29.0,
+      "lineHeight": 1.25
+    }
+  },
+  "es": {
+    "controls": {
+      "fontSize": 24.0,
+      "lineHeight": 1.27
+    },
+    "wind": {
+      "fontSize": 29.5,
+      "lineHeight": 1.25
+    },
+    "welcome_0": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_1": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_2": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "welcome_3": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "1": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "2": {
+      "fontSize": 22.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "3": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "4": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "5": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "6": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "7": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "8": {
+      "fontSize": 22.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "9": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "11": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "12": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "14": {
+      "fontSize": 24.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "15": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "16": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "17": {
+      "fontSize": 22.5,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "18": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "19": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "20": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "21": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "22": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "23": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 48,
+      "height": 82,
+      "width": 670,
+      "left": 0
+    },
+    "24": {
+      "fontSize": 26.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "25": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "26": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "27": {
+      "fontSize": 25.5,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "28": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "29": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "30": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "31": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "32": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "33": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    },
+    "34": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 53,
+      "height": 82,
+      "width": 670,
+      "left": 10
+    }
+  },
+  "pl": {
+    "controls": {
+      "fontSize": 25.0,
+      "lineHeight": 1.27
+    },
+    "welcome_0": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 650,
+      "left": -1
+    },
+    "welcome_1": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "welcome_2": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "welcome_3": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "1": {
+      "fontSize": 26.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "2": {
+      "fontSize": 22.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "3": {
+      "fontSize": 22.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "4": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "5": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "6": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "7": {
+      "fontSize": 22.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "8": {
+      "fontSize": 22.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "9": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "11": {
+      "fontSize": 25.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "12": {
+      "fontSize": 22.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "13": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "14": {
+      "fontSize": 25.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "15": {
+      "fontSize": 25.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "16": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "17": {
+      "fontSize": 24.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "18": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "19": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "20": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "21": {
+      "fontSize": 23.5,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "22": {
+      "fontSize": 23.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "23": {
+      "fontSize": 26.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "24": {
+      "fontSize": 28.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "25": {
+      "fontSize": 22.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "26": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "27": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "28": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "29": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "30": {
+      "fontSize": 25.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "31": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "32": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "33": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
+    },
+    "34": {
+      "fontSize": 27.0,
+      "lineHeight": 1.25,
+      "top": 51,
+      "height": 82,
+      "width": 660,
+      "left": -1
     }
   }
-  if (!targetMaxH || targetMaxH < 95) targetMaxH = 105;
+};
 
-  let iterations = 0;
-  while (currentFs > minFs && iterations < 8) {
-    iterations++;
-    const isOverflowingY = el.scrollHeight > targetMaxH + 4;
-    const isOverflowingX = el.scrollWidth > el.clientWidth + 4;
-    if (isOverflowingY || isOverflowingX) {
-      currentFs -= 1;
-      el.style.fontSize = currentFs + 'px';
+window.defaultTypographyByLang = {
+  hu: { fontSize: 26.5, lineHeight: 1.25, top: 51, height: 82, width: 685, left: 0 },
+  en: { fontSize: 26.0, lineHeight: 1.25, top: 51, height: 82, width: 670, left: 0 },
+  ru: { fontSize: 26.0, lineHeight: 1.21, top: 44, height: 82, width: 670, left: 0 },
+  de: { fontSize: 26.5, lineHeight: 1.25, top: 51, height: 82, width: 685, left: 0 },
+  fr: { fontSize: 26.0, lineHeight: 1.21, top: 51, height: 82, width: 685, left: 0 },
+  es: { fontSize: 26.0, lineHeight: 1.25, top: 48, height: 82, width: 670, left: 0 },
+  pl: { fontSize: 26.5, lineHeight: 1.25, top: 51, height: 82, width: 660, left: -1 }
+};
+
+window.applyMonologueTypography = function (el, key) {
+  if (!el) return;
+  const lang = (typeof window.getGameLanguage === 'function')
+    ? window.getGameLanguage()
+    : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu');
+
+  if (lang === 'ru') {
+    el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+    el.style.fontWeight = 'normal';
+    el.style.letterSpacing = '0.3px';
+  } else {
+    el.style.fontFamily = "'Briskb', 'Georgia', 'Times New Roman', serif";
+    el.style.fontWeight = 'bold';
+    el.style.letterSpacing = 'normal';
+  }
+
+  const strKey = String(key);
+  const langMap = (window.dialogueTypography && window.dialogueTypography[lang]) || {};
+  let cfg = langMap[strKey] || {};
+
+  const defs = window.defaultTypographyByLang || {};
+  const defLang = defs[lang] || { fontSize: 26.0, lineHeight: 1.25, top: 51, height: 82, width: 685, left: 0 };
+
+  let fs = (cfg.fontSize !== undefined && cfg.fontSize !== null) ? cfg.fontSize : (defLang.fontSize || 26.0);
+  let lh = (cfg.lineHeight !== undefined && cfg.lineHeight !== null) ? cfg.lineHeight : (defLang.lineHeight || 1.25);
+
+  let topVal = (cfg.top !== undefined && cfg.top !== null) ? cfg.top : defLang.top;
+  let heightVal = (cfg.height !== undefined && cfg.height !== null) ? cfg.height : defLang.height;
+  let widthVal = (cfg.width !== undefined && cfg.width !== null) ? cfg.width : defLang.width;
+  let leftVal = (cfg.left !== undefined && cfg.left !== null) ? cfg.left : defLang.left;
+
+  if (strKey === 'controls') {
+    fs = cfg.fontSize || 22.0;
+    lh = cfg.lineHeight || 1.27;
+    topVal = 82;
+    heightVal = 220;
+    widthVal = 365;
+    leftVal = 0;
+  } else if (strKey === 'wind') {
+    fs = cfg.fontSize || 28.0;
+    lh = cfg.lineHeight || 1.25;
+    if (lang === 'fr') {
+      topVal = 52; heightVal = 195; widthVal = 320; leftVal = 0;
+    } else if (lang === 'es') {
+      topVal = 38; heightVal = 230; widthVal = 320; leftVal = 3;
+    } else {
+      topVal = 30; heightVal = 220; widthVal = 320; leftVal = 0;
+    }
+  }
+
+  el.style.setProperty('font-size', fs + 'px', 'important');
+  el.style.setProperty('line-height', String(lh), 'important');
+  el.style.setProperty('white-space', 'pre-line', 'important');
+  el.style.setProperty('word-break', 'normal', 'important');
+  el.style.setProperty('overflow-wrap', 'break-word', 'important');
+  el.style.setProperty('text-wrap', 'normal', 'important');
+
+  // Alkalmazzuk a monológ pontos pozícióját és dobozméreteit a belső szövegdobozra!
+  const box = el.closest('.monolog-inner-textbox') || el.parentElement;
+  if (box) {
+    box.style.setProperty('top', topVal + 'px', 'important');
+    box.style.setProperty('--textbox-top', topVal + 'px', 'important');
+
+    box.style.setProperty('height', heightVal + 'px', 'important');
+    box.style.setProperty('--textbox-height', heightVal + 'px', 'important');
+
+    box.style.setProperty('width', widthVal + 'px', 'important');
+    box.style.setProperty('--textbox-width', widthVal + 'px', 'important');
+
+    box.style.setProperty('left', `calc(50% + ${leftVal}px)`, 'important');
+    box.style.setProperty('--textbox-left', leftVal + 'px', 'important');
+  }
+};
+
+// === [#TUTOR.04.03.00] START | name: fitDialogueText | lines: ~85 ===
+// @subsystem: TUTOR.03_HartyaVadaszat
+// @summary: 3D Hártyavadászat funkció: Intelligens egysoros és többsoros tördelés és a valódi lehető legnagyobb betűméret beállítása.
+window.fitDialogueText = function (el, maxFs = null, minFs = 13.0) {
+  if (!el) return;
+  const lang = (typeof window.getGameLanguage === 'function')
+    ? window.getGameLanguage()
+    : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu');
+
+  if (lang === 'ru') {
+    el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+    el.style.fontWeight = 'normal';
+    el.style.letterSpacing = '0.3px';
+  } else {
+    el.style.fontFamily = "'Briskb', 'Georgia', 'Times New Roman', serif";
+    el.style.fontWeight = 'bold';
+    el.style.letterSpacing = 'normal';
+  }
+
+  // TÖRDELÉSI ÉS TIPOGRÁFIAI VÉDELEM:
+  // A szerzői sortöréseket (\n) megőrizzük, hogy a tördelés kézzel is szabályozható legyen:
+  let rawTxt = el.innerText || el.textContent || '';
+
+  // 2. Nyelvspecifikus írásjel-illesztés:
+  if (lang === 'fr') {
+    // Francia nyelv: Hivatalos keskeny nem-törhető szóköz (\u202F - espace fine insécable)
+    rawTxt = rawTxt.replace(/[\s\u00A0\u202F]*([?!:;»%])/g, '\u202F$1');
+    rawTxt = rawTxt.replace(/([«])[\s\u00A0\u202F]*/g, '$1\u202F');
+  } else {
+    // Minden más nyelv: Az írásjelek szigorúan közvetlenül az előtte lévő szóhoz tapadnak (0 szóköz)
+    rawTxt = rawTxt.replace(/[\s\u00A0\u202F]+([?!.,:;])/g, '$1');
+    if (lang === 'es') {
+      rawTxt = rawTxt.replace(/([¿¡])[\s\u00A0\u202F]+/g, '$1');
+    }
+  }
+
+  if (el.innerText !== rawTxt) {
+    el.innerText = rawTxt;
+  }
+
+  el.style.wordBreak = 'normal';
+  el.style.overflowWrap = 'break-word';
+  el.style.whiteSpace = 'pre-line';
+  el.style.textWrap = 'normal';
+
+  // Határok mérése a dedikált belső szövegdobozból
+  const isControlsMode = el.closest('.controls-popup-mode') !== null;
+  const isWindMode = el.closest('.wind-popup-mode') !== null;
+  const isPanelMode = isControlsMode || isWindMode;
+  const box = el.closest('.monolog-inner-textbox') || el.parentElement;
+  const targetMaxW = (box && box.clientWidth > 0) ? box.clientWidth : (isControlsMode ? 365 : (isWindMode ? 320 : 685));
+  const targetMaxH = (box && box.clientHeight > 0) ? box.clientHeight : (isPanelMode ? 220 : 82);
+
+  const startMaxFs = (maxFs !== null) ? maxFs : (isControlsMode ? 22.0 : 28.0);
+
+  // Kézi felülbírálás (csak ha a felhasználó a hangoló csúszkáját mozgatja)
+  if (window.customUserOverrideActive) {
+    const cfg = isControlsMode ? window.customControlsConfig : (isWindMode ? window.customWindConfig : window.customTextBoxConfig);
+    if (cfg && cfg.fontSize) {
+      el.style.setProperty('font-size', cfg.fontSize + 'px', 'important');
+      if (cfg.lineHeight) {
+        el.style.setProperty('line-height', String(cfg.lineHeight), 'important');
+      }
+      const txt = (el.innerText || el.textContent || '').trim();
+      if (!txt.includes('\n')) {
+        el.style.setProperty('white-space', 'nowrap', 'important');
+        if (el.scrollWidth > targetMaxW) {
+          el.style.setProperty('white-space', 'pre-line', 'important');
+        }
+      } else {
+        el.style.setProperty('white-space', 'pre-line', 'important');
+      }
+      return;
+    }
+  }
+
+  // Fallback rejtett DOM esetén
+  if (!box || box.clientWidth === 0) {
+    const txt = (el.innerText || el.textContent || '').trim();
+    let fbFs = isControlsMode ? 23.5 : 28.0;
+    if (txt.length > 180) fbFs = isControlsMode ? 21.0 : 22.0;
+    else if (txt.length > 125) fbFs = isControlsMode ? 22.5 : 23.5;
+    else if (txt.length > 85) fbFs = 26.0;
+    el.style.setProperty('font-size', fbFs + 'px', 'important');
+    el.style.setProperty('line-height', isControlsMode ? '1.30' : '1.20', 'important');
+    return;
+  }
+
+  // 🚀 VALÓDI LEGNAGYOBB MÉRET KERESÉSE (Top-Down Search):
+  let currentFs = startMaxFs;
+  let currentLh = isControlsMode 
+    ? Math.max(1.22, +(1.22 + (currentFs - minFs) * 0.007).toFixed(2))
+    : Math.max(1.14, +(1.14 + (currentFs - minFs) * 0.008).toFixed(2));
+
+  el.style.setProperty('font-size', currentFs + 'px', 'important');
+  el.style.setProperty('line-height', String(currentLh), 'important');
+
+  // 🎯 HA NINCS KÉZI SORTÖRÉS (\n) ÉS A SZÖVEG <= 70 KARAKTER:
+  // Elsődlegesen megpróbáljuk EGYETLEN SORBA illeszteni a betűméret finom skálázásával!
+  const hasAuthorNewline = rawTxt.includes('\n');
+  const trySingleLine = !hasAuthorNewline && rawTxt.trim().length <= 70;
+
+  if (trySingleLine) {
+    el.style.setProperty('white-space', 'nowrap', 'important');
+    while (currentFs > 24.5) {
+      if (el.scrollWidth > targetMaxW) {
+        currentFs -= 0.5;
+        el.style.setProperty('font-size', currentFs + 'px', 'important');
+      } else {
+        break;
+      }
+    }
+    // Ha még 19.5px-en sem férne el, visszaáll pre-line-ra
+    if (el.scrollWidth > targetMaxW) {
+      el.style.setProperty('white-space', 'pre-line', 'important');
+      currentFs = startMaxFs;
+      el.style.setProperty('font-size', currentFs + 'px', 'important');
+    }
+  } else {
+    el.style.setProperty('white-space', 'pre-line', 'important');
+  }
+
+  let guard = 0;
+  while (currentFs > minFs && guard < 40) {
+    guard++;
+    const isOverflowH = el.scrollHeight > targetMaxH;
+    const isOverflowW = el.scrollWidth > targetMaxW;
+
+    if (isOverflowH || isOverflowW) {
+      currentFs -= 0.5;
+      currentLh = isControlsMode 
+        ? Math.max(1.22, +(1.22 + (currentFs - minFs) * 0.007).toFixed(2))
+        : Math.max(1.14, +(1.14 + (currentFs - minFs) * 0.008).toFixed(2));
+      el.style.setProperty('font-size', currentFs + 'px', 'important');
+      el.style.setProperty('line-height', String(currentLh), 'important');
     } else {
       break;
     }
@@ -255,10 +2492,11 @@ function setupTopBarEvents() {
 
   if (btnInfo && infoOverlay) {
     btnInfo.addEventListener('click', () => {
-      const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
+      const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const content = document.getElementById('info-scroll-content');
       if (content) {
-        content.innerText = (lang === 'en') ? window.INFO_SCROLL_EN : window.INFO_SCROLL_HU;
+        const dict = window.INFO_SCROLL_TRANSLATIONS || {};
+        content.innerText = dict[lang] || dict.hu || window.INFO_SCROLL_HU;
       }
       infoOverlay.style.display = 'flex';
     });
@@ -1366,15 +3604,20 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
   setTimeout(() => {
     renderer.render(scene, cam);
     const overlay = document.getElementById('zozo-welcome-overlay');
+    const isTestEog = typeof window !== 'undefined' && window.location && new URLSearchParams(window.location.search).get('test_eog');
 
     if (overlay) {
-      if (isLoadMode || window.isFishingMode) {
+      if (isLoadMode || window.isFishingMode || isTestEog) {
         overlay.style.display = 'none';
         window.isCutscenePlaying = false;
-        if (window.isFishingMode && typeof window.initFishingMode === 'function') {
+        if (isTestEog) {
+          // EoG tesztmód: azonnali üres móló Zozó nélkül, kincsesládával
+          if (typeof setupEogEmptyPierScene === 'function') {
+            setupEogEmptyPierScene();
+          }
+        } else if (window.isFishingMode && typeof window.initFishingMode === 'function') {
           window.initFishingMode();
-        }
-      } else {
+        }} else {
         overlay.style.display = 'flex';
         window.isCutscenePlaying = true;
         window.selectZozoTextStep(0);
@@ -2304,7 +4547,206 @@ let lastMonologAdvanceTime = 0;
 // === [#TUTOR.04.26.00] START | name: closeZozoWelcome | lines: ~16 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: closeZozoWelcome.
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 🎙️ ZOZÓ HANGOS FELOLVASÁS MOTOR (TTS ENGINE - read-r.png + AUTO-READ TOGGLE)
+// ═══════════════════════════════════════════════════════════════════════════
+window.currentZozoTTSAudio = null;
+window.currentZozoTTSKey = null;
+window._lastPopupAudioKey = null;
+
+// Auto-Read mód perzisztens tárolása (alapból bekapcsolva a kényelmes élményért!)
+const storedAutoRead = localStorage.getItem('ebook_pirates_zozo_autoread');
+window.isZozoAutoReadActive = false; // Ideiglenesen kikapcsolva, amíg a felolvasó ikon rejtve van
+
+window.setZozoTTSButtonState = function (isPlaying) {
+  document.querySelectorAll('.zozo-read-aloud-btn').forEach(btn => {
+    if (isPlaying) {
+      btn.classList.add('tts-playing');
+    } else {
+      btn.classList.remove('tts-playing');
+    }
+    if (window.isZozoAutoReadActive) {
+      btn.classList.add('auto-read-active');
+      btn.setAttribute('title', 'Zozó felolvasás: BEKAPCSOLVA (Kattints a kikapcsoláshoz)');
+    } else {
+      btn.classList.remove('auto-read-active');
+      btn.setAttribute('title', 'Zozó felolvasás: KIKAPCSOLVA (Kattints a bekapcsoláshoz)');
+    }
+  });
+};
+
+window.toggleZozoAutoRead = function (event) {
+  if (event) {
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+  }
+
+  // Ha éppen beszél, megállítjuk
+  if (window.currentZozoTTSAudio && !window.currentZozoTTSAudio.paused) {
+    window.stopZozoTTS();
+    // Ha auto-read aktív volt, a gombnyomás kikapcsolja
+    window.isZozoAutoReadActive = !window.isZozoAutoReadActive;
+    localStorage.setItem('ebook_pirates_zozo_autoread', window.isZozoAutoReadActive ? '1' : '0');
+    window.setZozoTTSButtonState(false);
+    return;
+  }
+
+  window.isZozoAutoReadActive = !window.isZozoAutoReadActive;
+  localStorage.setItem('ebook_pirates_zozo_autoread', window.isZozoAutoReadActive ? '1' : '0');
+  window.setZozoTTSButtonState(false);
+
+  // Ha bekapcsoltuk, azonnal olvassa fel az éppen látható szöveget!
+  if (window.isZozoAutoReadActive) {
+    window.triggerZozoAutoReadCurrent();
+  }
+};
+
+window.playCurrentZozoTTS = window.toggleZozoAutoRead;
+
+window.stopZozoTTS = function () {
+  if (window.currentZozoTTSAudio) {
+    try {
+      window.currentZozoTTSAudio.pause();
+      window.currentZozoTTSAudio.currentTime = 0;
+    } catch (e) {}
+    window.currentZozoTTSAudio = null;
+  }
+  window.currentZozoTTSKey = null;
+  window.setZozoTTSButtonState(false);
+
+  // Háttérzene hangerő visszaállítása (ducking feloldás)
+  if (window.bgMusicAudio && !window.isMusicMuted && window.eogState !== 'VIDEO') {
+    window.bgMusicAudio.volume = 0.5 * (typeof window.musicVolMult === 'number' ? window.musicVolMult : 1.0);
+  }
+};
+
+window.resolveActiveZozoTTSKey = function () {
+  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+  if (welcomeOverlay && welcomeOverlay.style.display !== 'none') {
+    const idx = typeof window.zozoTextStep === 'number' ? window.zozoTextStep : 0;
+    return 'welcome_' + idx;
+  }
+
+  const monologContainer = document.getElementById('zozo-ingame-monolog-container');
+  if (monologContainer && monologContainer.style.display !== 'none') {
+    if (window.monologState && Array.isArray(window.monologState.currentBlockQueue)) {
+      const mIdx = window.monologState.currentBlockQueue[window.monologState.currentBlockIndex];
+      if (mIdx !== undefined && mIdx !== null) {
+        return 'monolog_' + String(mIdx);
+      }
+    }
+  }
+
+  const popupToast = document.getElementById('ingame-popup-toast');
+  if (popupToast && popupToast.style.display !== 'none') {
+    if (window._lastPopupAudioKey) return window._lastPopupAudioKey;
+    const pTxt = (document.getElementById('popup-toast-text')?.innerText || '').trim();
+    if (window.gamePopups && pTxt) {
+      const norm = s => s.replace(/\s+/g, ' ').trim();
+      for (const [k, v] of Object.entries(window.gamePopups)) {
+        if (norm(String(v)) === norm(pTxt)) {
+          return 'popup_' + k;
+        }
+      }
+    }
+  }
+
+  const eogDialog = document.getElementById('eog-compact-dialog');
+  if (eogDialog && eogDialog.style.display !== 'none') {
+    const eTxt = (document.getElementById('eog-dialog-text')?.innerText || '').trim();
+    if (window.eogMonologues && eTxt) {
+      const norm = s => s.replace(/\s+/g, ' ').trim();
+      for (const [k, v] of Object.entries(window.eogMonologues)) {
+        if (norm(String(v)) === norm(eTxt)) {
+          return 'eog_' + k;
+        }
+      }
+    }
+    if (eTxt.includes('LÁDA') || eTxt.includes('CHEST')) return 'eog_pointB';
+    if (eTxt.includes('mólóra') || eTxt.includes('pier')) return 'eog_chestFound';
+    return 'eog_pointA';
+  }
+
+  return null;
+};
+
+window.triggerZozoAutoReadCurrent = function () {
+  const ttsKey = window.resolveActiveZozoTTSKey();
+  if (!ttsKey) return;
+
+  window.stopZozoTTS();
+
+  const lang = ((typeof window.getGameLanguage === 'function')
+    ? window.getGameLanguage()
+    : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu')).toLowerCase();
+
+  const popupToast = document.getElementById('ingame-popup-toast');
+  const isPopupActive = popupToast && popupToast.style.display !== 'none';
+  if (isPopupActive && window._popupTimeout) {
+    clearTimeout(window._popupTimeout);
+    window._popupTimeout = null;
+  }
+
+  const primaryPath = `assets/sounds/tts/${lang}/${ttsKey}.mp3`;
+  const fallbackHuPath = `assets/sounds/tts/hu/${ttsKey}.mp3`;
+
+  const audio = new Audio(primaryPath);
+  const volMult = (typeof window.soundVolMult === 'number' && window.soundVolMult > 0) ? window.soundVolMult : 1.0;
+  audio.volume = Math.max(0.35, Math.min(1.0, volMult));
+
+  window.currentZozoTTSAudio = audio;
+  window.currentZozoTTSKey = ttsKey;
+  window.setZozoTTSButtonState(true);
+
+  if (window.bgMusicAudio && !window.isMusicMuted) {
+    window.bgMusicAudio.volume = 0.16 * (typeof window.musicVolMult === 'number' ? window.musicVolMult : 1.0);
+  }
+
+  const onFinish = function () {
+    if (window.currentZozoTTSAudio === audio) {
+      window.currentZozoTTSAudio = null;
+      window.currentZozoTTSKey = null;
+      window.setZozoTTSButtonState(false);
+      if (window.bgMusicAudio && !window.isMusicMuted && window.eogState !== 'VIDEO') {
+        window.bgMusicAudio.volume = 0.5 * (typeof window.musicVolMult === 'number' ? window.musicVolMult : 1.0);
+      }
+      if (isPopupActive && popupToast.style.display !== 'none') {
+        window._popupTimeout = setTimeout(() => {
+          if (typeof window.dismissActivePopup === 'function') window.dismissActivePopup();
+        }, 1200);
+      }
+    }
+  };
+
+  audio.onended = onFinish;
+  audio.onerror = function () {
+    if (lang !== 'hu') {
+      audio.src = fallbackHuPath;
+      audio.play().catch(err => onFinish());
+    } else {
+      onFinish();
+    }
+  };
+
+  audio.play().catch(err => {
+    console.log('TTS autoplay waiting for click/key:', err);
+    onFinish();
+  });
+};
+
+window.checkAndPlayAutoRead = function () {
+  if (window.isZozoAutoReadActive) {
+    setTimeout(() => {
+      window.triggerZozoAutoReadCurrent();
+    }, 120);
+  } else {
+    window.setZozoTTSButtonState(false);
+  }
+};
+
 window.closeZozoWelcome = function () {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
   const overlay = document.getElementById('zozo-welcome-overlay');
   if (overlay) overlay.style.display = 'none';
 
@@ -2355,6 +4797,8 @@ window.showInGameMonolog = function (startIndex, endIndex, onComplete) {
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: renderCurrentMonolog.
 window.renderCurrentMonolog = function () {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
+  window.checkAndPlayAutoRead();
   const container = document.getElementById('zozo-ingame-monolog-container');
   if (!container) return;
 
@@ -2365,11 +4809,17 @@ window.renderCurrentMonolog = function () {
     window.monologState.hasSeen[monologIdx] = true;
 
     const nameplate = container.querySelector('.zozo-nameplate-std');
-    if (monologIdx === 'controls' || monologIdx === 'wind') {
+    if (monologIdx === 'controls') {
       container.classList.add('controls-popup-mode');
+      container.classList.remove('wind-popup-mode');
+      if (nameplate) nameplate.style.display = 'none';
+    } else if (monologIdx === 'wind') {
+      container.classList.add('wind-popup-mode');
+      container.classList.remove('controls-popup-mode');
       if (nameplate) nameplate.style.display = 'none';
     } else {
       container.classList.remove('controls-popup-mode');
+      container.classList.remove('wind-popup-mode');
       if (nameplate) nameplate.style.display = 'block';
     }
 
@@ -2382,6 +4832,12 @@ window.renderCurrentMonolog = function () {
       }
     }
 
+    // Szövegdoboz Hangoló szinkronizálása a futó monológ kulcsával:
+    const selMono = document.getElementById('sel-tuner-monolog');
+    const lblMono = document.getElementById('lbl-tuner-monolog-name');
+    if (selMono) selMono.value = String(monologIdx);
+    if (lblMono) lblMono.innerText = String(monologIdx);
+
     // ELŐBB megjelenítjük (display = 'flex'), hogy a böngésző valódi méreteket (clientWidth) tudjon mérni
     container.style.display = 'flex';
     window.isCutscenePlaying = true;
@@ -2389,8 +4845,10 @@ window.renderCurrentMonolog = function () {
     const textEl = document.getElementById('ingame-dialogue-text');
     if (textEl) {
       textEl.innerText = textVal;
-      if (typeof window.fitDialogueText === 'function') {
-        window.fitDialogueText(textEl, 20, 14);
+      if (typeof window.applyMonologueTypography === 'function') {
+        window.applyMonologueTypography(textEl, String(monologIdx));
+      } else if (typeof window.fitDialogueText === 'function') {
+        window.fitDialogueText(textEl, 28, 14);
       }
     }
   } else {
@@ -2441,8 +4899,13 @@ window.advanceInGameMonolog = function (e) {
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: closeInGameMonolog.
 window.closeInGameMonolog = function () {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
   const container = document.getElementById('zozo-ingame-monolog-container');
-  if (container) container.style.display = 'none';
+  if (container) {
+    container.style.display = 'none';
+    container.classList.remove('controls-popup-mode');
+    container.classList.remove('wind-popup-mode');
+  }
   window.isCutscenePlaying = false;
 
   if (window.monologState.onComplete) {
@@ -2513,17 +4976,25 @@ let lastStepTime = 0;
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: selectZozoTextStep.
 window.selectZozoTextStep = function (stepVal) {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
+  window.checkAndPlayAutoRead();
   const idx = parseInt(stepVal, 10);
-  if (!isNaN(idx) && idx >= 0 && idx < window.zozoWelcomeTexts.length) {
+  const totalSteps = (window.zozoWelcomeTexts && window.zozoWelcomeTexts.length > 0) ? window.zozoWelcomeTexts.length : 4;
+  if (!isNaN(idx) && idx >= 0 && idx < totalSteps) {
     window.zozoTextStep = idx;
-    document.body.className = `welcome-mode step-${idx}`;
+    const curL = window.currentLanguage || 'hu';
+    document.body.className = `welcome-mode step-${idx}` + (curL === 'ru' ? ' lang-ru' : '');
+    document.body.setAttribute('data-lang', curL);
 
     const dialogText = document.getElementById('zozo-dialogue-text');
     if (dialogText) {
-      dialogText.innerText = window.zozoWelcomeTexts[idx];
-      if (typeof window.fitDialogueText === 'function') {
-        const initialMax = (idx === 0) ? 28 : 24;
-        window.fitDialogueText(dialogText, initialMax, 13);
+      if (window.zozoWelcomeTexts && window.zozoWelcomeTexts[idx]) {
+        dialogText.innerText = window.zozoWelcomeTexts[idx];
+      }
+      if (typeof window.applyMonologueTypography === 'function') {
+        window.applyMonologueTypography(dialogText, 'welcome_' + idx);
+      } else if (typeof window.fitDialogueText === 'function') {
+        window.fitDialogueText(dialogText, 28, 13);
       }
     }
 
@@ -2583,6 +5054,8 @@ window.advanceZozoWelcome = function (event) {
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: showPopUp.
 window.showPopUp = function (msg, onCompleteCb) {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
+  window.checkAndPlayAutoRead();
   if (window.isFishingMode) {
     if (onCompleteCb) onCompleteCb();
     return;
@@ -2597,15 +5070,16 @@ window.showPopUp = function (msg, onCompleteCb) {
   const txt = document.getElementById('popup-toast-text');
   if (p) {
     p.classList.remove('controls-popup-mode');
+    p.classList.remove('wind-popup-mode');
     p.style.display = 'flex';
     p.style.pointerEvents = 'auto';
 
     if (txt) {
       txt.innerText = msg;
-      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(txt, 23, 16);
+      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(txt, 27, 14);
     } else {
       p.innerText = msg;
-      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(p, 23, 16);
+      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(p, 27, 14);
     }
 
     window.isTimedPopupActive = true;
@@ -2627,6 +5101,7 @@ window.showClickControlledPopUp = window.showPopUp;
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: dismissActivePopup.
 window.dismissActivePopup = function (e) {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
   if (e && e.stopPropagation) e.stopPropagation();
   const p = document.getElementById('ingame-popup-toast');
   if (p && p.style.display !== 'none') {
@@ -2646,21 +5121,39 @@ window.dismissActivePopup = function (e) {
 // === [#TUTOR.04.31.00] END ===
 
 addEventListener('keydown', (e) => {
-  if (e.code !== 'Space') return;
+  // Tuner panel és beviteli mezők esetén ne léptessen a Space
+  if (e.target && (e.target.closest('#textbox-tuner-panel') || e.target.closest('#btn-toggle-textbox-tuner') || e.target.tagName === 'SELECT')) return;
 
-  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+  const isTextInput = e.target && (
+    e.target.tagName === 'TEXTAREA' || 
+    (e.target.tagName === 'INPUT' && !['range', 'button', 'checkbox', 'radio', 'submit'].includes((e.target.type || '').toLowerCase()))
+  );
+  if (isTextInput) return;
+
+  // A felhasználó kifejezett szabálya: KIZÁRÓLAG a Space billentyű léptet (az Enter nem léptethet)!
+  const isSpace = e.code === 'Space' || e.key === ' ' || e.keyCode === 32;
+  if (!isSpace) return;
+
+  e.preventDefault();
+
+  // Ha a hangoló nyitva van és aktív egy monológ vagy irányító panel, a Space a következő dialógusra léptet
+  const tunerPanel = document.getElementById('textbox-tuner-panel');
   const ingameContainer = document.getElementById('zozo-ingame-monolog-container');
+  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
   const popupToast = document.getElementById('ingame-popup-toast');
+  const eogDialog = document.getElementById('eog-compact-dialog');
 
+  // Normál Space léptetési lánc: Welcome boxok → In-Game Monológ / Irányító Panel → PopUpok → EoG
   if (welcomeOverlay && welcomeOverlay.style.display !== 'none') {
-    e.preventDefault();
     window.advanceZozoWelcome(e);
   } else if (ingameContainer && ingameContainer.style.display !== 'none') {
-    e.preventDefault();
     window.advanceInGameMonolog(e);
   } else if (popupToast && popupToast.style.display !== 'none') {
-    e.preventDefault();
     window.dismissActivePopup(e);
+  } else if (eogDialog && eogDialog.style.display !== 'none') {
+    if (typeof window.closeEogDialog === 'function') {
+      window.closeEogDialog();
+    }
   }
 });
 
@@ -2722,12 +5215,17 @@ addEventListener('click', (e) => {
     return;
   }
 
-  const popupToast = document.getElementById('ingame-popup-toast');
-
-  if (popupToast && popupToast.style.display !== 'none' && popupToast.contains(e.target)) {
-    window.dismissActivePopup(e);
+  // Ha a fejlesztői hangoló panelre vagy annak gombjaira kattint a felhasználó, ne léptessük el a dialógust!
+  if (e.target.closest('#textbox-tuner-panel') || e.target.closest('#btn-toggle-textbox-tuner')) {
     return;
   }
+
+  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+  const ingameContainer = document.getElementById('zozo-ingame-monolog-container');
+  const popupToast = document.getElementById('ingame-popup-toast');
+
+  // Felhasználói szabály: KIZÁRÓLAG a Space billentyű léptetheti a monológokat/párbeszédeket!
+  // Egérkattintásos léptetés szigorúan tiltva van a játékos kérésére.
 });
 
 // === [#TUTOR.04.32.00] START | name: resetAirshipChase | lines: ~10 ===
@@ -2851,7 +5349,7 @@ function frame(now) {
         const crashOverlay = document.getElementById('crash-overlay');
         if (crashOverlay) {
           const crashSpan = crashOverlay.querySelector('span');
-          if (crashSpan) crashSpan.innerText = '⚓ Nyílt tenger: Utazás Hebok kikötőbe...';
+          if (crashSpan) crashSpan.innerText = (typeof window.getOpenSeaText === 'function') ? window.getOpenSeaText() : '⚓ Nyílt tenger: Utazás Hebok kikötőbe...';
           crashOverlay.style.display = 'flex';
           setTimeout(() => { crashOverlay.style.display = 'none'; }, 1200);
         }
@@ -3756,8 +6254,7 @@ function frame(now) {
           if (crashOverlay) {
             const crashSpan = crashOverlay.querySelector('span');
             if (crashSpan) {
-              const isEn = (typeof window.getGameLanguage === 'function') ? (window.getGameLanguage() === 'en') : ((window.currentLanguage || localStorage.getItem('siteLang') || localStorage.getItem('ebp_language')) === 'en');
-              crashSpan.innerText = isEn ? '💥 Reef collision!' : '💥 Zátonyra futottál!';
+              crashSpan.innerText = (typeof window.getReefCrashText === 'function') ? window.getReefCrashText() : '💥 Zátonyra futottál!';
             }
             crashOverlay.style.background = 'rgba(255, 0, 0, 0.7)';
             crashOverlay.style.display = 'flex';
@@ -3800,8 +6297,7 @@ function frame(now) {
           if (crashOverlay) {
             const crashSpan = crashOverlay.querySelector('span');
             if (crashSpan) {
-              const isEn = (typeof window.getGameLanguage === 'function') ? (window.getGameLanguage() === 'en') : ((window.currentLanguage || localStorage.getItem('siteLang') || localStorage.getItem('ebp_language')) === 'en');
-              crashSpan.innerText = isEn ? '💥 Reef collision!' : '💥 Zátonyra futottál!';
+              crashSpan.innerText = (typeof window.getReefCrashText === 'function') ? window.getReefCrashText() : '💥 Zátonyra futottál!';
             }
             crashOverlay.style.background = 'rgba(255, 0, 0, 0.3)';
             crashOverlay.style.display = 'flex';
@@ -4012,6 +6508,7 @@ window.showZozoEogMonolog = function (text, onCloseCallback) {
   if (!dialog || !textEl) return;
 
   textEl.innerText = text;
+  if (typeof window.fitDialogueText === 'function') window.fitDialogueText(textEl, 26, 14);
   dialog.style.display = 'block';
   window.isCutscenePlaying = true;
   window.currentMv = 0;
@@ -4050,7 +6547,9 @@ window.showZozoEogMonolog = function (text, onCloseCallback) {
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: onClick.
   function onClick(e) {
+    if (e && e.target && e.target.closest && e.target.closest('.zozo-read-aloud-btn')) return;
     if (e && e.stopPropagation) e.stopPropagation();
+    if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
     closeEogDialog();
   }
 // === [#TUTOR.04.3E.00] END ===
@@ -4186,7 +6685,13 @@ function startEogCinematic(sceneRef, boatRef) {
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: showChestAtPier.
 function showChestAtPier(sceneRef) {
-  if (!window.homePos) return;
+  const targetScene = sceneRef || window.sceneRef || (typeof scene !== 'undefined' ? scene : null);
+  if (!targetScene) return;
+  if (window.eogChestAtPier) {
+    window.eogChestAtPier.visible = true;
+    if (window.chestLidModel) window.chestLidModel.visible = true;
+    return;
+  }
   const loader = new GLTFLoader();
   loader.load(window.getAssetUrl('models/pirates_assets/SM_Prop_Chest_Treasure_01.glb'), function (gltf) {
     const pierChest = gltf.scene;
@@ -4232,44 +6737,685 @@ function startEogFadeAndVideo() {
 }
 // === [#TUTOR.04.43.00] END ===
 
-// === [#TUTOR.04.44.00] START | name: startEogVideo | lines: ~36 ===
+
+// ─── ÜRES MÓLÓ ÉS KINCSESLÁDA BEÁLLÍTÁSA A VIDEÓ ELŐTTI ÁLLAPOTRA (ZOZÓ NÉLKÜL) ───
+function setupEogEmptyPierScene() {
+  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+  if (welcomeOverlay) {
+    welcomeOverlay.style.display = 'none';
+    welcomeOverlay.style.setProperty('display', 'none', 'important');
+  }
+  const zozoChar = document.getElementById('zozo-character-container');
+  if (zozoChar) {
+    zozoChar.style.display = 'none';
+    zozoChar.style.setProperty('display', 'none', 'important');
+  }
+  const zozoBox = document.getElementById('zozo-dialogue-box');
+  if (zozoBox) {
+    zozoBox.style.display = 'none';
+    zozoBox.style.setProperty('display', 'none', 'important');
+  }
+  const ingameMonolog = document.getElementById('zozo-ingame-monolog-container');
+  if (ingameMonolog) {
+    ingameMonolog.style.display = 'none';
+    ingameMonolog.style.setProperty('display', 'none', 'important');
+  }
+  const popupToast = document.getElementById('ingame-popup-toast');
+  if (popupToast) {
+    popupToast.style.display = 'none';
+    popupToast.style.setProperty('display', 'none', 'important');
+  }
+  const compactDialog = document.getElementById('eog-compact-dialog');
+  if (compactDialog) {
+    compactDialog.style.display = 'none';
+    compactDialog.style.setProperty('display', 'none', 'important');
+  }
+
+  // Csónak visszahelyezése pontosan a móló dokkoló pozíciójára (ahol a videó indult)
+  if (window.boat) {
+    window.boat.position.set(4.6, 0, -94.7);
+    window.boat.rotation.set(0, 3.874, 0);
+  }
+
+  // 30 regisztrált hártya a bázison, 0 szállított
+  window.storedMembranes = 30;
+  window.carriedMembranes = 0;
+  if (typeof window.updateTopBarMembranes === 'function') {
+    window.updateTopBarMembranes();
+  }
+
+  // Kincsesláda és aranytallérok megjelenítése a mólón
+  if (typeof showChestAtPier === 'function') {
+    showChestAtPier(typeof scene !== 'undefined' ? scene : window.sceneRef);
+  } else if (window.eogChestAtPier) {
+    window.eogChestAtPier.visible = true;
+    if (window.chestLidModel) window.chestLidModel.visible = true;
+  }
+
+  // Esti lámpások fényének beállítása
+  if (window.dockLanternLights) {
+    window.dockLanternLights.forEach(light => { light.intensity = 180.0; });
+  }
+  if (window.lantern1Light) window.lantern1Light.intensity = 180.0;
+  if (window.lantern2Light) window.lantern2Light.intensity = 180.0;
+  window.gameTimeProgress = 0.90;
+  if (typeof window.updateEnvironmentLighting === 'function') {
+    window.updateEnvironmentLighting();
+  }
+}
+window.setupEogEmptyPierScene = setupEogEmptyPierScene;
+window.showChestAtPier = showChestAtPier;
+
+// === [#TUTOR.04.44.00] START | name: startEogVideo | lines: ~230 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
-// @summary: 3D Hártyavadászat funkció: startEogVideo.
-function startEogVideo() {
+// @summary: 3D Hártyavadászat funkció: startEogVideo dinamikus nyelvi videó, felirat és hangerőszabályzással (7 nyelv).
+
+const EOG_PROMPT_TRANSLATIONS = {
+  hu: {
+    soundBtn: "🔊 Teszt: HANGGAL (felirat nélkül)",
+    muteBtn: "🔇 Teszt: NÉMÍTVA (felirattal)",
+    title: "▶ Kattints ide a videó indításához HANGGAL!",
+    sub: "(A böngésző kattintást igényel a hangos videó lejátszásához)"
+  },
+  en: {
+    soundBtn: "🔊 Test: WITH SOUND (no subtitles)",
+    muteBtn: "🔇 Test: MUTED (with subtitles)",
+    title: "▶ Click here to play video WITH SOUND!",
+    sub: "(Browser requires interaction to enable audio)"
+  },
+  de: {
+    soundBtn: "🔊 Test: MIT TON (ohne Untertitel)",
+    muteBtn: "🔇 Test: STUMM (mit Untertiteln)",
+    title: "▶ Hier klicken, um das Video MIT TON abzuspielen!",
+    sub: "(Browser erfordert Klick für Audiowiedergabe)"
+  },
+  es: {
+    soundBtn: "🔊 Prueba: CON SONIDO (sin subtítulos)",
+    muteBtn: "🔇 Prueba: SILENCIADO (con subtítulos)",
+    title: "▶ ¡Haz clic aquí para reproducir el vídeo CON SONIDO!",
+    sub: "(El navegador requiere interacción para activar el audio)"
+  },
+  fr: {
+    soundBtn: "🔊 Test : AVEC SON (sans sous-titres)",
+    muteBtn: "🔇 Test : EN SOURDINE (avec sous-titres)",
+    title: "▶ Cliquez ici pour lancer la vidéo AVEC LE SON !",
+    sub: "(Le navigateur nécessite une interaction pour activer le son)"
+  },
+  pl: {
+    soundBtn: "🔊 Test: Z DŹWIĘKIEM (bez napisów)",
+    muteBtn: "🔇 Test: WYCISZONY (z napisami)",
+    title: "▶ Kliknij tutaj, aby odtworzyć wideo Z DŹWIĘKIEM!",
+    sub: "(Przeglądarka wymaga kliknięcia, aby włączyć dźwięk)"
+  },
+  ru: {
+    soundBtn: "🔊 Тест: СО ЗВУКОМ (без субтитров)",
+    muteBtn: "🔇 Тест: БЕЗ ЗВУКА (с субтитрами)",
+    title: "▶ Нажмите здесь, чтобы запустить видео СО ЗВУКОМ!",
+    sub: "(Браузер требует взаимодействия для включения звука)"
+  }
+};
+
+function parseEogSrtOrVtt(text) {
+  if (!text) return [];
+  const cues = [];
+  const blocks = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split(/\n\n+/);
+  for (let block of blocks) {
+    const lines = block.trim().split('\n');
+    const timeIdx = lines.findIndex(l => l.includes('-->'));
+    if (timeIdx !== -1) {
+      const parts = lines[timeIdx].split('-->');
+      if (parts.length === 2) {
+        const parseTime = function (str) {
+          const m = str.trim().match(/(?:(\d{1,2}):)?(\d{2}):(\d{2})[,.](\d{3})/);
+          if (!m) return NaN;
+          const h = m[1] ? parseInt(m[1], 10) : 0;
+          const min = parseInt(m[2], 10);
+          const sec = parseInt(m[3], 10);
+          const ms = parseInt(m[4], 10);
+          return h * 3600 + min * 60 + sec + ms / 1000;
+        };
+        const start = parseTime(parts[0]);
+        const end = parseTime(parts[1]);
+        const textLines = lines.slice(timeIdx + 1).filter(l => l.trim().length > 0 && !l.trim().match(/^\d+$/));
+        const cueText = textLines.join('\n').trim();
+        if (!isNaN(start) && !isNaN(end) && cueText) {
+          cues.push({ start, end, text: cueText });
+        }
+      }
+    }
+  }
+  return cues;
+}
+
+function loadAndAttachEogSubtitles(video, curL) {
+  const subFileMap = {
+    de: 'Tutorial_EoG_video_Deu_sub.srt',
+    en: 'Tutorial_EoG_video_Eng_sub.srt',
+    es: 'Tutorial_EoG_video_Es_sub.srt',
+    fr: 'Tutorial_EoG_video_Fr_sub.srt',
+    hu: 'Tutorial_EoG_video_Hu_sub.srt',
+    pl: 'Tutorial_EoG_video_Pl_sub.srt',
+    ru: 'Tutorial_EoG_video_Ru_sub.srt'
+  };
+  const fileName = subFileMap[curL] || subFileMap.hu;
+  const pathsToTry = [
+    'assets/videos/EoG_' + curL.toUpperCase() + '_sub.srt',
+    'assets/videos/Kész/' + fileName,
+    'assets/videos/K%C3%A9sz/' + fileName,
+    'assets/videos/EoG_' + curL.toUpperCase() + '_sub.srt',
+    'assets/videos/EoG_' + curL.toUpperCase() + '_sub.vtt'
+  ];
+
+  const subOverlay = document.getElementById('eog-video-subtitles');
+  if (subOverlay) {
+    subOverlay.style.display = 'none';
+    subOverlay.textContent = '';
+    subOverlay.style.fontFamily = (curL === 'ru') ? 'Georgia, Arial, sans-serif' : "'Briskb', Arial, sans-serif";
+  }
+
+  // Töröljük a korábbi időzítőt és text trackeket (GARANTÁLTAN 0 DUPLÁZÁS)
+  if (window._eogSubtitleTimeUpdateHandler) {
+    video.removeEventListener('timeupdate', window._eogSubtitleTimeUpdateHandler);
+    window._eogSubtitleTimeUpdateHandler = null;
+  }
+  const oldTracks = video.querySelectorAll('track');
+  oldTracks.forEach(function (t) { t.remove(); });
+
+  function tryFetchSub(index) {
+    if (index >= pathsToTry.length) return;
+    fetch(pathsToTry[index])
+      .then(function (res) {
+        if (!res.ok) throw new Error('Subtitle not found: ' + pathsToTry[index]);
+        return res.text();
+      })
+      .then(function (rawText) {
+        const cues = parseEogSrtOrVtt(rawText);
+        if (!cues || cues.length === 0) return;
+
+        // KIZÁRÓLAG az egyedi #eog-video-subtitles réteget használjuk,
+        // így a felirat soha többé nem duplázódik meg egyik nyelven sem!
+        if (subOverlay) {
+          window._eogSubtitleTimeUpdateHandler = function () {
+            const ct = video.currentTime;
+            const activeCue = cues.find(function (c) { return ct >= c.start && ct <= c.end; });
+            if (activeCue) {
+              subOverlay.textContent = activeCue.text;
+              subOverlay.style.display = 'block';
+            } else {
+              subOverlay.style.display = 'none';
+              subOverlay.textContent = '';
+    subOverlay.style.fontFamily = (curL === 'ru') ? 'Georgia, Arial, sans-serif' : "'Briskb', Arial, sans-serif";
+            }
+          };
+          video.addEventListener('timeupdate', window._eogSubtitleTimeUpdateHandler);
+        }
+      })
+      .catch(function () {
+        tryFetchSub(index + 1);
+      });
+  }
+  tryFetchSub(0);
+}
+
+function cleanupEogVideoAudioAndSubtitles() {
+  const video = document.getElementById('eog-video');
+  if (video) {
+    video.pause();
+    if (window._eogSubtitleTimeUpdateHandler) {
+      video.removeEventListener('timeupdate', window._eogSubtitleTimeUpdateHandler);
+      window._eogSubtitleTimeUpdateHandler = null;
+    }
+    const oldTracks = video.querySelectorAll('track');
+    oldTracks.forEach(function (t) { t.remove(); });
+  }
+  const subOverlay = document.getElementById('eog-video-subtitles');
+  if (subOverlay) {
+    subOverlay.style.display = 'none';
+    subOverlay.textContent = '';
+    subOverlay.style.fontFamily = (curL === 'ru') ? 'Georgia, Arial, sans-serif' : "'Briskb', Arial, sans-serif";
+  }
+  const promptEl = document.getElementById('eog-autoplay-prompt');
+  if (promptEl) promptEl.style.display = 'none';
+
+  // Korábbi audio beállítások maradéktalan visszaállítása
+  if (window._prevAudioBeforeEogVideo) {
+    const prev = window._prevAudioBeforeEogVideo;
+    window.isMusicMuted = prev.isMusicMuted;
+    window.isSoundMuted = prev.isSoundMuted;
+    window.musicVolMult = prev.musicVolMult;
+    window.soundVolMult = prev.soundVolMult;
+
+    if (window.bgMusicAudio) {
+      window.bgMusicAudio.muted = window.isMusicMuted;
+      window.bgMusicAudio.volume = 0.5 * window.musicVolMult;
+      if (!window.isMusicMuted && prev.bgMusicWasPlaying) {
+        window.bgMusicAudio.play().catch(function (e) { console.log('Music resume blocked:', e); });
+      }
+    }
+
+    if (window.ambSoundAudio) {
+      window.ambSoundAudio.muted = window.isSoundMuted;
+      window.ambSoundAudio.volume = 0.6 * window.soundVolMult;
+      if (!window.isSoundMuted && prev.ambSoundWasPlaying) {
+        window.ambSoundAudio.play().catch(function (e) { console.log('Amb sound resume blocked:', e); });
+      }
+    }
+
+    // TopBar ikonok szinkronizálása a visszaállított állapothoz
+    const btnMusic = document.getElementById('btn-tb-music');
+    if (btnMusic) {
+      btnMusic.src = window.isMusicMuted 
+        ? window.getAssetUrl('assets/images/music_mute-r.png') 
+        : window.getAssetUrl('assets/images/music-r.png');
+    }
+    const btnSound = document.getElementById('btn-tb-sound');
+    if (btnSound) {
+      btnSound.src = window.isSoundMuted 
+        ? window.getAssetUrl('assets/images/sound_mute-r.png') 
+        : window.getAssetUrl('assets/images/sound-r.png');
+    }
+
+    window._prevAudioBeforeEogVideo = null;
+  }
+}
+
+function startEogVideo(modeOverride) {
   window.eogState = 'VIDEO';
   const overlay = document.getElementById('eog-video-overlay');
   const video = document.getElementById('eog-video');
+  const promptEl = document.getElementById('eog-autoplay-prompt');
+  const testControls = document.getElementById('eog-test-controls');
+
   if (overlay && video) {
-    video.muted = true;
+    // ÜRES MÓLÓ BIZTOSÍTÁSA (Zozó és minden korábbi párbeszéd azonnali elrejtése)
+    const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+    if (welcomeOverlay) welcomeOverlay.style.display = 'none';
+    const zozoChar = document.getElementById('zozo-character-container');
+    if (zozoChar) zozoChar.style.display = 'none';
+    const zozoBox = document.getElementById('zozo-dialogue-box');
+    if (zozoBox) zozoBox.style.display = 'none';
+    const ingameMonolog = document.getElementById('zozo-ingame-monolog-container');
+    if (ingameMonolog) ingameMonolog.style.display = 'none';
+    const popupToast = document.getElementById('ingame-popup-toast');
+    if (popupToast) popupToast.style.display = 'none';
+    const compactDialog = document.getElementById('eog-compact-dialog');
+    if (compactDialog) compactDialog.style.display = 'none';
+
+    if (window.boat) {
+      window.boat.position.set(5, 0, -94);
+      window.boat.rotation.set(0, 3.874, 0);
+    }
+    window.storedMembranes = 30;
+    window.carriedMembranes = 0;
+    if (typeof window.updateTopBarMembranes === 'function') {
+      window.updateTopBarMembranes();
+    }
+    if (typeof window.spawnEogPierChest === 'function' && !window.eogChestAtPier) {
+      window.spawnEogPierChest();
+    } else if (window.eogChestAtPier) {
+      window.eogChestAtPier.visible = true;
+    }
+
+    // Nyelv felderítése prioritási sorrendben: URL paraméter (?lang=...) > aktuális nyelv > localStorage > 'hu'
+    const urlParams = new URLSearchParams(window.location.search);
+    const curL = (urlParams.get('lang') || 
+                  ((typeof window.getGameLanguage === 'function') ? window.getGameLanguage() : null) || 
+                  window.currentLanguage || 
+                  localStorage.getItem('ebook_pirates_language') || 
+                  localStorage.getItem('siteLang') || 
+                  'hu').toLowerCase();
+    
+    // 1. Nyelvspecifikus EoG videó kiválasztása (EoG_HU.mp4, EoG_EN.mp4, EoG_DE.mp4, stb.)
+    const langSrc = 'assets/videos/EoG_' + curL.toUpperCase() + '.mp4';
+    if (!video.src || !video.src.includes(langSrc)) {
+      video.src = langSrc;
+      video.load();
+    }
     video.currentTime = 0;
     video.playbackRate = 1.0;
-    overlay.style.display = 'flex';
-    var playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(function (e) {
-        overlay.style.cursor = 'pointer';
-        overlay.addEventListener('click', function onceClick() {
-          video.play();
-          overlay.removeEventListener('click', onceClick);
-        }, { once: true });
-      });
+
+    // 2. Audio állapot és tesztmód felmérése
+    const testParam = urlParams.get('test_eog');
+
+    let isMusicActive = true; // Alapértelmezett: a játék zenéje aktív
+    if (modeOverride === 'sound' || testParam === 'sound') {
+      isMusicActive = true;
+    } else if (modeOverride === 'mute' || testParam === 'mute') {
+      isMusicActive = false;
+    } else {
+      // Normál játékmód: ha a felhasználó korábban némította a zenét vagy 0%-ra húzta
+      const storedMute = localStorage.getItem('ebook_pirates_music_muted');
+      const storedVol = localStorage.getItem('ebook_pirates_music_vol');
+      if (storedMute === '1' || window.isMusicMuted === true || (storedVol !== null && parseInt(storedVol, 10) === 0)) {
+        isMusicActive = false;
+      } else {
+        isMusicActive = true;
+      }
     }
+
+    // 3. Tesztelő vezérlősáv és feliratok honosítása
+    const promptTexts = EOG_PROMPT_TRANSLATIONS[curL] || EOG_PROMPT_TRANSLATIONS.hu;
+    if (testControls) {
+      testControls.style.display = (testParam !== null) ? 'flex' : 'none';
+      const btnSound = document.getElementById('eog-btn-force-sound');
+      const btnMute = document.getElementById('eog-btn-force-mute');
+      if (btnSound) {
+        btnSound.textContent = promptTexts.soundBtn;
+        btnSound.onclick = function (e) {
+          e.stopPropagation();
+          startEogVideo('sound');
+        };
+      }
+      if (btnMute) {
+        btnMute.textContent = promptTexts.muteBtn;
+        btnMute.onclick = function (e) {
+          e.stopPropagation();
+          startEogVideo('mute');
+        };
+      }
+    }
+
+    const promptTitle = document.getElementById('eog-autoplay-title');
+    if (promptTitle) promptTitle.textContent = promptTexts.title;
+    const promptSub = document.getElementById('eog-autoplay-subtitle');
+    if (promptSub) promptSub.textContent = promptTexts.sub;
+
+    // Audio állapot elmentése a videó előttről
+    if (!window._prevAudioBeforeEogVideo) {
+      window._prevAudioBeforeEogVideo = {
+        isMusicMuted: window.isMusicMuted,
+        isSoundMuted: window.isSoundMuted,
+        musicVolMult: window.musicVolMult,
+        soundVolMult: window.soundVolMult,
+        bgMusicWasPlaying: !window.isMusicMuted && window.bgMusicAudio && !window.bgMusicAudio.paused,
+        ambSoundWasPlaying: !window.isSoundMuted && window.ambSoundAudio && !window.ambSoundAudio.paused
+      };
+    }
+
+    // Feliratok és időzítő takarítása az indítás előtt
+    const subOverlay = document.getElementById('eog-video-subtitles');
+    if (subOverlay) {
+      subOverlay.style.display = 'none';
+      subOverlay.textContent = '';
+    subOverlay.style.fontFamily = (curL === 'ru') ? 'Georgia, Arial, sans-serif' : "'Briskb', Arial, sans-serif";
+    }
+    if (window._eogSubtitleTimeUpdateHandler) {
+      video.removeEventListener('timeupdate', window._eogSubtitleTimeUpdateHandler);
+      window._eogSubtitleTimeUpdateHandler = null;
+    }
+    const oldTracks = video.querySelectorAll('track');
+    oldTracks.forEach(function (t) { t.remove(); });
+
+    if (isMusicActive) {
+      // ══════════════════════════════════════════════════════════════
+      // HA A ZENE MENT: Videó HANGGAL, FELIRAT NÉLKÜL
+      // ══════════════════════════════════════════════════════════════
+      video.muted = false;
+      const targetVol = (typeof window.musicVolMult === 'number' && !isNaN(window.musicVolMult) && window.musicVolMult > 0) 
+        ? window.musicVolMult 
+        : 0.8;
+      video.volume = Math.max(0.1, Math.min(1.0, targetVol));
+
+      // Játék háttérzene és környezeti hangok elnémítása
+      if (window.bgMusicAudio) {
+        window.bgMusicAudio.muted = true;
+        window.bgMusicAudio.pause();
+      }
+      if (window.ambSoundAudio) {
+        window.ambSoundAudio.muted = true;
+        window.ambSoundAudio.pause();
+      }
+      window.isSoundMuted = true;
+    } else {
+      // ══════════════════════════════════════════════════════════════
+      // HA A ZENE NÉMÍTVA VOLT: Videó NÉMÍTVA, EGYETLEN FELIRATTAL
+      // ══════════════════════════════════════════════════════════════
+      video.muted = true;
+      video.volume = 0;
+
+      // Egyetlen tiszta, nem duplázott felirat csatolása
+      loadAndAttachEogSubtitles(video, curL);
+    }
+
+    overlay.style.display = 'flex';
+
+    // Videó elindítása Autoplay védelemmel
+    function doPlay() {
+      if (promptEl) promptEl.style.display = 'none';
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function (e) {
+          console.warn("Autoplay audio blocked by browser policy, waiting for click:", e);
+          if (promptEl && isMusicActive) {
+            promptEl.style.display = 'block';
+            promptEl.onclick = function (clickEvt) {
+              clickEvt.stopPropagation();
+              promptEl.style.display = 'none';
+              video.muted = false;
+              video.volume = Math.max(0.1, Math.min(1.0, window.musicVolMult || 0.8));
+              video.play();
+            };
+          }
+          overlay.style.cursor = 'pointer';
+          overlay.addEventListener('click', function onceClick() {
+            if (promptEl) promptEl.style.display = 'none';
+            video.muted = !isMusicActive;
+            if (isMusicActive) video.volume = Math.max(0.1, Math.min(1.0, window.musicVolMult || 0.8));
+            video.play();
+            overlay.style.cursor = 'default';
+            overlay.removeEventListener('click', onceClick);
+          }, { once: true });
+        });
+      }
+    }
+
+    doPlay();
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🎬 END-OF-GAME VIDEÓ VEZÉRLŐ GOMBOK (PAUSE & FELIRAT TOGGLE)
+    // ═══════════════════════════════════════════════════════════════════════════
+    const btnVideoPause = document.getElementById('eog-btn-toggle-pause');
+    const pauseIcon = document.getElementById('eog-pause-icon');
+    const btnVideoSub = document.getElementById('eog-btn-toggle-subtitles');
+        const subIcon = document.getElementById('eog-sub-icon'); /* MARK_START */ /*
+    function updateEogVideoControlsUI() {
+      if (pauseIcon) {
+        pauseIcon.style.opacity = video.paused ? '0.55' : '1.0';
+        pauseIcon.style.filter = video.paused 
+          ? 'grayscale(75%) drop-shadow(0 0 10px rgba(255, 60, 60, 0.9))' 
+          : 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.85))';
+      }
+      const subLabels = {
+        hu: { on: 'Felirat: BE (Kattints a kikapcsoláshoz)', off: 'Felirat: KI (Kattints a bekapcsoláshoz)' },
+        en: { on: 'Subtitles: ON (Click to disable)', off: 'Subtitles: OFF (Click to enable)' },
+        de: { on: 'Untertitel: AN (Klicken zum Deaktivieren)', off: 'Untertitel: AUS (Klicken zum Aktivieren)' },
+        fr: { on: 'Sous-titres: ACTIVÉS (Cliquer pour désactiver)', off: 'Sous-titres: DÉSACTIVÉS (Cliquer pour activer)' },
+        es: { on: 'Subtítulos: ACTIVADOS (Haz clic para desactivar)', off: 'Subtítulos: DESACTIVADOS (Haz clic para activar)' },
+        pl: { on: 'Napisy: WŁĄCZONE (Kliknij, aby wyłączyć)', off: 'Napisy: WYŁĄCZONE (Kliknij, aby włączyć)' },
+        ru: { on: 'Субтитры: ВКЛ (Нажмите для отключения)', off: 'Субтитры: ВЫКЛ (Нажмите для включения)' }
+      };
+      const curSubL = subLabels[curL] || subLabels.hu;
+      if (btnVideoSub) {
+        if (window._eogSubtitlesManuallyEnabled) {
+          btnVideoSub.classList.add('active-sub');
+          btnVideoSub.classList.remove('sub-muted');
+          btnVideoSub.setAttribute('title', curSubL.on);
+        } else {
+          btnVideoSub.classList.remove('active-sub');
+          btnVideoSub.classList.add('sub-muted');
+          btnVideoSub.setAttribute('title', curSubL.off);
+        }
+      }
+    }
+      if (pauseIcon) {
+        pauseIcon.style.opacity = video.paused ? '0.55' : '1.0';
+        pauseIcon.style.filter = video.paused 
+          ? 'grayscale(75%) drop-shadow(0 0 10px rgba(255, 60, 60, 0.9))' 
+          : 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.85))';
+      }
+      if (btnVideoSub) {
+//
+          btnVideoSub.classList.add('active-sub');
+          btnVideoSub.classList.remove('sub-muted');
+          btnVideoSub.setAttribute('title', 'Felirat: BEKAPCSOLVA (Kattints a kikapcsoláshoz)');
+        } else {
+          btnVideoSub.classList.remove('active-sub');
+          btnVideoSub.classList.add('sub-muted');
+          btnVideoSub.setAttribute('title', 'Felirat: KIKAPCSOLVA (Kattints a bekapcsoláshoz)');
+        }
+      }
+    }
+
+//
+//
+          btnVideoSub.classList.add('active-sub');
+//
+        } else {
+          btnVideoSub.classList.remove('active-sub');
+//
+        }
+      }
+    }
+
+*/
+
+    function updateEogVideoControlsUI() {
+      if (pauseIcon) {
+        pauseIcon.style.opacity = video.paused ? '0.55' : '1.0';
+        pauseIcon.style.filter = video.paused 
+          ? 'grayscale(75%) drop-shadow(0 0 10px rgba(255, 60, 60, 0.9))' 
+          : 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.85))';
+      }
+      const subLabels = {
+        hu: { on: 'Felirat: BE (Kattints a kikapcsoláshoz)', off: 'Felirat: KI (Kattints a bekapcsoláshoz)' },
+        en: { on: 'Subtitles: ON (Click to disable)', off: 'Subtitles: OFF (Click to enable)' },
+        de: { on: 'Untertitel: AN (Klicken zum Deaktivieren)', off: 'Untertitel: AUS (Klicken zum Aktivieren)' },
+        fr: { on: 'Sous-titres: ACTIVÉS (Cliquer pour désactiver)', off: 'Sous-titres: DÉSACTIVÉS (Cliquer pour activer)' },
+        es: { on: 'Subtítulos: ACTIVADOS (Haz clic para desactivar)', off: 'Subtítulos: DESACTIVADOS (Haz clic para activar)' },
+        pl: { on: 'Napisy: WŁĄCZONE (Kliknij, aby wyłączyć)', off: 'Napisy: WYŁĄCZONE (Kliknij, aby włączyć)' },
+        ru: { on: 'Субтитры: ВКЛ (Нажмите для отключения)', off: 'Субтитры: ВЫКЛ (Нажмите для включения)' }
+      };
+      const curSubL = subLabels[curL] || subLabels.hu;
+      if (btnVideoSub) {
+        if (window._eogSubtitlesManuallyEnabled) {
+          btnVideoSub.classList.add('active-sub');
+          btnVideoSub.classList.remove('sub-muted');
+          btnVideoSub.setAttribute('title', curSubL.on);
+        } else {
+          btnVideoSub.classList.remove('active-sub');
+          btnVideoSub.classList.add('sub-muted');
+          btnVideoSub.setAttribute('title', curSubL.off);
+        }
+      }
+    }
+
+     window._eogSubtitlesManuallyEnabled = !isMusicActive; // ha némítva volt, alapból be van kapcsolva
+    updateEogVideoControlsUI();
+
+    if (btnVideoPause) {
+      btnVideoPause.onclick = function (e) {
+        e.stopPropagation();
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+        updateEogVideoControlsUI();
+      };
+    }
+
+    if (btnVideoSub) {
+      btnVideoSub.onclick = function (e) {
+        e.stopPropagation();
+        window._eogSubtitlesManuallyEnabled = !window._eogSubtitlesManuallyEnabled;
+        if (window._eogSubtitlesManuallyEnabled) {
+//
+          loadAndAttachEogSubtitles(video, curL);
+        } else {
+          if (subOverlay) {
+            subOverlay.style.display = 'none';
+            subOverlay.textContent = '';
+    subOverlay.style.fontFamily = (curL === 'ru') ? 'Georgia, Arial, sans-serif' : "'Briskb', Arial, sans-serif";
+          }
+        }
+        updateEogVideoControlsUI();
+      };
+    }
+
+    // Space billentyű a videó megállítására / folytatására
+    function onVideoKeyDown(e) {
+      if (window.eogState !== 'VIDEO') {
+        document.removeEventListener('keydown', onVideoKeyDown);
+        return;
+      }
+      if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (video.paused) video.play();
+        else video.pause();
+        updateEogVideoControlsUI();
+      }
+    }
+    document.addEventListener('keydown', onVideoKeyDown);
+
+    video.onerror = function (err) {
+      console.error("EoG video playback error:", err);
+      cleanupEogVideoAudioAndSubtitles();
+      overlay.style.display = 'none';
+      const fadeEl = document.getElementById('eog-fade-overlay');
+      if (fadeEl) fadeEl.style.opacity = '0';
+      if (window.eogChestAtPier) window.eogChestAtPier.visible = true;
+      setTimeout(function () {
+        window.startEogBoatNamingRoutine();
+      }, 1000);
+    };
+
     video.onended = function () {
+      cleanupEogVideoAudioAndSubtitles();
       window.eogState = 'DONE';
       overlay.style.display = 'none';
       const fadeEl = document.getElementById('eog-fade-overlay');
       if (fadeEl) fadeEl.style.opacity = '0';
 
-      // Visszatérés a 3D móló nézethez nyitott ládával + 2 mp várakozás
+      // Biztosítjuk, hogy a háttérben Zozó nélkül az üres móló és a láda jelenjen meg
+      const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+      if (welcomeOverlay) welcomeOverlay.style.display = 'none';
+      const zozoChar = document.getElementById('zozo-character-container');
+      if (zozoChar) zozoChar.style.display = 'none';
+      const zozoBox = document.getElementById('zozo-dialogue-box');
+      if (zozoBox) zozoBox.style.display = 'none';
+      const ingameMonolog = document.getElementById('zozo-ingame-monolog-container');
+      if (ingameMonolog) ingameMonolog.style.display = 'none';
+      const compactDialog = document.getElementById('eog-compact-dialog');
+      if (compactDialog) compactDialog.style.display = 'none';
+
+      if (window.boat) {
+        window.boat.position.set(5, 0, -94);
+        window.boat.rotation.set(0, 3.874, 0);
+      }
       if (window.eogChestAtPier) {
         window.eogChestAtPier.visible = true;
+      }
+      window.storedMembranes = 30;
+      window.carriedMembranes = 0;
+      if (typeof window.updateTopBarMembranes === 'function') {
+        window.updateTopBarMembranes();
       }
 
       setTimeout(function () {
         window.startEogBoatNamingRoutine();
-      }, 2000);
+      }, 1500);
     };
   }
+}
+
+window.startEogVideo = startEogVideo;
+window.startEogFadeAndVideo = startEogFadeAndVideo;
+
+if (typeof window !== 'undefined' && window.location && new URLSearchParams(window.location.search).get('test_eog')) {
+  setTimeout(function () {
+    if (typeof startEogVideo === 'function') startEogVideo();
+  }, 1000);
 }
 // === [#TUTOR.04.44.00] END ===
 
@@ -4302,6 +7448,14 @@ window.eogBoatName = '';
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: startEogBoatNamingRoutine.
 window.startEogBoatNamingRoutine = function () {
+  // Zozó és minden korábbi dialógus garantált elrejtése a háttérből
+  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+  if (welcomeOverlay) welcomeOverlay.style.display = 'none';
+  const zozoChar = document.getElementById('zozo-character-container');
+  if (zozoChar) zozoChar.style.display = 'none';
+  const zozoBox = document.getElementById('zozo-dialogue-box');
+  if (zozoBox) zozoBox.style.display = 'none';
+
   // BIZTONSÁGI LÉPÉS: A csónaknév beírása előtt a teljes képernyőből kilépünk, hogy meglegyen a normál fókusz és ablakméret!
   if (typeof window.exitFullscreenIfActive === 'function') {
     window.exitFullscreenIfActive();
@@ -4460,13 +7614,60 @@ window.showEogSummaryPanel = function () {
   const bName = window.eogBoatName || 'Névtelen csónak';
   const mCount = window.storedMembranes || 30;
 
-  const fullSummary =
-    `Megszerzett kincsek:\n` +
-    `${mCount} db hártya\n` +
-    `1 db Hebok térkép\n` +
-    `10 kalózkredit\n` +
-    `1 db tekercs\n` +
-    `1 db csónak, név: ${bName}`;
+  const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+  const fullSummary = (function() {
+    switch (lang) {
+      case 'en':
+        return `Acquired Treasures:\n` +
+          `${mCount} membranes\n` +
+          `1 Hebok map\n` +
+          `10 pirate credits\n` +
+          `1 scroll\n` +
+          `1 boat, name: ${bName}`;
+      case 'de':
+        return `Erlangte Schätze:\n` +
+          `${mCount} Membranen\n` +
+          `1 Hebok-Karte\n` +
+          `10 Piratenkredite\n` +
+          `1 Schriftrolle\n` +
+          `1 Boot, Name: ${bName}`;
+      case 'fr':
+        return `Trésors acquis :\n` +
+          `${mCount} membranes\n` +
+          `1 carte de Hebok\n` +
+          `10 crédits pirates\n` +
+          `1 parchemin\n` +
+          `1 bateau, nom : ${bName}`;
+      case 'es':
+        return `Tesoros obtenidos:\n` +
+          `${mCount} membranas\n` +
+          `1 mapa de Hebok\n` +
+          `10 créditos pirata\n` +
+          `1 pergamino\n` +
+          `1 barco, nombre: ${bName}`;
+      case 'pl':
+        return `Zdobyte skarby:\n` +
+          `${mCount} membran\n` +
+          `1 mapa Heboku\n` +
+          `10 kredytów pirackich\n` +
+          `1 zwój\n` +
+          `1 łódź, nazwa: ${bName}`;
+      case 'ru':
+        return `Добытые сокровища:\n` +
+          `${mCount} мембран\n` +
+          `1 карта Хебока\n` +
+          `10 пиратских кредитов\n` +
+          `1 свиток\n` +
+          `1 лодка, имя: ${bName}`;
+      default:
+        return `Megszerzett kincsek:\n` +
+          `${mCount} db hártya\n` +
+          `1 db Hebok térkép\n` +
+          `10 kalózkredit\n` +
+          `1 db tekercs\n` +
+          `1 db csónak, név: ${bName}`;
+    }
+  })();
 
   typewriterEffect(summaryTextEl, fullSummary, 12, function () {
     if (btnNext) {
@@ -4710,7 +7911,9 @@ window.checkIfUserIsVeteran = function () {
 window.showEogVeteranPanel = function () {
   const veteranOverlay = document.getElementById('eog-veteran-user-overlay');
   const veteranTextEl = document.getElementById('eog-veteran-text');
-  const veteranMsg = "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
+  const curLang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+  const dict = (window.UI_TRANSLATIONS && (window.UI_TRANSLATIONS[curLang] || window.UI_TRANSLATIONS.hu)) || {};
+  const veteranMsg = dict.veteranMsg || "Te már tapasztalt tengeri zsivány vagy, ezeket a kincseket már megkaptad korábban! Menj vissza Hebokba!";
 
   if (veteranTextEl) {
     veteranTextEl.innerText = veteranMsg;
@@ -4722,7 +7925,7 @@ window.showEogVeteranPanel = function () {
 
     const btnContinue = document.getElementById('eog-btn-veteran-continue');
     if (btnContinue) {
-      btnContinue.innerText = "OK (Vissza Hebokba)";
+      btnContinue.innerText = dict.veteranBtn || "OK (Vissza Hebokba)";
       btnContinue.onclick = function (e) {
         e.stopPropagation();
         veteranOverlay.style.display = 'none';
@@ -4816,10 +8019,21 @@ window.showEogSuccessChoicePanel = function () {
   window.isCutscenePlaying = true;
 
   let secondsLeft = 15;
+  const lang = window.currentLanguage || localStorage.getItem('siteLang') || 'hu';
+  const choiceMap = {
+    hu: { text: "Kincseid felírásra kerültek a karakterlapodra.<br>Ezek után mihez kezdesz?", cp: "(Automatikus kihajózás Hebokba: ", cs: " mp)" },
+    en: { text: "Your treasures have been recorded on your character sheet.<br>What will you do next?", cp: "(Automatic departure to Hebok: ", cs: " s)" },
+    de: { text: "Deine Schätze wurden auf deinem Charakterbogen eingetragen.<br>Was möchtest du als Nächstes tun?", cp: "(Automatische Abfahrt nach Hebok: ", cs: " s)" },
+    fr: { text: "Vos trésors ont été enregistrés sur votre fiche de personnage.<br>Que souhaitez-vous faire maintenant ?", cp: "(Départ automatique pour Hebok : ", cs: " s)" },
+    es: { text: "Tus tesoros han sido anotados en tu hoja de personaje.<br>¿Qué harás a continuación?", cp: "(Salida automática rumbo a Hebok: ", cs: " s)" },
+    pl: { text: "Twoje skarby zostały zapisane na twojej karcie postaci.<br>Co zamierzasz teraz zrobić?", cp: "(Automatyczne wypłynięcie do Heboku: ", cs: " s)" },
+    ru: { text: "Твои сокровища записаны на лист персонажа.<br>Что ты будешь делать дальше?", cp: "(Автоматический отплыв в Хебок: ", cs: " сек)" }
+  };
+  const cData = choiceMap[lang] || choiceMap.hu;
   if (choiceTextEl) {
     choiceTextEl.innerHTML = 
-      `Kincseid felírásra kerültek a karakterlapodra.<br>Ezek után mihez kezdesz?<br>` +
-      `<span id="eog-choice-countdown" style="font-size: 15px; color: #554433; font-weight: normal; display: block; margin-top: 6px;">(Automatikus kihajózás Hebokba: <b style="color: #885500;">${secondsLeft}</b> mp)</span>`;
+      `${cData.text}<br>` +
+      `<span id="eog-choice-countdown" style="font-size: 15px; color: #554433; font-weight: normal; display: block; margin-top: 6px;">${cData.cp}<b style="color: #885500;">${secondsLeft}</b>${cData.cs}</span>`;
   }
 
 // === [#TUTOR.04.54.00] START | name: updateCountdown | lines: ~13 ===
@@ -4829,7 +8043,8 @@ window.showEogSuccessChoicePanel = function () {
     secondsLeft--;
     const countEl = document.getElementById('eog-choice-countdown');
     if (countEl) {
-      countEl.innerHTML = `(Automatikus kihajózás Hebokba: <b style="color: #885500;">${Math.max(0, secondsLeft)}</b> mp)`;
+      const cDataCur = choiceMap[lang] || choiceMap.hu;
+      countEl.innerHTML = `${cDataCur.cp}<b style="color: #885500;">${Math.max(0, secondsLeft)}</b>${cDataCur.cs}`;
     }
     if (secondsLeft <= 0) {
       clearInterval(window._eogChoiceTimer);
@@ -5452,7 +8667,18 @@ window.UI_TRANSLATIONS = {
     exitConfirmTitle: "Biztosan ki akarsz lépni?",
     exitConfirmYes: "Igen, kilépek",
     exitConfirmCancel: "Mégsem",
-    mobileModeTitle: "Váltás Hajóvezérlés és Kamera között"
+    mobileModeTitle: "Váltás Hajóvezérlés és Kamera között",
+    namingTitle: "Mi legyen a csónakod neve?",
+    namingSubmit: "Mehet!",
+    namingCancel: "Kilépés",
+    confirmTitle1: "Biztos vagy benne?",
+    confirmYes1: "Teljesen",
+    confirmNo1: "Van jobb ötletem",
+    confirmTitle2: "Nem adsz nevet a hajónak?",
+    confirmYes2: "Nincs ötletem",
+    confirmNo2: "De igen",
+    summaryNextBtn: "Tovább!",
+    namingAlert: "Kérlek, adj meg egy nevet a csónaknak!" 
   },
   en: {
     durabilityTitle: "Boat Durability (HP)",
@@ -5476,15 +8702,205 @@ window.UI_TRANSLATIONS = {
     exitConfirmTitle: "Are you sure you want to exit?",
     exitConfirmYes: "Yes, Exit",
     exitConfirmCancel: "Cancel",
-    mobileModeTitle: "Toggle Boat Controls & Camera"
+    mobileModeTitle: "Toggle Boat Controls & Camera",
+    namingTitle: "What should your boat's name be?",
+    namingSubmit: "Go!",
+    namingCancel: "Exit",
+    confirmTitle1: "Are you sure?",
+    confirmYes1: "Completely",
+    confirmNo1: "I have a better idea",
+    confirmTitle2: "Won't you name the boat?",
+    confirmYes2: "No idea",
+    confirmNo2: "Yes, I will",
+    summaryNextBtn: "Continue!",
+    namingAlert: "Please enter a name for the boat!" 
   }
-};
+,
+  de: {
+    durabilityTitle: "Haltbarkeit des Bootes (HP)",
+    durabilityIconTitle: "Haltbarkeit des Bootes",
+    carriedTitle: "Geladene Membranen",
+    storedTitle: "Eingelagerte Membranen",
+    infoTitle: "Info",
+    settingsTitle: "Einstellungen",
+    soundTitle: "Töne",
+    musicTitle: "Musik",
+    fullscreenTitle: "Vollbild",
+    pauseTitle: "Pause",
+    stopTitle: "Hauptmenü",
+    saveTitle: "Speichern",
+    exitTitle: "Beenden",
+    baseExitBtn: "⚓ Angeln beenden & Speichern",
+    eogChoiceFish: "Weiter fischen",
+    eogChoiceHebok: "Nach Hebok!",
+    eogChoiceExit: "Beenden",
+    eogBoatNameInput: "Benenne dein Boot...",
+    exitConfirmTitle: "Möchtest du wirklich beenden?",
+    exitConfirmYes: "Ja, beenden",
+    exitConfirmCancel: "Abbrechen",
+    mobileModeTitle: "Zwischen Bootssteuerung und Kamera wechseln",
+    namingTitle: "Wie soll dein Boot heißen?",
+    namingSubmit: "Fertig!",
+    namingCancel: "Beenden",
+    confirmTitle1: "Bist du sicher?",
+    confirmYes1: "Absolut",
+    confirmNo1: "Ich habe eine bessere Idee",
+    confirmTitle2: "Willst du dem Boot keinen Namen geben?",
+    confirmYes2: "Keine Idee",
+    confirmNo2: "Doch, will ich",
+    summaryNextBtn: "Weiter!",
+    namingAlert: "Bitte gib dem Boot einen Namen!" 
+  },
+  fr: {
+    durabilityTitle: "Durabilité du bateau (PV)",
+    durabilityIconTitle: "Durabilité du bateau",
+    carriedTitle: "Membranes à bord",
+    storedTitle: "Membranes stockées",
+    infoTitle: "Infos",
+    settingsTitle: "Paramètres",
+    soundTitle: "Sons",
+    musicTitle: "Musique",
+    fullscreenTitle: "Plein écran",
+    pauseTitle: "Pause",
+    stopTitle: "Menu principal",
+    saveTitle: "Sauvegarder",
+    exitTitle: "Quitter",
+    baseExitBtn: "⚓ Terminer la pêche et sauvegarder",
+    eogChoiceFish: "Continuer à pêcher",
+    eogChoiceHebok: "Cap sur Hebok !",
+    eogChoiceExit: "Quitter",
+    eogBoatNameInput: "Nommez votre bateau...",
+    exitConfirmTitle: "Voulez-vous vraiment quitter ?",
+    exitConfirmYes: "Oui, quitter",
+    exitConfirmCancel: "Annuler",
+    mobileModeTitle: "Basculer entre contrôle du bateau et caméra",
+    namingTitle: "Quel sera le nom de ton bateau ?",
+    namingSubmit: "C'est parti !",
+    namingCancel: "Quitter",
+    confirmTitle1: "Es-tu sûr ?",
+    confirmYes1: "Tout à fait",
+    confirmNo1: "J'ai une meilleure idée",
+    confirmTitle2: "Tu ne donnes pas de nom au bateau ?",
+    confirmYes2: "Pas d'idée",
+    confirmNo2: "Si, j'en ai un",
+    summaryNextBtn: "Continuer !",
+    namingAlert: "Veuillez donner un nom au bateau !" 
+  },
+  es: {
+    durabilityTitle: "Durabilidad del barco (PV)",
+    durabilityIconTitle: "Durabilidad del barco",
+    carriedTitle: "Membranas a bordo",
+    storedTitle: "Membranas almacenadas",
+    infoTitle: "Info",
+    settingsTitle: "Ajustes",
+    soundTitle: "Sonidos",
+    musicTitle: "Música",
+    fullscreenTitle: "Pantalla completa",
+    pauseTitle: "Pausa",
+    stopTitle: "Menú principal",
+    saveTitle: "Guardar",
+    exitTitle: "Salir",
+    baseExitBtn: "⚓ Finalizar pesca y guardar",
+    eogChoiceFish: "Seguir pescando",
+    eogChoiceHebok: "¡Rumbo a Hebok!",
+    eogChoiceExit: "Salir",
+    eogBoatNameInput: "Nombra tu barco...",
+    exitConfirmTitle: "¿Seguro que quieres salir?",
+    exitConfirmYes: "Sí, salir",
+    exitConfirmCancel: "Cancelar",
+    mobileModeTitle: "Alternar entre control del barco y cámara",
+    namingTitle: "¿Cuál será el nombre de tu barco?",
+    namingSubmit: "¡Listo!",
+    namingCancel: "Salir",
+    confirmTitle1: "¿Estás seguro?",
+    confirmYes1: "Totalmente",
+    confirmNo1: "Tengo una mejor idea",
+    confirmTitle2: "¿No le darás un nombre al barco?",
+    confirmYes2: "Sin ideas",
+    confirmNo2: "Sí que le doy",
+    summaryNextBtn: "¡Continuar!",
+    namingAlert: "¡Por favor, ponle un nombre al barco!" 
+  },
+  pl: {
+    durabilityTitle: "Wytrzymałość łodzi (PŻ)",
+    durabilityIconTitle: "Wytrzymałość łodzi",
+    carriedTitle: "Membrany na pokładzie",
+    storedTitle: "Membrany w bazie",
+    infoTitle: "Informacja",
+    settingsTitle: "Ustawienia",
+    soundTitle: "Dźwięki",
+    musicTitle: "Muzyka",
+    fullscreenTitle: "Pełny ekran",
+    pauseTitle: "Pauza",
+    stopTitle: "Menu główne",
+    saveTitle: "Zapisz",
+    exitTitle: "Wyjście",
+    baseExitBtn: "⚓ Zakończ łowienie i zapisz",
+    eogChoiceFish: "Łów dalej",
+    eogChoiceHebok: "Kierunek Hebok!",
+    eogChoiceExit: "Wyjście",
+    eogBoatNameInput: "Nazwij swoją łódź...",
+    exitConfirmTitle: "Czy na pewno chcesz wyjść?",
+    exitConfirmYes: "Tak, wyjdź",
+    exitConfirmCancel: "Anuluj",
+    mobileModeTitle: "Przełącz między sterowaniem łodzią a kamerą",
+    namingTitle: "Jak ma się nazywać twoja łódź?",
+    namingSubmit: "Zatwierdź!",
+    namingCancel: "Wyjście",
+    confirmTitle1: "Jesteś pewien?",
+    confirmYes1: "Całkowicie",
+    confirmNo1: "Mam lepszy pomysł",
+    confirmTitle2: "Nie nadasz łodzi imienia?",
+    confirmYes2: "Brak pomysłu",
+    confirmNo2: "Jednak nadam",
+    summaryNextBtn: "Dalej!",
+    namingAlert: "Proszę podać nazwę dla łodzi!" 
+  },
+  ru: {
+    durabilityTitle: "Прочность лодки (HP)",
+    durabilityIconTitle: "Прочность лодки",
+    carriedTitle: "Мембраны на борту",
+    storedTitle: "Мембраны на складе",
+    infoTitle: "Инфо",
+    settingsTitle: "Настройки",
+    soundTitle: "Звуки",
+    musicTitle: "Музыка",
+    fullscreenTitle: "Полный экран",
+    pauseTitle: "Пауза",
+    stopTitle: "Главное меню",
+    saveTitle: "Сохранить",
+    exitTitle: "Выход",
+    baseExitBtn: "⚓ Завершить сбор и сохранить",
+    eogChoiceFish: "Продолжить сбор",
+    eogChoiceHebok: "Курс на Хебок!",
+    eogChoiceExit: "Выход",
+    eogBoatNameInput: "Дайте имя лодке...",
+    exitConfirmTitle: "Вы уверены, что хотите выйти?",
+    exitConfirmYes: "Да, выйти",
+    exitConfirmCancel: "Отмена",
+    mobileModeTitle: "Переключение между управлением лодкой и камерой",
+    namingTitle: "Как назвать твою лодку?",
+    namingSubmit: "Готово!",
+    namingCancel: "Выход",
+    confirmTitle1: "Ты уверен?",
+    confirmYes1: "Абсолютно",
+    confirmNo1: "Есть идея получше",
+    confirmTitle2: "Не дашь имя лодке?",
+    confirmYes2: "Нет идей",
+    confirmNo2: "Да, назову",
+    summaryNextBtn: "Далее!",
+    namingAlert: "Пожалуйста, введите имя для лодки!" 
+  }};
 
 // === [#TUTOR.04.62.00] START | name: applyLanguageToUI | lines: ~74 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: applyLanguageToUI.
 window.applyLanguageToUI = function (lang) {
   const targetLang = lang || window.currentLanguage || 'hu';
+  if (document.body) {
+    document.body.setAttribute('data-lang', targetLang);
+    document.body.classList.toggle('lang-ru', targetLang === 'ru');
+  }
   const dict = window.UI_TRANSLATIONS[targetLang] || window.UI_TRANSLATIONS.hu;
 
 // === [#TUTOR.04.63.00] START | name: setAttr | lines: ~4 ===
@@ -5539,8 +8955,24 @@ window.applyLanguageToUI = function (lang) {
   setText('eog-btn-choice-fish', dict.eogChoiceFish);
   setText('eog-btn-choice-hebok', dict.eogChoiceHebok);
   setText('eog-btn-choice-exit', dict.eogChoiceExit);
+  setText('eog-naming-title', dict.namingTitle);
+  setText('eog-btn-naming-submit', dict.namingSubmit);
+  setText('eog-btn-naming-cancel', dict.namingCancel);
+  setText('eog-confirm1-title', dict.confirmTitle1);
+  setText('eog-btn-confirm-yes', dict.confirmYes1);
+  setText('eog-btn-confirm-no', dict.confirmNo1);
+  setText('eog-confirm2-title', dict.confirmTitle2);
+  setText('eog-btn-noidea', dict.confirmYes2);
+  setText('eog-btn-yesidea', dict.confirmNo2);
+  setText('eog-btn-summary-next', dict.summaryNextBtn);
   setAttr('eog-boat-name-input', 'placeholder', dict.eogBoatNameInput);
   setAttr('mobile-mode-btn', 'title', dict.mobileModeTitle);
+  setAttr('btn-close-info-scroll', 'title', dict.closeTitle || 'Bezárás');
+  setAttr('btn-close-info-scroll', 'alt', dict.closeTitle || 'Bezárás');
+  setText('guest-auth-text', dict.guestAuthMsg);
+  setText('btn-guest-login', dict.guestLogin);
+  setText('btn-guest-register', dict.guestRegister);
+  setText('btn-guest-exit', dict.guestExit);
 
   // Re-run TopBar tooltip registration if available
   if (typeof setupTopBarEvents === 'function') {
@@ -5560,9 +8992,1456 @@ window.applyLanguageToUI = function (lang) {
 
   const infoContent = document.getElementById('info-scroll-content');
   if (infoContent) {
-    infoContent.innerText = (targetLang === 'en') ? window.INFO_SCROLL_EN : window.INFO_SCROLL_HU;
+    const dict = window.INFO_SCROLL_TRANSLATIONS || {};
+    infoContent.innerText = dict[targetLang] || dict.hu || window.INFO_SCROLL_HU;
 // === [#TUTOR.04.62.00] END ===
   }
 
   console.log('🌐 UI elemek sikeresen átállítva nyelvre:', targetLang);
 };
+
+// ================================================================================
+// ================================================================================
+// 📐 ÉLŐ VIZUÁLIS SZÖVEGDOBOZ FINOMHANGOLÓ (Kettős Mód: Pergamen és Irányító Panel)
+// Készült az AGENTS.md felhasználói szabályzat előírása szerint.
+// ================================================================================
+(function () {
+  'use strict';
+
+  let currentTunerTab = 'sample1'; // Alapértelmezett: 1000px-es pergamen (Welcome & Monológok 1-34)
+
+  window.customTextBoxConfig = {
+    width: 666,
+    height: 88,
+    top: 48,
+    fontSize: null,
+    lineHeight: null
+  };
+  window.customControlsConfig = {
+    panelWidth: 590,
+    panelHeight: 400,
+    panelRight: 5,
+    panelBottom: 20,
+    innerWidth: 370,
+    innerHeight: 220,
+    innerTop: 86,
+    fontSize: null,
+    lineHeight: null
+  };
+  window.customWindConfig = {
+    panelWidth: 480,
+    panelHeight: 300,
+    panelRight: 6,
+    panelBottom: 19,
+    innerWidth: 330,
+    innerHeight: 220,
+    innerTop: 42,
+    fontSize: null,
+    lineHeight: null
+  };
+  window.customUserOverrideActive = false;
+
+  // Segédfüggvény: a képernyőn látható aktív szövegelem azonosítása
+  function getActiveVisibleTextElement() {
+    const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+    if (welcomeOverlay && welcomeOverlay.style.display !== 'none' && window.getComputedStyle(welcomeOverlay).display !== 'none') {
+      return document.getElementById('zozo-dialogue-text');
+    }
+    const ingame = document.getElementById('zozo-ingame-monolog-container');
+    if (ingame && ingame.style.display !== 'none' && window.getComputedStyle(ingame).display !== 'none') {
+      return document.getElementById('ingame-dialogue-text');
+    }
+    const toast = document.getElementById('ingame-popup-toast');
+    if (toast && toast.style.display !== 'none' && window.getComputedStyle(toast).display !== 'none') {
+      return document.getElementById('popup-toast-text');
+    }
+    return document.getElementById('zozo-dialogue-text') || document.getElementById('ingame-dialogue-text');
+  }
+
+  function createTextBoxTunerUI() {
+    // Alapértelmezetten a szerkesztő rejtve van a tiszta játékélmény és tesztelés érdekében.
+    // Kizárólag a ?edit=1 vagy ?tuner=1 URL paraméterrel aktiválódik!
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEditMode = urlParams.get('edit') === '1' || urlParams.get('tuner') === '1';
+    if (!isEditMode) return;
+
+    if (document.getElementById('textbox-tuner-panel')) return;
+
+    // 1. Lebegő nyitógomb
+    const btnToggle = document.createElement('button');
+    btnToggle.id = 'btn-toggle-textbox-tuner';
+    btnToggle.innerHTML = '📐 Szövegdoboz Hangoló';
+    btnToggle.style.cssText = `
+      position: fixed;
+      top: 65px;
+      right: 15px;
+      z-index: 999999;
+      background: rgba(20, 15, 10, 0.94);
+      color: #ffe6aa;
+      border: 2px solid #d4af37;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-family: 'Briskb', 'Georgia', serif;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.75);
+      transition: transform 0.15s, background 0.15s;
+    `;
+    btnToggle.onmouseover = () => btnToggle.style.transform = 'scale(1.05)';
+    btnToggle.onmouseout = () => btnToggle.style.transform = 'scale(1.0)';
+
+    // 2. Szerkesztő panel
+    const panel = document.createElement('div');
+    panel.id = 'textbox-tuner-panel';
+    panel.style.cssText = `
+      display: none;
+      position: fixed;
+      top: 105px;
+      right: 15px;
+      width: 410px;
+      max-height: 86vh;
+      overflow-y: auto;
+      z-index: 999999;
+      background: rgba(18, 14, 10, 0.97);
+      color: #fff;
+      border: 2px solid #d4af37;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.9);
+      font-family: 'Briskb', 'Georgia', serif;
+      font-size: 13px;
+      box-sizing: border-box;
+    `;
+
+    panel.innerHTML = `
+      <div id="tuner-drag-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d4af37; padding: 6px 8px; margin-bottom: 8px; cursor: grab; user-select: none; background: rgba(255,215,0,0.08); border-radius: 6px 6px 0 0;">
+        <span style="font-size: 14px; font-weight: bold; color: #ffd700; pointer-events: none;">✥ Szövegdoboz Hangoló</span>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button id="btn-dock-left-right" title="Gyors áthelyezés Bal / Jobb oldalra" style="background: #2a1f14; border: 1px solid #d4af37; color: #ffd700; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; font-weight: bold;">
+            ⬅️ Balra
+          </button>
+          <button id="btn-close-textbox-tuner" style="background: none; border: none; color: #ff8888; font-size: 18px; cursor: pointer; font-weight: bold; padding: 0 4px; line-height: 1;">✕</button>
+        </div>
+      </div>
+
+      <!-- 🌐 Nyelvválasztó sáv -->
+      <div style="margin-bottom: 10px;">
+        <div style="font-size: 11px; color: #ffcc66; font-weight: bold; margin-bottom: 4px;">🌐 Nyelv választása:</div>
+        <div style="display: flex; gap: 4px; justify-content: space-between; flex-wrap: wrap;">
+          <button class="tuner-lang-btn" data-lang="hu" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #3a2a15; color: #ffd700; border: 1px solid #d4af37; border-radius: 4px; cursor: pointer;">🇭🇺 HU</button>
+          <button class="tuner-lang-btn" data-lang="en" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 4px; cursor: pointer;">🇬🇧 EN</button>
+          <button class="tuner-lang-btn" data-lang="de" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 4px; cursor: pointer;">🇩🇪 DE</button>
+          <button class="tuner-lang-btn" data-lang="fr" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 4px; cursor: pointer;">🇫🇷 FR</button>
+          <button class="tuner-lang-btn" data-lang="es" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 4px; cursor: pointer;">🇪🇸 ES</button>
+          <button class="tuner-lang-btn" data-lang="pl" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 4px; cursor: pointer;">🇵🇱 PL</button>
+          <button class="tuner-lang-btn" data-lang="ru" style="flex: 1; padding: 4px 2px; font-size: 11px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 4px; cursor: pointer;">🇷🇺 RU</button>
+        </div>
+      </div>
+
+      <!-- 📖 Szövegválasztó és Léptető Szekció -->
+      <div style="background: rgba(0,0,0,0.4); border: 1px solid #664422; border-radius: 6px; padding: 8px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+          <span style="font-size: 11px; font-weight: bold; color: #ffd700;">📖 Szöveg kiválasztása:</span>
+          <span id="lbl-tuner-monolog-name" style="font-size: 11px; color: #ffeb99; font-weight: bold;">welcome_0</span>
+        </div>
+        <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 4px;">
+          <button id="btn-tuner-prev-mono" style="padding: 5px 8px; font-size: 11px; font-weight: bold; background: #2c2014; color: #ffe; border: 1px solid #775533; border-radius: 4px; cursor: pointer;">◀ Előző</button>
+          <select id="sel-tuner-monolog" style="flex: 1; padding: 5px; font-size: 11px; background: #221810; color: #ffd700; border: 1px solid #775533; border-radius: 4px; cursor: pointer;"></select>
+          <button id="btn-tuner-next-mono" style="padding: 5px 8px; font-size: 11px; font-weight: bold; background: #2c2014; color: #ffe; border: 1px solid #775533; border-radius: 4px; cursor: pointer;">Következő ▶</button>
+        </div>
+
+        <!-- ✏️ Élő Szövegszerkesztő Mező -->
+        <div style="margin-top: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+            <span style="font-size: 11px; font-weight: bold; color: #ffcc66;">✏️ Szöveg & Sortörés Élő Módosítása:</span>
+            <span id="lbl-tuner-charcount" style="font-size: 10px; color: #aaa;">0 kar.</span>
+          </div>
+          <textarea id="tuner-text-input" rows="3" style="width: 100%; box-sizing: border-box; padding: 6px 8px; font-family: 'Briskb', 'Georgia', serif; font-size: 13px; font-weight: bold; background: #150f0a; color: #fff; border: 1px solid #d4af37; border-radius: 5px; resize: vertical; outline: none; line-height: 1.35;"></textarea>
+        </div>
+      </div>
+
+      <!-- Fül választó: Alsó Pergamen vs Irányító Panel vs Szél Panel -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 10px;">
+        <button id="tab-btn-sample1" style="padding: 6px 2px; font-size: 10.5px; font-weight: bold; background: #3a2a15; color: #ffd700; border: 1px solid #d4af37; border-radius: 5px; cursor: pointer;">
+          📜 Pergamen
+        </button>
+        <button id="tab-btn-controls" style="padding: 6px 2px; font-size: 10.5px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 5px; cursor: pointer;">
+          🎮 Irányítás
+        </button>
+        <button id="tab-btn-wind" style="padding: 6px 2px; font-size: 10.5px; font-weight: bold; background: #221810; color: #bbb; border: 1px solid #665; border-radius: 5px; cursor: pointer;">
+          💨 Szél Panel
+        </button>
+      </div>
+
+      <div style="margin-bottom: 10px; text-align: center;">
+        <button id="btn-toggle-guide-frame" style="width: 100%; padding: 7px; background: #3a2a15; color: #ffd700; border: 1px solid #ffd700; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px;">
+          🔲 Sárga segédkeret: BEKAPCSOLVA
+        </button>
+      </div>
+
+      <!-- SZEKCIÓ 1: 1. MINTA (1000px Alsó Pergamen) CSÚSZKÁK -->
+      <div id="section-sample1-tuner" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+        <div style="font-weight: bold; color: #ffcc66; font-size: 12px; border-bottom: 1px dashed #554; padding-bottom: 3px;">
+          📜 Pergamen Szövegdoboz és Tipográfia:
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↔️ Belső Szélesség:</span>
+            <span id="val-tb-width" style="color: #ffd700; font-weight: bold;">685px</span>
+          </div>
+          <input type="range" id="rng-tb-width" min="450" max="750" step="5" value="670" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↕️ Belső Magasság:</span>
+            <span id="val-tb-height" style="color: #ffd700; font-weight: bold;">82px</span>
+          </div>
+          <input type="range" id="rng-tb-height" min="50" max="140" step="2" value="82" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>📍 Felső eltolás (Top):</span>
+            <span id="val-tb-top" style="color: #ffd700; font-weight: bold;">51px</span>
+          </div>
+          <input type="range" id="rng-tb-top" min="20" max="80" step="1" value="51" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>⬅️➡️ Vízszintes eltolás (Bal / Jobb):</span>
+            <span id="val-tb-left" style="color: #ffd700; font-weight: bold;">0px (Középen)</span>
+          </div>
+          <input type="range" id="rng-tb-left" min="-150" max="150" step="1" value="0" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>🔤 Betűméret:</span>
+              <span id="val-tb-fs" style="color: #ffd700; font-weight: bold;">Auto</span>
+            </div>
+            <input type="range" id="rng-tb-fs" min="14" max="36" step="0.5" value="24" style="width: 100%; cursor: pointer;">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>📏 Sorköz:</span>
+              <span id="val-tb-lh" style="color: #ffd700; font-weight: bold;">Auto</span>
+            </div>
+            <input type="range" id="rng-tb-lh" min="1.05" max="1.50" step="0.02" value="1.25" style="width: 100%; cursor: pointer;">
+          </div>
+        </div>
+
+        <button id="btn-tb-fs-auto" style="padding: 5px; font-size: 11px; background: #2c2014; color: #ffd700; border: 1px solid #775533; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          🔄 Vissza Auto Méretre
+        </button>
+      </div>
+
+      <!-- SZEKCIÓ 2: IRÁNYÍTÓ PANEL CSÚSZKÁK -->
+      <div id="section-controls-tuner" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+        <div style="font-weight: bold; color: #ffcc66; font-size: 12px; border-bottom: 1px dashed #554; padding-bottom: 3px;">
+          🎮 Irányító Panel Pozíció és Méret:
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↔️ Panel Szélesség:</span>
+            <span id="val-ctrl-pw" style="color: #ffd700; font-weight: bold;">565px</span>
+          </div>
+          <input type="range" id="rng-ctrl-pw" min="350" max="750" step="5" value="565" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↕️ Panel Magasság:</span>
+            <span id="val-ctrl-ph" style="color: #ffd700; font-weight: bold;">385px</span>
+          </div>
+          <input type="range" id="rng-ctrl-ph" min="200" max="550" step="5" value="385" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>➡️ Jobb:</span>
+              <span id="val-ctrl-pr" style="color: #ffd700; font-weight: bold;">6%</span>
+            </div>
+            <input type="range" id="rng-ctrl-pr" min="0" max="25" step="1" value="6" style="width: 100%; cursor: pointer;">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>⬇️ Alsó:</span>
+              <span id="val-ctrl-pb" style="color: #ffd700; font-weight: bold;">19%</span>
+            </div>
+            <input type="range" id="rng-ctrl-pb" min="5" max="45" step="1" value="19" style="width: 100%; cursor: pointer;">
+          </div>
+        </div>
+
+        <div style="font-weight: bold; color: #ffcc66; font-size: 12px; border-bottom: 1px dashed #554; padding-bottom: 3px; margin-top: 4px;">
+          📦 Belső Szövegdoboz és Tipográfia:
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↔️ Belső Szélesség:</span>
+            <span id="val-ctrl-iw" style="color: #ffd700; font-weight: bold;">365px</span>
+          </div>
+          <input type="range" id="rng-ctrl-iw" min="200" max="550" step="5" value="365" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↕️ Belső Magasság:</span>
+            <span id="val-ctrl-ih" style="color: #ffd700; font-weight: bold;">220px</span>
+          </div>
+          <input type="range" id="rng-ctrl-ih" min="150" max="320" step="5" value="220" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>📍 Belső Top eltolás:</span>
+            <span id="val-ctrl-it" style="color: #ffd700; font-weight: bold;">82px</span>
+          </div>
+          <input type="range" id="rng-ctrl-it" min="20" max="140" step="2" value="82" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>⬅️➡️ Belső Vízszintes eltolás (Bal / Jobb):</span>
+            <span id="val-ctrl-il" style="color: #ffd700; font-weight: bold;">0px (Középen)</span>
+          </div>
+          <input type="range" id="rng-ctrl-il" min="-100" max="100" step="1" value="0" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>🔤 Betűméret:</span>
+              <span id="val-ctrl-fs" style="color: #ffd700; font-weight: bold;">22px (Kézi)</span>
+            </div>
+            <input type="range" id="rng-ctrl-fs" min="14" max="32" step="0.5" value="22" style="width: 100%; cursor: pointer;">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>📏 Sorköz:</span>
+              <span id="val-ctrl-lh" style="color: #ffd700; font-weight: bold;">1.27 (Kézi)</span>
+            </div>
+            <input type="range" id="rng-ctrl-lh" min="1.15" max="1.50" step="0.02" value="1.27" style="width: 100%; cursor: pointer;">
+          </div>
+        </div>
+
+        <button id="btn-ctrl-fs-auto" style="padding: 5px; font-size: 11px; background: #2c2014; color: #ffd700; border: 1px solid #775533; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          🔄 Vissza Auto Méretre
+        </button>
+      </div>
+
+      <!-- SZEKCIÓ 3: SZÉL FIGYELMEZTETŐ PANEL CSÚSZKÁK -->
+      <div id="section-wind-tuner" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+        <div style="font-weight: bold; color: #66ccff; font-size: 12px; border-bottom: 1px dashed #554; padding-bottom: 3px;">
+          💨 Szél Panel Pozíció és Méret:
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↔️ Panel Szélesség:</span>
+            <span id="val-wind-pw" style="color: #66ccff; font-weight: bold;">480px</span>
+          </div>
+          <input type="range" id="rng-wind-pw" min="350" max="750" step="5" value="480" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↕️ Panel Magasság:</span>
+            <span id="val-wind-ph" style="color: #66ccff; font-weight: bold;">300px</span>
+          </div>
+          <input type="range" id="rng-wind-ph" min="200" max="550" step="5" value="300" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>➡️ Jobb:</span>
+              <span id="val-wind-pr" style="color: #66ccff; font-weight: bold;">6%</span>
+            </div>
+            <input type="range" id="rng-wind-pr" min="0" max="25" step="1" value="6" style="width: 100%; cursor: pointer;">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>⬇️ Alsó:</span>
+              <span id="val-wind-pb" style="color: #66ccff; font-weight: bold;">19%</span>
+            </div>
+            <input type="range" id="rng-wind-pb" min="5" max="45" step="1" value="19" style="width: 100%; cursor: pointer;">
+          </div>
+        </div>
+
+        <div style="font-weight: bold; color: #66ccff; font-size: 12px; border-bottom: 1px dashed #554; padding-bottom: 3px; margin-top: 4px;">
+          📦 Belső Szövegdoboz és Tipográfia:
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↔️ Belső Szélesség:</span>
+            <span id="val-wind-iw" style="color: #66ccff; font-weight: bold;">320px</span>
+          </div>
+          <input type="range" id="rng-wind-iw" min="200" max="550" step="5" value="320" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>↕️ Belső Magasság:</span>
+            <span id="val-wind-ih" style="color: #66ccff; font-weight: bold;">220px</span>
+          </div>
+          <input type="range" id="rng-wind-ih" min="150" max="320" step="5" value="220" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>📍 Belső Top eltolás:</span>
+            <span id="val-wind-it" style="color: #66ccff; font-weight: bold;">30px</span>
+          </div>
+          <input type="range" id="rng-wind-it" min="10" max="140" step="2" value="30" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>⬅️➡️ Belső Vízszintes eltolás (Bal / Jobb):</span>
+            <span id="val-wind-il" style="color: #66ccff; font-weight: bold;">0px (Középen)</span>
+          </div>
+          <input type="range" id="rng-wind-il" min="-100" max="100" step="1" value="0" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>🔤 Betűméret:</span>
+              <span id="val-wind-fs" style="color: #66ccff; font-weight: bold;">28px (Kézi)</span>
+            </div>
+            <input type="range" id="rng-wind-fs" min="14" max="36" step="0.5" value="28" style="width: 100%; cursor: pointer;">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>📏 Sorköz:</span>
+              <span id="val-wind-lh" style="color: #66ccff; font-weight: bold;">1.25 (Auto)</span>
+            </div>
+            <input type="range" id="rng-wind-lh" min="1.15" max="1.50" step="0.02" value="1.25" style="width: 100%; cursor: pointer;">
+          </div>
+        </div>
+
+        <button id="btn-wind-fs-auto" style="padding: 5px; font-size: 11px; background: #14202c; color: #66ccff; border: 1px solid #335577; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          🔄 Vissza Auto Méretre
+        </button>
+      </div>
+
+      <!-- Alsó funkciógombok -->
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button id="btn-copy-textbox-css" style="flex: 2; padding: 8px; background: #2d5a27; color: #fff; border: 1px solid #4e9a40; border-radius: 6px; font-weight: bold; cursor: pointer;">
+          📋 Másolás Vágólapra
+        </button>
+        <button id="btn-reset-textbox-values" style="flex: 1; padding: 8px; background: #443322; color: #ddd; border: 1px solid #775533; border-radius: 6px; cursor: pointer;">
+          🔄 Alapérték
+        </button>
+      </div>
+      <div id="msg-textbox-copied" style="display: none; color: #88ff88; text-align: center; margin-top: 6px; font-size: 11px;">
+        ✅ Értékek a vágólapra másolva!
+      </div>
+    `;
+
+    document.body.appendChild(btnToggle);
+    document.body.appendChild(panel);
+
+    // Tab kezelés: Pergamen vs Irányítás vs Szél Panel
+    const tabSample1 = document.getElementById('tab-btn-sample1');
+    const tabControls = document.getElementById('tab-btn-controls');
+    const tabWind = document.getElementById('tab-btn-wind');
+    const secSample1 = document.getElementById('section-sample1-tuner');
+    const secControls = document.getElementById('section-controls-tuner');
+    const secWind = document.getElementById('section-wind-tuner');
+
+    function activateTab(tabName) {
+      currentTunerTab = tabName;
+      [tabSample1, tabControls, tabWind].forEach(b => {
+        b.style.background = '#221810';
+        b.style.color = '#bbb';
+        b.style.borderColor = '#665';
+      });
+      secSample1.style.display = 'none';
+      secControls.style.display = 'none';
+      secWind.style.display = 'none';
+
+      if (tabName === 'controls') {
+        tabControls.style.background = '#3a2a15';
+        tabControls.style.color = '#ffd700';
+        tabControls.style.borderColor = '#d4af37';
+        secControls.style.display = 'flex';
+      } else if (tabName === 'wind') {
+        tabWind.style.background = '#152535';
+        tabWind.style.color = '#66ccff';
+        tabWind.style.borderColor = '#3399cc';
+        secWind.style.display = 'flex';
+      } else {
+        tabSample1.style.background = '#3a2a15';
+        tabSample1.style.color = '#ffd700';
+        tabSample1.style.borderColor = '#d4af37';
+        secSample1.style.display = 'flex';
+      }
+    }
+
+    tabSample1.onclick = () => activateTab('sample1');
+    tabControls.onclick = () => activateTab('controls');
+    tabWind.onclick = () => activateTab('wind');
+
+    // 1. Minta (Pergamen) csúszkák
+    const rngW = document.getElementById('rng-tb-width');
+    const rngH = document.getElementById('rng-tb-height');
+    const rngTop = document.getElementById('rng-tb-top');
+    const rngLeft = document.getElementById('rng-tb-left');
+    const rngFs = document.getElementById('rng-tb-fs');
+    const rngLh = document.getElementById('rng-tb-lh');
+
+    const valW = document.getElementById('val-tb-width');
+    const valH = document.getElementById('val-tb-height');
+    const valTop = document.getElementById('val-tb-top');
+    const valLeft = document.getElementById('val-tb-left');
+    const valFs = document.getElementById('val-tb-fs');
+    const valLh = document.getElementById('val-tb-lh');
+
+    function applyLiveTextBox(fromUserFontSlider = false) {
+      const w = rngW.value;
+      const h = rngH.value;
+      const t = rngTop.value;
+      const l = rngLeft.value;
+
+      valW.textContent = w + 'px';
+      valH.textContent = h + 'px';
+      valTop.textContent = t + 'px';
+      valLeft.textContent = (l == 0) ? '0px (Középen)' : (l < 0 ? (l + 'px (Balra)') : ('+' + l + 'px (Jobbra)'));
+
+      document.documentElement.style.setProperty('--textbox-width', w + 'px');
+      document.documentElement.style.setProperty('--textbox-height', h + 'px');
+      document.documentElement.style.setProperty('--textbox-top', t + 'px');
+      document.documentElement.style.setProperty('--textbox-left', l + 'px');
+
+      const activeText = getActiveVisibleTextElement();
+      if (!activeText) return;
+
+      if (fromUserFontSlider) {
+        window.customUserOverrideActive = true;
+        const fs = parseFloat(rngFs.value);
+        const lh = parseFloat(rngLh.value);
+        valFs.textContent = fs + 'px (Kézi)';
+        valLh.textContent = lh.toFixed(2) + ' (Kézi)';
+        window.customTextBoxConfig = {
+          width: parseInt(w, 10),
+          height: parseInt(h, 10),
+          top: parseInt(t, 10),
+          fontSize: fs,
+          lineHeight: lh
+        };
+        activeText.style.setProperty('font-size', fs + 'px', 'important');
+        activeText.style.setProperty('line-height', String(lh), 'important');
+        const curTxt = (activeText.innerText || activeText.textContent || '').trim();
+        if (!curTxt.includes('\n')) {
+          activeText.style.setProperty('white-space', 'nowrap', 'important');
+          if (activeText.scrollWidth > parseInt(w, 10)) {
+            activeText.style.setProperty('white-space', 'pre-line', 'important');
+          }
+        } else {
+          activeText.style.setProperty('white-space', 'pre-line', 'important');
+        }
+      } else {
+        if (window.customUserOverrideActive && window.customTextBoxConfig && window.customTextBoxConfig.fontSize) {
+          activeText.style.setProperty('font-size', window.customTextBoxConfig.fontSize + 'px', 'important');
+          if (window.customTextBoxConfig.lineHeight) {
+            activeText.style.setProperty('line-height', String(window.customTextBoxConfig.lineHeight), 'important');
+          }
+        } else {
+          window.customUserOverrideActive = false;
+          if (typeof window.fitDialogueText === 'function') {
+            window.fitDialogueText(activeText, 28, 14);
+          }
+          const compFs = parseFloat(window.getComputedStyle(activeText).fontSize) || 24;
+          const compLhRaw = parseFloat(window.getComputedStyle(activeText).lineHeight);
+          const compLh = compLhRaw ? +(compLhRaw / compFs).toFixed(2) : 1.25;
+          valFs.textContent = Math.round(compFs * 10) / 10 + 'px (Auto)';
+          valLh.textContent = compLh.toFixed(2) + ' (Auto)';
+          rngFs.value = compFs;
+          rngLh.value = compLh;
+        }
+      }
+    }
+
+    [rngW, rngH, rngTop, rngLeft].forEach(el => el.addEventListener('input', () => applyLiveTextBox(false)));
+    [rngFs, rngLh].forEach(el => el.addEventListener('input', () => applyLiveTextBox(true)));
+
+    document.getElementById('btn-tb-fs-auto').onclick = () => {
+      window.customUserOverrideActive = false;
+      window.customTextBoxConfig.fontSize = null;
+      window.customTextBoxConfig.lineHeight = null;
+      const activeText = getActiveVisibleTextElement();
+      if (activeText) {
+        activeText.style.removeProperty('font-size');
+        activeText.style.removeProperty('line-height');
+      }
+      applyLiveTextBox(false);
+    };
+
+    // Irányító panel csúszkák
+    const rngCPW = document.getElementById('rng-ctrl-pw');
+    const rngCPH = document.getElementById('rng-ctrl-ph');
+    const rngCPR = document.getElementById('rng-ctrl-pr');
+    const rngCPB = document.getElementById('rng-ctrl-pb');
+    const rngCIW = document.getElementById('rng-ctrl-iw');
+    const rngCIH = document.getElementById('rng-ctrl-ih');
+    const rngCIT = document.getElementById('rng-ctrl-it');
+    const rngCIL = document.getElementById('rng-ctrl-il');
+    const rngCFS = document.getElementById('rng-ctrl-fs');
+    const rngCLH = document.getElementById('rng-ctrl-lh');
+
+    const valCPW = document.getElementById('val-ctrl-pw');
+    const valCPH = document.getElementById('val-ctrl-ph');
+    const valCPR = document.getElementById('val-ctrl-pr');
+    const valCPB = document.getElementById('val-ctrl-pb');
+    const valCIW = document.getElementById('val-ctrl-iw');
+    const valCIH = document.getElementById('val-ctrl-ih');
+    const valCIT = document.getElementById('val-ctrl-it');
+    const valCIL = document.getElementById('val-ctrl-il');
+    const valCFS = document.getElementById('val-ctrl-fs');
+    const valCLH = document.getElementById('val-ctrl-lh');
+
+    function applyControlsPanelSliders(fromUserFontSlider = false) {
+      const pw = rngCPW.value;
+      const ph = rngCPH.value;
+      const pr = rngCPR.value;
+      const pb = rngCPB.value;
+      const iw = rngCIW.value;
+      const ih = rngCIH.value;
+      const it = rngCIT.value;
+      const il = rngCIL.value;
+
+      valCPW.textContent = pw + 'px';
+      valCPH.textContent = ph + 'px';
+      valCPR.textContent = pr + '%';
+      valCPB.textContent = pb + '%';
+      valCIW.textContent = iw + 'px';
+      valCIH.textContent = ih + 'px';
+      valCIT.textContent = it + 'px';
+      valCIL.textContent = (il == 0) ? '0px (Középen)' : (il < 0 ? (il + 'px (Balra)') : ('+' + il + 'px (Jobbra)'));
+
+      document.documentElement.style.setProperty('--ctrl-p-width', pw + 'px');
+      document.documentElement.style.setProperty('--ctrl-p-height', ph + 'px');
+      document.documentElement.style.setProperty('--ctrl-p-right', pr + '%');
+      document.documentElement.style.setProperty('--ctrl-p-bottom', pb + '%');
+      document.documentElement.style.setProperty('--ctrl-inner-width', iw + 'px');
+      document.documentElement.style.setProperty('--ctrl-inner-height', ih + 'px');
+      document.documentElement.style.setProperty('--ctrl-inner-top', it + 'px');
+      document.documentElement.style.setProperty('--ctrl-inner-left', il + 'px');
+
+      const activeText = getActiveVisibleTextElement();
+      if (!activeText) return;
+
+      if (fromUserFontSlider) {
+        window.customUserOverrideActive = true;
+        const fs = parseFloat(rngCFS.value);
+        const lh = parseFloat(rngCLH.value);
+        valCFS.textContent = fs + 'px (Kézi)';
+        valCLH.textContent = lh.toFixed(2) + ' (Kézi)';
+        window.customControlsConfig = {
+          fontSize: fs,
+          lineHeight: lh
+        };
+        activeText.style.setProperty('font-size', fs + 'px', 'important');
+        activeText.style.setProperty('line-height', String(lh), 'important');
+      } else {
+        if (window.customUserOverrideActive && window.customControlsConfig && window.customControlsConfig.fontSize) {
+          activeText.style.setProperty('font-size', window.customControlsConfig.fontSize + 'px', 'important');
+          if (window.customControlsConfig.lineHeight) {
+            activeText.style.setProperty('line-height', String(window.customControlsConfig.lineHeight), 'important');
+          }
+        } else {
+          window.customUserOverrideActive = false;
+          if (typeof window.fitDialogueText === 'function') {
+            window.fitDialogueText(activeText, 24, 14);
+          }
+          const compFs = parseFloat(window.getComputedStyle(activeText).fontSize) || 23.5;
+          const compLhRaw = parseFloat(window.getComputedStyle(activeText).lineHeight);
+          const compLh = compLhRaw ? +(compLhRaw / compFs).toFixed(2) : 1.30;
+          valCFS.textContent = Math.round(compFs * 10) / 10 + 'px (Auto)';
+          valCLH.textContent = compLh.toFixed(2) + ' (Auto)';
+          rngCFS.value = compFs;
+          rngCLH.value = compLh;
+        }
+      }
+    }
+
+    [rngCPW, rngCPH, rngCPR, rngCPB, rngCIW, rngCIH, rngCIT, rngCIL].forEach(el => el.addEventListener('input', () => applyControlsPanelSliders(false)));
+    [rngCFS, rngCLH].forEach(el => el.addEventListener('input', () => applyControlsPanelSliders(true)));
+
+    document.getElementById('btn-ctrl-fs-auto').onclick = () => {
+      window.customUserOverrideActive = false;
+      if (window.customControlsConfig) {
+        window.customControlsConfig.fontSize = null;
+        window.customControlsConfig.lineHeight = null;
+      }
+      const activeText = getActiveVisibleTextElement();
+      if (activeText) {
+        activeText.style.removeProperty('font-size');
+        activeText.style.removeProperty('line-height');
+      }
+      applyControlsPanelSliders(false);
+    };
+
+    // Szél panel csúszkák
+    const rngWPW = document.getElementById('rng-wind-pw');
+    const rngWPH = document.getElementById('rng-wind-ph');
+    const rngWPR = document.getElementById('rng-wind-pr');
+    const rngWPB = document.getElementById('rng-wind-pb');
+    const rngWIW = document.getElementById('rng-wind-iw');
+    const rngWIH = document.getElementById('rng-wind-ih');
+    const rngWIT = document.getElementById('rng-wind-it');
+    const rngWIL = document.getElementById('rng-wind-il');
+    const rngWFS = document.getElementById('rng-wind-fs');
+    const rngWLH = document.getElementById('rng-wind-lh');
+
+    const valWPW = document.getElementById('val-wind-pw');
+    const valWPH = document.getElementById('val-wind-ph');
+    const valWPR = document.getElementById('val-wind-pr');
+    const valWPB = document.getElementById('val-wind-pb');
+    const valWIW = document.getElementById('val-wind-iw');
+    const valWIH = document.getElementById('val-wind-ih');
+    const valWIT = document.getElementById('val-wind-it');
+    const valWIL = document.getElementById('val-wind-il');
+    const valWFS = document.getElementById('val-wind-fs');
+    const valWLH = document.getElementById('val-wind-lh');
+
+    function applyWindPanelSliders(fromUserFontSlider = false) {
+      const pw = rngWPW.value;
+      const ph = rngWPH.value;
+      const pr = rngWPR.value;
+      const pb = rngWPB.value;
+      const iw = rngWIW.value;
+      const ih = rngWIH.value;
+      const it = rngWIT.value;
+      const il = rngWIL.value;
+
+      valWPW.textContent = pw + 'px';
+      valWPH.textContent = ph + 'px';
+      valWPR.textContent = pr + '%';
+      valWPB.textContent = pb + '%';
+      valWIW.textContent = iw + 'px';
+      valWIH.textContent = ih + 'px';
+      valWIT.textContent = it + 'px';
+      valWIL.textContent = (il == 0) ? '0px (Középen)' : (il < 0 ? (il + 'px (Balra)') : ('+' + il + 'px (Jobbra)'));
+
+      document.documentElement.style.setProperty('--wind-p-width', pw + 'px');
+      document.documentElement.style.setProperty('--wind-p-height', ph + 'px');
+      document.documentElement.style.setProperty('--wind-p-right', pr + '%');
+      document.documentElement.style.setProperty('--wind-p-bottom', pb + '%');
+      document.documentElement.style.setProperty('--wind-inner-width', iw + 'px');
+      document.documentElement.style.setProperty('--wind-inner-height', ih + 'px');
+      document.documentElement.style.setProperty('--wind-inner-top', it + 'px');
+      document.documentElement.style.setProperty('--wind-inner-left', il + 'px');
+
+      const activeText = getActiveVisibleTextElement();
+      if (!activeText) return;
+
+      if (fromUserFontSlider) {
+        window.customUserOverrideActive = true;
+        const fs = parseFloat(rngWFS.value);
+        const lh = parseFloat(rngWLH.value);
+        valWFS.textContent = fs + 'px (Kézi)';
+        valWLH.textContent = lh.toFixed(2) + ' (Kézi)';
+        window.customWindConfig = {
+          fontSize: fs,
+          lineHeight: lh
+        };
+        activeText.style.setProperty('font-size', fs + 'px', 'important');
+        activeText.style.setProperty('line-height', String(lh), 'important');
+      } else {
+        if (window.customUserOverrideActive && window.customWindConfig && window.customWindConfig.fontSize) {
+          activeText.style.setProperty('font-size', window.customWindConfig.fontSize + 'px', 'important');
+          if (window.customWindConfig.lineHeight) {
+            activeText.style.setProperty('line-height', String(window.customWindConfig.lineHeight), 'important');
+          }
+        } else {
+          window.customUserOverrideActive = false;
+          if (typeof window.fitDialogueText === 'function') {
+            window.fitDialogueText(activeText, 28, 14);
+          }
+          const compFs = parseFloat(window.getComputedStyle(activeText).fontSize) || 28;
+          const compLhRaw = parseFloat(window.getComputedStyle(activeText).lineHeight);
+          const compLh = compLhRaw ? +(compLhRaw / compFs).toFixed(2) : 1.25;
+          valWFS.textContent = Math.round(compFs * 10) / 10 + 'px (Auto)';
+          valWLH.textContent = compLh.toFixed(2) + ' (Auto)';
+          rngWFS.value = compFs;
+          rngWLH.value = compLh;
+        }
+      }
+    }
+
+    [rngWPW, rngWPH, rngWPR, rngWPB, rngWIW, rngWIH, rngWIT, rngWIL].forEach(el => el.addEventListener('input', () => applyWindPanelSliders(false)));
+    [rngWFS, rngWLH].forEach(el => el.addEventListener('input', () => applyWindPanelSliders(true)));
+
+    document.getElementById('btn-wind-fs-auto').onclick = () => {
+      window.customUserOverrideActive = false;
+      if (window.customWindConfig) {
+        window.customWindConfig.fontSize = null;
+        window.customWindConfig.lineHeight = null;
+      }
+      const activeText = getActiveVisibleTextElement();
+      if (activeText) {
+        activeText.style.removeProperty('font-size');
+        activeText.style.removeProperty('line-height');
+      }
+      applyWindPanelSliders(false);
+    };
+
+    // Segédkeret gomb
+    const btnGuide = document.getElementById('btn-toggle-guide-frame');
+    function updateGuideBtnState() {
+      const isGuide = document.body.classList.contains('show-textbox-guide');
+      btnGuide.textContent = isGuide ? '🔲 Sárga segédkeret: BEKAPCSOLVA' : '🔳 Sárga segédkeret: KIKAPCSOLVA';
+      btnGuide.style.background = isGuide ? '#3a2a15' : '#221810';
+    }
+
+    btnGuide.onclick = () => {
+      document.body.classList.toggle('show-textbox-guide');
+      updateGuideBtnState();
+    };
+
+    btnToggle.onclick = () => {
+      const isClosed = (panel.style.display === 'none' || !panel.style.display);
+      panel.style.display = isClosed ? 'block' : 'none';
+      if (isClosed) {
+        document.body.classList.add('show-textbox-guide');
+        populateDropdownOptions();
+        updateLangButtonStyles(window.currentLanguage || 'hu');
+        const activeText = getActiveVisibleTextElement();
+        if (activeText && txtInput) {
+          txtInput.value = activeText.innerText || activeText.textContent || '';
+          if (charCount) charCount.innerText = txtInput.value.length + ' kar.';
+        }
+        if (activeText && activeText.closest('.controls-popup-mode')) {
+          activateTab('controls');
+          applyControlsPanelSliders(false);
+        } else {
+          activateTab('sample1');
+          applyLiveTextBox(false);
+        }
+      } else {
+        document.body.classList.remove('show-textbox-guide');
+      }
+      updateGuideBtnState();
+    };
+
+    document.getElementById('btn-close-textbox-tuner').onclick = () => {
+      panel.style.display = 'none';
+      document.body.classList.remove('show-textbox-guide');
+      updateGuideBtnState();
+    };
+
+    // ✥ Áthelyezhetőség (Húzás / Drag & Drop és 1-kattintásos Átdobás)
+    const dragHeader = document.getElementById('tuner-drag-header');
+    const btnDock = document.getElementById('btn-dock-left-right');
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let panelStartX = 0;
+    let panelStartY = 0;
+
+    function startDrag(clientX, clientY) {
+      isDragging = true;
+      if (dragHeader) dragHeader.style.cursor = 'grabbing';
+      dragStartX = clientX;
+      dragStartY = clientY;
+      const rect = panel.getBoundingClientRect();
+      panelStartX = rect.left;
+      panelStartY = rect.top;
+
+      panel.style.left = panelStartX + 'px';
+      panel.style.top = panelStartY + 'px';
+      panel.style.right = 'auto';
+      panel.style.bottom = 'auto';
+    }
+
+    function doDrag(clientX, clientY) {
+      if (!isDragging) return;
+      const deltaX = clientX - dragStartX;
+      const deltaY = clientY - dragStartY;
+
+      let newX = panelStartX + deltaX;
+      let newY = panelStartY + deltaY;
+
+      const pad = 10;
+      const maxW = window.innerWidth - panel.offsetWidth - pad;
+      const maxH = window.innerHeight - 80;
+      newX = Math.max(pad, Math.min(maxW, newX));
+      newY = Math.max(pad, Math.min(maxH, newY));
+
+      panel.style.left = newX + 'px';
+      panel.style.top = newY + 'px';
+
+      if (btnDock) {
+        btnDock.textContent = (newX < window.innerWidth / 2) ? '➡️ Jobbra' : '⬅️ Balra';
+      }
+    }
+
+    function endDrag() {
+      if (isDragging) {
+        isDragging = false;
+        if (dragHeader) dragHeader.style.cursor = 'grab';
+      }
+    }
+
+    if (dragHeader) {
+      dragHeader.addEventListener('mousedown', (e) => {
+        if (e.target.closest('#btn-dock-left-right') || e.target.closest('#btn-close-textbox-tuner')) return;
+        startDrag(e.clientX, e.clientY);
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => doDrag(e.clientX, e.clientY));
+      window.addEventListener('mouseup', endDrag);
+
+      // Érintőképernyős (Touch) támogatás
+      dragHeader.addEventListener('touchstart', (e) => {
+        if (e.target.closest('#btn-dock-left-right') || e.target.closest('#btn-close-textbox-tuner')) return;
+        if (e.touches && e.touches[0]) {
+          startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        if (e.touches && e.touches[0]) {
+          doDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', endDrag);
+    }
+
+    // 1-kattintásos Gyors Dokkoló gomb (Balra / Jobbra)
+    if (btnDock) {
+      btnDock.onclick = (e) => {
+        e.stopPropagation();
+        const rect = panel.getBoundingClientRect();
+        const isCurrentlyLeft = rect.left < window.innerWidth / 2;
+
+        if (isCurrentlyLeft) {
+          panel.style.left = 'auto';
+          panel.style.right = '15px';
+          panel.style.top = '105px';
+          btnDock.textContent = '⬅️ Balra';
+        } else {
+          panel.style.right = 'auto';
+          panel.style.left = '15px';
+          panel.style.top = '105px';
+          btnDock.textContent = '➡️ Jobbra';
+        }
+      };
+    }
+
+    // Nyelvkezelés a Tunerben
+    function updateLangButtonStyles(activeLang) {
+      const cur = activeLang || window.currentLanguage || 'hu';
+      document.querySelectorAll('.tuner-lang-btn').forEach(btn => {
+        const l = btn.getAttribute('data-lang');
+        if (l === cur) {
+          btn.style.background = '#d4af37';
+          btn.style.color = '#111';
+          btn.style.borderColor = '#fff';
+        } else {
+          btn.style.background = '#221810';
+          btn.style.color = '#bbb';
+          btn.style.borderColor = '#665';
+        }
+      });
+    }
+
+    window.switchTunerLanguage = async function(lang) {
+      window.currentLanguage = lang;
+      localStorage.setItem('siteLang', lang);
+      localStorage.setItem('ebook_pirates_language', lang);
+      localStorage.setItem('ebp_language', lang);
+      if (document.body) {
+        document.body.setAttribute('data-lang', lang);
+        document.body.classList.toggle('lang-ru', lang === 'ru');
+      }
+
+      const filename = (lang === 'hu') ? 'dialogues.json' : `dialogues_${lang}.json`;
+      try {
+        const res = await fetch(filename + '?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          window.zozoWelcomeTexts = data.welcomeTexts || [];
+          window.gameMonologues = data.gameMonologues || {};
+          window.gamePopups = data.popups || {};
+          window.eogMonologues = data.eogMonologues || {};
+        }
+      } catch (err) {
+        console.error('Hiba a dialógus fájl betöltésekor:', err);
+      }
+
+      if (typeof window.applyLanguageToUI === 'function') {
+        window.applyLanguageToUI(lang);
+      }
+
+      if (lang === 'ru') {
+        rngTop.value = 44;
+        valTop.textContent = '44px';
+        rngW.value = 670;
+        valW.textContent = '670px';
+        rngLeft.value = 0;
+        valLeft.textContent = '0px (Középen)';
+        document.documentElement.style.setProperty('--textbox-top', '44px');
+        document.documentElement.style.setProperty('--textbox-width', '670px');
+        document.documentElement.style.setProperty('--textbox-left', '0px');
+      } else if (lang === 'es') {
+        rngTop.value = 48;
+        valTop.textContent = '48px';
+        rngW.value = 670;
+        valW.textContent = '670px';
+        rngLeft.value = 0;
+        valLeft.textContent = '0px (Középen)';
+        document.documentElement.style.setProperty('--textbox-top', '48px');
+        document.documentElement.style.setProperty('--textbox-width', '670px');
+        document.documentElement.style.setProperty('--textbox-left', '0px');
+      } else if (lang === 'pl') {
+        rngTop.value = 51;
+        valTop.textContent = '51px';
+        rngW.value = 660;
+        valW.textContent = '660px';
+        rngLeft.value = -1;
+        valLeft.textContent = '-1px (Balra)';
+        document.documentElement.style.setProperty('--textbox-top', '51px');
+        document.documentElement.style.setProperty('--textbox-width', '660px');
+        document.documentElement.style.setProperty('--textbox-left', '-1px');
+      } else {
+        rngTop.value = 51;
+        valTop.textContent = '51px';
+        rngW.value = 685;
+        valW.textContent = '685px';
+        rngLeft.value = 0;
+        valLeft.textContent = '0px (Középen)';
+        document.documentElement.style.setProperty('--textbox-top', '51px');
+        document.documentElement.style.setProperty('--textbox-width', '685px');
+        document.documentElement.style.setProperty('--textbox-left', '0px');
+      }
+
+      if (lang === 'fr') {
+        rngWPW.value = 475;
+        rngWPR.value = 6;
+        rngWIW.value = 320;
+        rngWIH.value = 195;
+        rngWIT.value = 52;
+        rngWIL.value = 0;
+        valWPW.textContent = '475px';
+        valWPR.textContent = '6%';
+        valWIW.textContent = '320px';
+        valWIH.textContent = '195px';
+        valWIT.textContent = '52px';
+        valWIL.textContent = '0px (Középen)';
+        document.documentElement.style.setProperty('--wind-p-width', '475px');
+        document.documentElement.style.setProperty('--wind-p-right', '6%');
+        document.documentElement.style.setProperty('--wind-inner-width', '320px');
+        document.documentElement.style.setProperty('--wind-inner-height', '195px');
+        document.documentElement.style.setProperty('--wind-inner-top', '52px');
+        document.documentElement.style.setProperty('--wind-inner-left', '0px');
+      } else if (lang === 'es') {
+        rngWPW.value = 480;
+        rngWPR.value = 8;
+        rngWIW.value = 320;
+        rngWIH.value = 230;
+        rngWIT.value = 38;
+        rngWIL.value = 3;
+        valWPW.textContent = '480px';
+        valWPR.textContent = '8%';
+        valWIW.textContent = '320px';
+        valWIH.textContent = '230px';
+        valWIT.textContent = '38px';
+        valWIL.textContent = '+3px (Jobbra)';
+        document.documentElement.style.setProperty('--wind-p-width', '480px');
+        document.documentElement.style.setProperty('--wind-p-right', '8%');
+        document.documentElement.style.setProperty('--wind-inner-width', '320px');
+        document.documentElement.style.setProperty('--wind-inner-height', '230px');
+        document.documentElement.style.setProperty('--wind-inner-top', '38px');
+        document.documentElement.style.setProperty('--wind-inner-left', '3px');
+      } else {
+        rngWPW.value = 480;
+        rngWPR.value = 6;
+        rngWIW.value = 320;
+        rngWIH.value = 220;
+        rngWIT.value = 30;
+        rngWIL.value = 0;
+        valWPW.textContent = '480px';
+        valWPR.textContent = '6%';
+        valWIW.textContent = '320px';
+        valWIH.textContent = '220px';
+        valWIT.textContent = '30px';
+        valWIL.textContent = '0px (Középen)';
+        document.documentElement.style.setProperty('--wind-p-width', '480px');
+        document.documentElement.style.setProperty('--wind-p-right', '6%');
+        document.documentElement.style.setProperty('--wind-inner-width', '320px');
+        document.documentElement.style.setProperty('--wind-inner-height', '220px');
+        document.documentElement.style.setProperty('--wind-inner-top', '30px');
+        document.documentElement.style.setProperty('--wind-inner-left', '0px');
+      }
+
+      updateLangButtonStyles(lang);
+      populateDropdownOptions();
+      const currentKey = selMono.value || 'welcome_0';
+      window.jumpToTunerMonolog(currentKey);
+    };
+
+    document.querySelectorAll('.tuner-lang-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const lang = btn.getAttribute('data-lang');
+        await window.switchTunerLanguage(lang);
+      };
+    });
+
+    // Összes szöveg listája a léptetéshez és legördülőhöz
+    const allTextList = [
+      { key: 'welcome_0', type: 'welcome', index: 0, title: '👋 Welcome #0' },
+      { key: 'welcome_1', type: 'welcome', index: 1, title: '👋 Welcome #1' },
+      { key: 'welcome_2', type: 'welcome', index: 2, title: '👋 Welcome #2' },
+      { key: 'welcome_3', type: 'welcome', index: 3, title: '👋 Welcome #3' },
+      { key: 'controls', type: 'controls', keyVal: 'controls', title: '🎮 Irányító Panel (controls)' },
+      { key: '1', type: 'monolog', keyVal: '1', title: '📜 Monológ #1' },
+      { key: '2', type: 'monolog', keyVal: '2', title: '📜 Monológ #2' },
+      { key: '3', type: 'monolog', keyVal: '3', title: '📜 Monológ #3' },
+      { key: '4', type: 'monolog', keyVal: '4', title: '📜 Monológ #4' },
+      { key: '5', type: 'monolog', keyVal: '5', title: '📜 Monológ #5' },
+      { key: '6', type: 'monolog', keyVal: '6', title: '📜 Monológ #6' },
+      { key: '7', type: 'monolog', keyVal: '7', title: '📜 Monológ #7' },
+      { key: '8', type: 'monolog', keyVal: '8', title: '📜 Monológ #8' },
+      { key: '9', type: 'monolog', keyVal: '9', title: '📜 Monológ #9' },
+      { key: '11', type: 'monolog', keyVal: '11', title: '📜 Monológ #11' },
+      { key: '12', type: 'monolog', keyVal: '12', title: '📜 Monológ #12' },
+      { key: '13', type: 'monolog', keyVal: '13', title: '📜 Monológ #13' },
+      { key: '14', type: 'monolog', keyVal: '14', title: '📜 Monológ #14' },
+      { key: '15', type: 'monolog', keyVal: '15', title: '📜 Monológ #15' },
+      { key: '16', type: 'monolog', keyVal: '16', title: '📜 Monológ #16' },
+      { key: '17', type: 'monolog', keyVal: '17', title: '📜 Monológ #17' },
+      { key: '18', type: 'monolog', keyVal: '18', title: '📜 Monológ #18' },
+      { key: '19', type: 'monolog', keyVal: '19', title: '📜 Monológ #19' },
+      { key: '20', type: 'monolog', keyVal: '20', title: '📜 Monológ #20' },
+      { key: '21', type: 'monolog', keyVal: '21', title: '📜 Monológ #21' },
+      { key: '22', type: 'monolog', keyVal: '22', title: '📜 Monológ #22' },
+      { key: '23', type: 'monolog', keyVal: '23', title: '📜 Monológ #23' },
+      { key: '24', type: 'monolog', keyVal: '24', title: '📜 Monológ #24' },
+      { key: '25', type: 'monolog', keyVal: '25', title: '📜 Monológ #25' },
+      { key: '26', type: 'monolog', keyVal: '26', title: '📜 Monológ #26' },
+      { key: '27', type: 'monolog', keyVal: '27', title: '📜 Monológ #27' },
+      { key: '28', type: 'monolog', keyVal: '28', title: '📜 Monológ #28' },
+      { key: '29', type: 'monolog', keyVal: '29', title: '📜 Monológ #29' },
+      { key: '30', type: 'monolog', keyVal: '30', title: '📜 Monológ #30' },
+      { key: '31', type: 'monolog', keyVal: '31', title: '📜 Monológ #31' },
+      { key: '32', type: 'monolog', keyVal: '32', title: '📜 Monológ #32' },
+      { key: '33', type: 'monolog', keyVal: '33', title: '📜 Monológ #33' },
+      { key: '34', type: 'monolog', keyVal: '34', title: '📜 Monológ #34' },
+      { key: 'wind', type: 'controls', keyVal: 'wind', title: '💨 Szél Panel (wind)' }
+    ];
+
+    function getTextSnippet(item) {
+      let raw = '';
+      if (item.type === 'welcome') {
+        raw = (window.zozoWelcomeTexts && window.zozoWelcomeTexts[item.index]) || '';
+      } else {
+        raw = (window.gameMonologues && window.gameMonologues[item.keyVal]) || '';
+      }
+      raw = raw.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+      return raw ? (raw.length > 25 ? raw.substring(0, 25) + '…' : raw) : '';
+    }
+
+    const selMono = document.getElementById('sel-tuner-monolog');
+    const lblMono = document.getElementById('lbl-tuner-monolog-name');
+
+    function populateDropdownOptions() {
+      const curVal = selMono.value || 'welcome_0';
+      selMono.innerHTML = '';
+      allTextList.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.key;
+        const snip = getTextSnippet(item);
+        opt.innerText = snip ? `${item.title}: "${snip}"` : item.title;
+        selMono.appendChild(opt);
+      });
+      selMono.value = curVal;
+    }
+
+    const txtInput = document.getElementById('tuner-text-input');
+    const charCount = document.getElementById('lbl-tuner-charcount');
+
+    function syncTextareaToScreen(rawTxt) {
+      if (txtInput) {
+        txtInput.value = rawTxt;
+        if (charCount) charCount.innerText = rawTxt.length + ' kar.';
+      }
+    }
+
+    if (txtInput) {
+      txtInput.oninput = () => {
+        const newTxt = txtInput.value;
+        if (charCount) charCount.innerText = newTxt.length + ' kar.';
+        const activeText = getActiveVisibleTextElement();
+        if (activeText) {
+          activeText.innerText = newTxt;
+          if (typeof window.fitDialogueText === 'function') {
+            window.fitDialogueText(activeText, currentTunerTab === 'controls' ? 24 : 28, 14);
+          }
+        }
+        const curKey = selMono.value || 'welcome_0';
+        if (String(curKey).startsWith('welcome_')) {
+          const idx = parseInt(curKey.replace('welcome_', ''), 10);
+          if (window.zozoWelcomeTexts) window.zozoWelcomeTexts[idx] = newTxt;
+        } else {
+          if (window.gameMonologues) window.gameMonologues[curKey] = newTxt;
+        }
+      };
+    }
+
+    window.jumpToTunerMonolog = function(monoKey) {
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      window.focus();
+      selMono.value = monoKey;
+      if (lblMono) lblMono.innerText = monoKey;
+
+      const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+      const container = document.getElementById('zozo-ingame-monolog-container');
+
+      if (String(monoKey).startsWith('welcome_')) {
+        const stepIdx = parseInt(monoKey.replace('welcome_', ''), 10);
+        window.zozoTextStep = stepIdx;
+        if (container) container.style.display = 'none';
+        const rawTxt = (window.zozoWelcomeTexts && window.zozoWelcomeTexts[stepIdx]) || "";
+        syncTextareaToScreen(rawTxt);
+        if (welcomeOverlay) {
+          welcomeOverlay.style.display = 'block';
+          const wText = document.getElementById('zozo-dialogue-text');
+          if (wText) {
+            wText.innerText = rawTxt;
+          }
+          const backBtn = document.getElementById('welcome-back-btn');
+          if (backBtn) backBtn.style.display = (stepIdx > 0) ? 'block' : 'none';
+        }
+        activateTab('sample1');
+        applyLiveTextBox(false);
+      } else if (monoKey === 'controls') {
+        if (welcomeOverlay) welcomeOverlay.style.display = 'none';
+        const rawTxt = (window.gameMonologues && window.gameMonologues['controls']) || "";
+        syncTextareaToScreen(rawTxt);
+        if (container) {
+          container.classList.add('controls-popup-mode');
+          container.classList.remove('wind-popup-mode');
+          const nameplate = container.querySelector('.zozo-nameplate-std');
+          if (nameplate) nameplate.style.display = 'none';
+          container.style.display = 'flex';
+          const txtEl = document.getElementById('ingame-dialogue-text');
+          if (txtEl) txtEl.innerText = rawTxt;
+        }
+        activateTab('controls');
+        applyControlsPanelSliders(false);
+      } else if (monoKey === 'wind') {
+        if (welcomeOverlay) welcomeOverlay.style.display = 'none';
+        const rawTxt = (window.gameMonologues && window.gameMonologues['wind']) || "";
+        syncTextareaToScreen(rawTxt);
+        if (container) {
+          container.classList.add('wind-popup-mode');
+          container.classList.remove('controls-popup-mode');
+          const nameplate = container.querySelector('.zozo-nameplate-std');
+          if (nameplate) nameplate.style.display = 'none';
+          container.style.display = 'flex';
+          const txtEl = document.getElementById('ingame-dialogue-text');
+          if (txtEl) txtEl.innerText = rawTxt;
+        }
+        activateTab('wind');
+        applyWindPanelSliders(false);
+      } else {
+        // Normál 1000px in-game monológ (1..34)
+        if (welcomeOverlay) welcomeOverlay.style.display = 'none';
+        const rawTxt = (window.gameMonologues && window.gameMonologues[monoKey]) || "";
+        syncTextareaToScreen(rawTxt);
+        if (container) {
+          container.classList.remove('controls-popup-mode');
+          container.classList.remove('wind-popup-mode');
+          const nameplate = container.querySelector('.zozo-nameplate-std');
+          if (nameplate) nameplate.style.display = 'block';
+          container.style.display = 'flex';
+          const txtEl = document.getElementById('ingame-dialogue-text');
+          if (txtEl) {
+            txtEl.innerText = rawTxt;
+          }
+        }
+        activateTab('sample1');
+        applyLiveTextBox(false);
+      }
+    };
+
+    selMono.onchange = () => {
+      window.jumpToTunerMonolog(selMono.value);
+    };
+
+    document.getElementById('btn-tuner-prev-mono').onclick = () => {
+      const keys = allTextList.map(item => item.key);
+      const curIdx = keys.indexOf(selMono.value);
+      const nextIdx = (curIdx - 1 + keys.length) % keys.length;
+      window.jumpToTunerMonolog(keys[nextIdx]);
+    };
+
+    document.getElementById('btn-tuner-next-mono').onclick = () => {
+      const keys = allTextList.map(item => item.key);
+      const curIdx = keys.indexOf(selMono.value);
+      const nextIdx = (curIdx + 1) % keys.length;
+      window.jumpToTunerMonolog(keys[nextIdx]);
+    };
+
+    // Másolás vágólapra
+    document.getElementById('btn-copy-textbox-css').onclick = () => {
+      const curLang = (window.currentLanguage || 'hu').toUpperCase();
+      const curKey = selMono.value || 'welcome_0';
+      let curTxt = (txtInput && txtInput.value) ? txtInput.value : '';
+      if (!curTxt) {
+        const activeText = getActiveVisibleTextElement();
+        if (activeText) curTxt = activeText.innerText || activeText.textContent || '';
+      }
+      const targetJson = (window.currentLanguage === 'hu') ? 'dialogues.json' : `dialogues_${window.currentLanguage}.json`;
+      const targetTxt = `translations_txt/dialogues_${window.currentLanguage || 'hu'}.txt`;
+
+      let code = `==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [${curKey}] - [${curLang}]
+==================================================
+🌐 Nyelv: ${curLang}
+📁 Célfájl (JSON): ${targetJson}
+📁 Célfájl (TXT): ${targetTxt}
+🔑 Kulcs: ${curKey}
+📝 Módosított Szöveg (sortörésekkel):
+"""
+${curTxt}
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (${currentTunerTab === 'controls' ? 'Irányító Panel' : (currentTunerTab === 'wind' ? 'Szél Figyelmeztető Panel' : '1000px Pergamen')}):
+`;
+
+      if (currentTunerTab === 'controls') {
+        code += `:root {
+  --ctrl-p-width: ${rngCPW.value}px;
+  --ctrl-p-height: ${rngCPH.value}px;
+  --ctrl-p-right: ${rngCPR.value}%;
+  --ctrl-p-bottom: ${rngCPB.value}%;
+  --ctrl-inner-width: ${rngCIW.value}px;
+  --ctrl-inner-height: ${rngCIH.value}px;
+  --ctrl-inner-top: ${rngCIT.value}px;
+  --ctrl-inner-left: ${rngCIL.value}px;
+}
+Betűméret: ${valCFS.textContent}, Sorköz: ${valCLH.textContent}
+==================================================`;
+      } else if (currentTunerTab === 'wind') {
+        code += `:root {
+  --wind-p-width: ${rngWPW.value}px;
+  --wind-p-height: ${rngWPH.value}px;
+  --wind-p-right: ${rngWPR.value}%;
+  --wind-p-bottom: ${rngWPB.value}%;
+  --wind-inner-width: ${rngWIW.value}px;
+  --wind-inner-height: ${rngWIH.value}px;
+  --wind-inner-top: ${rngWIT.value}px;
+  --wind-inner-left: ${rngWIL.value}px;
+}
+Betűméret: ${valWFS.textContent}, Sorköz: ${valWLH.textContent}
+==================================================`;
+      } else {
+        code += `:root {
+  --textbox-width: ${rngW.value}px;
+  --textbox-height: ${rngH.value}px;
+  --textbox-top: ${rngTop.value}px;
+  --textbox-left: ${rngLeft.value}px;
+}
+Betűméret: ${valFs.textContent}, Sorköz: ${valLh.textContent}
+==================================================`;
+      }
+
+      console.log('📋 Másolt konfiguráció:\n' + code);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          const msg = document.getElementById('msg-textbox-copied');
+          if (msg) {
+            msg.innerText = '✅ Teljes módosítási csomag a vágólapra másolva!';
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3500);
+          }
+        }).catch(err => {
+          console.warn('Clipboard write failed, logged to console.', err);
+          const msg = document.getElementById('msg-textbox-copied');
+          if (msg) {
+            msg.innerText = '✅ Konzolba kiírva (F12)!';
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3500);
+          }
+        });
+      } else {
+        const msg = document.getElementById('msg-textbox-copied');
+        if (msg) {
+          msg.innerText = '✅ Konzolba kiírva (F12)!';
+          msg.style.display = 'block';
+          setTimeout(() => { msg.style.display = 'none'; }, 3500);
+        }
+      }
+    };
+
+    // Alapértékek visszaállítása
+    document.getElementById('btn-reset-textbox-values').onclick = () => {
+      if (currentTunerTab === 'controls') {
+        rngCPW.value = 565;
+        rngCPH.value = 385;
+        rngCPR.value = 6;
+        rngCPB.value = 19;
+        rngCIW.value = 365;
+        rngCIH.value = 220;
+        rngCIT.value = 82;
+        rngCIL.value = 0;
+        window.customUserOverrideActive = false;
+        applyControlsPanelSliders(false);
+      } else if (currentTunerTab === 'wind') {
+        const isFr = (window.currentLanguage === 'fr');
+        const isEs = (window.currentLanguage === 'es');
+        rngWPW.value = isFr ? 475 : 480;
+        rngWPH.value = 300;
+        rngWPR.value = isEs ? 8 : 6;
+        rngWPB.value = 19;
+        rngWIW.value = 320;
+        rngWIH.value = isFr ? 195 : (isEs ? 230 : 220);
+        rngWIT.value = isFr ? 52 : (isEs ? 38 : 30);
+        rngWIL.value = isEs ? 3 : 0;
+        window.customUserOverrideActive = false;
+        applyWindPanelSliders(false);
+      } else {
+        const isRu = (window.currentLanguage === 'ru');
+        const isEs = (window.currentLanguage === 'es');
+        const isPl = (window.currentLanguage === 'pl');
+        rngW.value = (isRu || isEs) ? 670 : (isPl ? 660 : 685);
+        rngH.value = 82;
+        rngTop.value = isRu ? 44 : (isEs ? 48 : 51);
+        rngLeft.value = isPl ? -1 : 0;
+        window.customUserOverrideActive = false;
+        applyLiveTextBox(false);
+      }
+    };
+
+    // Kezdeti inicializálás
+    populateDropdownOptions();
+    updateLangButtonStyles(window.currentLanguage || 'hu');
+    updateGuideBtnState();
+    const activeText = getActiveVisibleTextElement();
+    if (activeText && txtInput) {
+      txtInput.value = activeText.innerText || activeText.textContent || '';
+      if (charCount) charCount.innerText = txtInput.value.length + ' kar.';
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createTextBoxTunerUI);
+  } else {
+    createTextBoxTunerUI();
+  }
+})();
+

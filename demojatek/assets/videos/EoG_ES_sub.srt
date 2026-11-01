@@ -1,0 +1,11 @@
+﻿1
+00:00:02,240 --> 00:00:03,680
+¿Cómo se llama el puerto pirata?
+
+2
+00:00:07,770  --> 00:00:08,040
+Hebok.
+
+3
+00:00:14,590 --> 00:00:15,830
+Puedes quedarte con el barco.

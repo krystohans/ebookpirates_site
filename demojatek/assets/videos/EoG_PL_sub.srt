@@ -1,0 +1,23 @@
+﻿1
+00:00:01,080 --> 00:00:03,260
+Jak nazywa się ten piracki port?
+
+2
+00:00:05,600 --> 00:00:06,700
+Hej, to proste!
+
+3
+00:00:07,230 --> 00:00:08,300
+Hebok.
+
+4
+00:00:14,250 --> 00:00:15,400
+Potrzebuję kryształu.
+
+5
+00:00:17,350 --> 00:00:19,582
+Pozostałe skarby są twoje. 
+
+6
+00:00:19,862 --> 00:00:21,830
+Możesz zatrzymać też moją łódź.

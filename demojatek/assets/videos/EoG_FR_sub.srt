@@ -1,0 +1,23 @@
+﻿1
+00:00:02,320 --> 00:00:03,640
+Quel est le nom du port pirate ?
+
+2
+00:00:05,320 --> 00:00:06,200
+Hey, c'est facile. 
+
+3
+00:00:07,700 --> 00:00:08,250
+Hebok.
+
+3
+00:00:14,680 --> 00:00:17,640
+J'ai besoin du cristal. 
+
+4
+00:00:17,640 --> 00:00:19,670
+Les autres trésors sont à vous, 
+
+5
+00:00:19,670 --> 00:00:20,830
+vous pouvez garder mon bateau aussi.

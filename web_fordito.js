@@ -1015,6 +1015,7 @@ const translations = {
         'monk_approve_button': 'Elfogadás',
         'monk_reject_button': 'Elutasítás',
         'monk_quiz_approval_title': 'Jóváhagyásra váró kvízkérdések',
+        'monk_quiz_type_label': 'Kérdés típusa:',
         'monk_quiz_approve_confirm': 'Biztosan ELFOGADOD ezt a kvízkérdést? (Kapsz érte 1 kalózkreditet!)',
         'monk_quiz_reject_confirm': 'Biztosan ELUTASÍTOD ezt a kvízkérdést?',
         'monk_quiz_evaluation_success': 'Sikeres kiértékelés!',
@@ -1574,8 +1575,8 @@ const translations = {
         'server_overloaded_short': 'Server overloaded.',
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
-// === [#HEX:F.04.17E.00] START | name: does | lines: 1045 ===
-// @calls: [#HEX:D.01.7E.00], [#HEX:F.04.13.00], [#HEX:A.05.1A.00], [#HEX:A.05.12.00], [#HEX:F.04.1CF.00] | @calledBy: none
+// === [#HEX:F.04.17E.00] START | name: does | lines: 1046 ===
+// @calls: [#HEX:A.05.1A.00], [#HEX:F.04.1F.00], [#HEX:F.01.00.00], [#HEX:D.01.7E.00], [#HEX:B.07.38.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -2232,6 +2233,7 @@ const translations = {
         'monk_approve_button': 'Approve',
         'monk_reject_button': 'Reject',
         'monk_quiz_approval_title': 'Pending Quiz Questions',
+        'monk_quiz_type_label': 'Question type:',
         'monk_quiz_approve_confirm': 'Are you sure you want to APPROVE this quiz question? (You will receive 1 pirate credit!)',
         'monk_quiz_reject_confirm': 'Are you sure you want to REJECT this quiz question?',
         'monk_quiz_evaluation_success': 'Evaluation successful!',
@@ -3342,6 +3344,7 @@ const translations = {
         'monk_approve_button': 'Genehmigen',
         'monk_reject_button': 'Ablehnen',
         'monk_quiz_approval_title': 'Ausstehende Quizfragen',
+        'monk_quiz_type_label': 'Fragetyp:',
         'monk_quiz_approve_confirm': 'Sind Sie sicher, dass Sie diese Quizfrage GENEHMIGEN möchten? (Sie erhalten 1 Piratenkredit!)',
         'monk_quiz_reject_confirm': 'Sind Sie sicher, dass Sie diese Quizfrage ABLEHNEN möchten?',
         'monk_quiz_evaluation_success': 'Bewertung erfolgreich!',
@@ -4627,6 +4630,7 @@ const translations = {
         'monk_approve_button': 'Approuver',
         'monk_reject_button': 'Rejeter',
         'monk_quiz_approval_title': 'Questions de quiz en attente',
+        'monk_quiz_type_label': 'Type de question:',
         'monk_quiz_approve_confirm': 'Êtes-vous sûr de vouloir APPROUVER cette question de quiz ? (Vous recevrez 1 crédit pirate !)',
         'monk_quiz_reject_confirm': 'Êtes-vous sûr de vouloir REJETER cette question de quiz ?',
         'monk_quiz_evaluation_success': 'Évaluation réussie !',
@@ -5921,6 +5925,7 @@ const translations = {
         'monk_approve_button': 'Aprobar',
         'monk_reject_button': 'Rechazar',
         'monk_quiz_approval_title': 'Preguntas de quiz pendientes',
+        'monk_quiz_type_label': 'Tipo de pregunta:',
         'monk_quiz_approve_confirm': '¿Está seguro de que desea APROBAR esta pregunta de quiz? (¡Recibirá 1 crédito pirata!)',
         'monk_quiz_reject_confirm': '¿Está seguro de que desea RECHAZAR esta pregunta de quiz?',
         'monk_quiz_evaluation_success': '¡Evaluación exitosa!',
@@ -7206,6 +7211,7 @@ const translations = {
         'monk_approve_button': 'Zatwierdź',
         'monk_reject_button': 'Odrzuć',
         'monk_quiz_approval_title': 'Oczekujące pytania quizowe',
+        'monk_quiz_type_label': 'Typ pytania:',
         'monk_quiz_approve_confirm': 'Czy na pewno chcesz ZATWIERDZIĆ to pytanie quizowe? (Otrzymasz 1 kredyt piracki!)',
         'monk_quiz_reject_confirm': 'Czy na pewno chcesz ODRZUCIĆ to pytanie quizowe?',
         'monk_quiz_evaluation_success': 'Ocena pomyślna!',
@@ -8491,6 +8497,7 @@ const translations = {
         'monk_approve_button': 'Одобрить',
         'monk_reject_button': 'Отклонить',
         'monk_quiz_approval_title': 'Ожидающие вопросы викторины',
+        'monk_quiz_type_label': 'Тип вопроса:',
         'monk_quiz_approve_confirm': 'Вы уверены, что хотите ОДОБРИТЬ этот вопрос викторины? (Вы получите 1 пиратский кредит!)',
         'monk_quiz_reject_confirm': 'Вы уверены, что хотите ОТКЛОНИТЬ этот вопрос викторины?',
         'monk_quiz_evaluation_success': 'Оценка успешна!',
@@ -9522,7 +9529,7 @@ function t(key) {
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
 // === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
-// @calls: [#HEX:F.08.0B.00], [#HEX:F.04.180.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
+// @calls: [#HEX:F.08.07.00], [#HEX:F.08.0B.00], [#HEX:F.04.180.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;

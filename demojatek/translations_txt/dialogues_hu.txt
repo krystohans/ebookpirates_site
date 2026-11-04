@@ -158,7 +158,7 @@ Most jobb lesz, ha eltűnünk a szemük elől,
 mielőtt a tengerbe hajítanak minket.
 
 [gameMonologues.controls]
-A W,A,S,D vagy az iránynyíl gombokkal tudod irányítani a hajót. A kamerát akkor tudod forgatni, ha lenyomva tartod akár a jobb, akár a bal gombot az egéren. Az információs ablakokat a space lenyomásával tudod léptetni / bezárni.
+A W,A,S,D vagy az iránynyíl gombokkal tudod irányítani a hajót. Az információs ablakokat a space lenyomásával tudod léptetni / bezárni, vagy ha az egérrel belekattintasz.
 
 [gameMonologues.wind]
 Figyelj a szélirányra, úgy forgasd a vitorlát!

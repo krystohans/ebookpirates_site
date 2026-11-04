@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eBookPirates – Kalózsziget 3D Tutorial</title>
-  <link rel="stylesheet" href="style.css?v=20261026_72">
+  <link rel="stylesheet" href="style.css?v=20261103_03">
 
   <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
   <style>
@@ -145,7 +145,7 @@
     <canvas id="c"></canvas>
 
     <!-- TopBar Dinamikus Konténer -->
-    <div id="topbar-container"></div>
+    <div id="topbar-container" style="position: relative; z-index: 100000;"></div>
 
     <!-- Mobil Módváltó Gomb (Hajókormány ↔ Kamera) -->
     <div id="mobile-mode-btn" title="Váltás Hajóvezérlés és Kamera között">☸️</div>
@@ -165,7 +165,7 @@
         <div id="zozo-nameplate" class="zozo-nameplate-std">
           <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" id="zozo-nameplate-img" />
         </div>
-        <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+        <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
         <div id="welcome-back-btn" class="monolog-nav-btn monolog-back-btn" onclick="window.previousZozoWelcome(event)" style="display: none;">&#9664;</div>
         <div class="monolog-inner-textbox">
           <div id="zozo-dialogue-text" class="zozo-dialogue-text-std">
@@ -184,7 +184,7 @@
       <div class="zozo-nameplate-std">
         <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
       </div>
-      <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+      <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
       <div id="monolog-back-btn" class="monolog-nav-btn monolog-back-btn" onclick="window.previousInGameMonolog(event)" style="display: none;">&#9664;</div>
       <div class="monolog-inner-textbox">
         <div id="ingame-dialogue-text" class="zozo-dialogue-text-std"></div>
@@ -210,7 +210,7 @@
 
     <!-- IN-GAME POPUP TOAST (A PopUp és irányítási üzenetekhez) -->
     <div id="ingame-popup-toast" class="zozo-monolog-box-std" style="display: none;">
-      <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+      <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
       <div class="monolog-inner-textbox">
         <div id="popup-toast-text" class="zozo-dialogue-text-std"></div>
       </div>
@@ -218,7 +218,7 @@
 
   <!-- EoG MONOLÓG DIALOG -->
   <div id="eog-compact-dialog" class="zozo-monolog-box-std" style="display: none;">
-    <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+    <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
     <div class="zozo-nameplate-std">
       <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
     </div>
@@ -446,8 +446,8 @@
       });
     })();
   </script>
-  <script src="quiz_manager.js?v=20261025_01"></script>
-  <script type="module" src="script.js?v=20261101_01"></script>
+  <script src="quiz_manager.js?v=20261104_01"></script>
+  <script type="module" src="script.js?v=20261104_01"></script>
 </body>
 
 </html>

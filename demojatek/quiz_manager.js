@@ -1,62 +1,83 @@
+// ============================================================================
+// 📜 eBookPirates – Kalózsziget QuizManager & Protocol Chain
+// ============================================================================
+
 window.QuizConfig = {
-  TUTORZEP: {
+  // ─── 🔴 TZQSvA: Hosszú kérdések (> 50 karakter) – 3 Soros elrendezés (Rézívbe felhúzva) ───
+  TZQSvA: {
+    name: "TZQSvA",
+    description: "TUTORZEP Hosszú kérdések (> 50 karakter) – 3 Soros elrendezés",
     panelWidth: 831,
     panelHeight: 768,
-    // 1 soros kérdés koordinátái (AMIKOR NINCS SORTÖRÉS)
-    question_singleline: {
-      top: 220,
-      left: 121,
-      width: 589,
-      height: 59,
-      fontSize: 20
+    question_line1: {
+      top: 195,
+      left: 300,
+      width: 235,
+      height: 30,
+      fontSize: 22,
+      lineHeight: 1,
+      maxChars: 16
     },
-    // 2 soros kérdés koordinátái (AMIKOR VAN SORTÖRÉS: \n vagy <br> vagy > 50 karakter)
-    // 220px magasságban mindkét sor a fa deszka belsejében, tökéletesen középre igazítva jelenik meg (16px a rézkerettől, 13px a válaszoktól)!
-    question_multiline: {
+    question_line2: {
       top: 220,
-      left: 121,
-      width: 589,
-      height: 59,
-      fontSize: 19
+      left: 145,
+      width: 555,
+      height: 35,
+      fontSize: 22,
+      lineHeight: 1,
+      maxChars: 42
     },
-    // Alapértelmezett kompatibilitási mező
-    question: {
-      top: 220,
-      left: 121,
-      width: 589,
-      height: 59,
-      fontSize: 19
+    question_line3: {
+      top: 256,
+      left: 145,
+      width: 555,
+      height: 30,
+      fontSize: 22,
+      lineHeight: 1,
+      maxChars: 42
     },
     answers: [
-      {
-        top: 287,
-        left: 135,
-        width: 560,
-        height: 47,
-        fontSize: 19
-      },
-      {
-        top: 349,
-        left: 135,
-        width: 560,
-        height: 85,
-        fontSize: 19
-      },
-      {
-        top: 448,
-        left: 135,
-        width: 560,
-        height: 48,
-        fontSize: 19
-      },
-      {
-        top: 513,
-        left: 135,
-        width: 560,
-        height: 54,
-        fontSize: 19
-      }
+      { top: 295, left: 145, width: 560, height: 42, fontSize: 20 },
+      { top: 370, left: 145, width: 560, height: 42, fontSize: 20 },
+      { top: 455, left: 145, width: 560, height: 42, fontSize: 20 },
+      { top: 517, left: 145, width: 560, height: 42, fontSize: 20 }
     ]
+  },
+  // ─── 🔵 TZQSvB: Normál/Rövid kérdések (<= 50 karakter) – 2 Soros kiegyensúlyozott elrendezés ───
+  TZQSvB: {
+    name: "TZQSvB",
+    description: "TUTORZEP Normál/Rövid kérdések (<= 50 karakter) – 2 Soros elrendezés",
+    panelWidth: 831,
+    panelHeight: 768,
+    question_line1: {
+      top: 196,
+      left: 302,
+      width: 230,
+      height: 38,
+      fontSize: 23,
+      lineHeight: 1.25,
+      maxChars: 18
+    },
+    question_line2: {
+      top: 236,
+      left: 145,
+      width: 555,
+      height: 38,
+      fontSize: 23,
+      lineHeight: 1.25,
+      maxChars: 42
+    },
+    question_line3: null,
+    answers: [
+      { top: 293, left: 145, width: 560, height: 42, fontSize: 21 },
+      { top: 370, left: 145, width: 560, height: 42, fontSize: 21 },
+      { top: 455, left: 145, width: 560, height: 42, fontSize: 21 },
+      { top: 517, left: 145, width: 560, height: 42, fontSize: 21 }
+    ]
+  },
+  TUTORZEP: {
+    panelWidth: 831,
+    panelHeight: 768
   },
   DEFAULT: {
     panelWidth: 780,
@@ -71,42 +92,169 @@ window.QuizConfig = {
 };
 
 class QuizManager {
-  // === [#TUTOR.05.00.00] START | method: constructor | lines: ~20 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: QuizManager osztály inicializálása, kérdéskövető Set-ek (answeredCorrectlyIds, missedQuestionIds).
-  // @calls: loadQuestions, loadUI / bindEvents
-  // @calledBy: window.quizManager példányosítás
   constructor() {
     this.questions = [];
-    // Pedagógiai kérdéskövetés:
-    // 1. answeredCorrectlyIds: Helyesen megválaszolt kérdések -> SOHA TÖBBÉ nem kerülnek elő
-    this.answeredCorrectlyIds = new Set();
-    // 2. missedQuestionIds: Elrontott kérdések -> Újra fel kell tenni, miután az új kérdések elfogytak!
-    this.missedQuestionIds = new Set();
-    // 3. currentlySeenIds: Már legalább egyszer látott kérdések a ciklusban
-    this.currentlySeenIds = new Set();
+    this.questionsByBaseId = {}; // { HU: { baseId: q }, EN: { ... } }
+    this.rawLanguageData = {};   // { HU: { GameInfo: [], TUTORZEP: [] } }
 
     this.currentQuestion = null;
+    this.currentBaseId = null;
+    this.currentShuffledOrder = null;
+    this.currentCorrectIndex = 0;
     this.currentMode = null;
+    this.isQuizModalOpen = false;
     this.onCompleteCallback = null;
     this.isRendering = false;
     this.uiReady = false;
-    this.literatureQuestions = [];
+    this.pendingSync = false;
 
+    // Pedagógiai és szekvenciális kérdéskövető Set-ek (sessionStorage-al szinkronban)
+    this.answeredCorrectlyIds = new Set();
+    this.missedQuestionIds = new Set();
+    this.currentlySeenIds = new Set();
+
+    this.initSessionState();
     this.loadQuestions();
-    if (document.getElementById("quiz-overlay")) { this.uiReady = true; this.bindEvents(); this.initVisualEditor(); } else { this.loadUI(); }
-  }
-  // === [#TUTOR.05.00.00] END ===
 
-  // === [#TUTOR.05.01.00] START | method: updateScale | lines: ~14 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kvízpanel aránytartó skálázása (831x768 belső arány, CSS transform scale) a képernyőmérethez.
-  // @calls: none
-  // @calledBy: window.onresize, openQuiz
+    if (document.getElementById("quiz-overlay")) {
+      this.uiReady = true;
+      this.bindEvents();
+      this.initVisualEditor();
+    } else {
+      this.loadUI();
+    }
+  }
+
+  // ─── 💾 [ASKED PROTOKOLL]: SESSION STORAGE ÁLLAPOTKEZELÉS ───
+  initSessionState() {
+    const state = this.getSessionState();
+    Object.keys(state).forEach(baseId => {
+      const rec = state[baseId];
+      if (rec.asked) this.currentlySeenIds.add(baseId);
+      if (rec.answeredCorrectly === true) this.answeredCorrectlyIds.add(baseId);
+      if (rec.answeredCorrectly === false) this.missedQuestionIds.add(baseId);
+    });
+  }
+
+  getSessionState() {
+    try {
+      const raw = sessionStorage.getItem('ebookpirates_quiz_session_state');
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  saveSessionState(state) {
+    try {
+      sessionStorage.setItem('ebookpirates_quiz_session_state', JSON.stringify(state));
+    } catch (e) {
+      console.warn("Nem sikerült menteni a sessionStorage-ba:", e);
+    }
+  }
+
+  setSessionRecord(baseId, updates) {
+    if (!baseId) return;
+    const state = this.getSessionState();
+    state[baseId] = Object.assign(state[baseId] || { baseId: baseId, asked: false, answeredCorrectly: null, shuffledOrder: null }, updates);
+    this.saveSessionState(state);
+  }
+
+  getSessionRecord(baseId) {
+    if (!baseId) return null;
+    const state = this.getSessionState();
+    return state[baseId] || null;
+  }
+
+  // ─── 🌐 AKTUÁLIS NYELV MEGHATÁROZÁSA ───
+  getCurrentLang() {
+    let lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+    lang = String(lang).trim().toUpperCase();
+    const validLangs = ['HU', 'EN', 'DE', 'FR', 'ES', 'PL', 'RU'];
+    return validLangs.includes(lang) ? lang : 'HU';
+  }
+
+  // ─── 📥 [LOAD PROTOKOLL]: NYELVI FÁJLOK BETÖLTÉSE ───
+  async loadQuestions(targetLang = null) {
+    const lang = targetLang || this.getCurrentLang();
+    if (this.questionsByBaseId[lang]) {
+      this.questions = this.buildFlatQuestionList(lang);
+      return this.questions;
+    }
+
+    try {
+      const fileName = `QQ_${lang}_Translate.json?t=` + Date.now();
+      const res = await fetch(fileName);
+      if (res.ok) {
+        const data = await res.json();
+        this.rawLanguageData[lang] = data;
+        this.indexQuestionsForLang(lang, data);
+        this.questions = this.buildFlatQuestionList(lang);
+        console.log(`⚓ QuizManager: ${lang} kérdésfájl (${this.questions.length} kérdés) sikeresen betöltve.`);
+      } else {
+        console.warn(`Nem sikerült betölteni a(z) ${fileName} fájlt, fallback a HU-ra.`);
+        if (lang !== 'HU') await this.loadQuestions('HU');
+      }
+    } catch (e) {
+      console.error(`Hiba a kvízkérdések (${lang}) betöltésekor:`, e);
+      if (lang !== 'HU') await this.loadQuestions('HU');
+    }
+    return this.questions;
+  }
+
+  indexQuestionsForLang(lang, data) {
+    if (!this.questionsByBaseId[lang]) {
+      this.questionsByBaseId[lang] = {};
+    }
+    const categories = ['GameInfo', 'TUTORZEP'];
+    categories.forEach(cat => {
+      const list = data[cat] || [];
+      list.forEach(q => {
+        const baseId = q.baseId || q.uid || String(q.id);
+        this.questionsByBaseId[lang][baseId] = q;
+      });
+    });
+  }
+
+  buildFlatQuestionList(lang) {
+    const data = this.rawLanguageData[lang];
+    if (!data) return [];
+    let list = [];
+    if (Array.isArray(data.GameInfo)) list = list.concat(data.GameInfo);
+    if (Array.isArray(data.TUTORZEP)) list = list.concat(data.TUTORZEP);
+    return list;
+  }
+
+  // ─── 🔄 [IDSEARCH PROTOKOLL]: VALÓS IDEJŰ NYELVVÁLTÁS A KVÍZ KÖZBEN ───
+  async onLanguageChanged(newLang) {
+    const targetLang = String(newLang || 'HU').trim().toUpperCase();
+    console.log(`🌐 QuizManager: Nyelvváltás esemény fogadva: -> ${targetLang}`);
+
+    // Betöltjük az új nyelv adatait, ha még nincsenek a memóriában
+    if (!this.questionsByBaseId[targetLang]) {
+      await this.loadQuestions(targetLang);
+    }
+    this.questions = this.buildFlatQuestionList(targetLang);
+
+    // HA A KVÍZABLAK ÉPP NYITVA VAN:
+    if (this.isQuizModalOpen && this.currentBaseId) {
+      const newQuestion = (this.questionsByBaseId[targetLang] && this.questionsByBaseId[targetLang][this.currentBaseId]);
+      if (newQuestion) {
+        this.currentQuestion = newQuestion;
+        console.log(`🎯 Kérdés azonnali frissítése az új nyelvre (${targetLang}), BaseID: ${this.currentBaseId}`);
+        // Újrarajzolás: az eredeti shuffledOrder megtartásával!
+        this.renderQuestion(true);
+      } else {
+        console.warn(`Nem található a(z) ${this.currentBaseId} azonosítójú kérdés a(z) ${targetLang} fordításban!`);
+      }
+    }
+  }
+
+  // ─── 📐 PANEL SKÁLÁZÁS ───
   updateScale() {
     const panel = document.getElementById('quiz-panel-box');
     if (!panel) return;
-    const isZep = this.currentMode === 'TUTORZEP';
+    const isZep = this.currentMode === 'TUTORZEP' || this.currentMode === 'TUTOR_GameInfo' || this.currentMode === 'GameInfo';
     const baseW = isZep ? 831 : 780;
     const baseH = isZep ? 768 : 650;
 
@@ -117,52 +265,8 @@ class QuizManager {
     panel.style.transform = `scale(${scale})`;
     panel.style.transformOrigin = 'center center';
   }
-  // === [#TUTOR.05.01.00] END ===
 
-  // === [#TUTOR.05.02.00] START | method: loadQuestions | lines: ~37 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kvízkérdések aszinkron betöltése (quiz_questions.json vagy quiz_questions_en.json).
-  // @calls: none
-  // @calledBy: constructor
-  async loadQuestions() {
-    const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
-    try {
-      let res = await fetch('quiz_questions.json?t=' + Date.now());
-      if (res.ok) {
-        this.questions = await res.json();
-      }
-    } catch (e) {
-      console.error("Hiba a kvízkérdések betöltésekor:", e);
-    }
-
-    // Irodalmi kérdések betöltése a Google Sheets backendből (kvizkerdesek vagy kvíz_ENG munkalap)
-    if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
-      const self = this;
-      const functionName = (lang === 'en') ? 'getQuizQuestionsEn' : 'getQuizQuestions';
-      window.parent.callBackend(functionName, [], function (backendQuestions) {
-        if (Array.isArray(backendQuestions) && backendQuestions.length > 0) {
-          self.literatureQuestions = backendQuestions;
-          console.log("📚 " + backendQuestions.length + " db irodalmi kvízkérdés betöltve a backendből (" + lang + ")!");
-        }
-      }, function (err) {
-        // Fallback standard getQuizQuestions
-        window.parent.callBackend('getQuizQuestions', [], function (backendQuestions) {
-          if (Array.isArray(backendQuestions) && backendQuestions.length > 0) {
-            self.literatureQuestions = backendQuestions;
-          }
-        });
-      });
-    }
-
-    this.literatureQuestions = [];
-  }
-  // === [#TUTOR.05.02.00] END ===
-
-  // === [#TUTOR.05.03.00] START | method: loadUI | lines: ~24 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kvíz felület betöltése (quiz_panel.html) és DOM-ba fűzése.
-  // @calls: bindEvents, initVisualEditor
-  // @calledBy: constructor
+  // ─── 🖼️ UI BETÖLTÉSE ───
   async loadUI() {
     try {
       const res = await fetch('quiz_panel.html?t=' + Date.now());
@@ -187,17 +291,18 @@ class QuizManager {
       console.error("Hiba a kvíz UI betöltésekor:", e);
     }
   }
-  // === [#TUTOR.05.03.00] END ===
 
-  // === [#TUTOR.05.04.00] START | method: bindEvents | lines: ~15 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Eseménykezelők bekötése (ablak átméretezés, bezárás, válasz gombok).
-  // @calls: updateScale, closeQuizUI, handleAnswer
-  // @calledBy: constructor, loadUI
+  // ─── 🖱️ ESEMÉNYEK BEKÖTÉSE ───
   bindEvents() {
     window.addEventListener('resize', () => {
-      if (this.uiReady) this.updateScale();
+      if (this.uiReady && this.isQuizModalOpen) this.updateScale();
     });
+
+    window.addEventListener('languageChanged', (e) => {
+      const lang = (e && e.detail && e.detail.language) || window.currentLanguage;
+      if (lang) this.onLanguageChanged(lang);
+    });
+
     const container = document.getElementById('quiz-answers-container');
     if (container) {
       container.addEventListener('click', (e) => {
@@ -209,78 +314,13 @@ class QuizManager {
       });
     }
   }
-  // === [#TUTOR.05.04.00] END ===
 
-  // === [#TUTOR.05.05.00] START | method: getQuestionId | lines: ~3 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kérdésazonosító ID kinyerése a kérdés objektumból.
-  // @calls: none
-  // @calledBy: openQuiz, handleAnswer
   getQuestionId(q) {
-    return q.id !== undefined ? q.id : (q.Kerdes || q.question || JSON.stringify(q));
+    return q.baseId || q.uid || q.id || q.Kerdes || q.question;
   }
-  // === [#TUTOR.05.05.00] END ===
 
-  // === [#TUTOR.05.06.00] START | method: extractQuestionText | lines: ~3 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kérdésszöveg kinyerése és tisztítása a megfelelő nyelven.
-  // @calls: none
-  // @calledBy: renderQuestion
-  extractQuestionText(q) {
-    const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
-    if (lang !== 'hu') {
-      const localized = q['question_' + lang];
-      if (localized) return localized;
-      if (lang === 'en' && q.question_en) return q.question_en;
-    }
-    return q.Kerdes || q.question || q.text || "";
-  }
-  // === [#TUTOR.05.06.00] END ===
-
-  // === [#TUTOR.05.07.00] START | method: extractAnswersAndCorrect | lines: ~28 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Válaszopciók és a helyes index kinyerése a megfelelő nyelven.
-  // @calls: none
-  // @calledBy: renderQuestion
-  extractAnswersAndCorrect(q) {
-    const lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
-    let answers = [];
-    let correctIdx = 0;
-
-    if (lang !== 'hu' && Array.isArray(q['answers_' + lang])) {
-      answers = [...q['answers_' + lang]];
-      correctIdx = typeof q.correctIndex === 'number' ? q.correctIndex : 0;
-      return { answers, correctIdx };
-    }
-    if (lang === 'en' && Array.isArray(q.answers_en)) {
-      answers = [...q.answers_en];
-      correctIdx = typeof q.correctIndex === 'number' ? q.correctIndex : 0;
-      return { answers, correctIdx };
-    }
-
-    if (Array.isArray(q.answers)) {
-      answers = [...q.answers];
-      correctIdx = typeof q.correctIndex === 'number' ? q.correctIndex : 0;
-    } else if (q.A !== undefined && q.B !== undefined) {
-      answers = [q.A, q.B, q.C || "", q.D || ""];
-      const correctLetter = (q.Helyes || q.correct || "A").toString().trim().toUpperCase();
-      const letterMap = { "A": 0, "B": 1, "C": 2, "D": 3 };
-      correctIdx = letterMap[correctLetter] !== undefined ? letterMap[correctLetter] : 0;
-    } else if (q.Valasz_1 !== undefined) {
-      answers = [q.Valasz_1, q.Valasz_2, q.Valasz_3 || "", q.Valasz_4 || ""];
-      correctIdx = parseInt(q.Helyes || 1, 10) - 1;
-    }
-
-    return { answers, correctIdx };
-  }
-  // === [#TUTOR.05.07.00] END ===
-
-  // === [#TUTOR.05.08.00] START | method: openQuiz | lines: ~87 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Léghajó Kvízpárbaj megnyitása: szigorú kérdésismétlődés-gátlás, kérdéskiválasztás és renderelés indítása.
-  // @calls: renderQuestion, updateScale
-  // @calledBy: script.js (léghajó utolérés esemény)
-    openQuiz(category, onComplete) {
+  // ─── 🚀 [TRIGGER PROTOKOLL]: KVÍZ MEGNYITÁSA ───
+  openQuiz(category, onComplete) {
     if (!this.uiReady || this.questions.length === 0) {
       setTimeout(() => this.openQuiz(category, onComplete), 100);
       return;
@@ -293,26 +333,24 @@ class QuizManager {
     const allQ = this.questions || [];
 
     if (category === 'TUTORZEP') {
-      // ─── TUTORZEP LÉGHAJÓS KVÍZ PRIORITÁSI LÁNC ───
-      // 1. Prioritás: Még SOHA NEM LÁTOTT hivatalos TUTORZEP kérdések
+      // 1. Még nem látott TUTORZEP kérdések
       available = allQ.filter(q => {
         const cat = q.category || q.Tipus;
-        const qId = this.getQuestionId(q);
-        return cat === 'TUTORZEP' && !this.answeredCorrectlyIds.has(qId) && !this.currentlySeenIds.has(qId);
+        const baseId = this.getQuestionId(q);
+        return cat === 'TUTORZEP' && !this.answeredCorrectlyIds.has(baseId) && !this.currentlySeenIds.has(baseId);
       });
 
-      // 2. Prioritás: Korábban ELRONTOTT TUTORZEP kérdések (újra-kérdezés)
+      // 2. Korábban elrontott kérdések újrakérdezése
       if (available.length === 0) {
         available = allQ.filter(q => {
           const cat = q.category || q.Tipus;
-          const qId = this.getQuestionId(q);
-          return cat === 'TUTORZEP' && !this.answeredCorrectlyIds.has(qId) && this.missedQuestionIds.has(qId);
+          const baseId = this.getQuestionId(q);
+          return cat === 'TUTORZEP' && !this.answeredCorrectlyIds.has(baseId) && this.missedQuestionIds.has(baseId);
         });
       }
 
-      // 3. Ha minden TUTORZEP kérdésre jól válaszolt: TUTORZEP kérdéskészlet újraindítása
+      // 3. Ha minden kérdés elfogyott: ciklus újraindítása
       if (available.length === 0) {
-        // Töröljük a TUTORZEP kérdések látott állapotát, de nem keverünk be mást!
         const tutorzepIds = new Set(allQ.filter(q => (q.category || q.Tipus) === 'TUTORZEP').map(q => this.getQuestionId(q)));
         for (let id of tutorzepIds) {
           this.answeredCorrectlyIds.delete(id);
@@ -322,27 +360,24 @@ class QuizManager {
         available = allQ.filter(q => (q.category || q.Tipus) === 'TUTORZEP');
       }
 
-    } else {
-      // ─── HÁRTYAFELVÉTELI KVÍZEK (TUTOR_GameInfo) ───
-      // 1. Prioritás: Még SOHA NEM LÁTOTT TUTOR_GameInfo technikai kérdések
+    } else if (category === 'TUTOR_GameInfo' || category === 'GameInfo') {
+      // Tutorial Hártyafelvétel: Kizárólag GameInfo kérdések
       available = allQ.filter(q => {
-        const qCat = q.category || q.Tetes_IN || q.Tipus;
-        const qId = this.getQuestionId(q);
-        return (qCat === 'TUTOR_GameInfo' || qCat === category) && !this.answeredCorrectlyIds.has(qId) && !this.currentlySeenIds.has(qId);
+        const cat = q.category || q.Tipus;
+        const baseId = this.getQuestionId(q);
+        return cat === 'GameInfo' && !this.answeredCorrectlyIds.has(baseId) && !this.currentlySeenIds.has(baseId);
       });
 
-      // 2. Prioritás: Korábban ELRONTOTT TUTOR_GameInfo kérdések (újra-kérdezés a tanításért!)
       if (available.length === 0) {
         available = allQ.filter(q => {
-          const qCat = q.category || q.Tetes_IN || q.Tipus;
-          const qId = this.getQuestionId(q);
-          return (qCat === 'TUTOR_GameInfo' || qCat === category) && !this.answeredCorrectlyIds.has(qId) && this.missedQuestionIds.has(qId);
+          const cat = q.category || q.Tipus;
+          const baseId = this.getQuestionId(q);
+          return cat === 'GameInfo' && !this.answeredCorrectlyIds.has(baseId) && this.missedQuestionIds.has(baseId);
         });
       }
 
-      // 3. SZABÁLY: Ha a játékos MIND a 14 db TUTOR_GameInfo kérdést helyesen megválaszolta -> NINCS TÖBB HÁRTYAFELVÉTELI KÉRDÉS!
       if (available.length === 0) {
-        console.log('🎓 Mind a 14 db TUTOR_GameInfo kérdés sikeresen megtanulva! Nincs több hártyafelvételi kvíz, a hártya azonnal felvehető.');
+        console.log('🎓 Mind a 14 db GameInfo kérdés sikeresen megtanulva! Nincs több hártyafelvételi kvíz.');
         if (this.onCompleteCallback) {
           const cb = this.onCompleteCallback;
           this.onCompleteCallback = null;
@@ -350,242 +385,295 @@ class QuizManager {
         }
         return;
       }
-    }
-
-    if (available.length === 0) {
-      if (this.onCompleteCallback) {
-        const cb = this.onCompleteCallback;
-        this.onCompleteCallback = null;
-        cb(true);
-      }
-      return;
+    } else {
+      // Fallback általános szűrés
+      available = allQ.filter(q => {
+        const baseId = this.getQuestionId(q);
+        return !this.answeredCorrectlyIds.has(baseId) && !this.currentlySeenIds.has(baseId);
+      });
+      if (available.length === 0) available = allQ;
     }
 
     this.currentQuestion = available[Math.floor(Math.random() * available.length)];
-    const qId = this.getQuestionId(this.currentQuestion);
-    this.currentlySeenIds.add(qId);
+    this.currentBaseId = this.getQuestionId(this.currentQuestion);
+    this.currentlySeenIds.add(this.currentBaseId);
 
-    this.renderQuestion();
+    // Válaszok egyszeri, fix megkeverése a kérdés nyitásakor
+    const numAnswers = Array.isArray(this.currentQuestion.answers) ? this.currentQuestion.answers.length : 4;
+    const indices = [];
+    for (let i = 0; i < numAnswers; i++) indices.push(i);
+    indices.sort(() => Math.random() - 0.5);
+    this.currentShuffledOrder = indices;
+
+    // Rögzítés a sessionStorage-ba
+    this.setSessionRecord(this.currentBaseId, {
+      baseId: this.currentBaseId,
+      asked: true,
+      answeredCorrectly: null,
+      shuffledOrder: this.currentShuffledOrder
+    });
+
+    this.isQuizModalOpen = true;
+    this.renderQuestion(false);
   }
-  // === [#TUTOR.05.08.00] END ===
 
-  // === [#TUTOR.05.09.00] START | method: renderQuestion | lines: ~169 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kettős kérdésdoboz (1 soros: 220px vs 2 soros: 199px) és a 4 független falap doboz elhelyezése és kirajzolása.
-  // @calls: extractQuestionText, extractAnswersAndCorrect
-  // @calledBy: openQuiz
-  renderQuestion() {
+  // ─── 🎨 [DISPLAY, LAYOUT, SETUP & RENDER PROTOKOLLOK] ───
+  renderQuestion(isMidQuizSwitch = false) {
     const overlay = document.getElementById('quiz-overlay');
     const panel = document.getElementById('quiz-panel-box');
     const qText = document.getElementById('quiz-question-text');
     const title = document.getElementById('quiz-title');
     const ansContainer = document.getElementById('quiz-answers-container');
 
-    if (!overlay || !qText || !panel || !ansContainer) return;
+    if (!overlay || !panel || !ansContainer) return;
 
-    const { answers, correctIdx } = this.extractAnswersAndCorrect(this.currentQuestion);
-    this.currentCorrectIndex = correctIdx;
+    if (title) title.style.display = 'none';
+    if (qText) qText.style.display = 'none';
 
-    const indices = answers.map((_, i) => i);
-    indices.sort(() => Math.random() - 0.5);
+    // 1. Válaszok és helyes index kinyerése
+    const answers = Array.isArray(this.currentQuestion.answers) ? [...this.currentQuestion.answers] : [];
+    this.currentCorrectIndex = typeof this.currentQuestion.correctIndex === 'number' ? this.currentQuestion.correctIndex : 0;
 
+    // Ha nincs mentett keverés (vagy hibás), generálunk
+    if (!this.currentShuffledOrder || this.currentShuffledOrder.length !== answers.length) {
+      const record = this.getSessionRecord(this.currentBaseId);
+      if (record && Array.isArray(record.shuffledOrder) && record.shuffledOrder.length === answers.length) {
+        this.currentShuffledOrder = record.shuffledOrder;
+      } else {
+        const ind = answers.map((_, i) => i);
+        ind.sort(() => Math.random() - 0.5);
+        this.currentShuffledOrder = ind;
+      }
+    }
+    const indices = this.currentShuffledOrder;
+
+    // 2. Tisztítás: Kérdésszöveg megtisztítása szerzői <br> és dupla space-ektől
+    const rawQText = this.currentQuestion.question || this.currentQuestion.Kerdes || "";
+    const cleanQText = rawQText
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/[\r\n\t]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // 3. [LAYOUT PROTOKOLL]: Hossz szerinti elrendezés választás
+    // <= 50 karakter: TZQSvB (2 soros kiegyensúlyozott elrendezés)
+    // > 50 karakter: TZQSvA (3 soros rézívbe felhúzva)
+    const isLong = cleanQText.length > 50;
+    const activeSetup = isLong ? window.QuizConfig.TZQSvA : window.QuizConfig.TZQSvB;
+
+    // Nyelv és font beállítások (Orosz nyelv esetén cirill-kompatibilis betűtípus)
+    const curLang = this.getCurrentLang();
+    const isRussian = curLang === 'RU';
+    const baseFontFamily = isRussian ? "'Georgia', Arial, sans-serif" : "'Briskb', 'Courier New', monospace";
+
+    panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center / 100% 100%";
+    panel.style.position = "relative";
+    panel.style.width = "831px";
+    panel.style.height = "768px";
+    panel.style.padding = "0px";
+    panel.style.display = "block";
+
+    // 3 Kérdéssor konténer felépítése/kezelése
+    let qBox1 = document.getElementById('quiz-qbox-1');
+    let qBox2 = document.getElementById('quiz-qbox-2');
+    let qBox3 = document.getElementById('quiz-qbox-3');
+
+    if (!qBox1) { qBox1 = document.createElement('div'); qBox1.id = 'quiz-qbox-1'; panel.appendChild(qBox1); }
+    if (!qBox2) { qBox2 = document.createElement('div'); qBox2.id = 'quiz-qbox-2'; panel.appendChild(qBox2); }
+    if (!qBox3) { qBox3 = document.createElement('div'); qBox3.id = 'quiz-qbox-3'; panel.appendChild(qBox3); }
+
+    const applyBoxStyle = (box, cfg) => {
+      if (!cfg) {
+        box.style.display = 'none';
+        box.innerText = '';
+        return;
+      }
+      box.style.display = 'flex';
+      box.style.position = 'absolute';
+      box.style.top = cfg.top + 'px';
+      box.style.left = cfg.left + 'px';
+      box.style.width = cfg.width + 'px';
+      box.style.height = cfg.height + 'px';
+      box.style.fontSize = (isRussian ? Math.max(18, cfg.fontSize - 2) : cfg.fontSize) + 'px';
+      box.style.lineHeight = cfg.lineHeight || 1.2;
+      box.style.fontFamily = baseFontFamily;
+      box.style.fontWeight = 'bold';
+      box.style.color = '#ffd700';
+      box.style.textShadow = '1px 1px 2px rgba(0,0,0,0.85)';
+      box.style.alignItems = 'center';
+      box.style.justifyContent = 'center';
+      box.style.textAlign = 'center';
+      box.style.boxSizing = 'border-box';
+      box.style.overflow = 'hidden';
+      box.style.whiteSpace = 'nowrap';
+      box.style.userSelect = 'none';
+      box.style.border = window._quizDebugBorders ? '2px dashed cyan' : 'none';
+    };
+
+    applyBoxStyle(qBox1, activeSetup.question_line1);
+    applyBoxStyle(qBox2, activeSetup.question_line2);
+    applyBoxStyle(qBox3, activeSetup.question_line3);
+
+    // 4. [SETUP PROTOKOLL]: Szavak pontos csomagolása
+    const words = cleanQText.split(' ').filter(w => w.length > 0);
+    let line1 = '', line2 = '', line3 = '';
+
+    if (!isLong) {
+      // ─── TZQSvB (<= 50 kar.): 2 Soros Elrendezés (Line 1: max ~18 kar., Line 2: max ~42 kar.) ───
+      let wIdx = 0;
+      const maxL1 = activeSetup.question_line1.maxChars || 18;
+      while (wIdx < words.length) {
+        const candidate = line1 ? (line1 + ' ' + words[wIdx]) : words[wIdx];
+        if (!line1 || candidate.length <= maxL1) {
+          line1 = candidate;
+          wIdx++;
+        } else {
+          break;
+        }
+      }
+      line2 = words.slice(wIdx).join(' ');
+      line3 = '';
+    } else {
+      // ─── TZQSvA (> 50 kar.): 3 Soros Elrendezés (Line 1: max ~16 kar., Line 2 & 3: kiegyensúlyozva ~42 kar.) ───
+      let wIdx = 0;
+      const maxL1 = activeSetup.question_line1.maxChars || 16;
+      while (wIdx < words.length) {
+        const candidate = line1 ? (line1 + ' ' + words[wIdx]) : words[wIdx];
+        if (!line1 || candidate.length <= maxL1) {
+          line1 = candidate;
+          wIdx++;
+        } else {
+          break;
+        }
+      }
+      const remWords = words.slice(wIdx);
+      const remLen = remWords.join(' ').length;
+      if (remLen > 42) {
+        let l2Words = [];
+        for (let w of remWords) {
+          const cand = l2Words.concat([w]).join(' ');
+          if (l2Words.length === 0 || cand.length <= 42) {
+            l2Words.push(w);
+          } else {
+            break;
+          }
+        }
+        line2 = l2Words.join(' ');
+        line3 = remWords.slice(l2Words.length).join(' ');
+      } else {
+        const half = Math.ceil(remWords.length / 2);
+        line2 = remWords.slice(0, half).join(' ');
+        line3 = remWords.slice(half).join(' ');
+      }
+    }
+
+    qBox1.innerText = line1;
+    qBox2.innerText = line2;
+    qBox3.innerText = line3;
+
+    // 5. Válasz Falap Gombok Elhelyezése (Fix pozíciók, új nyelv szerinti feliratok)
     ansContainer.innerHTML = '';
+    ansContainer.style.position = "static";
+    ansContainer.style.margin = "0px";
+    ansContainer.style.padding = "0px";
+
     const letters = ["A", "B", "C", "D"];
 
-    if (this.currentMode === 'TUTORZEP') {
-      if (title) title.style.display = 'none';
-      panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center / 100% 100%";
+    indices.forEach((actualAnsIdx, displayPos) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-ans-btn';
+      btn.setAttribute('data-index', actualAnsIdx);
+      btn.id = 'quiz-ans-btn-' + displayPos;
 
-      const cfg = window.QuizConfig.TUTORZEP;
+      const rawAnsText = answers[actualAnsIdx] || '';
+      const cleanAnsText = rawAnsText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      btn.innerText = `${letters[displayPos]}) ${cleanAnsText}`;
 
-      // ── TUTORZEP: 5 FÜGGETLEN FALAP POZICIONÁLÁS ──
-      panel.style.position = "relative";
-      panel.style.width = cfg.panelWidth + "px";
-      panel.style.height = cfg.panelHeight + "px";
-      panel.style.padding = "0px";
-      panel.style.display = "block";
+      const ansCfg = activeSetup.answers[displayPos] || { top: 295, left: 145, width: 560, height: 42, fontSize: 20 };
 
-      // 1. Kérdés falap doboz (Dinamikus választás: 1 soros vs 2 soros sortöréses kérdés)
-      const rawQText = this.extractQuestionText(this.currentQuestion);
-      const hasLineBreak = rawQText.includes('\n') || rawQText.includes('<br>') || rawQText.includes('<br/>') || rawQText.includes('<BR>') || rawQText.includes('<BR/>');
-      const isEffectivelyMultiline = hasLineBreak || rawQText.replace(/<[^>]*>/g, '').length > 50;
-      const qCfg = isEffectivelyMultiline ? (cfg.question_multiline || cfg.question) : (cfg.question_singleline || cfg.question);
+      // Orosz vagy hosszú válasz betűméret-finomítás
+      let computedAnsFs = isRussian ? Math.max(16, ansCfg.fontSize - 3) : ansCfg.fontSize;
+      if (cleanAnsText.length > 40) computedAnsFs = Math.min(computedAnsFs, 17);
+      if (cleanAnsText.length > 50) computedAnsFs = Math.min(computedAnsFs, 15);
 
-      qText.style.position = "absolute";
-      qText.style.top = qCfg.top + "px";
-      qText.style.left = qCfg.left + "px";
-      qText.style.width = qCfg.width + "px";
-      qText.style.height = qCfg.height + "px";
-      qText.style.color = "#ffea00";
-      qText.style.fontFamily = "'Briskb', 'Courier New', monospace";
-      const qLen = rawQText.length;
-      let qFSize = qCfg.fontSize || 20;
-      if (qLen > 80) { qFSize = Math.max(15, qFSize - 4); }
-      else if (qLen > 65) { qFSize = Math.max(17, qFSize - 2); }
-      qText.style.fontSize = qFSize + "px";
-      qText.style.fontWeight = "bold";
-      qText.style.display = "flex";
-      qText.style.alignItems = "center";
-      qText.style.justifyContent = "center";
-      qText.style.textAlign = "center";
-      qText.style.boxSizing = "border-box";
-      qText.style.margin = "0px";
-      qText.style.padding = "0px 15px";
-      qText.style.background = "transparent";
-      qText.style.border = window._quizDebugBorders ? "2px dashed cyan" : "none";
-      qText.style.lineHeight = "1.3";
-      qText.style.overflow = "hidden";
-      qText.innerHTML = this.extractQuestionText(this.currentQuestion).replace(/\n/g, '<br>');
+      btn.style.position = "absolute";
+      btn.style.top = ansCfg.top + "px";
+      btn.style.left = ansCfg.left + "px";
+      btn.style.width = ansCfg.width + "px";
+      btn.style.height = ansCfg.height + "px";
+      btn.style.background = "transparent";
+      btn.style.border = window._quizDebugBorders ? "2px dashed lime" : "none";
+      btn.style.boxShadow = "none";
+      btn.style.color = "#ffd700";
+      btn.style.textShadow = "1px 1px 2px rgba(0,0,0,0.85)";
+      btn.style.fontFamily = baseFontFamily;
+      btn.style.fontSize = computedAnsFs + "px";
+      btn.style.fontWeight = "bold";
+      btn.style.padding = "0px 20px";
+      btn.style.margin = "0px";
+      btn.style.boxSizing = "border-box";
+      btn.style.display = "flex";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "center";
+      btn.style.textAlign = "center";
+      btn.style.cursor = "pointer";
+      btn.style.lineHeight = "1.2";
+      btn.style.overflow = "hidden";
+      btn.style.whiteSpace = "nowrap";
 
-      // Válasz konténer
-      ansContainer.style.position = "static";
-      ansContainer.style.margin = "0px";
-      ansContainer.style.padding = "0px";
+      btn.onmouseenter = () => { btn.style.color = "#ffffff"; };
+      btn.onmouseleave = () => { btn.style.color = "#ffd700"; };
 
-      // 2-5. Válasz gombok 4 független falap doboza
-      indices.forEach((actualAnsIdx, displayPos) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-ans-btn';
-        btn.setAttribute('data-index', actualAnsIdx);
-        btn.id = 'quiz-ans-btn-' + displayPos;
-        btn.innerText = `${letters[displayPos]}) ${answers[actualAnsIdx]}`;
-
-        const ansCfg = cfg.answers[displayPos] || { top: 287, left: 135, width: 560, height: 50, fontSize: 19 };
-
-        btn.style.position = "absolute";
-        btn.style.top = ansCfg.top + "px";
-        btn.style.left = ansCfg.left + "px";
-        btn.style.width = ansCfg.width + "px";
-        btn.style.height = ansCfg.height + "px";
-        btn.style.background = "transparent";
-        btn.style.border = window._quizDebugBorders ? "2px dashed lime" : "none";
-        btn.style.boxShadow = "none";
-        btn.style.color = "#ffea00";
-        btn.style.fontFamily = "'Briskb', 'Courier New', monospace";
-        const aLen = (answers[actualAnsIdx] || '').length;
-        let aFSize = ansCfg.fontSize || 19;
-        if (aLen > 45) { aFSize = Math.max(13, aFSize - 4); }
-        else if (aLen > 35) { aFSize = Math.max(15, aFSize - 2); }
-        btn.style.fontSize = aFSize + "px";
-        btn.style.fontWeight = "bold";
-        btn.style.padding = "0px 20px";
-        btn.style.margin = "0px";
-        btn.style.boxSizing = "border-box";
-        btn.style.display = "flex";
-        btn.style.alignItems = "center";
-        btn.style.justifyContent = "center";
-        btn.style.textAlign = "center";
-        btn.style.cursor = "pointer";
-        btn.style.lineHeight = "1.25";
-
-        btn.onmouseenter = () => { btn.style.color = "#ffffff"; };
-        btn.onmouseleave = () => { btn.style.color = "#ffea00"; };
-
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.handleAnswer(actualAnsIdx);
-        });
-        ansContainer.appendChild(btn);
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handleAnswer(actualAnsIdx);
       });
-
-    } else {
-      // DEFAULT Kvíz Panel (Halászat / Egyéb)
-      if (title) title.style.display = 'none';
-      panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Quiz_window_new_2-r.png') no-repeat center / 100% 100%";
-      const cfg = window.QuizConfig.DEFAULT;
-      panel.style.position = "relative";
-      panel.style.width = cfg.panelWidth + "px";
-      panel.style.height = cfg.panelHeight ? (cfg.panelHeight + "px") : "auto";
-      panel.style.padding = `${cfg.padTop}px ${cfg.padRight}px ${cfg.padBottom}px ${cfg.padLeft}px`;
-      panel.style.display = "flex";
-      panel.style.flexDirection = "column";
-
-      qText.style.position = "static";
-      qText.style.color = "#ffeedd";
-      qText.style.background = "rgba(20, 10, 5, 0.85)";
-      qText.style.border = "2px solid #6b4c2a";
-      qText.style.borderRadius = "6px";
-      qText.style.padding = "15px 20px";
-      qText.style.width = "100%";
-      qText.style.maxWidth = "100%";
-      qText.style.boxSizing = "border-box";
-      qText.style.fontFamily = "'Briskb', 'Courier New', monospace";
-      qText.style.fontSize = "20px";
-      qText.style.height = "auto";
-      qText.style.minHeight = cfg.qMinHeight + "px";
-      qText.style.marginTop = "0px";
-      qText.style.marginBottom = cfg.qMarginBottom + "px";
-      qText.innerHTML = this.extractQuestionText(this.currentQuestion).replace(/\n/g, '<br>');
-
-      ansContainer.style.position = "static";
-      ansContainer.style.display = "flex";
-      ansContainer.style.flexDirection = "column";
-      ansContainer.style.gap = cfg.ansGap + "px";
-
-      indices.forEach((actualAnsIdx, displayPos) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-ans-btn';
-        btn.setAttribute('data-index', actualAnsIdx);
-        btn.innerText = `${letters[displayPos]}) ${answers[actualAnsIdx]}`;
-        btn.style.position = "static";
-        btn.style.width = "100%";
-        btn.style.background = "rgba(20, 10, 5, 0.85)";
-        btn.style.border = "2px solid #6b4c2a";
-        btn.style.color = "#ffeedd";
-        btn.style.fontFamily = "'Briskb', 'Courier New', monospace";
-        btn.style.fontSize = "15px";
-        btn.style.padding = "12px 18px";
-        btn.style.cursor = "pointer";
-
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.handleAnswer(actualAnsIdx);
-        });
-        ansContainer.appendChild(btn);
-      });
-    }
+      ansContainer.appendChild(btn);
+    });
 
     this.updateScale();
     window.isCutscenePlaying = true;
     overlay.style.display = 'flex';
- overlay.style.visibility = 'visible';
- overlay.style.opacity = '1';
- overlay.style.zIndex = '99999999';
+    overlay.style.visibility = 'visible';
+    overlay.style.opacity = '1';
+    overlay.style.zIndex = '99995'; // Topbar alatt (topbar: 100000)
   }
-  // === [#TUTOR.05.09.00] END ===
 
-  // === [#TUTOR.05.0A.00] START | method: closeQuizUI | lines: ~5 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Kvíz felület bezárása és elrejtése.
-  // @calls: none
-  // @calledBy: handleAnswer, finishQuiz
+  // ─── 🚪 KVÍZ ABLAK BEZÁRÁSA ───
   closeQuizUI() {
     const overlay = document.getElementById('quiz-overlay');
     if (overlay) overlay.style.display = 'none';
+    const qb1 = document.getElementById('quiz-qbox-1');
+    const qb2 = document.getElementById('quiz-qbox-2');
+    const qb3 = document.getElementById('quiz-qbox-3');
+    if (qb1) qb1.style.display = 'none';
+    if (qb2) qb2.style.display = 'none';
+    if (qb3) qb3.style.display = 'none';
+
+    this.isQuizModalOpen = false;
     window.isCutscenePlaying = false;
+
+    // Ha időközben be volt ütemezve egy háttér-szinkronizáció, most futtatjuk le!
+    if (this.pendingSync) {
+      this.pendingSync = false;
+      if (typeof window.executeDelayedSync === 'function') {
+        window.executeDelayedSync();
+      }
+    }
   }
-  // === [#TUTOR.05.0A.00] END ===
 
-  // === [#TUTOR.05.0B.00] START | method: handleAnswer | lines: ~75 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Válasz kiértékelése: helyes válasznál siker, hibásnál zsákmányvesztés (airship_bad) vagy üres csónak visszatérés (airship_bad_empty).
-  // @calls: closeQuizUI, onCompleteCallback, showInGameMonolog
-  // @calledBy: Válasz gomb kattintás
+  // ─── ⚖️ [ANSWER PROTOKOLL]: VÁLASZ KIÉRTÉKELÉSE ÉS EREDMÉNYKEZELÉS ───
   handleAnswer(selectedIdx) {
-    const overlay = document.getElementById('quiz-overlay');
     const isCorrect = (selectedIdx === this.currentCorrectIndex);
+    const qId = this.currentBaseId;
 
-    overlay.style.display = 'none';
-    window.isCutscenePlaying = false;
-
-    const qId = this.getQuestionId(this.currentQuestion);
     if (isCorrect) {
-      // ✅ HELYES VÁLASZ: Bekerül a sikeresen teljesítettek közé, SOHA TÖBBÉ NEM LESZ MEGKÉRDEZVE!
       this.answeredCorrectlyIds.add(qId);
       this.missedQuestionIds.delete(qId);
+      this.setSessionRecord(qId, { answeredCorrectly: true });
     } else {
-      // ❌ HIBÁS VÁLASZ: Bekerül az elrontottak közé -> Újra fel kell tenni, miután a többi új kérdés elfogyott!
       this.missedQuestionIds.add(qId);
+      this.setSessionRecord(qId, { answeredCorrectly: false });
     }
 
     const finishQuiz = () => {
@@ -593,7 +681,7 @@ class QuizManager {
       if (this.onCompleteCallback) {
         const cb = this.onCompleteCallback;
         this.onCompleteCallback = null;
-        try { cb(isCorrect); } catch(err) { console.error('Quiz callback hiba:', err); }
+        try { cb(isCorrect); } catch (err) { console.error('Quiz callback hiba:', err); }
       }
     };
 
@@ -607,7 +695,6 @@ class QuizManager {
         }
       } else {
         if (typeof window.carriedMembranes === 'number' && window.carriedMembranes > 0) {
-          // 1. Eset: Van nálunk hártya -> kirabolnak, hártya elvész
           window.carriedMembranes = 0;
           const msg = (window.gamePopups && window.gamePopups.airship_bad) || "Ezek most kiraboltak.\nMost mehetünk ki tovább halászni.";
           if (typeof window.showPopUp === 'function') {
@@ -616,7 +703,6 @@ class QuizManager {
             finishQuiz();
           }
         } else {
-          // 2. Eset: carried = 0 -> A monológ ELŐSZÖR a helyszínen ugrik fel, és CSAK A BEZÁRÁSA UTÁN kerül vissza a csónak a mólóra
           const onMonologClosed = () => {
             if (window.boat && window.homePos) {
               window.boat.position.set(window.homePos.x, 0, window.homePos.z);
@@ -629,9 +715,9 @@ class QuizManager {
             finishQuiz();
           };
 
-          const emptyText = (window.gameMonologues && window.gameMonologues.airship_bad_empty) || 
-                            (window.gamePopups && window.gamePopups.airship_bad_empty) || 
-                            "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket.";
+          const emptyText = (window.gameMonologues && window.gameMonologues.airship_bad_empty) ||
+            (window.gamePopups && window.gamePopups.airship_bad_empty) ||
+            "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket.";
 
           if (typeof window.showInGameMonolog === 'function') {
             window.showInGameMonolog('airship_bad_empty', onMonologClosed);
@@ -646,14 +732,8 @@ class QuizManager {
       finishQuiz();
     }
   }
-  // === [#TUTOR.05.0B.00] END ===
 
-  // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ (AGENTS.md Felhasználói Szabály) ───
-  // === [#TUTOR.05.0C.00] START | method: initVisualEditor | lines: ~136 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Élő vizuális koordináta-szerkesztő panel a falap dobozok hajszálpontos pozicionálásához.
-  // @calls: populateVisualEditorFields, applyLiveStyles
-  // @calledBy: constructor
+  // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ PANEL ───
   initVisualEditor() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('edit') !== '1' && params.get('editor') !== '1') {
@@ -724,13 +804,10 @@ class QuizManager {
 
     document.body.appendChild(editor);
 
-    // Szerkesztő megnyitó lebegő gomb
     const toggleBtn = document.createElement('button');
     toggleBtn.id = 'qve-toggle-btn';
     toggleBtn.innerText = '🛠️ Kvíz Szerkesztő';
     toggleBtn.style.cssText = 'position: fixed; bottom: 10px; right: 10px; z-index: 99999; background: #332211; color: #ffea00; border: 1px solid #ffcc00; padding: 6px 12px; border-radius: 5px; font-family: sans-serif; font-size: 12px; cursor: pointer; opacity: 0.8;';
-    toggleBtn.onmouseenter = () => { toggleBtn.style.opacity = '1'; };
-    toggleBtn.onmouseleave = () => { toggleBtn.style.opacity = '0.8'; };
     toggleBtn.onclick = () => {
       const isOpening = editor.style.display === 'none';
       editor.style.display = isOpening ? 'block' : 'none';
@@ -746,8 +823,11 @@ class QuizManager {
     };
     document.body.appendChild(toggleBtn);
 
-    // Eseménykezelők a csúszkákhoz / mezőkhöz
-    document.getElementById('qve-close').onclick = () => { editor.style.display = 'none'; window._quizDebugBorders = false; this.applyLiveStyles(); };
+    document.getElementById('qve-close').onclick = () => {
+      editor.style.display = 'none';
+      window._quizDebugBorders = false;
+      this.applyLiveStyles();
+    };
 
     const updateLive = () => {
       const cfg = window.QuizConfig.TUTORZEP;
@@ -757,37 +837,18 @@ class QuizManager {
       const qW = parseInt(document.getElementById('qve-q-width').value, 10);
       const qF = parseInt(document.getElementById('qve-q-font').value, 10);
 
-      if (!isNaN(qTop)) {
-        cfg.question.top = qTop;
-        if (cfg.question_multiline) cfg.question_multiline.top = qTop;
-        if (cfg.question_singleline) cfg.question_singleline.top = qTop;
-      }
-      if (!isNaN(qH)) {
-        cfg.question.height = qH;
-        if (cfg.question_multiline) cfg.question_multiline.height = qH;
-        if (cfg.question_singleline) cfg.question_singleline.height = qH;
-      }
-      if (!isNaN(qL)) {
-        cfg.question.left = qL;
-        if (cfg.question_multiline) cfg.question_multiline.left = qL;
-        if (cfg.question_singleline) cfg.question_singleline.left = qL;
-      }
-      if (!isNaN(qW)) {
-        cfg.question.width = qW;
-        if (cfg.question_multiline) cfg.question_multiline.width = qW;
-        if (cfg.question_singleline) cfg.question_singleline.width = qW;
-      }
-      if (!isNaN(qF)) {
-        cfg.question.fontSize = qF;
-        if (cfg.question_multiline) cfg.question_multiline.fontSize = qF;
-        if (cfg.question_singleline) cfg.question_singleline.fontSize = qF;
-      }
+      if (!isNaN(qTop)) cfg.question_line1 = Object.assign(cfg.question_line1 || {}, { top: qTop });
+      if (!isNaN(qH)) cfg.question_line1 = Object.assign(cfg.question_line1 || {}, { height: qH });
+      if (!isNaN(qL)) cfg.question_line1 = Object.assign(cfg.question_line1 || {}, { left: qL });
+      if (!isNaN(qW)) cfg.question_line1 = Object.assign(cfg.question_line1 || {}, { width: qW });
+      if (!isNaN(qF)) cfg.question_line1 = Object.assign(cfg.question_line1 || {}, { fontSize: qF });
 
-      const ansLeft = parseInt(document.getElementById('qve-ans-left').value, 10) || 135;
+      const ansLeft = parseInt(document.getElementById('qve-ans-left').value, 10) || 145;
       const ansWidth = parseInt(document.getElementById('qve-ans-width').value, 10) || 560;
-      const ansFont = parseInt(document.getElementById('qve-ans-font').value, 10) || 18;
+      const ansFont = parseInt(document.getElementById('qve-ans-font').value, 10) || 20;
 
       for (let i = 0; i < 4; i++) {
+        if (!cfg.answers) cfg.answers = [];
         if (!cfg.answers[i]) cfg.answers[i] = {};
         cfg.answers[i].top = parseInt(document.getElementById('qve-a' + i + '-top').value, 10) || cfg.answers[i].top;
         cfg.answers[i].height = parseInt(document.getElementById('qve-a' + i + '-height').value, 10) || cfg.answers[i].height;
@@ -816,79 +877,47 @@ class QuizManager {
       this.openQuiz('TUTORZEP');
     };
   }
-  // === [#TUTOR.05.0C.00] END ===
 
-  // === [#TUTOR.05.0D.00] START | method: populateVisualEditorFields | lines: ~22 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: Vizuális szerkesztő beviteli mezőinek feltöltése a QuizConfig aktuális értékeivel.
-  // @calls: none
-  // @calledBy: initVisualEditor
   populateVisualEditorFields() {
-    const cfg = window.QuizConfig.TUTORZEP;
-    const rawQText = this.currentQuestion ? this.extractQuestionText(this.currentQuestion) : '';
-    const hasLineBreak = rawQText.includes('\n') || rawQText.includes('<br>') || rawQText.includes('<br/>') || rawQText.includes('<BR>') || rawQText.includes('<BR/>');
-    const qCfg = hasLineBreak ? (cfg.question_multiline || cfg.question) : (cfg.question_singleline || cfg.question);
-
+    const cfg = window.QuizConfig.TZQSvA;
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-    setVal('qve-q-top', qCfg.top);
-    setVal('qve-q-height', qCfg.height);
-    setVal('qve-q-left', qCfg.left);
-    setVal('qve-q-width', qCfg.width);
-    setVal('qve-q-font', qCfg.fontSize);
-
-    setVal('qve-a0-top', cfg.answers[0].top);
-    setVal('qve-a0-height', cfg.answers[0].height);
-    setVal('qve-a1-top', cfg.answers[1].top);
-    setVal('qve-a1-height', cfg.answers[1].height);
-    setVal('qve-a2-top', cfg.answers[2].top);
-    setVal('qve-a2-height', cfg.answers[2].height);
-    setVal('qve-a3-top', cfg.answers[3].top);
-    setVal('qve-a3-height', cfg.answers[3].height);
-
-    setVal('qve-ans-left', cfg.answers[0].left);
-    setVal('qve-ans-width', cfg.answers[0].width);
-    setVal('qve-ans-font', cfg.answers[0].fontSize);
-  }
-  // === [#TUTOR.05.0D.00] END ===
-
-  // === [#TUTOR.05.0E.00] START | method: applyLiveStyles | lines: ~32 ===
-  // @subsystem: TUTOR.04_QuizDuel
-  // @summary: A vizuális szerkesztő csúszkáinak élő ráültetése a DOM elemekre.
-  // @calls: none
-  // @calledBy: initVisualEditor input esemény
-  applyLiveStyles() {
-    if (this.currentMode !== 'TUTORZEP') return;
-    const cfg = window.QuizConfig.TUTORZEP;
-    const qText = document.getElementById('quiz-question-text');
-    if (qText) {
-      const rawQText = this.currentQuestion ? this.extractQuestionText(this.currentQuestion) : '';
-      const hasLineBreak = rawQText.includes('\n') || rawQText.includes('<br>') || rawQText.includes('<br/>') || rawQText.includes('<BR>') || rawQText.includes('<BR/>');
-      const qCfg = hasLineBreak ? (cfg.question_multiline || cfg.question) : (cfg.question_singleline || cfg.question);
-
-      qText.style.top = qCfg.top + 'px';
-      qText.style.height = qCfg.height + 'px';
-      qText.style.left = qCfg.left + 'px';
-      qText.style.width = qCfg.width + 'px';
-      qText.style.fontSize = qCfg.fontSize + 'px';
-      qText.style.border = window._quizDebugBorders ? '2px dashed cyan' : 'none';
-      qText.style.backgroundColor = window._quizDebugBorders ? 'rgba(0, 255, 255, 0.12)' : 'transparent';
+    if (cfg && cfg.question_line1) {
+      setVal('qve-q-top', cfg.question_line1.top);
+      setVal('qve-q-height', cfg.question_line1.height);
+      setVal('qve-q-left', cfg.question_line1.left);
+      setVal('qve-q-width', cfg.question_line1.width);
+      setVal('qve-q-font', cfg.question_line1.fontSize);
     }
+    if (cfg && cfg.answers) {
+      for (let i = 0; i < 4; i++) {
+        if (cfg.answers[i]) {
+          setVal('qve-a' + i + '-top', cfg.answers[i].top);
+          setVal('qve-a' + i + '-height', cfg.answers[i].height);
+        }
+      }
+      if (cfg.answers[0]) {
+        setVal('qve-ans-left', cfg.answers[0].left);
+        setVal('qve-ans-width', cfg.answers[0].width);
+        setVal('qve-ans-font', cfg.answers[0].fontSize);
+      }
+    }
+  }
 
+  applyLiveStyles() {
+    const qBox1 = document.getElementById('quiz-qbox-1');
+    if (qBox1) {
+      qBox1.style.border = window._quizDebugBorders ? '2px dashed cyan' : 'none';
+      qBox1.style.backgroundColor = window._quizDebugBorders ? 'rgba(0, 255, 255, 0.12)' : 'transparent';
+    }
     const borderColors = ['#ff3366', '#ffaa00', '#33ff88', '#33ccff'];
     for (let i = 0; i < 4; i++) {
       const btn = document.getElementById('quiz-ans-btn-' + i);
-      if (btn && cfg.answers[i]) {
-        btn.style.top = cfg.answers[i].top + 'px';
-        btn.style.height = cfg.answers[i].height + 'px';
-        btn.style.left = cfg.answers[i].left + 'px';
-        btn.style.width = cfg.answers[i].width + 'px';
-        btn.style.fontSize = cfg.answers[i].fontSize + 'px';
+      if (btn) {
         btn.style.border = window._quizDebugBorders ? `2px dashed ${borderColors[i]}` : 'none';
         btn.style.backgroundColor = window._quizDebugBorders ? 'rgba(255, 255, 255, 0.08)' : 'transparent';
       }
     }
   }
-  // === [#TUTOR.05.0E.00] END ===
 }
 
 if (typeof window !== 'undefined') {
@@ -896,4 +925,3 @@ if (typeof window !== 'undefined') {
     window.quizManager = new QuizManager();
   }
 }
-

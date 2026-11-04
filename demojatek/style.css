@@ -229,7 +229,7 @@ canvas {
 }
 
 #zozo-dialogue-text {
-  font-size: 14px;
+  font-size: 26px;
   line-height: 1.3;
   color: #000000;
   text-align: center;
@@ -801,7 +801,7 @@ body[data-lang="pl"] {
 
 #eog-summary-text {
   font-family: 'Briskb', 'Courier New', monospace !important;
-  font-size: 22px !important;
+  font-size: 24px !important;
   font-weight: bold !important;
   color: #1a1a1a !important;
   line-height: 1.6 !important;
@@ -915,17 +915,17 @@ body[data-lang="pl"] {
 .monolog-inner-textbox {
   position: absolute !important;
   left: calc(50% + var(--textbox-left, 0px)) !important;
-  top: var(--textbox-top, 51px) !important;
+  top: var(--textbox-top, 40px) !important;
   transform: translateX(-50%) !important;
   width: var(--textbox-width, 685px) !important;
   max-width: 90% !important;
-  height: var(--textbox-height, 82px) !important;
+  height: var(--textbox-height, 95px) !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   pointer-events: none !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   z-index: 528 !important;
   padding: 0 !important;
   margin: 0 !important;
@@ -968,11 +968,11 @@ body.show-textbox-guide .monolog-inner-textbox {
     /* ─── IRÁNYÍTÓ PANEL (controls) ─── */
     --ctrl-p-bottom: 19%;
     --ctrl-p-right: 6%;
-    --ctrl-p-width: 565px;
-    --ctrl-p-height: 385px;
+    --ctrl-p-width: 590px;
+    --ctrl-p-height: 400px;
     --ctrl-inner-top: 82px;
     --ctrl-inner-left: 0px;
-    --ctrl-inner-width: 365px;
+    --ctrl-inner-width: 370px;
     --ctrl-inner-height: 220px;
     --ctrl-font-size: 22px;
     --ctrl-line-height: 1.27;
@@ -998,9 +998,9 @@ body.show-textbox-guide .monolog-inner-textbox {
     bottom: var(--ctrl-p-bottom, 19%) !important;
     left: auto !important;
     right: var(--ctrl-p-right, 6%) !important;
-    width: var(--ctrl-p-width, 565px) !important;
-    height: var(--ctrl-p-height, 385px) !important;
-    min-height: var(--ctrl-p-height, 385px) !important;
+    width: var(--ctrl-p-width, 590px) !important;
+    height: var(--ctrl-p-height, 400px) !important;
+    min-height: var(--ctrl-p-height, 400px) !important;
     transform: none !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -1032,7 +1032,7 @@ body.show-textbox-guide .monolog-inner-textbox {
     left: calc(50% + var(--ctrl-inner-left, 0px)) !important;
     top: var(--ctrl-inner-top, 82px) !important;
     transform: translateX(-50%) !important;
-    width: var(--ctrl-inner-width, 365px) !important;
+    width: var(--ctrl-inner-width, 370px) !important;
     max-width: 90% !important;
     height: var(--ctrl-inner-height, 220px) !important;
     box-sizing: border-box !important;
@@ -1040,7 +1040,7 @@ body.show-textbox-guide .monolog-inner-textbox {
     align-items: center !important;
     justify-content: center !important;
     pointer-events: none !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     z-index: 528 !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -1050,6 +1050,8 @@ body.show-textbox-guide .monolog-inner-textbox {
   #zozo-ingame-monolog-container.controls-popup-mode #ingame-dialogue-text,
   #ingame-popup-toast.controls-popup-mode .zozo-dialogue-text-std,
   #ingame-popup-toast.controls-popup-mode #popup-toast-text {
+    font-size: 24px !important;
+    line-height: 1.25 !important;
     width: 100% !important;
     max-width: 100% !important;
     text-align: center !important;
@@ -1127,7 +1129,7 @@ body.show-textbox-guide .monolog-inner-textbox {
     align-items: center !important;
     justify-content: center !important;
     pointer-events: none !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     z-index: 528 !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -1175,9 +1177,12 @@ body.show-textbox-guide .monolog-inner-textbox {
 /* Jobb oldali Irányítás és Szél paneleken a felső fa perem jobb oldalán */
 #zozo-ingame-monolog-container.controls-popup-mode .zozo-read-aloud-btn,
 #ingame-popup-toast.controls-popup-mode .zozo-read-aloud-btn {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
   left: auto !important;
-  right: 64px !important;
-  top: 14px !important;
+  right: 95px !important;
+  top: 68px !important;
   width: 48px !important;
   height: 48px !important;
 }
@@ -1249,9 +1254,12 @@ body.show-textbox-guide .monolog-inner-textbox {
 /* Jobb oldali Irányítás és Szél paneleken a jobb felső fa peremen */
 #zozo-ingame-monolog-container.controls-popup-mode .zozo-read-aloud-btn,
 #ingame-popup-toast.controls-popup-mode .zozo-read-aloud-btn {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
   left: auto !important;
-  right: 64px !important;
-  top: 14px !important;
+  right: 95px !important;
+  top: 68px !important;
   width: 48px !important;
   height: 48px !important;
 }
@@ -1522,3 +1530,6 @@ body.show-textbox-guide .monolog-inner-textbox {
   opacity: 0.55 !important;
 */
 }
+
+
+

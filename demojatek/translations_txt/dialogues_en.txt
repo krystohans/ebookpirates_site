@@ -1,7 +1,7 @@
 === WELCOME TEXTS ===
 welcome_0: So, are you the new arrival? \nA Landlubber, huh?
 welcome_1: Looking for reading material for the Library? Well, my friend,\nready-made books don't just float around in the water here!
-welcome_2: Listen here, Landlubber! If you want to see words on a page,\nyou'll have to work for it.
+welcome_2: Listen here, Landlubber! If you want to see words on a page, you'll have to work for it.
 welcome_3: Let me show you how we coastal folk make a living. Hop in! What are you waiting for? I don't have all day!
 
 === GAME MONOLOGUES ===
@@ -38,7 +38,7 @@ monolog_31: And even if you had the book consecrated, it will \nlose its value i
 monolog_32: I'm getting hungry, so you're on your own from here. \nBring me more Membranes. And watch my ship!
 monolog_33: And if you've written something yourself to add,\nyou'll have to submit it to the Sages for judgment.
 monolog_34: They live up in the Cloud Monastery, above the Shrine. They oversee the written word.
-monolog_controls: Use W, A, S, D or the arrow keys to steer the ship. You can rotate the camera by holding down either the left or right mouse button. You can advance through / close the information windows by pressing Space.
+monolog_controls: Use W, A, S, D or the arrow keys to steer the ship. You can advance through / close the information windows by pressing Space or by clicking on them with the mouse.
 monolog_wind: Watch the wind direction and trim the sail accordingly!
 monolog_airship_bad_empty: We'd better vanish from their sight right now, \nbefore they toss us into the sea.
 

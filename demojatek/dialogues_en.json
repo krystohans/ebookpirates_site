@@ -1,8 +1,8 @@
 {
   "welcomeTexts": [
     "So, are you the new arrival? \nA Landlubber, huh?",
-    "Looking for reading material for the Library? Well, my friend,\nready-made books don't just float around in the water here!",
-    "Listen here, Landlubber! If you want to see words on a page,\nyou'll have to work for it.",
+    "Looking for reading material for the Library?\nWell, my friend, ready-made books don't just float around in the water here!",
+    "Listen here, Landlubber! If you want to see words on a page, you'll have to work for it.",
     "Let me show you how we coastal folk make a living. Hop in! What are you waiting for? I don't have all day!"
   ],
   "gameMonologues": {
@@ -39,7 +39,7 @@
     "32": "I'm getting hungry, so you're on your own from here. \nBring me more Membranes. And watch my ship!",
     "33": "And if you've written something yourself to add,\nyou'll have to submit it to the Sages for judgment.",
     "34": "They live up in the Cloud Monastery, above the Shrine. They oversee the written word.",
-    "controls": "Use W, A, S, D or the arrow keys to steer the ship. You can rotate the camera by holding down either the left or right mouse button. You can advance through / close the information windows by pressing Space.",
+    "controls": "Use W, A, S, D or the arrow keys to steer the ship. You can advance through / close the information windows by pressing Space or by clicking on them with the mouse.",
     "wind": "Watch the wind direction and trim the sail accordingly!",
     "airship_bad_empty": "We'd better vanish from their sight right now, \nbefore they toss us into the sea."
   },

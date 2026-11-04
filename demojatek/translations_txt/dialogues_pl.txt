@@ -119,7 +119,7 @@ Lepiej zniknijmy im z oczu,
 zanim cisną nas w głębiny morza.
 
 [gameMonologues.controls]
-Steruj łodzią klawiszami W, A, S, D lub strzałkami. Obracaj kamerę trzymając lewy lub prawy przycisk myszy. Okna informacyjne przewijasz Spacją.
+Sterujesz łodzią za pomocą klawiszy W, A, S, D lub strzałek. Okna informacyjne możesz przewijać / zamykać naciskając spację lub klikając w nie myszą.
 
 [gameMonologues.wind]
 Obserwuj kierunek wiatru i odpowiednio ustawiaj żagiel!

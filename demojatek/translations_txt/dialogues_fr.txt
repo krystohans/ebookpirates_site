@@ -120,7 +120,7 @@ Mieux vaut disparaître de leur vue illico,
 avant qu'ils ne nous balancent par-dessus bord.
 
 [gameMonologues.controls]
-Utilise Z, Q, S, D ou les flèches pour diriger le bateau. Fais pivoter la caméra en maintenant le clic gauche ou droit. Fais défiler les fenêtres d'information avec Espace.
+Tu peux diriger le bateau avec les touches Z, Q, S, D (ou W, A, S, D) ou les flèches directionnelles. Fais défiler / ferme les fenêtres d'information en appuyant sur Espace ou en cliquant dessus avec la souris.
 
 [gameMonologues.wind]
 Surveille la direction du vent et oriente la voile en conséquence !

@@ -47,11 +47,15 @@
 
       // Kényszerített fishing mód beállítása
       params.set('mode', 'fishing');
+      if (!params.has('lang')) {
+        const storedLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+        params.set('lang', storedLang);
+      }
       if (!params.has('v')) {
         params.set('v', Date.now().toString());
       }
 
-      const targetUrl = 'demojatek/tutorial_fixed.html?' + params.toString();
+      const targetUrl = 'Membrane_Hunting/tutorial_fixed.html?' + params.toString();
       frame.src = targetUrl;
 
       // Üzenetek közvetítése a szülő ablak (app.js) felé vagy önálló Live Server átirányítás

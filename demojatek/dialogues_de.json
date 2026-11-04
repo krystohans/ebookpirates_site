@@ -5,29 +5,6 @@
     "Hör mal zu, Landratte! Wenn du Buchstaben sehen willst, musst du dafür schuften.",
     "Ich zeig dir, wovon wir Küstenleute leben. Steig ein!\nWorauf wartest du noch? Ich hab nicht den ganzen Tag Zeit!"
   ],
-  "popups": {
-    "new_membrane": "Du hast eine weitere Membran gesammelt!\nAb zurück in den Hafen!",
-    "airship_good": "Saubere Arbeit. Weiter so!",
-    "airship_bad": "Die haben uns gerade ausgeraubt.\nJetzt können wir wieder rausfahren und mehr fischen.",
-    "membrane_good": "Die haben wir eingesackt!",
-    "membrane_bad": "Diese Membran ist gerade abgetrieben!",
-    "beach": "Auf den Strand sollten wir lieber nicht auflaufen!",
-    "out_of_range": "Mit diesem Wrack können wir uns nicht aufs offene Meer wagen.",
-    "homepoint": "Alles ausgeladen, wir können los.",
-    "empty_boat": "Du bist mit leerem Boot zurückgekehrt.",
-    "eog_empty_water": "Das Wasser ist verdächtig leer,\nkomm, sehen wir uns an der Buchtmündung um!",
-    "airship_catch": "SIE HABEN UNS EINGEHOLT! Sie werden Fragen stellen.\nAntwortest du richtig, kommen wir davon, aber machst du\neinen Fehler, nehmen sie uns die Membranen ab.",
-    "boat_crash": "Riff-Kollision!",
-    "boat_fixing": "Ich hab's diesmal geflickt, aber pass besser auf!",
-    "boat_lowHP": "Einen weiteren Aufprall überstehen wir nicht.\nBring das Boot zurück!",
-    "boat_totalcar": "Du bist gesunken. Aus dir wird kein Seemann.",
-    "airship_bad_empty": "Verschwinden wir lieber schleunigst aus ihren Augen,\nbevor sie uns ins Meer werfen."
-  },
-  "eogMonologues": {
-    "pointA": "He, Landratte! Das Wasser ist verdächtig leer...\nSehen wir mal nach, was an der Buchtmündung los ist!",
-    "pointB": "Was ist das dort am Ufer? Das ist keine Membran, sondern...\nSollte das etwa...? Das ist eine TRUHE! EINE TRUHE!\nSchnell, die müssen wir uns holen!",
-    "chestFound": "Jetzt steuere ich das Boot selbst zum Pier zurück.\nIch lasse nicht zu, dass du mir das vermasselst!"
-  },
   "gameMonologues": {
     "1": "Ich habe gesehen, dass eine Membran ganz nah\nherangetrieben ist. Fischen wir zuerst die heraus!",
     "2": "Das sind die Membranen. Das Letternmeer hat sie in die Bucht gespült. Das ist unser Schatz. Und du musst sie nur herausfischen.",
@@ -62,8 +39,31 @@
     "32": "Ich hab Hunger, ab hier segelst du allein weiter. Bring mir mehr Membranen. Und pass mir auf mein Boot auf!",
     "33": "Und wenn du selbst was schreibst und es ins Spiel bringen willst, musst du es den Weisen vorlegen.",
     "34": "Sie leben oben im Wolkenkloster über dem Heiligtum.\nSie wachen über das geschriebene Wort.",
-    "controls": "Benutze W, A, S, D oder die Pfeiltasten zum Steuern. Die Kamera drehst du mit gedrückter linker oder rechter Maustaste. Textfenster schaltest du mit der Leertaste weiter.",
+    "controls": "Mit den Tasten W, A, S, D oder den Pfeiltasten steuerst du das Schiff. Info-Fenster kannst du mit der Leertaste weiterschalten / schließen oder indem du mit der Maus darauf klickst.",
     "wind": "Achte auf die Windrichtung und richte das Segel danach aus!",
     "airship_bad_empty": "Verschwinden wir lieber schleunigst aus ihren Augen,\nbevor sie uns ins Meer werfen."
+  },
+  "popups": {
+    "new_membrane": "Du hast eine weitere Membran gesammelt!\nAb zurück in den Hafen!",
+    "airship_good": "Saubere Arbeit. Weiter so!",
+    "airship_bad": "Die haben uns gerade ausgeraubt.\nJetzt können wir wieder rausfahren und mehr fischen.",
+    "membrane_good": "Die haben wir eingesackt!",
+    "membrane_bad": "Diese Membran ist gerade abgetrieben!",
+    "beach": "Auf den Strand sollten wir lieber nicht auflaufen!",
+    "out_of_range": "Mit diesem Wrack können wir uns nicht aufs offene Meer wagen.",
+    "homepoint": "Alles ausgeladen, wir können los.",
+    "empty_boat": "Du bist mit leerem Boot zurückgekehrt.",
+    "eog_empty_water": "Das Wasser ist verdächtig leer,\nkomm, sehen wir uns an der Buchtmündung um!",
+    "airship_catch": "SIE HABEN UNS EINGEHOLT! Sie werden Fragen stellen.\nAntwortest du richtig, kommen wir davon, aber machst du\neinen Fehler, nehmen sie uns die Membranen ab.",
+    "boat_crash": "Riff-Kollision!",
+    "boat_fixing": "Ich hab's diesmal geflickt, aber pass besser auf!",
+    "boat_lowHP": "Einen weiteren Aufprall überstehen wir nicht.\nBring das Boot zurück!",
+    "boat_totalcar": "Du bist gesunken. Aus dir wird kein Seemann.",
+    "airship_bad_empty": "Verschwinden wir lieber schleunigst aus ihren Augen,\nbevor sie uns ins Meer werfen."
+  },
+  "eogMonologues": {
+    "pointA": "He, Landratte! Das Wasser ist verdächtig leer...\nSehen wir mal nach, was an der Buchtmündung los ist!",
+    "pointB": "Was ist das dort am Ufer? Das ist keine Membran, sondern... Sollte das etwa...?\nDas ist eine TRUHE! EINE TRUHE!\nSchnell, die müssen wir uns holen!",
+    "chestFound": "Jetzt steuere ich das Boot selbst zum Pier zurück.\nIch lasse nicht zu, dass du mir das vermasselst!"
   }
 }

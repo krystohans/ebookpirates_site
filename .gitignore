@@ -3,6 +3,8 @@
 appsscript.json
 .clasp*
 credentials*
+*client_secret*
+*Antigravity*
 .env
 
 # Node / build
@@ -41,3 +43,7 @@ Toolbox/
 *toolbox*
 *debug_panel*
 Protected_Backups/
+$*
+*$*
+*.bak*
+*.esd

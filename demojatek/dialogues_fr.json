@@ -62,7 +62,7 @@
     "32": "Moi, j'ai faim, alors tu te débrouilles tout seul à partir d'ici. Rapporte-moi d'autres membranes. Et prends soin de mon bateau !",
     "33": "Et si tu as écrit quelque chose que tu veux introduire en jeu, il faudra le soumettre au jugement des Sages.",
     "34": "Ils résident là-haut dans le Monastère des Nuages,\nau-dessus du Sanctuaire.",
-    "controls": "Utilise Z, Q, S, D ou les flèches pour diriger le bateau. Fais pivoter la caméra en maintenant le clic gauche ou droit. Fais défiler les fenêtres d'information avec Espace.",
+    "controls": "Tu peux diriger le bateau avec les touches Z, Q, S, D (ou W, A, S, D) ou les flèches directionnelles. Fais défiler / ferme les fenêtres d'information en appuyant sur Espace ou en cliquant dessus avec la souris.",
     "wind": "Surveille la direction du vent et oriente la voile en conséquence !",
     "airship_bad_empty": "Mieux vaut disparaître de leur vue illico,\navant qu'ils ne nous balancent par-dessus bord."
   }

@@ -1,0 +1,195 @@
+[welcomeTexts.0]
+¿Eres tú el nuevo? ¿Un marinero de agua dulce?
+
+[welcomeTexts.1]
+¿Buscas lectura para la Biblioteca? Bueno, camarada, ¡por aquí los libros encuadernados no flotan solos en el agua!
+
+[welcomeTexts.2]
+¡Escúchame bien, grumete! Si quieres ver letras en una página, vas a tener que sudar la gota gorda.
+
+[welcomeTexts.3]
+Te enseñaré de qué vivimos la gente de la costa. ¡Sube! ¿A qué esperas? ¡No tengo todo el día para ti!
+
+[gameMonologues.1]
+He avistado una membrana que flota bastante cerca. ¡Vamos a pescar esa primero!
+
+[gameMonologues.2]
+Estas son las Membranas. El Mar de Letras las arrastró a la bahía. Son nuestro tesoro. Y tú solo tienes que pescarlas.
+
+[gameMonologues.3]
+¡Bien hecho! Pero recuerda: tu membrana solo está a salvo cuando la entregas en el puerto. ¡Muévete, de vuelta!
+
+[gameMonologues.4]
+¡CUIDADO! Si te estrellas contra un arrecife, perderás tus membranas.
+
+[gameMonologues.5]
+Tendrás que sacar treinta de estas maravillas relucientes para que el Maestro de Pergaminos se digne a dirigirte la palabra.
+
+[gameMonologues.6]
+Por once Créditos Pirata, desde luego. Aquí nada es de balde.
+
+[gameMonologues.7]
+Estas son solo las membranas ordinarias. Más allá de la bahía, en los arrecifes, las encontrarás de colores. Azul, roja, verde... cada una para un género literario distinto.
+
+[gameMonologues.8]
+Pero allí solo nos aventuramos viejos lobos de mar como yo. Y las islas remotas... bueno, da igual. Aún no estás a ese nivel.
+
+[gameMonologues.9]
+Maldición... ¡Piratas del Aire! ¿A QUÉ TE QUEDAS MIRANDO? ¡HUYAMOS! ¡De vuelta al puerto!
+
+[gameMonologues.11]
+Ahora déjame explicarte cómo funciona la vida por estos lares, ya que pareces no tener ni la menor idea de nada.
+
+[gameMonologues.12]
+Solo dos cosas importan: Créditos Pirata y Talentos.
+Recibes un Crédito al día por conectarte. Uno solo. Y eso no es más que calderilla.
+
+[gameMonologues.13]
+El Maestro de Pergaminos te da uno por treinta membranas. Pero son cuatro perras.
+
+[gameMonologues.14]
+El verdadero trabajo está en la Taberna. Allí se reparten las misiones, cuando te hayas ganado el derecho.
+
+[gameMonologues.15]
+Tus pergaminos puedes leerlos en la Biblioteca.
+O venderlos por 10 créditos, o en el Mercado.
+
+[gameMonologues.16]
+O bien recolectas pergaminos hasta reunir la obra completa. Entonces podrás mandar encuadernar una Copia.
+
+[gameMonologues.17]
+O llevas un libro real que poseas a la biblioteca
+y haces que lo consagren allí. Así es como se pone la mano encima a un Libro auténtico.
+
+[gameMonologues.18]
+Consagrar un Libro cuesta Talentos. Y eso no se pesca flotando en el agua.
+
+[gameMonologues.19]
+Eso solo lo aportan los Grandes Mecenas, a través de Patreon o PayPal.
+
+[gameMonologues.20]
+O si descubres un tesoro por el que otro jugador
+esté dispuesto a pagarte Talentos en el Mercado.
+
+[gameMonologues.21]
+Hay un Banco, pero solo cambia a la baja. Puedes vender Talentos por Créditos, pero al revés... ¡ni lo sueñes!
+
+[gameMonologues.22]
+Ya le vas pillando el truco. Si sigues trabajando así,
+quizás algún día te lleve a Hebok, el puerto pirata.
+
+[gameMonologues.23]
+Allí podrás fletar o comprar navíos, o incluso enrolarte en la tripulación de otros barcos. O con los piratas.
+
+[gameMonologues.24]
+En Hebok se levanta también el Santuario, donde se consagran las Copias.
+
+[gameMonologues.25]
+Si consigues un libro nuevo, la Primera Edición es tuya, y te llevas diez Copias de regalo que puedes regalar libremente.
+
+[gameMonologues.26]
+Y si se lo das a alguien que consagre la Copia, podrías ver cómo tintinea un buen puñado de monedas.
+
+[gameMonologues.27]
+O hasta puedes convocar una Caza de Libros sobre él. ¡Ahí es donde empieza la verdadera diversión!
+
+[gameMonologues.28]
+Cuantos más libros acumules, más importante te harás por aquí. ¡Quién sabe si no acabarás convertido en Capitán!
+
+[gameMonologues.29]
+Pero si robas un libro o permites que gente de fuera
+del juego lo lea, ¡tu castigo será implacable!
+
+[gameMonologues.30]
+No te pasarán por la quilla, pero pondrán tu nombre
+en el muro de la vergüenza para que todos vean lo que has hecho.
+
+[gameMonologues.31]
+Y aunque hayas consagrado el libro, perderá todo su valor en el juego: irá a parar a la Prisión de Libros.
+
+[gameMonologues.32]
+A mí me ruge la tripa, así que a partir de aquí te las apañas tú solo. Tráeme más membranas. ¡Y cuídame la barca!
+
+[gameMonologues.33]
+Y si tú mismo has escrito una obra que quieras añadir, tendrás que someterla al juicio de los Sabios.
+
+[gameMonologues.34]
+Habitan arriba en el Monasterio de las Nubes, sobre el Santuario. Ellos son los custodios de la palabra escrita.
+
+[gameMonologues.airship_bad_empty]
+Más vale que nos esfumemos de su vista,
+antes de que nos arrojen al mar.
+
+[gameMonologues.controls]
+Usa W, A, S, D o las flechas para gobernar el navío. Gira la cámara manteniendo pulsado el botón izquierdo o derecho del ratón. Avanza los diálogos con la barra Espaciadora.
+
+[gameMonologues.wind]
+¡Vigila la dirección del viento y orienta la vela en consecuencia!
+
+[popups.airship_bad]
+Nos acaban de saquear.
+Ahora tendremos que volver a salir a faenar.
+
+[popups.airship_bad_empty]
+Más vale que nos esfumemos de su vista,
+antes de que nos arrojen al mar.
+
+[popups.airship_catch]
+¡NOS HAN DADO ALCANCE! Nos van a interrogar.
+Si respondes bien, zafaremos, pero si fallas,
+nos quitarán las membranas.
+
+[popups.airship_good]
+Bien hecho. ¡Sigue con la faena!
+
+[popups.beach]
+¡No deberíamos encallar en la orilla!
+
+[popups.boat_crash]
+¡Colisión con el arrecife!
+
+[popups.boat_fixing]
+Lo he remendado por esta vez, ¡pero ten más cuidado!
+
+[popups.boat_lowHP]
+No sobreviviremos a otro choque.
+¡Regresa el barco a puerto!
+
+[popups.boat_totalcar]
+Te has ido a pique. De ti no saldrá un marinero.
+
+[popups.empty_boat]
+Has vuelto con el barco vacío.
+
+[popups.eog_empty_water]
+El agua está sospechosamente desierta,
+¡vamos a inspeccionar la boca de la bahía!
+
+[popups.homepoint]
+He descargado todo el fardo, ¡en marcha!
+
+[popups.membrane_bad]
+¡Esta membrana acaba de escapar a la deriva!
+
+[popups.membrane_good]
+¡Esta ya es nuestra!
+
+[popups.new_membrane]
+¡Has recogido otra membrana!
+¡Rumbo de vuelta al puerto!
+
+[popups.out_of_range]
+Con este cascarón no podemos aventurarnos a mar abierto.
+
+[eogMonologues.chestFound]
+Ahora llevaré yo mismo el barco de vuelta al muelle.
+¡No voy a dejar que me arruines este botín!
+
+[eogMonologues.pointA]
+¡Eh, grumete! El agua está sospechosamente vacía...
+¡Echemos un vistazo a ver qué ocurre en la boca de la bahía!
+
+[eogMonologues.pointB]
+¿Qué es aquello en la orilla? No es una membrana, es...
+¿Acaso podría ser...? ¡Es un COFRE! ¡UN COFRE!
+¡Rápido, tenemos que recogerlo!

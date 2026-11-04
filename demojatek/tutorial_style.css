@@ -1026,11 +1026,11 @@ body.show-textbox-guide .monolog-inner-textbox {
   /* ─── IRÁNYÍTÓ PANEL (controls) ─── */
   --ctrl-p-bottom: 19%;
   --ctrl-p-right: 6%;
-  --ctrl-p-width: 565px;
-  --ctrl-p-height: 385px;
+  --ctrl-p-width: 590px;
+  --ctrl-p-height: 400px;
   --ctrl-inner-top: 82px;
   --ctrl-inner-left: 0px;
-  --ctrl-inner-width: 365px;
+  --ctrl-inner-width: 370px;
   --ctrl-inner-height: 220px;
   --ctrl-font-size: 22px;
   --ctrl-line-height: 1.27;
@@ -1056,9 +1056,9 @@ body.show-textbox-guide .monolog-inner-textbox {
   bottom: var(--ctrl-p-bottom, 19%) !important;
   left: auto !important;
   right: var(--ctrl-p-right, 6%) !important;
-  width: var(--ctrl-p-width, 565px) !important;
-  height: var(--ctrl-p-height, 385px) !important;
-  min-height: var(--ctrl-p-height, 385px) !important;
+  width: var(--ctrl-p-width, 590px) !important;
+  height: var(--ctrl-p-height, 400px) !important;
+  min-height: var(--ctrl-p-height, 400px) !important;
   transform: none !important;
   padding: 0 !important;
   margin: 0 !important;
@@ -1090,7 +1090,7 @@ body.show-textbox-guide .monolog-inner-textbox {
   left: calc(50% + var(--ctrl-inner-left, 0px)) !important;
   top: var(--ctrl-inner-top, 82px) !important;
   transform: translateX(-50%) !important;
-  width: var(--ctrl-inner-width, 365px) !important;
+  width: var(--ctrl-inner-width, 370px) !important;
   max-width: 90% !important;
   height: var(--ctrl-inner-height, 220px) !important;
   box-sizing: border-box !important;
@@ -1233,9 +1233,12 @@ body.show-textbox-guide #zozo-ingame-monolog-container.wind-popup-mode {
 /* Jobb oldali Irányítás és Szél paneleken a felső fa perem jobb oldalán */
 #zozo-ingame-monolog-container.controls-popup-mode .zozo-read-aloud-btn,
 #ingame-popup-toast.controls-popup-mode .zozo-read-aloud-btn {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
   left: auto !important;
-  right: 64px !important;
-  top: 14px !important;
+  right: 95px !important;
+  top: 68px !important;
   width: 48px !important;
   height: 48px !important;
 }
@@ -1262,7 +1265,7 @@ body.show-textbox-guide #zozo-ingame-monolog-container.wind-popup-mode {
   pointer-events: auto !important;
   user-select: none !important;
   object-fit: contain !important;
-  display: none !important; /* Ideiglenesen elrejtve, később visszatérünk rá */
+  display: block !important;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.75)) !important;
   transition: transform 0.15s ease, filter 0.2s ease !important;
 }
@@ -1308,9 +1311,12 @@ body.show-textbox-guide #zozo-ingame-monolog-container.wind-popup-mode {
 /* Jobb oldali Irányítás és Szél paneleken a jobb felső fa peremen */
 #zozo-ingame-monolog-container.controls-popup-mode .zozo-read-aloud-btn,
 #ingame-popup-toast.controls-popup-mode .zozo-read-aloud-btn {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
   left: auto !important;
-  right: 64px !important;
-  top: 14px !important;
+  right: 95px !important;
+  top: 68px !important;
   width: 48px !important;
   height: 48px !important;
 }
@@ -1581,3 +1587,5 @@ body.show-textbox-guide #zozo-ingame-monolog-container.wind-popup-mode {
   opacity: 0.55 !important;
   */
 }
+
+

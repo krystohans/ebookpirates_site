@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Beállítások</title>
+  <!-- Behúzzuk az eredeti stíluslapot a betűtípus (Briskb) és egyebek miatt -->
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Teljes képernyős, középre igazító konténer - Pontos szinkronban a MainMenuTutorial.html-lel */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000 !important;
+      overflow: hidden;
+      font-family: 'Briskb', 'Courier New', monospace;
+    }
+
+    #main-menu-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    /* A logó mögötti négyzetes fa panel - Hajszálpontosan a Főmenü mérete és pozíciója */
+    .menu-logo-container {
+      width: 330px;
+      height: 330px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -20px;
+      margin-bottom: -60px;
+      padding: 75px;
+      box-sizing: border-box;
+    }
+
+    .menu-logo-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* A menüpontok fa paneljei - Pontosan 450x70px */
+    .menu-button {
+      width: 450px;
+      height: 70px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1px 0;
+      cursor: pointer;
+      transition: transform 0.1s ease-in-out;
+      
+      /* Szöveg stílusa */
+      color: #000000;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-size: 26px;
+      font-weight: bold;
+      text-transform: none;
+    }
+
+    /* Hover effektus */
+    .menu-button:hover {
+      transform: scale(1.05);
+      color: #333333;
+    }
+
+    /* Hangerő csúszka konténer - Pontosan 450x70px fa fatábla */
+    .menu-slider-container {
+      width: 450px;
+      height: 70px;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center center;
+      background-size: 100% 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 1px 0;
+      padding-top: 0px;
+      padding-bottom: 2px;
+      box-sizing: border-box;
+      transition: transform 0.1s ease-in-out;
+    }
+
+    .menu-slider-container:hover {
+      transform: scale(1.03);
+    }
+    
+    .slider-label {
+      color: #000000;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 1px;
+      line-height: 1;
+    }
+
+    /* Steampunk Slider CSS */
+    .steampunk-slider {
+      -webkit-appearance: none;
+      width: 75%;
+      height: 8px;
+      background: rgba(61, 43, 31, 0.7);
+      border: 1px solid #3d2b1f;
+      border-radius: 4px;
+      outline: none;
+    }
+    
+    .steampunk-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png") no-repeat center center;
+      background-size: contain;
+      border: none;
+      cursor: pointer;
+      filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.6));
+    }
+    
+    .steampunk-slider::-moz-range-thumb {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png") no-repeat center center;
+      background-size: contain;
+      border: none;
+      cursor: pointer;
+      filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.6));
+    }
+
+    
+    /* Nyelvválasztó modal (felugró ablak) & Abrigó Térkép Porthole Hotspotok */
+    #lang-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: rgba(0,0,0,0.85);
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lang-img-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 92vw;
+      max-height: 88vh;
+      filter: drop-shadow(0 15px 45px rgba(0,0,0,0.95));
+      user-select: none;
+    }
+
+    .lang-img-wrapper img {
+      max-width: 92vw;
+      max-height: 88vh;
+      height: auto;
+      display: block;
+      border: 3px solid #3d2b1f;
+      border-radius: 12px;
+      box-sizing: border-box;
+    }
+
+    .lang-porthole-btn {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .lang-porthole-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.85), inset 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .lang-porthole-btn:active {
+      transform: scale(0.93);
+    }
+
+    @keyframes portholePop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.18); box-shadow: 0 0 25px 8px #ffd700; }
+      100% { transform: scale(1); }
+    }
+
+    .porthole-clicked {
+      animation: portholePop 0.35s ease-out forwards;
+    }
+
+    .back-btn-hotspot {
+      position: absolute;
+      top: 78.5%;
+      left: 78.0%;
+      width: 20.0%;
+      height: 20.0%;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .back-btn-hotspot:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 16px 3px rgba(212, 175, 55, 0.7);
+    }
+
+    .back-btn-hotspot:active {
+      transform: scale(0.94);
+    }
+
+</style>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Videó automatikus lejátszás megerősítése
+        const bgVid = document.getElementById('bg-video');
+        if (bgVid) {
+          bgVid.muted = true;
+          bgVid.play().catch(function(err) { console.log('Video autoplay:', err); });
+        }
+
+        // Menü zene és hangok betöltése
+        const menuMusic = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/Tutorial_music.mp3');
+        menuMusic.loop = true;
+        const menuAmbience = new Audio('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/sounds/waves-and-seagulls.wav');
+        menuAmbience.loop = true;
+  
+        // Autoplay policy miatt az első kattintásra indítjuk el a hangokat
+        let audioStarted = false;
+        document.addEventListener('click', () => {
+          if (!audioStarted) {
+            if (menuMusic.volume > 0) menuMusic.play().catch(e => {});
+            if (menuAmbience.volume > 0) menuAmbience.play().catch(e => {});
+            audioStarted = true;
+          }
+        });
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        let savedLang = urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('ebp_language') || 'hu';
+        localStorage.setItem('ebook_pirates_language', savedLang);
+        localStorage.setItem('siteLang', savedLang);
+        applySettingsLanguage(savedLang);
+
+        if (urlParams.has('langSelector') && urlParams.get('langSelector') === 'true') {
+          showLanguageSelector();
+        }
+
+        // Hangerő csúszkák inicializálása localStorage-ből
+        const musicSlider = document.getElementById('music-slider');
+        const soundSlider = document.getElementById('sound-slider');
+        
+        if (musicSlider) {
+          musicSlider.value = localStorage.getItem('ebook_pirates_music_vol') !== null ? localStorage.getItem('ebook_pirates_music_vol') : 100;
+          menuMusic.volume = (musicSlider.value / 100.0) * 0.5; // A játékbeli alap hangerő 0.5
+          musicSlider.addEventListener('input', (e) => {
+            localStorage.setItem('ebook_pirates_music_vol', e.target.value);
+            menuMusic.volume = (e.target.value / 100.0) * 0.5;
+            if (audioStarted && menuMusic.paused && menuMusic.volume > 0) menuMusic.play();
+          });
+        }
+        
+        if (soundSlider) {
+          soundSlider.value = localStorage.getItem('ebook_pirates_sound_vol') !== null ? localStorage.getItem('ebook_pirates_sound_vol') : 100;
+          menuAmbience.volume = (soundSlider.value / 100.0) * 0.6; // A játékbeli alap hangerő 0.6
+          soundSlider.addEventListener('input', (e) => {
+            localStorage.setItem('ebook_pirates_sound_vol', e.target.value);
+            menuAmbience.volume = (e.target.value / 100.0) * 0.6;
+            if (audioStarted && menuAmbience.paused && menuAmbience.volume > 0) menuAmbience.play();
+          });
+        }
+      });
+
+    const SETTINGS_TRANSLATIONS = {
+      hu: {
+        title: "Beállítások",
+        music: "Zene",
+        musicTitle: "Zene hangereje",
+        sound: "Hang",
+        soundTitle: "Effektek hangereje",
+        language: "Nyelv",
+        back: "Vissza a Főmenübe",
+        langTitle: "Nyelv / Language"
+      },
+      en: {
+        title: "Settings",
+        music: "Music",
+        musicTitle: "Music volume",
+        sound: "Sound",
+        soundTitle: "Sound effects volume",
+        language: "Language",
+        back: "Back to Main Menu",
+        langTitle: "Language"
+      },
+      de: {
+        title: "Einstellungen",
+        music: "Musik",
+        musicTitle: "Musiklautstärke",
+        sound: "Ton",
+        soundTitle: "Effektlautstärke",
+        language: "Sprache",
+        back: "Zurück zum Hauptmenü",
+        langTitle: "Sprache"
+      },
+      fr: {
+        title: "Paramètres",
+        music: "Musique",
+        musicTitle: "Volume de la musique",
+        sound: "Sons",
+        soundTitle: "Volume des effets",
+        language: "Langue",
+        back: "Retour au Menu Principal",
+        langTitle: "Langue"
+      },
+      es: {
+        title: "Configuración",
+        music: "Música",
+        musicTitle: "Volumen de música",
+        sound: "Sonido",
+        soundTitle: "Volumen de efectos",
+        language: "Idioma",
+        back: "Volver al Menú Principal",
+        langTitle: "Idioma"
+      },
+      pl: {
+        title: "Ustawienia",
+        music: "Muzyka",
+        musicTitle: "Głośność muzyki",
+        sound: "Dźwięki",
+        soundTitle: "Głośność efektów",
+        language: "Język",
+        back: "Powrót do Menu Głównego",
+        langTitle: "Język"
+      },
+      ru: {
+        title: "Настройки",
+        music: "Музыка",
+        musicTitle: "Громкость музыки",
+        sound: "Звук",
+        soundTitle: "Громкость звуков",
+        language: "Язык",
+        back: "В Главное Меню",
+        langTitle: "Язык"
+      }
+    };
+
+    // === [#TUTOR.02.00.00] START | name: showLanguageSelector | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó hajóablakos modal felugró megjelenítése.
+    // @calls: none
+    // @calledBy: quick-language-selector vagy Földgömb kattintás
+    function showLanguageSelector() {
+      const modal = document.getElementById('lang-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+    // === [#TUTOR.02.00.00] END ===
+
+    // === [#TUTOR.02.01.00] START | name: closeLanguageSelector | lines: ~5 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó hajóablakos modal bezárása.
+    // @calls: none
+    // @calledBy: selectLanguage, X gomb, overlay háttérkattintás
+    function closeLanguageSelector(event) {
+      if (event) event.stopPropagation();
+      const modal = document.getElementById('lang-modal');
+      if (modal) modal.style.display = 'none';
+    }
+    // === [#TUTOR.02.01.00] END ===
+
+    // === [#TUTOR.02.02.00] START | name: selectLanguage | lines: ~9 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Kiválasztott nyelv érvényesítése a hajóablak animáció után.
+    // @calls: [#HEX:TUTOR.02.04.00], [#HEX:TUTOR.02.01.00]
+    // @calledBy: Lőrés / hajóablak kattintás (HU vagy EN)
+    function selectLanguage(lang, event) {
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('porthole-clicked');
+      }
+      setTimeout(() => {
+        changeLanguage(lang);
+        closeLanguageSelector();
+      }, 180);
+    }
+    // === [#TUTOR.02.02.00] END ===
+
+    // === [#TUTOR.02.06.00] START | name: changeLanguage | lines: ~11 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvváltás mentése (localStorage, URL param) és felület frissítése.
+    // @calls: [#HEX:TUTOR.02.03.00], [#HEX:TUTOR.02.05.00]
+    // @calledBy: selectLanguage, térkép lőrés kattintás
+    function changeLanguage(lang) {
+      localStorage.setItem('ebook_pirates_language', lang);
+      localStorage.setItem('siteLang', lang);
+      localStorage.setItem('ebp_language', lang);
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+      applySettingsLanguage(lang);
+    }
+    // === [#TUTOR.02.06.00] END ===
+
+    // === [#TUTOR.02.03.00] START | name: applySettingsLanguage | lines: ~24 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: A Beállítások menü feliratai (zene, hangeffekt, gombok, zászló) dinamikus fordítása.
+    // @calls: none
+    // @calledBy: changeLanguage, DOMContentLoaded
+    function applySettingsLanguage(lang) {
+      const t = SETTINGS_TRANSLATIONS[lang] || SETTINGS_TRANSLATIONS.hu;
+      document.title = t.title;
+      const musicLabel = document.getElementById('label-music');
+      const soundLabel = document.getElementById('label-sound');
+      const musicSlider = document.getElementById('music-slider');
+      const soundSlider = document.getElementById('sound-slider');
+      const btnLang = document.getElementById('btn-settings-lang');
+      const btnBack = document.getElementById('btn-settings-back');
+      const flagWrap = document.getElementById('quick-language-selector');
+      const flagImg = document.getElementById('current-language-flag');
+      const backHotspot = document.querySelector('.back-btn-hotspot');
+
+      if (musicLabel) musicLabel.innerText = t.music;
+      if (soundLabel) soundLabel.innerText = t.sound;
+      if (musicSlider) musicSlider.setAttribute('title', t.musicTitle);
+      if (soundSlider) soundSlider.setAttribute('title', t.soundTitle);
+      if (btnLang) btnLang.innerText = t.language;
+      if (btnBack) btnBack.innerText = t.back;
+      if (flagWrap) flagWrap.setAttribute('title', t.langTitle);
+      if (flagImg) {
+        flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${lang}-removebg-preview.png`;
+      }
+      if (backHotspot) backHotspot.setAttribute('title', t.back);
+      document.documentElement.lang = lang;
+    }
+    // === [#TUTOR.02.03.00] END ===
+
+    // === [#TUTOR.02.04.00] START | name: openLanguageMap | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó pergamen térkép overlay megnyitása.
+    // @calls: none
+    // @calledBy: btn-settings-lang kattintás
+    function openLanguageMap() {
+      const overlay = document.getElementById('language-map-overlay');
+      if (overlay) overlay.style.display = 'flex';
+    }
+    // === [#TUTOR.02.04.00] END ===
+
+    // === [#TUTOR.02.05.00] START | name: closeLanguageMap | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvválasztó pergamen térkép overlay bezárása.
+    // @calls: none
+    // @calledBy: changeLanguage, X gomb
+    function closeLanguageMap() {
+      const overlay = document.getElementById('language-map-overlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+    // === [#TUTOR.02.05.00] END ===
+
+    // === [#TUTOR.02.06.00] START | name: changeLanguage | lines: ~12 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Nyelvváltás mentése (localStorage, URL param) és felület frissítése.
+    // @calls: [#HEX:TUTOR.02.03.00], [#HEX:TUTOR.02.05.00]
+    // @calledBy: selectLanguage, térkép lőrés kattintás
+    function changeLanguage(lang) {
+      localStorage.setItem('ebook_pirates_language', lang);
+      localStorage.setItem('siteLang', lang);
+      localStorage.setItem('ebp_language', lang);
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+      applySettingsLanguage(lang);
+      closeLanguageMap();
+    }
+    // === [#TUTOR.02.06.00] END ===
+
+    // === [#TUTOR.02.07.00] START | name: goBackToMainMenu | lines: ~4 ===
+    // @subsystem: TUTOR.01_Settings
+    // @summary: Visszatérés a Főmenübe (MainMenuTutorial.html) az aktuális nyelv megőrzésével.
+    // @calls: none
+    // @calledBy: btn-settings-back kattintás
+    function goBackToMainMenu() {
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'MainMenuTutorial.html?lang=' + curLang + '&v=' + Date.now();
+    }
+    // === [#TUTOR.02.07.00] END ===
+  </script>
+</head>
+<body>
+  <!-- 🚁 Forgó Léghajó Videó Háttér (Teljesen megegyezik a Főmenüvel) -->
+  <video id="bg-video" autoplay loop muted playsinline preload="auto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none;">
+    <source src="assets/videos/Zeppelin%20forog%20(1).mp4" type="video/mp4">
+    <source src="assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
+    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Zeppelin%20forog%20(1).mp4" type="video/mp4">
+  </video>
+  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: 1; pointer-events: none;"></div>
+
+  <div id="main-menu-overlay">
+    
+    <!-- Felső Logó Panel (Hajszálpontosan a Főmenü pozíciójában) -->
+    <div class="menu-logo-container">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Color_logó.png" alt="eBookPirates Logo">
+    </div>
+
+    <!-- Nyelvi Ikon (Pontosan azonos magasság és pozíció a Főmenü zászlójával) -->
+    <!-- Nyelvi Ikon (Mutatja az aktuális nyelvet, kattintásra megnyitja a nyelvválasztó térképet) -->
+    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="showLanguageSelector()" title="Nyelvválasztás / Language Selection">
+      <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+    </div>
+
+    <!-- 4 Menüpont pontosan a Főmenü 4 gombjának helyén és méretében -->
+    <!-- 1. Zene Csúszka -->
+    <div class="menu-slider-container">
+      <div id="label-music" class="slider-label">Zene</div>
+      <input type="range" min="0" max="100" class="steampunk-slider" id="music-slider" title="Zene hangereje">
+    </div>
+    
+    <!-- 2. Hang Csúszka -->
+    <div class="menu-slider-container">
+      <div id="label-sound" class="slider-label">Hang</div>
+      <input type="range" min="0" max="100" class="steampunk-slider" id="sound-slider" title="Effektek hangereje">
+    </div>
+
+    <!-- 3. Nyelv gomb -->
+    <div id="btn-settings-lang" class="menu-button" onclick="showLanguageSelector()">Nyelv</div>
+
+    <!-- 4. Vissza a Főmenübe gomb -->
+    <div id="btn-settings-back" class="menu-button" onclick="goBackToMainMenu()">Vissza a Főmenübe</div>
+
+  </div>
+
+
+    <!-- 🗺️ ABRIGÓ NYELVVÁLASZTÓ TÉRKÉP FELUGRÓ ABLAK -->
+  <div id="lang-modal">
+    <div class="lang-img-wrapper">
+      <img src="assets/images/Nyelvvalaszto_Abrigoval.jpg" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Nyelvvalaszto_Abrigoval.jpg'" alt="Válassz nyelvet / Select Language">
+      
+      <!-- 1. MAGYAR -->
+      <div class="lang-porthole-btn" style="top: 42.5%; left: 5.2%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('hu', event)" title="Magyar"></div>
+
+      <!-- 2. ENGLISH (BEKÖTVE) -->
+      <div class="lang-porthole-btn" style="top: 42.5%; left: 28.6%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('en', event)" title="English"></div>
+
+      <!-- 3. DEUTSCH -->
+      <div class="lang-porthole-btn" style="top: 42.5%; left: 52.6%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('de', event)" title="Deutsch"></div>
+
+      <!-- 4. ESPAÑOL -->
+      <div class="lang-porthole-btn" style="top: 42.5%; left: 76.4%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('es', event)" title="Español"></div>
+
+      <!-- 5. РУССКИЙ -->
+      <div class="lang-porthole-btn" style="top: 64.6%; left: 17.0%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('ru', event)" title="Русский"></div>
+
+      <!-- 6. POLSKI -->
+      <div class="lang-porthole-btn" style="top: 72.8%; left: 42.2%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('pl', event)" title="Polski"></div>
+
+      <!-- 7. FRANÇAIS -->
+      <div class="lang-porthole-btn" style="top: 64.6%; left: 66.0%; width: 18.5%; height: 18.5%;" onclick="selectLanguage('fr', event)" title="Français"></div>
+
+      <!-- 8. VISSZA / BACK GOMB -->
+      <div class="back-btn-hotspot" onclick="closeLanguageSelector(event)" title="Vissza / Back"></div>
+    </div>
+  </div>
+
+</body>
+</html>

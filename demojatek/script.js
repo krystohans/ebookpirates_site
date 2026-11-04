@@ -1,5 +1,5 @@
 window.INFO_SCROLL_EN = "You landlubber! Didn't you come here to read?! Or is paying attention to me some kind of luxury?!\nIt's because of people like you that I keep this piece of junk on me.\nHere, take it, everything you need to know is written right down here.\n\nGoal of the Game:\n• You must collect 30 glowing Membranes floating on the water and bring them back to the port. The storm lantern marks the way back.\n• Your ship has 10 durability points. You lose one point each time you hit a rock. When this value drops to one, you will receive a warning. If the boat's durability drops to zero, the ship breaks and sinks; you will have to restart the game from the main menu, and all membranes collected up to that point will be lost.\n• During your collection run, quiz questions regarding the rules of the game will pop up from time to time. If you answer correctly, you scoop up the membrane; if you answer incorrectly, you do not.\n\nControls:\n• You steer the sailing boat using the W, A, S, D and arrow keys.\n• The camera can be rotated with the mouse. As long as you hold down the left mouse button, your ship will turn in the direction the camera is facing.\n• The main menu can be accessed via the Menu icon (top menu bar, the icon next to the skull).\n• You can advance through text bubbles by pressing Space.\n• The info scroll can be closed by clicking on the skull (bottom right corner).\n• In the Settings menu, you can adjust the sounds, music, fullscreen mode, and game language.\n• After picking up the third membrane, an airship takes off, which will be anchored at the mouth of the bay until then. From that point on, it follows you throughout the tutorial. If it catches up to you, it will ask you a question. If you answer correctly, you can move on; if you answer incorrectly, you lose the membranes currently on your ship (membranes already delivered to the port remain safe). If you had no membranes on your ship, the tutorial restarts from the port.\n\nThe World:\nThe Pirate Port is called Hebok. This is where you can find the Market, the Book Shrine, and the Tavern, where you can accept quests.\nYou can rent or buy a ship there, or you can even join the crew of other ships. Or join the pirates.\nThe more Books you have, the higher your rank will be.\n\nCurrencies:\nWe use Pirate Credits and Talent in the game.\n• You can earn Pirate Credits through adventures; plus, the system automatically credits you with one point every day upon logging in. You can also sell your items for Pirate Credits, except for Books.\n• You can obtain Talent by supporting our work via PayPal or Patreon, or if you are lucky enough to find a Let-crystal and sell it at the Shrine.\n• You can exchange Talent for Pirate Credits at the Bank, but not the other way around.\n\nMembrane\n• The raw material for Scrolls; it cannot be read on its own.\n\nScroll\n• Scrolls can be crafted from Membranes. You can read your Scrolls, Copies, and Books in the Library.\n• The Scrollmaster crafts one Scroll from 30 Membranes for 11 Pirate Credits.\n• You can buy and sell Scrolls at the Scrollmaster or on the Market.\n\nCopy\n• To craft a Copy, you need all the Scrolls of a book, but you can also receive Copies from other players or purchase them on the Market. If you are lucky.\n\nBook\nConsecration\n• In the Book Shrine, a Copy is consecrated into a Book upon paying Talent.\n• After Consecration, the Book becomes downloadable as an ebook, and the player to whom the Book is registered receives 10 Copies to do with as they please.\n• If any player illegally shares the downloaded ebook, the Book will lose its value in the game despite having been consecrated, meaning it goes into Book Prison, and the culprit's name will be put up on the Wall of Shame.";
-window.INFO_SCROLL_HU = 'Te patkány! Hát nem olvasni jöttél?! Vagy csak rám figyelni luxus?! \nA hozzád hasonlók miatt tartom ezt a szart magamnál. \nNesze, itt van minden leírva, amit tudnod kell.\n\nA játék célja:\n- 30 darab, vizen lebegő, világító Hártyát kell összeszedéned és eljuttatnod a kikötőbe. Oda az utat a viharlámpa mutatja. \n- A hajódnak 10 életereje van. Minden egyes sziklának ütközéskor elveszítesz ezekből egyet. Ha ez az érték eléri az egyet, figyelmeztetést kapsz. Ha a csónak életereje nullára csökken, akkor a hajó összetörik és elsüllyed, te pedig kezdheted a játékot elölről a főmenüből és minden addig szerzett hártyád elvész.  \n- A gyűjtögetés során időről időre kvízkédések ugranak fel a játék szabályaival kapcsolatban. Helyes válasz esetén felszeded a hártyát, hibás válasz esetén nem.\n\nAz irányításról:\n- Te irányítod a vitorlás csónakot w, a, s, d és az iránynyíl billentyűkkel. \n- Az egérrel a kamerát lehet forgatni. Amíg lenyomva tartod a bal egérgombot, addig a hajód arra fordul, amerre a kamera néz.\n- A főmenüt a Menü ikonnal tudod elérni (felső menüsor, a halálfej melletti ikon). \n- A szövegbuborékokat a space-el tudod léptetni. \n- Az info scrollt a halálfejre kattintva (jobb alsó sarok) tudod összezárni.\n- A Beállítások menüben a hangokat, zenét, teljes képernyőt és játék nyelvét beállítani.\n- A harmadik hártya felvétele után felszáll léghajó, ami addig az öböl bejáratában fog horgonyozni. Ezt követően a tutorial során végig követ. Ha utolér, akkor feltesz egy kérdést. Ha jó válaszolsz, tovéábbmehetsz, ha rosszul, a hajón levő hártyákat elveszíted (a kikötőben leadott hártyák megmaradnak). Ha nem volt hártyád a hajón, akkor a tutorial újraindul a kikötőből.\n\nA világról:\nA Kalózkikötőt Heboknak hívják. Itt találod a Piacot, a Könyvszentélyt és a Tavernát, ott vállalhatsz küldetéseket .\nOtt bérelhetsz vagy vehetsz hajót, de akár más hajók legénységéhez is  csatlakozhatsz. Vagy a kalózokhoz. \nMinél több Könyved van, annál nagyobb lesz a rangod. \n\nPénzek: \nA játékban Kalózkreditet és Tálentumot használunk.\n- Kalózkreditet kalandokkal tudsz szerezni, plusz a rendszer automatikusan jóváír neked minden nap a belépéskor egyet. Eladhatod a tárgyaidat is Kalózkreditért, kivéve a Könyveket.\n- Tálentumhoz úgy juthatsz, ha támogatod a munkánkat PayPal-en vagy Patreonon keresztül, vagy ha olyan mázlis vagy, hogy találsz egy letkristályt és eladod a Szentélyben. \n- A Bankban tudsz váltani Tálentumot Kalózkreditre, de visszafelé nem.\n\nHártya\n- A Tekercsek alapanyaga, önmagában nem olvasható.\n\nTekercs\n- Tekercset Hártyából lehet készíttetni. A Tekercseidet, a Másolatot és a Könyveidet a Könyvtárban tudod elolvasni.\n- A Tekercsmester 30 db Hártyából 11 Kalózkreditért készít neked egy Tekercset. \n- Tekercset eladni és venni a Tekercsmesternél vagy a Piacon lehet.\n\nMásolat\n- Másolat készítéséhez a Könyv összes Tekercsére szükséged van, de kaphatsz Másolatot más játékosoktól is, vagy megvásárolhatod őket a Piacon. Ha szerencséd van.\n\nKönyv\nFelszentelés\n- A Könyvszentélyben a Másolatot Tálentum befizetésével Könyvvé szentelik.\nA Szentelés után a Könyv ebook formában letölthetővé válik, és az a játékos, akinek a nevére íródik a Könyv, kap 10 db Másolatot, amivel szabadon rendelkezhet. \n- Ha a letöltött ebookot bármelyik játékos illegálisan megosztja, akkor hiába szenteltette fel a Könyvet, az elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül, a bűnös neve pedig felkerül a Szégyenfalra.';
+window.INFO_SCROLL_HU = "Te patkány! Hát nem olvasni jöttél?! Vagy csak rám figyelni luxus?! \nA hozzád hasonlók miatt tartom ezt a szart magamnál. \nNesze, itt van minden leírva, amit tudnod kell.\nA játék célja:\n- 30 darab, vízen lebegő, világító Hártyát kell összeszedned és eljuttatnod a kikötőbe. Oda az utat a viharlámpa mutatja. \n- A hajódnak 10 életereje van. Minden egyes sziklának ütközéskor elveszítesz ezekből egyet. Ha ez az érték eléri az egyet, figyelmeztetést kapsz. Ha a csónak életereje nullára csökken, akkor a hajó összetörik és elsüllyed, te pedig kezdheted a játékot elölről a főmenüből és minden addig szerzett hártyád elvész.  \n- A gyűjtögetés során időről időre kvízkérdések ugranak fel a játék szabályaival kapcsolatban. Helyes válasz esetén felszeded a hártyát, hibás válasz esetén nem.\nAz irányításról:\n- Te irányítod a vitorlás csónakot w, a, s, d és az iránynyíl billentyűkkel. \n- Az egérrel a kamerát lehet forgatni.\n- A főmenüt a Menü ikonnal tudod elérni (felső menü sor, a halálfej melletti ikon). \n- A szövegbuborékokat a space-el tudod léptetni, vagy ha rákattintasz a panelre. Ha máshova kattintasz a képernyőn, akkor nem  fog léptetni.  \n- Az info scrollt a halálfejre kattintva (jobb alsó sarok) tudod összezárni.\n- A Beállítások menüben a hangokat, zenét, teljes képernyőt és játék nyelvét beállítani.\n- A harmadik hártya felvétele után felszáll léghajó, ami addig az öböl bejáratában fog horgonyozni. Ezt követően a tutorial során végig követ. Ha utolér, akkor feltesz egy kérdést. Ha jó válaszolsz, továbbmehetsz, ha rosszul, a hajón levő hártyákat elveszíted (a kikötőben leadott hártyák megmaradnak). Ha nem volt hártyád a hajón, akkor a tutorial újraindul a kikötőből.\nA világról:\nA Kalózkikötőt Heboknak hívják. Itt találod a Piacot, a Könyvszentélyt és a Tavernát, ott vállalhatsz küldetéseket .\nOtt bérelhetsz vagy vehetsz hajót, de akár más hajók legénységéhez is csatlakozhatsz. Vagy a kalózokhoz. \nMinél több Könyved van, annál nagyobb lesz a rangod. \nPénzek: \nA játékban Kalózkreditet és Tálentumot használunk.\n- Kalózkreditet kalandokkal tudsz szerezni, plusz a rendszer automatikusan jóváír neked minden nap a belépéskor egyet. Eladhatod a tárgyaidat is Kalózkreditért, kivéve a Könyveket.\n- Tálentumhoz úgy juthatsz, ha támogatod a munkánkat PayPal-en vagy Patreonon keresztül, vagy ha olyan mázlis vagy, hogy találsz egy letkristályt és eladod a Szentélyben. \n- A Bankban tudsz váltani Tálentumot Kalózkreditre, de visszafelé nem.\nHártya\n- A Tekercsek alapanyaga, önmagában nem olvasható.\nTekercs\n- Tekercset Hártyából lehet készíttetni. A Tekercseidet, a Másolatot és a Könyveidet a Könyvtárban tudod elolvasni.\n- A Tekercsmester 30 db Hártyából 11 Kalózkreditért készít neked egy Tekercset. \n- Tekercset eladni és venni a Tekercsmesternél vagy a Piacon lehet.\nMásolat\n- Másolat készítéséhez a Könyv összes Tekercsére szükséged van, de kaphatsz Másolatot más játékosoktól is, vagy megvásárolhatod őket a Piacon. Ha szerencséd van.\nKönyv\nFelszentelés\n- A Könyvszentélyben a Másolatot Tálentum befizetésével Könyvvé szentelik.\nA Szentelés után a Könyv ebook formában letölthetővé válik, és az a játékos, akinek a nevére íródik a Könyv, kap 10 db Másolatot, amivel szabadon rendelkezhet. \n- Ha a letöltött ebookot bármelyik játékos illegálisan megosztja, akkor hiába szenteltette fel a Könyvet, az elveszti az értékét a játékban, vagyis Könyvbörtönbe kerül, a bűnös neve pedig felkerül a Szégyenfalra.";
 window.INFO_SCROLL_TRANSLATIONS = {
   hu: window.INFO_SCROLL_HU,
   en: window.INFO_SCROLL_EN,
@@ -54,13 +54,43 @@ window.gameMonologues = {};
 window.gamePopups = {};
 window.eogMonologues = {};
 
+// ================================================================================
+// 🌐 KÖZPONTI JÁTÉKNYELV-KEZELŐ (SINGLE SOURCE OF TRUTH)
+// Mindig szinkronban tartja az URL-t, a memóriát és az összes localStorage kulcsot.
+// ================================================================================
+window.getGameLanguage = function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlLang = urlParams.get('lang');
+  if (urlLang) {
+    const clean = urlLang.toLowerCase().trim();
+    if (['hu', 'en', 'de', 'fr', 'es', 'pl', 'ru'].includes(clean)) {
+      window.currentLanguage = clean;
+      try {
+        localStorage.setItem('ebook_pirates_language', clean);
+        localStorage.setItem('siteLang', clean);
+        localStorage.setItem('ebp_language', clean);
+      } catch (e) { }
+      return clean;
+    }
+  }
+  const stored = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || localStorage.getItem('ebp_language');
+  if (stored) {
+    const clean = stored.toLowerCase().trim();
+    if (['hu', 'en', 'de', 'fr', 'es', 'pl', 'ru'].includes(clean)) {
+      window.currentLanguage = clean;
+      return clean;
+    }
+  }
+  window.currentLanguage = 'hu';
+  return 'hu';
+};
+
 // === [#TUTOR.04.02.00] START | name: loadDialogues | lines: ~24 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: loadDialogues.
 async function loadDialogues() {
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const lang = window.currentLanguage || urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || 'hu';
+    const lang = window.getGameLanguage();
     window.currentLanguage = lang;
     if (document.body) {
       document.body.setAttribute('data-lang', lang);
@@ -164,7 +194,7 @@ window.dialogueTypography = {
       "left": 0
     },
     "controls": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.27
     },
     "1": {
@@ -414,11 +444,11 @@ window.dialogueTypography = {
       "left": 0
     },
     "welcome_1": {
-      "fontSize": 27.0,
+      "fontSize": 24.5,
       "lineHeight": 1.25,
-      "top": 51,
-      "height": 82,
-      "width": 670,
+      "top": 56,
+      "height": 76,
+      "width": 675,
       "left": 0
     },
     "welcome_3": {
@@ -606,7 +636,7 @@ window.dialogueTypography = {
       "left": 0
     },
     "controls": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.27
     },
     "welcome_2": {
@@ -620,7 +650,7 @@ window.dialogueTypography = {
   },
   "ru": {
     "controls": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.27
     },
     "wind": {
@@ -1864,7 +1894,7 @@ window.dialogueTypography = {
       "left": -1
     },
     "2": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.25,
       "top": 51,
       "height": 82,
@@ -1872,7 +1902,7 @@ window.dialogueTypography = {
       "left": -1
     },
     "3": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.25,
       "top": 51,
       "height": 82,
@@ -1904,7 +1934,7 @@ window.dialogueTypography = {
       "left": -1
     },
     "7": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.25,
       "top": 51,
       "height": 82,
@@ -1912,7 +1942,7 @@ window.dialogueTypography = {
       "left": -1
     },
     "8": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.25,
       "top": 51,
       "height": 82,
@@ -1936,7 +1966,7 @@ window.dialogueTypography = {
       "left": -1
     },
     "12": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.25,
       "top": 51,
       "height": 82,
@@ -2040,7 +2070,7 @@ window.dialogueTypography = {
       "left": -1
     },
     "25": {
-      "fontSize": 22.0,
+      "fontSize": 24.0,
       "lineHeight": 1.25,
       "top": 51,
       "height": 82,
@@ -2163,13 +2193,27 @@ window.applyMonologueTypography = function (el, key) {
   let widthVal = (cfg.width !== undefined && cfg.width !== null) ? cfg.width : defLang.width;
   let leftVal = (cfg.left !== undefined && cfg.left !== null) ? cfg.left : defLang.left;
 
-  if (strKey === 'controls') {
-    fs = cfg.fontSize || 22.0;
+    if (strKey === 'controls') {
+    fs = cfg.fontSize || 24.0;
     lh = cfg.lineHeight || 1.27;
     topVal = 82;
     heightVal = 220;
-    widthVal = 365;
+    widthVal = 370;
     leftVal = 0;
+    // widthVal = 370 (user original restored)
+    if (lang === 'de') {
+      fs = cfg.fontSize || 24.0;
+      lh = cfg.lineHeight || 1.25;
+      topVal = 82;
+      heightVal = 220;
+      // widthVal = 370 (user original restored)
+    } else if (lang === 'fr') {
+      fs = cfg.fontSize || 19.0;
+      lh = cfg.lineHeight || 1.23;
+      topVal = 72;
+      heightVal = 240;
+      // widthVal = 370 (user original restored)
+    }
   } else if (strKey === 'wind') {
     fs = cfg.fontSize || 28.0;
     lh = cfg.lineHeight || 1.25;
@@ -2203,6 +2247,22 @@ window.applyMonologueTypography = function (el, key) {
 
     box.style.setProperty('left', `calc(50% + ${leftVal}px)`, 'important');
     box.style.setProperty('--textbox-left', leftVal + 'px', 'important');
+
+    // 🛡️ TÚLCSORDULÁS-VÉDELEM (3 soros vagy hosszabb szövegeknél automatikus finomméretezés a levágás ellen)
+    if (strKey !== 'controls' && strKey !== 'wind') {
+      let currentFs = fs;
+      // Legfeljebb EGYETLEN 0.5px-es finomcsökkentés a beállított mérethez képest:
+      if (el.scrollHeight > (heightVal + 2) || el.offsetHeight > (heightVal + 2)) {
+        currentFs = fs - 0.5;
+        el.style.setProperty('font-size', currentFs + 'px', 'important');
+      }
+      if (el.scrollHeight > (heightVal + 2) && heightVal < 94) {
+        box.style.setProperty('top', '44px', 'important');
+        box.style.setProperty('--textbox-top', '44px', 'important');
+        box.style.setProperty('height', '94px', 'important');
+        box.style.setProperty('--textbox-height', '94px', 'important');
+      }
+    }
   }
 };
 
@@ -2556,6 +2616,11 @@ function setupTopBarEvents() {
       await loadDialogues();
       if (typeof window.applyLanguageToUI === 'function') {
         window.applyLanguageToUI(selectedLang);
+      }
+      if (window.quizManager && typeof window.quizManager.onLanguageChanged === 'function') {
+        window.quizManager.onLanguageChanged(selectedLang);
+      }
+      window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: selectedLang } })); if (true) {
       }
       const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
       if (welcomeOverlay && welcomeOverlay.style.display !== 'none') {
@@ -3005,9 +3070,9 @@ const scene = new THREE.Scene();
 window.scene = scene;
 scene.background = new THREE.Color(0x7ec8e8);
 // 🏔️ Hegyek & Távoli horizont megjelenítése: növelt kameratávolság (2500m) és lágy horizont-köd
-scene.fog = new THREE.Fog(0x7ec8e8, 350, 2400);
+scene.fog = new THREE.Fog(0x7ec8e8, 600, 3200);
 
-const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 2500);
+const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 3500);
 window.cam = cam;
 let orbH = 0.0, orbV = 15.0, orbDist = 26.00;
 const ORB_MIN_V = 5.0, ORB_MAX_V = 90.0, ORB_MIN_D = 26.00, ORB_MAX_D = 26.00;
@@ -3249,7 +3314,8 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
     if (child.isMesh) {
       child.castShadow = false; child.receiveShadow = false;
-      child.frustumCulled = true; child.visible = true;
+      const isMountainOrTerrain = name.includes('mountain') || name.includes('hill') || name.includes('cliff') || name.includes('terrain') || name.includes('island') || name.includes('rock') || name.includes('land') || name.includes('dune') || name.includes('beach');
+      child.frustumCulled = !isMountainOrTerrain; child.visible = true;
 
       // 🌿 Kis növények, fű, apró elemek regisztrálása dinamikus távolsági cullinghoz
       const isSmallFoliageOrProp = name.includes('grass') || name.includes('sugarcane') ||
@@ -4557,7 +4623,7 @@ window._lastPopupAudioKey = null;
 
 // Auto-Read mód perzisztens tárolása (alapból bekapcsolva a kényelmes élményért!)
 const storedAutoRead = localStorage.getItem('ebook_pirates_zozo_autoread');
-window.isZozoAutoReadActive = false; // Ideiglenesen kikapcsolva, amíg a felolvasó ikon rejtve van
+window.isZozoAutoReadActive = storedAutoRead !== null ? (storedAutoRead === '1') : true;
 
 window.setZozoTTSButtonState = function (isPlaying) {
   document.querySelectorAll('.zozo-read-aloud-btn').forEach(btn => {
@@ -4630,9 +4696,13 @@ window.resolveActiveZozoTTSKey = function () {
 
   const monologContainer = document.getElementById('zozo-ingame-monolog-container');
   if (monologContainer && monologContainer.style.display !== 'none') {
+    if (monologContainer.classList.contains('controls-popup-mode')) {
+      return 'monolog_controls';
+    }
     if (window.monologState && Array.isArray(window.monologState.currentBlockQueue)) {
       const mIdx = window.monologState.currentBlockQueue[window.monologState.currentBlockIndex];
       if (mIdx !== undefined && mIdx !== null) {
+        if (String(mIdx) === 'airship_bad_empty') return 'popup_airship_bad_empty';
         return 'monolog_' + String(mIdx);
       }
     }
@@ -4643,7 +4713,7 @@ window.resolveActiveZozoTTSKey = function () {
     if (window._lastPopupAudioKey) return window._lastPopupAudioKey;
     const pTxt = (document.getElementById('popup-toast-text')?.innerText || '').trim();
     if (window.gamePopups && pTxt) {
-      const norm = s => s.replace(/\s+/g, ' ').trim();
+      const norm = s => (s || '').replace(/\s+/g, ' ').replace(/[.,/#!$%^&*;:{}=\-_`~()?!]/g, '').trim().toLowerCase();
       for (const [k, v] of Object.entries(window.gamePopups)) {
         if (norm(String(v)) === norm(pTxt)) {
           return 'popup_' + k;
@@ -4654,17 +4724,18 @@ window.resolveActiveZozoTTSKey = function () {
 
   const eogDialog = document.getElementById('eog-compact-dialog');
   if (eogDialog && eogDialog.style.display !== 'none') {
+    if (window._currentEogKey) return window._currentEogKey;
     const eTxt = (document.getElementById('eog-dialog-text')?.innerText || '').trim();
     if (window.eogMonologues && eTxt) {
-      const norm = s => s.replace(/\s+/g, ' ').trim();
+      const norm = s => (s || '').replace(/\s+/g, ' ').replace(/[.,/#!$%^&*;:{}=\-_`~()?!]/g, '').trim().toLowerCase();
       for (const [k, v] of Object.entries(window.eogMonologues)) {
         if (norm(String(v)) === norm(eTxt)) {
           return 'eog_' + k;
         }
       }
     }
-    if (eTxt.includes('LÁDA') || eTxt.includes('CHEST')) return 'eog_pointB';
-    if (eTxt.includes('mólóra') || eTxt.includes('pier')) return 'eog_chestFound';
+    if (eTxt.includes('LÁDA') || eTxt.includes('CHEST') || eTxt.includes('TRUHE') || eTxt.includes('COFFRE') || eTxt.includes('COFRE') || eTxt.includes('SKRZYNIA') || eTxt.includes('СУНДУК')) return 'eog_pointB';
+    if (eTxt.includes('mólóra') || eTxt.includes('pier') || eTxt.includes('Steg') || eTxt.includes('pontoon') || eTxt.includes('quai') || eTxt.includes('muelle') || eTxt.includes('molo') || eTxt.includes('причал')) return 'eog_chestFound';
     return 'eog_pointA';
   }
 
@@ -4673,13 +4744,14 @@ window.resolveActiveZozoTTSKey = function () {
 
 window.triggerZozoAutoReadCurrent = function () {
   const ttsKey = window.resolveActiveZozoTTSKey();
-  if (!ttsKey) return;
+  if (!ttsKey) {
+    if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
+    return;
+  }
 
   window.stopZozoTTS();
 
-  const lang = ((typeof window.getGameLanguage === 'function')
-    ? window.getGameLanguage()
-    : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu')).toLowerCase();
+  const lang = window.getGameLanguage();
 
   const popupToast = document.getElementById('ingame-popup-toast');
   const isPopupActive = popupToast && popupToast.style.display !== 'none';
@@ -4688,7 +4760,8 @@ window.triggerZozoAutoReadCurrent = function () {
     window._popupTimeout = null;
   }
 
-  const primaryPath = `assets/sounds/tts/${lang}/${ttsKey}.mp3`;
+  const primaryPath = window.getAssetUrl(`assets/sounds/tts/${lang}/${ttsKey}.mp3?v=20261103_03`);
+  console.log('🔊 [ZOZO TTS]', 'lang=' + lang, 'key=' + ttsKey, 'url=' + primaryPath);
   const fallbackHuPath = `assets/sounds/tts/hu/${ttsKey}.mp3`;
 
   const audio = new Audio(primaryPath);
@@ -4720,13 +4793,10 @@ window.triggerZozoAutoReadCurrent = function () {
   };
 
   audio.onended = onFinish;
-  audio.onerror = function () {
-    if (lang !== 'hu') {
-      audio.src = fallbackHuPath;
-      audio.play().catch(err => onFinish());
-    } else {
-      onFinish();
-    }
+  audio.onerror = function (e) {
+    console.warn('⚠️ TTS betöltési hiba ennél a fájlnál:', primaryPath, e);
+    // Soha nem váltunk át önkényesen magyarra idegen nyelven:
+    onFinish();
   };
 
   audio.play().catch(err => {
@@ -4948,7 +5018,25 @@ window.triggerDropoffMonologs = function (prevStored, newStored) {
   if (window._dockDropoffLocked) return;
   window._dockDropoffLocked = true;
 
-  if (newStored >= 1 && !window.monologState.hasSeen[5]) {
+  const afterHomepointPopup = function () {
+    if (newStored >= 1 && !window.monologState.hasSeen[5]) {
+      window.showInGameMonolog(5, 6, function () {
+        window._dockDropoffLocked = false;
+        window._waitingForPierLeave = true;
+      });
+    } else if (newStored >= 3 && !window.monologState.hasSeen[11] && (window.membranePickUpCount || 0) < 4) {
+      window.showInGameMonolog(11, 14, function () {
+        window._dockDropoffLocked = false;
+        window._waitingForPierLeave = true;
+      });
+    } else {
+      window._dockDropoffLocked = false;
+      if (newStored >= 1) window._waitingForPierLeave = true;
+    }
+  };
+  window.showPopUp((window.gamePopups && window.gamePopups.homepoint) || "Kipakoltam, mehetünk!", afterHomepointPopup);
+  return;
+  if (false && newStored >= 1 && !window.monologState.hasSeen[5]) {
     // 1. Első leadás: közvetlenül a Zozó 5-6 nagymonológ ablak nyílik meg azonnal és tisztán
     window.showInGameMonolog(5, 6, function () {
       window._dockDropoffLocked = false;
@@ -4977,11 +5065,11 @@ let lastStepTime = 0;
 // @summary: 3D Hártyavadászat funkció: selectZozoTextStep.
 window.selectZozoTextStep = function (stepVal) {
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
-  window.checkAndPlayAutoRead();
   const idx = parseInt(stepVal, 10);
   const totalSteps = (window.zozoWelcomeTexts && window.zozoWelcomeTexts.length > 0) ? window.zozoWelcomeTexts.length : 4;
   if (!isNaN(idx) && idx >= 0 && idx < totalSteps) {
     window.zozoTextStep = idx;
+    window.checkAndPlayAutoRead();
     const curL = window.currentLanguage || 'hu';
     document.body.className = `welcome-mode step-${idx}` + (curL === 'ru' ? ' lang-ru' : '');
     document.body.setAttribute('data-lang', curL);
@@ -5053,7 +5141,78 @@ window.advanceZozoWelcome = function (event) {
 // === [#TUTOR.04.30.00] START | name: showPopUp | lines: ~37 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: showPopUp.
-window.showPopUp = function (msg, onCompleteCb) {
+window.showPopUp = function (msg, onCompleteCb, optionalAudioKey) {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
+  if (window.isFishingMode) {
+    if (onCompleteCb) onCompleteCb();
+    return;
+  }
+  const mc = document.getElementById('zozo-ingame-monolog-container');
+  if (mc && mc.style.display !== 'none') {
+    if (onCompleteCb) onCompleteCb();
+    return;
+  }
+
+  window._lastPopupAudioKey = null;
+  if (optionalAudioKey) {
+    window._lastPopupAudioKey = optionalAudioKey.startsWith('popup_') ? optionalAudioKey : ('popup_' + optionalAudioKey);
+  } else if (window.gamePopups && msg) {
+    const norm = s => (s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    const targetNorm = norm(msg);
+    for (const [k, v] of Object.entries(window.gamePopups)) {
+      const vNorm = norm(String(v));
+      if (vNorm === targetNorm || (targetNorm.length > 8 && vNorm.includes(targetNorm)) || (vNorm.length > 8 && targetNorm.includes(vNorm))) {
+        window._lastPopupAudioKey = 'popup_' + k;
+        break;
+      }
+    }
+  }
+
+  const p = document.getElementById('ingame-popup-toast');
+  const txt = document.getElementById('popup-toast-text');
+  if (p) {
+    p.classList.remove('controls-popup-mode');
+    p.classList.remove('wind-popup-mode');
+    p.style.display = 'flex';
+    p.style.pointerEvents = 'auto';
+
+    if (txt) {
+      txt.innerText = msg;
+      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(txt, 27, 14);
+    } else {
+      p.innerText = msg;
+      if (typeof window.fitDialogueText === 'function') window.fitDialogueText(p, 27, 14);
+    }
+
+    window.isTimedPopupActive = true;
+    window.activePopupCallback = onCompleteCb || null;
+
+    if (window._popupTimeout) clearTimeout(window._popupTimeout);
+    window._popupTimeout = setTimeout(() => {
+      window.dismissActivePopup();
+    }, 4500);
+
+    window.checkAndPlayAutoRead();
+  } else if (onCompleteCb) {
+    onCompleteCb();
+  }
+};
+window._oldShowPopUpIgnored = function (msg, onCompleteCb, optionalAudioKey) {
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
+  window._lastPopupAudioKey = null;
+  if (optionalAudioKey) {
+    window._lastPopupAudioKey = optionalAudioKey.startsWith('popup_') ? optionalAudioKey : ('popup_' + optionalAudioKey);
+  } else if (window.gamePopups && msg) {
+    const norm = s => (s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    const targetNorm = norm(msg);
+    for (const [k, v] of Object.entries(window.gamePopups)) {
+      const vNorm = norm(String(v));
+      if (vNorm === targetNorm || (targetNorm.length > 8 && vNorm.includes(targetNorm)) || (vNorm.length > 8 && targetNorm.includes(vNorm))) {
+        window._lastPopupAudioKey = 'popup_' + k;
+        break;
+      }
+    }
+  }
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
   window.checkAndPlayAutoRead();
   if (window.isFishingMode) {
@@ -5120,6 +5279,36 @@ window.dismissActivePopup = function (e) {
 };
 // === [#TUTOR.04.31.00] END ===
 
+// ====================================================
+// UNIVERZÁLIS DIALÓGUS LÉPTETŐ FUNKCIÓ (Space & Panel-Kattintás)
+// Felhasználói szabály: A monológ, welcome és popup boxok léptetése úgy működik,
+// hogy a Space mellett akkor is léptet, ha a játékos rákattint a panelre.
+// Ha máshova kattint (víz, háttér, stb.), NEM léptethet!
+// ====================================================
+window.advanceActiveDialogue = function (e) {
+  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
+  const ingameContainer = document.getElementById('zozo-ingame-monolog-container');
+  const popupToast = document.getElementById('ingame-popup-toast');
+  const eogDialog = document.getElementById('eog-compact-dialog');
+
+  if (welcomeOverlay && welcomeOverlay.style.display !== 'none') {
+    window.advanceZozoWelcome(e);
+    return true;
+  } else if (ingameContainer && ingameContainer.style.display !== 'none') {
+    window.advanceInGameMonolog(e);
+    return true;
+  } else if (popupToast && popupToast.style.display !== 'none') {
+    window.dismissActivePopup(e);
+    return true;
+  } else if (eogDialog && eogDialog.style.display !== 'none') {
+    if (typeof window.closeEogDialog === 'function') {
+      window.closeEogDialog();
+      return true;
+    }
+  }
+  return false;
+};
+
 addEventListener('keydown', (e) => {
   // Tuner panel és beviteli mezők esetén ne léptessen a Space
   if (e.target && (e.target.closest('#textbox-tuner-panel') || e.target.closest('#btn-toggle-textbox-tuner') || e.target.tagName === 'SELECT')) return;
@@ -5135,26 +5324,7 @@ addEventListener('keydown', (e) => {
   if (!isSpace) return;
 
   e.preventDefault();
-
-  // Ha a hangoló nyitva van és aktív egy monológ vagy irányító panel, a Space a következő dialógusra léptet
-  const tunerPanel = document.getElementById('textbox-tuner-panel');
-  const ingameContainer = document.getElementById('zozo-ingame-monolog-container');
-  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
-  const popupToast = document.getElementById('ingame-popup-toast');
-  const eogDialog = document.getElementById('eog-compact-dialog');
-
-  // Normál Space léptetési lánc: Welcome boxok → In-Game Monológ / Irányító Panel → PopUpok → EoG
-  if (welcomeOverlay && welcomeOverlay.style.display !== 'none') {
-    window.advanceZozoWelcome(e);
-  } else if (ingameContainer && ingameContainer.style.display !== 'none') {
-    window.advanceInGameMonolog(e);
-  } else if (popupToast && popupToast.style.display !== 'none') {
-    window.dismissActivePopup(e);
-  } else if (eogDialog && eogDialog.style.display !== 'none') {
-    if (typeof window.closeEogDialog === 'function') {
-      window.closeEogDialog();
-    }
-  }
+  window.advanceActiveDialogue(e);
 });
 
 addEventListener('click', (e) => {
@@ -5220,12 +5390,25 @@ addEventListener('click', (e) => {
     return;
   }
 
-  const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
-  const ingameContainer = document.getElementById('zozo-ingame-monolog-container');
-  const popupToast = document.getElementById('ingame-popup-toast');
+  // ----------------------------------------------------
+  // DIALÓGUS LÉPTETÉS PANELRE KATTINTÁSKOR:
+  // Csak akkor léptet, ha a játékos a szövegdobozra kattint!
+  // Ha a háttérre, karakterre, vízre, menüre kattint, NEM léptet!
+  // ----------------------------------------------------
+  const clickedDialoguePanel = e.target.closest('#zozo-dialogue-box') || 
+                               e.target.closest('#zozo-ingame-monolog-container') || 
+                               e.target.closest('#ingame-popup-toast') || 
+                               e.target.closest('#eog-compact-dialog');
 
-  // Felhasználói szabály: KIZÁRÓLAG a Space billentyű léptetheti a monológokat/párbeszédeket!
-  // Egérkattintásos léptetés szigorúan tiltva van a játékos kérésére.
+  if (clickedDialoguePanel) {
+    // Ha a felolvasás gombra vagy a visszaléptető nyílra kattintott, ne léptessen előre!
+    if (e.target.closest('.zozo-read-aloud-btn') || e.target.closest('.monolog-nav-btn')) return;
+
+    // Ha gomb van a dobozban (pl. EoG záró dialógus), a gombok saját onclickje fusson!
+    if (e.target.closest('button')) return;
+
+    window.advanceActiveDialogue(e);
+  }
 });
 
 // === [#TUTOR.04.32.00] START | name: resetAirshipChase | lines: ~10 ===
@@ -5864,7 +6047,7 @@ function frame(now) {
       window.eogState = 'POINT_A_SHOWN';
       if (!window.chestModel) spawnEogTreasureChest(scene, EoG_POINT_C);
       showZozoEogMonolog(
-        window.eogMonologues.pointA || 'Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet az öböl szájánál!',
+        (window._currentEogKey = 'eog_pointA', window.eogMonologues.pointA || 'Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet az öböl szájánál!'),
         function () {
           window.isCutscenePlaying = false;
           window.eogState = 'POINT_A_SHOWN';
@@ -5883,7 +6066,7 @@ function frame(now) {
 // @summary: 3D Hártyavadászat funkció: showBMonolog.
       function showBMonolog() {
         showZozoEogMonolog(
-          window.eogMonologues.pointB || 'Mi az ott a parton?',
+          (window._currentEogKey = 'eog_pointB', window.eogMonologues.pointB || 'Mi az ott a parton?'),
           function () {
             window.isCutscenePlaying = false;
             window.eogState = 'POINT_B_SHOWN';
@@ -5896,8 +6079,8 @@ function frame(now) {
         window.eogState = 'POINT_A_SHOWN';
         if (!window.chestModel) spawnEogTreasureChest(scene, EoG_POINT_C);
         showZozoEogMonolog(
-          window.eogMonologues.pointA || 'Te, Patkány! Gyanúsan üres a víz...',
-          function () { showBMonolog(); }
+          (window._currentEogKey = 'eog_pointA', window.eogMonologues.pointA || 'Te, Patkány! Gyanúsan üres a víz...'),
+          function () { showBMonolog(); }, 'eog_pointA'
         );
       } else {
         showBMonolog();
@@ -5915,7 +6098,7 @@ function frame(now) {
       if (window.chestGlowDisc) window.chestGlowDisc.visible = false;
       try { playEogFanfare(); } catch (e) { }
       showZozoEogMonolog(
-        window.eogMonologues.chestFound || 'Most én viszem vissza a csónakot a mólóra.\nNem hagyom, hogy ezt elszúrd nekem!',
+        (window._currentEogKey = 'eog_chestFound', window.eogMonologues.chestFound || 'Most én viszem vissza a csónakot a mólóra.\nNem hagyom, hogy ezt elszúrd nekem!'),
         function () {
           startEogCinematic(scene, boat);
         }
@@ -5947,6 +6130,9 @@ function frame(now) {
     if (t >= 1.0 && !window.eogPierArrived) {
       window.eogPierArrived = true;
       if (typeof showChestAtPier === 'function') showChestAtPier(scene);
+      setTimeout(function () {
+        if (typeof startEogFadeAndVideo === 'function') startEogFadeAndVideo();
+      }, 1500);
     }
   }
 
@@ -5967,6 +6153,7 @@ function frame(now) {
   if (dt > 0) {
     if (window._rockRespawnLock) {
       window.currentMv = 0;
+  window.checkAndPlayAutoRead();
       targetMv = 0;
     }
 
@@ -6195,6 +6382,7 @@ function frame(now) {
   if (collisionDetected) {
     // --- VISSZALÉPÉS AZ ELŐZŐ POZÍCIÓRA & MEGÁLLÁS (Forgás szabadon működik!) ---
     window.currentMv = 0;
+  window.checkAndPlayAutoRead();
     mv = 0;
     windForceX = 0;
     windForceZ = 0;
@@ -6502,7 +6690,9 @@ frame();
 // === [#TUTOR.04.3B.00] START | name: showZozoEogMonolog | lines: ~43 ===
 // @subsystem: TUTOR.03_HartyaVadaszat
 // @summary: 3D Hártyavadászat funkció: showZozoEogMonolog.
-window.showZozoEogMonolog = function (text, onCloseCallback) {
+window.showZozoEogMonolog = function (text, onCloseCallback, eogKey) {
+  if (eogKey) { window._currentEogKey = eogKey.startsWith('eog_') ? eogKey : ('eog_' + eogKey); }
+  if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
   const dialog = document.getElementById('eog-compact-dialog');
   const textEl = document.getElementById('eog-dialog-text');
   if (!dialog || !textEl) return;
@@ -6512,6 +6702,7 @@ window.showZozoEogMonolog = function (text, onCloseCallback) {
   dialog.style.display = 'block';
   window.isCutscenePlaying = true;
   window.currentMv = 0;
+  window.checkAndPlayAutoRead();
 
   let isClosed = false;
 
@@ -6521,6 +6712,7 @@ window.showZozoEogMonolog = function (text, onCloseCallback) {
   function closeEogDialog() {
     if (isClosed) return;
     isClosed = true;
+    if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
     dialog.style.display = 'none';
     window.isCutscenePlaying = false;
     document.removeEventListener('keydown', onKey);
@@ -6570,27 +6762,38 @@ function spawnEogTreasureChest(sceneRef, point) {
   const loader = new GLTFLoader();
   loader.load(window.getAssetUrl('models/pirates_assets/SM_Prop_Chest_Treasure_01.glb'), function (gltf) {
     window.chestModel = gltf.scene;
-    window.chestModel.position.set(point.x, 0.75, point.z);
+    window.chestModel.position.set(point.x, 1.8, point.z);
     window.chestModel.scale.set(250, 250, 250);
     sceneRef.add(window.chestModel);
 
     window.chestModel.traverse(function (child) {
       if (child.isMesh && child.material) {
-        child.material.emissive = new THREE.Color(0x332200);
+        child.material.emissive = new THREE.Color(0xffaa00);
+        child.material.emissiveIntensity = 0.85;
         child.material.roughness = 0.3;
         child.material.metalness = 0.8;
         child.material.needsUpdate = true;
       }
     });
 
-    const discGeom = new THREE.CylinderGeometry(1, 1, 0.5, 32);
-    const discMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.7 });
+    const discGeom = new THREE.CylinderGeometry(5.0, 5.0, 0.15, 32);
+    const discMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.85, depthWrite: false });
     const glowDisc = new THREE.Mesh(discGeom, discMat);
-    glowDisc.position.set(point.x, 0.1, point.z);
+    glowDisc.position.set(point.x, 1.82, point.z);
+    glowDisc.frustumCulled = false;
     sceneRef.add(glowDisc);
 
-    const chestLight = new THREE.PointLight(0xffaa33, 150.0, 800);
-    chestLight.position.set(0, 0.5, 0);
+
+
+
+
+
+
+
+
+
+    const chestLight = new THREE.PointLight(0xffdd44, 4500.0, 500);
+    chestLight.position.set(0, 2.0, 0);
     glowDisc.add(chestLight);
     window.chestGlowLight = chestLight;
     window.chestGlowDisc = glowDisc;
@@ -6600,7 +6803,7 @@ function spawnEogTreasureChest(sceneRef, point) {
       new THREE.BoxGeometry(2, 1.5, 1.2),
       new THREE.MeshStandardMaterial({ color: 0xc8a040, roughness: 0.4, metalness: 0.7 })
     );
-    fallback.position.set(point.x, 0.75, point.z);
+    fallback.position.set(point.x, 1.8, point.z);
     sceneRef.add(fallback);
     window.chestModel = fallback;
     window.eogState = 'CHEST_VISIBLE';
@@ -6697,14 +6900,14 @@ function showChestAtPier(sceneRef) {
     const pierChest = gltf.scene;
     pierChest.position.set(8, 1.5, -99);
     pierChest.scale.set(250, 250, 250);
-    sceneRef.add(pierChest);
+    targetScene.add(pierChest);
     window.eogChestAtPier = pierChest;
   });
   loader.load(window.getAssetUrl('models/pirates_assets/SM_Prop_Chest_Lid_01.glb'), function (gltf) {
     const lid = gltf.scene;
     lid.position.set(8, 1.5, -99);
     lid.scale.set(250, 250, 250);
-    sceneRef.add(lid);
+    targetScene.add(lid);
     window.chestLidModel = lid;
   });
   setTimeout(function () {
@@ -6958,6 +7161,7 @@ function loadAndAttachEogSubtitles(video, curL) {
 }
 
 function cleanupEogVideoAudioAndSubtitles() {
+  const curL = (typeof window.getGameLanguage === 'function') ? window.getGameLanguage() : 'hu';
   const video = document.getElementById('eog-video');
   if (video) {
     video.pause();
@@ -7066,7 +7270,7 @@ function startEogVideo(modeOverride) {
                   'hu').toLowerCase();
     
     // 1. Nyelvspecifikus EoG videó kiválasztása (EoG_HU.mp4, EoG_EN.mp4, EoG_DE.mp4, stb.)
-    const langSrc = 'assets/videos/EoG_' + curL.toUpperCase() + '.mp4';
+    const langSrc = window.getAssetUrl('assets/videos/EoG_' + curL.toUpperCase() + '.mp4');
     if (!video.src || !video.src.includes(langSrc)) {
       video.src = langSrc;
       video.load();
@@ -8072,6 +8276,8 @@ window.showEogSuccessChoicePanel = function () {
       e.stopPropagation();
       clearChoiceTimer();
       choiceOverlay.style.display = 'none';
+      if (window.eogChestAtPier) window.eogChestAtPier.visible = false;
+      if (window.chestLidModel) window.chestLidModel.visible = false;
       if (typeof window.exitFullscreenIfActive === 'function') {
         window.exitFullscreenIfActive();
       }
@@ -8081,7 +8287,7 @@ window.showEogSuccessChoicePanel = function () {
           action: 'start_hartyahalaszat'
         }, '*');
       } else {
-        window.location.href = '../minigame_fishing.html';
+        window.location.href = '../Membrane_Hunting/tutorial_fixed.html?mode=fishing';
       }
     };
   }
@@ -8430,6 +8636,8 @@ window.initFishingMode = function () {
   if (popupToast) popupToast.style.display = 'none';
   const monologBox = document.getElementById('zozo-ingame-monolog-container');
   if (monologBox) monologBox.style.display = 'none';
+  if (window.eogChestAtPier) window.eogChestAtPier.visible = false;
+  if (window.chestLidModel) window.chestLidModel.visible = false;
 
   // 2. Csónak kezdőpozíció a móló mellett
   if (typeof boat !== 'undefined' && boat && boat.position) {

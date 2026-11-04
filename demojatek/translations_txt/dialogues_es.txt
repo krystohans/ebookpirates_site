@@ -121,7 +121,7 @@ Más vale que nos esfumemos de su vista,
 antes de que nos arrojen al mar.
 
 [gameMonologues.controls]
-Usa W, A, S, D o las flechas para gobernar el navío. Gira la cámara manteniendo pulsado el botón izquierdo o derecho del ratón. Avanza los diálogos con la barra Espaciadora.
+Puedes controlar el barco con las teclas W, A, S, D o las flechas de dirección. Puedes avanzar / cerrar las ventanas de información pulsando la barra espaciadora o haciendo clic sobre ellas con el ratón.
 
 [gameMonologues.wind]
 ¡Vigila la dirección del viento y orienta la vela en consecuencia!

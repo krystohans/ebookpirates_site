@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUTORZEP Hangoló – TZQSvB (≤ 50 karakter – 2 Sor)</title>
+  <style>
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype'),
+           url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+    }
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype'),
+           url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+      font-weight: bold;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      width: 100%; height: 100%; overflow: hidden;
+      background: radial-gradient(ellipse at center, #232c38 0%, #111720 100%);
+      font-family: sans-serif;
+      display: flex; justify-content: center; align-items: center;
+      user-select: none;
+    }
+
+    #stage-wrapper {
+      position: relative;
+      width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      transition: all 0.25s ease;
+    }
+
+    #quiz-panel-box {
+      position: relative;
+      width: 831px; height: 768px;
+      min-width: 831px; min-height: 768px;
+      background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center / 100% 100%;
+      filter: drop-shadow(0 15px 35px rgba(0,0,0,0.9));
+      transform-origin: center center;
+    }
+
+    .tuner-box {
+      position: absolute;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.85);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .show-borders #box-q1 { border: 2px dashed #00ffff !important; background: rgba(0, 255, 255, 0.12) !important; }
+    .show-borders #box-q2 { border: 2px dashed #ff00ff !important; background: rgba(255, 0, 255, 0.12) !important; }
+    .show-borders #box-a0 { border: 2px dashed #ff3366 !important; background: rgba(255, 51, 102, 0.12) !important; }
+    .show-borders #box-a1 { border: 2px dashed #ffaa00 !important; background: rgba(255, 170, 0, 0.12) !important; }
+    .show-borders #box-a2 { border: 2px dashed #33ff88 !important; background: rgba(51, 255, 136, 0.12) !important; }
+    .show-borders #box-a3 { border: 2px dashed #33ccff !important; background: rgba(51, 204, 255, 0.12) !important; }
+
+    #editor-panel {
+      position: fixed;
+      top: 10px; bottom: 10px;
+      right: 10px;
+      width: 460px;
+      background: rgba(16, 12, 8, 0.97);
+      border: 2px solid #3399ff;
+      border-radius: 10px;
+      color: #ffeedd;
+      z-index: 999999;
+      display: flex; flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.95);
+      font-size: 13px;
+      transition: left 0.2s ease, right 0.2s ease;
+    }
+    #editor-panel.dock-left {
+      right: auto !important;
+      left: 10px !important;
+    }
+
+    #editor-header {
+      padding: 10px 14px;
+      background: linear-gradient(180deg, #182844, #0e1622);
+      border-bottom: 2px solid #224477;
+      display: flex; justify-content: space-between; align-items: center;
+      border-radius: 8px 8px 0 0;
+    }
+    #editor-header h3 { color: #66b2ff; font-size: 14px; margin: 0; }
+
+    #editor-content {
+      padding: 10px 14px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .editor-section {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(100, 150, 255, 0.25);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .char-badge {
+      background: #141f2a;
+      border: 1px solid #3399ff;
+      color: #99ccff;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 10px;
+      margin-top: 6px;
+    }
+
+    .field-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 6px; font-size: 12px;
+    }
+    .field-row input[type="number"] {
+      width: 65px;
+      background: #110d08;
+      border: 1px solid #886633;
+      color: #fff;
+      padding: 3px 5px;
+      border-radius: 4px;
+      text-align: right;
+      font-weight: bold;
+    }
+    .text-input-field {
+      width: 100%;
+      background: #110d08;
+      border: 1px solid #886633;
+      color: #ffd700;
+      padding: 5px 7px;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-top: 3px;
+      font-family: 'Briskb', monospace;
+      outline: none;
+    }
+    .text-input-field:focus { border-color: #ffd700; }
+
+    #editor-footer {
+      padding: 10px 14px;
+      background: #161009;
+      border-top: 2px solid #554020;
+      display: flex; gap: 8px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .btn {
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid transparent;
+      font-size: 12px;
+      transition: all 0.15s ease;
+    }
+    .btn-primary { background: #1a4d80; color: #fff; border-color: #3388cc; flex: 2; }
+    .btn-primary:hover { background: #2266aa; }
+    .btn-sec { background: #3a2818; color: #ffeedd; border-color: #775533; }
+    .btn-sec:hover { background: #4f3620; }
+  </style>
+</head>
+<body class="show-borders">
+
+  <div id="stage-wrapper">
+    <div id="quiz-panel-box">
+      <!-- 1. Kérdés 1. sor (2 soros kiegyensúlyozott minta) -->
+      <div id="box-q1" class="tuner-box">Melyik híres irodalmi</div>
+      <!-- 2. Kérdés 2. sor -->
+      <div id="box-q2" class="tuner-box">karaktert ihlette egy valóságos, dundi kisfiú?</div>
+      <!-- 3. Falap 1 - Válasz A -->
+      <div id="box-a0" class="tuner-box">A) Róbert Gidát a Micimackóból</div>
+      <!-- 4. Falap 2 - Válasz B -->
+      <div id="box-a1" class="tuner-box">B) Gombóc Artúrt a Pom Pom meséiből</div>
+      <!-- 5. Falap 3 - Válasz C -->
+      <div id="box-a2" class="tuner-box">C) Augustus Gloopot a Charlie és a csokigyárból</div>
+      <!-- 6. Falap 4 - Válasz D -->
+      <div id="box-a3" class="tuner-box">D) Neville Longbottomot A Harry Potterből</div>
+    </div>
+  </div>
+
+  <div id="editor-panel">
+    <div id="editor-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button id="btn-dock" class="btn btn-sec" style="padding: 3px 8px; font-size: 11px;">⇄ Átdobás Balra</button>
+        <h3>🔵 TZQSvB Szerkesztő (&le; 50 kar.)</h3>
+      </div>
+      <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 12px; color: #99ccff;">
+        <input type="checkbox" id="chk-borders" checked> Keretek
+      </label>
+    </div>
+
+    <div id="editor-content">
+      <!-- 1. KÉRDÉS 1. SOR -->
+      <div class="editor-section" style="border-left: 4px solid #00ffff;">
+        <div class="section-title" style="color: #00ffff;">
+          <span>📜 Kérdés 1. sor (Felső Sor)</span>
+          <span class="char-badge" id="badge-q1">21 kar.</span>
+        </div>
+        <input type="text" id="txt-q1" class="text-input-field" value="Melyik híres irodalmi">
+        <div class="input-grid">
+          <div class="field-row"><span>Top:</span><input type="number" id="in-q1-top" value="196"></div>
+          <div class="field-row"><span>Height:</span><input type="number" id="in-q1-height" value="38"></div>
+          <div class="field-row"><span>Left:</span><input type="number" id="in-q1-left" value="145"></div>
+          <div class="field-row"><span>Width:</span><input type="number" id="in-q1-width" value="555"></div>
+          <div class="field-row"><span>Betűméret:</span><input type="number" id="in-q1-font" value="23"></div>
+          <div class="field-row"><span>Sorköz:</span><input type="number" id="in-q1-lh" step="0.05" value="1.25"></div>
+        </div>
+      </div>
+
+      <!-- 2. KÉRDÉS 2. SOR -->
+      <div class="editor-section" style="border-left: 4px solid #ff00ff;">
+        <div class="section-title" style="color: #ff00ff;">
+          <span>📜 Kérdés 2. sor (Alsó Sor)</span>
+          <span class="char-badge" id="badge-q2">47 kar.</span>
+        </div>
+        <input type="text" id="txt-q2" class="text-input-field" value="karaktert ihlette egy valóságos, dundi kisfiú?">
+        <div class="input-grid">
+          <div class="field-row"><span>Top:</span><input type="number" id="in-q2-top" value="234"></div>
+          <div class="field-row"><span>Height:</span><input type="number" id="in-q2-height" value="38"></div>
+          <div class="field-row"><span>Left:</span><input type="number" id="in-q2-left" value="145"></div>
+          <div class="field-row"><span>Width:</span><input type="number" id="in-q2-width" value="555"></div>
+          <div class="field-row"><span>Betűméret:</span><input type="number" id="in-q2-font" value="23"></div>
+          <div class="field-row"><span>Sorköz:</span><input type="number" id="in-q2-lh" step="0.05" value="1.25"></div>
+        </div>
+      </div>
+
+      <!-- 3. FALAP 1 - VÁLASZ A -->
+      <div class="editor-section" style="border-left: 4px solid #ff3366;">
+        <div class="section-title" style="color: #ff3366;">
+          <span>🅰️ Falap 1 - Válasz A</span>
+          <span class="char-badge" id="badge-a0">46 kar.</span>
+        </div>
+        <input type="text" id="txt-a0" class="text-input-field" value="Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+        <div class="input-grid">
+          <div class="field-row"><span>Top (Vert.):</span><input type="number" id="in-a0-top" value="295"></div>
+          <div class="field-row"><span>Height (Mag.):</span><input type="number" id="in-a0-height" value="42"></div>
+          <div class="field-row"><span>Left (Horiz.):</span><input type="number" id="in-a0-left" value="145"></div>
+          <div class="field-row"><span>Width (Szél.):</span><input type="number" id="in-a0-width" value="560"></div>
+          <div class="field-row"><span>Betűméret:</span><input type="number" id="in-a0-font" value="21"></div>
+        </div>
+      </div>
+
+      <!-- 4. FALAP 2 - VÁLASZ B -->
+      <div class="editor-section" style="border-left: 4px solid #ffaa00;">
+        <div class="section-title" style="color: #ffaa00;">
+          <span>🅱️ Falap 2 - Válasz B</span>
+          <span class="char-badge" id="badge-a1">46 kar.</span>
+        </div>
+        <input type="text" id="txt-a1" class="text-input-field" value="Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+        <div class="input-grid">
+          <div class="field-row"><span>Top (Vert.):</span><input type="number" id="in-a1-top" value="370"></div>
+          <div class="field-row"><span>Height (Mag.):</span><input type="number" id="in-a1-height" value="42"></div>
+          <div class="field-row"><span>Left (Horiz.):</span><input type="number" id="in-a1-left" value="145"></div>
+          <div class="field-row"><span>Width (Szél.):</span><input type="number" id="in-a1-width" value="560"></div>
+          <div class="field-row"><span>Betűméret:</span><input type="number" id="in-a1-font" value="21"></div>
+        </div>
+      </div>
+
+      <!-- 5. FALAP 3 - VÁLASZ C -->
+      <div class="editor-section" style="border-left: 4px solid #33ff88;">
+        <div class="section-title" style="color: #33ff88;">
+          <span>🅲 Falap 3 - Válasz C</span>
+          <span class="char-badge" id="badge-a2">46 kar.</span>
+        </div>
+        <input type="text" id="txt-a2" class="text-input-field" value="Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+        <div class="input-grid">
+          <div class="field-row"><span>Top (Vert.):</span><input type="number" id="in-a2-top" value="455"></div>
+          <div class="field-row"><span>Height (Mag.):</span><input type="number" id="in-a2-height" value="42"></div>
+          <div class="field-row"><span>Left (Horiz.):</span><input type="number" id="in-a2-left" value="145"></div>
+          <div class="field-row"><span>Width (Szél.):</span><input type="number" id="in-a2-width" value="560"></div>
+          <div class="field-row"><span>Betűméret:</span><input type="number" id="in-a2-font" value="21"></div>
+        </div>
+      </div>
+
+      <!-- 6. FALAP 4 - VÁLASZ D -->
+      <div class="editor-section" style="border-left: 4px solid #33ccff;">
+        <div class="section-title" style="color: #33ccff;">
+          <span>🅳 Falap 4 - Válasz D</span>
+          <span class="char-badge" id="badge-a3">46 kar.</span>
+        </div>
+        <input type="text" id="txt-a3" class="text-input-field" value="Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+        <div class="input-grid">
+          <div class="field-row"><span>Top (Vert.):</span><input type="number" id="in-a3-top" value="540"></div>
+          <div class="field-row"><span>Height (Mag.):</span><input type="number" id="in-a3-height" value="42"></div>
+          <div class="field-row"><span>Left (Horiz.):</span><input type="number" id="in-a3-left" value="145"></div>
+          <div class="field-row"><span>Width (Szél.):</span><input type="number" id="in-a3-width" value="560"></div>
+          <div class="field-row"><span>Betűméret:</span><input type="number" id="in-a3-font" value="21"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="editor-footer">
+      <button class="btn btn-sec" id="btn-clear">🧹 Üres</button>
+      <button class="btn btn-sec" id="btn-sync-w">🔗 Szél. Szinkron</button>
+      <button class="btn btn-primary" id="btn-copy">📋 TZQSvB Másolása</button>
+    </div>
+  </div>
+
+  <script>
+    function updateScale() {
+      const panel = document.getElementById('quiz-panel-box');
+      if (!panel) return;
+      const baseW = 831, baseH = 768;
+      const availW = (window.innerWidth - 490) * 0.96;
+      const availH = window.innerHeight * 0.95;
+      const scale = Math.min(1.0, availW / baseW, availH / baseH);
+      panel.style.transform = `scale(${Math.max(0.55, scale)})`;
+    }
+    window.addEventListener('resize', updateScale);
+    updateScale();
+
+    document.getElementById('btn-dock').addEventListener('click', () => {
+      const panel = document.getElementById('editor-panel');
+      const isDockedLeft = panel.classList.toggle('dock-left');
+      document.getElementById('btn-dock').innerText = isDockedLeft ? '⇄ Átdobás Jobbra' : '⇄ Átdobás Balra';
+      updateScale();
+    });
+
+    function applyStyles() {
+      // Q1
+      const q1 = document.getElementById('box-q1');
+      q1.style.top = (parseInt(document.getElementById('in-q1-top').value, 10) || 196) + 'px';
+      q1.style.height = (parseInt(document.getElementById('in-q1-height').value, 10) || 38) + 'px';
+      q1.style.left = (parseInt(document.getElementById('in-q1-left').value, 10) || 145) + 'px';
+      q1.style.width = (parseInt(document.getElementById('in-q1-width').value, 10) || 555) + 'px';
+      q1.style.fontSize = (parseInt(document.getElementById('in-q1-font').value, 10) || 23) + 'px';
+      q1.style.lineHeight = parseFloat(document.getElementById('in-q1-lh').value) || 1.25;
+      q1.innerText = document.getElementById('txt-q1').value;
+      document.getElementById('badge-q1').innerText = q1.innerText.length + ' kar.';
+
+      // Q2
+      const q2 = document.getElementById('box-q2');
+      q2.style.top = (parseInt(document.getElementById('in-q2-top').value, 10) || 234) + 'px';
+      q2.style.height = (parseInt(document.getElementById('in-q2-height').value, 10) || 38) + 'px';
+      q2.style.left = (parseInt(document.getElementById('in-q2-left').value, 10) || 145) + 'px';
+      q2.style.width = (parseInt(document.getElementById('in-q2-width').value, 10) || 555) + 'px';
+      q2.style.fontSize = (parseInt(document.getElementById('in-q2-font').value, 10) || 23) + 'px';
+      q2.style.lineHeight = parseFloat(document.getElementById('in-q2-lh').value) || 1.25;
+      q2.innerText = document.getElementById('txt-q2').value;
+      document.getElementById('badge-q2').innerText = q2.innerText.length + ' kar.';
+
+      // Answers A-D
+      for (let i = 0; i < 4; i++) {
+        const box = document.getElementById('box-a' + i);
+        box.style.top = (parseInt(document.getElementById('in-a' + i + '-top').value, 10) || 295) + 'px';
+        box.style.height = (parseInt(document.getElementById('in-a' + i + '-height').value, 10) || 42) + 'px';
+        box.style.left = (parseInt(document.getElementById('in-a' + i + '-left').value, 10) || 145) + 'px';
+        box.style.width = (parseInt(document.getElementById('in-a' + i + '-width').value, 10) || 560) + 'px';
+        box.style.fontSize = (parseInt(document.getElementById('in-a' + i + '-font').value, 10) || 21) + 'px';
+        box.innerText = document.getElementById('txt-a' + i).value;
+        document.getElementById('badge-a' + i).innerText = box.innerText.length + ' kar.';
+      }
+    }
+
+    document.querySelectorAll('#editor-panel input').forEach(input => {
+      input.addEventListener('input', applyStyles);
+    });
+
+    document.getElementById('chk-borders').addEventListener('change', (e) => {
+      document.body.classList.toggle('show-borders', e.target.checked);
+    });
+
+    document.getElementById('btn-clear').addEventListener('click', () => {
+      document.getElementById('txt-q1').value = '';
+      document.getElementById('txt-q2').value = '';
+      document.getElementById('txt-a0').value = '';
+      document.getElementById('txt-a1').value = '';
+      document.getElementById('txt-a2').value = '';
+      document.getElementById('txt-a3').value = '';
+      applyStyles();
+    });
+
+    document.getElementById('btn-sync-w').addEventListener('click', () => {
+      const srcLeft = document.getElementById('in-a0-left').value;
+      const srcWidth = document.getElementById('in-a0-width').value;
+      const srcHeight = document.getElementById('in-a0-height').value;
+      const srcFont = document.getElementById('in-a0-font').value;
+      for (let i = 1; i < 4; i++) {
+        document.getElementById('in-a' + i + '-left').value = srcLeft;
+        document.getElementById('in-a' + i + '-width').value = srcWidth;
+        document.getElementById('in-a' + i + '-height').value = srcHeight;
+        document.getElementById('in-a' + i + '-font').value = srcFont;
+      }
+      applyStyles();
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', () => {
+      const exportData = {
+        setup: "TZQSvB",
+        description: "TUTORZEP Normál/Rövid kérdések (<= 50 karakter) – 2 Soros elrendezés",
+        question_line1: {
+          top: parseInt(document.getElementById('in-q1-top').value, 10),
+          left: parseInt(document.getElementById('in-q1-left').value, 10),
+          width: parseInt(document.getElementById('in-q1-width').value, 10),
+          height: parseInt(document.getElementById('in-q1-height').value, 10),
+          fontSize: parseInt(document.getElementById('in-q1-font').value, 10),
+          lineHeight: parseFloat(document.getElementById('in-q1-lh').value),
+          sampleChars: document.getElementById('txt-q1').value.length
+        },
+        question_line2: {
+          top: parseInt(document.getElementById('in-q2-top').value, 10),
+          left: parseInt(document.getElementById('in-q2-left').value, 10),
+          width: parseInt(document.getElementById('in-q2-width').value, 10),
+          height: parseInt(document.getElementById('in-q2-height').value, 10),
+          fontSize: parseInt(document.getElementById('in-q2-font').value, 10),
+          lineHeight: parseFloat(document.getElementById('in-q2-lh').value),
+          sampleChars: document.getElementById('txt-q2').value.length
+        },
+        answers: [
+          { top: parseInt(document.getElementById('in-a0-top').value, 10), left: parseInt(document.getElementById('in-a0-left').value, 10), width: parseInt(document.getElementById('in-a0-width').value, 10), height: parseInt(document.getElementById('in-a0-height').value, 10), fontSize: parseInt(document.getElementById('in-a0-font').value, 10) },
+          { top: parseInt(document.getElementById('in-a1-top').value, 10), left: parseInt(document.getElementById('in-a1-left').value, 10), width: parseInt(document.getElementById('in-a1-width').value, 10), height: parseInt(document.getElementById('in-a1-height').value, 10), fontSize: parseInt(document.getElementById('in-a1-font').value, 10) },
+          { top: parseInt(document.getElementById('in-a2-top').value, 10), left: parseInt(document.getElementById('in-a2-left').value, 10), width: parseInt(document.getElementById('in-a2-width').value, 10), height: parseInt(document.getElementById('in-a2-height').value, 10), fontSize: parseInt(document.getElementById('in-a2-font').value, 10) },
+          { top: parseInt(document.getElementById('in-a3-top').value, 10), left: parseInt(document.getElementById('in-a3-left').value, 10), width: parseInt(document.getElementById('in-a3-width').value, 10), height: parseInt(document.getElementById('in-a3-height').value, 10), fontSize: parseInt(document.getElementById('in-a3-font').value, 10) }
+        ]
+      };
+      const jsonStr = JSON.stringify(exportData, null, 2);
+      navigator.clipboard.writeText(jsonStr).then(() => {
+        alert('✅ TZQSvB (2-soros) konfiguráció kimásolva!');
+      }).catch(() => {
+        prompt('Másold ki a TZQSvB konfigurációt:', jsonStr);
+      });
+    });
+
+    applyStyles();
+  </script>
+</body>
+</html>

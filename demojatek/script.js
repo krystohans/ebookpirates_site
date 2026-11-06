@@ -6735,6 +6735,60 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
           mat.onBeforeCompile = (shader) => {
 
+            const isVulcanoMat = mat.name && mat.name.toLowerCase().includes('vulcano');
+
+            if (isVulcanoMat) {
+
+              shader.vertexShader = 'varying vec3 vMtWorldPos;\nvarying vec3 vMtNorm;\n' + shader.vertexShader.replace(
+
+                '#include <worldpos_vertex>',
+
+                '#include <worldpos_vertex>\nvMtWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvMtNorm = normalize((modelMatrix * vec4(normal, 0.0)).xyz);'
+
+              );
+
+              shader.fragmentShader = 'varying vec3 vMtWorldPos;\nvarying vec3 vMtNorm;\n' + shader.fragmentShader.replace(
+
+                '#include <dithering_fragment>',
+
+                '#include <dithering_fragment>\n' +
+
+                'vec3 cBase = vec3(0.18, 0.18, 0.19);\n' +
+
+                'vec3 cMid = vec3(0.38, 0.40, 0.42);\n' +
+
+                'vec3 cPeak = vec3(0.88, 0.89, 0.88);\n' +
+
+                'vec3 cMoss = vec3(0.34, 0.48, 0.24);\n' +
+
+                'float ridgeFlow = sin(vMtWorldPos.x * 0.015) * cos(vMtWorldPos.z * 0.015) * 40.0 + sin(vMtWorldPos.x * 0.035 + vMtWorldPos.z * 0.02) * 18.0;\n' +
+
+                'float effY = vMtWorldPos.y + ridgeFlow;\n' +
+
+                'float upSlope = clamp(vMtNorm.y, 0.0, 1.0);\n' +
+
+                'float midT = smoothstep(10.0, 120.0, effY);\n' +
+
+                'vec3 rockGrad = mix(cBase, cMid, midT);\n' +
+
+                'float eastFacing = smoothstep(0.05, 0.65, vMtNorm.x) * smoothstep(0.15, 0.85, upSlope);\n' +
+
+                'float greenZone = smoothstep(10.0, 50.0, effY) * (1.0 - smoothstep(130.0, 240.0, effY));\n' +
+
+                'float greenNoise = 0.75 + 0.25 * sin(vMtWorldPos.x * 0.03 + vMtWorldPos.z * 0.02);\n' +
+
+                'rockGrad = mix(rockGrad, cMoss, clamp(eastFacing * greenZone * greenNoise * 1.0, 0.0, 0.80));\n' +
+
+                'float peakT = smoothstep(70.0, 320.0, effY) * smoothstep(0.12, 0.70, upSlope);\n' +
+
+                'vec3 finalRockCol = mix(rockGrad, cPeak, peakT * 0.85);\n' +
+
+                'gl_FragColor.rgb = mix(gl_FragColor.rgb, finalRockCol * (0.85 + 0.3 * upSlope), 0.78);'
+
+              );
+
+            }
+
             shader.fragmentShader = shader.fragmentShader.replace(
 
               'gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );',
@@ -6821,7 +6875,7 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
         const isBlack = child.material.color && child.material.color.r < 0.1 && child.material.color.g < 0.1 && child.material.color.b < 0.1;
 
-        if (isBlack || (child.name && child.name.toLowerCase().includes("airship"))) {
+        if ((!isMountainOrTerrain && isBlack) || (child.name && child.name.toLowerCase().includes("airship"))) {
 
           child.material.color.setHex(0xd4af37);
 

@@ -283,16 +283,296 @@
   ],
   "TUTORZEP": [
     {
+      "uid": "TUTMHDEMQTU0OKFR10001",
+      "baseId": "TUTMHDEMQTU0OK0001",
+      "id": 1,
+      "category": "TUTORZEP",
+      "question": "Quand a lieu le Festival international du livre de Budapest ?",
+      "answers": [
+        "En octobre",
+        "En septembre",
+        "En juin",
+        "En mai"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20001",
+        "TUTMHDEMATU0OKFR30001_1",
+        "TUTMHDEMATU0OKFR30001_2",
+        "TUTMHDEMATU0OKFR30001_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10002",
+      "baseId": "TUTMHDEMQTU0OK0002",
+      "id": 2,
+      "category": "TUTORZEP",
+      "question": "De quelle nationalité était Selma Lagerlöf ?",
+      "answers": [
+        "suédois",
+        "danois",
+        "finlandais",
+        "norvégien"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20002",
+        "TUTMHDEMATU0OKFR30002_1",
+        "TUTMHDEMATU0OKFR30002_2",
+        "TUTMHDEMATU0OKFR30002_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10003",
+      "baseId": "TUTMHDEMQTU0OK0003",
+      "id": 3,
+      "category": "TUTORZEP",
+      "question": "Qui est le terrifiant capitaine pirate du roman L'Île au Trésor ?",
+      "answers": [
+        "Long John Argent",
+        "Capitaine Flint",
+        "Capitaine Crochet",
+        "Jack Sparrow"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20003",
+        "TUTMHDEMATU0OKFR30003_1",
+        "TUTMHDEMATU0OKFR30003_2",
+        "TUTMHDEMATU0OKFR30003_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10004",
+      "baseId": "TUTMHDEMQTU0OK0004",
+      "id": 4,
+      "category": "TUTORZEP",
+      "question": "Qui mène le baleinier Pequod contre Moby Dick ?",
+      "answers": [
+        "Capitaine Achab",
+        "Capitaine Némo",
+        "Jim Hawkins",
+        "Robinson Crusoé"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20004",
+        "TUTMHDEMATU0OKFR30004_1",
+        "TUTMHDEMATU0OKFR30004_2",
+        "TUTMHDEMATU0OKFR30004_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10005",
+      "baseId": "TUTMHDEMQTU0OK0005",
+      "id": 5,
+      "category": "TUTORZEP",
+      "question": "Quel roman de Jules Verne parle d'un groupe d'écoliers ?",
+      "answers": [
+        "Vacances de deux ans",
+        "L'île mystérieuse",
+        "Capitaine Némo",
+        "Enfants du capitaine Grant"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20005",
+        "TUTMHDEMATU0OKFR30005_1",
+        "TUTMHDEMATU0OKFR30005_2",
+        "TUTMHDEMATU0OKFR30005_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10006",
+      "baseId": "TUTMHDEMQTU0OK0006",
+      "id": 6,
+      "category": "TUTORZEP",
+      "question": "Quel est le nom du compagnon indigène de Robinson Crusoé ?",
+      "answers": [
+        "Vendredi",
+        "Samedi",
+        "Jeudi",
+        "Jim"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20006",
+        "TUTMHDEMATU0OKFR30006_1",
+        "TUTMHDEMATU0OKFR30006_2",
+        "TUTMHDEMATU0OKFR30006_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10007",
+      "baseId": "TUTMHDEMQTU0OK0007",
+      "id": 7,
+      "category": "TUTORZEP",
+      "question": "Qui est l'ennemi juré de Peter Pan ?",
+      "answers": [
+        "Capitaine Crochet",
+        "Barbe Noire",
+        "Capitaine Morgan",
+        "Capitaine Barbosa"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20007",
+        "TUTMHDEMATU0OKFR30007_1",
+        "TUTMHDEMATU0OKFR30007_2",
+        "TUTMHDEMATU0OKFR30007_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10008",
+      "baseId": "TUTMHDEMQTU0OK0008",
+      "id": 8,
+      "category": "TUTORZEP",
+      "question": "Ulysse se bouche les oreilles avec de la cire pour entendre le chant de quelles créatures marines ?",
+      "answers": [
+        "Aucun d'entre eux",
+        "Sirènes",
+        "Harpies",
+        "Sirènes"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20008",
+        "TUTMHDEMATU0OKFR30008_1",
+        "TUTMHDEMATU0OKFR30008_2",
+        "TUTMHDEMATU0OKFR30008_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10009",
+      "baseId": "TUTMHDEMQTU0OK0009",
+      "id": 9,
+      "category": "TUTORZEP",
+      "question": "Quelles créatures habitent cette île dans la satire de Jonathan Swift ?",
+      "answers": [
+        "Lilliputiens",
+        "Géants",
+        "Mouton",
+        "je hausse les épaules"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20009",
+        "TUTMHDEMATU0OKFR30009_1",
+        "TUTMHDEMATU0OKFR30009_2",
+        "TUTMHDEMATU0OKFR30009_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10010",
+      "baseId": "TUTMHDEMQTU0OK0010",
+      "id": 10,
+      "category": "TUTORZEP",
+      "question": "Qui est le jeune noble qui est le quatrième à rejoindre les gardes du corps royaux ?",
+      "answers": [
+        "D'Artagnan",
+        "Athos",
+        "Aramis",
+        "Porthos"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20010",
+        "TUTMHDEMATU0OKFR30010_1",
+        "TUTMHDEMATU0OKFR30010_2",
+        "TUTMHDEMATU0OKFR30010_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10011",
+      "baseId": "TUTMHDEMQTU0OK0011",
+      "id": 11,
+      "category": "TUTORZEP",
+      "question": "Quelles structures ordinaires Don Quichotte considère-t-il comme des géants maléfiques ?",
+      "answers": [
+        "Moulins à vent",
+        "Phares",
+        "Groupes",
+        "Points de vue"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20011",
+        "TUTMHDEMATU0OKFR30011_1",
+        "TUTMHDEMATU0OKFR30011_2",
+        "TUTMHDEMATU0OKFR30011_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10012",
+      "baseId": "TUTMHDEMQTU0OK0012",
+      "id": 12,
+      "category": "TUTORZEP",
+      "question": "Qui est le personnage principal de R. A. Salvatore ?",
+      "answers": [
+        "Drizzt Do'Urden",
+        "Sable et Glokta",
+        "Drus",
+        "Raistlin"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20012",
+        "TUTMHDEMATU0OKFR30012_1",
+        "TUTMHDEMATU0OKFR30012_2",
+        "TUTMHDEMATU0OKFR30012_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10013",
+      "baseId": "TUTMHDEMQTU0OK0013",
+      "id": 13,
+      "category": "TUTORZEP",
+      "question": "Quel héros d'écrivain est Lord Cozimo de Lodoci ?",
+      "answers": [
+        "Terry Pratchett",
+        "R.A. Salvatore",
+        "Michael Endé",
+        "Jeffrey Pierre"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20013",
+        "TUTMHDEMATU0OKFR30013_1",
+        "TUTMHDEMATU0OKFR30013_2",
+        "TUTMHDEMATU0OKFR30013_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKFR10014",
+      "baseId": "TUTMHDEMQTU0OK0014",
+      "id": 14,
+      "category": "TUTORZEP",
+      "question": "Quel guerrier héroïque Arnold Schwarzenegger a-t-il incarné au cinéma ?",
+      "answers": [
+        "Conan le Barbare",
+        "Druss la Légende",
+        "Mersant le Sombre",
+        "Tom Bombadil"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKFR20014",
+        "TUTMHDEMATU0OKFR30014_1",
+        "TUTMHDEMATU0OKFR30014_2",
+        "TUTMHDEMATU0OKFR30014_3"
+      ],
+      "correctIndex": 0
+    },
+    {
       "uid": "TUTMHDEMQTU0OKFR10015",
       "baseId": "TUTMHDEMQTU0OK0015",
       "id": 15,
       "category": "TUTORZEP",
-      "question": "Par la citation de qui s'ouvre le livre 'Le Collier de la princesse' ?",
+      "question": "Dans quel univers imaginaire évolue le héros Leon Silver ?",
       "answers": [
-        "Béla Hamvas",
-        "Alexandre Dumas",
-        "Sándor Weöres",
-        "Lao Tseu"
+        "Chérubion",
+        "Ynev",
+        "Worluk",
+        "Ammerunia"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20015",
@@ -307,12 +587,12 @@
       "baseId": "TUTMHDEMQTU0OK0016",
       "id": 16,
       "category": "TUTORZEP",
-      "question": "Combien de bras le bonheur a-t-il selon Shelby Van Pelt ?",
+      "question": "Combien de jours Willy Fogg a-t-il voyagé autour du monde ?",
       "answers": [
-        "Huit",
-        "Quatre",
-        "Trois et demi",
-        "Deux"
+        "soixante dix neuf",
+        "Quatre-vingts",
+        "Quatre-vingt-un",
+        "Finalement ça n'a pas marché"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20016",
@@ -327,12 +607,12 @@
       "baseId": "TUTMHDEMQTU0OK0017",
       "id": 17,
       "category": "TUTORZEP",
-      "question": "Où Agatha Christie a-t-elle écrit une grande partie de ses polars ?",
+      "question": "Sur quelle roue Brandon Sanderson a-t-il écrit ?",
       "answers": [
-        "Assise dans sa baignoire",
-        "Dans le bureau de son éditeur",
-        "Dans un café londonien",
-        "Dans sa pièce d'étude"
+        "Le temps",
+        "Destin",
+        "Le char",
+        "La chance"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20017",
@@ -347,12 +627,12 @@
       "baseId": "TUTMHDEMQTU0OK0018",
       "id": 18,
       "category": "TUTORZEP",
-      "question": "Pourquoi J.K. Rowling a-t-elle écrit le premier Harry Potter dans un café ?",
+      "question": "Leigh Bardugo a-t-il écrit sur la troisième maison ?",
       "answers": [
-        "Parce qu'elle avait froid chez elle",
-        "Elle adorait le bruit de fond",
-        "Elle s'inspirait des clients",
-        "Elle avait du café et des gâteaux gratuits"
+        "Neuvième",
+        "Dixième",
+        "Septième",
+        "D'abord"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20018",
@@ -367,12 +647,12 @@
       "baseId": "TUTMHDEMQTU0OK0019",
       "id": 19,
       "category": "TUTORZEP",
-      "question": "De quel roman Stephen King ne se souvient-il pas d'avoir écrit à cause des drogues ?",
+      "question": "Par quelle citation commence le livre Le collier de la princesse ?",
       "answers": [
-        "Cujo",
-        "Shining",
-        "Ça (It)",
-        "Simetierre"
+        "Béla Hamvas",
+        "Alexandre Dumas",
+        "Sándor Weöres",
+        "Lao Tseu"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20019",
@@ -387,12 +667,12 @@
       "baseId": "TUTMHDEMQTU0OK0020",
       "id": 20,
       "category": "TUTORZEP",
-      "question": "Quel musicien rock voulait jouer Gollum dans l'adaptation du Seigneur des Anneaux ?",
+      "question": "Selon Shelby Van Pelt, combien de bras le bonheur a-t-il ?",
       "answers": [
-        "John Lennon",
-        "Bon Jovi",
-        "Axl Rose",
-        "Ozzy Osbourne"
+        "Huit",
+        "Quatre",
+        "Il est trois heures et demie",
+        "Deux"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20020",
@@ -407,12 +687,12 @@
       "baseId": "TUTMHDEMQTU0OK0021",
       "id": 21,
       "category": "TUTORZEP",
-      "question": "Qu'est-ce qui a inspiré Frank Herbert pour l'écriture de Dune ?",
+      "question": "Où Agatha Christie a-t-elle écrit une partie importante de ses célèbres romans policiers ?",
       "answers": [
-        "Un projet gouvernemental",
-        "Un rapport de la NASA sur Mars",
-        "Des vacances dans les dunes d'Oregon",
-        "Un cauchemar"
+        "Assis dans sa baignoire",
+        "Dans le bureau de son éditeur",
+        "Dans un café à Londres",
+        "Dans son étude"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20021",
@@ -427,12 +707,12 @@
       "baseId": "TUTMHDEMQTU0OK0022",
       "id": 22,
       "category": "TUTORZEP",
-      "question": "Quel élément Edgar Rice Burroughs a-t-il déposé comme marque ?",
+      "question": "Pourquoi J.K. Le premier livre Harry Potter de Rowling dans un café ?",
       "answers": [
-        "Le cri de Tarzan",
-        "La langue des grands singes",
-        "Le nom de Tarzan",
-        "Le titre de 'Seigneur de la Jungle'"
+        "Parce qu'il avait froid à la maison",
+        "Il adorait le bruit de fond",
+        "Il a modelé les personnages sur les invités",
+        "Il a reçu du café et des gâteaux gratuits"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20022",
@@ -447,12 +727,12 @@
       "baseId": "TUTMHDEMQTU0OK0023",
       "id": 23,
       "category": "TUTORZEP",
-      "question": "Que fait Pinocchio au Grillon parlant dans le livre original ?",
+      "question": "Quel livre Stephen King ne se souvient-il pas avoir écrit à cause de la drogue ?",
       "answers": [
-        "Il l'écrase avec un marteau",
-        "Il l'enferme dans une boîte d'allumettes",
-        "Il le vend à un cirque itinérant",
-        "Il le jette par la fenêtre"
+        "Cool",
+        "Le brillant",
+        "Le (Il)",
+        "Sématiste pour animaux de compagnie"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20023",
@@ -467,12 +747,12 @@
       "baseId": "TUTMHDEMQTU0OK0024",
       "id": 24,
       "category": "TUTORZEP",
-      "question": "Quel roman classique a en partie inspiré Batman ?",
+      "question": "Quel musicien de rock voulait jouer le rôle de Gollum dans le film Le Seigneur des Anneaux ?",
       "answers": [
-        "Dracula",
-        "Frankenstein",
-        "L'Homme invisible",
-        "Dr Jekyll et Mr Hyde"
+        "John Lennon",
+        "Bon Jovi",
+        "Axel Rose",
+        "Ozzy Osbourne"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20024",
@@ -487,12 +767,12 @@
       "baseId": "TUTMHDEMQTU0OK0025",
       "id": 25,
       "category": "TUTORZEP",
-      "question": "D'où provient la célèbre pluie de code vert de Matrix ?",
+      "question": "Qu'est-ce qui a inspiré Frank Herbert pour écrire « Dune » ?",
       "answers": [
-        "Du livre de cuisine japonaise de la femme du concepteur",
-        "D'un manuel de physique russe",
-        "D'un vieux catalogue de meubles suédois",
-        "D'un papyrus de l'Égypte antique"
+        "Un projet gouvernemental",
+        "Un rapport de la NASA sur Mars",
+        "Des vacances dans le désert",
+        "Un cauchemar"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20025",
@@ -507,12 +787,12 @@
       "baseId": "TUTMHDEMQTU0OK0026",
       "id": 26,
       "category": "TUTORZEP",
-      "question": "Quel événement réel a inspiré les 'Noces Pourpres' de Game of Thrones ?",
+      "question": "Qu'a fait protéger légalement Edgar Rice Burroughs ?",
       "answers": [
-        "Le 'Dîner Noir', un massacre médiéval écossais",
-        "Le mariage vengeur de la princesse Olga de Kiev",
-        "Le massacre de la Saint-Barthélemy en France",
-        "Le banquet de noces scandaleux du roi Édouard II"
+        "Le cri de Tarzan",
+        "Le langage des gorilles",
+        "Le nom de Tarzan",
+        "Le titre « Seigneur de la jungle »"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20026",
@@ -527,12 +807,12 @@
       "baseId": "TUTMHDEMQTU0OK0027",
       "id": 27,
       "category": "TUTORZEP",
-      "question": "Quelle fausse affirmation du Da Vinci Code le Louvre a-t-il officiellement démentie ?",
+      "question": "Que fait Pinocchio avec les grillons dans le livre original ?",
       "answers": [
-        "Que la pyramide de verre compte 666 losanges",
-        "Qu'un extraterrestre se cache derrière la Joconde",
-        "Que le tombeau de Jésus repose sous le musée",
-        "Que le directeur était grand maître d'un ordre"
+        "Il l'aplatit avec un marteau",
+        "Il l'enferme dans une boîte d'allumettes sombre",
+        "Il le vend à un cirque ambulant",
+        "Il le jette par la fenêtre"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20027",
@@ -547,12 +827,12 @@
       "baseId": "TUTMHDEMQTU0OK0028",
       "id": 28,
       "category": "TUTORZEP",
-      "question": "Qu'est-ce qui a inspiré William Steig pour le prénom 'Shrek' ?",
+      "question": "Quel livre classique a inspiré Batman ?",
       "answers": [
-        "Le mot yiddish 'Schreck' signifiant terreur",
-        "Le marais écossais nommé Skriech",
-        "Un mercenaire allemand nommé Shreck",
-        "Son voisin qui s'appelait Shreck"
+        "Dracula",
+        "Frankenstein",
+        "L'Homme invisible",
+        "Dr Jekyll et Mr Hyde"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20028",
@@ -567,12 +847,12 @@
       "baseId": "TUTMHDEMQTU0OK0029",
       "id": 29,
       "category": "TUTORZEP",
-      "question": "De qui Ian Fleming s'est-il inspiré pour le personnage de 'Q' dans James Bond ?",
+      "question": "D'où vient le code numérique vert emblématique de Matrix ?",
       "answers": [
-        "D'un démineur de la Seconde Guerre mondiale",
-        "D'un horloger londonien",
-        "De l'assistant d'Albert Einstein",
-        "De lui-même"
+        "Extrait du livre de cuisine japonaise de la femme du créateur",
+        "Extrait d'un manuel de physique russe",
+        "Extrait d'un ancien catalogue d'une usine de meubles suédoise",
+        "D'un papyrus égyptien ancien"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20029",
@@ -587,12 +867,12 @@
       "baseId": "TUTMHDEMQTU0OK0030",
       "id": 30,
       "category": "TUTORZEP",
-      "question": "Qui était le comte Dracula dans la réalité historique ?",
+      "question": "Quel événement réel a inspiré le « Mariage rouge » de Game of Thrones ?",
       "answers": [
-        "Le prince Vlad III l'Empaleur",
-        "Un roi de Bavière fou",
-        "Un inquisiteur espagnol",
-        "Un tueur en série londonien"
+        "Un massacre médiéval écossais, le Black Supper",
+        "Le mariage de vengeance de la princesse Olga de Kiev",
+        "Le massacre nocturne de la Saint-Barthélemy en France",
+        "II. Le scandaleux dîner de noces du roi Édouard d'Angleterre"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20030",
@@ -607,12 +887,12 @@
       "baseId": "TUTMHDEMQTU0OK0031",
       "id": 31,
       "category": "TUTORZEP",
-      "question": "Quelle phobie a inspiré Stan Lee pour la création de Spider-Man ?",
+      "question": "Quel faux fait contenu dans le Da Vinci Code a été officiellement démenti par le Louvre ?",
       "answers": [
-        "Il détestait les mouches, mais l'Homme-Mouche sonnait mal",
-        "Il souffrait du vertige",
-        "Il était arachnophobe",
-        "Il détestait les masques"
+        "Que la pyramide de verre est composée de 666 plaques de verre",
+        "Qu'un extraterrestre puisse être vu derrière la Joconde",
+        "Que sous le musée se trouve le véritable tombeau de Jésus",
+        "Que le directeur du musée était le grand maître d'un ordre médiéval de chevaliers"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20031",
@@ -627,12 +907,12 @@
       "baseId": "TUTMHDEMQTU0OK0032",
       "id": 32,
       "category": "TUTORZEP",
-      "question": "Qu'est-ce qui a donné à Michael Crichton l'idée de Jurassic Park ?",
+      "question": "Qu'est-ce qui a donné à William Steig l'idée du nom de Shrek ?",
       "answers": [
-        "Sa fascination pour le clonage génétique",
-        "Il voulait inventer la viande la plus chère du monde",
-        "Un cauchemar avec des dinosaures",
-        "Le projet scolaire de sa fille"
+        "Le mot yiddish pour « Schreck ».",
+        "Une tourbière écossaise appelée Skriech",
+        "Un mercenaire allemand médiéval nommé Shreck",
+        "Son voisin nommé Shreck"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20032",
@@ -647,12 +927,12 @@
       "baseId": "TUTMHDEMQTU0OK0033",
       "id": 33,
       "category": "TUTORZEP",
-      "question": "Quel personnage littéraire a été inspiré par un vrai petit garçon dodu ?",
+      "question": "Sur qui Ian Fleming a-t-il modelé le Q des épisodes de James Bond ?",
       "answers": [
-        "Jean-Christophe dans Winnie l'Ourson",
-        "Neville Londubat dans Harry Potter",
-        "Augustus Gloop dans Charlie et la Chocolaterie",
-        "Arthur Boulette dans les contes Pom Pom"
+        "Un II. à propos d'un expert en bombes de la Seconde Guerre mondiale",
+        "À propos d'un horloger londonien",
+        "À propos de l'assistant d'Albert Einstein",
+        "À propos de vous"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20033",
@@ -667,12 +947,12 @@
       "baseId": "TUTMHDEMQTU0OK0034",
       "id": 34,
       "category": "TUTORZEP",
-      "question": "Qui est le redoutable capitaine pirate de L'Île au trésor ?",
+      "question": "Qui était réellement le comte Dracula dans l'Histoire ?",
       "answers": [
-        "Long John Silver",
-        "Capitaine Grand",
-        "Capitaine Crochet",
-        "Jack Sparrow"
+        "Le prince Vlad l'Empaleur (Vlad Țepeș)",
+        "Un roi bavarois fou",
+        "Un inquisiteur espagnol",
+        "Un tueur en série londonien"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20034",
@@ -687,12 +967,12 @@
       "baseId": "TUTMHDEMQTU0OK0035",
       "id": 35,
       "category": "TUTORZEP",
-      "question": "Comment s'appelle le compagnon indigène de Robinson Crusoé ?",
+      "question": "Quelle phobie a inspiré Stan Lee à écrire Spider-Man ?",
       "answers": [
-        "Vendredi",
-        "Samedi",
-        "Jeudi",
-        "Jim"
+        "Il détestait les mouches",
+        "C'était spacieux",
+        "C'était une araignée",
+        "Il détestait les masques"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20035",
@@ -707,12 +987,12 @@
       "baseId": "TUTMHDEMQTU0OK0036",
       "id": 36,
       "category": "TUTORZEP",
-      "question": "Contre le chant de quelles créatures Ulysse bouche-t-il les oreilles de son équipage ?",
+      "question": "Qu'est-ce qui a donné à Michael Crichton l'idée d'écrire Jurassic Park ?",
       "answers": [
-        "Aucune d'entre elles",
-        "Les Sirènes",
-        "Les Harpies",
-        "Les Ondines"
+        "Il s'intéressait au clonage de gènes",
+        "Il voulait trouver la viande la plus chère",
+        "Un cauchemar de dinosaures",
+        "Le projet scolaire de sa petite fille"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20036",
@@ -727,12 +1007,12 @@
       "baseId": "TUTMHDEMQTU0OK0037",
       "id": 37,
       "category": "TUTORZEP",
-      "question": "Quels êtres minuscules peuplent la première île dans la satire de Swift ?",
+      "question": "Quel personnage littéraire célèbre a été inspiré par un vrai petit garçon de Dundee ?",
       "answers": [
-        "Les Lilliputiens",
-        "Les Géants",
-        "Les Yahoos",
-        "Les Houyhnhnms"
+        "Róbert Gida de Winnie l'ourson",
+        "Neville Londubat de Harry Potter",
+        "Augustus Gloop de Charlie et la Chocolaterie",
+        "Artúr Gombóc des contes Pom Pom"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20037",
@@ -747,118 +1027,18 @@
       "baseId": "TUTMHDEMQTU0OK0038",
       "id": 38,
       "category": "TUTORZEP",
-      "question": "Quel jeune gentilhomme rejoint en quatrième les mousquetaires du roi ?",
+      "question": "Ce qui a été fermé en l'honneur de Victor Hugo à sa mort",
       "answers": [
-        "D'Artagnan",
-        "Athos",
-        "Aramis",
-        "Porthos"
+        "Tous les bordels de Paris",
+        "Votre café préféré",
+        "L'hippodrome",
+        "Vos pubs préférés"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20038",
         "TUTMHDEMATU0OKFR30038_1",
         "TUTMHDEMATU0OKFR30038_2",
         "TUTMHDEMATU0OKFR30038_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKFR10039",
-      "baseId": "TUTMHDEMQTU0OK0039",
-      "id": 39,
-      "category": "TUTORZEP",
-      "question": "Quelles constructions Don Quichotte prend-il pour de gigantesques monstres ?",
-      "answers": [
-        "Des moulins à vent",
-        "Des phares",
-        "Des monastères",
-        "Des tours de guet"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKFR20039",
-        "TUTMHDEMATU0OKFR30039_1",
-        "TUTMHDEMATU0OKFR30039_2",
-        "TUTMHDEMATU0OKFR30039_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKFR10040",
-      "baseId": "TUTMHDEMQTU0OK0040",
-      "id": 40,
-      "category": "TUTORZEP",
-      "question": "Dans quel roman le demi-orque Skandar Graun est-il le héros principal ?",
-      "answers": [
-        "La Parole du Chaos",
-        "La Bataille pour la Pierre de Nuit",
-        "L'Éclat de Cristal",
-        "L'Histoire sans fin"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKFR20040",
-        "TUTMHDEMATU0OKFR30040_1",
-        "TUTMHDEMATU0OKFR30040_2",
-        "TUTMHDEMATU0OKFR30040_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKFR10041",
-      "baseId": "TUTMHDEMQTU0OK0041",
-      "id": 41,
-      "category": "TUTORZEP",
-      "question": "Quel guerrier fantastique a été incarné par Arnold Schwarzenegger ?",
-      "answers": [
-        "Conan le Barbare",
-        "Druss la Légende",
-        "Mersant le Sombre",
-        "Tom Bombadil"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKFR20041",
-        "TUTMHDEMATU0OKFR30041_1",
-        "TUTMHDEMATU0OKFR30041_2",
-        "TUTMHDEMATU0OKFR30041_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKFR10042",
-      "baseId": "TUTMHDEMQTU0OK0042",
-      "id": 42,
-      "category": "TUTORZEP",
-      "question": "De quel monde imaginaire le héros Leon Silver est-il issu ?",
-      "answers": [
-        "Cherubion",
-        "Ynev",
-        "Worluk",
-        "Ammerunia"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKFR20042",
-        "TUTMHDEMATU0OKFR30042_1",
-        "TUTMHDEMATU0OKFR30042_2",
-        "TUTMHDEMATU0OKFR30042_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKFR10065",
-      "baseId": "TUTMHDEMQTU0OK0065",
-      "id": 65,
-      "category": "TUTORZEP",
-      "question": "Qu'a-t-on fermé à Paris en hommage à Victor Hugo lors de son décès ?",
-      "answers": [
-        "Toutes les maisons closes de Paris",
-        "Son café favori",
-        "L'hippodrome",
-        "Sa taverne préférée"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKFR20065",
-        "TUTMHDEMATU0OKFR30065_1",
-        "TUTMHDEMATU0OKFR30065_2",
-        "TUTMHDEMATU0OKFR30065_3"
       ],
       "correctIndex": 0
     }

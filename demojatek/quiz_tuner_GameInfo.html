@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 Hártyafelvételi Kvíz (GameInfo) Élő Vizuális Szerkesztő</title>
+  <style>
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype'),
+           url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+    }
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype'),
+           url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+      font-weight: bold;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background: #0f1318;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e0e6ed;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ─── BAL/JOBB OLDALI VEZÉRLŐPANEL ─── */
+    #editor-panel {
+      width: 440px;
+      min-width: 440px;
+      height: 100vh;
+      background: #181f2a;
+      border-right: 2px solid #2a3b50;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      box-shadow: 4px 0 25px rgba(0,0,0,0.6);
+      transition: all 0.2s ease;
+    }
+    #editor-panel.dock-right {
+      order: 2;
+      border-right: none;
+      border-left: 2px solid #2a3b50;
+      box-shadow: -4px 0 25px rgba(0,0,0,0.6);
+    }
+
+    .editor-header {
+      padding: 14px 18px;
+      background: #111722;
+      border-bottom: 2px solid #334e68;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .editor-header h1 {
+      font-size: 15px;
+      color: #ffd166;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .editor-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .editor-content::-webkit-scrollbar { width: 6px; }
+    .editor-content::-webkit-scrollbar-thumb { background: #334e68; border-radius: 3px; }
+
+    .section-card {
+      background: #1e2837;
+      border: 1px solid #2f435a;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .section-title {
+      font-size: 13px;
+      color: #48cae4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #2f435a;
+      padding-bottom: 6px;
+    }
+
+    .ctrl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .ctrl-row:last-child { margin-bottom: 0; }
+    .ctrl-row label {
+      color: #c0ccda;
+      flex: 1;
+    }
+    .ctrl-inputs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 210px;
+    }
+    .ctrl-inputs input[type="range"] {
+      flex: 1;
+      accent-color: #ffd166;
+      cursor: pointer;
+    }
+    .ctrl-inputs input[type="number"] {
+      width: 58px;
+      background: #0d131d;
+      border: 1px solid #334e68;
+      border-radius: 4px;
+      color: #ffd166;
+      font-weight: bold;
+      text-align: right;
+      padding: 4px 6px;
+      font-size: 12px;
+    }
+
+    textarea.txt-input {
+      width: 100%;
+      background: #0d131d;
+      border: 1px solid #334e68;
+      border-radius: 6px;
+      color: #ffd166;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 8px;
+      resize: vertical;
+      min-height: 52px;
+      margin-bottom: 8px;
+    }
+    input.ans-txt-input {
+      width: 100%;
+      background: #0d131d;
+      border: 1px solid #334e68;
+      border-radius: 4px;
+      color: #ffd166;
+      font-size: 12px;
+      padding: 5px 8px;
+      margin-bottom: 6px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .mini-btn {
+      background: #243447;
+      border: 1px solid #3a506b;
+      color: #a0b2c6;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mini-btn:hover {
+      background: #334e68;
+      color: #fff;
+    }
+
+    .editor-footer {
+      padding: 12px 16px;
+      background: #111722;
+      border-top: 2px solid #334e68;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #06d6a0;
+      color: #052e24;
+    }
+    .btn-primary:hover {
+      background: #08f0b4;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #243447;
+      color: #ffd166;
+      border: 1px solid #3a506b;
+    }
+    .btn-secondary:hover {
+      background: #334e68;
+    }
+
+    /* ─── JOBB OLDALI ELŐNÉZETI TÉR ─── */
+    #preview-viewport {
+      flex: 1;
+      height: 100vh;
+      background: #090d12 url('assets/images/back.jpg') center/cover no-repeat;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #preview-overlay-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    /* ─── KVÍZ PANEL DOBOZ ─── */
+    #quiz-panel-box {
+      position: relative;
+      background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Quiz_window_new_2-r.png') no-repeat center center / 100% 100%;
+      box-sizing: border-box;
+      filter: drop-shadow(0 15px 35px rgba(0,0,0,0.9));
+      display: flex;
+      flex-direction: column;
+      transition: width 0.05s, height 0.05s, padding 0.05s;
+      pointer-events: auto;
+      transform-origin: center center;
+    }
+
+    #quiz-question-text {
+      color: #ffeedd;
+      background: rgba(20, 10, 5, 0.85);
+      border: 2px solid #6b4c2a;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: pre-wrap;
+      word-break: break-word;
+      transition: all 0.05s;
+    }
+
+    #quiz-answers-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      transition: all 0.05s;
+    }
+
+    .quiz-ans-btn {
+      width: 100%;
+      background: rgba(20, 10, 5, 0.85);
+      border: 2px solid #6b4c2a;
+      color: #ffeedd;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      box-sizing: border-box;
+      transition: all 0.15s ease-in-out;
+      outline: none !important;
+    }
+    .quiz-ans-btn:hover {
+      background: rgba(45, 25, 10, 0.92);
+      border-color: #ffd166;
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    /* Debug wireframe */
+    .wireframe #quiz-panel-box { outline: 2px dashed #00ffff !important; }
+    .wireframe #quiz-question-text { outline: 2px dashed #ff0055 !important; }
+    .wireframe .quiz-ans-btn { outline: 2px dashed #00ff66 !important; }
+
+    /* JSON kimenet felugró ablak */
+    #modal-export {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    #modal-export-content {
+      width: 600px;
+      max-width: 90vw;
+      background: #181f2a;
+      border: 2px solid #334e68;
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    #modal-export-content textarea {
+      width: 100%;
+      height: 280px;
+      background: #0d131d;
+      border: 1px solid #2f435a;
+      border-radius: 6px;
+      color: #06d6a0;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 10px;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── SZERKESZTŐ VEZÉRLŐPANEL ─── -->
+  <div id="editor-panel">
+    <div class="editor-header">
+      <h1>🛠️ GameInfo Kvíz Hangoló</h1>
+      <button id="btn-dock" class="mini-btn" title="Panel átdobása a másik oldalra">⇄ Átdobás</button>
+    </div>
+
+    <div class="editor-content">
+
+      <!-- Minta kérdés választó -->
+      <div class="section-card">
+        <div class="section-title">
+          <span>📜 Minta Kérdésszöveg</span>
+        </div>
+        <div class="btn-row">
+          <button class="mini-btn" id="btn-q-short">1-soros rövid</button>
+          <button class="mini-btn" id="btn-q-exact" style="color: #ffd166; font-weight: bold;">Képernyőképen lévő (2-soros)</button>
+          <button class="mini-btn" id="btn-q-long">3-soros hosszú</button>
+        </div>
+        <textarea id="txt-question" class="txt-input">Melyik irányító gombokkal navigálhatod a csónakodat?</textarea>
+      </div>
+
+      <!-- 1. Panel méretezés -->
+      <div class="section-card">
+        <div class="section-title">
+          <span>🖼️ 1. Panel Méretek, Pozíció & Padding</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Vízszintes pozíció (panelOffsetX):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-panel-offset-x" min="-400" max="400" step="2" value="0">
+            <input type="number" id="num-panel-offset-x" min="-400" max="400" step="2" value="0">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Függőleges pozíció (panelOffsetY):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-panel-offset-y" min="-300" max="300" step="2" value="0">
+            <input type="number" id="num-panel-offset-y" min="-300" max="300" step="2" value="0">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Szélesség (panelWidth):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-panel-width" min="600" max="1150" step="5" value="780">
+            <input type="number" id="num-panel-width" min="600" max="1150" step="5" value="780">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Magasság (0 = Auto):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-panel-height" min="0" max="850" step="5" value="0">
+            <input type="number" id="num-panel-height" min="0" max="850" step="5" value="0">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Felső padding (padTop):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-pad-top" min="20" max="180" step="1" value="85">
+            <input type="number" id="num-pad-top" min="20" max="180" step="1" value="85">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Jobb padding (padRight):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-pad-right" min="20" max="180" step="1" value="105">
+            <input type="number" id="num-pad-right" min="20" max="180" step="1" value="105">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Alsó padding (padBottom):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-pad-bottom" min="20" max="180" step="1" value="65">
+            <input type="number" id="num-pad-bottom" min="20" max="180" step="1" value="65">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Bal padding (padLeft):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-pad-left" min="20" max="180" step="1" value="105">
+            <input type="number" id="num-pad-left" min="20" max="180" step="1" value="105">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Kérdés doboz szerkesztése -->
+      <div class="section-card">
+        <div class="section-title">
+          <span>❓ 2. Kérdés Szövegdoboz</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Betűméret (qFontSize):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-q-font" min="14" max="30" step="1" value="20">
+            <input type="number" id="num-q-font" min="14" max="30" step="1" value="20">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Sormagasság (qLineHeight):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-q-lh" min="1.0" max="1.8" step="0.05" value="1.3">
+            <input type="number" id="num-q-lh" min="1.0" max="1.8" step="0.05" value="1.3">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Min. Magasság (qMinHeight):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-q-minh" min="30" max="150" step="5" value="60">
+            <input type="number" id="num-q-minh" min="30" max="150" step="5" value="60">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Alsó margó (qMarginBottom):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-q-mb" min="0" max="45" step="1" value="20">
+            <input type="number" id="num-q-mb" min="0" max="45" step="1" value="20">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Függőleges belső padding:</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-q-pad-v" min="5" max="35" step="1" value="15">
+            <input type="number" id="num-q-pad-v" min="5" max="35" step="1" value="15">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Vízszintes belső padding:</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-q-pad-h" min="5" max="40" step="1" value="20">
+            <input type="number" id="num-q-pad-h" min="5" max="40" step="1" value="20">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Válasz gombok szerkesztése -->
+      <div class="section-card">
+        <div class="section-title">
+          <span>🔘 3. Válasz Gombok & Dobozok</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Gombok köze (ansGap):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-ans-gap" min="2" max="25" step="1" value="10">
+            <input type="number" id="num-ans-gap" min="2" max="25" step="1" value="10">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Betűméret (ansFontSize):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-ans-font" min="12" max="22" step="1" value="15">
+            <input type="number" id="num-ans-font" min="12" max="22" step="1" value="15">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Függőleges padding (btnPadV):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-btn-padv" min="4" max="25" step="1" value="12">
+            <input type="number" id="num-btn-padv" min="4" max="25" step="1" value="12">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Vízszintes padding (btnPadH):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-btn-padh" min="6" max="35" step="1" value="18">
+            <input type="number" id="num-btn-padh" min="6" max="35" step="1" value="18">
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <label>Fix / Min. Magasság (0=Auto):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-btn-h" min="0" max="65" step="1" value="0">
+            <input type="number" id="num-btn-h" min="0" max="65" step="1" value="0">
+          </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <label style="font-size: 11px; color: #a0b2c6; display: block; margin-bottom: 4px;">Minta válaszok szövege:</label>
+          <input type="text" id="txt-ans-0" class="ans-txt-input" value="A) Kizárólag egérrel">
+          <input type="text" id="txt-ans-1" class="ans-txt-input" value="B) W, A, S, D és nyílbillentyűk">
+          <input type="text" id="txt-ans-2" class="ans-txt-input" value="C) Csak hangvezérléssel">
+          <input type="text" id="txt-ans-3" class="ans-txt-input" value="D) Csak a szóköz billentyűvel">
+        </div>
+      </div>
+
+      <!-- Nézet / Méretarány -->
+      <div class="section-card">
+        <div class="section-title">
+          <span>👁️ Nézet & Illeszkedés</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Előnézet Skála (Zoom):</label>
+          <div class="ctrl-inputs">
+            <input type="range" id="rng-zoom" min="0.5" max="1.4" step="0.05" value="1.0">
+            <input type="number" id="num-zoom" min="0.5" max="1.4" step="0.05" value="1.0">
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top: 6px;">
+          <button class="mini-btn" id="btn-toggle-wireframe">📐 Dobozkeretek (Wireframe)</button>
+          <button class="mini-btn" id="btn-reset-default">🔄 Eredeti DEFAULT visszaállítása</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Alsó akciógombok -->
+    <div class="editor-footer">
+      <button id="btn-copy-clipboard" class="action-btn btn-primary">
+        📋 Beállítások Másolása a Vágólapra
+      </button>
+      <button id="btn-show-json" class="action-btn btn-secondary">
+        🔍 Kód & JSON Megtekintése
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── JOBB OLDALI ELŐNÉZETI TÉR ─── -->
+  <div id="preview-viewport">
+    <div id="preview-overlay-bg">
+      <div id="quiz-panel-box">
+        <div id="quiz-question-text">
+          Melyik irányító gombokkal navigálhatod a csónakodat?
+        </div>
+        <div id="quiz-answers-container">
+          <button class="quiz-ans-btn" id="btn-ans-0">A) Kizárólag egérrel</button>
+          <button class="quiz-ans-btn" id="btn-ans-1">B) W, A, S, D és nyílbillentyűk</button>
+          <button class="quiz-ans-btn" id="btn-ans-2">C) Csak hangvezérléssel</button>
+          <button class="quiz-ans-btn" id="btn-ans-3">D) Csak a szóköz billentyűvel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export felugró ablak -->
+  <div id="modal-export">
+    <div id="modal-export-content">
+      <h3 style="color: #ffd166;">📋 Kimentett Konfiguráció & Kód</h3>
+      <p style="font-size: 12px; color: #a0b2c6;">Ezt a blokkot a rendszer a vágólapra másolta. Közvetlenül beilleszthető a QuizConfig-ba vagy elküldhető a csetbe:</p>
+      <textarea id="export-code-area" readonly></textarea>
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button id="btn-modal-copy" class="mini-btn" style="background:#06d6a0; color:#052e24; font-weight:bold; padding:6px 14px;">Másolás</button>
+        <button id="btn-modal-close" class="mini-btn" style="padding:6px 14px;">Bezárás</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── KÉTIRÁNYÚ RANGE / NUMBER SZINKRONIZÁLÁS ───
+    const controls = [
+      { id: 'panel-offset-x', isFloat: false },
+      { id: 'panel-offset-y', isFloat: false },
+      { id: 'panel-width', isFloat: false },
+      { id: 'panel-height', isFloat: false },
+      { id: 'pad-top', isFloat: false },
+      { id: 'pad-right', isFloat: false },
+      { id: 'pad-bottom', isFloat: false },
+      { id: 'pad-left', isFloat: false },
+      { id: 'q-font', isFloat: false },
+      { id: 'q-lh', isFloat: true },
+      { id: 'q-minh', isFloat: false },
+      { id: 'q-mb', isFloat: false },
+      { id: 'q-pad-v', isFloat: false },
+      { id: 'q-pad-h', isFloat: false },
+      { id: 'ans-gap', isFloat: false },
+      { id: 'ans-font', isFloat: false },
+      { id: 'btn-padv', isFloat: false },
+      { id: 'btn-padh', isFloat: false },
+      { id: 'btn-h', isFloat: false },
+      { id: 'zoom', isFloat: true }
+    ];
+
+    controls.forEach(ctrl => {
+      const rng = document.getElementById('rng-' + ctrl.id);
+      const num = document.getElementById('num-' + ctrl.id);
+      if (rng && num) {
+        rng.addEventListener('input', () => {
+          num.value = rng.value;
+          applyStyles();
+        });
+        num.addEventListener('input', () => {
+          rng.value = num.value;
+          applyStyles();
+        });
+      }
+    });
+
+    // Szöveges beviteli mezők élő frissítése
+    ['txt-question', 'txt-ans-0', 'txt-ans-1', 'txt-ans-2', 'txt-ans-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', applyStyles);
+    });
+
+    // ─── STÍLUSOK ALKALMAZÁSA ÉLŐBEN ───
+    function getVal(id, isFloat = false) {
+      const el = document.getElementById('num-' + id);
+      return isFloat ? parseFloat(el.value) : parseInt(el.value, 10);
+    }
+
+    function applyStyles() {
+      const panel = document.getElementById('quiz-panel-box');
+      const qText = document.getElementById('quiz-question-text');
+      const ansCont = document.getElementById('quiz-answers-container');
+      const ansBtns = document.querySelectorAll('.quiz-ans-btn');
+
+      const pOffsetX = getVal('panel-offset-x');
+      const pOffsetY = getVal('panel-offset-y');
+      const zoom = getVal('zoom', true);
+      const pW = getVal('panel-width');
+      const pH = getVal('panel-height');
+      const pTop = getVal('pad-top');
+      const pRight = getVal('pad-right');
+      const pBottom = getVal('pad-bottom');
+      const pLeft = getVal('pad-left');
+      const zoom = getVal('zoom', true);
+
+      // Panel pozíció, méret & padding
+      panel.style.left = pOffsetX + 'px';
+      panel.style.top = pOffsetY + 'px';
+      panel.style.width = pW + 'px';
+      panel.style.height = pH > 0 ? (pH + 'px') : 'auto';
+      panel.style.padding = `${pTop}px ${pRight}px ${pBottom}px ${pLeft}px`;
+      panel.style.transform = `scale(${zoom})`;
+
+      // Kérdés doboz
+      const qFont = getVal('q-font');
+      const qLh = getVal('q-lh', true);
+      const qMinH = getVal('q-minh');
+      const qMb = getVal('q-mb');
+      const qPadV = getVal('q-pad-v');
+      const qPadH = getVal('q-pad-h');
+
+      qText.innerText = document.getElementById('txt-question').value;
+      qText.style.fontSize = qFont + 'px';
+      qText.style.lineHeight = qLh;
+      qText.style.minHeight = qMinH + 'px';
+      qText.style.marginBottom = qMb + 'px';
+      qText.style.padding = `${qPadV}px ${qPadH}px`;
+
+      // Válasz konténer és gombok
+      const ansGap = getVal('ans-gap');
+      const ansFont = getVal('ans-font');
+      const btnPadV = getVal('btn-padv');
+      const btnPadH = getVal('btn-padh');
+      const btnH = getVal('btn-h');
+
+      ansCont.style.gap = ansGap + 'px';
+
+      ansBtns.forEach((btn, idx) => {
+        btn.innerText = document.getElementById('txt-ans-' + idx).value;
+        btn.style.fontSize = ansFont + 'px';
+        btn.style.padding = `${btnPadV}px ${btnPadH}px`;
+        btn.style.minHeight = btnH > 0 ? (btnH + 'px') : 'auto';
+      });
+    }
+
+    // ─── DOKKOLÁS ÁTDOBÁSA (BAL / JOBB) ───
+    document.getElementById('btn-dock').addEventListener('click', () => {
+      const panel = document.getElementById('editor-panel');
+      const isRight = panel.classList.toggle('dock-right');
+      document.getElementById('btn-dock').innerText = isRight ? '⇄ Jobb oldalon' : '⇄ Bal oldalon';
+    });
+
+    // ─── WIREFRAME KONTÚROK ───
+    document.getElementById('btn-toggle-wireframe').addEventListener('click', () => {
+      document.body.classList.toggle('wireframe');
+    });
+
+    // ─── MINTA KÉRDÉSEK ───
+    document.getElementById('btn-q-short').addEventListener('click', () => {
+      document.getElementById('txt-question').value = "Hol szerezhetsz újabb hártyát?";
+      applyStyles();
+    });
+    document.getElementById('btn-q-exact').addEventListener('click', () => {
+      document.getElementById('txt-question').value = "Melyik irányító gombokkal navigálhatod a csónakodat?";
+      applyStyles();
+    });
+    document.getElementById('btn-q-long').addEventListener('click', () => {
+      document.getElementById('txt-question').value = "Ha a viharos tengeren elsodródik egy hártya a csónakod mellől, milyen módon kaphatsz rá újra esélyt a játék során?";
+      applyStyles();
+    });
+
+    // ─── ALAPHELYZET (RESET) ───
+    document.getElementById('btn-reset-default').addEventListener('click', () => {
+      setVal('panel-offset-x', 0);
+      setVal('panel-offset-y', 0);
+      setVal('panel-width', 780);
+      setVal('panel-height', 0);
+      setVal('pad-top', 85);
+      setVal('pad-right', 105);
+      setVal('pad-bottom', 65);
+      setVal('pad-left', 105);
+      setVal('q-font', 20);
+      setVal('q-lh', 1.3);
+      setVal('q-minh', 60);
+      setVal('q-mb', 20);
+      setVal('q-pad-v', 15);
+      setVal('q-pad-h', 20);
+      setVal('ans-gap', 10);
+      setVal('ans-font', 15);
+      setVal('btn-padv', 12);
+      setVal('btn-padh', 18);
+      setVal('btn-h', 0);
+      setVal('zoom', 1.0);
+      document.getElementById('txt-question').value = "Melyik irányító gombokkal navigálhatod a csónakodat?";
+      applyStyles();
+    });
+
+    function setVal(id, val) {
+      const rng = document.getElementById('rng-' + id);
+      const num = document.getElementById('num-' + id);
+      if (rng) rng.value = val;
+      if (num) num.value = val;
+    }
+
+    // ─── MINDEN INFORMÁCIÓ KIMENTÉSE ÉS MÁSOLÁSA ───
+    function buildExportPayload() {
+      const pOffsetX = getVal('panel-offset-x');
+      const pOffsetY = getVal('panel-offset-y');
+      const zoom = getVal('zoom', true);
+      const pW = getVal('panel-width');
+      const pH = getVal('panel-height');
+      const pTop = getVal('pad-top');
+      const pRight = getVal('pad-right');
+      const pBottom = getVal('pad-bottom');
+      const pLeft = getVal('pad-left');
+
+      const qFont = getVal('q-font');
+      const qLh = getVal('q-lh', true);
+      const qMinH = getVal('q-minh');
+      const qMb = getVal('q-mb');
+      const qPadV = getVal('q-pad-v');
+      const qPadH = getVal('q-pad-h');
+
+      const ansGap = getVal('ans-gap');
+      const ansFont = getVal('ans-font');
+      const btnPadV = getVal('btn-padv');
+      const btnPadH = getVal('btn-padh');
+      const btnH = getVal('btn-h');
+
+      const configObj = {
+        name: "GameInfo_DEFAULT",
+        description: "Hártyafelvételi Kvíz (Quiz_window_new_2-r.png) kalibrált beállításai",
+        timestamp: new Date().toISOString(),
+        panelOffsetX: pOffsetX,
+        panelOffsetY: pOffsetY,
+        scale: zoom,
+        panelWidth: pW,
+        panelHeight: pH,
+        padTop: pTop,
+        padRight: pRight,
+        padBottom: pBottom,
+        padLeft: pLeft,
+        qFontSize: qFont,
+        qLineHeight: qLh,
+        qMinHeight: qMinH,
+        qMarginBottom: qMb,
+        qPaddingTopBottom: qPadV,
+        qPaddingLeftRight: qPadH,
+        qWidth: "100%",
+        ansGap: ansGap,
+        ansFontSize: ansFont,
+        btnPaddingTopBottom: btnPadV,
+        btnPaddingLeftRight: btnPadH,
+        btnHeight: btnH,
+        btnMt0: 0,
+        btnMt1: 0,
+        btnMt2: 0,
+        btnMt3: 0
+      };
+
+      const jsCode = `// 📜 GameInfo Kalibráció QuizConfig.DEFAULT:\nwindow.QuizConfig.DEFAULT = ` + JSON.stringify(configObj, null, 2) + `;`;
+
+      return {
+        json: JSON.stringify(configObj, null, 2),
+        jsCode: jsCode,
+        fullText: jsCode
+      };
+    }
+
+    // Másolás a vágólapra
+    const btnCopy = document.getElementById('btn-copy-clipboard');
+    btnCopy.addEventListener('click', () => {
+      const payload = buildExportPayload();
+      navigator.clipboard.writeText(payload.fullText).then(() => {
+        btnCopy.innerText = "✅ SIKERESEN KIMÁSOLVA A VÁGÓLAPRA!";
+        btnCopy.style.background = "#ffd166";
+        btnCopy.style.color = "#000";
+        setTimeout(() => {
+          btnCopy.innerText = "📋 Beállítások Másolása a Vágólapra";
+          btnCopy.style.background = "#06d6a0";
+          btnCopy.style.color = "#052e24";
+        }, 2500);
+      }).catch(err => {
+        // Fallback felugró ablak ha nincs clipboard API engedély
+        showModal(payload.fullText);
+      });
+    });
+
+    // Kód megtekintése modal
+    document.getElementById('btn-show-json').addEventListener('click', () => {
+      const payload = buildExportPayload();
+      showModal(payload.fullText);
+    });
+
+    function showModal(content) {
+      const modal = document.getElementById('modal-export');
+      const area = document.getElementById('export-code-area');
+      area.value = content;
+      modal.style.display = 'flex';
+      area.select();
+    }
+
+    document.getElementById('btn-modal-close').addEventListener('click', () => {
+      document.getElementById('modal-export').style.display = 'none';
+    });
+
+    document.getElementById('btn-modal-copy').addEventListener('click', () => {
+      const area = document.getElementById('export-code-area');
+      area.select();
+      document.execCommand('copy');
+      alert('✅ Másolva a vágólapra!');
+    });
+
+    // Kezdeti kirajzolás
+    applyStyles();
+  </script>
+</body>
+</html>
+

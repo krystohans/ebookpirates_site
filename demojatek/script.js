@@ -6146,7 +6146,7 @@ scene.fog = new THREE.Fog(0x7ec8e8, 600, 3200);
 
 
 
-const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 3500);
+const cam = new THREE.PerspectiveCamera(55, wrap.clientWidth / wrap.clientHeight, 0.5, 7000);
 
 window.cam = cam;
 

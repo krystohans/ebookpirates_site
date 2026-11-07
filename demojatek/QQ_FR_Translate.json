@@ -527,12 +527,12 @@
       "baseId": "TUTMHDEMQTU0OK0013",
       "id": 13,
       "category": "TUTORZEP",
-      "question": "Quel héros d'écrivain est Lord Cozimo de Lodoci ?",
+      "question": "Quel héros d'écrivain est Lord Havelock Vétérini ?",
       "answers": [
         "Terry Pratchett",
-        "R.A. Salvatore",
-        "Michael Endé",
-        "Jeffrey Pierre"
+        "R. A. Salvatore",
+        "Michael Ende",
+        "Jeffrey Stone"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20013",
@@ -1007,12 +1007,12 @@
       "baseId": "TUTMHDEMQTU0OK0037",
       "id": 37,
       "category": "TUTORZEP",
-      "question": "Quel personnage littéraire célèbre a été inspiré par un vrai petit garçon de Dundee ?",
+      "question": "Quel personnage littéraire célèbre a été inspiré par un vrai petit garçon dodu ?",
       "answers": [
-        "Róbert Gida de Winnie l'ourson",
+        "Jean-Christophe de Winnie l'ourson",
         "Neville Londubat de Harry Potter",
         "Augustus Gloop de Charlie et la Chocolaterie",
-        "Artúr Gombóc des contes Pom Pom"
+        "Arthur Gombóc des contes Pom Pom"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKFR20037",

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    window.errors = [];
+    window.onerror = function(msg, url, line, col, err) {
+      window.errors.push({msg: msg, line: line, col: col});
+    };
+  </script>
+  <script src="quiz_manager.js"></script>
+</head>
+<body>
+  <div id="quiz-overlay" style="display:none;"><div id="quiz-panel-box"></div></div>
+  <script>
+    const res = document.createElement('div');
+    res.id = 'result';
+    res.innerText = JSON.stringify({
+      errors: window.errors,
+      quizManager: typeof window.quizManager,
+      instance: window.quizManager ? {
+        uiReady: window.quizManager.uiReady,
+        questions: (window.quizManager.questions || []).length
+      } : null
+    });
+    document.body.appendChild(res);
+  </script>
+</body>
+</html>

@@ -778,19 +778,24 @@ class QuizManager {
       const rawQText = this.currentQuestion.question || this.currentQuestion.Kerdes || "";
       const cleanQText = rawQText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
+      qText.style.display = 'flex';
+      qText.style.alignItems = 'center';
+      qText.style.justifyContent = 'center';
+      qText.style.textAlign = 'center';
       qText.style.position = "static";
       qText.style.color = "#ffeedd";
-      qText.style.background = "rgba(20, 10, 5, 0.85)";
-      qText.style.border = "2px solid #6b4c2a";
+      qText.style.background = "transparent";
+      qText.style.border = "none";
       qText.style.borderRadius = "6px";
-      qText.style.padding = "15px 20px";
+      qText.style.padding = `${cfg.qPaddingTopBottom || 15}px ${cfg.qPaddingLeftRight || 20}px`;
+      qText.style.lineHeight = cfg.qLineHeight || 1.3;
       qText.style.width = "100%";
       qText.style.maxWidth = "100%";
       qText.style.boxSizing = "border-box";
       qText.style.fontFamily = baseFontFamily;
       qText.style.fontSize = (isRussian ? "18px" : "20px");
-      qText.style.height = "auto";
-      qText.style.minHeight = cfg.qMinHeight + "px";
+      qText.style.height = "118px";
+      qText.style.minHeight = "118px";
       qText.style.marginTop = "0px";
       qText.style.marginBottom = cfg.qMarginBottom + "px";
       qText.innerHTML = cleanQText;
@@ -813,12 +818,14 @@ class QuizManager {
 
         btn.style.position = "static";
         btn.style.width = "100%";
-        btn.style.background = "rgba(20, 10, 5, 0.85)";
-        btn.style.border = "2px solid #6b4c2a";
+        btn.style.background = "transparent";
+        btn.style.border = "none";
         btn.style.color = "#ffeedd";
         btn.style.fontFamily = baseFontFamily;
         btn.style.fontSize = (isRussian ? "15px" : "16px");
         btn.style.padding = "12px 18px";
+        if (displayPos === 2) btn.style.marginTop = "4px";
+        if (displayPos === 3) btn.style.marginTop = "7px";
         btn.style.cursor = "pointer";
         btn.style.borderRadius = "6px";
         btn.style.textAlign = "left";

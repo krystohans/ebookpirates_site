@@ -1,0 +1,763 @@
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_1] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: welcome_1
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Ищешь чтиво для Библиотеки? Что ж, приятель, здесь готовые книги на воде сами по себе не плавают!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_2] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: welcome_2
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Слушай сюда, салажонок! Если хочешь буквы, придется как следует попотеть.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 28px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_3] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: welcome_3
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Я покажу тебе, чем живем мы, береговой люд. Залезай! Чего застыл? У меня нет на тебя целого дня!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [1] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 1
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Я приметил мембрану, которая дрейфует совсем рядом. Выловим сначала её!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [2] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 2
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Вот они — Мембраны. Море Букв прибило их в бухту. Это наше сокровище. А твоя задача — просто вычерпывать их.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 23px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [3] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 3
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Красиво! Но помни: мембрана в безопасности, только когда доставлена в порт! Разворачивайся, живо назад!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [4] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 4
+📝 Módosított Szöveg (sortörésekkel):
+"""
+БЕРЕГИСЬ! Налетишь на риф — потеряешь все мембраны.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 26px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [5] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 5
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Вылови тридцать таких сияющих чудес, чтобы Мастер Свитков вообще cоблаговолил с тобой заговорить.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [6] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 6
+📝 Módosított Szöveg (sortörésekkel):
+"""
+За одиннадцать Пиратских кредитов, естественно. Здесь задаром ничего не бывает.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [7] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 7
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Это только простые мембраны. За пределами бухты, у рифов, попадаются цветные. Синие, красные, зеленые... каждая под свой жанр.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [8] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 8
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Но туда добираются лишь матерые волки. А далекие острова... ладно, неважно. Это пока не твой уровень.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [9] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 9
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Проклятье... Воздушные пираты! ЧЕГО ВЫЛУПИЛСЯ? УДИРАЕМ! Назад в порт!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [11] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 11
+📝 Módosított Szöveg (sortörésekkel):
+"""
+А теперь я втолкую тебе, как устроена жизнь, пока мы не вернулись на причал.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [12] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 12
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Значение имеют две вещи: Пиратские кредиты и Таланты. Кредит дают при входе. Один. Но это гроши.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [13] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 13
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Мастер Свитков тоже дает один за тридцать мембран.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [14] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 14
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Настоящее дело ждет в Таверне. Там можно взять задания, когда заслужишь право.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [15] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 15
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Свои свитки сможешь читать в Библиотеке. Или продать за 10 кредитов, либо на Рынке.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [16] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 16
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Или копи свитки, пока не соберешь целиком. Тогда сможешь заказать из них переплетенную Копию.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 26px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [17] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 17
+📝 Módosított Szöveg (sortörésekkel):
+"""
+С готовой Копией идешь в Святилище и освящаешь её. Только так можно заполучить настоящую Книгу.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24.5px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [18] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 18
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Освящение Книги требует Талантов. А их из воды не выловишь.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [19] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 19
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Их жалуют только Великие Меценаты, через Patreon или PayPal.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [20] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 20
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Либо если отыщешь сокровище, за которое другой игрок готов заплатить.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [21] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 21
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Банк тут есть, но меняет только в одну сторону. Продать Таланты за Кредиты можно, а вот наоборот... забудь!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 23px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [22] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 22
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Ну вот, начинаешь соображать. Будешь стараться, может, однажды я возьму тебя в пиратский порт Хебок.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [25] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 25
+📝 Módosított Szöveg (sortörésekkel):
+"""
+После освящения сможешь скачать книгу, да еще получишь десять Копий, которыми волен распоряжаться как годно.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 23.5px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [26] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 26
+📝 Módosított Szöveg (sortörésekkel):
+"""
+А если отдашь тому, кто освятит Копию, в твоем кармане может приятно звенеть звонкая монета.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [27] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 27
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Или сможешь объявить на неё Книжную охоту. Вот тогда-то и начнется самое веселье!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 26.5px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [28] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 28
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Чем больше у тебя книг, тем важнее персона. Глядишь, дорастешь и до Капитана!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [29] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 29
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Но если украдешь книгу или дашь вне игры, твоя кара будет беспощадной!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [30] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 30
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Под килем тебя не протянут, но имя вывесят на доске позора, чтобы каждый видел, что ты натворил.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [31] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 31
+📝 Módosított Szöveg (sortörésekkel):
+"""
+И если ты освятил книгу, она потеряет ценность: прямиком в Книжную Тюрьму.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 26px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [32] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 32
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Таскай мне больше мембран. 
+И смотри за моей лодкой!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [33] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 33
+📝 Módosított Szöveg (sortörésekkel):
+"""
+А если сам напишешь что-нибудь и захочешь в игру, тебе прямая дорога к монахам.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [34] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 34
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Они обитают в Обители Облаков, высоко над Святилищем.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 0px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.21 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [wind] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: wind
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Следи за направлением ветра и одстраивай парус!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (Szél Figyelmeztető Panel):
+:root {
+  --wind-p-width: 480px;
+  --wind-p-height: 300px;
+  --wind-p-right: 6%;
+  --wind-p-bottom: 19%;
+  --wind-inner-width: 320px;
+  --wind-inner-height: 220px;
+  --wind-inner-top: 30px;
+  --wind-inner-left: 0px;
+}
+Betűméret: 28px (Auto), Sorköz: 1.25 (Auto)
+==================================================
+
+
+
+
+
+

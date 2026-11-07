@@ -527,10 +527,10 @@
       "baseId": "TUTMHDEMQTU0OK0013",
       "id": 13,
       "category": "TUTORZEP",
-      "question": "Which writer's hero is Lord Cozimo de Lodoci?",
+      "question": "Which writer's hero is Lord Havelock Vetinari?",
       "answers": [
         "Terry Pratchett",
-        "R.A. Salvatore",
+        "R. A. Salvatore",
         "Michael Ende",
         "Jeffrey Stone"
       ],
@@ -1007,12 +1007,12 @@
       "baseId": "TUTMHDEMQTU0OK0037",
       "id": 37,
       "category": "TUTORZEP",
-      "question": "Which famous literary character was inspired by a real-life little boy from Dundee?",
+      "question": "Which famous literary character was inspired by a real-life chubby boy?",
       "answers": [
-        "Róbert Gida from Winnie the Pooh",
+        "Christopher Robin from Winnie-the-Pooh",
         "Neville Longbottom from Harry Potter",
         "Augustus Gloop from Charlie and the Chocolate Factory",
-        "Artúr Gombóc from the Pom Pom tales"
+        "Arthur Dumpling from the Pom Pom tales"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKEN20037",

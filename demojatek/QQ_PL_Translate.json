@@ -527,12 +527,12 @@
       "baseId": "TUTMHDEMQTU0OK0013",
       "id": 13,
       "category": "TUTORZEP",
-      "question": "Bohaterem jakiego pisarza jest Lord Cozimo de Lodoci?",
+      "question": "Bohaterem jakiego pisarza jest Lord Havelock Vetinari?",
       "answers": [
-        "Terry'ego Pratchetta",
-        "RA Salvatore",
-        "Michał Ende",
-        "Jeffreya Stone’a"
+        "Terry Pratchett",
+        "R. A. Salvatore",
+        "Michael Ende",
+        "Jeffrey Stone"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKPL20013",
@@ -1007,12 +1007,12 @@
       "baseId": "TUTMHDEMQTU0OK0037",
       "id": 37,
       "category": "TUTORZEP",
-      "question": "Która słynna postać literacka została zainspirowana prawdziwym chłopcem z Dundee?",
+      "question": "Która słynna postać literacka została zainspirowana prawdziwym pyzatym chłopcem?",
       "answers": [
-        "Robert Gida z Kubusia Puchatka",
+        "Krzyś z Kubusia Puchatka",
         "Neville Longbottom z Harry'ego Pottera",
         "Augustus Gloop z Charliego i fabryki czekolady",
-        "Artúr Gombóc z opowieści Pom Pom"
+        "Arthur Gombóc z opowieści Pom Pom"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKPL20037",

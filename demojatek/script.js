@@ -5416,7 +5416,7 @@ function setupTopBarEvents() {
 
   if (tooltipEl && tooltipTextEl) {
 
-    const tooltipTargets = document.querySelectorAll('#topbar [title], #topbar [data-custom-tooltip], #settings-dropdown [title], #settings-dropdown [data-custom-tooltip]');
+    const tooltipTargets = document.querySelectorAll('#topbar [title], #topbar [data-custom-tooltip], #settings-dropdown [title], #settings-dropdown [data-custom-tooltip], .zozo-read-aloud-btn');
 
     tooltipTargets.forEach(el => {
 
@@ -6176,7 +6176,7 @@ const LOOK_OFFSET_Y = 2.5;
 
 
 
-scene.add(new THREE.AmbientLight(0x8ab4d0, 0.55));
+scene.add(window.ambientLight = new THREE.AmbientLight(0x8ab4d0, 0.55));
 
 const sun = new THREE.DirectionalLight(0xfff4d6, 1.3);
 
@@ -6202,7 +6202,7 @@ window.cinematicLight.visible = false;
 
 scene.add(window.cinematicLight);
 
-scene.add(new THREE.HemisphereLight(0x87ceeb, 0x305030, 0.35));
+scene.add(window.hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x305030, 0.35));
 
 
 
@@ -6252,6 +6252,15 @@ window.updateEnvironmentLighting = function () {
 
   sun.position.set(sunX, Math.max(sunY, -200), sunZ);
 
+  if (window.sunMesh) {
+    const sunDir = new THREE.Vector3(sunX, Math.max(sunY, -120), sunZ).normalize();
+    window.sunMesh.position.copy(sunDir.multiplyScalar(910));
+    window.sunMesh.visible = p < 0.78;
+    if (window.sunMesh.material) {
+      window.sunMesh.material.color = p < 0.48 ? new THREE.Color(0xfffae0) : new THREE.Color(0xfffae0).lerp(new THREE.Color(0xff4400), (p - 0.48) / 0.22);
+    }
+  }
+
 
 
   let sunColor, skyColor, fogColor, intensity;
@@ -6274,11 +6283,11 @@ window.updateEnvironmentLighting = function () {
 
     const t = (p - 0.35) / 0.50;
 
-    sunColor = new THREE.Color(0xffffff).lerp(new THREE.Color(0xff5500), t);
+    sunColor = new THREE.Color(0xffffff).lerp(new THREE.Color(0xff7722), t);
 
-    skyColor = new THREE.Color(0x5cb8e4).lerp(new THREE.Color(0xe2583e), t);
+    skyColor = new THREE.Color(0x5cb8e4).lerp(new THREE.Color(0xba1a62), t);
 
-    fogColor = new THREE.Color(0x5cb8e4).lerp(new THREE.Color(0xd35400), t);
+    fogColor = new THREE.Color(0x5cb8e4).lerp(new THREE.Color(0x7a184d), t);
 
     intensity = THREE.MathUtils.lerp(1.5, 0.8, t);
 
@@ -6306,7 +6315,73 @@ window.updateEnvironmentLighting = function () {
 
   scene.fog.color.copy(fogColor);
 
+  if (window.skyDome && window.skyDome.geometry && window.skyDome.geometry.attributes.color) {
+    const colAttr = window.skyDome.geometry.attributes.color;
+    const posAttr = window.skyDome.geometry.attributes.position;
+    let horizC, midC, zenithC;
+    if (p <= 0.48) {
+      const t = Math.max(0.0, (p - 0.25) / 0.23);
+      horizC = new THREE.Color(0xebd6af).lerp(new THREE.Color(0xf5a623), t);
+      zenithC = new THREE.Color(0x5cb8e4).lerp(new THREE.Color(0x243b68), t);
+      midC = new THREE.Color(horizC).lerp(zenithC, 0.5);
+    } else if (p <= 0.70) {
+      const t = (p - 0.48) / 0.22;
+      horizC = new THREE.Color(0xf5a623).lerp(new THREE.Color(0xff8811), t);
+      const mStart = new THREE.Color(0xf5a623).lerp(new THREE.Color(0x243b68), 0.5);
+      midC = mStart.lerp(new THREE.Color(0xba1a62), t);
+      zenithC = new THREE.Color(0x243b68).lerp(new THREE.Color(0x1b143d), t);
+    } else {
+      const t = Math.min(1.0, (p - 0.70) / 0.26);
+      horizC = new THREE.Color(0xff8811).lerp(new THREE.Color(0x071124), t);
+      midC = new THREE.Color(0xba1a62).lerp(new THREE.Color(0x050a18), t);
+      zenithC = new THREE.Color(0x1b143d).lerp(new THREE.Color(0x02040b), t);
+    }
+    for (let i = 0; i < posAttr.count; i++) {
+      const t = Math.max(0.0, Math.min(1.0, posAttr.getY(i) / 950));
+      const c = t < 0.40 ? new THREE.Color(horizC).lerp(midC, t / 0.40) : new THREE.Color(midC).lerp(zenithC, (t - 0.40) / 0.60);
+      colAttr.setXYZ(i, c.r, c.g, c.b);
+    }
+    colAttr.needsUpdate = true;
+  }
 
+  if (window.ambientLight) {
+    window.ambientLight.intensity = p < 0.70 ? 0.55 : THREE.MathUtils.lerp(0.55, 0.12, (p - 0.70) / 0.26);
+  }
+  if (window.hemiLight) {
+    window.hemiLight.intensity = p < 0.70 ? 0.35 : THREE.MathUtils.lerp(0.35, 0.08, (p - 0.70) / 0.26);
+  }
+  if (window.starField && window.starField.material) {
+    window.starField.material.opacity = p < 0.68 ? 0.0 : Math.min(1.0, (p - 0.68) / 0.26);
+  }
+
+  if (window.water && window.water.material) {
+    const wm = window.water.material;
+    if (wm.uniforms) {
+      if (wm.uniforms['sunDirection']) {
+        wm.uniforms['sunDirection'].value.copy(sun.position).normalize();
+      }
+      if (wm.uniforms['sunColor']) {
+        if (p < 0.70) {
+          wm.uniforms['sunColor'].value.copy(sun.color);
+        } else {
+          wm.uniforms['sunColor'].value.copy(sun.color).lerp(new THREE.Color(0x050a14), (p - 0.70) / 0.26);
+        }
+      }
+      if (wm.uniforms['waterColor']) {
+        if (p < 0.70) {
+          wm.uniforms['waterColor'].value.setHex(0x1476a6);
+        } else {
+          wm.uniforms['waterColor'].value.setHex(0x1476a6).lerp(new THREE.Color(0x04101a), (p - 0.70) / 0.26);
+        }
+      }
+    } else if (wm.color) {
+      if (p < 0.70) {
+        wm.color.setHex(0x1476a6);
+      } else {
+        wm.color.setHex(0x1476a6).lerp(new THREE.Color(0x04101a), (p - 0.70) / 0.26);
+      }
+    }
+  }
 
   const isNight = p >= 0.83;
 
@@ -6410,7 +6485,30 @@ let skyDome;
 
   g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
 
-  skyDome = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true }));
+  skyDome = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true, fog: false }));
+  window.skyDome = skyDome;
+
+  const starGeo = new THREE.BufferGeometry();
+  const starCount = 1300;
+  const starPos = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const u = Math.random(), v = Math.random();
+    const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0), r = 920;
+    starPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    starPos[i * 3 + 1] = Math.abs(r * Math.cos(phi)) + 15;
+    starPos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  window.starField = new THREE.Points(starGeo, new THREE.PointsMaterial({
+    color: 0xffffff, size: 2.2, transparent: true, opacity: 0.0, fog: false
+  }));
+  skyDome.add(window.starField);
+
+  const sunGeo = new THREE.SphereGeometry(42, 32, 32);
+  const sunMat = new THREE.MeshBasicMaterial({ color: 0xfffae0, fog: false });
+  const sunMesh = new THREE.Mesh(sunGeo, sunMat);
+  skyDome.add(sunMesh);
+  window.sunMesh = sunMesh;
 
   scene.add(skyDome);
 
@@ -6482,7 +6580,7 @@ if (isAndroid) {
 
 }
 
-
+window.water = water;
 
 {
 
@@ -9527,13 +9625,13 @@ window.setZozoTTSButtonState = function (isPlaying) {
 
       btn.classList.add('auto-read-active');
 
-      btn.setAttribute('title', 'Zozó felolvasás: BEKAPCSOLVA (Kattints a kikapcsoláshoz)');
+      btn.setAttribute('data-custom-tooltip', 'Felolvasás');
 
     } else {
 
       btn.classList.remove('auto-read-active');
 
-      btn.setAttribute('title', 'Zozó felolvasás: KIKAPCSOLVA (Kattints a bekapcsoláshoz)');
+      btn.setAttribute('data-custom-tooltip', 'Felolvasás');
 
     }
 
@@ -11529,7 +11627,7 @@ function frame(now) {
 
 
 
-            window.gameTimeProgress = Math.min(count / 30.0, 0.90);
+            window.gameTimeProgress = Math.min(count <= 20 ? 0.10 + (count / 20.0) * 0.20 : (count <= 25 ? 0.30 + ((count - 20) / 5.0) * 0.18 : 0.48 + ((count - 25) / 5.0) * 0.22), 0.70);
 
             if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
 
@@ -12400,6 +12498,8 @@ function frame(now) {
 // @summary: 3D Hártyavadászat funkció: showBMonolog.
 
       function showBMonolog() {
+        window.gameTimeProgress = 0.70; // 🌅 Drámai napnyugta a 2. EoG monológ megjelenésekor (Láda észrevétele)
+        if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
 
         showZozoEogMonolog(
 
@@ -12458,6 +12558,8 @@ function frame(now) {
       window.eogState = 'CHEST_FOUND';
 
       window.isWindActive = false; // Szél leállítása az EoG felületekhez
+      window.gameTimeProgress = 0.70; // 🌅 Drámai napnyugta a kincsesláda felvételekor
+      if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
 
       window.chestModel.visible = false;
 
@@ -12496,6 +12598,9 @@ function frame(now) {
     const DURATION = 20.0; // Egyenletes, felgyorsított visszatérési sebesség (nem lassul be a kanyarokban)
 
     const t = Math.min(elapsed / DURATION, 1.0);
+    // 🌙 Folyamatos átúszás Napnyugtából (0.70) Éjszakába (0.96) a mólóig tartó 20 mp alatt
+    window.gameTimeProgress = THREE.MathUtils.lerp(0.70, 0.96, t);
+    if (typeof window.updateEnvironmentLighting === 'function') window.updateEnvironmentLighting();
 
 
 
@@ -13632,6 +13737,7 @@ function frame(now) {
     skyDome.position.x = cam.position.x;
 
     skyDome.position.z = cam.position.z;
+    if (window.starField) window.starField.rotation.y += 0.00012;
 
   }
 
@@ -13825,7 +13931,7 @@ function spawnEogTreasureChest(sceneRef, point) {
 
     const discGeom = new THREE.CylinderGeometry(5.0, 5.0, 0.15, 32);
 
-    const discMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.0, visible: false, depthWrite: false });
+    const discMat = new THREE.MeshBasicMaterial({ color: 0xffcc00, transparent: true, opacity: 0.75, visible: true, depthWrite: false });
 
     const glowDisc = new THREE.Mesh(discGeom, discMat);
 
@@ -13855,7 +13961,7 @@ function spawnEogTreasureChest(sceneRef, point) {
 
 
 
-    const chestLight = new THREE.PointLight(0xffcc44, 25.0, 30);
+    const chestLight = new THREE.PointLight(0xffcc44, 150.0, 60);
 
     chestLight.position.set(0, 2.0, 0);
 

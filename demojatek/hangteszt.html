@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Zozó Hangteszt & Letöltés</title>
+  <style>
+    body {
+      background: #0f141c;
+      color: #e6dec8;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    h1 { color: #ffd700; border-bottom: 2px solid #a67938; padding-bottom: 10px; }
+    .card {
+      background: rgba(30, 40, 55, 0.8);
+      border: 1px solid #a67938;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .card.orig {
+      border: 2px solid #00e5ff;
+      background: rgba(0, 50, 80, 0.6);
+    }
+    .title { font-weight: bold; font-size: 17px; margin-bottom: 4px; }
+    .desc { font-size: 13px; color: #a0b0c0; }
+    audio { outline: none; height: 40px; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+    .badge-orig { background: #00bcd4; color: #000; }
+    .badge-rec { background: #4caf50; color: #fff; }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #00bcd4;
+      color: #051525;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-download:hover {
+      background: #26c6da;
+      transform: scale(1.03);
+    }
+    .btn-download.mp3-btn {
+      background: #ffb300;
+    }
+    .btn-download.mp3-btn:hover {
+      background: #ffc107;
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎙️ Zozó Eredeti Hangminták Letöltése & Tesztelője</h1>
+  <p>Itt tudod közvetlenül meghallgatni és 1 kattintással letölteni a videóból kivágott eredeti hangsávokat:</p>
+
+  <!-- 1. Teljes Eredeti Beszéd -->
+  <div class="card orig">
+    <div>
+      <div class="title">🎬 Teljes Eredeti Videó Hangsáv (0:00 - 0:22) <span class="badge badge-orig">Teljes Beszéd</span></div>
+      <div class="desc">A videó teljes dialógusa: <em>„Mi a kikötő neve? De hisz' ez egyszerű. Hebok. A többi kincs a tiéd. A csónakomat is megtarthatod.”</em></div>
+    </div>
+    <div class="actions">
+      <audio controls src="assets/sounds/tts_test/zozo_teljes_eredeti_beszed.mp3"></audio>
+      <a class="btn-download" href="assets/sounds/tts_test/zozo_teljes_eredeti_beszed.wav" download="zozo_teljes_eredeti_beszed.wav">📥 .WAV</a>
+      <a class="btn-download mp3-btn" href="assets/sounds/tts_test/zozo_teljes_eredeti_beszed.mp3" download="zozo_teljes_eredeti_beszed.mp3">📥 .MP3</a>
+    </div>
+  </div>
+
+  <!-- 2. Tiszta Vágott Részlet -->
+  <div class="card orig">
+    <div>
+      <div class="title">✂️ Vágott Tiszta Minta (15.6s - 19.3s) <span class="badge badge-orig">Referencia Klónozáshoz</span></div>
+      <div class="desc">Zozó mondata: <em>„A többi kincs a tiéd. A csónakomat is megtarthatod.”</em> (Zajmentes minta).</div>
+    </div>
+    <div class="actions">
+      <audio controls src="assets/sounds/tts_test/zozo_reference_voice.wav"></audio>
+      <a class="btn-download" href="assets/sounds/tts_test/zozo_reference_voice.wav" download="zozo_referencia_minta.wav">📥 .WAV</a>
+    </div>
+  </div>
+
+  <h2 style="color: #a67938; margin-top: 36px; border-bottom: 1px solid rgba(166,121,56,0.4); padding-bottom: 8px;">Korábbi Szintetizált Tesztek</h2>
+
+  <!-- Variációk -->
+  <div class="card">
+    <div>
+      <div class="title">Gemini Charon (+25% tempó)</div>
+      <div class="desc">Mondat: „Na, te vagy az új jövevény? Egy Szárazföldi Patkány?”</div>
+    </div>
+    <audio controls src="assets/sounds/tts_test/gemini_Charon_fast.mp3"></audio>
+  </div>
+
+  <div class="card">
+    <div>
+      <div class="title">Gemini Puck (+20% tempó)</div>
+      <div class="desc">Mondat: „Na, te vagy az új jövevény? Egy Szárazföldi Patkány?”</div>
+    </div>
+    <audio controls src="assets/sounds/tts_test/gemini_Puck_fast.mp3"></audio>
+  </div>
+
+</body>
+</html>

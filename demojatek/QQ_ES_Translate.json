@@ -527,12 +527,12 @@
       "baseId": "TUTMHDEMQTU0OK0013",
       "id": 13,
       "category": "TUTORZEP",
-      "question": "¿El héroe de qué escritor es Lord Cozimo de Lodoci?",
+      "question": "¿El héroe de qué escritor es Lord Havelock Vetinari?",
       "answers": [
         "Terry Pratchett",
-        "REAL ACADEMIA DE BELLAS ARTES. salvatore",
-        "michael ende",
-        "Jeffrey Piedra"
+        "R. A. Salvatore",
+        "Michael Ende",
+        "Jeffrey Stone"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKES20013",
@@ -1007,12 +1007,12 @@
       "baseId": "TUTMHDEMQTU0OK0037",
       "id": 37,
       "category": "TUTORZEP",
-      "question": "¿Qué personaje literario famoso se inspiró en un niño de la vida real de Dundee?",
+      "question": "¿Qué personaje literario famoso se inspiró en un niño regordete de la vida real?",
       "answers": [
-        "Robert Gida de Winnie the Pooh",
+        "Christopher Robin de Winnie the Pooh",
         "Neville Longbottom de Harry Potter",
         "Augustus Gloop de Charlie y la fábrica de chocolate",
-        "Artúr Gombóc de los cuentos de Pom Pom"
+        "Arthur Gombóc de los cuentos de Pom Pom"
       ],
       "answerUids": [
         "TUTMHDEMATU0OKES20037",

@@ -1,0 +1,856 @@
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [24] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 24
+📝 Módosított Szöveg (sortörésekkel):
+"""
+В Хебоке находится и само Святилище, где освящают Копии.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 10px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [23] - [RU]
+==================================================
+🌐 Nyelv: RU
+📁 Célfájl (JSON): dialogues_ru.json
+📁 Célfájl (TXT): translations_txt/dialogues_ru.txt
+🔑 Kulcs: 23
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Там можно арендовать или купить корабль, или наняться к другим капитанам. Или к пиратам.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 670px;
+  --textbox-height: 82px;
+  --textbox-top: 44px;
+  --textbox-left: 10px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_0] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: welcome_0
+📝 Módosított Szöveg (sortörésekkel):
+"""
+No proszę, to ty jesteś ten nowy? Szczur lądowy, co?
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 650px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_1] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: welcome_1
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Szukasz lektur do Biblioteki? Cóż, mój przyjacielu,
+gotowe księgi nie dryfują tu sobie ot tak po wodzie!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_2] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: welcome_2
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Słuchaj uważnie, szczurze lądowy! Jeśli chcesz litery, musisz na to ciężko zapracować.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [welcome_3] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: welcome_3
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Pokażę ci, z czego żyjemy my, ludzie wybrzeża. Wskakuj! Na co jeszcze czekasz? Nie mam całego dnia!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [1] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 1
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Zauważyłem membranę unoszącą się całkiem blisko.
+Wyłówmy najpierw tę sztukę!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 26.5px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [2] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 2
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Oto Membrany. Morze Liter zniosło je prosto do zatoki. To nasz największy skarb. A twoim zadaniem jest po prostu je wyłowić.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 22px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [3] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 3
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Pięknie! Pamiętaj jednak: twoja membrana jest bezpieczna dopiero wtedy, gdy dostarczysz ją do portu! Ruszaj z powrotem!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 22px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [4] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 4
+📝 Módosított Szöveg (sortörésekkel):
+"""
+UWAŻAJ! Jeśli uderzysz w rafę, stracisz wiezione membrany.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [5] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 5
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Musisz wygarnąć z wody trzydzieści tych lśniących cudów, zanim Mistrz Zwojów w ogóle zechce amienić z tobą słowo.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 23px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [6] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 6
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Za jedenaście Kredytów Pirackich, rzecz jasna. U nas nic nie ma za darmo.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [7] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 7
+📝 Módosított Szöveg (sortörésekkel):
+"""
+To tylko podstawowe membrany. Za zatoką, przy rafach, trafisz też na kolorowe. Błękitne, karminowe, zielone... każda dla innego gatunku.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 22px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [8] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 8
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Ale tam zapuszczają się tylko stare wilki morskie jak ja. A na odległe wyspy... no mniejsza z tym. To jeszcze nie twoja liga.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 22px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [9] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 9
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Niech to licho... Podniebni Piraci! NA CO SIĘ GAPISZ? UCIEKAJMY! Zawracaj do portu!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [11] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 11
+📝 Módosított Szöveg (sortörésekkel):
+"""
+A teraz wyjaśnię ci, jak kręci się tutejsze życie, skoro jesteś w tych sprawach tak kompletnie zielony.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25.5px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [12] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 12
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Liczą się dwie rzeczy: Kredyty Pirackie i Talenty. Kredyt dostajesz każdego dnia przy logowaniu. Jeden. Ale to drobniaki na waciki.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 22px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [13] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 13
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Mistrz Zwojów też da ci jeden za trzydzieści membran. Ale to groszowe sprawy.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [14] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 14
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Prawdziwa robota czeka w Tawernie. Tam dostaniesz zlecenia, gdy już sobie na to zapracujesz.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25.5px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [15] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 15
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Swoje zwoje możesz czytać w Bibliotece. Albo sprzedać za 10 kredytów, bądź wystawić na Rynku.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25.5px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [16] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 16
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Możesz też zbierać zwoje, aż skompletujesz wszystkie do księgi. Wtedy zlecisz oprawienie z nich Kopii.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [17] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 17
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Mając Kopię, zanosisz ją do Świątyni i oddajesz do poświęcenia. W ten sposób zyskujesz prawdziwą Księgę.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 24px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [18] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 18
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Poświęcenie Księgi wymaga Talentów. A tych nie wyłowisz ot tak z wody.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [19] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 19
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Płyną one jedynie od Wielkich Mecenasów, poprzez Patreon lub PayPal.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [20] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 20
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Albo jeśli znajdziesz skarb, za który inny gracz zapłaci ci Talentami na Rynku.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [21] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 21
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Jest co prawda Bank, ale wymienia tylko w dół. Sprzedać Talenty za Kredyty można, lecz w drugą stronę... zapomnij!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 23.5px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [22] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 22
+📝 Módosított Szöveg (sortörésekkel):
+"""
+No proszę, powoli chwytasz o co chodzi. Jeśli będziesz tak dalej pracować, może kiedyś zabiorę cię do pirackiego portu Hebok.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 23px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [23] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 23
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Tam wynajmiesz lub kupisz statek, albo zaciągniesz się do załogi innych łajb. Albo do samych piratów.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 26px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [24] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 24
+📝 Módosított Szöveg (sortörésekkel):
+"""
+W Heboku wznosi się też Świątynia, gdzie wyświęca się Kopie.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 28px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [25] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 25
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Po wyświęceniu możesz pobrać księgę jako ebook, a do tego dostajesz dziesięć Kopii, którymi możesz swobodnie obdarowywać.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 22px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [26] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 26
+📝 Módosított Szöveg (sortörésekkel):
+"""
+A jeśli dasz ją komuś, kto poświęci otrzymaną Kopię,
+do twojej kieszeni może wpaść całkiem zgrabny grosz.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [27] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 27
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Albo ogłosisz na nią Polowanie na Księgi. O, wtedy zaczyna się prawdziwa zabawa!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [28] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 28
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Im więcej ksiąg posiadasz, tym większym stajesz się panem. Może wyrośniesz nawet na Kapitana!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [29] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 29
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Lecz jeśli skradniesz księgę lub dasz czytać ludziom spoza gry, kara będzie bezwzględna!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [30] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 30
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Pod kilem cię nie przeciągną, ale twoje miano zawiśnie na ścianie hańby, by każdy widział, coś uczynił.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 25px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [31] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 31
+📝 Módosított Szöveg (sortörésekkel):
+"""
+I choćbyś wyświęcił księgę, utraci całą wartość w grze: trafi wprost do Więzienia Ksiąg.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [32] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 32
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Zgłodniałem, więc od tej chwili radzisz sobie sam.
+Przynieś mi więcej membran. I pilnuj mojej łodzi!
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [33] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 33
+📝 Módosított Szöveg (sortörésekkel):
+"""
+A jeśli sam coś napisałeś i chcesz to wprowadzić,
+musisz udać się do mnichów.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+==================================================
+📌 MÓDOSÍTÁSI CSOMAG: [34] - [PL]
+==================================================
+🌐 Nyelv: PL
+📁 Célfájl (JSON): dialogues_pl.json
+📁 Célfájl (TXT): translations_txt/dialogues_pl.txt
+🔑 Kulcs: 34
+📝 Módosított Szöveg (sortörésekkel):
+"""
+Mieszkają w Klasztorze Obłoków, wysoko ponad Świątynią. To oni czuwają nad słowem pisanym.
+"""
+--------------------------------------------------
+📐 Pozíció & Tipográfia (1000px Pergamen):
+:root {
+  --textbox-width: 660px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+Betűméret: 27px (Kézi), Sorköz: 1.25 (Kézi)
+==================================================
+
+
+

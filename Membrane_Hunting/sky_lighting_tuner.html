@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌅 Égbolt és Fények Tuner Panel – eBookPirates</title>
+  <link rel="stylesheet" href="style.css?v=20261026_72">
+
+  <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
+  <style>
+    #eog-boat-name-input {
+      background: rgba(0,0,0,0.08) !important;
+      -webkit-box-shadow: 0 0 0px 1000px rgba(210, 190, 160, 0.85) inset !important;
+      box-shadow: 0 0 0px 1000px rgba(210, 190, 160, 0.85) inset !important;
+      backdrop-filter: blur(2px) !important;
+      border: 1px solid rgba(0,0,0,0.3) !important;
+      border-radius: 6px !important;
+      font-family: 'Briskb', 'Courier New', Courier, monospace !important;
+      font-weight: bold !important;
+      color: #1a1a1a !important;
+      -webkit-text-fill-color: #1a1a1a !important;
+      box-sizing: border-box !important;
+      outline: none !important;
+      transition: background 0.15s, border-color 0.15s !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+
+    #ingame-popup-toast .zozo-nameplate-std,
+    #ingame-popup-toast.controls-popup-mode .zozo-nameplate-std,
+    #zozo-ingame-monolog-container.controls-popup-mode .zozo-nameplate-std,
+    #ingame-popup-toast.wind-popup-mode .zozo-nameplate-std,
+    #zozo-ingame-monolog-container.wind-popup-mode .zozo-nameplate-std {
+      display: none !important;
+    }
+
+    #eog-boat-name-input:focus,
+    #eog-boat-name-input:active {
+      background: rgba(0,0,0,0.12) !important;
+      -webkit-box-shadow: 0 0 0px 1000px rgba(200, 180, 150, 0.9) inset !important;
+      box-shadow: 0 0 0px 1000px rgba(200, 180, 150, 0.9) inset !important;
+      border-color: rgba(0,0,0,0.6) !important;
+      color: #1a1a1a !important;
+      -webkit-text-fill-color: #1a1a1a !important;
+    }
+  
+/* ─── END-OF-GAME (EoG) ZÁRÓ PANELEK PONTOS ILLESZTÉSE ─── */
+#bay-exit-confirm-overlay .zozo-monolog-box-std,
+#eog-boat-naming-overlay .zozo-monolog-box-std,
+#mh-tow-overlay .zozo-monolog-box-std,
+#eog-confirm-overlay-1 .zozo-monolog-box-std,
+#eog-confirm-overlay-2 .zozo-monolog-box-std,
+#eog-veteran-user-overlay .zozo-monolog-box-std,
+#guest-auth-required-overlay .zozo-monolog-box-std {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 820px !important;
+  max-width: 95vw !important;
+  min-height: 380px !important;
+  padding: 85px 180px 65px 180px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: center !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
+}
+
+#eog-success-choice-overlay .zozo-monolog-box-std {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 860px !important;
+  max-width: 95vw !important;
+  min-height: 400px !important;
+  padding: 95px 180px 75px 180px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: center !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
+}
+
+#eog-summary-overlay .zozo-monolog-box-std, #mh-intro-overlay .zozo-monolog-box-std {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 860px !important;
+  max-width: 95vw !important;
+  min-height: 560px !important;
+  padding: 135px 200px 90px 200px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: space-between !important;
+  text-align: left !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
+}
+
+#eog-summary-text {
+  font-family: 'Briskb', 'Courier New', monospace !important;
+  font-size: 22px !important;
+  font-weight: bold !important;
+  color: #1a1a1a !important;
+  line-height: 1.6 !important;
+  white-space: pre-line !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 220px !important;
+  text-align: left !important;
+}
+
+#eog-btn-summary-next {
+  min-width: 200px !important;
+  font-size: 19px !important;
+  padding: 12px 28px !important;
+  font-family: 'Briskb', monospace !important;
+  font-weight: bold !important;
+  margin-bottom: 20px !important;
+}
+
+  </style>
+
+  <script type="importmap">
+  { "imports": { 
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+  } }
+  </script>
+</head>
+
+<body class="welcome-mode step-0">
+  <div id="game-wrapper">
+    <canvas id="c"></canvas>
+
+    <!-- TopBar Dinamikus Konténer -->
+    <div id="topbar-container"></div>
+
+    <!-- Mobil Módváltó Gomb (Hajókormány ↔ Kamera) -->
+    <div id="mobile-mode-btn" title="Váltás Hajóvezérlés és Kamera között">☸️</div>
+
+    <div id="crash-overlay"><span id="crash-overlay-text">💥 Zátonyra futottál!</span></div>
+
+
+    <!-- ZOZÓ WELCOME OVERLAY -->
+    <div id="zozo-welcome-overlay" style="display: none;">
+      <div id="zozo-character-container">
+        <img id="zozo-char-img" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02.png" alt="Zozó" />
+      </div>
+
+      <div id="zozo-dialogue-box" class="zozo-monolog-box-std">
+        <div id="zozo-nameplate" class="zozo-nameplate-std">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" id="zozo-nameplate-img" />
+        </div>
+        <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+        <div id="welcome-back-btn" class="monolog-nav-btn monolog-back-btn" onclick="window.previousZozoWelcome(event)" style="display: none;">&#9664;</div>
+        <div class="monolog-inner-textbox">
+          <div id="zozo-dialogue-text" class="zozo-dialogue-text-std">
+            Na, te vagy az új jövevény? Egy szárazföldi Patkány.
+          </div>
+        </div>
+        <div id="welcome-space-hint" style="position: absolute; bottom: 40px !important; right: 200px !important; font-family: 'Briskb', 'Courier New', monospace !important; font-size: 20px !important; color: #000000 !important; font-weight: bold !important; opacity: 1.00 !important; pointer-events: none !important; user-select: none !important; z-index: 99 !important;">&lt; space &gt;</div>
+      </div>
+    </div>
+
+
+
+
+    <!-- IN-GAME ZOZÓ MONOLÓG DOBOZ (Az in-game monológokhoz) -->
+    <div id="zozo-ingame-monolog-container" class="zozo-monolog-box-std" style="display: none;">
+      <div class="zozo-nameplate-std">
+        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
+      </div>
+      <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+      <div id="monolog-back-btn" class="monolog-nav-btn monolog-back-btn" onclick="window.previousInGameMonolog(event)" style="display: none;">&#9664;</div>
+      <div class="monolog-inner-textbox">
+        <div id="ingame-dialogue-text" class="zozo-dialogue-text-std"></div>
+      </div>
+    </div>
+
+    <!-- KILÉPÉS MEGERŐSÍTŐ ABLAK -->
+    <div id="exit-confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="zozo-monolog-box-std" style="position: relative; left: auto; top: auto; width: 950px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 55px 190px 45px 190px; box-sizing: border-box; transform: scale(1.1); text-align: center;">
+        <div style="font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 25px; font-weight: bold; color: #1a1a1a; margin-bottom: 35px; line-height: 1.4;">
+          Ha most kilépsz, elvesznek a hártyáid.<br>Biztosan kilépsz?
+        </div>
+        <div style="display: flex; gap: 40px; width: 100%; justify-content: center;">
+          <button id="btn-exit-yes" style="padding: 8px 18px; font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; cursor: pointer; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); color: #1a1a1a; border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; transition: transform 0.15s, background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.18)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(0,0,0,0.08)'; this.style.transform='scale(1.0)'">
+            Vesszenek a hártyák!
+          </button>
+          <button id="btn-exit-no" style="padding: 8px 18px; font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; cursor: pointer; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); color: #1a1a1a; border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; transition: transform 0.15s, background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.18)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(0,0,0,0.08)'; this.style.transform='scale(1.0)'">
+            Folytatom a halászatot
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-GAME POPUP TOAST (A PopUp és irányítási üzenetekhez) -->
+    <div id="ingame-popup-toast" class="zozo-monolog-box-std" style="display: none;">
+      <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+      <div class="monolog-inner-textbox">
+        <div id="popup-toast-text" class="zozo-dialogue-text-std"></div>
+      </div>
+    </div>
+
+  <!-- EoG MONOLÓG DIALOG -->
+  <div id="eog-compact-dialog" class="zozo-monolog-box-std" style="display: none;">
+    <img src="assets/images/read-r.png" alt="Felolvasás" title="Szöveg felolvasása Zozó hangján" class="zozo-read-aloud-btn" style="display: none !important;" onclick="window.playCurrentZozoTTS && window.playCurrentZozoTTS(event)" />
+    <div class="zozo-nameplate-std">
+      <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_nevtabla_2-r.png" alt="ZOZO" class="zozo-nameplate-img-std" />
+    </div>
+    <div class="monolog-inner-textbox">
+      <div id="eog-dialog-text" class="zozo-dialogue-text-std"></div>
+    </div>
+  </div>
+
+  <div id="eog-fade-overlay" style="display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 1.2s ease-in-out;"></div>
+
+    <div id="eog-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1001; align-items: center; justify-content: center;">
+    <!-- Tesztelő gyorsváltó gombok (csak test_eog módban aktív) -->
+    <div id="eog-test-controls" style="display: none; position: absolute; top: 22px; left: 50%; transform: translateX(-50%); z-index: 1005; display: flex; gap: 15px;">
+      <button id="eog-btn-force-sound" style="padding: 10px 22px; font-family: 'Briskb', Arial, sans-serif; font-size: 18px; font-weight: bold; background: #1b5e20; color: #fff; border: 2px solid #81c784; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.6);">🔊 Teszt: HANGGAL (felirat nélkül)</button>
+      <button id="eog-btn-force-mute" style="padding: 10px 22px; font-family: 'Briskb', Arial, sans-serif; font-size: 18px; font-weight: bold; background: #b71c1c; color: #fff; border: 2px solid #e57373; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.6);">🔇 Teszt: NÉMÍTVA (felirattal)</button>
+    </div>
+
+    <!-- Autoplay blokkolás esetén megjelenő kattintási felhívás -->
+    <div id="eog-autoplay-prompt" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1004; background: rgba(10, 10, 10, 0.92); border: 3px solid #ffd700; border-radius: 14px; padding: 25px 45px; text-align: center; cursor: pointer; box-shadow: 0 0 35px rgba(255, 215, 0, 0.65);">
+      <div id="eog-autoplay-title" style="font-family: 'Briskb', Arial, sans-serif; font-size: 32px; font-weight: bold; color: #ffd700; margin-bottom: 10px;">▶ Kattints ide a videó indításához HANGGAL!</div>
+      <div id="eog-autoplay-subtitle" style="font-family: Arial, sans-serif; font-size: 16px; color: #e0e0e0;">(A böngésző kattintást igényel a hangos videó lejátszásához)</div>
+    </div>
+
+    <video id="eog-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="assets/videos/EoG_HU.mp4"></video>
+    
+    <!-- EoG Videó Vezérlősáv: Megállítás/Újraindítás (Pause) és Felirat Toggle -->
+    <div id="eog-video-controls-bar">
+      <button id="eog-btn-toggle-pause" class="eog-ctrl-btn" title="Videó megállítása / folytatása (Space)">
+        <img id="eog-pause-icon" class="eog-ctrl-icon" src="assets/images/pause.png" alt="Szünet" />
+      </button>
+      <button id="eog-btn-toggle-subtitles" class="eog-ctrl-btn" title="Felirat megjelenítése / elrejtése">
+        <img id="eog-sub-icon" class="eog-ctrl-icon" src="assets/images/subtitle-r.png" alt="Felirat" />
+      </button>
+    </div>
+    <div id="eog-video-subtitles" style="display: none; position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); max-width: 78%; text-align: center; color: #ffffff; font-family: 'Briskb', Arial, sans-serif; font-size: 28px; font-weight: bold; text-shadow: 2px 2px 4px #000, -2px -2px 4px #000, 2px -2px 4px #000, -2px 2px 4px #000, 0 4px 8px #000; background: rgba(0, 0, 0, 0.65); padding: 12px 32px; border-radius: 10px; pointer-events: none; z-index: 1008; line-height: 1.35; letter-spacing: 0.5px; box-sizing: border-box;"></div>
+  </div>
+
+  <!-- ─── END RUTIN OVERLAYS ─── -->
+
+    <!-- 0. Öböl Kijárat / Hebok Utazás Megerősítő Panel -->
+  <div id="bay-exit-confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 380px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="bay-exit-title" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 32px; font-weight: bold; color: #1a1a1a; margin-top: 80px; line-height: 1.3; width: 100%;">
+        Elhajózol Hebokba?
+      </div>
+      <div style="display: flex; gap: 30px; width: 100%; justify-content: center; margin-bottom: 55px;">
+        <button id="btn-bay-exit-yes" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold; font-size: 20px; cursor: pointer;">Igen</button>
+        <button id="btn-bay-exit-no" class="eog-std-btn" style="min-width: 180px; font-family: 'Briskb', monospace; font-weight: bold; font-size: 20px; cursor: pointer;">Tovább halászok</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. Csónak Névadó Panel -->
+  <div id="eog-boat-naming-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 380px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-naming-title" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 65px; line-height: 1.3; width: 100%;">
+        Mi legyen a csónakod neve?
+      </div>
+      <input type="text" id="eog-boat-name-input" placeholder="Írd ide a csónak nevét..." style="width: calc(100% - 100px); text-align: center; font-size: 20px; font-weight: bold; font-family: 'Briskb', 'Courier New', Courier, monospace; margin: 10px 0; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; padding: 10px 18px; color: #1a1a1a; outline: none;" />
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 50px;">
+        <button id="eog-btn-naming-submit" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Mehet!</button>
+        <button id="eog-btn-naming-cancel" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Megerősítő Panel 1 (Mehet! után) -->
+  <div id="eog-confirm-overlay-1" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-confirm1-title" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 40px; line-height: 1.3; width: 100%;">
+        Biztos vagy benne?
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-confirm-yes" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Teljesen</button>
+        <button id="eog-btn-confirm-no" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Van jobb ötletem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Megerősítő Panel 2 (Kilépés után) -->
+  <div id="eog-confirm-overlay-2" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-confirm2-title" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; margin-top: 40px; line-height: 1.3; width: 100%;">
+        Nem adsz nevet a hajónak?
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-noidea" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Nincs ötletem</button>
+        <button id="eog-btn-yesidea" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">De igen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Összegző Info Panel -->
+    <!-- 4. Összegző Info Panel -->
+  <div id="eog-summary-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed !important; left: 50% !important; top: 50% !important; width: 860px !important; max-width: 95vw !important; min-height: 560px !important; padding: 135px 200px 90px 200px !important; box-sizing: border-box !important; transform: translate(-50%, -50%) !important; text-align: left !important; display: flex !important; flex-direction: column !important; align-items: stretch !important; justify-content: space-between !important;">
+      <div id="eog-summary-text" style="font-family: 'Briskb', 'Courier New', monospace !important; font-size: 22px !important; font-weight: bold !important; color: #1a1a1a !important; line-height: 1.6 !important; white-space: pre-line !important; width: 100% !important; margin: 0 !important; min-height: 220px !important;"></div>
+      <div style="width: 100% !important; display: flex !important; justify-content: center !important; margin-top: 10px !important; margin-bottom: 20px !important;">
+        <button id="eog-btn-summary-next" class="eog-std-btn" style="min-width: 200px !important; font-size: 19px !important; padding: 12px 28px !important; font-family: 'Briskb', monospace !important; font-weight: bold !important; visibility: hidden !important; margin-bottom: 20px !important;">Minden világos</button>
+      </div>
+    </div>
+  </div>
+
+<!-- 4/B. Feltételes Auth Prompt Panel (ha nincs belépve) -->
+  <div id="eog-auth-prompt-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 415px; padding: 65px 170px 70px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-auth-prompt-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #1a1a1a; margin-top: 45px; line-height: 1.3; width: 100%; white-space: pre-line;">
+        Csak akkor tarthatod meg a kincseket,&#10;ha belépsz.
+      </div>
+      <div style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-bottom: 60px;">
+        <button id="eog-btn-auth-login" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Belépek</button>
+        <button id="eog-btn-auth-register" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Regisztrálok</button>
+        <button id="eog-btn-auth-exit" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépek</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4/C. Auth Kilépés Megerősítő Panel (AreYouSure a kincsek elvesztéséről) -->
+  <div id="eog-auth-exit-confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 9999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; margin-top: 30px; line-height: 1.3; width: 100%;">
+        Ha most kilépsz, elvesznek a kincseid.<br>Biztosan kilépsz?
+      </div>
+      <div style="display: flex; gap: 30px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-auth-exit-yes" class="eog-std-btn" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Igen</button>
+        <button id="eog-btn-auth-exit-no" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Nem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Utolsó Átlépő Panel -->
+  <div id="eog-final-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 99999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 300px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
+      <div style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; line-height: 1.4; text-align: center; width: 100%;">
+        Most már beléphetsz a Kikötőbe
+      </div>
+    </div>
+  </div>
+
+  <!-- 5/B. Veterán Kalóz Panel (Már elvégzett tutorial és meglévő csónak esetén) -->
+  <div id="eog-veteran-user-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 9999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 320px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-veteran-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; margin-top: 25px; line-height: 1.3; width: 100%;">
+        Te már nem is vagy kezdő szárazföldi patkány!
+      </div>
+      <div style="display: flex; gap: 30px; width: 100%; justify-content: center; margin-bottom: 25px;">
+        <button id="eog-btn-veteran-continue" class="eog-std-btn" style="min-width: 190px; font-family: 'Briskb', monospace; font-weight: bold;">Játék folytatása</button>
+        <button id="eog-btn-veteran-exit" class="eog-std-btn eog-btn-sec" style="min-width: 160px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5/C. Kincsek Sikeres Felírása Visszajelző és Választó Panel -->
+  <div id="eog-success-choice-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 840px; max-width: 95vw; min-height: 360px; padding: 90px 170px 80px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="eog-success-choice-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #1a1a1a; margin-top: 50px; line-height: 1.35; width: 100%;">
+        Kincseid felírásra kerültek a karakterlapodra.<br>Ezek után mihez kezdesz?
+      </div>
+      <div style="display: flex; gap: 15px; width: 100%; justify-content: center; margin-bottom: 70px; flex-wrap: wrap;">
+        <button id="eog-btn-choice-fish" class="eog-std-btn" style="min-width: 155px; font-size: 16px; padding: 10px 14px; font-family: 'Briskb', monospace; font-weight: bold;">Tovább halászok</button>
+        <button id="eog-btn-choice-hebok" class="eog-std-btn" style="min-width: 155px; font-size: 16px; padding: 10px 14px; font-family: 'Briskb', monospace; font-weight: bold;">Irány Hebok!</button>
+        <button id="eog-btn-choice-exit" class="eog-std-btn eog-btn-sec" style="min-width: 130px; font-size: 16px; padding: 10px 14px; font-family: 'Briskb', monospace; font-weight: bold;">Kilépek</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5/E. MH Indító Tájékoztató Panel (Zozó lelépett & Holzkopf mester) -->
+  <div id="mh-intro-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="cursor: pointer;">
+      <div id="mh-intro-text" style="font-family: 'Briskb', 'Courier New', monospace !important; font-size: 22px !important; font-weight: bold !important; color: #1a1a1a !important; line-height: 1.6 !important; white-space: pre-line !important; width: 100% !important; margin: 0 !important; min-height: 220px !important; text-align: center !important;">Mivel Zozó lelépett, mostantól nincs aki megjavítsa a csónakot.&#10;&#10;Ha 2 alá csökken a csónak életereje, akkor Holzkopf mester elvontatja Hebokba.&#10;&#10;A javításért fizetned kell.</div>
+      <div style="width: 100% !important; display: flex !important; justify-content: center !important; margin-top: 10px !important; margin-bottom: 20px !important;">
+        <button id="mh-btn-intro-close" class="eog-std-btn" style="min-width: 200px !important; font-size: 19px !important; padding: 12px 28px !important; font-family: 'Briskb', monospace !important; font-weight: bold !important; margin-bottom: 20px !important;">Tovább</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5/F. Holzkopf Mester Elvontatás Vészpanel (HP < 2) -->
+  <div id="mh-tow-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 380px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
+      <div id="mh-tow-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; line-height: 1.35; width: 100%;">A csónak nem bír ki még egy ütközést.<br><br>Holzkopf mester most elvontat Hebokba.</div>
+    </div>
+  </div>
+
+  <!-- 5/D. Hebok Térkép Utazás Videó Overlay -->
+  <div id="hebok-departure-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000000; align-items: center; justify-content: center; cursor: pointer;">
+    <video id="hebok-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="terkeputazas_zene.mp4"></video>
+  </div>
+
+  <!-- 6. KÖTELEZŐ REGISZTRÁCIÓ / BELÉPÉS PANEL (NEM BELÉPETT USEREKNEK) -->
+  <div id="guest-auth-required-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 880px; max-width: 95vw; min-height: 380px; padding: 80px 185px 70px 185px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+      <div id="guest-auth-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 21px; font-weight: bold; color: #1a1a1a; margin-top: 25px; line-height: 1.4; max-width: 590px; width: 100%;">
+        A tutorial játékot csak regisztrált kalózok jogosultak játszani, ezért vagy lépj be, vagy ha még nem tetted, regisztrálj!
+      </div>
+      <div style="display: flex; gap: 15px; width: 100%; justify-content: center; margin-bottom: 25px; flex-wrap: wrap;">
+        <button id="btn-guest-login" class="eog-std-btn" style="min-width: 140px; font-size: 17px; padding: 10px 18px;">Belépés</button>
+        <button id="btn-guest-register" class="eog-std-btn" style="min-width: 140px; font-size: 17px; padding: 10px 18px;">Regisztráció</button>
+        <button id="btn-guest-exit" class="eog-std-btn eog-btn-sec" style="min-width: 140px; font-size: 17px; padding: 10px 18px;">Kilépés</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- ─── KVÍZ PANEL OVERLAY ─── -->
+  <div id="quiz-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99995; align-items: center; justify-content: center; pointer-events: auto;">
+    <div id="quiz-panel-box" style="position: relative; width: 831px; height: 768px; max-width: none; max-height: none; transform-origin: center center; background: transparent url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center center / 100% 100%; padding: 181px 120px 150px 120px; box-sizing: border-box; filter: drop-shadow(0 10px 25px rgba(0,0,0,0.9)); display: flex; flex-direction: column; align-items: center; transition: all 0.2s ease-in-out; pointer-events: auto;">
+      
+      <div id="quiz-title" style="color: #6b4c2a; font-family: 'Briskb', 'Courier New', monospace; font-size: 18px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">
+        📜 HÁRTYA KVÍZKÉRDÉS
+      </div>
+
+      <div id="quiz-question-text" style="color: #1a0a00; font-family: 'Briskb', 'Courier New', monospace; font-size: 20px; font-weight: bold; text-align: center; line-height: 1.35; min-height: 60px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; white-space: pre-wrap;">
+        Kérdés betöltése...
+      </div>
+
+      <!-- TÉTES JÁTÉK (DUPLA VAGY SEMMI) FELÜLET -->
+      <div id="quiz-betting-area" style="display: none; width: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin: 15px 0;">
+        <div id="quiz-bet-title" style="font-size: 18px; font-weight: bold; color: #ffeb3b; text-shadow: 2px 2px 4px #000; font-family: 'Briskb', 'Courier New', monospace; text-transform: uppercase;">⭐ KIEMELT TÉTES HÁRTYA!</div>
+        <div id="quiz-bet-info" style="font-size: 16px; color: #fff; text-shadow: 2px 2px 4px #000; text-align: center; font-family: 'Briskb', 'Courier New', monospace; line-height: 1.4;">
+          Kockára teszed a nálad lévő hártyákat dupla vagy semmi alapon?<br>
+          <span style="color:#4CAF50; font-weight:bold;">Helyes válasz: DUPLÁZÁS</span> | <span style="color:#f44336; font-weight:bold;">Helytelen: NULLÁZÁS</span>
+        </div>
+        <div style="display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 10px;">
+          <button id="quiz-bet-yes-btn" style="padding: 10px 22px; background: rgba(230, 110, 15, 0.9); border: 2px solid #ffcc00; color: #fff; font-family: 'Briskb', 'Courier New', monospace; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-shadow: 1px 1px 2px #000;">Kockáztatok!</button>
+          <button id="quiz-bet-no-btn" style="padding: 10px 22px; background: rgba(60, 60, 60, 0.9); border: 2px solid #aaa; color: #fff; font-family: 'Briskb', 'Courier New', monospace; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-shadow: 1px 1px 2px #000;">Nem, sima kérdést kérek</button>
+        </div>
+      </div>
+
+      <div id="quiz-answers-container" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+        <button class="quiz-ans-btn" data-index="0" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">A) Válasz 1</button>
+        <button class="quiz-ans-btn" data-index="1" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">B) Válasz 2</button>
+        <button class="quiz-ans-btn" data-index="2" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">C) Válasz 3</button>
+        <button class="quiz-ans-btn" data-index="3" style="width: 100%; padding: 12px 18px; background: rgba(20, 10, 5, 0.85); border: 2px solid #6b4c2a; color: #ffeedd; font-family: 'Briskb', 'Courier New', monospace; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.15s ease-in-out;">D) Válasz 4</button>
+      </div>
+
+    </div>
+  </div>
+ <!-- FEJLESZTŐI TOOLBOX (KIZÁRÓLAG LOKÁLIS KÖRNYEZETBEN: localhost / 127.0.0.1) -->
+  <script>
+    (function() {
+      const isLocal = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1' || 
+                      window.location.hostname.startsWith('192.168.') || 
+                      window.location.protocol === 'file:';
+      
+      // Ha éles GitHub Pages-en fut, a Toolbox KIZÁRÓLAG 0 terheléssel teljesen inaktív!
+      if (!isLocal) return;
+
+      function initDevToolbox() {
+        if (window.toolboxInitialized) return;
+        window.toolboxInitialized = true;
+        const s = document.createElement('script');
+        s.src = 'Toolbox/toolbox_loader.js?t=' + Date.now();
+        document.body.appendChild(s);
+      }
+
+      if (window.location.search.includes('toolbox=1') || window.location.search.includes('dev=1')) {
+        if (document.readyState === 'loading') {
+          window.addEventListener('DOMContentLoaded', initDevToolbox);
+        } else {
+          initDevToolbox();
+        }
+      }
+
+      window.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyT') {
+          initDevToolbox();
+        }
+      });
+    })();
+  </script>
+  <script src="quiz_manager.js?v=20261108_071000"></script>
+  <script type="module" src="script.js?v=20261108_075229"></script>
+
+  <!-- 🎛️ ÉGBOLT ÉS FÉNYEK INTERAKTÍV HANGOLÓ PANEL (IDŐ CSÚSZKÁVAL ÉS SZÍNVÁLASZTÓVAL) -->
+  <style>
+    #sky-tuner-panel {
+      position: fixed;
+      top: 60px;
+      right: 15px;
+      width: 340px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: rgba(20, 25, 35, 0.92);
+      border: 2px solid #d4af37;
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 13px;
+      z-index: 99999999;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+    #sky-tuner-panel h2 {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      color: #ffd700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+      padding-bottom: 6px;
+    }
+    .st-section {
+      margin-bottom: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 6px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .st-label {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    .st-clock-display {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffd700;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .st-slider {
+      width: 100%;
+      cursor: pointer;
+      accent-color: #ffd700;
+    }
+    .st-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .st-btn {
+      background: #2a2215;
+      color: #ffd700;
+      border: 1px solid #775533;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.15s;
+    }
+    .st-btn:hover {
+      background: #443318;
+      border-color: #ffd700;
+      color: #fff;
+    }
+    .st-color-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .st-color-row input[type="color"] {
+      width: 32px;
+      height: 24px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: none;
+      cursor: pointer;
+    }
+    .st-color-row input[type="text"] {
+      width: 75px;
+      background: #111;
+      border: 1px solid #555;
+      color: #ffd700;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 3px 5px;
+      border-radius: 4px;
+      text-align: center;
+    }
+  </style>
+
+  <div id="sky-tuner-panel">
+    <h2>
+      <span>🌅 Égbolt és Fény Tuner</span>
+      <button id="st-btn-toggle" style="background: none; border: none; color: #aaa; cursor: pointer; font-size: 16px;">➖</button>
+    </h2>
+
+    <div id="st-content">
+      <!-- 🕒 IDŐ CSÚSZKA -->
+      <div class="st-section">
+        <div class="st-label">🕒 Pontos napszaki idő (0:00 - 24:00)</div>
+        <div id="st-clock-val" class="st-clock-display">12:00 (Nappal)</div>
+        <input type="range" id="st-time-slider" class="st-slider" min="0" max="24" step="0.05" value="12">
+        
+        <div class="st-label" style="margin-top: 8px;">Gyorsteszt Idősávok:</div>
+        <div class="st-btn-grid">
+          <button class="st-btn" onclick="stApplyPreset(23.0)">🌙 Éjszaka (23:00)</button>
+          <button class="st-btn" onclick="stApplyPreset(7.0)">🌅 Napkelte (07:00)</button>
+          <button class="st-btn" onclick="stApplyPreset(12.0)">☀️ Nappal (12:00)</button>
+          <button class="st-btn" onclick="stApplyPreset(16.5)">🌇 Napnyugta (16:30)</button>
+          <button class="st-btn" onclick="stApplyPreset(18.0)" style="grid-column: span 2;">🌆 Este (18:00)</button>
+        </div>
+      </div>
+
+      <!-- 🎨 ÉGBOLT ÉS FELHŐ SZÍNEK (ÉLŐ SZERKESZTŐ) -->
+      <div class="st-section">
+        <div class="st-label">🎨 Aktuális Fények és Színek</div>
+        
+        <div class="st-color-row">
+          <span>Horizont szín:</span>
+          <input type="color" id="st-col-horiz" value="#1d5168">
+          <input type="text" id="st-hex-horiz" value="#1d5168" readonly>
+        </div>
+        <div class="st-color-row">
+          <span>Égbolt közép:</span>
+          <input type="color" id="st-col-mid" value="#0e324e">
+          <input type="text" id="st-hex-mid" value="#0e324e" readonly>
+        </div>
+        <div class="st-color-row">
+          <span>Zenit (ég teteje):</span>
+          <input type="color" id="st-col-zenith" value="#142129">
+          <input type="text" id="st-hex-zenith" value="#142129" readonly>
+        </div>
+        <div class="st-color-row">
+          <span>☁️ Felhők színe:</span>
+          <input type="color" id="st-col-cloud" value="#113852">
+          <input type="text" id="st-hex-cloud" value="#113852" readonly>
+        </div>
+      </div>
+
+      <!-- 💡 INTENZITÁSOK -->
+      <div class="st-section">
+        <div class="st-label">💡 Fény és Csillag intenzitás</div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+          <span>Napfény erősség:</span>
+          <span id="st-sun-int-val">1.2</span>
+        </div>
+        <input type="range" id="st-sun-slider" class="st-slider" min="0" max="2.5" step="0.05" value="1.2">
+
+        <div style="display: flex; justify-content: space-between; margin-top: 6px; margin-bottom: 2px;">
+          <span>✨ Csillagok láthatósága:</span>
+          <span id="st-star-val">0%</span>
+        </div>
+        <input type="range" id="st-star-slider" class="st-slider" min="0" max="1" step="0.05" value="0">
+      </div>
+
+      <!-- 📋 EXPORT GOMB -->
+      <div style="text-align: center; margin-top: 10px;">
+        <button id="st-btn-copy" class="st-btn" style="width: 100%; padding: 8px; font-size: 13px; background: #3d2b10; border-color: #ffd700;">📋 Aktuális értékek vágólapra másolása</button>
+        <div id="st-copy-toast" style="color: #00dd00; font-size: 11px; margin-top: 4px; display: none;">✓ Értékek kimásolva a vágólapra!</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 🎛️ Tuner Logika
+    (function () {
+      let isCollapsed = false;
+      const btnToggle = document.getElementById('st-btn-toggle');
+      const contentDiv = document.getElementById('st-content');
+      if (btnToggle && contentDiv) {
+        btnToggle.onclick = function () {
+          isCollapsed = !isCollapsed;
+          contentDiv.style.display = isCollapsed ? 'none' : 'block';
+          btnToggle.innerText = isCollapsed ? '➕' : '➖';
+        };
+      }
+
+      // Keresünk felhő anyagot
+      let cachedCloudMat = null;
+      function getCloudMaterial() {
+        if (cachedCloudMat) return cachedCloudMat;
+        if (window.cloudMaterial) { cachedCloudMat = window.cloudMaterial; return cachedCloudMat; }
+        if (window.scene) {
+          window.scene.traverse(function (child) {
+            if (child.isMesh && child.material) {
+              const mats = Array.isArray(child.material) ? child.material : [child.material];
+              mats.forEach(function (m) {
+                if (m && m.name === 'Cloud') cachedCloudMat = m;
+              });
+            }
+          });
+        }
+        return cachedCloudMat;
+      }
+
+      function getSunLight() {
+        if (window.scene) {
+          for (let i = 0; i < window.scene.children.length; i++) {
+            const c = window.scene.children[i];
+            if (c.isDirectionalLight) return c;
+          }
+        }
+        return null;
+      }
+
+      // A felhasználó által meghatározott idősáv-szótár:
+      // 19:00-06:29 éjszaka: Horizont #1d5168, Mid #0e324e, Zenit #142129, Felhők #113852
+      // 06:30-07:29 napkelte: Horizont #ffd200, Mid #fec301, Zenit #a0925e, Felhők #cc821b-#f9c73b
+      // 07:30-15:59 nappal: Horizont #ebd6af, Mid #5cb8e4, Zenit #2a75d3, Felhők #ffffff
+      // 16:00-16:59 napnyugta: Horizont #f17f70, Mid #915d8a, Zenit #c08baa, Felhők #604d84
+      // 17:00-18:59 este: fokozatos átmenet a sötétszürke éjszakába
+
+      function getTimeColors(hrs) {
+        let horiz, mid, zenith, cloud, sunInt, starOp, phaseName;
+
+        if (hrs >= 19.0 || hrs < 6.5) {
+          phaseName = "🌙 Éjszaka";
+          horiz = "#1d5168";
+          mid = "#0e324e";
+          zenith = "#142129";
+          cloud = "#113852";
+          sunInt = 0.15;
+          starOp = 1.0;
+        } else if (hrs >= 6.5 && hrs < 7.5) {
+          phaseName = "🌅 Napkelte";
+          const t = (hrs - 6.5) / 1.0;
+          horiz = "#ffd200";
+          mid = "#fec301";
+          zenith = "#a0925e";
+          cloud = t < 0.5 ? "#cc821b" : "#f9c73b";
+          sunInt = 0.8 + t * 0.4;
+          starOp = Math.max(0.0, 1.0 - t * 2.0);
+        } else if (hrs >= 7.5 && hrs < 16.0) {
+          phaseName = "☀️ Nappal";
+          horiz = "#ebd6af";
+          mid = "#5cb8e4";
+          zenith = "#2a75d3";
+          cloud = "#ffffff";
+          sunInt = 1.35;
+          starOp = 0.0;
+        } else if (hrs >= 16.0 && hrs < 17.0) {
+          phaseName = "🌇 Napnyugta";
+          const t = (hrs - 16.0) / 1.0;
+          horiz = "#f17f70";
+          mid = "#915d8a";
+          zenith = "#c08baa";
+          cloud = "#604d84";
+          sunInt = 0.9 - t * 0.3;
+          starOp = 0.0;
+        } else {
+          // 17:00 - 18:59: Este
+          phaseName = "🌆 Este";
+          const t = (hrs - 17.0) / 2.0;
+          horiz = "#c06480";
+          mid = "#553f66";
+          zenith = "#231e3d";
+          cloud = "#3a344d";
+          sunInt = 0.6 - t * 0.4;
+          starOp = Math.min(1.0, t * 0.9);
+        }
+
+        return { horiz, mid, zenith, cloud, sunInt, starOp, phaseName };
+      }
+
+      function applySkyAndLighting(horizHex, midHex, zenithHex, cloudHex, sunInt, starOp) {
+        // 1. SkyDome gradiens frissítése
+        if (window.skyDome && window.skyDome.geometry && window.skyDome.geometry.attributes.color) {
+          const colAttr = window.skyDome.geometry.attributes.color;
+          const posAttr = window.skyDome.geometry.attributes.position;
+          const hCol = new THREE.Color(horizHex);
+          const mCol = new THREE.Color(midHex);
+          const zCol = new THREE.Color(zenithHex);
+
+          for (let i = 0; i < posAttr.count; i++) {
+            const t = Math.max(0.0, Math.min(1.0, posAttr.getY(i) / 950));
+            const c = t < 0.40 ? new THREE.Color(hCol).lerp(mCol, t / 0.40) : new THREE.Color(mCol).lerp(zCol, (t - 0.40) / 0.60);
+            colAttr.setXYZ(i, c.r, c.g, c.b);
+          }
+          colAttr.needsUpdate = true;
+        }
+
+        // 2. Háttér és köd szinkron
+        if (window.scene) {
+          const mCol = new THREE.Color(midHex);
+          window.scene.background.copy(mCol);
+          if (window.scene.fog) window.scene.fog.color.copy(new THREE.Color(horizHex));
+        }
+
+        // 3. Felhők színezése
+        const cMat = getCloudMaterial();
+        if (cMat) {
+          const cloudCol = new THREE.Color(cloudHex);
+          cMat.color.copy(cloudCol);
+          if (cMat.emissive) cMat.emissive.copy(cloudCol).multiplyScalar(0.25);
+          cMat.needsUpdate = true;
+        }
+
+        // 4. Napfény
+        const sun = getSunLight();
+        if (sun) {
+          sun.intensity = sunInt;
+          sun.color.copy(new THREE.Color(horizHex).lerp(new THREE.Color(0xffffff), 0.5));
+        }
+
+        // 5. Csillagok
+        if (window.starField && window.starField.material) {
+          window.starField.material.opacity = starOp;
+        }
+      }
+
+      // UI Elemek
+      const slider = document.getElementById('st-time-slider');
+      const clockVal = document.getElementById('st-clock-val');
+      const colHoriz = document.getElementById('st-col-horiz');
+      const hexHoriz = document.getElementById('st-hex-horiz');
+      const colMid = document.getElementById('st-col-mid');
+      const hexMid = document.getElementById('st-hex-mid');
+      const colZenith = document.getElementById('st-col-zenith');
+      const hexZenith = document.getElementById('st-hex-zenith');
+      const colCloud = document.getElementById('st-col-cloud');
+      const hexCloud = document.getElementById('st-hex-cloud');
+      const sunSlider = document.getElementById('st-sun-slider');
+      const sunVal = document.getElementById('st-sun-int-val');
+      const starSlider = document.getElementById('st-star-slider');
+      const starVal = document.getElementById('st-star-val');
+
+      function updateUIFromValues(conf, hrs) {
+        const hInt = Math.floor(hrs);
+        const mInt = Math.floor((hrs - hInt) * 60);
+        const timeStr = (hInt < 10 ? '0' : '') + hInt + ':' + (mInt < 10 ? '0' : '') + mInt;
+        clockVal.innerText = timeStr + ' (' + conf.phaseName + ')';
+
+        colHoriz.value = conf.horiz;
+        hexHoriz.value = conf.horiz;
+        colMid.value = conf.mid;
+        hexMid.value = conf.mid;
+        colZenith.value = conf.zenith;
+        hexZenith.value = conf.zenith;
+        colCloud.value = conf.cloud;
+        hexCloud.value = conf.cloud;
+        sunSlider.value = conf.sunInt;
+        sunVal.innerText = conf.sunInt.toFixed(2);
+        starSlider.value = conf.starOp;
+        starVal.innerText = Math.round(conf.starOp * 100) + '%';
+      }
+
+      function onSliderChange() {
+        const hrs = parseFloat(slider.value);
+        const conf = getTimeColors(hrs);
+        updateUIFromValues(conf, hrs);
+        applySkyAndLighting(conf.horiz, conf.mid, conf.zenith, conf.cloud, conf.sunInt, conf.starOp);
+      }
+
+      slider.oninput = onSliderChange;
+
+      // Manuális színválasztók
+      function onManualColorChange() {
+        hexHoriz.value = colHoriz.value;
+        hexMid.value = colMid.value;
+        hexZenith.value = colZenith.value;
+        hexCloud.value = colCloud.value;
+        const sInt = parseFloat(sunSlider.value);
+        const sOp = parseFloat(starSlider.value);
+        sunVal.innerText = sInt.toFixed(2);
+        starVal.innerText = Math.round(sOp * 100) + '%';
+        applySkyAndLighting(colHoriz.value, colMid.value, colZenith.value, colCloud.value, sInt, sOp);
+      }
+
+      colHoriz.oninput = onManualColorChange;
+      colMid.oninput = onManualColorChange;
+      colZenith.oninput = onManualColorChange;
+      colCloud.oninput = onManualColorChange;
+      sunSlider.oninput = onManualColorChange;
+      starSlider.oninput = onManualColorChange;
+
+      window.stApplyPreset = function (hrs) {
+        slider.value = hrs;
+        onSliderChange();
+      };
+
+      // Vágólap másolás
+      document.getElementById('st-btn-copy').onclick = function () {
+        const data = {
+          time: clockVal.innerText,
+          horiz: colHoriz.value,
+          mid: colMid.value,
+          zenith: colZenith.value,
+          cloud: colCloud.value,
+          sunIntensity: parseFloat(sunSlider.value),
+          starOpacity: parseFloat(starSlider.value)
+        };
+        const textToCopy = JSON.stringify(data, null, 2);
+        navigator.clipboard.writeText(textToCopy).then(function () {
+          const t = document.getElementById('st-copy-toast');
+          t.style.display = 'block';
+          setTimeout(function () { t.style.display = 'none'; }, 2500);
+        });
+      };
+
+      // Automatikus felülbírálás a játék betöltődése után
+      const checkInterval = setInterval(function () {
+        if (window.skyDome && window.scene) {
+          clearInterval(checkInterval);
+          // Felülírjuk az automatikus napszak frissítőt
+          window.updateEnvironmentLighting = function () {
+            // A csúszka vezérli
+          };
+          // Kezdőérték: Éjszaka (23:00) a teszthez
+          stApplyPreset(23.0);
+          console.log('🌅 Sky Tuner sikeresen aktiválva!');
+        }
+      }, 500);
+    })();
+  </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

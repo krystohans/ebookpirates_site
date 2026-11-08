@@ -5406,6 +5406,18 @@ function setupTopBarEvents() {
 
   }
 
+  const btnExit = document.getElementById('btn-tb-exit');
+  if (btnExit) {
+    btnExit.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const exitOverlay = document.getElementById('exit-confirm-overlay');
+      if (exitOverlay) {
+        exitOverlay.style.display = 'flex';
+        window.isCutscenePlaying = true;
+      }
+    });
+  }
+
 
 
   const tooltipEl = document.getElementById('topbar-custom-tooltip');
@@ -5499,6 +5511,120 @@ function setupTopBarEvents() {
     }
 
 // === [#TUTOR.04.09.00] END ===
+
+// === [#TUTOR.04.MH.INTRO] START | name: showMhIntroPanel ===
+window.showMhIntroPanel = function (onClose) {
+  const overlay = document.getElementById('mh-intro-overlay');
+  if (!overlay) {
+    console.warn('mh-intro-overlay NOT FOUND in DOM!');
+    if (typeof onClose === 'function') onClose();
+    return;
+  }
+
+  // 7 nyelvű dinamikus szövegbeállítás az aktív játéknyelv alapján
+  try {
+    const curLang = (typeof window.getGameLanguage === 'function')
+      ? window.getGameLanguage()
+      : (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu');
+    const introDict = {
+      hu: {
+        text: "Mivel Zozó lelépett, mostantól nincs aki megjavítsa a csónakot.\n\nHa 2 alá csökken a csónak életereje, akkor Holzkopf mester elvontatja Hebokba.\n\nA javításért fizetned kell.",
+        btn: "Tovább"
+      },
+      en: {
+        text: "Since Zozo has left, there is no one to repair the boat anymore.\n\nIf the boat's durability drops below 2, Master Holzkopf will tow it to Hebok.\n\nYou will have to pay for the repairs.",
+        btn: "Continue"
+      },
+      de: {
+        text: "Da Zozo abgehauen ist, gibt es niemanden mehr, der das Boot repariert.\n\nWenn die Haltbarkeit des Bootes unter 2 fällt, schleppt Meister Holzkopf es nach Hebok ab.\n\nFür die Reparatur musst du bezahlen.",
+        btn: "Weiter"
+      },
+      fr: {
+        text: "Comme Zozo est parti, il n'y a plus personne pour réparer la barque.\n\nSi la durabilité de la barque tombe sous 2, Maître Holzkopf la remorquera jusqu'à Hebok.\n\nTu devras payer pour les réparations.",
+        btn: "Continuer"
+      },
+      es: {
+        text: "Como Zozo se ha ido, ya no hay nadie que repare la barca.\n\nSi la durabilidad de la barca cae por debajo de 2, el maestro Holzkopf la remolcará a Hebok.\n\nTendrás que pagar por las reparaciones.",
+        btn: "Continuar"
+      },
+      pl: {
+        text: "Skoro Zozo zwiał, nie ma już nikogo, kto mógłby naprawić łódź.\n\nJeśli wytrzymałość łodzi spadnie poniżej 2, mistrz Holzkopf odholuje ją do Hebok.\n\nZa naprawę będziesz musiał zapłacić.",
+        btn: "Dalej"
+      },
+      ru: {
+        text: "Раз Зозо сбежал, чинить лодку больше некому.\n\nЕсли прочность лодки упадет ниже 2, мастер Хольцкопф отбуксирует ее в Хебок.\n\nЗа ремонт придется заплатить.",
+        btn: "Далее"
+      }
+    };
+    const d = introDict[curLang] || introDict.hu;
+    const tEl = document.getElementById('mh-intro-text');
+    if (tEl) tEl.innerText = d.text;
+    const bEl = document.getElementById('mh-btn-intro-close');
+    if (bEl) bEl.innerText = d.btn;
+  } catch (e) {
+    console.warn('Lokalizációs hiba showMhIntroPanel-ben:', e);
+  }
+
+  overlay.style.display = 'flex';
+  window.isCutscenePlaying = true;
+
+  let closed = false;
+  function closeIntro(e) {
+    if (closed) return;
+    if (e && e.type === 'keydown' && e.code !== 'Space' && e.key !== ' ') return;
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    closed = true;
+    window.removeEventListener('keydown', closeIntro);
+    overlay.style.display = 'none';
+    window.isCutscenePlaying = false;
+    if (typeof onClose === 'function') onClose();
+  }
+
+  overlay.onclick = closeIntro;
+  const btnClose = document.getElementById('mh-btn-intro-close');
+  if (btnClose) btnClose.onclick = closeIntro;
+  window.addEventListener('keydown', closeIntro);
+};
+// === [#TUTOR.04.MH.INTRO] END ===
+
+// === [#TUTOR.04.MH.TOW] START | name: showMhTowPanel ===
+window.showMhTowPanel = function () {
+  const overlay = document.getElementById('mh-tow-overlay');
+  if (!overlay) {
+    if (typeof window.playHebokDepartureVideo === 'function') {
+      window.playHebokDepartureVideo();
+    } else if (typeof window.exitFishingGame === 'function') {
+      window.exitFishingGame('NORMAL');
+    }
+    return;
+  }
+  overlay.style.display = 'flex';
+  window.isCutscenePlaying = true; // megállítja a hajó irányítását
+
+  let triggered = false;
+  function triggerTow(e) {
+    if (triggered) return;
+    if (e && e.type === 'keydown' && e.code !== 'Space' && e.key !== ' ') return;
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    triggered = true;
+    window.removeEventListener('keydown', triggerTow);
+    overlay.style.display = 'none';
+
+    // Hebok térkép utazás videó elindítása
+    if (typeof window.playHebokDepartureVideo === 'function') {
+      window.playHebokDepartureVideo();
+    } else if (typeof window.exitFishingGame === 'function') {
+      window.exitFishingGame('NORMAL');
+    }
+  }
+
+  overlay.onclick = triggerTow;
+  window.addEventListener('keydown', triggerTow);
+  setTimeout(triggerTow, 4000); // 4 mp múlva magától is átlép
+};
+// === [#TUTOR.04.MH.TOW] END ===
+
+
 
 // === [#TUTOR.04.08.00] END ===
 
@@ -6142,7 +6268,7 @@ scene.background = new THREE.Color(0x7ec8e8);
 
 // 🏔️ Hegyek & Távoli horizont megjelenítése: növelt kameratávolság (2500m) és lágy horizont-köd
 
-scene.fog = new THREE.Fog(0x7ec8e8, 600, 3200);
+scene.fog = new THREE.Fog(0x7ec8e8, 350, 2400);
 
 
 
@@ -6485,7 +6611,7 @@ let skyDome;
 
   g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
 
-  skyDome = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true, fog: false }));
+  skyDome = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true, fog: false, depthWrite: false }));
   window.skyDome = skyDome;
 
   const starGeo = new THREE.BufferGeometry();
@@ -6775,7 +6901,7 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
     const name = child.name ? child.name.toLowerCase() : "";
     const wp = new THREE.Vector3();
     child.getWorldPosition(wp);
-    if (Math.abs(wp.x - (-3)) < 15 && Math.abs(wp.z - (-94)) < 15) {
+    if ((Math.abs(wp.x - (-3)) < 15 && Math.abs(wp.z - (-94)) < 15) || (Math.abs(wp.x - (-6.0)) < 4.0 && Math.abs(wp.z - 15.7) < 4.0 && wp.y < 1.0)) {
       if (name.includes('tree') || name.includes('palm') || name.includes('plant') || name.includes('foliage') || name.includes('bush') || name.includes('vine') || name.includes('leaf') || name.includes('leaves') || name.includes('branch')) {
         dockPlantsToRemove.push(child);
       }
@@ -6815,7 +6941,7 @@ new GLTFLoader().load(window.getAssetUrl('models/FullTrack_Small.glb'), function
 
       child.castShadow = false; child.receiveShadow = false;
 
-      const isMountainOrTerrain = name.includes('mountain') || name.includes('hill') || name.includes('cliff') || name.includes('terrain') || name.includes('island') || name.includes('rock') || name.includes('land') || name.includes('dune') || name.includes('beach');
+      const isMountainOrTerrain = name.includes('mountain') || name.includes('hill') || name.includes('cliff') || name.includes('terrain') || name.includes('island') || name.includes('rock') || name.includes('land') || name.includes('dune') || name.includes('beach') || name.includes('vulcan') || name.includes('volcan') || name.includes('peak');
 
       child.frustumCulled = !isMountainOrTerrain; child.visible = true;
 
@@ -9621,18 +9747,14 @@ window.setZozoTTSButtonState = function (isPlaying) {
 
     }
 
+    const ttsDict = {hu:'Felolvasás', en:'Read aloud', de:'Vorlesen', fr:'Lecture à voix haute', es:'Lectura en voz alta', pl:'Czytaj na głos', ru:'Прочитать вслух'};
+    const ttsLabel = ttsDict[(window.currentLanguage || localStorage.getItem('ebook_pirates_language') || 'hu').toLowerCase()] || 'Felolvasás';
     if (window.isZozoAutoReadActive) {
-
       btn.classList.add('auto-read-active');
-
-      btn.setAttribute('data-custom-tooltip', 'Felolvasás');
-
+      btn.setAttribute('data-custom-tooltip', ttsLabel);
     } else {
-
       btn.classList.remove('auto-read-active');
-
-      btn.setAttribute('data-custom-tooltip', 'Felolvasás');
-
+      btn.setAttribute('data-custom-tooltip', ttsLabel);
     }
 
   });
@@ -11076,53 +11198,38 @@ addEventListener('click', (e) => {
 
 
   if (e.target.closest('#btn-exit-yes')) {
-
     // ----------------------------------------------------
-
-    // TELJES KIJELENTKEZÉS (VESSZENEK A HÁRTYÁK GOMB)
-
+    // KILÉPÉS: VESSZENEK A HÁRTYÁK
     // ----------------------------------------------------
-
     const exitOverlay = document.getElementById('exit-confirm-overlay');
-
     if (exitOverlay) exitOverlay.style.display = 'none';
 
+    // A hajón levő hártyák elvesznek
+    window.carriedMembranes = 0;
+    if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
 
-
-    sessionStorage.removeItem('ebookPiratesToken');
-
-    localStorage.removeItem('ebookPiratesToken');
-
-    localStorage.removeItem('ebook_pirates_username');
-
-    localStorage.removeItem('ebook_pirates_user_email');
-
-    sessionStorage.removeItem('ebookPiratesLoginName');
-
-    sessionStorage.removeItem('ebookPiratesLoginPass');
-
-    sessionStorage.removeItem('ebook_is_logged_in');
-
-
-
-    if (window.parent && window.parent !== window) {
-
-      window.parent.postMessage({
-
-        type: 'EBOOK_PIRATES_TUTORIAL',
-
-        action: 'logout'
-
-      }, '*');
-
-    } else {
-
-      window.location.href = '../index.html';
-
+    // A játékos adatlapjára felíródnak a bázison tárolt (stored) hártyák
+    if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
+      if (window.storedMembranes > 0) {
+        window.parent.callBackend('saveHartyaScore', [window.storedMembranes]);
+      }
+      window.parent.callBackend('saveBoatDurability', [window.boatDurability || 10]);
     }
 
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        source: 'threejs-minigame',
+        status: 'COMPLETED',
+        gameType: 'FISHING',
+        exitType: 'QUIT_DISCARD',
+        score: window.storedMembranes || 0
+      }, '*');
+    } else {
+      const targetUrl = 'https://krystohans.github.io/ebookpirates_site/';
+      if (window.top && window.top !== window) window.top.location.href = targetUrl;
+      else window.location.href = targetUrl;
+    }
     return;
-
   }
 
 
@@ -12390,6 +12497,7 @@ function frame(now) {
 
 
     if (p >= 1.0) {
+      if (window.currentZozoTTSAudio && !window.currentZozoTTSAudio.paused && !window.currentZozoTTSAudio.ended) return;
 
       window.airshipAbductionActive = false;
 
@@ -14406,6 +14514,8 @@ window.showChestAtPier = showChestAtPier;
 const EOG_PROMPT_TRANSLATIONS = {
 
   hu: {
+    mhIntroText: "Mivel Zozó lelépett, mostantól nincs aki megjavítsa a csónakot.\n\nHa 2 alá csökken a csónak életereje, akkor Holzkopf mester elvontatja Hebokba.\n\nA javításért fizetned kell.",
+    mhIntroBtn: "Tovább",
 
     soundBtn: "🔊 Teszt: HANGGAL (felirat nélkül)",
 
@@ -14418,6 +14528,8 @@ const EOG_PROMPT_TRANSLATIONS = {
   },
 
   en: {
+    mhIntroText: "Since Zozo has left, there is no one to repair the boat anymore.\n\nIf the boat's durability drops below 2, Master Holzkopf will tow it to Hebok.\n\nYou will have to pay for the repairs.",
+    mhIntroBtn: "Continue",
 
     soundBtn: "🔊 Test: WITH SOUND (no subtitles)",
 
@@ -14430,6 +14542,8 @@ const EOG_PROMPT_TRANSLATIONS = {
   },
 
   de: {
+    mhIntroText: "Da Zozo abgehauen ist, gibt es niemanden mehr, der das Boot repariert.\n\nWenn die Haltbarkeit des Bootes unter 2 fällt, schleppt Meister Holzkopf es nach Hebok ab.\n\nFür die Reparatur musst du bezahlen.",
+    mhIntroBtn: "Weiter",
 
     soundBtn: "🔊 Test: MIT TON (ohne Untertitel)",
 
@@ -14454,6 +14568,8 @@ const EOG_PROMPT_TRANSLATIONS = {
   },
 
   fr: {
+    mhIntroText: "Comme Zozo est parti, il n'y a plus personne pour réparer la barque.\n\nSi la durabilité de la barque tombe sous 2, Maître Holzkopf la remorquera jusqu'à Hebok.\n\nTu devras payer pour les réparations.",
+    mhIntroBtn: "Continuer",
 
     soundBtn: "🔊 Test : AVEC SON (sans sous-titres)",
 
@@ -14466,6 +14582,8 @@ const EOG_PROMPT_TRANSLATIONS = {
   },
 
   pl: {
+    mhIntroText: "Skoro Zozo zwiał, nie ma już nikogo, kto mógłby naprawić łódź.\n\nJeśli wytrzymałość łodzi spadnie poniżej 2, mistrz Holzkopf odholuje ją do Hebok.\n\nZa naprawę będziesz musiał zapłacić.",
+    mhIntroBtn: "Dalej",
 
     soundBtn: "🔊 Test: Z DŹWIĘKIEM (bez napisów)",
 
@@ -14478,6 +14596,8 @@ const EOG_PROMPT_TRANSLATIONS = {
   },
 
   ru: {
+    mhIntroText: "Раз Зозо сбежал, чинить лодку больше некому.\n\nЕсли прочность лодки упадет ниже 2, мастер Хольцкопф отбуксирует ее в Хебок.\n\nЗа ремонт придется заплатить.",
+    mhIntroBtn: "Далее",
 
     soundBtn: "🔊 Тест: СО ЗВУКОМ (без субтитров)",
 
@@ -16663,7 +16783,7 @@ window.showEogVeteranPanel = function () {
 
         } else {
 
-          window.location.href = 'MainMenuTutorial.html';
+          window.location.href = '../kikotolatkep/index.html';
 
         }
 
@@ -16699,7 +16819,7 @@ window.showEogVeteranPanel = function () {
 
     } else {
 
-      window.location.href = 'MainMenuTutorial.html';
+      window.location.href = '../kikotolatkep/index.html';
 
     }
 
@@ -16721,7 +16841,7 @@ window.showEogFinalPanel = function () {
 
   // Ha a játékos már korábban elvégezte a tutorialt -> Veterán panel felugrása
 
-  if (window.checkIfUserIsVeteran && window.checkIfUserIsVeteran()) {
+  if (false /* A felírás lefutását a felhőbeli backend (parancsnoki_hid.js) felügyeli */) {
 
     window.showEogVeteranPanel();
 
@@ -16922,50 +17042,33 @@ window.showEogSuccessChoicePanel = function () {
   // 1. Gomb: Tovább halászok -> Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)
 
   const btnFish = document.getElementById('eog-btn-choice-fish');
-
   if (btnFish) {
-
     btnFish.onclick = function (e) {
-
       e.stopPropagation();
-
       clearChoiceTimer();
-
       choiceOverlay.style.display = 'none';
-
-      if (window.eogChestAtPier) window.eogChestAtPier.visible = false;
-
-      if (window.chestLidModel) window.chestLidModel.visible = false;
-
-      if (typeof window.exitFullscreenIfActive === 'function') {
-
-        window.exitFullscreenIfActive();
-
-      }
-
-      if (window.parent && window.parent !== window) {
-
-        window.parent.postMessage({
-
-          type: 'EBOOK_PIRATES_TUTORIAL',
-
-          action: 'start_hartyahalaszat'
-
-        }, '*');
-
+      const doNavigate = function () {
+        if (window.eogChestAtPier) window.eogChestAtPier.visible = false;
+        if (window.chestLidModel) window.chestLidModel.visible = false;
+        if (typeof window.exitFullscreenIfActive === 'function') {
+          window.exitFullscreenIfActive();
+        }
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'EBOOK_PIRATES_TUTORIAL',
+            action: 'start_hartyahalaszat'
+          }, '*');
+        } else {
+          window.location.href = '../Membrane_Hunting/tutorial_fixed.html?mode=fishing&lang=' + (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || 'hu');
+        }
+      };
+      if (typeof window.showMhIntroPanel === 'function') {
+        window.showMhIntroPanel(doNavigate);
       } else {
-
-        window.location.href = '../Membrane_Hunting/tutorial_fixed.html?mode=fishing';
-
+        doNavigate();
       }
-
     };
-
   }
-
-
-
-  // 2. Gomb: Irány Hebok! -> terkeputazas01.mp4 videó lejátszása + háttérben kikötő előbetöltése
 
   const btnHebok = document.getElementById('eog-btn-choice-hebok');
 
@@ -18109,7 +18212,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Szünet",
 
-    stopTitle: "STOP",
+    stopTitle: "MENÜ",
 
     saveTitle: "Mentés",
 
@@ -18125,11 +18228,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Adjon nevet a csónaknak...",
 
-    exitConfirmTitle: "Biztosan ki akarsz lépni?",
+    exitConfirmTitle: "Ha most kilépsz, elveszíted a hajón levő hártyáidat.<br>Biztosan kilépsz?",
 
-    exitConfirmYes: "Igen, kilépek",
+    exitConfirmYes: "Vesszenek a hártyák",
 
-    exitConfirmCancel: "Mégsem",
+    exitConfirmCancel: "Tovább halászok",
 
     mobileModeTitle: "Váltás Hajóvezérlés és Kamera között",
 
@@ -18179,7 +18282,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Pause",
 
-    stopTitle: "Main Menu",
+    stopTitle: "MENU",
 
     saveTitle: "Save",
 
@@ -18195,11 +18298,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Name your boat...",
 
-    exitConfirmTitle: "Are you sure you want to exit?",
+    exitConfirmTitle: "If you leave now, you will lose the membranes on board.<br>Are you sure you want to exit?",
 
-    exitConfirmYes: "Yes, Exit",
+    exitConfirmYes: "Discard membranes",
 
-    exitConfirmCancel: "Cancel",
+    exitConfirmCancel: "Keep fishing",
 
     mobileModeTitle: "Toggle Boat Controls & Camera",
 
@@ -18251,7 +18354,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Pause",
 
-    stopTitle: "Hauptmenü",
+    stopTitle: "MENÜ",
 
     saveTitle: "Speichern",
 
@@ -18267,11 +18370,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Benenne dein Boot...",
 
-    exitConfirmTitle: "Möchtest du wirklich beenden?",
+    exitConfirmTitle: "Wenn du jetzt gehst, verlierst du die Membranen an Bord.<br>Möchtest du wirklich beenden?",
 
-    exitConfirmYes: "Ja, beenden",
+    exitConfirmYes: "Membranen aufgeben",
 
-    exitConfirmCancel: "Abbrechen",
+    exitConfirmCancel: "Weiterfischen",
 
     mobileModeTitle: "Zwischen Bootssteuerung und Kamera wechseln",
 
@@ -18321,7 +18424,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Pause",
 
-    stopTitle: "Menu principal",
+    stopTitle: "MENU",
 
     saveTitle: "Sauvegarder",
 
@@ -18337,11 +18440,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Nommez votre bateau...",
 
-    exitConfirmTitle: "Voulez-vous vraiment quitter ?",
+    exitConfirmTitle: "Si vous quittez maintenant, vous perdrez les membranes à bord.<br>Voulez-vous vraiment quitter ?",
 
-    exitConfirmYes: "Oui, quitter",
+    exitConfirmYes: "Abandonner les membranes",
 
-    exitConfirmCancel: "Annuler",
+    exitConfirmCancel: "Continuer à pêcher",
 
     mobileModeTitle: "Basculer entre contrôle du bateau et caméra",
 
@@ -18391,7 +18494,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Pausa",
 
-    stopTitle: "Menú principal",
+    stopTitle: "MENÚ",
 
     saveTitle: "Guardar",
 
@@ -18407,11 +18510,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Nombra tu barco...",
 
-    exitConfirmTitle: "¿Seguro que quieres salir?",
+    exitConfirmTitle: "Si sales ahora, perderás las membranas a bordo.<br>¿Seguro que quieres salir?",
 
-    exitConfirmYes: "Sí, salir",
+    exitConfirmYes: "Descartar membranas",
 
-    exitConfirmCancel: "Cancelar",
+    exitConfirmCancel: "Seguir pescando",
 
     mobileModeTitle: "Alternar entre control del barco y cámara",
 
@@ -18461,7 +18564,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Pauza",
 
-    stopTitle: "Menu główne",
+    stopTitle: "MENU",
 
     saveTitle: "Zapisz",
 
@@ -18477,11 +18580,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Nazwij swoją łódź...",
 
-    exitConfirmTitle: "Czy na pewno chcesz wyjść?",
+    exitConfirmTitle: "Jeśli wyjdziesz teraz, stracisz membrany na pokładzie.<br>Czy na pewno chcesz wyjść?",
 
-    exitConfirmYes: "Tak, wyjdź",
+    exitConfirmYes: "Porzuć membrany",
 
-    exitConfirmCancel: "Anuluj",
+    exitConfirmCancel: "Łów dalej",
 
     mobileModeTitle: "Przełącz między sterowaniem łodzią a kamerą",
 
@@ -18531,7 +18634,7 @@ window.UI_TRANSLATIONS = {
 
     pauseTitle: "Пауза",
 
-    stopTitle: "Главное меню",
+    stopTitle: "МЕНЮ",
 
     saveTitle: "Сохранить",
 
@@ -18547,11 +18650,11 @@ window.UI_TRANSLATIONS = {
 
     eogBoatNameInput: "Дайте имя лодке...",
 
-    exitConfirmTitle: "Вы уверены, что хотите выйти?",
+    exitConfirmTitle: "Если ты выйдешь сейчас, ты потеряешь мембраны на борту.<br>Ты уверен, что хочешь выйти?",
 
-    exitConfirmYes: "Да, выйти",
+    exitConfirmYes: "Потерять мембраны",
 
-    exitConfirmCancel: "Отмена",
+    exitConfirmCancel: "Продолжить рыбалку",
 
     mobileModeTitle: "Переключение между управлением лодкой и камерой",
 
@@ -18726,6 +18829,8 @@ window.applyLanguageToUI = function (lang) {
   setText('eog-btn-yesidea', dict.confirmNo2);
 
   setText('eog-btn-summary-next', dict.summaryNextBtn);
+  setText('mh-intro-text', dict.mhIntroText);
+  setText('mh-btn-intro-close', dict.mhIntroBtn);
 
   setAttr('eog-boat-name-input', 'placeholder', dict.eogBoatNameInput);
 
@@ -18742,6 +18847,11 @@ window.applyLanguageToUI = function (lang) {
   setText('btn-guest-register', dict.guestRegister);
 
   setText('btn-guest-exit', dict.guestExit);
+
+  const exitMsgEl = document.getElementById('exit-confirm-msg');
+  if (exitMsgEl && dict.exitConfirmTitle) exitMsgEl.innerHTML = dict.exitConfirmTitle;
+  setText('btn-exit-yes', dict.exitConfirmYes);
+  setText('btn-exit-no', dict.exitConfirmCancel);
 
 
 

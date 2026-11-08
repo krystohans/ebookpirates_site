@@ -9,7 +9,7 @@
     "new_membrane": "Tu as récolté une autre membrane !\nRetourne vite au port !",
     "airship_good": "Joli coup. Continue ton boulot !",
     "airship_bad": "Ils viennent de nous piller.\nOn n'a plus qu'à repartir pêcher.",
-    "membrane_good": "Celle-là est dans la poche !",
+    "membrane_good": "⚓ Bonne réponse ! Membrane récupérée (+1 à bord).",
     "membrane_bad": "Cette membrane vient de dériver au loin !",
     "beach": "Il ne faudrait pas s'échouer sur le rivage !",
     "out_of_range": "Impossible de s'aventurer en haute mer\navec cette vieille carcasse.",
@@ -21,7 +21,8 @@
     "boat_fixing": "J'ai rafistolé la coque pour cette fois, mais fais plus attention !",
     "boat_lowHP": "On ne survivra pas à un choc de plus.\nRappelle vite le bateau au port !",
     "boat_totalcar": "Tu as sombré. Tu ne feras jamais un marin.",
-    "airship_bad_empty": "Mieux vaut disparaître de leur vue illico,\navant qu'ils ne nous balancent par-dessus bord."
+    "airship_bad_empty": "Mieux vaut disparaître de leur vue illico,\navant qu'ils ne nous balancent par-dessus bord.",
+    "9": "Le dirigeable des garde-côtes effectue un contrôle."
   },
   "eogMonologues": {
     "pointA": "Hé, matelot ! L'eau est suspecte de calme...\nAllons voir ce qui se trame à l'embouchure de la baie !",
@@ -37,7 +38,7 @@
     "6": "Pour onze Crédits Pirates, bien entendu. Rien n'est gratuit par ici.",
     "7": "Ce ne sont là que les membranes ordinaires. Au-delà de la baie, vers les récifs, tu en trouveras de couleur. Bleues, rouges, vertes... chacune vouée à un genre littéraire.",
     "8": "Mais seuls de vieux loups de mer comme moi peuvent s'y aventurer. Et les îles lointaines... ce n'est pas encore ton niveau.",
-    "9": "Bon sang... des Pirates du Ciel ! QU'EST-CE QUE TU FABRIQUES ? RAPIDE! ! Retournons au port !",
+    "9": "Le dirigeable des garde-côtes effectue un contrôle.",
     "11": "Maintenant, laisse-moi t'expliquer comment tourne le monde ici, puisque tu as l'air complètement dépassé par les événements.",
     "12": "Deux choses comptent : les Crédits Pirates et les Talents. Tu reçois un Crédit par jour en te connectant. Un seul. Mais ce n'est que de la menue monnaie.",
     "13": "Le Maître des Rouleaux t'en donne un aussi pour trente membranes.",

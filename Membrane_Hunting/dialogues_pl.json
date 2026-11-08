@@ -9,7 +9,7 @@
     "new_membrane": "Zebrałeś kolejną membranę!\nWracaj prędko do portu!",
     "airship_good": "Dobra robota. Nie zwalniaj tempa!",
     "airship_bad": "Właśnie nas obrabowali.\nTeraz musimy wypłynąć znowu na połów.",
-    "membrane_good": "Ta już jest nasza!",
+    "membrane_good": "⚓ Prawidłowa odpowiedź! Membrana zabezpieczona (+1 na pokładzie).",
     "membrane_bad": "Ta membrana właśnie odpłynęła w siną dal!",
     "beach": "Lepiej nie wpadajmy na mieliznę przy brzegu!",
     "out_of_range": "Tą starą łajbą nie wypłyniemy na otwarte morze.",
@@ -21,7 +21,8 @@
     "boat_fixing": "Załatałem to na ten raz, ale uważaj bardziej!",
     "boat_lowHP": "Kolejnego zderzenia nie przetrwamy.\nZawracaj łódź do przystani!",
     "boat_totalcar": "Zatonąłeś. Marynarza z ciebie nie będzie.",
-    "airship_bad_empty": "Lepiej zniknijmy im z oczu,\nzanim cisną nas w głębiny morza."
+    "airship_bad_empty": "Lepiej zniknijmy im z oczu,\nzanim cisną nas w głębiny morza.",
+    "9": "Sterowiec straży przybrzeżnej przeprowadza kontrolę."
   },
   "eogMonologues": {
     "pointA": "Hej, szczurze! Woda jest podejrzanie pusta...\nSprawdźmy, co dzieje się u wejścia do zatoki!",
@@ -37,7 +38,7 @@
     "6": "Za jedenaście Kredytów Pirackich, rzecz jasna. U nas nic nie ma za darmo.",
     "7": "To tylko podstawowe membrany. Za zatoką, przy rafach, trafisz też na kolorowe. Błękitne, karminowe, zielone... każda dla innego gatunku.",
     "8": "Ale tam zapuszczają się tylko stare wilki morskie jak ja. A na odległe wyspy... no mniejsza z tym. To jeszcze nie twoja liga.",
-    "9": "Niech to licho... Podniebni Piraci! NA CO SIĘ GAPISZ? UCIEKAJMY! Zawracaj do portu!",
+    "9": "Sterowiec straży przybrzeżnej przeprowadza kontrolę.",
     "11": "A teraz wyjaśnię ci, jak kręci się tutejsze życie, skoro jesteś w tych sprawach tak kompletnie zielony.",
     "12": "Liczą się dwie rzeczy: Kredyty Pirackie i Talenty. Kredyt dostajesz każdego dnia przy logowaniu. Jeden. Ale to drobniaki na waciki.",
     "13": "Mistrz Zwojów też da ci jeden za trzydzieści membran. Ale to groszowe sprawy.",

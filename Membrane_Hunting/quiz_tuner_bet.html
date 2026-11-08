@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tétes Döntés Panel Hangoló (Bet Decision Tuner)</title>
+  <style>
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype'),
+           url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf') format('opentype');
+    }
+    @font-face {
+      font-family: 'Briskb';
+      src: url('assets/fonts/Briskb.otf') format('opentype'),
+           url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf') format('opentype');
+      font-weight: bold;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── OLDALSÓ VEZÉRLŐ PANEL ─── */
+    #sidebar {
+      width: 450px;
+      min-width: 420px;
+      height: 100vh;
+      background: #161b22;
+      border-right: 1px solid #30363d;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    }
+
+    #sidebar-header {
+      padding: 14px 18px;
+      background: #21262d;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #sidebar-header h2 {
+      margin: 0;
+      font-size: 15px;
+      color: #58a6ff;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #controls-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .group-box {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .group-title {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #f0883e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 6px;
+    }
+
+    .ctrl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+      font-size: 12px;
+    }
+    .ctrl-row label {
+      flex: 1;
+      color: #8b949e;
+      cursor: pointer;
+    }
+    .ctrl-row input[type="range"] {
+      width: 140px;
+      accent-color: #58a6ff;
+    }
+    .ctrl-row input[type="number"] {
+      width: 58px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 11px;
+      text-align: right;
+      margin-left: 8px;
+    }
+    .ctrl-row select, .ctrl-row input[type="color"] {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 11px;
+    }
+    .ctrl-row textarea {
+      width: 100%;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #ffeedd;
+      border-radius: 4px;
+      padding: 6px;
+      font-family: 'Briskb', monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+
+    #sidebar-footer {
+      padding: 12px 16px;
+      background: #21262d;
+      border-top: 1px solid #30363d;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn-action {
+      background: #238636;
+      color: #fff;
+      border: none;
+      padding: 9px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-action:hover { background: #2ea043; }
+    .btn-secondary {
+      background: #30363d;
+      color: #c9d1d9;
+    }
+    .btn-secondary:hover { background: #3c444d; }
+
+    /* ─── JOBB OLDALI ÉLŐ ELŐNÉZET ─── */
+    #preview-area {
+      flex: 1;
+      height: 100vh;
+      background: #050a10 url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/textures/waternormals.jpg') repeat center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Minta TopBar */
+    #mock-topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 85px;
+      background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/wood_bar_top.png') no-repeat center top / 100% 85px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      color: #ffd700;
+      font-family: 'Briskb', monospace;
+      font-size: 18px;
+      text-shadow: 1px 1px 2px #000;
+      pointer-events: none;
+    }
+
+    /* Kvíz Overlay & Panel */
+    #quiz-overlay {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+    }
+
+    #quiz-panel {
+      position: relative;
+      background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Quiz_window_new_2-r.png') no-repeat center / 100% 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      transition: none;
+    }
+
+    #q-box {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      word-break: break-word;
+    }
+
+    #q-title {
+      width: 100%;
+      text-align: center;
+    }
+
+    #q-body {
+      width: 100%;
+      text-align: center;
+    }
+
+    #ans-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bet-btn {
+      font-family: 'Briskb', 'Courier New', monospace;
+      font-weight: bold;
+      cursor: pointer;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .bet-btn:hover {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BAL OLDALI VEZÉRLŐ PANEL -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <h2>Tétes Döntés Panel Hangoló</h2>
+      <button class="btn-action btn-secondary" style="padding:4px 8px;font-size:11px;" onclick="resetDefaults()">Alaphelyzet</button>
+    </div>
+
+    <div id="controls-container">
+
+      <!-- 1. CÍMSOR (TITLE) -->
+      <div class="group-box">
+        <div class="group-title">1. Címsor (Felső Sor)</div>
+        <div style="margin-bottom:8px;">
+          <input type="text" id="txtTitle" style="width:100%; background:#21262d; border:1px solid #30363d; color:#ffeedd; padding:6px; border-radius:4px; font-family:'Briskb',monospace; font-size:13px;" value="TÉTES KÉRDÉS KÖVETKEZIK!" oninput="render()">
+        </div>
+        <div class="ctrl-row">
+          <label>Címsor betűméret:</label>
+          <input type="range" id="titleFontSize" min="12" max="28" value="18" oninput="sync('titleFontSize')">
+          <input type="number" id="titleFontSize_num" value="18" oninput="sync('titleFontSize', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Címsor alatti sorköz (távolság):</label>
+          <input type="range" id="titleMarginBottom" min="4" max="40" value="14" oninput="sync('titleMarginBottom')">
+          <input type="number" id="titleMarginBottom_num" value="14" oninput="sync('titleMarginBottom', true)">
+        </div>
+      </div>
+
+      <!-- 2. KÉRDÉSSZÖVEG (BODY) & SORKÖZ -->
+      <div class="group-box">
+        <div class="group-title">2. Kérdésszöveg és Belső Sorköz</div>
+        <div style="margin-bottom:8px;">
+          <textarea id="txtBody" rows="2" oninput="render()">Kockáztatod a csónakodon lévő hártyáidat egy Dupla vagy Semmi játékban?</textarea>
+        </div>
+        <div class="ctrl-row">
+          <label>Kérdés betűméret:</label>
+          <input type="range" id="bodyFontSize" min="12" max="28" value="18" oninput="sync('bodyFontSize')">
+          <input type="number" id="bodyFontSize_num" value="18" oninput="sync('bodyFontSize', true)">
+        </div>
+        <div class="ctrl-row" style="background:#1f2937; padding:4px 6px; border-radius:4px;">
+          <label style="color:#58a6ff; font-weight:bold;">Két sor közötti sorköz (Line-Height):</label>
+          <input type="range" id="bodyLineHeight" min="1.0" max="2.4" step="0.05" value="1.35" oninput="sync('bodyLineHeight')">
+          <input type="number" id="bodyLineHeight_num" value="1.35" step="0.05" oninput="sync('bodyLineHeight', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Betűszín:</label>
+          <input type="color" id="qColor" value="#e0d4c2" onchange="render()">
+        </div>
+      </div>
+
+      <!-- 3. KÉRDÉS DOBOZ MARGÓK -->
+      <div class="group-box">
+        <div class="group-title">3. Kérdés Doboz Margók</div>
+        <div class="ctrl-row">
+          <label>Függőleges belső padding:</label>
+          <input type="range" id="qPadV" min="0" max="40" value="16" oninput="sync('qPadV')">
+          <input type="number" id="qPadV_num" value="16" oninput="sync('qPadV', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Vízszintes belső padding:</label>
+          <input type="range" id="qPadH" min="0" max="50" value="20" oninput="sync('qPadH')">
+          <input type="number" id="qPadH_num" value="20" oninput="sync('qPadH', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Doboz alatti margó (gombok előtt):</label>
+          <input type="range" id="qMarginBottom" min="0" max="40" value="13" oninput="sync('qMarginBottom')">
+          <input type="number" id="qMarginBottom_num" value="13" oninput="sync('qMarginBottom', true)">
+        </div>
+      </div>
+
+      <!-- 4. DÖNTŐ GOMBOK & TÁVOLSÁG -->
+      <div class="group-box">
+        <div class="group-title">4. Döntő Gombok és Távolságuk</div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:11px; color:#8b949e; display:block; margin-bottom:3px;">1. Gomb (Kockáztatok):</label>
+          <input type="text" id="txtBtnYes" style="width:100%; background:#21262d; border:1px solid #30363d; color:#ffeedd; padding:5px; border-radius:4px; font-family:'Briskb',monospace; font-size:12px;" value="Kockáztatok, Dupla vagy Semmi!" oninput="render()">
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:11px; color:#8b949e; display:block; margin-bottom:3px;">2. Gomb (Sima kérdés):</label>
+          <input type="text" id="txtBtnNo" style="width:100%; background:#21262d; border:1px solid #30363d; color:#ffeedd; padding:5px; border-radius:4px; font-family:'Briskb',monospace; font-size:12px;" value="Kérem a sima kérdést (kockázat nélkül)" oninput="render()">
+        </div>
+        <div class="ctrl-row" style="background:#1f2937; padding:4px 6px; border-radius:4px;">
+          <label style="color:#58a6ff; font-weight:bold;">Gombok közötti távolság (ansGap):</label>
+          <input type="range" id="ansGap" min="4" max="60" value="32" oninput="sync('ansGap')">
+          <input type="number" id="ansGap_num" value="32" oninput="sync('ansGap', true)">
+        </div>
+        <div class="ctrl-row" style="background:#1f2937; padding:4px 6px; border-radius:4px;">
+          <label style="color:#58a6ff; font-weight:bold;">Gombok betűmérete (btnFontSize):</label>
+          <input type="range" id="btnFontSize" min="10" max="28" value="15" oninput="sync('btnFontSize')">
+          <input type="number" id="btnFontSize_num" value="15" oninput="sync('btnFontSize', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Gombok szélessége (%):</label>
+          <input type="range" id="btnWidth" min="50" max="100" value="100" oninput="sync('btnWidth')">
+          <input type="number" id="btnWidth_num" value="100" oninput="sync('btnWidth', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Függőleges padding (btnPadV):</label>
+          <input type="range" id="btnPadV" min="4" max="24" value="10" oninput="sync('btnPadV')">
+          <input type="number" id="btnPadV_num" value="10" oninput="sync('btnPadV', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Vízszintes padding (btnPadH):</label>
+          <input type="range" id="btnPadH" min="8" max="40" value="20" oninput="sync('btnPadH')">
+          <input type="number" id="btnPadH_num" value="20" oninput="sync('btnPadH', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>1. Gomb háttér alfa:</label>
+          <input type="range" id="btnYesAlpha" min="0.0" max="1" step="0.05" value="0.1" oninput="sync('btnYesAlpha')">
+          <input type="number" id="btnYesAlpha_num" value="0.1" step="0.05" oninput="sync('btnYesAlpha', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>2. Gomb háttér alfa:</label>
+          <input type="range" id="btnNoAlpha" min="0.0" max="1" step="0.05" value="0.1" oninput="sync('btnNoAlpha')">
+          <input type="number" id="btnNoAlpha_num" value="0.1" step="0.05" oninput="sync('btnNoAlpha', true)">
+        </div>
+      </div>
+
+      <!-- 5. PANEL KERET & POZÍCIÓ -->
+      <div class="group-box">
+        <div class="group-title">5. Panel Keret és Margók</div>
+        <div class="ctrl-row">
+          <label>Szélesség (panelWidth):</label>
+          <input type="range" id="panelWidth" min="450" max="850" value="600" oninput="sync('panelWidth')">
+          <input type="number" id="panelWidth_num" value="600" oninput="sync('panelWidth', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Magasság (panelHeight):</label>
+          <input type="range" id="panelHeight" min="300" max="700" value="502" oninput="sync('panelHeight')">
+          <input type="number" id="panelHeight_num" value="502" oninput="sync('panelHeight', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Felső padding (padTop):</label>
+          <input type="range" id="padTop" min="40" max="140" value="96" oninput="sync('padTop')">
+          <input type="number" id="padTop_num" value="96" oninput="sync('padTop', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Jobb padding (padRight):</label>
+          <input type="range" id="padRight" min="40" max="140" value="95" oninput="sync('padRight')">
+          <input type="number" id="padRight_num" value="95" oninput="sync('padRight', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Alsó padding (padBottom):</label>
+          <input type="range" id="padBottom" min="20" max="100" value="49" oninput="sync('padBottom')">
+          <input type="number" id="padBottom_num" value="49" oninput="sync('padBottom', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Bal padding (padLeft):</label>
+          <input type="range" id="padLeft" min="40" max="140" value="94" oninput="sync('padLeft')">
+          <input type="number" id="padLeft_num" value="94" oninput="sync('padLeft', true)">
+        </div>
+        <div class="ctrl-row">
+          <label>Előnézet Skála (Scale):</label>
+          <input type="range" id="scale" min="0.6" max="1.5" step="0.05" value="1.2" oninput="sync('scale')">
+          <input type="number" id="scale_num" value="1.2" step="0.05" oninput="sync('scale', true)">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ALSÓ MŰVELETI SÁV -->
+    <div id="sidebar-footer">
+      <button class="btn-action" onclick="copyConfig()">📋 Beállítások Másolása a Vágólapra</button>
+      <button class="btn-action btn-secondary" onclick="showJsonModal()">🔍 Kód és JSON Megtekintése</button>
+    </div>
+  </div>
+
+  <!-- JOBB OLDALI ÉLŐ ELŐNÉZET -->
+  <div id="preview-area">
+    <div id="mock-topbar">
+      <span>Teszt Kalóz</span>
+      <span>Életerő: 10 / 10 &nbsp;|&nbsp; Hártyák: 4 &nbsp;|&nbsp; Arany: 250</span>
+      <span>⚓ Súgó</span>
+    </div>
+
+    <div id="quiz-overlay">
+      <div id="quiz-panel">
+        <div id="q-box">
+          <div id="q-title"></div>
+          <div id="q-body"></div>
+        </div>
+        <div id="ans-container">
+          <button class="bet-btn" id="btn-yes"></button>
+          <button class="bet-btn" id="btn-no"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON MODAL -->
+  <div id="json-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; align-items:center; justify-content:center;">
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:8px; width:550px; max-width:90%; padding:20px;">
+      <h3 style="margin-top:0; color:#58a6ff;">Kimért Konfigurációs Kód</h3>
+      <textarea id="json-output" readonly style="width:100%; height:260px; background:#0d1117; border:1px solid #30363d; color:#7ee787; font-family:monospace; font-size:12px; padding:10px;"></textarea>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px;">
+        <button class="btn-action" onclick="copyJsonFromModal()">Másolás</button>
+        <button class="btn-action btn-secondary" onclick="closeJsonModal()">Bezárás</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getVal(id, isFloat) {
+      if (isFloat === undefined) isFloat = false;
+      var el = document.getElementById(id);
+      return isFloat ? parseFloat(el.value) : parseInt(el.value, 10);
+    }
+    function getStr(id) {
+      return document.getElementById(id).value;
+    }
+
+    function sync(id, fromNum) {
+      if (fromNum === undefined) fromNum = false;
+      var slider = document.getElementById(id);
+      var num = document.getElementById(id + '_num');
+      if (fromNum) slider.value = num.value;
+      else num.value = slider.value;
+      render();
+    }
+
+    function render() {
+      // Szövegek
+      var titleText = getStr('txtTitle');
+      var bodyText = getStr('txtBody').replace(/\n/g, '<br>');
+      var btnYesText = getStr('txtBtnYes');
+      var btnNoText = getStr('txtBtnNo');
+
+      // Tipográfia
+      var titleFontSize = getVal('titleFontSize');
+      var titleMarginBottom = getVal('titleMarginBottom');
+      var bodyFontSize = getVal('bodyFontSize');
+      var bodyLineHeight = getVal('bodyLineHeight', true);
+      var qColor = getStr('qColor');
+
+      // Margók
+      var qPadV = getVal('qPadV');
+      var qPadH = getVal('qPadH');
+      var qMarginBottom = getVal('qMarginBottom');
+
+      // Gombok stílus
+      var btnWidth = getVal('btnWidth');
+      var ansGap = getVal('ansGap');
+      var btnFontSize = getVal('btnFontSize');
+      var btnPadV = getVal('btnPadV');
+      var btnPadH = getVal('btnPadH');
+      var btnYesAlpha = getVal('btnYesAlpha', true);
+      var btnNoAlpha = getVal('btnNoAlpha', true);
+
+      // Panel méret & elrendezés
+      var panelWidth = getVal('panelWidth');
+      var panelHeight = getVal('panelHeight');
+      var padTop = getVal('padTop');
+      var padRight = getVal('padRight');
+      var padBottom = getVal('padBottom');
+      var padLeft = getVal('padLeft');
+      var scale = getVal('scale', true);
+
+      // DOM frissítés: Panel
+      var panel = document.getElementById('quiz-panel');
+      panel.style.width = panelWidth + 'px';
+      panel.style.height = panelHeight > 0 ? (panelHeight + 'px') : 'auto';
+      panel.style.padding = padTop + 'px ' + padRight + 'px ' + padBottom + 'px ' + padLeft + 'px';
+      panel.style.transform = 'scale(' + scale + ')';
+      panel.style.marginTop = '40px';
+
+      // DOM frissítés: Kérdés doboz
+      var qBox = document.getElementById('q-box');
+      qBox.style.padding = qPadV + 'px ' + qPadH + 'px';
+      qBox.style.marginBottom = qMarginBottom + 'px';
+      qBox.style.backgroundColor = 'transparent';
+      qBox.style.border = 'none';
+
+      // Címsor
+      var qTitle = document.getElementById('q-title');
+      qTitle.innerText = titleText;
+      qTitle.style.fontSize = titleFontSize + 'px';
+      qTitle.style.color = qColor;
+      qTitle.style.marginBottom = titleMarginBottom + 'px';
+      qTitle.style.lineHeight = '1.2';
+
+      // Kérdésszöveg (2 soros body)
+      var qBody = document.getElementById('q-body');
+      qBody.innerHTML = bodyText;
+      qBody.style.fontSize = bodyFontSize + 'px';
+      qBody.style.lineHeight = bodyLineHeight;
+      qBody.style.color = qColor;
+
+      // DOM frissítés: Gombok konténer
+      var ansContainer = document.getElementById('ans-container');
+      ansContainer.style.gap = ansGap + 'px';
+
+      // DOM frissítés: Igen gomb
+      var btnYes = document.getElementById('btn-yes');
+      btnYes.innerHTML = btnYesText;
+      btnYes.style.width = btnWidth + '%';
+      btnYes.style.fontSize = btnFontSize + 'px';
+      btnYes.style.padding = btnPadV + 'px ' + btnPadH + 'px';
+      btnYes.style.backgroundColor = btnYesAlpha > 0 ? ('rgba(40, 20, 10, ' + btnYesAlpha + ')') : 'transparent';
+      btnYes.style.border = 'none';
+      btnYes.style.borderRadius = '0px';
+      btnYes.style.color = qColor;
+      btnYes.style.boxShadow = 'none';
+
+      // DOM frissítés: Nem gomb
+      var btnNo = document.getElementById('btn-no');
+      btnNo.innerHTML = btnNoText;
+      btnNo.style.width = btnWidth + '%';
+      btnNo.style.fontSize = btnFontSize + 'px';
+      btnNo.style.padding = btnPadV + 'px ' + btnPadH + 'px';
+      btnNo.style.backgroundColor = btnNoAlpha > 0 ? ('rgba(20, 10, 5, ' + btnNoAlpha + ')') : 'transparent';
+      btnNo.style.border = 'none';
+      btnNo.style.borderRadius = '0px';
+      btnNo.style.color = qColor;
+      btnNo.style.boxShadow = 'none';
+    }
+
+    function getConfigObject() {
+      return {
+        titleText: getStr('txtTitle'),
+        bodyText: getStr('txtBody'),
+        btnYesText: getStr('txtBtnYes'),
+        btnNoText: getStr('txtBtnNo'),
+        titleFontSize: getVal('titleFontSize'),
+        titleMarginBottom: getVal('titleMarginBottom'),
+        bodyFontSize: getVal('bodyFontSize'),
+        bodyLineHeight: getVal('bodyLineHeight', true),
+        qColor: getStr('qColor'),
+        qPadV: getVal('qPadV'),
+        qPadH: getVal('qPadH'),
+        qMarginBottom: getVal('qMarginBottom'),
+        btnWidth: getVal('btnWidth'),
+        ansGap: getVal('ansGap'),
+        btnFontSize: getVal('btnFontSize'),
+        btnPadV: getVal('btnPadV'),
+        btnPadH: getVal('btnPadH'),
+        btnYesAlpha: getVal('btnYesAlpha', true),
+        btnNoAlpha: getVal('btnNoAlpha', true),
+        panelWidth: getVal('panelWidth'),
+        panelHeight: getVal('panelHeight'),
+        padTop: getVal('padTop'),
+        padRight: getVal('padRight'),
+        padBottom: getVal('padBottom'),
+        padLeft: getVal('padLeft'),
+        scale: getVal('scale', true)
+      };
+    }
+
+    function copyConfig() {
+      var cfg = getConfigObject();
+      var code = 'window.QuizConfig.BET_DECISION = ' + JSON.stringify(cfg, null, 2) + ';';
+      navigator.clipboard.writeText(code).then(function() {
+        alert('A beállítások sikeresen vágólapra másolva! Csak másold be a chatbe, és azonnal átültetjük a játékba.');
+      }).catch(function(err) {
+        showJsonModal();
+      });
+    }
+
+    function showJsonModal() {
+      var cfg = getConfigObject();
+      var code = 'window.QuizConfig.BET_DECISION = ' + JSON.stringify(cfg, null, 2) + ';';
+      document.getElementById('json-output').value = code;
+      document.getElementById('json-modal').style.display = 'flex';
+    }
+
+    function closeJsonModal() {
+      document.getElementById('json-modal').style.display = 'none';
+    }
+
+    function copyJsonFromModal() {
+      var textarea = document.getElementById('json-output');
+      textarea.select();
+      document.execCommand('copy');
+      alert('Kód vágólapra másolva!');
+      closeJsonModal();
+    }
+
+    function resetDefaults() {
+      document.getElementById('txtTitle').value = "TÉTES KÉRDÉS KÖVETKEZIK!";
+      document.getElementById('txtBody').value = "Kockáztatod a csónakodon lévő hártyáidat egy Dupla vagy Semmi játékban?";
+      document.getElementById('titleFontSize').value = 18; sync('titleFontSize');
+      document.getElementById('titleMarginBottom').value = 14; sync('titleMarginBottom');
+      document.getElementById('bodyFontSize').value = 18; sync('bodyFontSize');
+      document.getElementById('bodyLineHeight').value = 1.35; sync('bodyLineHeight');
+      document.getElementById('qPadV').value = 16; sync('qPadV');
+      document.getElementById('qPadH').value = 20; sync('qPadH');
+      document.getElementById('qMarginBottom').value = 13; sync('qMarginBottom');
+      document.getElementById('btnWidth').value = 100; sync('btnWidth');
+      document.getElementById('ansGap').value = 32; sync('ansGap');
+      document.getElementById('btnFontSize').value = 15; sync('btnFontSize');
+      document.getElementById('btnPadV').value = 10; sync('btnPadV');
+      document.getElementById('btnPadH').value = 20; sync('btnPadH');
+      document.getElementById('panelWidth').value = 600; sync('panelWidth');
+      document.getElementById('panelHeight').value = 502; sync('panelHeight');
+      document.getElementById('padTop').value = 96; sync('padTop');
+      document.getElementById('padRight').value = 95; sync('padRight');
+      document.getElementById('padBottom').value = 49; sync('padBottom');
+      document.getElementById('padLeft').value = 94; sync('padLeft');
+      document.getElementById('scale').value = 1.2; sync('scale');
+    }
+
+    // Kezdeti render
+    window.addEventListener('DOMContentLoaded', function() {
+      render();
+    });
+  </script>
+</body>
+</html>

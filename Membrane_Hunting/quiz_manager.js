@@ -21,7 +21,7 @@ window.QuizConfig = {
       height: 35,
       fontSize: 22,
       lineHeight: 1,
-      maxChars: 42
+      maxChars: 48
     },
     question_line3: {
       top: 256,
@@ -30,7 +30,7 @@ window.QuizConfig = {
       height: 30,
       fontSize: 22,
       lineHeight: 1,
-      maxChars: 42
+      maxChars: 48
     },
     answers: [
       { top: 295, left: 145, width: 560, height: 42, fontSize: 20 },
@@ -61,7 +61,7 @@ window.QuizConfig = {
       height: 38,
       fontSize: 23,
       lineHeight: 1.25,
-      maxChars: 42
+      maxChars: 48
     },
     question_line3: null,
     answers: [
@@ -76,14 +76,60 @@ window.QuizConfig = {
     panelHeight: 768
   },
   DEFAULT: {
-    panelWidth: 780,
-    panelHeight: 0,
-    padTop: 85, padRight: 105, padBottom: 65, padLeft: 105,
-    qMarginBottom: 20, qMinHeight: 60, qFontSize: 20,
+    name: "GameInfo_DEFAULT",
+    panelOffsetX: 0,
+    panelOffsetY: 46,
+    scale: 1.2,
+    panelWidth: 600,
+    panelHeight: 510,
+    padTop: 98,
+    padRight: 95,
+    padBottom: 39,
+    padLeft: 97,
+    qFontSize: 18,
+    qLineHeight: 1.35,
+    qMinHeight: 30,
+    qMarginBottom: 18,
+    qPaddingTopBottom: 35,
+    qPaddingLeftRight: 24,
     qWidth: "100%",
-    ansGap: 10, ansFontSize: 15,
-    btnMt0: 0, btnMt1: 0, btnMt2: 0, btnMt3: 0,
-    btnHeight: 0
+    ansGap: 8,
+    ansFontSize: 13,
+    btnPaddingTopBottom: 4,
+    btnPaddingLeftRight: 14,
+    btnHeight: 0,
+    btnMt0: 0,
+    btnMt1: 0,
+    btnMt2: 0,
+    btnMt3: 0
+  },
+  BET_DECISION: {
+    titleText: "TÉTES KÉRDÉS KÖVETKEZIK!",
+    bodyText: "Kockáztatod a csónakodon lévő hártyáidat egy Dupla vagy Semmi játékban?",
+    btnYesText: "Kockáztatok, Dupla vagy Semmi!",
+    btnNoText: "Kérem a sima kérdést (kockázat nélkül)",
+    titleFontSize: 20,
+    titleMarginBottom: 14,
+    bodyFontSize: 18,
+    bodyLineHeight: 1.45,
+    qColor: "#e0d4c2",
+    qPadV: 13,
+    qPadH: 20,
+    qMarginBottom: 13,
+    btnWidth: 100,
+    ansGap: 37,
+    btnFontSize: 16,
+    btnPadV: 6,
+    btnPadH: 20,
+    btnYesAlpha: 0.1,
+    btnNoAlpha: 0.1,
+    panelWidth: 600,
+    panelHeight: 502,
+    padTop: 96,
+    padRight: 95,
+    padBottom: 49,
+    padLeft: 94,
+    scale: 1.2
   }
 };
 
@@ -252,12 +298,15 @@ class QuizManager {
     const panel = document.getElementById('quiz-panel-box');
     if (!panel) return;
     const isZep = this.currentMode === 'TUTORZEP';
-    const baseW = isZep ? 831 : 780;
-    const baseH = isZep ? 768 : 650;
+    const cfg = isZep ? window.QuizConfig.TUTORZEP : window.QuizConfig.DEFAULT;
+    const baseW = isZep ? 831 : (cfg.panelWidth || 600);
+    const baseH = isZep ? 768 : (cfg.panelHeight || 510);
 
     const availW = window.innerWidth * 0.95;
-    const availH = window.innerHeight * 0.95;
-    const scale = Math.min(1.0, availW / baseW, availH / baseH);
+    const availH = isZep ? (window.innerHeight - 85) * 0.90 : window.innerHeight * 0.95;
+    const targetScale = isZep ? 1.0 : (cfg.scale || 1.0);
+    const autoScale = Math.min(1.0, availW / baseW, availH / baseH);
+    const scale = targetScale * autoScale;
 
     panel.style.transform = `scale(${scale})`;
     panel.style.transformOrigin = 'center center';
@@ -403,7 +452,22 @@ class QuizManager {
     const indices = [];
     for (let i = 0; i < numAnswers; i++) indices.push(i);
     indices.sort(() => Math.random() - 0.5);
-    this.currentShuffledOrder = indices;
+    let finalIndices = indices;
+    const baseId1 = this.currentBaseId || (this.currentQuestion && (this.currentQuestion.baseId || this.currentQuestion.uid));
+    if (baseId1 === 'TUTMHDEMQTU0OK0030' || baseId1 === 'TUTMHDEMQTU0OK0031') {
+      const ansArr = Array.isArray(this.currentQuestion.answers) ? this.currentQuestion.answers : [];
+      let lIdx = -1;
+      if (baseId1 === 'TUTMHDEMQTU0OK0030') {
+        lIdx = ansArr.findIndex(a => (a || '').includes('II.') || /(?:edward|eduárd|édouard|эдуард)/i.test(a || ''));
+      }
+      if (lIdx === -1) {
+        lIdx = ansArr.reduce((mI, a, i, arr) => (a || '').length > (arr[mI] || '').length ? i : mI, 0);
+      }
+      const rem = [0, 1, 2, 3].filter(i => i !== lIdx);
+      rem.sort(() => Math.random() - 0.5);
+      finalIndices = [rem[0], lIdx, rem[1], rem[2]];
+    }
+    this.currentShuffledOrder = finalIndices;
 
     // Rögzítés a sessionStorage-ba
     this.setSessionRecord(this.currentBaseId, {
@@ -444,6 +508,19 @@ class QuizManager {
         this.currentShuffledOrder = ind;
       }
     }
+    const baseId2 = this.currentBaseId || (this.currentQuestion && (this.currentQuestion.baseId || this.currentQuestion.uid));
+    if (baseId2 === 'TUTMHDEMQTU0OK0030' || baseId2 === 'TUTMHDEMQTU0OK0031') {
+      let lIdx = -1;
+      if (baseId2 === 'TUTMHDEMQTU0OK0030') {
+        lIdx = answers.findIndex(a => (a || '').includes('II.') || /(?:edward|eduárd|édouard|эдуард)/i.test(a || ''));
+      }
+      if (lIdx === -1) {
+        lIdx = answers.reduce((mI, a, i, arr) => (a || '').length > (arr[mI] || '').length ? i : mI, 0);
+      }
+      const rem = [0, 1, 2, 3].filter(i => i !== lIdx);
+      rem.sort(() => Math.random() - 0.5);
+      this.currentShuffledOrder = [rem[0], lIdx, rem[1], rem[2]];
+    }
     const indices = this.currentShuffledOrder;
 
     // Nyelv és font beállítások (Orosz nyelv esetén cirill-kompatibilis betűtípus)
@@ -465,10 +542,57 @@ class QuizManager {
         .replace(/\s+/g, ' ')
         .trim();
 
-      // 3. [LAYOUT PROTOKOLL]: Hossz szerinti elrendezés választás
-      // <= 50 karakter: TZQSvB (2 soros kiegyensúlyozott elrendezés)
-      // > 50 karakter: TZQSvA (3 soros rézívbe felhúzva)
-      const isLong = cleanQText.length > 50;
+      // 3. [TUTORIAL DETERMINISZTIKUS SORREND]: Szavak csomagolása és elrendezés választása
+      const words = cleanQText.split(' ').filter(w => w.length > 0);
+      let line1 = '', line2 = '', line3 = '';
+      let isLong = false;
+      let wIdx = 0;
+      while (wIdx < words.length) {
+        const candidate = line1 ? (line1 + ' ' + words[wIdx]) : words[wIdx];
+        if (!line1 || candidate.length <= 18) {
+          line1 = candidate;
+          wIdx++;
+        } else {
+          break;
+        }
+      }
+
+      const remWords = words.slice(wIdx);
+      const remLen = remWords.join(' ').length;
+
+      if (remLen <= 48) {
+        // Elfér a 2. sorban! 2 Soros Elrendezés (TZQSvB: 23px kérdés, 21px válaszok)
+        isLong = false;
+        line2 = remWords.join(' ');
+        line3 = '';
+      } else {
+        // Nem fér el egy sorban -> 3 Soros Elrendezés (TZQSvA: 22px kérdés, 20px válaszok)
+        isLong = true;
+        line1 = '';
+        wIdx = 0;
+        while (wIdx < words.length) {
+          const candidate = line1 ? (line1 + ' ' + words[wIdx]) : words[wIdx];
+          if (!line1 || candidate.length <= 16) {
+            line1 = candidate;
+            wIdx++;
+          } else {
+            break;
+          }
+        }
+        const longRemWords = words.slice(wIdx);
+        let l2Words = [];
+        for (let w of longRemWords) {
+          const cand = l2Words.concat([w]).join(' ');
+          if (l2Words.length === 0 || cand.length <= 48) {
+            l2Words.push(w);
+          } else {
+            break;
+          }
+        }
+        line2 = l2Words.join(' ');
+        line3 = longRemWords.slice(l2Words.length).join(' ');
+      }
+
       const activeSetup = isLong ? window.QuizConfig.TZQSvA : window.QuizConfig.TZQSvB;
 
       panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/airship_quiz_panel_clean.png') no-repeat center / 100% 100%";
@@ -519,57 +643,6 @@ class QuizManager {
       applyBoxStyle(qBox2, activeSetup.question_line2);
       applyBoxStyle(qBox3, activeSetup.question_line3);
 
-      // 4. [SETUP PROTOKOLL]: Szavak pontos csomagolása
-      const words = cleanQText.split(' ').filter(w => w.length > 0);
-      let line1 = '', line2 = '', line3 = '';
-
-      if (!isLong) {
-        let wIdx = 0;
-        const maxL1 = activeSetup.question_line1.maxChars || 18;
-        while (wIdx < words.length) {
-          const candidate = line1 ? (line1 + ' ' + words[wIdx]) : words[wIdx];
-          if (!line1 || candidate.length <= maxL1) {
-            line1 = candidate;
-            wIdx++;
-          } else {
-            break;
-          }
-        }
-        line2 = words.slice(wIdx).join(' ');
-        line3 = '';
-      } else {
-        let wIdx = 0;
-        const maxL1 = activeSetup.question_line1.maxChars || 16;
-        while (wIdx < words.length) {
-          const candidate = line1 ? (line1 + ' ' + words[wIdx]) : words[wIdx];
-          if (!line1 || candidate.length <= maxL1) {
-            line1 = candidate;
-            wIdx++;
-          } else {
-            break;
-          }
-        }
-        const remWords = words.slice(wIdx);
-        const remLen = remWords.join(' ').length;
-        if (remLen > 42) {
-          let l2Words = [];
-          for (let w of remWords) {
-            const cand = l2Words.concat([w]).join(' ');
-            if (l2Words.length === 0 || cand.length <= 42) {
-              l2Words.push(w);
-            } else {
-              break;
-            }
-          }
-          line2 = l2Words.join(' ');
-          line3 = remWords.slice(l2Words.length).join(' ');
-        } else {
-          const half = Math.ceil(remWords.length / 2);
-          line2 = remWords.slice(0, half).join(' ');
-          line3 = remWords.slice(half).join(' ');
-        }
-      }
-
       qBox1.innerText = line1;
       qBox2.innerText = line2;
       qBox3.innerText = line3;
@@ -590,13 +663,29 @@ class QuizManager {
 
         const rawAnsText = answers[actualAnsIdx] || '';
         const cleanAnsText = rawAnsText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-        btn.innerText = `${letters[displayPos]}) ${cleanAnsText}`;
+        const qBaseId = this.currentBaseId || (this.currentQuestion && (this.currentQuestion.baseId || this.currentQuestion.uid)) || '';
+        const isTwoLinePlank = ((qBaseId === 'TUTMHDEMQTU0OK0030' || qBaseId === 'TUTMHDEMQTU0OK0031') && displayPos === 1);
+        if (isTwoLinePlank) {
+          const w = cleanAnsText.split(' ');
+          const m = Math.ceil(w.length / 2);
+          btn.innerHTML = `${letters[displayPos]}) ${w.slice(0, m).join(' ')}<br>${w.slice(m).join(' ')}`;
+        } else {
+          btn.innerText = `${letters[displayPos]}) ${cleanAnsText}`;
+        }
 
         const ansCfg = activeSetup.answers[displayPos] || { top: 295, left: 145, width: 560, height: 42, fontSize: 20 };
 
-        let computedAnsFs = isRussian ? Math.max(16, ansCfg.fontSize - 3) : ansCfg.fontSize;
-        if (cleanAnsText.length > 40) computedAnsFs = Math.min(computedAnsFs, 17);
-        if (cleanAnsText.length > 50) computedAnsFs = Math.min(computedAnsFs, 15);
+        const qLang = this.getCurrentLang();
+        const FMAP = {
+          HU: { TUTMHDEMQTU0OK0030: 20 },
+          EN: { TUTMHDEMQTU0OK0031: 20, TUTMHDEMQTU0OK0037: 19, TUTMHDEMQTU0OK0030: 18 },
+          DE: { TUTMHDEMQTU0OK0032: 20, TUTMHDEMQTU0OK0037: 20, TUTMHDEMQTU0OK0027: 19, TUTMHDEMQTU0OK0029: 19, TUTMHDEMQTU0OK0022: 18, TUTMHDEMQTU0OK0030: 18, TUTMHDEMQTU0OK0031: 18, TUTMHDEMQTU0OK0033: 18 },
+          FR: { TUTMHDEMQTU0OK0030: 19, TUTMHDEMQTU0OK0029: 18, TUTMHDEMQTU0OK0031: 18, TUTMHDEMQTU0OK0033: 18 },
+          ES: { TUTMHDEMQTU0OK0037: 20, TUTMHDEMQTU0OK0029: 19, TUTMHDEMQTU0OK0030: 18 },
+          PL: { TUTMHDEMQTU0OK0030: 20, TUTMHDEMQTU0OK0032: 20 },
+          RU: { TUTMHDEMQTU0OK0030: 19, TUTMHDEMQTU0OK0029: 19, TUTMHDEMQTU0OK0031: 19 }
+        };
+        let computedAnsFs = (FMAP[qLang] && FMAP[qLang][qBaseId]) || (isRussian ? Math.max(16, ansCfg.fontSize - 3) : ansCfg.fontSize);
 
         btn.style.position = "absolute";
         btn.style.top = ansCfg.top + "px";
@@ -619,9 +708,9 @@ class QuizManager {
         btn.style.justifyContent = "center";
         btn.style.textAlign = "center";
         btn.style.cursor = "pointer";
-        btn.style.lineHeight = "1.2";
+        btn.style.lineHeight = isTwoLinePlank ? "1.05" : "1.2";
         btn.style.overflow = "hidden";
-        btn.style.whiteSpace = "nowrap";
+        btn.style.whiteSpace = isTwoLinePlank ? "normal" : "nowrap";
 
         btn.onmouseenter = () => { btn.style.color = "#ffffff"; };
         btn.onmouseleave = () => { btn.style.color = "#ffd700"; };
@@ -645,87 +734,107 @@ class QuizManager {
 
       const isStaked = !!(this.currentQuestion.isStaked || (this.currentQuestion.category === 'TRUE'));
 
-      // 🎲 1. TÉT KÉRDÉS AJÁNLAT (Dupla vagy Semmi)
+      // 1. TÉT KÉRDÉS AJÁNLAT (Dupla vagy Semmi)
       if (isStaked && !this._betDecisionMade) {
         panel.style.background = "url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Quiz_window_new_2-r.png') no-repeat center / 100% 100%";
-        const cfg = window.QuizConfig.DEFAULT;
+        const bCfg = window.QuizConfig.BET_DECISION || window.QuizConfig.DEFAULT;
         panel.style.position = "relative";
-        panel.style.width = cfg.panelWidth + "px";
-        panel.style.height = cfg.panelHeight ? (cfg.panelHeight + "px") : "auto";
-        panel.style.padding = `${cfg.padTop}px ${cfg.padRight}px ${cfg.padBottom}px ${cfg.padLeft}px`;
+        panel.style.width = (bCfg.panelWidth || 600) + "px";
+        panel.style.height = bCfg.panelHeight ? (bCfg.panelHeight + "px") : "auto";
+        panel.style.padding = `${bCfg.padTop}px ${bCfg.padRight}px ${bCfg.padBottom}px ${bCfg.padLeft}px`;
         panel.style.display = "flex";
         panel.style.flexDirection = "column";
 
-        const betPrompts = {
-          HU: "🎲 TÉTES KÉRDÉS KÖVETKEZIK!<br>Kockáztatod a csónakodon lévő hártyáidat egy Dupla vagy Semmi játékban?",
-          EN: "🎲 STAKED QUESTION AHEAD!<br>Do you want to risk your membranes in a Double or Nothing game?",
-          DE: "🎲 EINSATZ-FRAGE STEHT BEVOR!<br>Möchtest du deine Membranen für ein Alles-oder-Nichts riskieren?",
-          FR: "🎲 QUESTION À MISE EN JEU !<br>Veux-tu risquer tes membranes dans un Quitte ou Double ?",
-          ES: "🎲 ¡PREGUNTA CON APUESTA!<br>¿Quieres arriesgar tus membranas en un Doble o Nada?",
-          PL: "🎲 PYTANIE ZE STAWKĄ!<br>Czy chcesz zaryzykować swoje membrany w grze Wszystko albo Nic?",
-          RU: "🎲 ВОПРОС СО СТАВКОЙ!<br>Хочешь рискнуть мембранами в игре «Всё или ничего»?"
+        const betTitleMap = {
+          HU: "TÉTES KÉRDÉS KÖVETKEZIK!",
+          EN: "STAKED QUESTION AHEAD!",
+          DE: "EINSATZ-FRAGE STEHT BEVOR!",
+          FR: "QUESTION À MISE EN JEU !",
+          ES: "¡PREGUNTA CON APUESTA!",
+          PL: "PYTANIE ZE STAWKĄ!",
+          RU: "ВОПРОС СО СТАВКОЙ!"
+        };
+
+        const betBodyMap = {
+          HU: "Kockáztatod a csónakodon lévő hártyáidat egy Dupla vagy Semmi játékban?",
+          EN: "Do you want to risk your membranes in a Double or Nothing game?",
+          DE: "Möchtest du deine Membranen für ein Alles-oder-Nichts riskieren?",
+          FR: "Veux-tu risquer tes membranes dans un Quitte ou Double ?",
+          ES: "¿Quieres arriesgar tus membranas en un Doble o Nada?",
+          PL: "Czy chcesz zaryzykować swoje membrany w grze Wszystko albo Nic?",
+          RU: "Хочешь рискнуть мембранами в игре «Всё или ничего»?"
         };
 
         const btnYesTexts = {
-          HU: "🔥 Kockáztatok, Dupla vagy Semmi!",
-          EN: "🔥 Yes, Double or Nothing!",
-          DE: "🔥 Ja, Alles oder Nichts!",
-          FR: "🔥 Oui, Quitte ou Double !",
-          ES: "🔥 ¡Sí, Doble o Nada!",
-          PL: "🔥 Tak, Wszystko albo Nic!",
-          RU: "🔥 Да, «Всё или ничего»!"
+          HU: "Kockáztatok, Dupla vagy Semmi!",
+          EN: "Yes, Double or Nothing!",
+          DE: "Ja, Alles oder Nichts!",
+          FR: "Oui, Quitte ou Double !",
+          ES: "¡Sí, Doble o Nada!",
+          PL: "Tak, Wszystko albo Nic!",
+          RU: "Да, «Всё vagy ничего»!"
         };
 
         const btnNoTexts = {
-          HU: "🛡️ Kérem a sima kérdést (kockázat nélkül)",
-          EN: "🛡️ Regular question (no risk)",
-          DE: "🛡️ Normale Frage (ohne Risiko)",
-          FR: "🛡️ Question normale (sans risque)",
-          ES: "🛡️ Pregunta normal (sin riesgo)",
-          PL: "🛡️ Zwykłe pytanie (bez ryzyka)",
-          RU: "🛡️ Обычный вопрос (без риска)"
+          HU: "Kérem a sima kérdést (kockázat nélkül)",
+          EN: "Regular question (no risk)",
+          DE: "Normale Frage (ohne Risiko)",
+          FR: "Question normale (sans risque)",
+          ES: "Pregunta normal (sin riesgo)",
+          PL: "Zwykłe pytanie (bez ryzyka)",
+          RU: "Обычный вопрос (без риска)"
         };
 
-        const betPromptText = betPrompts[curLang] || betPrompts.HU;
-        const btnYesText = btnYesTexts[curLang] || btnYesTexts.HU;
-        const btnNoText = btnNoTexts[curLang] || btnNoTexts.HU;
+        const titleText = (curLang === 'HU' && bCfg.titleText) ? bCfg.titleText : (betTitleMap[curLang] || betTitleMap.HU);
+        const bodyText = (curLang === 'HU' && bCfg.bodyText) ? bCfg.bodyText : (betBodyMap[curLang] || betBodyMap.HU);
+        const btnYesText = (curLang === 'HU' && bCfg.btnYesText) ? bCfg.btnYesText : (btnYesTexts[curLang] || btnYesTexts.HU);
+        const btnNoText = (curLang === 'HU' && bCfg.btnNoText) ? bCfg.btnNoText : (btnNoTexts[curLang] || btnNoTexts.HU);
 
         qText.style.position = "static";
-        qText.style.color = "#ffd700";
-        qText.style.background = "rgba(35, 15, 5, 0.92)";
-        qText.style.border = "2px solid #ffd700";
-        qText.style.borderRadius = "8px";
-        qText.style.padding = "20px 25px";
+        qText.style.color = bCfg.qColor || "#e0d4c2";
+        qText.style.background = "transparent";
+        qText.style.border = "none";
+        qText.style.borderRadius = "0px";
+        qText.style.padding = `${bCfg.qPadV || 13}px ${bCfg.qPadH || 20}px`;
         qText.style.width = "100%";
         qText.style.boxSizing = "border-box";
         qText.style.fontFamily = baseFontFamily;
-        qText.style.fontSize = (isRussian ? "20px" : "22px");
         qText.style.fontWeight = "bold";
         qText.style.textAlign = "center";
-        qText.style.lineHeight = "1.4";
-        qText.style.marginBottom = "20px";
-        qText.innerHTML = betPromptText;
+        qText.style.marginBottom = `${bCfg.qMarginBottom || 13}px`;
+        qText.style.display = "flex";
+        qText.style.flexDirection = "column";
+        qText.style.alignItems = "center";
+
+        const titleFontSize = isRussian ? Math.max(14, (bCfg.titleFontSize || 20) - 2) : (bCfg.titleFontSize || 20);
+        const bodyFontSize = isRussian ? Math.max(13, (bCfg.bodyFontSize || 18) - 2) : (bCfg.bodyFontSize || 18);
+        const titleHtml = `<div style="font-size:${titleFontSize}px; color:${bCfg.qColor || '#e0d4c2'}; margin-bottom:${bCfg.titleMarginBottom || 14}px; line-height:1.2;">${titleText}</div>`;
+        const bodyHtml = `<div style="font-size:${bodyFontSize}px; color:${bCfg.qColor || '#e0d4c2'}; line-height:${bCfg.bodyLineHeight || 1.45};">${bodyText}</div>`;
+        qText.innerHTML = titleHtml + bodyHtml;
 
         ansContainer.innerHTML = '';
         ansContainer.style.position = "static";
         ansContainer.style.display = "flex";
         ansContainer.style.flexDirection = "column";
-        ansContainer.style.gap = "14px";
+        ansContainer.style.gap = `${bCfg.ansGap || 37}px`;
+        ansContainer.style.alignItems = "center";
+
+        const btnFontSize = isRussian ? Math.max(12, (bCfg.btnFontSize || 16) - 1) : (bCfg.btnFontSize || 16);
 
         const btnYes = document.createElement('button');
-        btnYes.className = 'quiz-ans-btn';
+        btnYes.className = 'eog-std-btn';
         btnYes.innerHTML = btnYesText;
-        btnYes.style.width = "100%";
-        btnYes.style.padding = "14px 20px";
-        btnYes.style.background = "linear-gradient(135deg, rgba(80, 40, 10, 0.95), rgba(40, 20, 5, 0.95))";
-        btnYes.style.border = "2px solid #ffd700";
-        btnYes.style.color = "#ffffff";
-        btnYes.style.fontFamily = baseFontFamily;
-        btnYes.style.fontSize = (isRussian ? "17px" : "19px");
+        btnYes.style.width = `${bCfg.btnWidth || 100}%`;
+        btnYes.style.padding = `${bCfg.btnPadV || 6}px ${bCfg.btnPadH || 20}px`;
+        btnYes.style.background = (bCfg.btnYesAlpha > 0) ? `rgba(40, 20, 10, ${bCfg.btnYesAlpha})` : "transparent";
+        btnYes.style.border = "none";
+        btnYes.style.color = bCfg.qColor || "#e0d4c2";
+        btnYes.style.fontFamily = "'BriskB', 'Courier New', monospace";
+        btnYes.style.fontSize = `${btnFontSize}px`;
         btnYes.style.fontWeight = "bold";
-        btnYes.style.borderRadius = "6px";
+        btnYes.style.borderRadius = "0px";
         btnYes.style.cursor = "pointer";
-        btnYes.style.boxShadow = "0 0 15px rgba(255, 215, 0, 0.4)";
+        btnYes.style.boxShadow = "none";
         btnYes.onclick = (e) => {
           e.stopPropagation();
           window.isDoubleOrNothingActive = true;
@@ -734,18 +843,19 @@ class QuizManager {
         };
 
         const btnNo = document.createElement('button');
-        btnNo.className = 'quiz-ans-btn';
+        btnNo.className = 'eog-std-btn';
         btnNo.innerHTML = btnNoText;
-        btnNo.style.width = "100%";
-        btnNo.style.padding = "14px 20px";
-        btnNo.style.background = "rgba(20, 10, 5, 0.88)";
-        btnNo.style.border = "2px solid #8b6b4a";
-        btnNo.style.color = "#ffeedd";
-        btnNo.style.fontFamily = baseFontFamily;
-        btnNo.style.fontSize = (isRussian ? "16px" : "18px");
+        btnNo.style.width = `${bCfg.btnWidth || 100}%`;
+        btnNo.style.padding = `${bCfg.btnPadV || 6}px ${bCfg.btnPadH || 20}px`;
+        btnNo.style.background = (bCfg.btnNoAlpha > 0) ? `rgba(20, 10, 5, ${bCfg.btnNoAlpha})` : "transparent";
+        btnNo.style.border = "none";
+        btnNo.style.color = bCfg.qColor || "#e0d4c2";
+        btnNo.style.fontFamily = "'BriskB', 'Courier New', monospace";
+        btnNo.style.fontSize = `${btnFontSize}px`;
         btnNo.style.fontWeight = "bold";
-        btnNo.style.borderRadius = "6px";
+        btnNo.style.borderRadius = "0px";
         btnNo.style.cursor = "pointer";
+        btnNo.style.boxShadow = "none";
         btnNo.onclick = (e) => {
           e.stopPropagation();
           window.isDoubleOrNothingActive = false;
@@ -822,8 +932,8 @@ class QuizManager {
         btn.style.border = "none";
         btn.style.color = "#ffeedd";
         btn.style.fontFamily = baseFontFamily;
-        btn.style.fontSize = (isRussian ? "15px" : "16px");
-        btn.style.padding = "12px 18px";
+        btn.style.fontSize = isRussian ? Math.max(12, (cfg.ansFontSize || 15) - 1) + "px" : (cfg.ansFontSize || 15) + "px";
+        btn.style.padding = `${cfg.btnPaddingTopBottom || 12}px ${cfg.btnPaddingLeftRight || 18}px`;
         if (displayPos === 2) btn.style.marginTop = "4px";
         if (displayPos === 3) btn.style.marginTop = "7px";
         btn.style.cursor = "pointer";
@@ -844,6 +954,7 @@ class QuizManager {
 
     this.updateScale();
     window.isCutscenePlaying = true;
+    overlay.style.paddingTop = isZep ? '85px' : '0px';
     overlay.style.display = 'flex';
     overlay.style.visibility = 'visible';
     overlay.style.opacity = '1';
@@ -876,6 +987,9 @@ class QuizManager {
 
   // ─── ⚖️ [ANSWER PROTOKOLL]: VÁLASZ KIÉRTÉKELÉSE ÉS EREDMÉNYKEZELÉS ───
   handleAnswer(selectedIdx) {
+    // Kvízfelület és szövegdobozok azonnali, tiszta bezárása
+    this.closeQuizUI();
+
     const isCorrect = (selectedIdx === this.currentCorrectIndex);
     const qId = this.currentBaseId;
     const wasDoubleOrNothing = !!window.isDoubleOrNothingActive;
@@ -900,8 +1014,39 @@ class QuizManager {
     };
 
     if (this.currentMode === 'TUTORZEP') {
+      const curL = (this.getCurrentLang() || 'HU').toLowerCase();
+      const tutorzepGoodMsgs = {
+        hu: 'Helyes válasz. A rakomány biztonságban.',
+        en: 'Correct answer. Cargo is secure.',
+        de: 'Richtige Antwort. Die Ladung ist in Sicherheit.',
+        fr: 'Bonne réponse. La cargaison est en sécurité.',
+        es: 'Respuesta correcta. La carga está a salvo.',
+        pl: 'Prawidłowa odpowiedź. Ładunek jest bezpieczny.',
+        ru: 'Верный ответ. Груз в безопасности.'
+      };
+
+      const tutorzepRobbedMsgs = {
+        hu: 'Hibás válasz. A léghajó legénysége elkobozta a fedélzeten lévő hártyákat.',
+        en: 'Wrong answer. The airship crew confiscated all membranes from your boat.',
+        de: 'Falsche Antwort. Die Luftschiff-Besatzung hat alle Membranen beschlagnahmt.',
+        fr: "Mauvaise réponse. L'équipage du dirigeable a confisqué toutes les membranes.",
+        es: 'Respuesta incorrecta. La tripulación del dirigible confiscó todas las membranas.',
+        pl: 'Błędna odpowiedź. Załoga sterowca skonfiskowała wszystkie membrany z łodzi.',
+        ru: 'Неверный ответ. Команда дирижабля конфисковала все мембраны с лодки.'
+      };
+
+      const tutorzepEmptyMsgs = {
+        hu: 'Hibás válasz. A további konfliktusok elkerülése miatt visszavonulunk a mólóhoz.',
+        en: 'Wrong answer. Retreating to the pier to avoid further conflict.',
+        de: 'Falsche Antwort. Rückzug zum Pier, um weitere Konflikte zu vermeiden.',
+        fr: "Mauvaise réponse. Repli vers le ponton pour éviter d'autres conflits.",
+        es: 'Respuesta incorrecta. Retirada al muelle para evitar más conflictos.',
+        pl: 'Błędna odpowiedź. Odwrót do molo, aby uniknąć dalszego konfliktu.',
+        ru: 'Неверный ответ. Отступаем к пирсу, чтобы избежать дальнейшего конфликта.'
+      };
+
       if (isCorrect) {
-        const msg = (window.gamePopups && window.gamePopups.airship_good) || "Szép volt. Folytasd a melót!";
+        const msg = tutorzepGoodMsgs[curL] || tutorzepGoodMsgs.hu;
         if (typeof window.showPopUp === 'function') {
           window.showPopUp(msg, finishQuiz);
         } else {
@@ -910,7 +1055,7 @@ class QuizManager {
       } else {
         if (typeof window.carriedMembranes === 'number' && window.carriedMembranes > 0) {
           window.carriedMembranes = 0;
-          const msg = (window.gamePopups && window.gamePopups.airship_bad) || "Ezek most kiraboltak.\nMost mehetünk ki tovább halászni.";
+          const msg = tutorzepRobbedMsgs[curL] || tutorzepRobbedMsgs.hu;
           if (typeof window.showPopUp === 'function') {
             window.showPopUp(msg, finishQuiz);
           } else {
@@ -929,14 +1074,9 @@ class QuizManager {
             finishQuiz();
           };
 
-          const emptyText = (window.gameMonologues && window.gameMonologues.airship_bad_empty) ||
-            (window.gamePopups && window.gamePopups.airship_bad_empty) ||
-            "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket.";
-
-          if (typeof window.showInGameMonolog === 'function') {
-            window.showInGameMonolog('airship_bad_empty', onMonologClosed);
-          } else if (typeof window.showPopUp === 'function') {
-            window.showPopUp(emptyText, onMonologClosed);
+          const msg = tutorzepEmptyMsgs[curL] || tutorzepEmptyMsgs.hu;
+          if (typeof window.showPopUp === 'function') {
+            window.showPopUp(msg, onMonologClosed);
           } else {
             onMonologClosed();
           }
@@ -947,28 +1087,27 @@ class QuizManager {
       const curL = (this.getCurrentLang() || 'HU').toLowerCase();
 
       const doubleWinMsgs = {
-        hu: `⭐ Kiemelt siker! Megdupláztad a hártyáidat!\nÚj hártyaszám a csónakon: ${(window.carriedMembranes || 1) * 2} db.`,
-        en: `⭐ Great success! You doubled your membranes!\nNew count on boat: ${(window.carriedMembranes || 1) * 2}.`,
-        de: `⭐ Großer Erfolg! Du hast deine Membranen verdoppelt!\nNeue Anzahl an Bord: ${(window.carriedMembranes || 1) * 2}.`,
-        fr: `⭐ Grand succès ! Tu as doublé tes membranes !\nNouveau nombre à bord : ${(window.carriedMembranes || 1) * 2}.`,
-        es: `⭐ ¡Gran éxito! ¡Has duplicado tus membranas!\nNueva cantidad a bordo: ${(window.carriedMembranes || 1) * 2}.`,
-        pl: `⭐ Wielki sukces! Podwoiłeś swoje membrany!\nNowa liczba na łodzi: ${(window.carriedMembranes || 1) * 2}.`,
-        ru: `⭐ Отличный успех! Ты удвоил свои мембраны!\nНовое количество на лодке: ${(window.carriedMembranes || 1) * 2}.`
+        hu: "Telitalálat! A Dupla vagy Semmi tét bevált – a rakomány megduplázva.",
+        en: "Bullseye! The Double or Nothing gamble paid off – cargo doubled.",
+        de: "Volltreffer! Doppelt oder Nichts hat sich gelohnt – Ladung verdoppelt.",
+        fr: "Dans le mille ! Le coup Quitte ou Double a réussi – cargaison doublée.",
+        es: "¡Pleno! La apuesta Doble o Nada funcionó – carga duplicada.",
+        pl: "Strzał w dziesiątkę! Ryzyko się opłaciło – ładunek podwojony.",
+        ru: "В яблочко! Ставка «Всё или ничего» сыграла – груз удвоен."
       };
 
       const doubleLoseMsgs = {
-        hu: `Sajnos nem talált!\nElveszítetted a csónakodon lévő hártyákat.`,
-        en: `Unfortunately incorrect!\nYou lost all membranes on your boat.`,
-        de: `Leider falsch!\nDu hast deine Membranen an Bord verloren.`,
-        fr: `Malheureusement incorrect !\nTu as perdu les membranes à bord.`,
-        es: `¡Lamentablemente incorrecto!\nHas perdido todas las membranas de tu barco.`,
-        pl: `Niestety błędna odpowiedź!\nStraciłeś membrany ze swojej łodzi.`,
-        ru: `К сожалению, неверно!\nТы потерял все мембраны на своей лодке.`
+        hu: "Hibás válasz. A csónakon lévő hártyák a vízbe vesztek.",
+        en: "Wrong answer. The membranes on your boat were lost to the sea.",
+        de: "Falsche Antwort. Die Membranen auf dem Boot gingen im Meer verloren.",
+        fr: "Mauvaise réponse. Les membranes du bateau sont perdues en mer.",
+        es: "Respuesta incorrecta. Las membranas del barco se perdieron en el mar.",
+        pl: "Błędna odpowiedź. Membrany z łodzi przepadły w toni.",
+        ru: "Неверный ответ. Мембраны с лодки канули в пучину."
       };
 
       if (isCorrect) {
         if (wasDoubleOrNothing) {
-          window.carriedMembranes = (window.carriedMembranes || 1) * 2;
           const msg = doubleWinMsgs[curL] || doubleWinMsgs.hu;
           if (typeof window.showPopUp === 'function') {
             window.showPopUp(msg, finishQuiz);
@@ -976,8 +1115,14 @@ class QuizManager {
             finishQuiz();
           }
         } else {
-          window.carriedMembranes = (window.carriedMembranes || 0) + 1;
-          finishQuiz();
+          const goodMsg = (typeof window.getMembraneGoodText === 'function')
+            ? window.getMembraneGoodText()
+            : "Helyes válasz! Sikeres hártyabegyűjtés (+1 a fedélzeten).";
+          if (typeof window.showPopUp === 'function') {
+            window.showPopUp(goodMsg, finishQuiz);
+          } else {
+            finishQuiz();
+          }
         }
       } else {
         if (wasDoubleOrNothing) {
@@ -989,12 +1134,7 @@ class QuizManager {
             finishQuiz();
           }
         } else {
-          const msg = (window.gamePopups && window.gamePopups.membrane_bad) || "Sajnos a válasz helytelen, ez a hártya most elúszott!";
-          if (typeof window.showPopUp === 'function') {
-            window.showPopUp(msg, finishQuiz);
-          } else {
-            finishQuiz();
-          }
+          finishQuiz();
         }
       }
       if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
@@ -1066,7 +1206,7 @@ class QuizManager {
 
       <div style="margin-top: 10px; display: flex; gap: 6px;">
         <button id="qve-copy-btn" style="flex: 1; padding: 6px; background: #225522; color: #fff; border: 1px solid #44aa44; border-radius: 4px; cursor: pointer; font-weight: bold;">📋 Másolás Vágólapra</button>
-        <button id="qve-test-btn" style="padding: 6px 10px; background: #223366; color: #fff; border: 1px solid #4466aa; border-radius: 4px; cursor: pointer;">🎲 Új Kérdés</button>
+        <button id="qve-test-btn" style="padding: 6px 10px; background: #223366; color: #fff; border: 1px solid #4466aa; border-radius: 4px; cursor: pointer;">Új Kérdés</button>
       </div>
     `;
 

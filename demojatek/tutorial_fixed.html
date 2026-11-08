@@ -46,6 +46,7 @@
     }
   
 /* ─── END-OF-GAME (EoG) ZÁRÓ PANELEK PONTOS ILLESZTÉSE ─── */
+#exit-confirm-overlay .zozo-monolog-box-std,
 #eog-boat-naming-overlay .zozo-monolog-box-std,
 #eog-confirm-overlay-1 .zozo-monolog-box-std,
 #eog-confirm-overlay-2 .zozo-monolog-box-std,
@@ -88,7 +89,7 @@
   filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
 }
 
-#eog-summary-overlay .zozo-monolog-box-std {
+#eog-summary-overlay .zozo-monolog-box-std, #mh-intro-overlay .zozo-monolog-box-std {
   position: fixed !important;
   left: 50% !important;
   top: 50% !important;
@@ -191,16 +192,16 @@
 
     <!-- KILÉPÉS MEGERŐSÍTŐ ABLAK -->
     <div id="exit-confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
-      <div class="zozo-monolog-box-std" style="position: relative; left: auto; top: auto; width: 950px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 55px 190px 45px 190px; box-sizing: border-box; transform: scale(1.1); text-align: center;">
-        <div style="font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 25px; font-weight: bold; color: #1a1a1a; margin-bottom: 35px; line-height: 1.4;">
-          Ha most kilépsz, elvesznek a hártyáid.<br>Biztosan kilépsz?
+      <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 380px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+        <div id="exit-confirm-msg" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 26px; font-weight: bold; color: #1a1a1a; margin-top: 45px; line-height: 1.35; width: 100%;">
+          Ha most kilépsz, elveszíted a hajón levő hártyáidat.<br>Biztosan kilépsz?
         </div>
-        <div style="display: flex; gap: 40px; width: 100%; justify-content: center;">
-          <button id="btn-exit-yes" style="padding: 8px 18px; font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; cursor: pointer; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); color: #1a1a1a; border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; transition: transform 0.15s, background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.18)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(0,0,0,0.08)'; this.style.transform='scale(1.0)'">
-            Vesszenek a hártyák!
+        <div style="display: flex; gap: 30px; width: 100%; justify-content: center; margin-bottom: 50px;">
+          <button id="btn-exit-yes" class="eog-std-btn" style="min-width: 170px; font-family: 'Briskb', monospace; font-weight: bold; font-size: 19px; cursor: pointer;">
+            Vesszenek a hártyák
           </button>
-          <button id="btn-exit-no" style="padding: 8px 18px; font-family: 'BriskB', 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; cursor: pointer; background: rgba(0,0,0,0.08); backdrop-filter: blur(2px); color: #1a1a1a; border: 1px solid rgba(0,0,0,0.3); border-radius: 6px; transition: transform 0.15s, background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.18)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(0,0,0,0.08)'; this.style.transform='scale(1.0)'">
-            Folytatom a halászatot
+          <button id="btn-exit-no" class="eog-std-btn" style="min-width: 170px; font-family: 'Briskb', monospace; font-weight: bold; font-size: 19px; cursor: pointer;">
+            Tovább halászok
           </button>
         </div>
       </div>
@@ -369,6 +370,23 @@
     </div>
   </div>
 
+  <!-- 5/E. MH Indító Tájékoztató Panel (Zozó lelépett & Holzkopf mester) -->
+  <div id="mh-intro-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="cursor: pointer;">
+      <div id="mh-intro-text" style="font-family: 'Briskb', 'Courier New', monospace !important; font-size: 22px !important; font-weight: bold !important; color: #1a1a1a !important; line-height: 1.6 !important; white-space: pre-line !important; width: 100% !important; margin: 0 !important; min-height: 220px !important; text-align: center !important;">Mivel Zozó lelépett, mostantól nincs aki megjavítsa a csónakot.&#10;&#10;Ha 2 alá csökken a csónak életereje, akkor Holzkopf mester elvontatja Hebokba.&#10;&#10;A javításért fizetned kell.</div>
+      <div style="width: 100% !important; display: flex !important; justify-content: center !important; margin-top: 10px !important; margin-bottom: 20px !important;">
+        <button id="mh-btn-intro-close" class="eog-std-btn" style="min-width: 200px !important; font-size: 19px !important; padding: 12px 28px !important; font-family: 'Briskb', monospace !important; font-weight: bold !important; margin-bottom: 20px !important;">Tovább</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5/F. Holzkopf Mester Elvontatás Vészpanel (HP < 2) -->
+  <div id="mh-tow-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 999999; align-items: center; justify-content: center; pointer-events: auto;">
+    <div class="zozo-monolog-box-std" style="position: fixed; left: 50%; top: 50%; width: 800px; min-height: 380px; padding: 65px 170px 50px 170px; box-sizing: border-box; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
+      <div id="mh-tow-text" style="font-family: 'Briskb', 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #1a1a1a; line-height: 1.35; width: 100%;">A csónak nem bír ki még egy ütközést.<br><br>Holzkopf mester most elvontat Hebokba.</div>
+    </div>
+  </div>
+
   <!-- 5/D. Hebok Térkép Utazás Videó Overlay -->
   <div id="hebok-departure-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000000; align-items: center; justify-content: center; cursor: pointer;">
     <video id="hebok-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/terkeputazas01.mp4"></video>
@@ -409,6 +427,7 @@
 
   </div>
 </div>
+</div>
  <!-- FEJLESZTŐI TOOLBOX (KIZÁRÓLAG LOKÁLIS KÖRNYEZETBEN: localhost / 127.0.0.1) -->
   <script>
     (function() {
@@ -444,7 +463,7 @@
     })();
   </script>
   <script src="quiz_manager.js?v=20261107_0811"></script>
-  <script type="module" src="script.js?v=20261107_1042"></script>
+  <script type="module" src="script.js?v=1794130030"></script>
 </body>
 
 </html>

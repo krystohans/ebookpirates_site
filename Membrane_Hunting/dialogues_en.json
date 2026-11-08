@@ -14,7 +14,7 @@
     "6": "For eleven Pirate Credits, of course. Nothing is free around here.",
     "7": "These are just the basic Membranes. Beyond the bay, out by the reefs, you'll find colored ones too. Blue, red, green... each a different genre.",
     "8": "Only old sea dogs like me make it that far. And the distant islands... well, never mind. That's not on your level yet.",
-    "9": "Damn it... Sky Pirates! WHAT ARE YOU STARING AT? COME ON! Back to the port!",
+    "9": "The Coast Guard airship is conducting an inspection.",
     "11": "Now, let me explain how life works around here, \nsince you seem completely clueless about it.",
     "12": "Only two things matter: Pirate Credits and Talents. You get one Credit a day when logging in. That's just pocket change.",
     "13": "The Scrollmaster gives you one for thirty Membranes too. But that's pennies.",
@@ -47,7 +47,7 @@
     "new_membrane": "You've collected another membrane! \nGet back to port!",
     "airship_good": "Nice job. Keep up the work!",
     "airship_bad": "They just robbed us. \nNow we have to go back out to fish for more.",
-    "membrane_good": "Scooped this one up!",
+    "membrane_good": "⚓ Correct answer! Membrane secured (+1 on board).",
     "membrane_bad": "This membrane just drifted away!",
     "beach": "Don't run aground on the shore!",
     "out_of_range": "We can't head out to the open sea in this wreck.",
@@ -59,7 +59,8 @@
     "boat_fixing": "I patched it up this time, but be more careful!",
     "boat_lowHP": "We won't survive another crash. \nGet the boat back!",
     "boat_totalcar": "You sank. You're no sailor.",
-    "airship_bad_empty": "We'd better vanish from their sight right now, \nbefore they toss us into the sea."
+    "airship_bad_empty": "We'd better vanish from their sight right now, \nbefore they toss us into the sea.",
+    "9": "The Coast Guard airship is conducting an inspection."
   },
   "eogMonologues": {
     "pointA": "Hey, Landlubber! The water is suspiciously empty...\nLet's check out what's happening at the mouth of the bay!",

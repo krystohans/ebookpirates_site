@@ -93,6 +93,11 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
         } else if (event.data.action === 'navigate_to_page') {
             if (typeof loadPage === 'function') {
                 loadPage(event.data.page || 'kikoto_oldal');
+                if (event.data.auto_workshop) {
+                    setTimeout(function() {
+                        loadPage('hajomuhely_oldal');
+                    }, 3000);
+                }
             }
         } else if (event.data.action === 'start_hartyahalaszat') {
             console.log('🎣 Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)...');
@@ -519,11 +524,11 @@ function initializeApp(user) {
         window.pendingMarketingData = null;
     } else {
         // Normál irányítás
-        if (user.startPage) {
-            loadPage(user.startPage); // A backend mondja meg (tutorial vagy jogosult)
-        } else {
-            // Fallback: ha a backend valamiért nem küld startPage-et
-            loadPage('tutorial_oldal');
+        var urlParams = new URLSearchParams(window.location.search);
+        var targetPage = (urlParams.get('page') && window.userTutorialCompleted !== false) ? urlParams.get('page') : (user.startPage || 'kikoto_oldal');
+        loadPage(targetPage);
+        if (urlParams.get('auto_workshop') === '1') {
+            setTimeout(function () { loadPage('hajomuhely_oldal'); }, 3000);
         }
     }
 }
@@ -1222,7 +1227,7 @@ function runTutorialScript() {
             return;
         }
 
-        var unityUrl = 'demojatek/MainMenuTutorial.html';
+        var unityUrl = 'demojatek/tutorial_fixed.html';
         var mode = (flow && flow.tutorialCompleted) ? 'completed' : 'tutorial';
         var isLoadParam = (flow && flow.isLoad) ? '&load=1' : '';
         unityTargetUrl = unityUrl + '?mode=' + mode + '&new=1' + isLoadParam;

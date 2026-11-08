@@ -14,7 +14,7 @@
     "6": "Tizenegy Kalózkreditért, persze. Itt semmi sincs ingyen.",
     "7": "Ezek csak az alap Hártyák. Az öblön túl, a zátonyoknál már színeseket is találsz. Kék, vörös, zöld... mind más zsáner.",
     "8": "De oda csak olyan vén tengeri medvék jutnak ki, mint én. A távoli szigeteken meg... na mindegy. Az még nem a te szinted.",
-    "9": "A fene... a Légi Kalózok.\nMIT BÁMULSZ? MENEKÜLJÜNK! Vissza a kikötőbe!",
+    "9": "A parti őrség léghajója ellenőrzést hajt végre.",
     "11": "Most pedig elmagyarázom, hogy működik itt az élet, ha már ennyire hülye vagy hozzá.",
     "12": "Csak két dolog számít: a Kalózkreditek és a Talentumok. Kreditet naponta kaphatsz, ha belépsz. Egyet. De az csak aprópénz.",
     "13": "A Tekercsmester is ad egyet harminc Hártyáért. \nDe az aprópénz.",
@@ -47,7 +47,7 @@
     "new_membrane": "Újabb hártyát gyűjtöttél be! \nNyomás vissza a kikötőbe!",
     "airship_good": "Szép volt. Folytasd a melót!",
     "airship_bad": "Ezek most kiraboltak. \nMost mehetünk ki tovább halászni.",
-    "membrane_good": "Ezt felszedtük",
+    "membrane_good": "⚓ Helyes válasz! Sikeres hártyabegyűjtés (+1 a fedélzeten).",
     "membrane_bad": "Ez a hártya most elúszott!",
     "beach": "A partra nem kéne felfutni!",
     "out_of_range": "Ezzel a ronccsal nem mehetünk ki a nyílt tengerre.",
@@ -59,7 +59,8 @@
     "boat_fixing": "Ezt most megjavítottam, de vigyázz jobban!",
     "boat_lowHP": "Még egy ütközést nem élünk túl.\nVidd vissza a csónakot!",
     "boat_totalcar": "Elsüllyedtél. Belőled nem lesz hajós.",
-    "airship_bad_empty": "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket."
+    "airship_bad_empty": "Most jobb lesz, ha eltűnünk a szemük elől,\nmielőtt a tengerbe hajítanak minket.",
+    "9": "A parti őrség léghajója ellenőrzést hajt végre."
   },
   "eogMonologues": {
     "pointA": "Te, Patkány! Gyanúsan üres a víz...\nNézzük meg, hogy mi a helyzet az öböl szájánál!",

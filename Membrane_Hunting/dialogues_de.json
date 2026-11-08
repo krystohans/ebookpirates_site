@@ -14,7 +14,7 @@
     "6": "Für elf Piratenkredite natürlich. Hier gibt es nichts umsonst.",
     "7": "Das sind nur die einfachen Membranen. Jenseits der Bucht bei den Riffen findest du auch farbige. Blau, rot, grün... jedes eine andere Gattung.",
     "8": "Aber dorthin schaffen es nur alte Seebären wie ich.\nUnd die fernen Inseln... na egal. Das ist noch nicht deine Liga.",
-    "9": "Verdammt... Luftpiraten! WAS GLOTZT DU SO? SCHNELL! Zurück in den Hafen!",
+    "9": "Das Luftschiff der Küstenwache führt eine Kontrolle durch.",
     "11": "Jetzt erklär ich dir erst mal, wie das Leben hier läuft, wo du dich schon so dämlich anstellst.",
     "12": "Nur zwei Dinge zählen: Piratenkredite und Talente.\nEinen Kredit gibt es täglich fürs Einloggen. Einen einzigen. Aber das ist nur Taschengeld.",
     "13": "Der Schriftrollenmeister gibt dir auch einen für dreißig Membranen. Aber das sind Peanuts.",
@@ -47,7 +47,7 @@
     "new_membrane": "Du hast eine weitere Membran gesammelt!\nAb zurück in den Hafen!",
     "airship_good": "Saubere Arbeit. Weiter so!",
     "airship_bad": "Die haben uns gerade ausgeraubt.\nJetzt können wir wieder rausfahren und mehr fischen.",
-    "membrane_good": "Die haben wir eingesackt!",
+    "membrane_good": "⚓ Richtige Antwort! Membran geborgen (+1 an Bord).",
     "membrane_bad": "Diese Membran ist gerade abgetrieben!",
     "beach": "Auf den Strand sollten wir lieber nicht auflaufen!",
     "out_of_range": "Mit diesem Wrack können wir uns nicht aufs offene Meer wagen.",
@@ -59,7 +59,8 @@
     "boat_fixing": "Ich hab's diesmal geflickt, aber pass besser auf!",
     "boat_lowHP": "Einen weiteren Aufprall überstehen wir nicht.\nBring das Boot zurück!",
     "boat_totalcar": "Du bist gesunken. Aus dir wird kein Seemann.",
-    "airship_bad_empty": "Verschwinden wir lieber schleunigst aus ihren Augen,\nbevor sie uns ins Meer werfen."
+    "airship_bad_empty": "Verschwinden wir lieber schleunigst aus ihren Augen,\nbevor sie uns ins Meer werfen.",
+    "9": "Das Luftschiff der Küstenwache führt eine Kontrolle durch."
   },
   "eogMonologues": {
     "pointA": "He, Landratte! Das Wasser ist verdächtig leer...\nSehen wir mal nach, was an der Buchtmündung los ist!",

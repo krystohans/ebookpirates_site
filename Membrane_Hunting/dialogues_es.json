@@ -9,7 +9,7 @@
     "new_membrane": "¡Has recogido otra membrana!\n¡Rumbo de vuelta al puerto!",
     "airship_good": "Bien hecho. ¡Sigue con la faena!",
     "airship_bad": "Nos acaban de saquear.\nAhora tendremos que volver a salir a faenar.",
-    "membrane_good": "¡Esta ya es nuestra!",
+    "membrane_good": "⚓ ¡Respuesta correcta! Membrana recogida (+1 a bordo).",
     "membrane_bad": "¡Esta membrana acaba de escapar a la deriva!",
     "beach": "¡No deberíamos encallar en la orilla!",
     "out_of_range": "Con este cascarón no podemos aventurarnos a mar abierto.",
@@ -21,7 +21,8 @@
     "boat_fixing": "Lo he remendado por esta vez, ¡pero ten más cuidado!",
     "boat_lowHP": "No sobreviviremos a otro choque.\n¡Regresa el barco a puerto!",
     "boat_totalcar": "Te has ido a pique. De ti no saldrá un marinero.",
-    "airship_bad_empty": "Más vale que nos esfumemos de su vista,\nantes de que nos arrojen al mar."
+    "airship_bad_empty": "Más vale que nos esfumemos de su vista,\nantes de que nos arrojen al mar.",
+    "9": "El dirigible de la guardia costera está realizando una inspección."
   },
   "eogMonologues": {
     "pointA": "¡Eh, grumete! El agua está sospechosamente vacía...\n¡Echemos un vistazo a ver qué ocurre en la boca de la bahía!",
@@ -37,7 +38,7 @@
     "6": "Por once Créditos Pirata, desde luego. Aquí nada es de balde.",
     "7": "Estas son solo las membranas ordinarias. Más allá de la bahía, en los arrecifes, las encontrarás de colores. Azul, roja, verde... cada una para un género literario distinto.",
     "8": "Pero allí solo nos aventuramos viejos lobos de mar como yo. Y las islas remotas... bueno, da igual. Aún no estás a ese nivel.",
-    "9": "Maldición... ¡Piratas del Aire! ¿A QUÉ TE QUEDAS MIRANDO? ¡HUYAMOS! ¡De vuelta al puerto!",
+    "9": "El dirigible de la guardia costera está realizando una inspección.",
     "11": "Ahora déjame explicarte cómo funciona la vida por estos lares, ya que pareces no tener ni la menor idea de nada.",
     "12": "Solo dos cosas importan: Créditos Pirata y Talentos.\nRecibes un Crédito al día por conectarte. Uno solo. Y eso no es más que calderilla.",
     "13": "El Maestro de Pergaminos te da uno por treinta membranas. Pero son cuatro perras.",

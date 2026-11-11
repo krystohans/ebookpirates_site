@@ -355,7 +355,7 @@
 
     // @calledBy: X gomb a fejlécben
 // === [#HEX:D.06.15.00] START | name: returnToHarbor | lines: 8 | action: 'navigate_to_page' ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:D.06.1E.00] | @calledBy: none
+// @calls: [#HEX:D.06.1E.00], [#HEX:F.04.2C1.00] | @calledBy: none
     function returnToHarbor() {
       stopAccSpeech();
       if (window.parent && window.parent !== window) {
@@ -430,7 +430,7 @@
 
     // @calledBy: applyMenuLanguage, openAccessibilityTutorial
 // === [#HEX:D.06.17.00] START | name: applyAccTutorialLanguage | lines: 66 ===
-// @calls: [#HEX:D.06.16.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.06.19.00], [#HEX:D.06.23.00]
+// @calls: [#HEX:F.04.13.00], [#HEX:D.06.16.00] | @calledBy: [#HEX:D.06.19.00], [#HEX:D.06.23.00]
     function applyAccTutorialLanguage(lang) {
       const t = getAccTranslations(lang);
       if (!t) {
@@ -511,7 +511,7 @@
 
     // @calledBy: DOMContentLoaded, changeLanguage
 // === [#HEX:D.06.19.00] START | name: applyMenuLanguage | lines: 29 ===
-// @calls: [#HEX:D.06.1D.00], [#HEX:D.06.17.00] | @calledBy: [#HEX:D.06.1A.00]
+// @calls: [#HEX:D.06.17.00], [#HEX:D.06.1D.00] | @calledBy: [#HEX:D.06.1A.00]
     function applyMenuLanguage(lang) {
       const t = MENU_TRANSLATIONS[lang] || MENU_TRANSLATIONS.hu;
       const btnNew = document.getElementById('btn-new-game');
@@ -563,7 +563,7 @@
 
     // @calledBy: Nyelvválasztó térkép lőrés kattintás
 // === [#HEX:D.06.1A.00] START | name: changeLanguage | lines: 12 ===
-// @calls: [#HEX:D.06.19.00], [#HEX:D.03.15.00] | @calledBy: none
+// @calls: [#HEX:D.03.15.00], [#HEX:D.06.19.00] | @calledBy: none
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);
@@ -663,7 +663,7 @@
 
     // @calledBy: speakAccIntro, speakAccAccordion, speakCurrentQuizQuestion
 // === [#HEX:D.06.1F.00] START | name: toggleAccSpeech | lines: 58 ===
-// @calls: [#HEX:D.07.04.00], [#HEX:D.06.1E.00] | @calledBy: [#HEX:D.06.20.00], [#HEX:D.06.21.00], [#HEX:D.04.1F.00]
+// @calls: [#HEX:D.06.1E.00], [#HEX:D.07.04.00] | @calledBy: [#HEX:D.06.20.00], [#HEX:D.06.21.00], [#HEX:D.04.1F.00]
     function toggleAccSpeech(text, btnElement) {
       if (!('speechSynthesis' in window)) {
         alert('A böngésződ sajnos nem támogatja a közvetlen hangos felolvasást.');
@@ -850,7 +850,7 @@
 
     // @calledBy: btn-acc-tutorial kattintás, URL ?tutorial=accessibility
 // === [#HEX:D.06.23.00] START | name: openAccessibilityTutorial | lines: 23 ===
-// @calls: [#HEX:A.06.10.08], [#HEX:D.06.17.00] | @calledBy: none
+// @calls: [#HEX:D.06.17.00], [#HEX:A.06.10.08] | @calledBy: none
     function openAccessibilityTutorial() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       applyAccTutorialLanguage(curLang);
@@ -878,7 +878,7 @@
 
     // @calledBy: acc-close-btn kattintás
 // === [#HEX:D.06.24.00] START | name: closeAccessibilityTutorial | lines: 26 | action: 'navigate_to_page' ===
-// @calls: [#HEX:A.06.10.08], [#HEX:D.06.1E.00], [#HEX:D.05.13.00], [#HEX:F.04.2C1.00], [#HEX:B.15.07.00] | @calledBy: none
+// @calls: [#HEX:D.05.13.00], [#HEX:B.15.07.00], [#HEX:A.06.10.08], [#HEX:D.06.1E.00], [#HEX:F.04.2C1.00] | @calledBy: none
     function closeAccessibilityTutorial() {
       stopAccSpeech();
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -970,7 +970,7 @@
 
     // @calledBy: startAccessibilityQuiz, handleAccQuizAnswer
 // === [#HEX:D.04.21.00] START | name: renderAccQuizQuestion | lines: 60 ===
-// @calls: [#HEX:D.01.C3.00], [#HEX:D.04.22.00], [#HEX:D.06.16.00] | @calledBy: [#HEX:D.04.20.00], [#HEX:D.04.22.00]
+// @calls: [#HEX:D.01.C3.00], [#HEX:D.06.16.00], [#HEX:D.04.22.00] | @calledBy: [#HEX:D.04.20.00], [#HEX:D.04.22.00]
     function renderAccQuizQuestion() {
       accIsAnswering = false;
       const qTextEl = document.getElementById('acc-quiz-question-text');
@@ -1035,7 +1035,7 @@
 
     // @calledBy: acc-quiz-option-btn kattintás
 // === [#HEX:D.04.22.00] START | name: handleAccQuizAnswer | lines: 37 ===
-// @calls: [#HEX:D.04.21.00], [#HEX:D.06.16.00] | @calledBy: [#HEX:D.04.21.00]
+// @calls: [#HEX:D.06.16.00], [#HEX:D.04.21.00] | @calledBy: [#HEX:D.04.21.00]
     function handleAccQuizAnswer(selectedIdx, correctIdx, btnElement, currentQuestion) {
       if (accIsAnswering) return;
       accIsAnswering = true;
@@ -1099,7 +1099,7 @@
 
     // @calledBy: acc-boat-accept-btn kattintás, Enter billentyű
 // === [#HEX:D.01.C4.00] START | name: submitAccBoatName | lines: 13 ===
-// @calls: [#HEX:D.06.26.00], [#HEX:D.06.16.00] | @calledBy: none
+// @calls: [#HEX:D.06.16.00], [#HEX:D.06.26.00] | @calledBy: none
     function submitAccBoatName() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const t = getAccTranslations(curLang) || {};
@@ -1167,7 +1167,7 @@
 
     // @calledBy: acc-depart-btn kattintás
 // === [#HEX:D.06.27.00] START | name: finalizeAccTutorialAndDepart | lines: 52 | action: 'tutorial_completed' ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:B.12.26.00] | @calledBy: none
+// @calls: [#HEX:B.12.26.00], [#HEX:F.04.2C1.00] | @calledBy: none
     function finalizeAccTutorialAndDepart() {
       const nameInput = document.getElementById('acc-boat-name-input');
 

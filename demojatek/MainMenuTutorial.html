@@ -99,6 +99,14 @@
       pointer-events: none !important;
     }
 
+    #btn-acc-tutorial {
+      font-size: 23px !important;
+      padding: 0 20px !important;
+      box-sizing: border-box !important;
+      white-space: nowrap !important;
+      letter-spacing: -0.2px;
+    }
+
     /* ─── AKADÁLYMENTES TUTORIAL OVERLAY & INFOPANEL (ATKINSON HYPERLEGIBLE TYPOGRAPHY) ─── */
     #acc-tutorial-overlay,
     #acc-tutorial-overlay * {
@@ -337,98 +345,17 @@
       50% { opacity: 0.75; transform: scale(1.03); }
       100% { opacity: 1; }
     }
-
-    /* ─── KÖTELEZŐ FEKVŐ TÁJOLÁS (ORIENTATION GUARD) ─── */
-    #orientation-guard {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle at center, rgba(15, 25, 45, 0.98) 0%, rgba(5, 10, 18, 1) 100%);
-      z-index: 99999999;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px;
-      box-sizing: border-box;
-      color: #ffd700;
-      font-family: 'BriskB', 'Courier New', monospace;
-      pointer-events: auto;
-    }
-
-    .rotate-phone-anim {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 25px;
-      animation: rotatePhone 2.2s ease-in-out infinite;
-    }
-
-    @keyframes rotatePhone {
-      0% { transform: rotate(0deg) scale(1); }
-      35% { transform: rotate(90deg) scale(1.1); }
-      70% { transform: rotate(90deg) scale(1.1); }
-      100% { transform: rotate(0deg) scale(1); }
-    }
-
-    .orientation-title {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffea00;
-      margin-bottom: 12px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-      letter-spacing: 1px;
-    }
-
-    .orientation-desc {
-      font-size: 15px;
-      color: #eaddb5;
-      max-width: 360px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .force-landscape-btn {
-      background: linear-gradient(180deg, #d4af37 0%, #aa8010 100%);
-      color: #1a1005;
-      font-weight: bold;
-      border: 2px solid #fff;
-      border-radius: 8px;
-      padding: 10px 22px;
-      font-size: 15px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(212,175,55,0.4);
-    }
-
-    @media screen and (orientation: portrait) and (max-width: 1024px) {
-      #orientation-guard {
-        display: flex !important;
-      }
-    }
-  </style>
-
-  <script>
-    window.requestLandscapeMode = function() {
-      try {
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen().then(() => {
-            if (screen.orientation && screen.orientation.lock) {
-              screen.orientation.lock('landscape').catch(() => {});
-            }
-          }).catch(() => {});
-        } else if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(() => {});
-        }
-      } catch(e) {}
-    };
-  </script>
+  
+    </style>
+  <script src="acc_tutorial_translations.js?v=20261018"></script>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
 
+    // @calledBy: X gomb a fejlécben
+// === [#HEX:D.06.15.00] START | name: returnToHarbor | lines: 8 | action: 'navigate_to_page' ===
+// @calls: [#HEX:F.04.2C1.00], [#HEX:D.06.1E.00] | @calledBy: none
     function returnToHarbor() {
       stopAccSpeech();
       if (window.parent && window.parent !== window) {
@@ -437,21 +364,235 @@
         window.location.href = 'https://krystohans.github.io/ebookpirates_site/kikotolatkep/index.html';
       }
     }
+// === [#HEX:D.06.15.00] END ===
+
+    const MENU_TRANSLATIONS = {
+      hu: {
+        newGame: "Új Játék",
+        continueGame: "Játék Folytatása",
+        settings: "Beállítások",
+        accTutorial: "Akadálymentes Tutorial",
+        langTitle: "Nyelv / Language"
+      },
+      en: {
+        newGame: "New Game",
+        continueGame: "Continue Game",
+        settings: "Settings",
+        accTutorial: "Accessible Tutorial",
+        langTitle: "Language"
+      },
+      de: {
+        newGame: "Neues Spiel",
+        continueGame: "Spiel fortsetzen",
+        settings: "Einstellungen",
+        accTutorial: "Barrierefreies Tutorial",
+        langTitle: "Sprache"
+      },
+      fr: {
+        newGame: "Nouvelle Partie",
+        continueGame: "Continuer la Partie",
+        settings: "Paramètres",
+        accTutorial: "Tutoriel Accessible",
+        langTitle: "Langue"
+      },
+      es: {
+        newGame: "Nueva Partida",
+        continueGame: "Continuar Partida",
+        settings: "Configuración",
+        accTutorial: "Tutorial Accesible",
+        langTitle: "Idioma"
+      },
+      pl: {
+        newGame: "Nowa Gra",
+        continueGame: "Kontynuuj Grę",
+        settings: "Ustawienia",
+        accTutorial: "Dostępny Samouczek",
+        langTitle: "Język"
+      },
+      ru: {
+        newGame: "Новая Игра",
+        continueGame: "Продолжить Игру",
+        settings: "Настройки",
+        accTutorial: "Доступное Обучение",
+        langTitle: "Язык"
+      }
+    };
+    
+
+// === [#HEX:D.06.16.00] START | name: getAccTranslations | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:D.06.17.00], [#HEX:D.06.20.00], [#HEX:D.04.21.00], [#HEX:D.04.22.00], [#HEX:D.01.C4.00]
+    function getAccTranslations(lang) {
+      const obj = window.ACC_TUTORIAL_TRANSLATIONS || (typeof ACC_TUTORIAL_TRANSLATIONS !== 'undefined' ? ACC_TUTORIAL_TRANSLATIONS : null);
+      if (!obj) return null;
+      return obj[lang] || obj.hu || null;
+    }
+// === [#HEX:D.06.16.00] END ===
+
+    // @calledBy: applyMenuLanguage, openAccessibilityTutorial
+// === [#HEX:D.06.17.00] START | name: applyAccTutorialLanguage | lines: 66 ===
+// @calls: [#HEX:D.06.16.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.06.19.00], [#HEX:D.06.23.00]
+    function applyAccTutorialLanguage(lang) {
+      const t = getAccTranslations(lang);
+      if (!t) {
+        console.warn('ACC_TUTORIAL_TRANSLATIONS not yet loaded for lang:', lang);
+        return;
+      }
+
+      const introTitle = document.getElementById('acc-intro-title');
+      if (introTitle && t.modalTitle) introTitle.innerText = t.modalTitle;
+
+      const introSpeakBtn = document.getElementById('acc-intro-speaker-btn');
+      if (introSpeakBtn && t.readAloudTitle) introSpeakBtn.setAttribute('title', t.readAloudTitle);
+
+      const introSpeakText = document.getElementById('acc-intro-speaker-text');
+      if (introSpeakText && t.readAloud) introSpeakText.innerText = t.readAloud;
+
+      const introGoalBold = document.getElementById('acc-intro-goal-bold');
+      if (introGoalBold && t.introGoalBold) introGoalBold.innerText = t.introGoalBold;
+
+      const introGoalText = document.getElementById('acc-intro-goal-text');
+      if (introGoalText && t.introText) introGoalText.innerHTML = t.introText;
+
+      const introCallP = document.getElementById('acc-intro-call-p');
+      if (introCallP && t.introCallToAction) introCallP.innerHTML = t.introCallToAction;
+
+      const startQuizBtn = document.getElementById('acc-start-quiz-btn');
+      if (startQuizBtn && t.startExamBtn) startQuizBtn.innerText = t.startExamBtn;
+
+      if (t.chapters && Array.isArray(t.chapters)) {
+        for (let i = 0; i < t.chapters.length; i++) {
+          const headerEl = document.getElementById(`acc-header-text-${i + 1}`);
+          const bodyEl = document.getElementById(`acc-body-${i + 1}`);
+          const speakerBtn = document.getElementById(`acc-speaker-btn-${i + 1}`);
+          if (headerEl && t.chapters[i].header) headerEl.innerText = t.chapters[i].header;
+          if (bodyEl && t.chapters[i].body) bodyEl.innerHTML = t.chapters[i].body;
+          if (speakerBtn && t.chapterReadTitle) speakerBtn.setAttribute('title', t.chapterReadTitle);
+        }
+      }
+
+      const quizTitle = document.getElementById('acc-quiz-title');
+      if (quizTitle && t.quizTitle) quizTitle.innerText = t.quizTitle;
+
+      const quizSpeakBtn = document.getElementById('acc-quiz-speaker-btn');
+      if (quizSpeakBtn && t.quizReadAloudTitle) quizSpeakBtn.setAttribute('title', t.quizReadAloudTitle);
+
+      const quizSpeakText = document.getElementById('acc-quiz-speaker-text');
+      if (quizSpeakText && t.readAloud) quizSpeakText.innerText = t.readAloud;
+
+      const namingTitle = document.getElementById('acc-naming-title');
+      if (namingTitle && t.namingTitle) namingTitle.innerText = t.namingTitle;
+
+      const namingDesc = document.getElementById('acc-naming-desc');
+      if (namingDesc && t.namingDesc) namingDesc.innerHTML = t.namingDesc;
+
+      const boatInput = document.getElementById('acc-boat-name-input');
+      if (boatInput && t.namingPlaceholder) boatInput.placeholder = t.namingPlaceholder;
+
+      const boatAcceptBtn = document.getElementById('acc-boat-accept-btn');
+      if (boatAcceptBtn && t.namingAccept) boatAcceptBtn.innerText = t.namingAccept;
+
+      const boatSkipBtn = document.getElementById('acc-boat-skip-btn');
+      if (boatSkipBtn && t.namingSkip) boatSkipBtn.innerText = t.namingSkip;
+
+      const departBtn = document.getElementById('acc-depart-btn');
+      if (departBtn && t.departBtn) departBtn.innerText = t.departBtn;
+    }
+// === [#HEX:D.06.17.00] END ===
+
+
+    // @calledBy: quick-language-selector zászló kattintás
+// === [#HEX:D.06.18.00] START | name: openSettingsWithLang | lines: 4 ===
+// @calls: none | @calledBy: none
+    function openSettingsWithLang() {
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'SettingsMenu.html?langSelector=true&lang=' + curLang + '&v=' + Date.now();
+    }
+// === [#HEX:D.06.18.00] END ===
+
+    // @calledBy: DOMContentLoaded, changeLanguage
+// === [#HEX:D.06.19.00] START | name: applyMenuLanguage | lines: 29 ===
+// @calls: [#HEX:D.06.1D.00], [#HEX:D.06.17.00] | @calledBy: [#HEX:D.06.1A.00]
+    function applyMenuLanguage(lang) {
+      const t = MENU_TRANSLATIONS[lang] || MENU_TRANSLATIONS.hu;
+      const btnNew = document.getElementById('btn-new-game');
+      const btnContinue = document.getElementById('btn-continue-game');
+      const btnSettings = document.getElementById('btn-settings');
+      const btnAcc = document.getElementById('btn-acc-tutorial');
+      const flagWrap = document.getElementById('quick-language-selector');
+      const flagImg = document.getElementById('current-language-flag');
+
+      if (btnNew) btnNew.innerText = t.newGame;
+      if (btnContinue) btnContinue.innerText = t.continueGame;
+      if (btnSettings) btnSettings.innerText = t.settings;
+      if (btnAcc) {
+        btnAcc.innerText = t.accTutorial;
+        if (lang === 'de') {
+          btnAcc.style.fontSize = '21px';
+        } else if (lang === 'en' || lang === 'fr' || lang === 'es' || lang === 'pl') {
+          btnAcc.style.fontSize = '24px';
+        } else {
+          btnAcc.style.fontSize = '23px';
+        }
+      }
+      if (flagWrap) flagWrap.setAttribute('title', t.langTitle);
+      if (flagImg) {
+        flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${lang}-removebg-preview.png`;
+      }
+      document.documentElement.lang = lang;
+      applyAccTutorialLanguage(lang);
+    }
+// === [#HEX:D.06.19.00] END ===
+
+    // @calledBy: none
+// === [#HEX:D.03.14.00] START | name: openLanguageMap | lines: 4 ===
+// @calls: none | @calledBy: none
+    function openLanguageMap() {
+      const overlay = document.getElementById('language-map-overlay');
+      if (overlay) overlay.style.display = 'flex';
+    }
+// === [#HEX:D.03.14.00] END ===
+
+    // @calledBy: none
+// === [#HEX:D.03.15.00] START | name: closeLanguageMap | lines: 4 ===
+// @calls: none | @calledBy: [#HEX:D.06.1A.00]
+    function closeLanguageMap() {
+      const overlay = document.getElementById('language-map-overlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+// === [#HEX:D.03.15.00] END ===
+
+    // @calledBy: Nyelvválasztó térkép lőrés kattintás
+// === [#HEX:D.06.1A.00] START | name: changeLanguage | lines: 12 ===
+// @calls: [#HEX:D.06.19.00], [#HEX:D.03.15.00] | @calledBy: none
+    function changeLanguage(lang) {
+      localStorage.setItem('ebook_pirates_language', lang);
+      localStorage.setItem('siteLang', lang);
+      localStorage.setItem('ebp_language', lang);
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+      applyMenuLanguage(lang);
+      closeLanguageMap();
+    }
+// === [#HEX:D.06.1A.00] END ===
+
+    // @calledBy: btn-settings gomb kattintás
+// === [#HEX:D.06.1B.00] START | name: openSettingsMenu | lines: 4 ===
+// @calls: none | @calledBy: none
+    function openSettingsMenu() {
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'SettingsMenu.html?lang=' + curLang + '&v=' + Date.now();
+    }
+// === [#HEX:D.06.1B.00] END ===
 
     document.addEventListener('DOMContentLoaded', () => {
       // Lekérjük a beállított nyelvet, alapértelmezett a magyar
-      let savedLang = localStorage.getItem('ebook_pirates_language') || 'hu';
-      // URL paraméterből is felülírható, ha a weboldal adta át
-      if (urlParams.has('lang')) {
-        savedLang = urlParams.get('lang');
-        localStorage.setItem('ebook_pirates_language', savedLang);
-      }
-      
-      const flagImg = document.getElementById('current-language-flag');
-      if (flagImg) {
-        // Használjuk az assets/images/flags mappában lévő megfelelő képet
-        flagImg.src = `https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${savedLang}-removebg-preview.png`;
-      }
+      let savedLang = urlParams.get('lang') || localStorage.getItem('siteLang') || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('ebp_language') || 'hu';
+      localStorage.setItem('ebook_pirates_language', savedLang);
+      localStorage.setItem('siteLang', savedLang);
+      applyMenuLanguage(savedLang);
 
       // --- 1. JÁTÉK FOLYTATÁSA ELLENŐRZÉSE (Mentés / Cookie alapján) ---
       const hasSaveState = localStorage.getItem('ebook_pirates_game_state') || 
@@ -464,24 +605,34 @@
       }
     });
 
+    // @calledBy: btn-new-game gomb kattintás
+// === [#HEX:D.06.1C.00] START | name: startNewGame | lines: 9 ===
+// @calls: none | @calledBy: none
     function startNewGame() {
       // Új játék indításakor töröljük a korábbi mentett állásokat!
       localStorage.removeItem('ebook_pirates_game_state');
       localStorage.removeItem('saved_boat_transform');
       localStorage.removeItem('ebp_tutorial_save');
       document.cookie = "ebook_pirates_game_state=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      window.location.href = 'tutorial_fixed.html';
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      window.location.href = 'tutorial_fixed.html?lang=' + curLang;
     }
+// === [#HEX:D.06.1C.00] END ===
 
+    // @calledBy: btn-continue-game gomb kattintás
+// === [#HEX:D.06.1D.00] START | name: continueGame | lines: 10 ===
+// @calls: none | @calledBy: [#HEX:D.06.19.00]
     function continueGame() {
       // Játék folytatása: ellenőrizzük, van-e mentett cookie/állás
       const hasSaveState = localStorage.getItem('ebook_pirates_game_state') || 
                            localStorage.getItem('saved_boat_transform') ||
                            document.cookie.includes('ebook_pirates_game_state=true');
       if (hasSaveState) {
-        window.location.href = 'tutorial_fixed.html?load=1';
+        const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+        window.location.href = 'tutorial_fixed.html?load=1&lang=' + curLang;
       }
     }
+// === [#HEX:D.06.1D.00] END ===
 
     // ─── AKADÁLYMENTES TUTORIAL & KVÍZ MOTOR (RANDOMIZÁLT VÁLASZOK + ÚJRA-SORBAÁLLÍTÁS) ───
     let accQuizAllQuestions = [];
@@ -494,6 +645,9 @@
     // ─── WEB SPEECH API HANGOS FELOLVASÓ MOTOR ───
     let accActiveSpeechBtn = null;
 
+    // @calledBy: toggleAccSpeech, closeAccessibilityTutorial, startAccessibilityQuiz, returnToHarbor
+// === [#HEX:D.06.1E.00] START | name: stopAccSpeech | lines: 11 ===
+// @calls: none | @calledBy: [#HEX:D.06.15.00], [#HEX:D.06.1F.00], [#HEX:D.06.24.00], [#HEX:D.04.20.00]
     function stopAccSpeech() {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -505,7 +659,11 @@
         accActiveSpeechBtn = null;
       }
     }
+// === [#HEX:D.06.1E.00] END ===
 
+    // @calledBy: speakAccIntro, speakAccAccordion, speakCurrentQuizQuestion
+// === [#HEX:D.06.1F.00] START | name: toggleAccSpeech | lines: 58 ===
+// @calls: [#HEX:D.07.04.00], [#HEX:D.06.1E.00] | @calledBy: [#HEX:D.06.20.00], [#HEX:D.06.21.00], [#HEX:D.04.1F.00]
     function toggleAccSpeech(text, btnElement) {
       if (!('speechSynthesis' in window)) {
         alert('A böngésződ sajnos nem támogatja a közvetlen hangos felolvasást.');
@@ -529,14 +687,23 @@
       const cleanText = tempDiv.textContent || tempDiv.innerText || '';
 
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'hu-HU';
-      utterance.rate = 0.95; // Tiszta, jól érthető tempó
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      const langMap = {
+        'hu': 'hu-HU',
+        'en': 'en-US',
+        'de': 'de-DE',
+        'fr': 'fr-FR',
+        'es': 'es-ES',
+        'pl': 'pl-PL',
+        'ru': 'ru-RU'
+      };
+      utterance.lang = langMap[curLang] || 'hu-HU';
+      utterance.rate = (curLang === 'hu') ? 0.95 : 1.0;
       utterance.pitch = 1.0;
 
-      // Magyar nyelvű hangmotor kiválasztása, ha van
       const voices = window.speechSynthesis.getVoices();
-      const huVoice = voices.find(v => v.lang && (v.lang.startsWith('hu') || v.lang.includes('HU')));
-      if (huVoice) utterance.voice = huVoice;
+      const voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(curLang));
+      if (voice) utterance.voice = voice;
 
       utterance.onstart = () => {
         accActiveSpeechBtn = btnElement;
@@ -555,23 +722,46 @@
 
       window.speechSynthesis.speak(utterance);
     }
+// === [#HEX:D.06.1F.00] END ===
 
+    // @calledBy: acc-intro-speaker-btn
+// === [#HEX:D.06.20.00] START | name: speakAccIntro | lines: 15 ===
+// @calls: [#HEX:D.06.1F.00], [#HEX:D.06.16.00] | @calledBy: none
     function speakAccIntro(btn) {
-      const title = "Akadálymentes Tutorial és Kalózvizsga.";
-      const desc = "A Tutorial célja: Ebben a módban a 3D ügyességi csónakázás helyett közvetlenül a játék elméleti alapjainak elsajátításával és a kalózvizsga sikeres letételével szerezheted meg a hivatalos kalóz jogosultságot és a kezdő felszerelésedet: harminc darab hártya, plusz tíz kalózkredit, egy fejezettekercs, egy térkép és a saját hajód. Olvasd át figyelmesen az alábbi fejezeteket, majd kattints a Vizsga indítása gombra!";
-      toggleAccSpeech(title + " " + desc, btn);
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      const t = getAccTranslations(curLang);
+      if (t) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = (t.introGoalBold || '') + ' ' + (t.introText || '') + ' ' + (t.introCallToAction || '');
+        const descText = tempDiv.textContent || tempDiv.innerText || '';
+        toggleAccSpeech((t.modalTitle || '') + '. ' + descText, btn);
+      } else {
+        const title = document.getElementById('acc-intro-title')?.innerText || '';
+        const descP = document.getElementById('acc-intro-desc-p')?.innerText || '';
+        const callP = document.getElementById('acc-intro-call-p')?.innerText || '';
+        toggleAccSpeech(title + '. ' + descP + ' ' + callP, btn);
+      }
     }
+// === [#HEX:D.06.20.00] END ===
 
+    // @calledBy: acc-speaker-btn-1..10
+// === [#HEX:D.06.21.00] START | name: speakAccAccordion | lines: 5 ===
+// @calls: [#HEX:D.06.1F.00] | @calledBy: none
     function speakAccAccordion(index, btn) {
       const headerText = document.getElementById(`acc-header-text-${index}`).innerText;
       const bodyText = document.getElementById(`acc-body-${index}`).innerText;
       toggleAccSpeech(headerText + ". " + bodyText, btn);
     }
+// === [#HEX:D.06.21.00] END ===
 
+    // @calledBy: acc-quiz-speaker-btn
+// === [#HEX:D.04.1F.00] START | name: speakCurrentQuizQuestion | lines: 34 ===
+// @calls: [#HEX:D.06.1F.00] | @calledBy: none
     function speakCurrentQuizQuestion(btn) {
       if (accActiveQuizQueue.length === 0) return;
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const q = accActiveQuizQueue[0];
-      const qText = q.question || q.Kerdes || '';
+      const qText = q[`question_${curLang}`] || ((curLang === 'en' && q.question_en) ? q.question_en : (q.question || q.Kerdes || ''));
       
       const buttons = document.querySelectorAll('.acc-quiz-option-btn');
       let answersText = '';
@@ -579,12 +769,36 @@
         answersText += b.innerText + ". ";
       });
 
-      toggleAccSpeech("Kérdés: " + qText + ". Válaszlehetőségek: " + answersText, btn);
+      const prefixMap = {
+        'hu': 'Kérdés: ',
+        'en': 'Question: ',
+        'de': 'Frage: ',
+        'fr': 'Question : ',
+        'es': 'Pregunta: ',
+        'pl': 'Pytanie: ',
+        'ru': 'Вопрос: '
+      };
+      const optPrefixMap = {
+        'hu': ' Válaszlehetőségek: ',
+        'en': ' Answer options: ',
+        'de': ' Antwortmöglichkeiten: ',
+        'fr': ' Options de réponse : ',
+        'es': ' Opciones de respuesta: ',
+        'pl': ' Opcje odpowiedzi: ',
+        'ru': ' Варианты ответов: '
+      };
+      const prefix = prefixMap[curLang] || 'Kérdés: ';
+      const optPrefix = optPrefixMap[curLang] || ' Válaszlehetőségek: ';
+      toggleAccSpeech(prefix + qText + "." + optPrefix + answersText, btn);
     }
+// === [#HEX:D.04.1F.00] END ===
 
     // 🔊 Gomb fölé navigáláskor hangos visszajelzés ("Felolvasás")
     let accHoverSpeechTimeout = null;
 
+    // @calledBy: acc-speaker-btn onmouseenter/onfocus
+// === [#HEX:D.06.22.00] START | name: announceAccSpeechHover | lines: 47 ===
+// @calls: none | @calledBy: none
     function announceAccSpeechHover(btn) {
       if (!('speechSynthesis' in window)) return;
 
@@ -600,20 +814,46 @@
           return;
         }
 
-        const u = new SpeechSynthesisUtterance("Felolvasás");
-        u.lang = 'hu-HU';
-        u.rate = 1.2; // Gyors, diszkrét bemondás
+        const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+        const hoverWords = {
+          'hu': 'Felolvasás',
+          'en': 'Read aloud',
+          'de': 'Vorlesen',
+          'fr': 'Lecture à voix haute',
+          'es': 'Leer en voz alta',
+          'pl': 'Czytaj na głos',
+          'ru': 'Прочесть вслух'
+        };
+        const langMap = {
+          'hu': 'hu-HU',
+          'en': 'en-US',
+          'de': 'de-DE',
+          'fr': 'fr-FR',
+          'es': 'es-ES',
+          'pl': 'pl-PL',
+          'ru': 'ru-RU'
+        };
+        const hoverWord = hoverWords[curLang] || 'Felolvasás';
+        const u = new SpeechSynthesisUtterance(hoverWord);
+        u.lang = langMap[curLang] || 'hu-HU';
+        u.rate = 1.2;
         u.pitch = 1.05;
 
         const voices = window.speechSynthesis.getVoices();
-        const huVoice = voices.find(v => v.lang && (v.lang.startsWith('hu') || v.lang.includes('HU')));
-        if (huVoice) u.voice = huVoice;
+        const voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(curLang));
+        if (voice) u.voice = voice;
 
         window.speechSynthesis.speak(u);
       }, 60);
     }
+// === [#HEX:D.06.22.00] END ===
 
+    // @calledBy: btn-acc-tutorial kattintás, URL ?tutorial=accessibility
+// === [#HEX:D.06.23.00] START | name: openAccessibilityTutorial | lines: 23 ===
+// @calls: [#HEX:A.06.10.08], [#HEX:D.06.17.00] | @calledBy: none
     function openAccessibilityTutorial() {
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      applyAccTutorialLanguage(curLang);
       const overlay = document.getElementById('acc-tutorial-overlay');
       const infoView = document.getElementById('acc-info-view');
       const quizView = document.getElementById('acc-quiz-view');
@@ -634,7 +874,11 @@
         if (summaryView) summaryView.style.display = 'none';
       }
     }
+// === [#HEX:D.06.23.00] END ===
 
+    // @calledBy: acc-close-btn kattintás
+// === [#HEX:D.06.24.00] START | name: closeAccessibilityTutorial | lines: 26 | action: 'navigate_to_page' ===
+// @calls: [#HEX:A.06.10.08], [#HEX:D.06.1E.00], [#HEX:D.05.13.00], [#HEX:F.04.2C1.00], [#HEX:B.15.07.00] | @calledBy: none
     function closeAccessibilityTutorial() {
       stopAccSpeech();
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -661,7 +905,11 @@
       const bgVid = document.getElementById('bg-video');
       if (bgVid) bgVid.style.display = 'block';
     }
+// === [#HEX:D.06.24.00] END ===
 
+    // @calledBy: acc-accordion-header kattintás
+// === [#HEX:D.06.25.00] START | name: toggleAccAccordion | lines: 16 ===
+// @calls: none | @calledBy: none
     function toggleAccAccordion(index) {
       const body = document.getElementById(`acc-body-${index}`);
       const icon = document.getElementById(`acc-icon-${index}`);
@@ -678,7 +926,11 @@
         if (icon) icon.innerText = '▼';
       }
     }
+// === [#HEX:D.06.25.00] END ===
 
+    // @calledBy: acc-start-quiz-btn kattintás
+// === [#HEX:D.04.20.00] START | name: startAccessibilityQuiz | lines: 35 ===
+// @calls: [#HEX:D.04.21.00], [#HEX:D.06.1E.00] | @calledBy: none
     async function startAccessibilityQuiz() {
       stopAccSpeech();
       const infoView = document.getElementById('acc-info-view');
@@ -714,13 +966,19 @@
 
       renderAccQuizQuestion();
     }
+// === [#HEX:D.04.20.00] END ===
 
+    // @calledBy: startAccessibilityQuiz, handleAccQuizAnswer
+// === [#HEX:D.04.21.00] START | name: renderAccQuizQuestion | lines: 60 ===
+// @calls: [#HEX:D.01.C3.00], [#HEX:D.04.22.00], [#HEX:D.06.16.00] | @calledBy: [#HEX:D.04.20.00], [#HEX:D.04.22.00]
     function renderAccQuizQuestion() {
       accIsAnswering = false;
       const qTextEl = document.getElementById('acc-quiz-question-text');
       const counterEl = document.getElementById('acc-quiz-counter');
       const optionsContainer = document.getElementById('acc-quiz-options');
       const feedbackEl = document.getElementById('acc-quiz-feedback');
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      const t = getAccTranslations(curLang) || {};
 
       if (feedbackEl) feedbackEl.innerText = '';
 
@@ -733,16 +991,24 @@
       const q = accActiveQuizQueue[0];
       const remaining = accActiveQuizQueue.length;
       if (counterEl) {
-        counterEl.innerText = `Sikeres válaszok: ${accCompletedCount} / ${accTargetCount} (Sorban hátralévő: ${remaining})`;
+        counterEl.innerText = `${t.quizCounterPrefix || 'Sikeres válaszok: '}${accCompletedCount} / ${accTargetCount} ${t.quizCounterQueue || '(Sorban hátralévő: '}${remaining})`;
       }
-      if (qTextEl) qTextEl.innerHTML = q.question || q.Kerdes || '';
+      const qText = q[`question_${curLang}`] || ((curLang === 'en' && q.question_en) ? q.question_en : (q.question || q.Kerdes || ''));
+      if (qTextEl) qTextEl.innerHTML = qText;
 
       if (optionsContainer) {
         optionsContainer.innerHTML = '';
         const letters = ['A', 'B', 'C', 'D'];
 
         // Eredeti válaszok és a helyes válasz szövegének kinyerése
-        let rawAnswers = q.answers ? [...q.answers] : [q.A, q.B, q.C, q.D];
+        let rawAnswers;
+        if (q[`answers_${curLang}`]) {
+          rawAnswers = [...q[`answers_${curLang}`]];
+        } else if (curLang === 'en' && q.answers_en) {
+          rawAnswers = [...q.answers_en];
+        } else {
+          rawAnswers = q.answers ? [...q.answers] : [q.A, q.B, q.C, q.D];
+        }
         rawAnswers = rawAnswers.filter(a => a !== undefined && a !== null && a !== '');
         const origCorrectIdx = q.correctIndex !== undefined ? q.correctIndex : 0;
         const correctText = rawAnswers[origCorrectIdx] || rawAnswers[0];
@@ -765,7 +1031,11 @@
         });
       }
     }
+// === [#HEX:D.04.21.00] END ===
 
+    // @calledBy: acc-quiz-option-btn kattintás
+// === [#HEX:D.04.22.00] START | name: handleAccQuizAnswer | lines: 37 ===
+// @calls: [#HEX:D.04.21.00], [#HEX:D.06.16.00] | @calledBy: [#HEX:D.04.21.00]
     function handleAccQuizAnswer(selectedIdx, correctIdx, btnElement, currentQuestion) {
       if (accIsAnswering) return;
       accIsAnswering = true;
@@ -775,6 +1045,9 @@
 
       const feedbackEl = document.getElementById('acc-quiz-feedback');
 
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      const t = getAccTranslations(curLang) || {};
+
       if (selectedIdx === correctIdx) {
         btnElement.classList.add('correct');
         accCompletedCount++;
@@ -782,7 +1055,7 @@
         accActiveQuizQueue.shift();
         if (feedbackEl) {
           feedbackEl.style.color = '#2ed573';
-          feedbackEl.innerText = '✓ Helyes válasz!';
+          feedbackEl.innerText = t.correctFeedback;
         }
       } else {
         btnElement.classList.add('wrong');
@@ -792,7 +1065,7 @@
         accActiveQuizQueue.push(wrongQ);
         if (feedbackEl) {
           feedbackEl.style.color = '#ff4757';
-          feedbackEl.innerText = '✗ Helytelen válasz! Ez a kérdés újra fel fog bukkanni a vizsgán.';
+          feedbackEl.innerText = t.wrongFeedback;
         }
       }
 
@@ -800,8 +1073,12 @@
         renderAccQuizQuestion();
       }, 1200);
     }
+// === [#HEX:D.04.22.00] END ===
 
     // ─── AKADÁLYMENTES CSÓNAK NÉVADÁS ÉS KINCSFELÍRÁS ───
+    // @calledBy: renderAccQuizQuestion (sikeres vizsga végén)
+// === [#HEX:D.01.C3.00] START | name: startAccBoatNamingRoutine | lines: 16 ===
+// @calls: [#HEX:D.05.13.00] | @calledBy: [#HEX:D.04.21.00]
     function startAccBoatNamingRoutine() {
       // BIZTONSÁGI LÉPÉS: A csónaknév beírása előtt a teljes képernyőből kilépünk, hogy meglegyen a normál fókusz és ablakméret!
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -818,19 +1095,29 @@
         setTimeout(() => nameInput.focus(), 200);
       }
     }
+// === [#HEX:D.01.C3.00] END ===
 
+    // @calledBy: acc-boat-accept-btn kattintás, Enter billentyű
+// === [#HEX:D.01.C4.00] START | name: submitAccBoatName | lines: 13 ===
+// @calls: [#HEX:D.06.26.00], [#HEX:D.06.16.00] | @calledBy: none
     function submitAccBoatName() {
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      const t = getAccTranslations(curLang) || {};
       const nameInput = document.getElementById('acc-boat-name-input');
       const val = nameInput ? nameInput.value.trim() : '';
       if (!val) {
-        alert('Kérlek, adj meg egy nevet a csónakodnak, vagy kattints a "Nincs Ötletem" gombra!');
+        alert(t.namingAlert);
         if (nameInput) nameInput.focus();
         return;
       }
       accBoatName = val;
       showAccSummaryPanel();
     }
+// === [#HEX:D.01.C4.00] END ===
 
+    // @calledBy: acc-boat-skip-btn kattintás
+// === [#HEX:D.01.C5.00] START | name: skipAccBoatName | lines: 9 ===
+// @calls: [#HEX:D.06.26.00] | @calledBy: none
     function skipAccBoatName() {
       let userName = localStorage.getItem('ebook_pirates_username') || sessionStorage.getItem('ebookPiratesLoginName') || localStorage.getItem('ebp_user_name') || 'Kaloz';
       const cleanName = userName.replace(/[^a-zA-Z0-9]/g, '');
@@ -840,28 +1127,47 @@
       if (nameInput) nameInput.value = accBoatName;
       showAccSummaryPanel();
     }
+// === [#HEX:D.01.C5.00] END ===
 
+    // @calledBy: submitAccBoatName, skipAccBoatName
+// === [#HEX:D.06.26.00] START | name: showAccSummaryPanel | lines: 31 ===
+// @calls: [#HEX:D.06.16.00] | @calledBy: [#HEX:D.01.C4.00], [#HEX:D.01.C5.00]
     function showAccSummaryPanel() {
       const namingView = document.getElementById('acc-quiz-naming-view');
       const summaryView = document.getElementById('acc-quiz-summary-view');
       const summaryTextEl = document.getElementById('acc-quiz-summary-text');
+      const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+      const t = getAccTranslations(curLang) || {};
 
       if (namingView) namingView.style.display = 'none';
       if (summaryView) summaryView.style.display = 'flex';
 
-      const displayName = accBoatName || 'Gyöngyhalász';
+      const nameMap = {
+        'en': 'Pearl Fisher',
+        'de': 'Perlenfischer',
+        'fr': 'Pêcheur de Perles',
+        'es': 'Pescador de Perlas',
+        'pl': 'Poławiacz Pereł',
+        'ru': 'Ловец Жемчуга'
+      };
+      const defaultName = nameMap[curLang] || 'Gyöngyhalász';
+      const displayName = accBoatName || defaultName;
 
       if (summaryTextEl) {
         summaryTextEl.innerHTML = 
-          `<b style="color: #ffd700; font-size: 24px;">Megszerzett Kincseid:</b><br><br>` +
-          `• <b>30 db</b> hártya<br>` +
-          `• <b>1 db</b> Hebok térkép<br>` +
-          `• <b>10</b> kalózkredit<br>` +
-          `• <b>1 db</b> tekercs<br>` +
-          `• <b>1 db</b> csónak (10 HP), név: <b style="color: #ffea00;">${displayName}</b>`;
+          `<b style="color: #ffd700; font-size: 24px;">${t.summaryTitle}</b><br><br>` +
+          `• ${t.summaryMembranes}<br>` +
+          `• ${t.summaryMap}<br>` +
+          `• ${t.summaryCredits}<br>` +
+          `• ${t.summaryScroll}<br>` +
+          `• ${t.summaryBoat}<b style="color: #ffea00;">${displayName}</b>`;
       }
     }
+// === [#HEX:D.06.26.00] END ===
 
+    // @calledBy: acc-depart-btn kattintás
+// === [#HEX:D.06.27.00] START | name: finalizeAccTutorialAndDepart | lines: 52 | action: 'tutorial_completed' ===
+// @calls: [#HEX:F.04.2C1.00], [#HEX:B.12.26.00] | @calledBy: none
     function finalizeAccTutorialAndDepart() {
       const nameInput = document.getElementById('acc-boat-name-input');
 
@@ -914,7 +1220,11 @@
         window.location.href = '../index.html';
       }
     }
+// === [#HEX:D.06.27.00] END ===
 
+    // @calledBy: none
+// === [#HEX:D.06.28.00] START | name: goToHarborFromMenu | lines: 11 | action: 'navigate_to_page' ===
+// @calls: [#HEX:F.04.2C1.00] | @calledBy: none
     function goToHarborFromMenu() {
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
@@ -926,26 +1236,12 @@
         window.location.href = '../index.html';
       }
     }
+// === [#HEX:D.06.28.00] END ===
   </script>
 </head>
 <body>
-  <!-- ─── KÖTELEZŐ FEKVŐ TÁJOLÁS KIKÉNYSZERÍTŐ RÉTEG ─── -->
-  <div id="orientation-guard">
-    <svg class="rotate-phone-anim" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-      <line x1="12" y1="18" x2="12.01" y2="18"></line>
-      <path d="M17 8l3-3-3-3"></path>
-      <path d="M20 5h-4"></path>
-    </svg>
-    <div class="orientation-title">⚓ VITORLABONTÁS FEKVŐ MÓDBAN!</div>
-    <div class="orientation-desc">A kalóz bázis és a 3D kaland fekvő képernyőre lett tervezve.<br><strong>Kérlek, fordítsd el a telefonodat oldalra!</strong></div>
-    <button class="force-landscape-btn" onclick="requestLandscapeMode()">🔄 Fekvő mód kényszerítése</button>
-  </div>
-
   <video id="bg-video" autoplay loop muted playsinline preload="auto" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none;">
-    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
-    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/Zeppelin%20forog%20(1).mp4" type="video/mp4">
-    <source src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/eBookPirates%20%E2%80%93%20Kal%C3%B3zsziget%203D%20Tutorial_2.mp4" type="video/mp4">
+    <source src="assets/videos/Tutorial_MainMenu_Perfect.mp4" type="video/mp4">
   </video>
   <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.15); z-index: 1; pointer-events: none;"></div>
 
@@ -982,6 +1278,9 @@
 
       // Autoplay policy miatt az első felhasználói interakcióra indítjuk el a háttérzenét
       let audioStarted = false;
+    // @calledBy: User click / touch listener
+// === [#HEX:D.06.29.00] START | name: tryAudio | lines: 7 ===
+// @calls: none | @calledBy: none
       const tryAudio = () => {
         if (!audioStarted) {
           if (musicVol > 0) menuMusic.play().catch(e => {});
@@ -989,6 +1288,7 @@
           audioStarted = true;
         }
       };
+// === [#HEX:D.06.29.00] END ===
 
       document.addEventListener('click', tryAudio);
       document.addEventListener('keydown', tryAudio);
@@ -1031,15 +1331,16 @@
     </div>
 
     <!-- Nyelvi Ikon -->
-    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="window.location.href='SettingsMenu.html?langSelector=true&v=' + Date.now();" title="Nyelv / Language">
+    <!-- Nyelvi Ikon (Mutatja az aktuális nyelvet, kattintásra megnyitja a Beállítások nyelvválasztóját) -->
+    <div id="quick-language-selector" style="cursor: pointer; margin: 10px auto 5px auto; position: relative; z-index: 10;" onclick="openSettingsWithLang()" title="Beállítások: Nyelvválasztás / Settings: Language">
       <img id="current-language-flag" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" style="height: 52px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6)); transition: transform 0.1s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
     </div>
 
     <!-- Menüpontok -->
-    <div class="menu-button" onclick="startNewGame()">Új Játék</div>
+    <div id="btn-new-game" class="menu-button" onclick="startNewGame()">Új Játék</div>
     <div id="btn-continue-game" class="menu-button" onclick="continueGame()">Játék Folytatása</div>
-    <div class="menu-button" onclick="window.location.href='SettingsMenu.html?v=' + Date.now();">Beállítások</div>
-    <div class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
+    <div id="btn-settings" class="menu-button" onclick="openSettingsMenu()">Beállítások</div>
+    <div id="btn-acc-tutorial" class="menu-button" onclick="openAccessibilityTutorial()">Akadálymentes Tutorial</div>
 
   </div>
 
@@ -1054,11 +1355,11 @@
         <!-- Akadálymentes Bevezető Kártya -->
         <div style="background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 16px 22px; margin-bottom: 14px; color: #f5f5f5; text-align: justify; font-size: 15.5px; line-height: 1.55;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h2 style="font-size: 24px; color: #ffd700; margin: 0;">Akadálymentes Tutorial & Kalózvizsga</h2>
-            <button class="acc-speaker-btn" onclick="speakAccIntro(this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Bevezető felolvasása"><span class="speaker-icon">🔊</span> Felolvasás</button>
+            <h2 id="acc-intro-title" style="font-size: 24px; color: #ffd700; margin: 0;">Akadálymentes Tutorial & Kalózvizsga</h2>
+            <button id="acc-intro-speaker-btn" class="acc-speaker-btn" onclick="speakAccIntro(this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Bevezető felolvasása"><span class="speaker-icon">🔊</span> <span id="acc-intro-speaker-text">Felolvasás</span></button>
           </div>
-          <p style="margin: 0 0 8px 0;"><b>A Tutorial célja:</b> Ebben a módban a 3D ügyességi csónakázás helyett közvetlenül a játék elméleti alapjainak elsajátításával és a kalózvizsga sikeres letételével szerezheted meg a hivatalos kalóz jogosultságot és a kezdő felszerelésedet (<b>30 db hártya, +10 kalózkredit, 1 fejezettekercs, 1 térkép és a saját hajód</b>).</p>
-          <p style="margin: 0; color: #ffd700;">Olvasd át figyelmesen az alábbi fejezeteket, majd kattints a <b>Vizsga indítása</b> gombra!</p>
+          <p id="acc-intro-desc-p" style="margin: 0 0 8px 0;"><b id="acc-intro-goal-bold">A Tutorial célja:</b> <span id="acc-intro-goal-text">Ebben a módban a 3D ügyességi csónakázás helyett közvetlenül a játék elméleti alapjainak elsajátításával és a kalózvizsga sikeres letételével szerezheted meg a hivatalos kalóz jogosultságot és a kezdő felszerelésedet (<b>30 db hártya, +10 kalózkredit, 1 fejezettekercs, 1 térkép és a saját hajód</b>).</span></p>
+          <p id="acc-intro-call-p" style="margin: 0; color: #ffd700;">Olvasd át figyelmesen az alábbi fejezeteket, majd kattints a <b>Vizsga indítása</b> gombra!</p>
         </div>
 
         <div class="acc-scrollable-content">
@@ -1067,7 +1368,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(1)">
               <span id="acc-header-text-1">Egy Új Irodalmi Ökoszisztéma</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(1, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-1" onclick="event.stopPropagation(); speakAccAccordion(1, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-1">▶</span>
               </div>
             </div>
@@ -1082,7 +1383,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(2)">
               <span id="acc-header-text-2">Ahol a Valóság és a Képzelet Új Szövetséget Köt</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(2, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-2" onclick="event.stopPropagation(); speakAccAccordion(2, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-2">▶</span>
               </div>
             </div>
@@ -1096,7 +1397,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(3)">
               <span id="acc-header-text-3">Ahol a Történet Életre Kel</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(3, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-3" onclick="event.stopPropagation(); speakAccAccordion(3, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-3">▶</span>
               </div>
             </div>
@@ -1110,7 +1411,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(4)">
               <span id="acc-header-text-4">A világról</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(4, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-4" onclick="event.stopPropagation(); speakAccAccordion(4, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-4">▶</span>
               </div>
             </div>
@@ -1124,7 +1425,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(5)">
               <span id="acc-header-text-5">Pénzek</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(5, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-5" onclick="event.stopPropagation(); speakAccAccordion(5, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-5">▶</span>
               </div>
             </div>
@@ -1141,7 +1442,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(6)">
               <span id="acc-header-text-6">Hártya feldolgozása</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(6, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-6" onclick="event.stopPropagation(); speakAccAccordion(6, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-6">▶</span>
               </div>
             </div>
@@ -1157,7 +1458,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(7)">
               <span id="acc-header-text-7">Könyv</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(7, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-7" onclick="event.stopPropagation(); speakAccAccordion(7, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-7">▶</span>
               </div>
             </div>
@@ -1172,7 +1473,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(8)">
               <span id="acc-header-text-8">Rang</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(8, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-8" onclick="event.stopPropagation(); speakAccAccordion(8, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-8">▶</span>
               </div>
             </div>
@@ -1186,7 +1487,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(9)">
               <span id="acc-header-text-9">A könyvtár</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(9, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-9" onclick="event.stopPropagation(); speakAccAccordion(9, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-9">▶</span>
               </div>
             </div>
@@ -1200,7 +1501,7 @@
             <div class="acc-accordion-header" onclick="toggleAccAccordion(10)">
               <span id="acc-header-text-10">Térképek és hajónaplók</span>
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button type="button" class="acc-speaker-btn" onclick="event.stopPropagation(); speakAccAccordion(10, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
+                <button type="button" class="acc-speaker-btn" id="acc-speaker-btn-10" onclick="event.stopPropagation(); speakAccAccordion(10, this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Fejezet felolvasása"><span class="speaker-icon">🔊</span></button>
                 <span id="acc-icon-10">▶</span>
               </div>
             </div>
@@ -1219,8 +1520,8 @@
       <!-- 2. NÉZET: KVÍZKÉRDÉSES TUTORIAL VIZSGA -->
       <div id="acc-quiz-view" style="display: none; flex-direction: column; height: 100%; width: 100%;">
         <div style="text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 15px;">
-          <h2 style="font-size: 26px; color: #ffd700; margin: 0;">Kalóz Kvíz Vizsga</h2>
-          <button class="acc-speaker-btn" onclick="speakCurrentQuizQuestion(this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Kérdés és válaszok felolvasása"><span class="speaker-icon">🔊</span> Felolvasás</button>
+          <h2 id="acc-quiz-title" style="font-size: 26px; color: #ffd700; margin: 0;">Kalóz Kvíz Vizsga</h2>
+          <button id="acc-quiz-speaker-btn" class="acc-speaker-btn" onclick="speakCurrentQuizQuestion(this)" onmouseenter="announceAccSpeechHover(this)" onfocus="announceAccSpeechHover(this)" title="Kérdés és válaszok felolvasása"><span class="speaker-icon">🔊</span> <span id="acc-quiz-speaker-text">Felolvasás</span></button>
         </div>
         <div style="text-align: center; margin-bottom: 8px;">
           <span id="acc-quiz-counter" style="font-size: 16px; color: #f5f5f5; font-weight: bold;">Kérdés 1 / 10</span>
@@ -1238,21 +1539,21 @@
 
         <!-- 3. NÉZET: CSÓNAK NÉVADÁS -->
         <div id="acc-quiz-naming-view" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 20px;">
-          <h2 style="font-size: 28px; color: #ffd700; margin-bottom: 15px;">Gratulálok! Sikeres Kalózvizsga!</h2>
-          <p style="font-size: 18px; color: #f0f0f0; max-width: 600px; line-height: 1.55; margin-bottom: 25px;">
+          <h2 id="acc-naming-title" style="font-size: 28px; color: #ffd700; margin-bottom: 15px;">Gratulálok! Sikeres Kalózvizsga!</h2>
+          <p id="acc-naming-desc" style="font-size: 18px; color: #f0f0f0; max-width: 600px; line-height: 1.55; margin-bottom: 25px;">
             A kincseid és az új vitorlásod átadása következik.<br>Hogy fogják hívni a csónakodat?
           </p>
           <input id="acc-boat-name-input" type="text" class="acc-text-input" placeholder="Pl. Gyöngyhalász" maxlength="24" onkeydown="if(event.key==='Enter') submitAccBoatName()">
           <div style="display: flex; gap: 15px; margin-top: 25px;">
-            <button class="acc-primary-btn" onclick="submitAccBoatName()">Név Elfogadása</button>
-            <button class="acc-primary-btn" style="background: #443322; color: #ccc;" onclick="skipAccBoatName()">Nincs Ötletem</button>
+            <button id="acc-boat-accept-btn" class="acc-primary-btn" onclick="submitAccBoatName()">Név Elfogadása</button>
+            <button id="acc-boat-skip-btn" class="acc-primary-btn" style="background: #443322; color: #ccc;" onclick="skipAccBoatName()">Nincs Ötletem</button>
           </div>
         </div>
 
         <!-- 4. NÉZET: KINCSEK ÖSSZEGZÉSE (FIX 30 HÁRTYA) -->
         <div id="acc-quiz-summary-view" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 45px 30px;">
           <div id="acc-quiz-summary-text" style="font-size: 20px; color: #f0f0f0; line-height: 1.65; margin-top: 20px; margin-bottom: 35px; background: #1e1812; border: 2px solid #d4af37; border-radius: 8px; padding: 25px 35px; width: 100%; max-width: 500px; box-sizing: border-box;"></div>
-          <button class="acc-primary-btn" style="font-size: 22px; padding: 14px 40px; margin-bottom: 30px;" onclick="finalizeAccTutorialAndDepart()">Irány Hebok Kikötő!</button>
+          <button id="acc-depart-btn" class="acc-primary-btn" style="font-size: 22px; padding: 14px 40px; margin-bottom: 30px;" onclick="finalizeAccTutorialAndDepart()">Irány Hebok Kikötő!</button>
         </div>
       </div>
     </div>
@@ -1263,5 +1564,6 @@
     <video id="acc-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/terkeputazas01.mp4"></video>
   </div>
 
-</body>
+
+  </body>
 </html>

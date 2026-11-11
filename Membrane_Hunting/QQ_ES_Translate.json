@@ -1,0 +1,1281 @@
+{
+  "GameInfo": [
+    {
+      "uid": "TUTDEMQGI0OKES10054",
+      "baseId": "TUTDEMQGI0OK0054",
+      "id": 54,
+      "category": "GameInfo",
+      "question": "¿Qué monedas existen en el juego?",
+      "answers": [
+        "Crédito Pirata y Talento",
+        "Oro y Plata",
+        "Maravedí y Cornado",
+        "Peniques y Táleros"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20054",
+        "TUTDEMAGI0OKES30054_1",
+        "TUTDEMAGI0OKES30054_2",
+        "TUTDEMAGI0OKES30054_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10055",
+      "baseId": "TUTDEMQGI0OK0055",
+      "id": 55,
+      "category": "GameInfo",
+      "question": "¿Qué se necesita para consagrar un libro en el Santuario además de la Copia?",
+      "answers": [
+        "Talento",
+        "Oración",
+        "200 créditos pirata",
+        "Un sacrificio"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20055",
+        "TUTDEMAGI0OKES30055_1",
+        "TUTDEMAGI0OKES30055_2",
+        "TUTDEMAGI0OKES30055_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10056",
+      "baseId": "TUTDEMQGI0OK0056",
+      "id": 56,
+      "category": "GameInfo",
+      "question": "¿Cómo puedes apoyar el proyecto de eBookPirates?",
+      "answers": [
+        "Patreon, PayPal",
+        "Con elogios",
+        "Mirando anuncios",
+        "Con un sacrificio de sangre"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20056",
+        "TUTDEMAGI0OKES30056_1",
+        "TUTDEMAGI0OKES30056_2",
+        "TUTDEMAGI0OKES30056_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10057",
+      "baseId": "TUTDEMQGI0OK0057",
+      "id": 57,
+      "category": "GameInfo",
+      "question": "¿Cuántas membranas se necesitan para prensar un pergamino?",
+      "answers": [
+        "Treinta",
+        "Cincuenta",
+        "Una por párrafo",
+        "Doce"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20057",
+        "TUTDEMAGI0OKES30057_1",
+        "TUTDEMAGI0OKES30057_2",
+        "TUTDEMAGI0OKES30057_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10058",
+      "baseId": "TUTDEMQGI0OK0058",
+      "id": 58,
+      "category": "GameInfo",
+      "question": "¿Cuántos pergaminos se necesitan para encuadernar una copia?",
+      "answers": [
+        "Todos los pergaminos del libro",
+        "Treinta",
+        "Doce",
+        "Cincuenta"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20058",
+        "TUTDEMAGI0OKES30058_1",
+        "TUTDEMAGI0OKES30058_2",
+        "TUTDEMAGI0OKES30058_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10059",
+      "baseId": "TUTDEMQGI0OK0059",
+      "id": 59,
+      "category": "GameInfo",
+      "question": "¿Dónde puedes conseguir misiones y encargos?",
+      "answers": [
+        "En la Taberna",
+        "Con el Capitán del puerto",
+        "En el Santuario del Libro",
+        "En la Biblioteca"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20059",
+        "TUTDEMAGI0OKES30059_1",
+        "TUTDEMAGI0OKES30059_2",
+        "TUTDEMAGI0OKES30059_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10060",
+      "baseId": "TUTDEMQGI0OK0060",
+      "id": 60,
+      "category": "GameInfo",
+      "question": "¿Dónde puedes leer tus pergaminos y copias?",
+      "answers": [
+        "En la Biblioteca",
+        "En la Taberna",
+        "Con el Capitán del puerto",
+        "En el Santuario del Libro"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20060",
+        "TUTDEMAGI0OKES30060_1",
+        "TUTDEMAGI0OKES30060_2",
+        "TUTDEMAGI0OKES30060_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10061",
+      "baseId": "TUTDEMQGI0OK0061",
+      "id": 61,
+      "category": "GameInfo",
+      "question": "¿Qué recompensa otorga la consagración de un libro?",
+      "answers": [
+        "ePub descargable + 10 copias",
+        "Se puede vender el libro después",
+        "El jugador sube de nivel",
+        "1000 créditos pirata"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20061",
+        "TUTDEMAGI0OKES30061_1",
+        "TUTDEMAGI0OKES30061_2",
+        "TUTDEMAGI0OKES30061_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10062",
+      "baseId": "TUTDEMQGI0OK0062",
+      "id": 62,
+      "category": "GameInfo",
+      "question": "¿Cuál es el castigo para los ladrones de libros?",
+      "answers": [
+        "Prisión de Libros, muro de la vergüenza",
+        "Pasar bajo la quilla",
+        "Bloqueo inmediato de la cuenta",
+        "Una multa económica"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20062",
+        "TUTDEMAGI0OKES30062_1",
+        "TUTDEMAGI0OKES30062_2",
+        "TUTDEMAGI0OKES30062_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10015",
+      "baseId": "TUTDEMQGI0OK0015",
+      "id": 15,
+      "category": "GameInfo",
+      "question": "¿Cómo se llama el puerto pirata en el Mar de las Letras?",
+      "answers": [
+        "Hebok",
+        "Isla de los Piratas",
+        "Roca Negra",
+        "Isla Calavera"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20015",
+        "TUTDEMAGI0OKES30015_1",
+        "TUTDEMAGI0OKES30015_2",
+        "TUTDEMAGI0OKES30015_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10016",
+      "baseId": "TUTDEMQGI0OK0016",
+      "id": 16,
+      "category": "GameInfo",
+      "question": "¿Cómo mantienes a salvo tus membranas durante una incursión?",
+      "answers": [
+        "Regresando a la Base del puerto",
+        "Ocultándolas del dirigible",
+        "Arrojándolas al mar",
+        "Encerrándolas bajo el bote"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20016",
+        "TUTDEMAGI0OKES30016_1",
+        "TUTDEMAGI0OKES30016_2",
+        "TUTDEMAGI0OKES30016_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10017",
+      "baseId": "TUTDEMQGI0OK0017",
+      "id": 17,
+      "category": "GameInfo",
+      "question": "¿Con qué teclas navegas y controlas tu velero?",
+      "answers": [
+        "W, A, S, D y las flechas",
+        "Únicamente con el ratón",
+        "Solo con la barra espaciadora",
+        "Solo mediante comandos de voz"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20017",
+        "TUTDEMAGI0OKES30017_1",
+        "TUTDEMAGI0OKES30017_2",
+        "TUTDEMAGI0OKES30017_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10020",
+      "baseId": "TUTDEMQGI0OK0020",
+      "id": 20,
+      "category": "GameInfo",
+      "question": "¿Qué debes hacer si el dirigible empieza a perseguirte?",
+      "answers": [
+        "Huir rápidamente hacia el muelle",
+        "Detenerse y rendirse",
+        "Disparar al dirigible",
+        "Saltar al agua"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20020",
+        "TUTDEMAGI0OKES30020_1",
+        "TUTDEMAGI0OKES30020_2",
+        "TUTDEMAGI0OKES30020_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKES10043",
+      "baseId": "TUTDEMQGI0OK0043",
+      "id": 43,
+      "category": "GameInfo",
+      "question": "¿Cómo puedo consultar las reglas del tutorial?",
+      "answers": [
+        "Abriendo el panel de información",
+        "Abriendo la página principal",
+        "Visitando la página de Patreon",
+        "En la página de Facebook"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKES20043",
+        "TUTDEMAGI0OKES30043_1",
+        "TUTDEMAGI0OKES30043_2",
+        "TUTDEMAGI0OKES30043_3"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "TUTORZEP": [
+    {
+      "uid": "TUTMHDEMQTU0OKES10009",
+      "baseId": "TUTMHDEMQTU0OK0009",
+      "id": 9,
+      "category": "TUTORZEP",
+      "question": "¿Cuándo se celebra el Festival Internacional del Libro de Budapest?",
+      "answers": [
+        "en octubre",
+        "en septiembre",
+        "en junio",
+        "En Mayo"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20009",
+        "TUTMHDEMATU0OKES30009_1",
+        "TUTMHDEMATU0OKES30009_2",
+        "TUTMHDEMATU0OKES30009_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10010",
+      "baseId": "TUTMHDEMQTU0OK0010",
+      "id": 10,
+      "category": "TUTORZEP",
+      "question": "¿De qué nacionalidad era Selma Lagerlöf?",
+      "answers": [
+        "sueco",
+        "danés",
+        "finlandés",
+        "noruego"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20010",
+        "TUTMHDEMATU0OKES30010_1",
+        "TUTMHDEMATU0OKES30010_2",
+        "TUTMHDEMATU0OKES30010_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10023",
+      "baseId": "TUTMHDEMQTU0OK0023",
+      "id": 23,
+      "category": "TUTORZEP",
+      "question": "¿Quién es el terrorífico capitán pirata de la novela La isla del tesoro?",
+      "answers": [
+        "Largo John Plata",
+        "Capitán pedernal",
+        "Capitán Garfio",
+        "gorrión"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20023",
+        "TUTMHDEMATU0OKES30023_1",
+        "TUTMHDEMATU0OKES30023_2",
+        "TUTMHDEMATU0OKES30023_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10024",
+      "baseId": "TUTMHDEMQTU0OK0024",
+      "id": 24,
+      "category": "TUTORZEP",
+      "question": "¿Quién lidera el ballenero Pequod contra Moby Dick?",
+      "answers": [
+        "Capitán Ahab",
+        "Capitán Nemo",
+        "Jim Hawkins",
+        "Robinson Cruzo"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20024",
+        "TUTMHDEMATU0OKES30024_1",
+        "TUTMHDEMATU0OKES30024_2",
+        "TUTMHDEMATU0OKES30024_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10025",
+      "baseId": "TUTMHDEMQTU0OK0025",
+      "id": 25,
+      "category": "TUTORZEP",
+      "question": "¿Qué novela de Julio Verne trata sobre un grupo de escolares?",
+      "answers": [
+        "vacaciones de dos años",
+        "La isla misteriosa",
+        "Capitán Nemo",
+        "Hijos del Capitán Grant"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20025",
+        "TUTMHDEMATU0OKES30025_1",
+        "TUTMHDEMATU0OKES30025_2",
+        "TUTMHDEMATU0OKES30025_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10026",
+      "baseId": "TUTMHDEMQTU0OK0026",
+      "id": 26,
+      "category": "TUTORZEP",
+      "question": "¿Cómo se llama el compañero nativo de Robinson Crusoe?",
+      "answers": [
+        "Viernes",
+        "Sábado",
+        "Jueves",
+        "Jim"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20026",
+        "TUTMHDEMATU0OKES30026_1",
+        "TUTMHDEMATU0OKES30026_2",
+        "TUTMHDEMATU0OKES30026_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10027",
+      "baseId": "TUTMHDEMQTU0OK0027",
+      "id": 27,
+      "category": "TUTORZEP",
+      "question": "¿Quién es el enemigo jurado de Peter Pan?",
+      "answers": [
+        "Capitán Garfio",
+        "Barbanegra",
+        "Capitán Morgan",
+        "Capitán Barbosa"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20027",
+        "TUTMHDEMATU0OKES30027_1",
+        "TUTMHDEMATU0OKES30027_2",
+        "TUTMHDEMATU0OKES30027_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10028",
+      "baseId": "TUTMHDEMQTU0OK0028",
+      "id": 28,
+      "category": "TUTORZEP",
+      "question": "¿Odiseo se tapa los oídos con cera para escuchar el canto de qué criaturas marinas?",
+      "answers": [
+        "Ninguno de ellos",
+        "sirenas",
+        "arpías",
+        "sirenas"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20028",
+        "TUTMHDEMATU0OKES30028_1",
+        "TUTMHDEMATU0OKES30028_2",
+        "TUTMHDEMATU0OKES30028_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10029",
+      "baseId": "TUTMHDEMQTU0OK0029",
+      "id": 29,
+      "category": "TUTORZEP",
+      "question": "¿Qué criaturas habitan esa isla en la sátira de Jonathan Swift?",
+      "answers": [
+        "liliputienses",
+        "Gigantes",
+        "Oveja",
+        "me encojo de hombros"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20029",
+        "TUTMHDEMATU0OKES30029_1",
+        "TUTMHDEMATU0OKES30029_2",
+        "TUTMHDEMATU0OKES30029_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10030",
+      "baseId": "TUTMHDEMQTU0OK0030",
+      "id": 30,
+      "category": "TUTORZEP",
+      "question": "¿Quién es el joven noble que es el cuarto en unirse a la guardia real?",
+      "answers": [
+        "D'Artagnan",
+        "Monte Athos",
+        "Aramis",
+        "Portos"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20030",
+        "TUTMHDEMATU0OKES30030_1",
+        "TUTMHDEMATU0OKES30030_2",
+        "TUTMHDEMATU0OKES30030_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10031",
+      "baseId": "TUTMHDEMQTU0OK0031",
+      "id": 31,
+      "category": "TUTORZEP",
+      "question": "¿Qué estructuras ordinarias considera Don Quijote que son gigantes malvados?",
+      "answers": [
+        "Molinos de viento",
+        "faros",
+        "Clústeres",
+        "Puntos de vista"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20031",
+        "TUTMHDEMATU0OKES30031_1",
+        "TUTMHDEMATU0OKES30031_2",
+        "TUTMHDEMATU0OKES30031_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10032",
+      "baseId": "TUTMHDEMQTU0OK0032",
+      "id": 32,
+      "category": "TUTORZEP",
+      "question": "¿Quién es el personaje principal de R. A. Salvatore?",
+      "answers": [
+        "Drizzt Do'Urden",
+        "Arena y Glokta",
+        "drusa",
+        "raistlin"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20032",
+        "TUTMHDEMATU0OKES30032_1",
+        "TUTMHDEMATU0OKES30032_2",
+        "TUTMHDEMATU0OKES30032_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10034",
+      "baseId": "TUTMHDEMQTU0OK0034",
+      "id": 34,
+      "category": "TUTORZEP",
+      "question": "¿El héroe de qué escritor es Lord Havelock Vetinari?",
+      "answers": [
+        "Terry Pratchett",
+        "R. A. Salvatore",
+        "Michael Ende",
+        "Jeffrey Stone"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20034",
+        "TUTMHDEMATU0OKES30034_1",
+        "TUTMHDEMATU0OKES30034_2",
+        "TUTMHDEMATU0OKES30034_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10035",
+      "baseId": "TUTMHDEMQTU0OK0035",
+      "id": 35,
+      "category": "TUTORZEP",
+      "question": "¿A qué legendario guerrero interpretó Arnold Schwarzenegger en el cine?",
+      "answers": [
+        "Conan el Bárbaro",
+        "Druss la Leyenda",
+        "Mersant el Oscuro",
+        "Tom Bombadil"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20035",
+        "TUTMHDEMATU0OKES30035_1",
+        "TUTMHDEMATU0OKES30035_2",
+        "TUTMHDEMATU0OKES30035_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10036",
+      "baseId": "TUTMHDEMQTU0OK0036",
+      "id": 36,
+      "category": "TUTORZEP",
+      "question": "¿En qué mundo de fantasía lucha el héroe Leon Silver?",
+      "answers": [
+        "Cherubion",
+        "Ynev",
+        "Worluk",
+        "Ammerunia"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20036",
+        "TUTMHDEMATU0OKES30036_1",
+        "TUTMHDEMATU0OKES30036_2",
+        "TUTMHDEMATU0OKES30036_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10038",
+      "baseId": "TUTMHDEMQTU0OK0038",
+      "id": 38,
+      "category": "TUTORZEP",
+      "question": "¿Cuántos días viajó Willy Fogg alrededor del mundo?",
+      "answers": [
+        "setenta y nueve",
+        "Ochenta",
+        "ochenta y uno",
+        "Al final no funcionó"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20038",
+        "TUTMHDEMATU0OKES30038_1",
+        "TUTMHDEMATU0OKES30038_2",
+        "TUTMHDEMATU0OKES30038_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10039",
+      "baseId": "TUTMHDEMQTU0OK0039",
+      "id": 39,
+      "category": "TUTORZEP",
+      "question": "¿Sobre qué rueda escribió Brandon Sanderson?",
+      "answers": [
+        "el tiempo",
+        "Destino",
+        "el carro",
+        "la suerte"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20039",
+        "TUTMHDEMATU0OKES30039_1",
+        "TUTMHDEMATU0OKES30039_2",
+        "TUTMHDEMATU0OKES30039_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10040",
+      "baseId": "TUTMHDEMQTU0OK0040",
+      "id": 40,
+      "category": "TUTORZEP",
+      "question": "¿Leigh Bardugo escribió sobre la tercera casa?",
+      "answers": [
+        "Noveno",
+        "Décimo",
+        "Séptimo",
+        "Primero"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20040",
+        "TUTMHDEMATU0OKES30040_1",
+        "TUTMHDEMATU0OKES30040_2",
+        "TUTMHDEMATU0OKES30040_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10041",
+      "baseId": "TUTMHDEMQTU0OK0041",
+      "id": 41,
+      "category": "TUTORZEP",
+      "question": "¿Con qué cita comienza el libro El collar de la princesa?",
+      "answers": [
+        "Béla Hamvas",
+        "Alejandro Dumas",
+        "Sándor Weöres",
+        "Lao Tsé"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20041",
+        "TUTMHDEMATU0OKES30041_1",
+        "TUTMHDEMATU0OKES30041_2",
+        "TUTMHDEMATU0OKES30041_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10042",
+      "baseId": "TUTMHDEMQTU0OK0042",
+      "id": 42,
+      "category": "TUTORZEP",
+      "question": "Según Shelby Van Pelt ¿cuántos brazos tiene la felicidad?",
+      "answers": [
+        "Ocho",
+        "cuatro",
+        "son las tres y media",
+        "Dos"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20042",
+        "TUTMHDEMATU0OKES30042_1",
+        "TUTMHDEMATU0OKES30042_2",
+        "TUTMHDEMATU0OKES30042_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10044",
+      "baseId": "TUTMHDEMQTU0OK0044",
+      "id": 44,
+      "category": "TUTORZEP",
+      "question": "¿Dónde escribió Agatha Christie una parte importante de sus famosas novelas policiales?",
+      "answers": [
+        "Sentado en su bañera",
+        "En la oficina de su editor",
+        "En una cafetería de Londres",
+        "en su estudio"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20044",
+        "TUTMHDEMATU0OKES30044_1",
+        "TUTMHDEMATU0OKES30044_2",
+        "TUTMHDEMATU0OKES30044_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10045",
+      "baseId": "TUTMHDEMQTU0OK0045",
+      "id": 45,
+      "category": "TUTORZEP",
+      "question": "¿Por qué J.K. ¿El primer libro de Harry Potter de Rowling en una cafetería?",
+      "answers": [
+        "porque tenia frio en casa",
+        "Le encantaba el ruido de fondo.",
+        "Modeló los personajes a partir de los invitados.",
+        "Obtuvo café y pastel gratis."
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20045",
+        "TUTMHDEMATU0OKES30045_1",
+        "TUTMHDEMATU0OKES30045_2",
+        "TUTMHDEMATU0OKES30045_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10046",
+      "baseId": "TUTMHDEMQTU0OK0046",
+      "id": 46,
+      "category": "TUTORZEP",
+      "question": "¿Qué libro no recuerda Stephen King haber escrito debido a la droga?",
+      "answers": [
+        "Fresco",
+        "el resplandor",
+        "El (eso)",
+        "Cementerio de mascotas"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20046",
+        "TUTMHDEMATU0OKES30046_1",
+        "TUTMHDEMATU0OKES30046_2",
+        "TUTMHDEMATU0OKES30046_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10047",
+      "baseId": "TUTMHDEMQTU0OK0047",
+      "id": 47,
+      "category": "TUTORZEP",
+      "question": "¿Qué músico de rock quería interpretar el papel de Gollum en la película El señor de los anillos?",
+      "answers": [
+        "John Lennon",
+        "Bonjovi",
+        "axl rosa",
+        "Ozzy Osborne"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20047",
+        "TUTMHDEMATU0OKES30047_1",
+        "TUTMHDEMATU0OKES30047_2",
+        "TUTMHDEMATU0OKES30047_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10048",
+      "baseId": "TUTMHDEMQTU0OK0048",
+      "id": 48,
+      "category": "TUTORZEP",
+      "question": "¿Qué inspiró a Frank Herbert para escribir 'Dune'?",
+      "answers": [
+        "Un proyecto gubernamental",
+        "Un informe de la NASA sobre Marte",
+        "Vacaciones en el desierto de Oregón",
+        "Una pesadilla"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20048",
+        "TUTMHDEMATU0OKES30048_1",
+        "TUTMHDEMATU0OKES30048_2",
+        "TUTMHDEMATU0OKES30048_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10049",
+      "baseId": "TUTMHDEMQTU0OK0049",
+      "id": 49,
+      "category": "TUTORZEP",
+      "question": "¿Qué patentó Edgar Rice Burroughs?",
+      "answers": [
+        "El grito de Tarzán",
+        "El idioma gorila",
+        "El nombre Tarzán",
+        "El título de \"Rey de la Selva\""
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20049",
+        "TUTMHDEMATU0OKES30049_1",
+        "TUTMHDEMATU0OKES30049_2",
+        "TUTMHDEMATU0OKES30049_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10050",
+      "baseId": "TUTMHDEMQTU0OK0050",
+      "id": 50,
+      "category": "TUTORZEP",
+      "question": "¿Qué hace Pinocho con los grillos en el libro original?",
+      "answers": [
+        "Lo aplana con un martillo.",
+        "Lo encierra en una caja de cerillas oscura.",
+        "Se lo vende a un circo ambulante.",
+        "Lo tira por la ventana"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20050",
+        "TUTMHDEMATU0OKES30050_1",
+        "TUTMHDEMATU0OKES30050_2",
+        "TUTMHDEMATU0OKES30050_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10051",
+      "baseId": "TUTMHDEMQTU0OK0051",
+      "id": 51,
+      "category": "TUTORZEP",
+      "question": "¿Qué libro clásico inspiró a Batman?",
+      "answers": [
+        "Drácula",
+        "Frankenstein",
+        "El hombre invisible",
+        "El extraño caso del Dr. Jekyll"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20051",
+        "TUTMHDEMATU0OKES30051_1",
+        "TUTMHDEMATU0OKES30051_2",
+        "TUTMHDEMATU0OKES30051_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10052",
+      "baseId": "TUTMHDEMQTU0OK0052",
+      "id": 52,
+      "category": "TUTORZEP",
+      "question": "¿De dónde vino el icónico código digital verde de Matrix?",
+      "answers": [
+        "Del libro de cocina japonés de la esposa del diseñador.",
+        "De un libro de texto de física ruso.",
+        "De un antiguo catálogo de una fábrica de muebles sueca.",
+        "De un papiro egipcio antiguo"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20052",
+        "TUTMHDEMATU0OKES30052_1",
+        "TUTMHDEMATU0OKES30052_2",
+        "TUTMHDEMATU0OKES30052_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10053",
+      "baseId": "TUTMHDEMQTU0OK0053",
+      "id": 53,
+      "category": "TUTORZEP",
+      "question": "¿Qué evento real inspiró la \"Boda Roja\" de Juego de Tronos?",
+      "answers": [
+        "Una masacre medieval escocesa, la Cena Negra",
+        "La boda de venganza de la princesa Olga de Kiev",
+        "La masacre nocturna francesa de San Bartolomé",
+        "II. La escandalosa cena de bodas del rey Eduardo de Inglaterra"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20053",
+        "TUTMHDEMATU0OKES30053_1",
+        "TUTMHDEMATU0OKES30053_2",
+        "TUTMHDEMATU0OKES30053_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10063",
+      "baseId": "TUTMHDEMQTU0OK0063",
+      "id": 63,
+      "category": "TUTORZEP",
+      "question": "¿Qué hecho falso del Código Da Vinci fue negado oficialmente por el Louvre?",
+      "answers": [
+        "Que la pirámide de cristal consta de 666 placas de vidrio",
+        "Que se puede ver un extraterrestre detrás de la Mona Lisa",
+        "Que debajo del museo se encuentra la verdadera tumba de Jesús",
+        "Que el director del museo era el gran maestre de una orden de caballeros medieval"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20063",
+        "TUTMHDEMATU0OKES30063_1",
+        "TUTMHDEMATU0OKES30063_2",
+        "TUTMHDEMATU0OKES30063_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10064",
+      "baseId": "TUTMHDEMQTU0OK0064",
+      "id": 64,
+      "category": "TUTORZEP",
+      "question": "¿Qué o quién le dio a William Steig la idea del nombre de Shrek?",
+      "answers": [
+        "La palabra yiddish para \"Schreck\".",
+        "Un pantano escocés llamado Skriech",
+        "Un mercenario alemán medieval llamado Shreck.",
+        "Su vecino llamado Shreck"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20064",
+        "TUTMHDEMATU0OKES30064_1",
+        "TUTMHDEMATU0OKES30064_2",
+        "TUTMHDEMATU0OKES30064_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10065",
+      "baseId": "TUTMHDEMQTU0OK0065",
+      "id": 65,
+      "category": "TUTORZEP",
+      "question": "¿En quién modeló Ian Fleming la Q de los episodios de James Bond?",
+      "answers": [
+        "Un II. sobre un experto en bombas de la Segunda Guerra Mundial",
+        "Sobre un relojero londinense",
+        "Sobre el asistente de Albert Einstein",
+        "Sobre ti"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20065",
+        "TUTMHDEMATU0OKES30065_1",
+        "TUTMHDEMATU0OKES30065_2",
+        "TUTMHDEMATU0OKES30065_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10066",
+      "baseId": "TUTMHDEMQTU0OK0066",
+      "id": 66,
+      "category": "TUTORZEP",
+      "question": "¿Quién fue el conde Drácula en la realidad?",
+      "answers": [
+        "El príncipe Vlad el Empalador (Vlad Țepeș)",
+        "Un rey loco de Baviera",
+        "Un inquisidor español",
+        "Un asesino en serie de Londres"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20066",
+        "TUTMHDEMATU0OKES30066_1",
+        "TUTMHDEMATU0OKES30066_2",
+        "TUTMHDEMATU0OKES30066_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10067",
+      "baseId": "TUTMHDEMQTU0OK0067",
+      "id": 67,
+      "category": "TUTORZEP",
+      "question": "¿Qué fobia inspiró a Stan Lee a escribir Spider-Man?",
+      "answers": [
+        "Odiaba las moscas",
+        "era espacioso",
+        "el era una araña",
+        "Odiaba las máscaras"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20067",
+        "TUTMHDEMATU0OKES30067_1",
+        "TUTMHDEMATU0OKES30067_2",
+        "TUTMHDEMATU0OKES30067_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10068",
+      "baseId": "TUTMHDEMQTU0OK0068",
+      "id": 68,
+      "category": "TUTORZEP",
+      "question": "¿Qué le dio a Michael Crichton la idea de escribir Jurassic Park?",
+      "answers": [
+        "Estaba interesado en la clonación de genes.",
+        "Quería encontrar la carne más cara.",
+        "Una pesadilla de dinosaurios",
+        "El proyecto escolar de su pequeña"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20068",
+        "TUTMHDEMATU0OKES30068_1",
+        "TUTMHDEMATU0OKES30068_2",
+        "TUTMHDEMATU0OKES30068_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10069",
+      "baseId": "TUTMHDEMQTU0OK0069",
+      "id": 69,
+      "category": "TUTORZEP",
+      "question": "¿Qué personaje literario famoso se inspiró en un niño regordete de la vida real?",
+      "answers": [
+        "Christopher Robin de Winnie the Pooh",
+        "Neville Longbottom de Harry Potter",
+        "Augustus Gloop de Charlie y la fábrica de chocolate",
+        "Arthur Gombóc de los cuentos de Pom Pom"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20069",
+        "TUTMHDEMATU0OKES30069_1",
+        "TUTMHDEMATU0OKES30069_2",
+        "TUTMHDEMATU0OKES30069_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKES10070",
+      "baseId": "TUTMHDEMQTU0OK0070",
+      "id": 70,
+      "category": "TUTORZEP",
+      "question": "Lo que se cerró en honor a Víctor Hugo cuando murió",
+      "answers": [
+        "Todos los burdeles de París",
+        "Tu cafetería favorita",
+        "la pista de carreras",
+        "Tus pubs favoritos"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKES20070",
+        "TUTMHDEMATU0OKES30070_1",
+        "TUTMHDEMATU0OKES30070_2",
+        "TUTMHDEMATU0OKES30070_3"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "TRUE": [
+    {
+      "uid": "MHQTR0OKES10002",
+      "baseId": "MHQTR0OK0002",
+      "id": 2,
+      "category": "TRUE",
+      "isStaked": true,
+      "question": "¿Quién escribió: «Padre nuestro, que estás en el cielo»?",
+      "answers": [
+        "Laci Lukács",
+        "San Lucas",
+        "Constantino VII",
+        "Jesús"
+      ],
+      "answerUids": [
+        "MHATR0OKES20002",
+        "MHATR0OKES30002_1",
+        "MHATR0OKES30002_2",
+        "MHATR0OKES30002_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQTR0OKES10013",
+      "baseId": "MHQTR0OK0013",
+      "id": 13,
+      "category": "TRUE",
+      "isStaked": true,
+      "question": "¿Quién es el protagonista de la novela de fantasía Hermanos Lobos (Farkastestvérek)?",
+      "answers": [
+        "Olmud Yelmo de Dragón",
+        "Hessgeron Cabeza de Lagarto",
+        "Kvazel Ebrio de Sueños",
+        "Cugell el Astuto"
+      ],
+      "answerUids": [
+        "MHATR0OKES20013",
+        "MHATR0OKES30013_1",
+        "MHATR0OKES30013_2",
+        "MHATR0OKES30013_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQTR0OKES10033",
+      "baseId": "MHQTR0OK0033",
+      "id": 33,
+      "category": "TRUE",
+      "isStaked": true,
+      "question": "¿De qué novela es protagonista Skandar Graun?",
+      "answers": [
+        "La Palabra del Caos (A káosz szava)",
+        "Batalla por la Piedra Nocturna",
+        "La Piedra de Cristal",
+        "La Historia Interminable"
+      ],
+      "answerUids": [
+        "MHATR0OKES20033",
+        "MHATR0OKES30033_1",
+        "MHATR0OKES30033_2",
+        "MHATR0OKES30033_3"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "FALSE": [
+    {
+      "uid": "MHQFA0OKES10003",
+      "baseId": "MHQFA0OK0003",
+      "id": 3,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿Cuál es el título de la antología de Zsolt Bukros publicada en 2024?",
+      "answers": [
+        "Vodka y sangre",
+        "Espejo y sangre",
+        "Fuego y sangre",
+        "Agua y sangre"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20003",
+        "MHAFA0OKES30003_1",
+        "MHAFA0OKES30003_2",
+        "MHAFA0OKES30003_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10004",
+      "baseId": "MHQFA0OK0004",
+      "id": 4,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿De quién es el seudónimo literario Raymond Darieni?",
+      "answers": [
+        "István Nemere",
+        "István Nemes",
+        "László L. Lőrincz",
+        "Sándor Szigeti"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20004",
+        "MHAFA0OKES30004_1",
+        "MHAFA0OKES30004_2",
+        "MHAFA0OKES30004_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10005",
+      "baseId": "MHQFA0OK0005",
+      "id": 5,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿De quién es el seudónimo literario Jessica J. Brutal?",
+      "answers": [
+        "István Nemes",
+        "István Nemere",
+        "Sándor Szélesi",
+        "Tibor Szántó"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20005",
+        "MHAFA0OKES30005_1",
+        "MHAFA0OKES30005_2",
+        "MHAFA0OKES30005_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10006",
+      "baseId": "MHQFA0OK0006",
+      "id": 6,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿Qué seudónimo literario pertenece a Sándor Szélesi?",
+      "answers": [
+        "Anthony Sheenard",
+        "Gordon Spencer",
+        "Jay Henorex",
+        "Gabriel Wraith"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20006",
+        "MHAFA0OKES30006_1",
+        "MHAFA0OKES30006_2",
+        "MHAFA0OKES30006_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10007",
+      "baseId": "MHQFA0OK0007",
+      "id": 7,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿A qué serie pertenece «Horizonte de medianoche» (Midnight Horizon)?",
+      "answers": [
+        "STAR WARS",
+        "World of WarCraft",
+        "WarHammer",
+        "MARVEL"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20007",
+        "MHAFA0OKES30007_1",
+        "MHAFA0OKES30007_2",
+        "MHAFA0OKES30007_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10008",
+      "baseId": "MHQFA0OK0008",
+      "id": 8,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿Cuál de las siguientes NO es una obra de Sheila Martens?",
+      "answers": [
+        "Felicidad dulce como la miel",
+        "Rodaje en el desierto",
+        "Déjate llevar por la corriente",
+        "Jaula de oro"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20008",
+        "MHAFA0OKES30008_1",
+        "MHAFA0OKES30008_2",
+        "MHAFA0OKES30008_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10011",
+      "baseId": "MHQFA0OK0011",
+      "id": 11,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿Con qué título se publicó un libro de Tímea Koppány en 2025?",
+      "answers": [
+        "El Campeón de la Dama del Lago",
+        "La Bendición de la Dama del Lago",
+        "El Ascenso de Ammerúnia",
+        "La Caída de Ammerúnia"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20011",
+        "MHAFA0OKES30011_1",
+        "MHAFA0OKES30011_2",
+        "MHAFA0OKES30011_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKES10037",
+      "baseId": "MHQFA0OK0037",
+      "id": 37,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "¿Quién no practicó magia en la Tierra?",
+      "answers": [
+        "Gandalf",
+        "Merlin",
+        "Dumbledore",
+        "Panoramix"
+      ],
+      "answerUids": [
+        "MHAFA0OKES20037",
+        "MHAFA0OKES30037_1",
+        "MHAFA0OKES30037_2",
+        "MHAFA0OKES30037_3"
+      ],
+      "correctIndex": 0
+    }
+  ]
+}

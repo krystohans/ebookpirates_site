@@ -1,0 +1,1281 @@
+{
+  "GameInfo": [
+    {
+      "uid": "TUTDEMQGI0OKRU10054",
+      "baseId": "TUTDEMQGI0OK0054",
+      "id": 54,
+      "category": "GameInfo",
+      "question": "Какая валюта используется в игре?",
+      "answers": [
+        "Пиратский кредит и Талант",
+        "Золото и Серебро",
+        "Гроши и Полушки",
+        "Пенни и Талеры"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20054",
+        "TUTDEMAGI0OKRU30054_1",
+        "TUTDEMAGI0OKRU30054_2",
+        "TUTDEMAGI0OKRU30054_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10055",
+      "baseId": "TUTDEMQGI0OK0055",
+      "id": 55,
+      "category": "GameInfo",
+      "question": "Что нужно для освящения книги в Святилище помимо Копии?",
+      "answers": [
+        "Талант",
+        "Молитва",
+        "200 пиратских кредитов",
+        "Жертвоприношение"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20055",
+        "TUTDEMAGI0OKRU30055_1",
+        "TUTDEMAGI0OKRU30055_2",
+        "TUTDEMAGI0OKRU30055_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10056",
+      "baseId": "TUTDEMQGI0OK0056",
+      "id": 56,
+      "category": "GameInfo",
+      "question": "Как можно поддержать проект eBookPirates?",
+      "answers": [
+        "Patreon, PayPal",
+        "Добрым словом",
+        "Просмотром рекламы",
+        "Кровавой жертвой"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20056",
+        "TUTDEMAGI0OKRU30056_1",
+        "TUTDEMAGI0OKRU30056_2",
+        "TUTDEMAGI0OKRU30056_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10057",
+      "baseId": "TUTDEMQGI0OK0057",
+      "id": 57,
+      "category": "GameInfo",
+      "question": "Сколько мембран требуется для создания одного свитка?",
+      "answers": [
+        "Тридцать",
+        "Пятьдесят",
+        "По одной на абзац",
+        "Двенадцать"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20057",
+        "TUTDEMAGI0OKRU30057_1",
+        "TUTDEMAGI0OKRU30057_2",
+        "TUTDEMAGI0OKRU30057_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10058",
+      "baseId": "TUTDEMQGI0OK0058",
+      "id": 58,
+      "category": "GameInfo",
+      "question": "Сколько свитков необходимо для сшивания копии книги?",
+      "answers": [
+        "Все свитки этой книги",
+        "Тридцать",
+        "Двенадцать",
+        "Пятьдесят"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20058",
+        "TUTDEMAGI0OKRU30058_1",
+        "TUTDEMAGI0OKRU30058_2",
+        "TUTDEMAGI0OKRU30058_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10059",
+      "baseId": "TUTDEMQGI0OK0059",
+      "id": 59,
+      "category": "GameInfo",
+      "question": "Где можно получить задания и поручения?",
+      "answers": [
+        "В Таверне",
+        "У Начальника порта",
+        "В Святилище Книг",
+        "В Библиотеке"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20059",
+        "TUTDEMAGI0OKRU30059_1",
+        "TUTDEMAGI0OKRU30059_2",
+        "TUTDEMAGI0OKRU30059_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10060",
+      "baseId": "TUTDEMQGI0OK0060",
+      "id": 60,
+      "category": "GameInfo",
+      "question": "Где вы можете читать свои свитки и копии?",
+      "answers": [
+        "В Библиотеке",
+        "В Таверне",
+        "У Смотрителя порта",
+        "В Святилище Книг"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20060",
+        "TUTDEMAGI0OKRU30060_1",
+        "TUTDEMAGI0OKRU30060_2",
+        "TUTDEMAGI0OKRU30060_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10061",
+      "baseId": "TUTDEMQGI0OK0061",
+      "id": 61,
+      "category": "GameInfo",
+      "question": "Что дает игроку освящение книги?",
+      "answers": [
+        "Файл .ePub для скачивания + 10 копий",
+        "Книгу затем можно продать",
+        "Игрок повышает свой уровень",
+        "1000 пиратских кредитов"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20061",
+        "TUTDEMAGI0OKRU30061_1",
+        "TUTDEMAGI0OKRU30061_2",
+        "TUTDEMAGI0OKRU30061_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10062",
+      "baseId": "TUTDEMQGI0OK0062",
+      "id": 62,
+      "category": "GameInfo",
+      "question": "Какое наказание ожидает книжных воров?",
+      "answers": [
+        "Книжная Тюрьма, доска позора",
+        "Протаскивание под килем",
+        "Мгновенный бан аккаунта",
+        "Денежный штраф"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20062",
+        "TUTDEMAGI0OKRU30062_1",
+        "TUTDEMAGI0OKRU30062_2",
+        "TUTDEMAGI0OKRU30062_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10015",
+      "baseId": "TUTDEMQGI0OK0015",
+      "id": 15,
+      "category": "GameInfo",
+      "question": "Как называется пиратский порт на Море Букв?",
+      "answers": [
+        "Хебок",
+        "Остров Пиратов",
+        "Черная Скала",
+        "Остров Черепа"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20015",
+        "TUTDEMAGI0OKRU30015_1",
+        "TUTDEMAGI0OKRU30015_2",
+        "TUTDEMAGI0OKRU30015_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10016",
+      "baseId": "TUTDEMQGI0OK0016",
+      "id": 16,
+      "category": "GameInfo",
+      "question": "Как сохранить собранные мембраны в безопасности во время плавания?",
+      "answers": [
+        "Вернувшись на Базу в порт",
+        "Спрятав их от дирижабля",
+        "Выбросив их в море",
+        "Заперев на дне лодки"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20016",
+        "TUTDEMAGI0OKRU30016_1",
+        "TUTDEMAGI0OKRU30016_2",
+        "TUTDEMAGI0OKRU30016_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10017",
+      "baseId": "TUTDEMQGI0OK0017",
+      "id": 17,
+      "category": "GameInfo",
+      "question": "С помощью каких клавиш управляется парусная лодка?",
+      "answers": [
+        "W, A, S, D и стрелки",
+        "Исключительно мышью",
+        "Только клавишей Пробел",
+        "Только голосом"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20017",
+        "TUTDEMAGI0OKRU30017_1",
+        "TUTDEMAGI0OKRU30017_2",
+        "TUTDEMAGI0OKRU30017_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10020",
+      "baseId": "TUTDEMQGI0OK0020",
+      "id": 20,
+      "category": "GameInfo",
+      "question": "Что делать, если за вами начал погоню дирижабль?",
+      "answers": [
+        "Быстро уплывать к пирсу",
+        "Остановиться и сдаться",
+        "Сбить дирижабль",
+        "Прыгнуть в воду"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20020",
+        "TUTDEMAGI0OKRU30020_1",
+        "TUTDEMAGI0OKRU30020_2",
+        "TUTDEMAGI0OKRU30020_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTDEMQGI0OKRU10043",
+      "baseId": "TUTDEMQGI0OK0043",
+      "id": 43,
+      "category": "GameInfo",
+      "question": "Как прочитать полные правила обучающей игры?",
+      "answers": [
+        "Открыв панель информации",
+        "Перейдя на главную страницу",
+        "Посетив страницу Patreon",
+        "На странице в Facebook"
+      ],
+      "answerUids": [
+        "TUTDEMAGI0OKRU20043",
+        "TUTDEMAGI0OKRU30043_1",
+        "TUTDEMAGI0OKRU30043_2",
+        "TUTDEMAGI0OKRU30043_3"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "TUTORZEP": [
+    {
+      "uid": "TUTMHDEMQTU0OKRU10009",
+      "baseId": "TUTMHDEMQTU0OK0009",
+      "id": 9,
+      "category": "TUTORZEP",
+      "question": "Когда проводится Будапештский международный книжный фестиваль?",
+      "answers": [
+        "В октябре",
+        "В сентябре",
+        "В июне",
+        "В мае"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20009",
+        "TUTMHDEMATU0OKRU30009_1",
+        "TUTMHDEMATU0OKRU30009_2",
+        "TUTMHDEMATU0OKRU30009_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10010",
+      "baseId": "TUTMHDEMQTU0OK0010",
+      "id": 10,
+      "category": "TUTORZEP",
+      "question": "Какой национальности была Сельма Лагерлёф?",
+      "answers": [
+        "Шведский",
+        "датский",
+        "финский",
+        "норвежский"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20010",
+        "TUTMHDEMATU0OKRU30010_1",
+        "TUTMHDEMATU0OKRU30010_2",
+        "TUTMHDEMATU0OKRU30010_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10023",
+      "baseId": "TUTMHDEMQTU0OK0023",
+      "id": 23,
+      "category": "TUTORZEP",
+      "question": "Кто такой ужасающий капитан пиратов из романа «Остров сокровищ»?",
+      "answers": [
+        "Лонг Джон Сильвер",
+        "Капитан Флинт",
+        "Капитан Крюк",
+        "Джек Воробей"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20023",
+        "TUTMHDEMATU0OKRU30023_1",
+        "TUTMHDEMATU0OKRU30023_2",
+        "TUTMHDEMATU0OKRU30023_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10024",
+      "baseId": "TUTMHDEMQTU0OK0024",
+      "id": 24,
+      "category": "TUTORZEP",
+      "question": "Кто возглавляет китобойный корабль «Пекод» против Моби Дика?",
+      "answers": [
+        "Капитан Ахав",
+        "Капитан Немо",
+        "Джим Хокинс",
+        "Робинзон Крузо"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20024",
+        "TUTMHDEMATU0OKRU30024_1",
+        "TUTMHDEMATU0OKRU30024_2",
+        "TUTMHDEMATU0OKRU30024_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10025",
+      "baseId": "TUTMHDEMQTU0OK0025",
+      "id": 25,
+      "category": "TUTORZEP",
+      "question": "В каком романе Жюля Верна рассказывается о группе школьников?",
+      "answers": [
+        "Двухлетний отпуск",
+        "Таинственный остров",
+        "Капитан Немо",
+        "Дети капитана Гранта"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20025",
+        "TUTMHDEMATU0OKRU30025_1",
+        "TUTMHDEMATU0OKRU30025_2",
+        "TUTMHDEMATU0OKRU30025_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10026",
+      "baseId": "TUTMHDEMQTU0OK0026",
+      "id": 26,
+      "category": "TUTORZEP",
+      "question": "Как звали родного спутника Робинзона Крузо?",
+      "answers": [
+        "Пятница",
+        "Суббота",
+        "Четверг",
+        "Джим"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20026",
+        "TUTMHDEMATU0OKRU30026_1",
+        "TUTMHDEMATU0OKRU30026_2",
+        "TUTMHDEMATU0OKRU30026_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10027",
+      "baseId": "TUTMHDEMQTU0OK0027",
+      "id": 27,
+      "category": "TUTORZEP",
+      "question": "Кто заклятый враг Питера Пэна?",
+      "answers": [
+        "Капитан Крюк",
+        "Черная Борода",
+        "Капитан Морган",
+        "Капитан Барбоза"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20027",
+        "TUTMHDEMATU0OKRU30027_1",
+        "TUTMHDEMATU0OKRU30027_2",
+        "TUTMHDEMATU0OKRU30027_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10028",
+      "baseId": "TUTMHDEMQTU0OK0028",
+      "id": 28,
+      "category": "TUTORZEP",
+      "question": "Под песни каких морских существ Одиссей затыкает уши воском?",
+      "answers": [
+        "Ни один из них",
+        "Сирены",
+        "Гарпии",
+        "Русалки"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20028",
+        "TUTMHDEMATU0OKRU30028_1",
+        "TUTMHDEMATU0OKRU30028_2",
+        "TUTMHDEMATU0OKRU30028_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10029",
+      "baseId": "TUTMHDEMQTU0OK0029",
+      "id": 29,
+      "category": "TUTORZEP",
+      "question": "Какие существа населяют этот остров в сатире Джонатана Свифта?",
+      "answers": [
+        "лилипуты",
+        "Гиганты",
+        "Овца",
+        "Я пожимаю плечами"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20029",
+        "TUTMHDEMATU0OKRU30029_1",
+        "TUTMHDEMATU0OKRU30029_2",
+        "TUTMHDEMATU0OKRU30029_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10030",
+      "baseId": "TUTMHDEMQTU0OK0030",
+      "id": 30,
+      "category": "TUTORZEP",
+      "question": "Кто этот молодой дворянин, четвертый присоединившийся к королевским телохранителям?",
+      "answers": [
+        "Д'Артаньян",
+        "Афон",
+        "Арамис",
+        "Портос"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20030",
+        "TUTMHDEMATU0OKRU30030_1",
+        "TUTMHDEMATU0OKRU30030_2",
+        "TUTMHDEMATU0OKRU30030_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10031",
+      "baseId": "TUTMHDEMQTU0OK0031",
+      "id": 31,
+      "category": "TUTORZEP",
+      "question": "Какие обычные сооружения Дон Кихот считает злыми гигантами?",
+      "answers": [
+        "Ветряные мельницы",
+        "Маяки",
+        "Кластеры",
+        "точки зрения"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20031",
+        "TUTMHDEMATU0OKRU30031_1",
+        "TUTMHDEMATU0OKRU30031_2",
+        "TUTMHDEMATU0OKRU30031_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10032",
+      "baseId": "TUTMHDEMQTU0OK0032",
+      "id": 32,
+      "category": "TUTORZEP",
+      "question": "Кто главный герой Р. А. Сальваторе?",
+      "answers": [
+        "Дриззт До'Урден",
+        "Санд дан Глокта",
+        "Друсс",
+        "Рейстлин"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20032",
+        "TUTMHDEMATU0OKRU30032_1",
+        "TUTMHDEMATU0OKRU30032_2",
+        "TUTMHDEMATU0OKRU30032_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10034",
+      "baseId": "TUTMHDEMQTU0OK0034",
+      "id": 34,
+      "category": "TUTORZEP",
+      "question": "Героем какого писателя является лорд Хэвлок Ветинари?",
+      "answers": [
+        "Терри Пратчетт",
+        "Р. А. Сальваторе",
+        "Майкл Энде",
+        "Джеффри Стоун"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20034",
+        "TUTMHDEMATU0OKRU30034_1",
+        "TUTMHDEMATU0OKRU30034_2",
+        "TUTMHDEMATU0OKRU30034_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10035",
+      "baseId": "TUTMHDEMQTU0OK0035",
+      "id": 35,
+      "category": "TUTORZEP",
+      "question": "Какого легендарного воина сыграл Арнольд Шварценеггер?",
+      "answers": [
+        "Конан-варвар",
+        "Друсс Легенда",
+        "Темный Мерсант",
+        "Том Бомбадил"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20035",
+        "TUTMHDEMATU0OKRU30035_1",
+        "TUTMHDEMATU0OKRU30035_2",
+        "TUTMHDEMATU0OKRU30035_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10036",
+      "baseId": "TUTMHDEMQTU0OK0036",
+      "id": 36,
+      "category": "TUTORZEP",
+      "question": "В каком фантастическом мире совершает подвиги герой Леон Сильвер?",
+      "answers": [
+        "Херувион (Cherubion)",
+        "Инев (Ynev)",
+        "Ворлук (Worluk)",
+        "Аммеруния"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20036",
+        "TUTMHDEMATU0OKRU30036_1",
+        "TUTMHDEMATU0OKRU30036_2",
+        "TUTMHDEMATU0OKRU30036_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10038",
+      "baseId": "TUTMHDEMQTU0OK0038",
+      "id": 38,
+      "category": "TUTORZEP",
+      "question": "Сколько дней Вилли Фогг путешествовал вокруг света?",
+      "answers": [
+        "Семьдесят девять",
+        "Восемьдесят",
+        "Восемьдесят один",
+        "В конце концов, это не сработало"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20038",
+        "TUTMHDEMATU0OKRU30038_1",
+        "TUTMHDEMATU0OKRU30038_2",
+        "TUTMHDEMATU0OKRU30038_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10039",
+      "baseId": "TUTMHDEMQTU0OK0039",
+      "id": 39,
+      "category": "TUTORZEP",
+      "question": "О каком колесе писал Брэндон Сандерсон?",
+      "answers": [
+        "Время",
+        "Судьба",
+        "Колесница",
+        "Удача"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20039",
+        "TUTMHDEMATU0OKRU30039_1",
+        "TUTMHDEMATU0OKRU30039_2",
+        "TUTMHDEMATU0OKRU30039_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10040",
+      "baseId": "TUTMHDEMQTU0OK0040",
+      "id": 40,
+      "category": "TUTORZEP",
+      "question": "Писал ли Ли Бардуго о третьем доме?",
+      "answers": [
+        "Девятый",
+        "Десятый",
+        "Седьмой",
+        "Первый"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20040",
+        "TUTMHDEMATU0OKRU30040_1",
+        "TUTMHDEMATU0OKRU30040_2",
+        "TUTMHDEMATU0OKRU30040_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10041",
+      "baseId": "TUTMHDEMQTU0OK0041",
+      "id": 41,
+      "category": "TUTORZEP",
+      "question": "С чьей цитаты начинается книга «Ожерелье принцессы»?",
+      "answers": [
+        "Бела Хамвас",
+        "Александр Дюма",
+        "Шандор Веорес",
+        "Лао Цзы"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20041",
+        "TUTMHDEMATU0OKRU30041_1",
+        "TUTMHDEMATU0OKRU30041_2",
+        "TUTMHDEMATU0OKRU30041_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10042",
+      "baseId": "TUTMHDEMQTU0OK0042",
+      "id": 42,
+      "category": "TUTORZEP",
+      "question": "По мнению Шелби Ван Пелт, сколько рук у счастья?",
+      "answers": [
+        "Восемь",
+        "Четыре",
+        "Сейчас половина четвертого",
+        "Два"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20042",
+        "TUTMHDEMATU0OKRU30042_1",
+        "TUTMHDEMATU0OKRU30042_2",
+        "TUTMHDEMATU0OKRU30042_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10044",
+      "baseId": "TUTMHDEMQTU0OK0044",
+      "id": 44,
+      "category": "TUTORZEP",
+      "question": "Где Агата Кристи написала значительную часть своих знаменитых криминальных романов?",
+      "answers": [
+        "Сидя в своей ванне",
+        "В офисе своего издательства",
+        "В кофейне в Лондоне",
+        "В своем кабинете"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20044",
+        "TUTMHDEMATU0OKRU30044_1",
+        "TUTMHDEMATU0OKRU30044_2",
+        "TUTMHDEMATU0OKRU30044_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10045",
+      "baseId": "TUTMHDEMQTU0OK0045",
+      "id": 45,
+      "category": "TUTORZEP",
+      "question": "Почему Дж.К. Первая книга Роулинг о Гарри Поттере в кофейне?",
+      "answers": [
+        "Потому что ему было холодно дома",
+        "Ему нравился фоновый шум",
+        "Он смоделировал персонажей по гостям.",
+        "Он получил бесплатный кофе и пирожное"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20045",
+        "TUTMHDEMATU0OKRU30045_1",
+        "TUTMHDEMATU0OKRU30045_2",
+        "TUTMHDEMATU0OKRU30045_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10046",
+      "baseId": "TUTMHDEMQTU0OK0046",
+      "id": 46,
+      "category": "TUTORZEP",
+      "question": "Какую книгу Стивен Кинг не помнит, как написал из-за наркотика?",
+      "answers": [
+        "Прохладный",
+        "Сияние",
+        "(Оно)",
+        "Кладбище домашних животных"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20046",
+        "TUTMHDEMATU0OKRU30046_1",
+        "TUTMHDEMATU0OKRU30046_2",
+        "TUTMHDEMATU0OKRU30046_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10047",
+      "baseId": "TUTMHDEMQTU0OK0047",
+      "id": 47,
+      "category": "TUTORZEP",
+      "question": "Какой рок-музыкант хотел сыграть роль Голлума в фильме «Властелин колец»?",
+      "answers": [
+        "Джон Леннон",
+        "Бон Джови",
+        "Эксл Роуз",
+        "Оззи Осборн"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20047",
+        "TUTMHDEMATU0OKRU30047_1",
+        "TUTMHDEMATU0OKRU30047_2",
+        "TUTMHDEMATU0OKRU30047_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10048",
+      "baseId": "TUTMHDEMQTU0OK0048",
+      "id": 48,
+      "category": "TUTORZEP",
+      "question": "Что вдохновило Фрэнка Герберта на написание «Дюны»?",
+      "answers": [
+        "Правительственный проект",
+        "Отчет NASA о поверхности Марса",
+        "Отпуск в пустыне Орегона",
+        "Кошмарный сон"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20048",
+        "TUTMHDEMATU0OKRU30048_1",
+        "TUTMHDEMATU0OKRU30048_2",
+        "TUTMHDEMATU0OKRU30048_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10049",
+      "baseId": "TUTMHDEMQTU0OK0049",
+      "id": 49,
+      "category": "TUTORZEP",
+      "question": "Что зарегистрировал как товарный знак Эдгар Райс Берроуз?",
+      "answers": [
+        "Крик Тарзана",
+        "Язык горилл",
+        "Имя Тарзан",
+        "Титул «Властелин джунглей»"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20049",
+        "TUTMHDEMATU0OKRU30049_1",
+        "TUTMHDEMATU0OKRU30049_2",
+        "TUTMHDEMATU0OKRU30049_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10050",
+      "baseId": "TUTMHDEMQTU0OK0050",
+      "id": 50,
+      "category": "TUTORZEP",
+      "question": "Что Пиноккио делает со сверчками в оригинальной книге?",
+      "answers": [
+        "Он расплющит его молотком",
+        "Он запирает его в темном спичечном коробке",
+        "Он продает его бродячему цирку.",
+        "Он выбрасывает его в окно"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20050",
+        "TUTMHDEMATU0OKRU30050_1",
+        "TUTMHDEMATU0OKRU30050_2",
+        "TUTMHDEMATU0OKRU30050_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10051",
+      "baseId": "TUTMHDEMQTU0OK0051",
+      "id": 51,
+      "category": "TUTORZEP",
+      "question": "Какая классическая книга вдохновила создателей Бэтмена?",
+      "answers": [
+        "Дракула",
+        "Франкенштейн",
+        "Человек-невидимка",
+        "Доктор Джекил и мистер Хайд"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20051",
+        "TUTMHDEMATU0OKRU30051_1",
+        "TUTMHDEMATU0OKRU30051_2",
+        "TUTMHDEMATU0OKRU30051_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10052",
+      "baseId": "TUTMHDEMQTU0OK0052",
+      "id": 52,
+      "category": "TUTORZEP",
+      "question": "Откуда взялся знаменитый зеленый цифровой код Матрицы?",
+      "answers": [
+        "Из японской кулинарной книги жены дизайнера",
+        "Из учебника русской физики.",
+        "Из каталога старой шведской мебельной фабрики.",
+        "Из древнеегипетского папируса"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20052",
+        "TUTMHDEMATU0OKRU30052_1",
+        "TUTMHDEMATU0OKRU30052_2",
+        "TUTMHDEMATU0OKRU30052_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10053",
+      "baseId": "TUTMHDEMQTU0OK0053",
+      "id": 53,
+      "category": "TUTORZEP",
+      "question": "Какое реальное событие вдохновило «Красную свадьбу» «Игры престолов»?",
+      "answers": [
+        "Средневековая шотландская резня, Черная вечеря.",
+        "Свадьба-месть киевской княгини Ольги",
+        "Французская Варфоломеевская ночь",
+        "II. Скандальный свадебный ужин короля Англии Эдуарда"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20053",
+        "TUTMHDEMATU0OKRU30053_1",
+        "TUTMHDEMATU0OKRU30053_2",
+        "TUTMHDEMATU0OKRU30053_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10063",
+      "baseId": "TUTMHDEMQTU0OK0063",
+      "id": 63,
+      "category": "TUTORZEP",
+      "question": "Какой фиктивный факт в «Коде да Винчи» официально опроверг Лувр?",
+      "answers": [
+        "Стеклянная пирамида состоит из 666 стеклянных пластин.",
+        "За Моной Лизой можно увидеть инопланетянина",
+        "Что под музеем находится настоящая могила Иисуса",
+        "Что директором музея был гроссмейстер средневекового рыцарского ордена."
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20063",
+        "TUTMHDEMATU0OKRU30063_1",
+        "TUTMHDEMATU0OKRU30063_2",
+        "TUTMHDEMATU0OKRU30063_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10064",
+      "baseId": "TUTMHDEMQTU0OK0064",
+      "id": 64,
+      "category": "TUTORZEP",
+      "question": "Что или кто подал Уильяму Стейгу идею имени Шрека?",
+      "answers": [
+        "На идише слово «Шрек».",
+        "Шотландское болото под названием Скрик.",
+        "Средневековый немецкий наемник по имени Шрек.",
+        "Его сосед по имени Шрек"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20064",
+        "TUTMHDEMATU0OKRU30064_1",
+        "TUTMHDEMATU0OKRU30064_2",
+        "TUTMHDEMATU0OKRU30064_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10065",
+      "baseId": "TUTMHDEMQTU0OK0065",
+      "id": 65,
+      "category": "TUTORZEP",
+      "question": "На ком Ян Флеминг смоделировал Q из эпизодов о Джеймсе Бонде?",
+      "answers": [
+        "А II. об эксперте по бомбам времен Второй мировой войны",
+        "О лондонском часовщике",
+        "О помощнике Альберта Эйнштейна",
+        "О себе"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20065",
+        "TUTMHDEMATU0OKRU30065_1",
+        "TUTMHDEMATU0OKRU30065_2",
+        "TUTMHDEMATU0OKRU30065_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10066",
+      "baseId": "TUTMHDEMQTU0OK0066",
+      "id": 66,
+      "category": "TUTORZEP",
+      "question": "Кем был граф Дракула в реальной истории?",
+      "answers": [
+        "Князь Влад Цепеш (Колосажатель)",
+        "Безумный баварский король",
+        "Испанский инквизитор",
+        "Лондонский серийный убийца"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20066",
+        "TUTMHDEMATU0OKRU30066_1",
+        "TUTMHDEMATU0OKRU30066_2",
+        "TUTMHDEMATU0OKRU30066_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10067",
+      "baseId": "TUTMHDEMQTU0OK0067",
+      "id": 67,
+      "category": "TUTORZEP",
+      "question": "Какая фобия вдохновила Стэна Ли написать «Человека-паука»?",
+      "answers": [
+        "Он ненавидел мух",
+        "Это было просторно",
+        "Он был пауком",
+        "Он ненавидел маски"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20067",
+        "TUTMHDEMATU0OKRU30067_1",
+        "TUTMHDEMATU0OKRU30067_2",
+        "TUTMHDEMATU0OKRU30067_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10068",
+      "baseId": "TUTMHDEMQTU0OK0068",
+      "id": 68,
+      "category": "TUTORZEP",
+      "question": "Что натолкнуло Майкла Крайтона на мысль написать «Парк Юрского периода»?",
+      "answers": [
+        "Он интересовался клонированием генов.",
+        "Он хотел найти самое дорогое мясо",
+        "Кошмар динозавра",
+        "Школьный проект ее маленькой девочки"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20068",
+        "TUTMHDEMATU0OKRU30068_1",
+        "TUTMHDEMATU0OKRU30068_2",
+        "TUTMHDEMATU0OKRU30068_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10069",
+      "baseId": "TUTMHDEMQTU0OK0069",
+      "id": 69,
+      "category": "TUTORZEP",
+      "question": "Какой известный литературный персонаж был вдохновлен реальным пухлым мальчиком?",
+      "answers": [
+        "Кристофер Робин из Винни-Пуха",
+        "Невилл Долгопупс из «Гарри Поттера»",
+        "Август Глуп из «Чарли и шоколадной фабрики»",
+        "Артур Гомбоц из сказок о Пом Поме"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20069",
+        "TUTMHDEMATU0OKRU30069_1",
+        "TUTMHDEMATU0OKRU30069_2",
+        "TUTMHDEMATU0OKRU30069_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUTMHDEMQTU0OKRU10070",
+      "baseId": "TUTMHDEMQTU0OK0070",
+      "id": 70,
+      "category": "TUTORZEP",
+      "question": "Что закрыли в честь Виктора Гюго, когда он умер",
+      "answers": [
+        "Все бордели Парижа",
+        "Ваша любимая кофейня",
+        "Ипподром",
+        "Ваши любимые пабы"
+      ],
+      "answerUids": [
+        "TUTMHDEMATU0OKRU20070",
+        "TUTMHDEMATU0OKRU30070_1",
+        "TUTMHDEMATU0OKRU30070_2",
+        "TUTMHDEMATU0OKRU30070_3"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "TRUE": [
+    {
+      "uid": "MHQTR0OKRU10002",
+      "baseId": "MHQTR0OK0002",
+      "id": 2,
+      "category": "TRUE",
+      "isStaked": true,
+      "question": "Кто написал: «Отче наш, сущий на небесах»?",
+      "answers": [
+        "Лаци Лукач",
+        "Св. Лука",
+        "Константин VII",
+        "Иисус"
+      ],
+      "answerUids": [
+        "MHATR0OKRU20002",
+        "MHATR0OKRU30002_1",
+        "MHATR0OKRU30002_2",
+        "MHATR0OKRU30002_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQTR0OKRU10013",
+      "baseId": "MHQTR0OK0013",
+      "id": 13,
+      "category": "TRUE",
+      "isStaked": true,
+      "question": "Кто главный герой фэнтези-романа «Волчьи братья» (Farkastestvérek)?",
+      "answers": [
+        "Олмуд Драконий Шлем",
+        "Ящероголовый Хессгерон",
+        "Сонный Квазел",
+        "Хитрый Кугелл"
+      ],
+      "answerUids": [
+        "MHATR0OKRU20013",
+        "MHATR0OKRU30013_1",
+        "MHATR0OKRU30013_2",
+        "MHATR0OKRU30013_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQTR0OKRU10033",
+      "baseId": "MHQTR0OK0033",
+      "id": 33,
+      "category": "TRUE",
+      "isStaked": true,
+      "question": "В каком романе главным героем является Скандaр Граун?",
+      "answers": [
+        "Слово Хаоса (A káosz szava)",
+        "Битва за Камень Ночи",
+        "Магический кристалл",
+        "Бесконечная история"
+      ],
+      "answerUids": [
+        "MHATR0OKRU20033",
+        "MHATR0OKRU30033_1",
+        "MHATR0OKRU30033_2",
+        "MHATR0OKRU30033_3"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "FALSE": [
+    {
+      "uid": "MHQFA0OKRU10003",
+      "baseId": "MHQFA0OK0003",
+      "id": 3,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Как называется антология Жолта Букроша, вышедшая в 2024 году?",
+      "answers": [
+        "Водка и кровь",
+        "Зеркало и кровь",
+        "Пламя и кровь",
+        "Вода и кровь"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20003",
+        "MHAFA0OKRU30003_1",
+        "MHAFA0OKRU30003_2",
+        "MHAFA0OKRU30003_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10004",
+      "baseId": "MHQFA0OK0004",
+      "id": 4,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Чьим литературным псевдонимом является Раймонд Дариени?",
+      "answers": [
+        "Иштван Немере",
+        "Иштван Немеш",
+        "Ласло Л. Лёринц",
+        "Шандор Сигети"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20004",
+        "MHAFA0OKRU30004_1",
+        "MHAFA0OKRU30004_2",
+        "MHAFA0OKRU30004_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10005",
+      "baseId": "MHQFA0OK0005",
+      "id": 5,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Чьим литературным псевдонимом является Джессика Дж. Брутал?",
+      "answers": [
+        "Иштван Немеш",
+        "Иштван Немере",
+        "Шандор Селеши",
+        "Тибор Санто"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20005",
+        "MHAFA0OKRU30005_1",
+        "MHAFA0OKRU30005_2",
+        "MHAFA0OKRU30005_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10006",
+      "baseId": "MHQFA0OK0006",
+      "id": 6,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Какой литературный псевдоним принадлежит Шандору Селеши?",
+      "answers": [
+        "Anthony Sheenard",
+        "Gordon Spencer",
+        "Jay Henorex",
+        "Gabriel Wraith"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20006",
+        "MHAFA0OKRU30006_1",
+        "MHAFA0OKRU30006_2",
+        "MHAFA0OKRU30006_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10007",
+      "baseId": "MHQFA0OK0007",
+      "id": 7,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "К какой серии относится роман «Полуночный горизонт» (Midnight Horizon)?",
+      "answers": [
+        "STAR WARS",
+        "World of WarCraft",
+        "WarHammer",
+        "MARVEL"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20007",
+        "MHAFA0OKRU30007_1",
+        "MHAFA0OKRU30007_2",
+        "MHAFA0OKRU30007_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10008",
+      "baseId": "MHQFA0OK0008",
+      "id": 8,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Какое из произведений НЕ принадлежит Шейле Мартенс?",
+      "answers": [
+        "Медовое счастье",
+        "Съёмки в пустыне",
+        "Плыви по течению",
+        "Золотая клетка"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20008",
+        "MHAFA0OKRU30008_1",
+        "MHAFA0OKRU30008_2",
+        "MHAFA0OKRU30008_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10011",
+      "baseId": "MHQFA0OK0011",
+      "id": 11,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Под каким названием в 2025 году вышла книга Тимеи Коппань?",
+      "answers": [
+        "Чемпион Владычицы Озера",
+        "Благословение Владычицы Озера",
+        "Возвышение Аммерунии",
+        "Падение Аммерунии"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20011",
+        "MHAFA0OKRU30011_1",
+        "MHAFA0OKRU30011_2",
+        "MHAFA0OKRU30011_3"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "MHQFA0OKRU10037",
+      "baseId": "MHQFA0OK0037",
+      "id": 37,
+      "category": "FALSE",
+      "isStaked": false,
+      "question": "Кто не колдовал на Земле?",
+      "answers": [
+        "Гэндальф",
+        "Мерлин",
+        "Дамблдор",
+        "Панорамикс"
+      ],
+      "answerUids": [
+        "MHAFA0OKRU20037",
+        "MHAFA0OKRU30037_1",
+        "MHAFA0OKRU30037_2",
+        "MHAFA0OKRU30037_3"
+      ],
+      "correctIndex": 0
+    }
+  ]
+}

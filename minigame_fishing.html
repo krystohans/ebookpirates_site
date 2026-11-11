@@ -49,17 +49,39 @@
         params.set('v', Date.now().toString());
       }
 
-      const targetUrl = 'demojatek/tutorial_fixed.html?' + params.toString();
+      const targetUrl = 'Membrane_Hunting/tutorial_fixed.html?' + params.toString();
       frame.src = targetUrl;
+
+      // Backend hívások továbbítása a fő alkalmazás (app.js) felé
+// === [#HEX:F.06.69.00] START | name: callBackend | lines: 8 ===
+// @calls: none | @calledBy: none
+      window.callBackend = function () {
+        if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
+          return window.parent.callBackend.apply(window.parent, arguments);
+        }
+        if (window.top && window.top !== window && typeof window.top.callBackend === 'function') {
+          return window.top.callBackend.apply(window.top, arguments);
+        }
+      };
+// === [#HEX:F.06.69.00] END ===
 
       // Üzenetek közvetítése a szülő ablak (app.js) felé vagy önálló Live Server átirányítás
       window.addEventListener('message', function (event) {
-        if (event.data && (event.data.source === 'threejs-minigame' || event.data.action === 'threejs_loaded' || event.data.action === 'save_game_state')) {
+        if (!event.data) return;
+        if (
+          event.data.source === 'threejs-minigame' ||
+          event.data.type === 'EBOOK_PIRATES_TUTORIAL' ||
+          event.data.action === 'threejs_loaded' ||
+          event.data.action === 'save_game_state'
+        ) {
           if (window.parent && window.parent !== window) {
             window.parent.postMessage(event.data, '*');
           } else if (event.data.status === 'COMPLETED') {
             const targetPage = event.data.targetPage || (event.data.exitType === 'DESTROYED' ? 'hajomuhely_oldal' : 'fedelzet_oldal');
             window.location.href = targetPage + '.html';
+          } else if (event.data.action === 'navigate_to_page') {
+            const page = event.data.page || 'kikoto_oldal';
+            window.location.href = 'index.html?page=' + encodeURIComponent(page) + (event.data.auto_workshop ? '&auto_workshop=1' : '');
           }
         }
       });

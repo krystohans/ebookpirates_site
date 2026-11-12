@@ -453,7 +453,7 @@
           <span id="tb-durability-count">10</span>
         </div>
         <div class="counter-box" title="Szállított hártyák">
-          <img src="assets/images/hordo_hartya_2-removebg-preview.png" class="counter-icon" title="Szállított hártyák">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/hordo_hartya_2-removebg-preview.png" class="counter-icon" title="Szállított hártyák">
           <span id="tb-carried-count">0</span>
         </div>
         <div class="counter-box" title="Bázison tárolt hártyák">
@@ -787,7 +787,7 @@
       console.log(`[Auto-Instancing] Kész! Összesen ${totalSaved} db háló lett összevonva, ami megmenti a videókártyát az összeomlástól!`);
     }
 
-    new GLTFLoader().load('models/FullTrack_Small.glb', function (gltf) {
+    new GLTFLoader().load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/FullTrack_Small.glb', function (gltf) {
       fullTrack = gltf.scene;
       window.fullTrack = fullTrack; // Hozzáférhetővé tesszük a spawn funkciók számára!
 
@@ -1159,7 +1159,7 @@
     });
 
     const gltfLoader = new GLTFLoader();
-    gltfLoader.load('./models/pirates_assets/SM_Prop_Lantern_01.glb', (gltf) => {
+    gltfLoader.load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/pirates_assets/SM_Prop_Lantern_01.glb', (gltf) => {
       const smallLantern1 = gltf.scene.clone();
       smallLantern1.position.set(14.5, 1.8, -97.4);
       smallLantern1.rotation.y = -16 * (Math.PI / 180);
@@ -1195,7 +1195,7 @@
       mainRockLanternLight.position.y += 2.0;
       scene.add(mainRockLanternLight);
     });
-    gltfLoader.load('./models/pirates_assets/SM_Prop_Lantern_Attachment_01.glb', (gltf) => {
+    gltfLoader.load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/pirates_assets/SM_Prop_Lantern_Attachment_01.glb', (gltf) => {
       const lantern1 = gltf.scene.clone();
       lantern1.position.set(-15.7, 8.3, -119.2);
       lantern1.rotation.y = 53 * (Math.PI / 180);
@@ -1217,7 +1217,7 @@
       scene.add(lantern2Light);
       window.lantern2Light = lantern2Light;
     });
-    gltfLoader.load('./models/boat.glb', (gltf) => {
+    gltfLoader.load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/boat.glb', (gltf) => {
       const model = gltf.scene;
 
       model.scale.set(30, 30, 30);
@@ -1517,7 +1517,7 @@
 
     // 🌟 Betöltjük a Unity-ből kiexportált valódi 3D Hártya modellt (models/hartya.glb)
     let hartyaTemplate = null;
-    new GLTFLoader().load('models/hartya.glb', function (gltf) {
+    new GLTFLoader().load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/hartya.glb', function (gltf) {
       hartyaTemplate = gltf.scene;
       // Drasztikus méretnövelés (az eddigi 0.3 helyett 1.5-re, azaz 10x nagyobb, mint az eredeti 0.15 volt!)
       hartyaTemplate.scale.set(1.5, 1.5, 1.5);
@@ -2367,7 +2367,7 @@
       const loader = new GLTFLoader();
 
       // Láda test betöltése
-      loader.load('./models/pirates_assets/SM_Prop_Chest_Treasure_01.glb', function(gltf) {
+      loader.load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/pirates_assets/SM_Prop_Chest_Treasure_01.glb', function(gltf) {
         window.chestModel = gltf.scene;
         window.chestModel.position.set(-382, 2.0, 1238);
         window.chestModel.scale.set(250, 250, 250);
@@ -2441,7 +2441,7 @@
     function showChestAtPier(sceneRef) {
       if (!window.homePos) return;
       const loader = new GLTFLoader();
-      loader.load('./models/pirates_assets/SM_Prop_Chest_Treasure_01.glb', function(gltf) {
+      loader.load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/pirates_assets/SM_Prop_Chest_Treasure_01.glb', function(gltf) {
         const pierChest = gltf.scene;
         pierChest.position.set(8, 1.5, -99);
         pierChest.scale.set(250, 250, 250);
@@ -2449,7 +2449,7 @@
         window.eogChestAtPier = pierChest;
         console.log('🏆 Kincsesláda megjelent a mólón (fény nélkül)!');
       });
-      loader.load('./models/pirates_assets/SM_Prop_Chest_Lid_01.glb', function(gltf) {
+      loader.load('https://storage.googleapis.com/kalozsziget-assets/tutorial/models/pirates_assets/SM_Prop_Chest_Lid_01.glb', function(gltf) {
         const lid = gltf.scene;
         lid.position.set(8, 1.5, -99);
         lid.scale.set(250, 250, 250);

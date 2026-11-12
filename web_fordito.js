@@ -138,6 +138,8 @@ const translations = {
         'header_logout': 'Hebok elhagyása',
         'header_fullscreen': 'Teljes képernyő',
         'header_install': 'Alkalmazás telepítése',
+        'header_lang_select': 'Nyelv kiválasztása',
+        'header_settings': 'Beállítások',
         'loading_switch_landscape': '⚓ Váltás teljes képernyős fekvő módra...',
         'pwa_already_installed_or_manual': 'Az alkalmazás hozzáadásához koppints a böngésző megosztás / menü gombjára, majd válaszd a \'Főképernyőhöz adás\' opciót!',
 
@@ -1439,6 +1441,8 @@ const translations = {
         'header_logout': 'Leaving Hebok',
         'header_fullscreen': 'Fullscreen',
         'header_install': 'Install App',
+        'header_lang_select': 'Select language',
+        'header_settings': 'Settings',
         'loading_switch_landscape': '⚓ Switching to fullscreen landscape...',
         'pwa_already_installed_or_manual': 'To install the app, tap your browser share/menu button and select \'Add to Home Screen\'!',
 
@@ -1576,7 +1580,7 @@ const translations = {
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
 // === [#HEX:F.04.17E.00] START | name: does | lines: 1046 ===
-// @calls: [#HEX:A.06.10.08], [#HEX:B.07.38.00], [#HEX:F.04.1CF.00], [#HEX:F.04.1F.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:D.01.7E.00], [#HEX:F.04.1CF.00], [#HEX:F.04.13.00], [#HEX:K.05.19.00], [#HEX:A.06.10.08] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -2747,6 +2751,8 @@ const translations = {
         'header_logout': 'Hebok verlassen',
         'header_fullscreen': 'Vollbild',
         'header_install': 'App installieren',
+        'header_lang_select': 'Sprache auswählen',
+        'header_settings': 'Einstellungen',
         'loading_switch_landscape': '⚓ Wechsel zu Vollbild-Querformat...',
         'pwa_already_installed_or_manual': 'Um die App zu installieren, tippe auf das Browser-Menü und wähle \'Zum Startbildschirm hinzufügen\'!',
 
@@ -4034,6 +4040,8 @@ const translations = {
         'header_logout': 'Quitter Hebok',
         'header_fullscreen': 'Plein écran',
         'header_install': 'Installer l\'application',
+        'header_lang_select': 'Sélectionner la langue',
+        'header_settings': 'Paramètres',
         'loading_switch_landscape': '⚓ Basculer en mode paysage plein écran...',
         'pwa_already_installed_or_manual': 'Pour installer l\'application, appuyez sur le menu du navigateur et sélectionnez \'Ajouter à l\'écran d\'accueil\' !',
 
@@ -5329,6 +5337,8 @@ const translations = {
         'header_logout': 'Abandonar Hebok',
         'header_fullscreen': 'Pantalla completa',
         'header_install': 'Instalar aplicación',
+        'header_lang_select': 'Seleccionar idioma',
+        'header_settings': 'Ajustes',
         'loading_switch_landscape': '⚓ Cambiando a modo horizontal de pantalla completa...',
         'pwa_already_installed_or_manual': 'Para instalar la aplicación, toca el menú del navegador y selecciona \'Añadir a la pantalla de inicio\'!',
 
@@ -6615,6 +6625,8 @@ const translations = {
         'header_logout': 'Opuszczenie Hebok',
         'header_fullscreen': 'Pełny ekran',
         'header_install': 'Zainstaluj aplikację',
+        'header_lang_select': 'Wybierz język',
+        'header_settings': 'Ustawienia',
         'loading_switch_landscape': '⚓ Przełączanie na pełnoekranowy tryb poziomy...',
         'pwa_already_installed_or_manual': 'Aby zainstalować aplikację, dotknij menu przeglądarki i wybierz \'Dodaj do ekranu głównego\'!',
 
@@ -7901,6 +7913,8 @@ const translations = {
         'header_logout': 'Покинуть Hebok',
         'header_fullscreen': 'Полноэкранный режим',
         'header_install': 'Установить приложение',
+        'header_lang_select': 'Выбрать язык',
+        'header_settings': 'Настройки',
         'loading_switch_landscape': '⚓ Переключение в полноэкранный альбомный режим...',
         'pwa_already_installed_or_manual': 'Чтобы установить приложение, нажмите меню браузера и выберите \'На главный экран\'!',
 
@@ -9529,7 +9543,7 @@ function t(key) {
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
 // === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
-// @calls: [#HEX:F.04.180.00], [#HEX:F.08.07.00], [#HEX:F.08.0B.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
+// @calls: [#HEX:F.08.0B.00], [#HEX:F.04.180.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;

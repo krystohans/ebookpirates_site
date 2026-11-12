@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eBookPirates – Kalózsziget 3D Tutorial</title>
-  <link rel="stylesheet" href="style.css?v=20261026_72">
+  <link rel="stylesheet" href="style.css?v=20261112_m332">
 
   <!-- Beviteli mező stílus – LoginMenu.html-ből átemelve, hogy ne legyen fehér -->
   <style>
@@ -146,6 +146,15 @@
 <body class="welcome-mode step-0">
   <div id="game-wrapper">
     <canvas id="c"></canvas>
+
+    <!-- 3D Betöltőképernyő -->
+    <div id="game-loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(ellipse at center, #1b3245 0%, #0b1520 100%); z-index: 99999; color: #f5deb3; font-family: 'Briskb', 'Courier New', monospace; pointer-events: none; transition: opacity 0.5s ease-out;">
+      <div style="font-size: 26px; font-weight: bold; margin-bottom: 12px; letter-spacing: 2px;">🏴‍☠️ KALÓZSZIGET 3D</div>
+      <div id="game-loading-status" style="font-size: 18px; margin-bottom: 15px; color: #ffd700;">3D Világ letöltése a felhőből...</div>
+      <div style="width: 320px; height: 14px; background: rgba(0,0,0,0.6); border: 2px solid #8b5a2b; border-radius: 8px; overflow: hidden; padding: 2px;">
+        <div id="game-loading-bar" style="width: 15%; height: 100%; background: linear-gradient(90deg, #d4af37, #ffd700); border-radius: 4px; transition: width 0.2s ease;"></div>
+      </div>
+    </div>
 
     <!-- TopBar Dinamikus Konténer -->
     <div id="topbar-container"></div>
@@ -494,7 +503,7 @@
     })();
   </script>
   <script src="quiz_manager.js?v=20261108_071000"></script>
-  <script type="module" src="script.js?v=1794129778"></script>
+  <script type="module" src="script.js?v=20261112_m332"></script>
 </body>
 
 </html>

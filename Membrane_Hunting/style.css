@@ -1,6 +1,31 @@
+#ingame-popup-toast.controls-popup-mode[style*="display: none"],
+#zozo-ingame-monolog-container.controls-popup-mode[style*="display: none"] {
+  display: none !important;
+}
 @font-face {
   font-family: 'Briskb';
-  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+}
+
+@font-face {
+  font-family: 'Briskb';
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'BriskB';
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+}
+
+@font-face {
+  font-family: 'BriskB';
+  src: url('assets/fonts/Briskb.otf') format('opentype'),
+       url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
+  font-weight: bold;
 }
 
 * {
@@ -109,11 +134,6 @@ canvas {
   text-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
 }
 
-@font-face {
-  font-family: 'Briskb';
-  src: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf") format('opentype');
-  font-weight: bold;
-}
 
 /* ─── ZOZÓ WELCOME OVERLAY & PÁRBESZÉD UI ─── */
 #zozo-welcome-overlay {
@@ -232,22 +252,52 @@ canvas {
   top: 77.5%;
   width: 1000px;
   min-height: 175px;
-  padding: 40px 112px 30px 112px;
+  padding: 38px 140px 28px 140px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box !important;
 }
 .welcome-mode.step-0 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 84vh !important; }
 .welcome-mode.step-0 #zozo-dialogue-text {
-  font-size: 28px;
-  line-height: 1.25;
+  font-size: 25px;
+  line-height: 1.25 !important;
   text-align: center;
   width: 100%;
   min-height: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
+  font-weight: bold;
+}
+
+/* Step 0 pontos nyelvi méretek */
+body.lang-de.step-0 #zozo-dialogue-text,
+body[data-lang="de"].step-0 #zozo-dialogue-text,
+body.lang-en.step-0 #zozo-dialogue-text,
+body[data-lang="en"].step-0 #zozo-dialogue-text,
+body.lang-fr.step-0 #zozo-dialogue-text,
+body[data-lang="fr"].step-0 #zozo-dialogue-text {
+  font-size: 26px;
+}
+
+body.lang-hu.step-0 #zozo-dialogue-text,
+body[data-lang="hu"].step-0 #zozo-dialogue-text {
+  font-size: 25px;
+}
+
+body.lang-es.step-0 #zozo-dialogue-text,
+body[data-lang="es"].step-0 #zozo-dialogue-text {
+  font-size: 21px;
+}
+
+body.lang-ru.step-0 #zozo-dialogue-text,
+body[data-lang="ru"].step-0 #zozo-dialogue-text,
+body.lang-pl.step-0 #zozo-dialogue-text,
+body[data-lang="pl"].step-0 #zozo-dialogue-text {
+  font-size: 24.5px;
 }
 
 /* ─── 2. WELCOME BOX (STEP-1) ─── */
@@ -258,11 +308,12 @@ canvas {
   top: 77.5%;
   width: 1000px;
   min-height: 175px;
-  padding: 40px 112px 30px 112px;
+  padding: 38px 140px 28px 140px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box !important;
 }
 .welcome-mode.step-1 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-1 #zozo-dialogue-text {
@@ -275,6 +326,9 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
+  font-weight: bold;
+  text-wrap: normal !important;
 }
 
 /* ─── 3. WELCOME BOX (STEP-2) ─── */
@@ -285,11 +339,12 @@ canvas {
   top: 77.5%;
   width: 1000px;
   min-height: 175px;
-  padding: 35px 112px 30px 112px;
+  padding: 38px 140px 28px 140px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box !important;
 }
 .welcome-mode.step-2 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-2 #zozo-dialogue-text {
@@ -302,6 +357,9 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
+  font-weight: bold;
+  text-wrap: normal !important;
 }
 
 /* ─── 4. WELCOME BOX (STEP-3) ─── */
@@ -312,11 +370,12 @@ canvas {
   top: 77.5%;
   width: 1000px;
   min-height: 175px;
-  padding: 35px 112px 30px 112px;
+  padding: 38px 140px 28px 140px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box !important;
 }
 .welcome-mode.step-3 #zozo-character-container { left: auto !important; right: 57.5%; bottom: 27%; height: 57vh; }
 .welcome-mode.step-3 #zozo-dialogue-text {
@@ -329,6 +388,9 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
+  font-weight: bold;
+  text-wrap: normal !important;
 }
 
 /* ─── POPUP TOAST & IN-GAME MONOLÓG ─── */
@@ -343,9 +405,9 @@ canvas {
   transform: translateX(-50%);
   width: 1000px;
   min-height: 175px;
-  padding: 52px 112px 32px 112px;
+  padding: 38px 140px 28px 140px !important;
   color: #000000;
-  font-family: 'Briskb', 'Courier New', monospace;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
   font-weight: bold;
   cursor: pointer;
   user-select: none;
@@ -355,19 +417,21 @@ canvas {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box !important;
 }
 
 #popup-toast-text,
 .zozo-dialogue-text-std {
-  font-size: 23px;
+  font-size: 24px;
   line-height: 1.25;
   color: #000000;
   text-align: center;
   width: 100%;
   min-height: 0;
-  font-family: 'Briskb', 'Courier New', monospace;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
   font-weight: bold;
   white-space: pre-wrap;
+  text-wrap: normal !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -393,45 +457,7 @@ canvas {
   transform: translateY(-50%) scale(0.95);
 }
 .monolog-back-btn {
-  left: 45px;
-}
-
-/* --- CONTROLS POPUP EGYEDI POZÍCIÓ --- */
-:root {
-  --ctrl-p-top: auto;
-  --ctrl-p-bottom: 20%;
-  --ctrl-p-left: auto;
-  --ctrl-p-right: 5%;
-  --ctrl-p-width: 600px;
-  --ctrl-p-min-height: 400px;
-  --ctrl-p-padding-t: 95px;
-  --ctrl-p-padding-r: 110px;
-  --ctrl-p-padding-b: 100px;
-  --ctrl-p-padding-l: 110px;
-  --ctrl-p-font-size: 23px;
-}
-
-#ingame-popup-toast.controls-popup-mode,
-#zozo-ingame-monolog-container.controls-popup-mode {
-  top: var(--ctrl-p-top) !important;
-  bottom: var(--ctrl-p-bottom) !important;
-  left: var(--ctrl-p-left) !important;
-  right: var(--ctrl-p-right) !important;
-  width: var(--ctrl-p-width) !important;
-  min-height: var(--ctrl-p-min-height) !important;
-  padding: var(--ctrl-p-padding-t) var(--ctrl-p-padding-r) var(--ctrl-p-padding-b) var(--ctrl-p-padding-l) !important;
-  transform: none !important;
-}
-
-#ingame-popup-toast.controls-popup-mode #popup-toast-text,
-#zozo-ingame-monolog-container.controls-popup-mode #ingame-dialogue-text {
-  font-size: var(--ctrl-p-font-size) !important;
-}
-
-#ingame-popup-toast .zozo-nameplate-std,
-#ingame-popup-toast.controls-popup-mode .zozo-nameplate-std,
-#zozo-ingame-monolog-container.controls-popup-mode .zozo-nameplate-std {
-  display: none !important;
+  left: 120px !important;
 }
 
 /* ─── ZÁRÓ PANELEK KERET OSZTÁLY (FA PANELEK) ─── */
@@ -640,7 +666,7 @@ body.mobile-hud #zozo-ingame-monolog-container {
 
 /* ─── PONTOS PADDING ÉS MARGÓ BEÁLLÍTÁSOK A SZÖVEG KILÓGÁS MEGELŐZÉSÉRE ─── */
 .zozo-monolog-box-std {
-  padding: 50px 145px 32px 145px !important;
+  padding: 38px 140px 28px 140px !important;
   box-sizing: border-box !important;
 }
 
@@ -649,8 +675,8 @@ body.mobile-hud #zozo-ingame-monolog-container {
 #ingame-dialogue-text,
 #eog-dialog-text,
 .zozo-dialogue-text-std {
-  padding-left: 10px !important;
-  padding-right: 10px !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   box-sizing: border-box !important;
@@ -659,4 +685,840 @@ body.mobile-hud #zozo-ingame-monolog-container {
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
   white-space: pre-wrap !important;
+  text-wrap: normal !important;
+  line-height: 1.25 !important;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif !important;
+}
+
+/* OROSZ (CIRILL) NYELVI TIPOGRÁFIA: Egységes, gyönyörű antikva betűk és írásjelek (bold nélkül) */
+body.lang-ru #zozo-dialogue-text,
+body.lang-ru #popup-toast-text,
+body.lang-ru #ingame-dialogue-text,
+body.lang-ru #eog-dialog-text,
+body.lang-ru .zozo-dialogue-text-std,
+body[data-lang="ru"] #zozo-dialogue-text,
+body[data-lang="ru"] #popup-toast-text,
+body[data-lang="ru"] #ingame-dialogue-text,
+body[data-lang="ru"] #eog-dialog-text,
+body[data-lang="ru"] .zozo-dialogue-text-std {
+  font-family: 'Georgia', 'Times New Roman', serif !important;
+  font-weight: normal !important;
+  letter-spacing: 0.3px !important;
+  text-wrap: normal !important;
+}
+
+body.lang-ru,
+body[data-lang="ru"] {
+  --textbox-width: 670px;
+  --textbox-top: 44px;
+}
+
+body.lang-fr,
+body[data-lang="fr"] {
+  --wind-p-width: 475px;
+  --wind-inner-height: 195px;
+  --wind-inner-top: 52px;
+}
+
+body.lang-es,
+body[data-lang="es"] {
+  --textbox-width: 670px;
+  --textbox-top: 48px;
+  --wind-p-right: 8%;
+  --wind-inner-height: 230px;
+  --wind-inner-top: 38px;
+  --wind-inner-left: 3px;
+}
+
+body.lang-pl,
+body[data-lang="pl"] {
+  --textbox-width: 660px;
+  --textbox-top: 51px;
+  --textbox-left: -1px;
+}
+
+/* ─── END-OF-GAME (EoG) ZÁRÓ PANELEK PONTOS ILLESZTÉSE ─── */
+#eog-boat-naming-overlay .zozo-monolog-box-std,
+#eog-confirm-overlay-1 .zozo-monolog-box-std,
+#eog-confirm-overlay-2 .zozo-monolog-box-std,
+#eog-veteran-user-overlay .zozo-monolog-box-std,
+#guest-auth-required-overlay .zozo-monolog-box-std {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 820px !important;
+  max-width: 95vw !important;
+  min-height: 380px !important;
+  padding: 85px 180px 65px 180px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: center !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
+}
+
+#eog-success-choice-overlay .zozo-monolog-box-std {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 860px !important;
+  max-width: 95vw !important;
+  min-height: 400px !important;
+  padding: 95px 180px 75px 180px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: center !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
+}
+
+#eog-summary-overlay .zozo-monolog-box-std {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 860px !important;
+  max-width: 95vw !important;
+  min-height: 560px !important;
+  padding: 135px 200px 90px 200px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: space-between !important;
+  text-align: left !important;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.9)) !important;
+}
+
+#eog-summary-text {
+  font-family: 'Briskb', 'Courier New', monospace !important;
+  font-size: 22px !important;
+  font-weight: bold !important;
+  color: #1a1a1a !important;
+  line-height: 1.6 !important;
+  white-space: pre-line !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 220px !important;
+  text-align: left !important;
+}
+
+#eog-btn-summary-next {
+  min-width: 200px !important;
+  font-size: 19px !important;
+  padding: 12px 28px !important;
+  font-family: 'Briskb', monospace !important;
+  font-weight: bold !important;
+  margin-bottom: 20px !important;
+}
+
+/* ─── EGYSÉGESÍTETT 1. MINTA SZÖVEGDOBOZ RENDSZER (MINDEN DIALÓGUSRA ÉS MONOLÓGRA) ─── */
+:root {
+  --textbox-width: 685px;
+  --textbox-height: 82px;
+  --textbox-top: 51px;
+  --textbox-font-size: 28px;
+  --textbox-line-height: 1.22;
+}
+
+/* Szigorú védelem: Ha egy elem inline display: none-t kapott, azt semmi sem írhatja felül! */
+#zozo-welcome-overlay[style*="display: none"],
+#zozo-ingame-monolog-container[style*="display: none"],
+#ingame-popup-toast[style*="display: none"],
+#eog-compact-dialog[style*="display: none"],
+[style*="display: none"] {
+  display: none !important;
+}
+
+#zozo-dialogue-box,
+.welcome-mode #zozo-dialogue-box,
+.welcome-mode.step-0 #zozo-dialogue-box,
+.welcome-mode.step-1 #zozo-dialogue-box,
+.welcome-mode.step-2 #zozo-dialogue-box,
+.welcome-mode.step-3 #zozo-dialogue-box,
+.zozo-monolog-box-std,
+#zozo-ingame-monolog-container,
+#ingame-popup-toast,
+#eog-compact-dialog {
+  position: absolute;
+  z-index: 525;
+  left: 50% !important;
+  top: 77.5% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  width: 1000px !important;
+  min-height: 175px !important;
+  color: #000000;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100%;
+  filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#zozo-nameplate,
+.zozo-nameplate-std {
+  position: absolute !important;
+  top: 0px !important;
+  left: 450px !important;
+  z-index: 530 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) !important;
+  transform: scale(1.36, 0.81) rotate(0deg) !important;
+  transform-origin: left top !important;
+}
+
+#zozo-nameplate-img,
+.zozo-nameplate-img-std {
+  height: 62px !important;
+  width: auto !important;
+  display: block !important;
+}
+
+#welcome-space-hint {
+  position: absolute !important;
+  bottom: 25px !important;
+  right: 175px !important;
+  font-family: 'Briskb', 'Courier New', monospace !important;
+  font-size: 19px !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  opacity: 0.9 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  z-index: 99 !important;
+}
+
+.monolog-inner-textbox {
+  position: absolute !important;
+  left: calc(50% + var(--textbox-left, 0px)) !important;
+  top: var(--textbox-top, 51px) !important;
+  transform: translateX(-50%) !important;
+  width: var(--textbox-width, 685px) !important;
+  max-width: 90% !important;
+  height: var(--textbox-height, 82px) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  z-index: 528 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body.show-textbox-guide .monolog-inner-textbox {
+  outline: 2px dashed #ffd700 !important;
+  outline-offset: -2px !important;
+  background: rgba(255, 215, 0, 0.14) !important;
+}
+
+.zozo-dialogue-text-std,
+#zozo-dialogue-text,
+#popup-toast-text,
+#ingame-dialogue-text,
+#eog-dialog-text {
+  width: 100% !important;
+  max-height: 100% !important;
+  text-align: center !important;
+  display: block !important;
+  font-family: 'Briskb', 'Georgia', 'Times New Roman', serif !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  text-wrap: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  white-space: pre-line !important;
+}
+
+/* ─── DEDIKÁLT SZÖVEGDOBOZ, IRÁNYÍTÓ PANEL ÉS SZÉL PANEL POZÍCIÓ RENDSZER ─── */
+  :root {
+    --textbox-width: 685px;
+    --textbox-height: 82px;
+    --textbox-top: 51px;
+    --textbox-left: 0px;
+
+    /* ─── IRÁNYÍTÓ PANEL (controls) ─── */
+    --ctrl-p-bottom: 19%;
+    --ctrl-p-right: 6%;
+    --ctrl-p-width: 565px;
+    --ctrl-p-height: 385px;
+    --ctrl-inner-top: 82px;
+    --ctrl-inner-left: 0px;
+    --ctrl-inner-width: 365px;
+    --ctrl-inner-height: 220px;
+    --ctrl-font-size: 22px;
+    --ctrl-line-height: 1.27;
+
+    /* ─── SZÉL FIGYELMEZTETŐ PANEL (wind) ─── */
+    --wind-p-bottom: 19%;
+    --wind-p-right: 6%;
+    --wind-p-width: 480px;
+    --wind-p-height: 300px;
+    --wind-inner-top: 30px;
+    --wind-inner-left: 0px;
+    --wind-inner-width: 320px;
+    --wind-inner-height: 220px;
+    --wind-font-size: 28px;
+    --wind-line-height: 1.25;
+  }
+
+  /* 🎮 IRÁNYÍTÓ PANEL (controls-popup-mode) STÍLUS */
+  #ingame-popup-toast.controls-popup-mode,
+  #zozo-ingame-monolog-container.controls-popup-mode {
+    position: absolute !important;
+    top: auto !important;
+    bottom: var(--ctrl-p-bottom, 19%) !important;
+    left: auto !important;
+    right: var(--ctrl-p-right, 6%) !important;
+    width: var(--ctrl-p-width, 565px) !important;
+    height: var(--ctrl-p-height, 385px) !important;
+    min-height: var(--ctrl-p-height, 385px) !important;
+    transform: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    display: flex;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+    filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85)) !important;
+  }
+
+  #zozo-ingame-monolog-container.controls-popup-mode .zozo-nameplate-std,
+  #ingame-popup-toast.controls-popup-mode .zozo-nameplate-std {
+    display: none !important;
+  }
+
+  #zozo-ingame-monolog-container.controls-popup-mode .monolog-back-btn,
+  #ingame-popup-toast.controls-popup-mode .monolog-back-btn {
+    left: 45px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    display: block !important;
+  }
+
+  #zozo-ingame-monolog-container.controls-popup-mode .monolog-inner-textbox,
+  #ingame-popup-toast.controls-popup-mode .monolog-inner-textbox {
+    position: absolute !important;
+    left: calc(50% + var(--ctrl-inner-left, 0px)) !important;
+    top: var(--ctrl-inner-top, 82px) !important;
+    transform: translateX(-50%) !important;
+    width: var(--ctrl-inner-width, 365px) !important;
+    max-width: 90% !important;
+    height: var(--ctrl-inner-height, 220px) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    z-index: 528 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #zozo-ingame-monolog-container.controls-popup-mode .zozo-dialogue-text-std,
+  #zozo-ingame-monolog-container.controls-popup-mode #ingame-dialogue-text,
+  #ingame-popup-toast.controls-popup-mode .zozo-dialogue-text-std,
+  #ingame-popup-toast.controls-popup-mode #popup-toast-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    display: block !important;
+    font-family: 'Briskb', 'Georgia', 'Times New Roman', serif !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+    text-wrap: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    white-space: pre-line !important;
+  }
+
+  body.show-textbox-guide #zozo-ingame-monolog-container.controls-popup-mode .monolog-inner-textbox {
+    outline: 2px dashed #ffd700 !important;
+    outline-offset: -2px !important;
+    background: rgba(255, 215, 0, 0.14) !important;
+  }
+
+  body.show-textbox-guide #zozo-ingame-monolog-container.controls-popup-mode {
+    outline: 2px solid #00e5ff !important;
+    outline-offset: -2px !important;
+  }
+
+  /* 💨 SZÉL FIGYELMEZTETŐ PANEL (wind-popup-mode) STÍLUS */
+  #ingame-popup-toast.wind-popup-mode,
+  #zozo-ingame-monolog-container.wind-popup-mode {
+    position: absolute !important;
+    top: auto !important;
+    bottom: var(--wind-p-bottom, 19%) !important;
+    left: auto !important;
+    right: var(--wind-p-right, 6%) !important;
+    width: var(--wind-p-width, 480px) !important;
+    height: var(--wind-p-height, 300px) !important;
+    min-height: var(--wind-p-height, 300px) !important;
+    transform: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    display: flex;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: url("https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_monolog_window_2.png") no-repeat center / 100% 100% !important;
+    filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.85)) !important;
+  }
+
+  #zozo-ingame-monolog-container.wind-popup-mode .zozo-nameplate-std,
+  #ingame-popup-toast.wind-popup-mode .zozo-nameplate-std {
+    display: none !important;
+  }
+
+  #zozo-ingame-monolog-container.wind-popup-mode .monolog-back-btn,
+  #ingame-popup-toast.wind-popup-mode .monolog-back-btn {
+    left: 45px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    display: block !important;
+  }
+
+  #zozo-ingame-monolog-container.wind-popup-mode .monolog-inner-textbox,
+  #ingame-popup-toast.wind-popup-mode .monolog-inner-textbox {
+    position: absolute !important;
+    left: calc(50% + var(--wind-inner-left, 0px)) !important;
+    top: var(--wind-inner-top, 30px) !important;
+    transform: translateX(-50%) !important;
+    width: var(--wind-inner-width, 320px) !important;
+    max-width: 90% !important;
+    height: var(--wind-inner-height, 220px) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    z-index: 528 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #zozo-ingame-monolog-container.wind-popup-mode .zozo-dialogue-text-std,
+  #zozo-ingame-monolog-container.wind-popup-mode #ingame-dialogue-text,
+  #ingame-popup-toast.wind-popup-mode .zozo-dialogue-text-std,
+  #ingame-popup-toast.wind-popup-mode #popup-toast-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    display: block !important;
+    font-family: 'Briskb', 'Georgia', 'Times New Roman', serif !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+    text-wrap: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    white-space: pre-line !important;
+  }
+
+  body.show-textbox-guide #zozo-ingame-monolog-container.wind-popup-mode .monolog-inner-textbox {
+    outline: 2px dashed #ffd700 !important;
+    outline-offset: -2px !important;
+    background: rgba(255, 215, 0, 0.14) !important;
+  }
+
+  body.show-textbox-guide #zozo-ingame-monolog-container.wind-popup-mode {
+    outline: 2px solid #00e5ff !important;
+    outline-offset: -2px !important;
+  }
+
+
+
+/* Popup toaston (ahol nincs Zozó névtábla) középen fent ül a peremen */
+#ingame-popup-toast .zozo-read-aloud-btn {
+  left: 474px !important;
+  top: -6px !important;
+}
+
+/* Jobb oldali Irányítás és Szél paneleken a felső fa perem jobb oldalán */
+#zozo-ingame-monolog-container.controls-popup-mode .zozo-read-aloud-btn,
+#ingame-popup-toast.controls-popup-mode .zozo-read-aloud-btn {
+  left: auto !important;
+  right: 64px !important;
+  top: 14px !important;
+  width: 48px !important;
+  height: 48px !important;
+}
+
+#zozo-ingame-monolog-container.wind-popup-mode .zozo-read-aloud-btn,
+#ingame-popup-toast.wind-popup-mode .zozo-read-aloud-btn {
+  left: auto !important;
+  right: 52px !important;
+  top: -4px !important;
+  width: 46px !important;
+  height: 46px !important;
+}
+
+/* ─── ZOZÓ FELOLVASÁS GOMB (read-r.png) – JOBB FELSŐ SAROK & AUTO-READ MÓD ─── */
+.zozo-read-aloud-btn {
+  position: absolute !important;
+  top: var(--read-btn-top, 8px) !important;
+  right: var(--read-btn-right, 142px) !important;
+  left: auto !important;
+  width: var(--read-btn-size, 52px) !important;
+  height: var(--read-btn-size, 52px) !important;
+  z-index: 560 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.75)) !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+}
+
+.zozo-read-aloud-btn:hover {
+  transform: scale(1.12) !important;
+  filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.95)) brightness(1.08) !important;
+}
+
+.zozo-read-aloud-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* Aktív Auto-Read mód: folyamatos arany dicsfény keret */
+.zozo-read-aloud-btn.auto-read-active {
+  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9)) brightness(1.12) !important;
+}
+
+/* Amikor éppen beszél (TTS lejátszás) */
+.zozo-read-aloud-btn.tts-playing {
+  animation: zozoTtsPulse 0.85s infinite alternate ease-in-out !important;
+}
+
+@keyframes zozoTtsPulse {
+  0% {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 10px rgba(255, 200, 0, 0.8)) brightness(1.08);
+  }
+  100% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 22px rgba(255, 230, 80, 1.0)) brightness(1.22);
+  }
+}
+
+/* Popup toaston jobb felül a peremen */
+#ingame-popup-toast .zozo-read-aloud-btn {
+  right: 142px !important;
+  top: 8px !important;
+  left: auto !important;
+}
+
+/* Jobb oldali Irányítás és Szél paneleken a jobb felső fa peremen */
+#zozo-ingame-monolog-container.controls-popup-mode .zozo-read-aloud-btn,
+#ingame-popup-toast.controls-popup-mode .zozo-read-aloud-btn {
+  left: auto !important;
+  right: 64px !important;
+  top: 14px !important;
+  width: 48px !important;
+  height: 48px !important;
+}
+
+#zozo-ingame-monolog-container.wind-popup-mode .zozo-read-aloud-btn,
+#ingame-popup-toast.wind-popup-mode .zozo-read-aloud-btn {
+  left: auto !important;
+  right: 52px !important;
+  top: -4px !important;
+  width: 46px !important;
+  height: 46px !important;
+}
+
+/* ─── END-OF-GAME VIDEÓ VEZÉRLŐK (JOBB FENT EGYMÁS MELLETT, 220px, SÁRGARÉZ KARIKA) ─── */
+#eog-video-controls-bar {
+  position: absolute !important;
+  top: 24px !important;
+  right: 220px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 16px !important;
+  z-index: 1006 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+#eog-btn-toggle-pause {
+  position: static !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+  user-select: none !important;
+}
+
+/* Subtitle gomb: Fényes sárgaréz karika körülötte, hogy ne olvadjon bele a háttérbe */
+#eog-btn-toggle-subtitles {
+  position: static !important;
+  background: rgba(20, 14, 8, 0.45) !important;
+  border: 1.5px solid #a67938 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 6px rgba(166, 121, 56, 0.6), inset 0 0 3px rgba(166, 121, 56, 0.35) !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+  user-select: none !important;
+}
+
+#eog-btn-toggle-subtitles.active-sub {
+  border-color: #d4a047 !important;
+  box-shadow: 0 0 12px rgba(212, 160, 71, 0.85), inset 0 0 5px rgba(212, 160, 71, 0.5) !important;
+}
+
+.eog-ctrl-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+  user-select: none !important;
+}
+
+.eog-ctrl-btn:hover {
+  transform: scale(1.12) !important;
+  filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.95)) !important;
+}
+
+.eog-ctrl-btn:active {
+  transform: scale(0.92) !important;
+}
+
+/* Gombok mérete: felezve (92px -> 46px) */
+.eog-ctrl-icon {
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.85)) !important;
+  transition: filter 0.2s ease, opacity 0.2s ease, transform 0.15s ease !important;
+}
+
+/* A pause érme belső grafikájának finomhangolása, hogy hajszálra akkora legyen mint a felirat érme */
+#eog-pause-icon {
+  width: 46px !important;
+  height: 46px !important;
+  transform: scale(1.48) !important;
+}
+
+#eog-sub-icon {
+  width: 46px !important;
+  height: 46px !important;
+}
+
+/* Aktív / kikapcsolt felirat állapot vizuális visszajelzése az érmén */
+.eog-ctrl-btn.active-sub .eog-ctrl-icon {
+  filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.95)) brightness(1.15) !important;
+}
+
+.eog-ctrl-btn.sub-muted .eog-ctrl-icon {
+  opacity: 0.55 !important;
+  filter: grayscale(85%) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6)) !important;
+}
+
+/* OBSOLETE_2_START
+#eog-video-controls-bar {
+  display: contents !important;
+}
+
+#eog-btn-toggle-pause {
+  position: absolute !important;
+  top: 25px !important;
+  right: 25px !important;
+  z-index: 1006 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 92px !important;
+  height: 92px !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+  user-select: none !important;
+}
+
+#eog-btn-toggle-subtitles {
+  position: absolute !important;
+  bottom: 25px !important;
+  right: 25px !important;
+  z-index: 1006 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 92px !important;
+  height: 92px !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+  user-select: none !important;
+}
+
+.eog-ctrl-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+  user-select: none !important;
+}
+
+.eog-ctrl-btn:hover {
+  transform: scale(1.10) !important;
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.95)) !important;
+}
+
+.eog-ctrl-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* Egyforma méret: mindkét érme a felirathoz igazítva (92px átmérő) */
+.eog-ctrl-icon {
+  width: 92px !important;
+  height: 92px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.85)) !important;
+  transition: filter 0.2s ease, opacity 0.2s ease, transform 0.15s ease !important;
+}
+
+/* A pause érme belső grafikájának felnagyítása a felirat érme méretéhez (1:1 vizuális egyezés) */
+#eog-pause-icon {
+  transform: scale(1.48) !important;
+}
+
+#eog-btn-toggle-pause:hover #eog-pause-icon {
+  transform: scale(1.60) !important;
+}
+
+/* Aktív / kikapcsolt felirat állapot vizuális visszajelzése az érmén */
+.eog-ctrl-btn.active-sub .eog-ctrl-icon {
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.95)) brightness(1.15) !important;
+}
+
+.eog-ctrl-btn.sub-muted .eog-ctrl-icon {
+  opacity: 0.55 !important;
+*/
+}
+
+/* OBSOLETE_START
+#eog-video-controls-bar {
+  position: absolute !important;
+  bottom: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 28px !important;
+  z-index: 1006 !important;
+  background: rgba(15, 12, 8, 0.78) !important;
+  padding: 10px 32px !important;
+  border-radius: 50px !important;
+  border: 2px solid rgba(212, 175, 55, 0.6) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), inset 0 0 16px rgba(255, 215, 0, 0.25) !important;
+  backdrop-filter: blur(4px) !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.eog-ctrl-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.15s ease, filter 0.2s ease !important;
+  user-select: none !important;
+}
+
+.eog-ctrl-btn:hover {
+  transform: scale(1.10) !important;
+  filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.95)) !important;
+}
+
+.eog-ctrl-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* TRASH_1 */
+.eog-ctrl-icon {
+  width: 92px !important;
+  height: 92px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.85)) !important;
+  transition: filter 0.2s ease, opacity 0.2s ease, transform 0.15s ease !important;
+}
+
+/* TRASH_2 */
+.eog-ctrl-btn.active-sub .eog-ctrl-icon {
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.95)) brightness(1.15) !important;
+}
+
+.eog-ctrl-btn.sub-muted .eog-ctrl-icon {
+  opacity: 0.55 !important;
+*/
 }

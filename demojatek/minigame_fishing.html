@@ -654,7 +654,7 @@
         async function buildScene() {
             // 1. Kikötő (Bázis) - GLB modell betöltése a Blenderből
             const loader = new THREE.GLTFLoader();
-            loader.load('../assets/models/SM_Bld_Fort_Base_03.glb', function (gltf) {
+            loader.load('https://storage.googleapis.com/kalozsziget-assets/assets/models/SM_Bld_Fort_Base_03.glb', function (gltf) {
                 baseHarbor = gltf.scene;
                 
                 // Beállítjuk a helyzetét és felnagyítjuk 2x-esre (ahogy kérted)

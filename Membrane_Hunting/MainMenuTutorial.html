@@ -511,7 +511,7 @@
 
     // @calledBy: DOMContentLoaded, changeLanguage
 // === [#HEX:D.07.88.00] START | name: applyMenuLanguage | lines: 29 ===
-// @calls: [#HEX:D.06.3E.00], [#HEX:D.07.8C.00] | @calledBy: [#HEX:D.07.89.00]
+// @calls: [#HEX:D.07.8C.00], [#HEX:D.06.3E.00] | @calledBy: [#HEX:D.07.89.00]
     function applyMenuLanguage(lang) {
       const t = MENU_TRANSLATIONS[lang] || MENU_TRANSLATIONS.hu;
       const btnNew = document.getElementById('btn-new-game');
@@ -563,7 +563,7 @@
 
     // @calledBy: Nyelvválasztó térkép lőrés kattintás
 // === [#HEX:D.07.89.00] START | name: changeLanguage | lines: 12 ===
-// @calls: [#HEX:D.07.88.00], [#HEX:D.03.2A.00] | @calledBy: none
+// @calls: [#HEX:D.03.2A.00], [#HEX:D.07.88.00] | @calledBy: none
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);
@@ -663,7 +663,7 @@
 
     // @calledBy: speakAccIntro, speakAccAccordion, speakCurrentQuizQuestion
 // === [#HEX:D.07.8E.00] START | name: toggleAccSpeech | lines: 58 ===
-// @calls: [#HEX:D.07.04.00], [#HEX:D.07.8D.00] | @calledBy: [#HEX:D.06.3F.00], [#HEX:D.07.8F.00], [#HEX:D.04.2E.00]
+// @calls: [#HEX:D.07.8D.00], [#HEX:D.07.04.00] | @calledBy: [#HEX:D.06.3F.00], [#HEX:D.07.8F.00], [#HEX:D.04.2E.00]
     function toggleAccSpeech(text, btnElement) {
       if (!('speechSynthesis' in window)) {
         alert('A böngésződ sajnos nem támogatja a közvetlen hangos felolvasást.');
@@ -850,7 +850,7 @@
 
     // @calledBy: btn-acc-tutorial kattintás, URL ?tutorial=accessibility
 // === [#HEX:D.06.40.00] START | name: openAccessibilityTutorial | lines: 23 ===
-// @calls: [#HEX:D.06.3E.00], [#HEX:A.06.10.08] | @calledBy: none
+// @calls: [#HEX:A.06.10.08], [#HEX:D.06.3E.00] | @calledBy: none
     function openAccessibilityTutorial() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       applyAccTutorialLanguage(curLang);
@@ -878,7 +878,7 @@
 
     // @calledBy: acc-close-btn kattintás
 // === [#HEX:D.06.41.00] START | name: closeAccessibilityTutorial | lines: 26 | action: 'navigate_to_page' ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:B.15.07.00], [#HEX:D.07.8D.00], [#HEX:D.05.13.00], [#HEX:A.06.10.08] | @calledBy: none
+// @calls: [#HEX:D.07.8D.00], [#HEX:D.05.13.00], [#HEX:F.04.2C1.00], [#HEX:A.06.10.08], [#HEX:B.15.07.00] | @calledBy: none
     function closeAccessibilityTutorial() {
       stopAccSpeech();
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -970,7 +970,7 @@
 
     // @calledBy: startAccessibilityQuiz, handleAccQuizAnswer
 // === [#HEX:D.04.30.00] START | name: renderAccQuizQuestion | lines: 60 ===
-// @calls: [#HEX:D.04.31.00], [#HEX:D.01.CC.00], [#HEX:D.07.86.00] | @calledBy: [#HEX:D.04.2F.00], [#HEX:D.04.31.00]
+// @calls: [#HEX:D.04.31.00], [#HEX:D.07.86.00], [#HEX:D.01.CC.00] | @calledBy: [#HEX:D.04.2F.00], [#HEX:D.04.31.00]
     function renderAccQuizQuestion() {
       accIsAnswering = false;
       const qTextEl = document.getElementById('acc-quiz-question-text');
@@ -1563,7 +1563,7 @@
 
   <!-- 🎥 KIHAJÓZÁS VIDEÓ OVERLAY -->
   <div id="acc-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: black; z-index: 1000000; align-items: center; justify-content: center; cursor: pointer;">
-    <video id="acc-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/terkeputazas01.mp4"></video>
+    <video id="acc-departure-video" preload="auto" playsinline style="width: 100%; height: 100%; object-fit: contain;" src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/videos/terkeputazas01.mp4?v=20261112"></video>
   </div>
 
 

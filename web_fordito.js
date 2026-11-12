@@ -1576,7 +1576,7 @@ const translations = {
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
 // === [#HEX:F.04.17E.00] START | name: does | lines: 1046 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.01.00.00], [#HEX:A.05.12.00], [#HEX:D.01.7E.00], [#HEX:F.04.1CF.00] | @calledBy: none
+// @calls: [#HEX:A.06.10.08], [#HEX:B.07.38.00], [#HEX:F.04.1CF.00], [#HEX:F.04.1F.00], [#HEX:F.04.2C1.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',

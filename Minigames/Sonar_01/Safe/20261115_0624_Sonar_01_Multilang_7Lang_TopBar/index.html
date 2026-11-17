@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SONAR_01 - Ködhasító Vezérlőpult</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cinzel, Share Tech Mono, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Cinzel', serif;
+      user-select: none;
+      -webkit-user-select: none;
+      background: radial-gradient(circle at 50% 40%, #1e3a5f 0%, #0d1b2a 60%, #050b11 100%);
+    }
+
+    .game-dimmed-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 9, 15, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* ─── HONLAP TOPBAR (Összecsukható) ─── */
+    @font-face {
+      font-family: 'BriskB';
+      src: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/fonts/Briskb.otf') format('opentype'),
+           url('https://storage.googleapis.com/kalozsziget-assets/assets/fonts/Briskb.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    #portal-topbar-wrapper {
+      position: relative;
+      width: 100%;
+      z-index: 1000;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #portal-topbar-wrapper.collapsed {
+      margin-top: -66px;
+    }
+
+    #header {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 100%;
+      height: 66px;
+      box-sizing: border-box;
+      background: url('https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/monolog_window.png') no-repeat center center;
+      background-size: 100% 100%;
+      border: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
+      padding: 0 calc(20px + 17px) 0 30px;
+      z-index: 1000;
+      position: relative;
+      user-select: none;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.85));
+    }
+
+    .header-nameplate {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 4px;
+      box-sizing: border-box;
+      flex-shrink: 1;
+      min-width: 70px;
+      max-width: 280px;
+      overflow: hidden;
+    }
+
+    .header-username-text {
+      font-family: 'BriskB', 'Georgia', serif;
+      font-size: 33px;
+      font-weight: bold;
+      color: #2b1704;
+      text-shadow: 0 1px 1px rgba(255, 235, 180, 0.9), 0 -1px 1px rgba(0, 0, 0, 0.4);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+      max-width: 100%;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    #header-main-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-action-btn {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.15s ease;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+    }
+
+    .header-action-btn:hover {
+      transform: scale(1.12) translateY(-2px);
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 8px rgba(255, 215, 0, 0.85));
+    }
+
+    .header-action-btn:active {
+      transform: scale(0.95) translateY(0);
+    }
+
+    .header-icon-img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+    }
+
+    .credit-btn {
+      gap: 8px;
+      background: rgba(20, 12, 5, 0.65);
+      border: 2px solid #8b5a2b;
+      border-radius: 24px;
+      padding: 2px 14px 2px 6px;
+      height: 48px;
+      box-sizing: border-box;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .credit-btn .header-icon-img {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+    }
+
+    #creditValue {
+      font-family: 'BriskB', monospace;
+      font-size: 21px;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      letter-spacing: 1px;
+    }
+
+    #header-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .header-desktop-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #header-exit-btn:hover {
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 10px rgba(255, 70, 70, 0.9));
+    }
+
+    .header-lang-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-popup-menu {
+      position: absolute;
+      top: 54px;
+      right: -6px;
+      background: linear-gradient(180deg, #2e2118 0%, #1a120c 100%);
+      border: 2px solid #8b5a2b;
+      border-radius: 10px;
+      padding: 8px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      min-width: 60px;
+    }
+
+    .lang-flag-btn {
+      background: transparent;
+      border: none;
+      padding: 2px;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+    }
+
+    .lang-flag-btn:hover,
+    .lang-flag-btn.active-lang {
+      transform: scale(1.15);
+      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.9));
+    }
+
+    .lang-flag-btn img {
+      width: 40px;
+      min-width: 40px;
+      max-width: none;
+      height: 44px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-mobile-settings-wrapper {
+      position: relative;
+      display: none;
+      align-items: center;
+    }
+
+    .mobile-settings-popup {
+      top: 52px;
+      right: 0;
+      min-width: 200px;
+      padding: 10px;
+    }
+
+    .mobile-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      color: #ffea00;
+      font-family: 'BriskB', 'Courier New', monospace;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 0.15s ease;
+    }
+
+    .mobile-menu-item:hover {
+      background: rgba(255, 215, 0, 0.15);
+    }
+
+    .menu-item-icon {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .mobile-menu-divider {
+      width: 100%;
+      height: 1px;
+      background: #8b5a2b;
+      margin: 6px 0;
+    }
+
+    .mobile-lang-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+      justify-items: center;
+    }
+
+    .mobile-lang-grid .lang-flag-btn img {
+      width: 34px;
+      height: 38px;
+    }
+
+    .logout-item {
+      color: #ff6666 !important;
+    }
+
+    @media (max-width: 860px) {
+      #portal-topbar-wrapper.collapsed {
+        margin-top: -56px;
+      }
+      #header {
+        padding: 0 calc(12px + 17px) 0 16px;
+        height: 56px;
+      }
+      .header-desktop-controls {
+        display: none !important;
+      }
+      .header-mobile-settings-wrapper {
+        display: flex !important;
+      }
+      .header-username-text {
+        font-size: 18px;
+      }
+      #header-main-actions {
+        gap: 8px;
+      }
+      .credit-btn {
+        padding: 2px 8px 2px 4px;
+        height: 36px;
+      }
+      .credit-btn .header-icon-img {
+        width: 26px;
+        height: 26px;
+      }
+      #creditValue {
+        font-size: 16px;
+      }
+      .header-icon-img {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
+    .topbar-toggle-handle {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #d4af37 0%, #8b6508 100%);
+      border: 1px solid #ffd700;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 2px 18px 4px 18px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      z-index: 60;
+    }
+    .topbar-toggle-handle:hover {
+      background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+      padding-bottom: 6px;
+    } #btn-toggle-topbar { top: 100%; bottom: auto; width: 151px; height: 55px; padding: 0; border: none; border-radius: 0; box-shadow: none; background: url('assets/images/topbar_handle.png') center top / 100% 100% no-repeat; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.65)); } #btn-toggle-topbar:hover { background: url('assets/images/topbar_handle.png') center top / 100% 100% no-repeat; padding-bottom: 0; filter: brightness(1.15) drop-shadow(0 5px 10px rgba(0,0,0,0.75)); transform: translateX(-50%) translateY(2px); } #btn-toggle-topbar span { display: none; } #portal-topbar-wrapper.collapsed #btn-toggle-topbar, #portal-topbar-wrapper.collapsed #btn-toggle-topbar:hover { background-image: url('assets/images/topbar_handle_down.png'); }
+
+    /* ─── KESKENY SÁRGARÉZ ABLAKKERET ─── */
+    .brass-window-frame {
+      position: relative;
+      border: 2px solid #b8860b;
+      outline: 1px solid #ffd700;
+      outline-offset: -3px;
+      box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.95),
+        0 0 20px rgba(212, 175, 55, 0.35),
+        inset 0 0 8px rgba(0, 0, 0, 0.8);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #0a0e14;
+      z-index: 20;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .brass-corner {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-color: #ffe082;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .corner-tl { top: 2px; left: 2px; border-top: 2px solid #ffd700; border-left: 2px solid #ffd700; }
+    .corner-tr { top: 2px; right: 2px; border-top: 2px solid #ffd700; border-right: 2px solid #ffd700; }
+    .corner-bl { bottom: 2px; left: 2px; border-bottom: 2px solid #ffd700; border-left: 2px solid #ffd700; }
+    .corner-br { bottom: 2px; right: 2px; border-bottom: 2px solid #ffd700; border-right: 2px solid #ffd700; }
+
+    .brass-close-btn {
+      background: linear-gradient(180deg, #875718 0%, #4a2c07 100%);
+      border: 1px solid #ffd700;
+      color: #fff2cc;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+      transition: all 0.15s ease;
+    }
+    .brass-close-btn:hover {
+      background: linear-gradient(180deg, #b37722 0%, #683e0a 100%);
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    /* Steampunk Gomb Animáció */
+    .steampunk-btn-img {
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+    .steampunk-btn-img:hover {
+      transform: scale(1.04) translateY(-1px);
+      filter: drop-shadow(0 6px 12px rgba(255,215,0,0.3));
+    }
+    .steampunk-btn-img:active {
+      transform: scale(0.97) translateY(1px);
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.9));
+    }
+
+    /* Csúszósávos odometer */
+    .odometer {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      overflow: hidden;
+      pointer-events: none;
+      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+    }
+    .digit-wheel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .digit-strip {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 1000%;
+      transform: translateY(0%);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .digit-strip span {
+      height: 10%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-weight: 700;
+      font-size: clamp(10px, 1.4vw, 24px);
+      color: #dfd8c8;
+      text-shadow: 0 1px 2px #000, 0 0 4px rgba(0,0,0,0.8);
+      user-select: none;
+    } .digit-wheel:last-child .digit-strip span { color: #111; text-shadow: 0 1px 0 rgba(255,255,255,0.45); }
+    /* ===== EGYEDI KURZOR (egész asztal) ===== */
+    #operating-window { cursor: url('assets/images/pointer.png') 21 0, default; } #switch-an, #switch-info { cursor: url('assets/images/grab.png') 7 15, grab; } #switch-an:active, #switch-info:active { cursor: url('assets/images/grabbing.png') 6 11, grabbing; } img, canvas, #operating-window { -webkit-user-drag: none; user-drag: none; user-select: none; -webkit-user-select: none; }
+    /* ===== ABAKUSZ ===== */
+    .abacus-container {
+      position: absolute;
+      left: 65.5%;
+      top: 6.0%;
+      width: 27.6%;
+      height: 22.8%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .abacus-row {
+      position: relative;
+      width: 100%;
+      height: 24%;
+    }
+    .abacus-bead {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      aspect-ratio: 0.82 / 1;
+      border-radius: 50%;
+      cursor: url('assets/images/grab.png') 7 15, grab;
+      background: center / 100% 100% no-repeat;
+      box-shadow: -2px 4px 6px rgba(0,0,0,0.85), inset 0 0 3px rgba(255,230,150,0.6);
+      transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.15s;
+      touch-action: none;
+    }
+    .abacus-bead:hover { filter: brightness(1.15); }
+    .abacus-bead:active { cursor: url('assets/images/grabbing.png') 6 11, grabbing; }
+    .abacus-row[data-row="0"] .abacus-bead { height: 72%; background-image: url('assets/images/abacus_bead_0.png'); }
+    .abacus-row[data-row="1"] .abacus-bead { height: 84%; background-image: url('assets/images/abacus_bead_1.png'); }
+    .abacus-row[data-row="2"] .abacus-bead { height: 96%; background-image: url('assets/images/abacus_bead_2.png'); }
+    .abacus-row[data-row="3"] .abacus-bead { height: 112%; background-image: url('assets/images/abacus_bead_3.png'); }
+    .mode-led {
+      width: 34.5%;
+      height: 48%;
+      top: 14%;
+      border-radius: 50%;
+      animation: modePulse 1.8s infinite alternate ease-in-out;
+    }
+    .mode-led-sonar {
+      box-shadow: 0 0 12px 3px #00e5ff, inset 0 0 8px 2px #00e5ff;
+      border: 1.5px solid #00e5ff;
+    }
+    .mode-led-map {
+      box-shadow: 0 0 12px 3px #ff5722, inset 0 0 8px 2px #ff5722;
+      border: 1.5px solid #ff5722;
+    }
+    .mode-led-route {
+      box-shadow: 0 0 12px 3px #ffcc00, inset 0 0 8px 2px #ffcc00;
+      border: 1.5px solid #ffcc00;
+    }
+    .mode-led-start {
+      box-shadow: 0 0 12px 3px #39ff14, inset 0 0 8px 2px #39ff14;
+      border: 1.5px solid #39ff14;
+    }
+    @keyframes modePulse {
+      0% { opacity: 0.65; transform: scale(0.96); }
+      100% { opacity: 1.0; transform: scale(1.04); }
+    }
+  </style>
+</head>
+<body class="w-screen h-screen flex flex-col justify-between relative overflow-hidden">
+
+  <!-- 1. HÁTTÉR: A főjáték elhalványított környezete -->
+  <div class="game-dimmed-backdrop"></div>
+
+  <!-- 2. HONLAP TOPBAR (Élő Portál Fejléc - Összecsukható) -->
+  <div id="portal-topbar-wrapper" class="flex-shrink-0">
+    <div id="header">
+      <!-- 1. Bal oldali zóna: Névtábla -->
+      <div class="header-nameplate" id="header-user-badge" title="Játékos Kalózprofil">
+        <span class="header-username-text" id="header-user-name">Turista</span>
+        <span class="header-title" style="display: none;">Turista</span>
+      </div>
+
+      <!-- 2. Középső zóna: Kreditek, Könyvtár, Kincsek -->
+      <div id="header-main-actions">
+        <div id="creditCell" class="header-action-btn credit-btn" title="Kreditegyenleg frissítése" data-lang-title="header_credits_tooltip" onclick="updateCreditDisplay()">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png" alt="Kredit" class="header-icon-img" onerror="this.src='assets/images/eBookPirates_coin_r.png'">
+          <span id="creditValue">0</span>
+        </div>
+        <div id="libraryLink" class="header-action-btn" title="Könyvtár" data-lang-title="header_library" onclick="loadPage('konyvtar')">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/konyvtar_removebg.png" alt="Könyvtár" class="header-icon-img" onerror="this.src='assets/images/konyvtar_removebg.png'">
+        </div>
+        <div id="treasuresLink" class="header-action-btn" title="Kincsek" data-lang-title="header_treasures" onclick="loadPage('kincsek')">
+          <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada_nocolor.png" alt="Kincsek" class="header-icon-img" onerror="this.src='assets/images/lada_nocolor.png'">
+        </div>
+      </div>
+
+      <!-- 3. Jobb oldali vezérlők: Asztali gyorsgombok + Mobil beállítások -->
+      <div id="header-controls">
+        <div class="header-desktop-controls">
+          <div class="header-action-btn" id="header-anchor-btn" title="Vissza a kikötőbe" data-lang-title="header_back_to_port" onclick="loadPage('kikoto_oldal')">
+            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="header-icon-img" onerror="this.src='assets/images/horgony_removebg.png'">
+          </div>
+
+          <!-- Földgömb + Nyelvválasztó lenyíló panel -->
+          <div class="header-lang-wrapper">
+            <div class="header-action-btn" id="header-lang-globe-btn" title="Nyelvválasztás" data-lang-title="header_lang_select" onclick="toggleHeaderLangDropdown(event)">
+              <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/nyelvvalaszto.png" alt="Nyelv" class="header-icon-img" onerror="this.src='assets/images/nyelvvalaszto.png'">
+            </div>
+            <div id="header-lang-dropdown" class="header-popup-menu" style="display: none;" onclick="event.stopPropagation()">
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" alt="HU" onerror="this.src='assets/images/flags/lang_hu-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" alt="EN" onerror="this.src='assets/images/flags/lang_en-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" alt="DE" onerror="this.src='assets/images/flags/lang_de-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" alt="FR" onerror="this.src='assets/images/flags/lang_fr-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" alt="ES" onerror="this.src='assets/images/flags/lang_es-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" alt="PL" onerror="this.src='assets/images/flags/lang_pl-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" alt="RU" onerror="this.src='assets/images/flags/lang_ru-removebg-preview.png'"></button>
+            </div>
+          </div>
+
+          <!-- Kilépés gomb -->
+          <div class="header-action-btn" id="header-exit-btn" title="Hebok elhagyása" data-lang-title="header_logout" onclick="logout()">
+            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png" alt="Kilépés" class="header-icon-img" onerror="this.src='assets/images/exit-r 1.png'">
+          </div>
+        </div>
+
+        <!-- Mobil / Kis felbontás esetén megjelenő fogaskerék -->
+        <div class="header-mobile-settings-wrapper">
+          <div class="header-action-btn" id="header-mobile-settings-btn" title="Beállítások & Menü" data-lang-title="header_settings" onclick="toggleHeaderMobileSettings(event)">
+            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/settings_icon.png" alt="Beállítások" class="header-icon-img" onerror="this.src='assets/images/settings_icon.png'">
+          </div>
+          <div id="header-mobile-popup" class="header-popup-menu mobile-settings-popup" style="display: none;" onclick="event.stopPropagation()">
+            <div class="mobile-menu-item" onclick="loadPage('kikoto_oldal'); toggleHeaderMobileSettings(event, false);">
+              <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="menu-item-icon" onerror="this.src='assets/images/horgony_removebg.png'">
+              <span data-lang="header_back_to_port">Kikötő</span>
+            </div>
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-lang-grid">
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" alt="HU" onerror="this.src='assets/images/flags/lang_hu-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" alt="EN" onerror="this.src='assets/images/flags/lang_en-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" alt="DE" onerror="this.src='assets/images/flags/lang_de-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" alt="FR" onerror="this.src='assets/images/flags/lang_fr-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" alt="ES" onerror="this.src='assets/images/flags/lang_es-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" alt="PL" onerror="this.src='assets/images/flags/lang_pl-removebg-preview.png'"></button>
+              <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" alt="RU" onerror="this.src='assets/images/flags/lang_ru-removebg-preview.png'"></button>
+            </div>
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-menu-item logout-item" onclick="logout()">
+              <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png" alt="Kilépés" class="menu-item-icon" onerror="this.src='assets/images/exit-r 1.png'">
+              <span data-lang="header_logout">Hebok elhagyása</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-toggle-topbar" class="topbar-toggle-handle" title="Fejléc elrejtése / megjelenítése">
+      <span id="topbar-arrow">▲</span>
+      <span id="topbar-text" class="text-[10px] tracking-wider uppercase">TopBar</span>
+    </button>
+  </div>
+
+  <!-- 3. KÖZPONTI TÉR: Keskeny sárgaréz Operating Desk ablak -->
+  <main class="flex-1 w-full flex items-center justify-center p-3 relative z-20 overflow-hidden">
+    
+    <div id="operating-window" class="brass-window-frame aspect-[16/9] max-h-full max-w-full flex flex-col relative" style="height: calc(100vh - 85px);">
+      
+      <div class="brass-corner corner-tl"></div>
+      <div class="brass-corner corner-tr"></div>
+      <div class="brass-corner corner-bl"></div>
+      <div class="brass-corner corner-br"></div>
+
+      <!-- Bezárás gomb -->
+      <div class="absolute top-2 right-2 z-40 hidden">
+        <button class="brass-close-btn px-2.5 py-0.5 rounded text-xs font-bold cursor-pointer" title="Minijáték bezárása">
+          ✕
+        </button>
+      </div>
+
+      <!-- Pult Főképe -->
+      <div class="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#070c10]">
+        <img 
+          src="assets/images/operating_desk_abacus_clean.jpg" 
+          alt="Operating Desk" 
+          class="w-full h-full object-cover select-none pointer-events-none"
+        />
+
+        <!-- ============================================================== -->
+        <!-- 📟 BAL OLDAL: CRT KÉPERNYŐ (100% ÁTLÁTSZÓ, fotó eredeti hálójával) -->
+        <!-- ============================================================== -->
+        <div class="absolute overflow-visible cursor-crosshair"
+             style="left: 4.8%; top: 17.11%; width: 46.8%; height: 78.8%;">
+          
+          <img src="assets/images/compass-black-background.png" alt="" class="absolute w-[68%] h-[68%] object-contain pointer-events-none" style="left: 45.6%; top: 50%; transform: translate(-50%, -50%); opacity: 0.14; filter: grayscale(100%) sepia(40%) hue-rotate(95deg) brightness(90%);" /><canvas id="let-crt-canvas" class="w-full h-full block bg-transparent relative z-10"></canvas>
+
+          <!-- Autentikus Steampunk Útvonaltervezés & START Gombok -->
+          <div id="screen-nav-bar" style="display: none;" class="absolute -top-12 left-1/2 -translate-x-1/2 hidden items-center gap-3 z-30 pointer-events-auto">
+            <!-- ÚTVONALTERVEZŐ Gomb -->
+            <button id="btn-screen-route" class="h-9 cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Útvonaltervezés aktiválása">
+              <img src="assets/images/btn_route_plate.png" alt="Útvonaltervezés" class="h-full object-contain filter drop-shadow-md" />
+            </button>
+
+            <!-- START Gomb -->
+            <button id="btn-screen-start" class="h-9 cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95 hidden" title="Hajó Indítása">
+              <img src="assets/images/btn_start_plate.png" alt="Start" class="h-full object-contain filter drop-shadow-md" />
+            </button>
+          </div>
+
+          <!-- Automata Navigáció (AN) Átváltás Figyelmeztetés -->
+          <div id="an-prompt-overlay" class="absolute bg-[#040b07]/[0.96] pb-[150px] hidden flex-col items-center justify-center p-6 z-40 text-center" style="left:-3.2%;right:3.2%;top:-1.6%;bottom:-0.8%;">
+            <h3 id="an-prompt-title" class="text-amber-500 font-mono text-[18px] font-bold tracking-widest mb-6">
+              ÁTADOD AZ IRÁNYÍTÁST AZ AN RENDSZERNEK?
+            </h3>
+            <p id="an-prompt-sub" class="text-[11px] text-[#39ff14] font-mono mb-8">
+              (Az Automata Navigáció átjuttatja a hajót, de 0 Navi Pontot és 0 Hártyát kapsz!)
+            </p>
+            <div class="flex gap-4">
+              <button id="btn-an-yes" class="px-5 py-1.5 bg-[#0a2e16] hover:bg-[#114522] text-[#bfffab] font-bold text-xs rounded border border-[#39ff14]/70 hover:border-[#ffd700] hover:shadow-[0_0_14px_rgba(255,215,0,0.85)] transition-all duration-150 cursor-pointer">
+                IGEN (Átadás)
+              </button>
+              <button id="btn-an-no" class="px-5 py-1.5 bg-[#0a2e16] hover:bg-[#114522] text-[#bfffab] font-bold text-xs rounded border border-[#39ff14]/70 hover:border-[#ffd700] hover:shadow-[0_0_14px_rgba(255,215,0,0.85)] transition-all duration-150 cursor-pointer">
+                NEM (Kézi vezérlés)
+              </button>
+            </div>
+          </div>
+                </div>
+
+        <!-- ============================================================== -->
+        <!-- 🔘 FELSŐ RÉZ KERET: 4-GOMBOS MÓDVÁLASZTÓ PANEL (Szonár, Térkép, Útvonal, Start) -->
+        <!-- ============================================================== -->
+        <div id="mode-panel" class="absolute flex items-center justify-between z-30 pointer-events-auto"
+             style="left: 5.21%; top: 0.10%; width: 40.43%; height: 12.75%;">
+          <!-- SZONÁR -->
+          <button id="btn-mode-sonar" class="relative w-1/4 h-full cursor-pointer focus:outline-none flex items-center justify-center" title="Szonár Mód">
+            <span class="mode-led mode-led-sonar absolute rounded-full pointer-events-none"></span>
+          </button>
+          <!-- TÉRKÉP -->
+          <button id="btn-mode-map" class="relative w-1/4 h-full cursor-pointer focus:outline-none flex items-center justify-center" title="Térkép Mód (X-szel jelölés)">
+            <span class="mode-led mode-led-map absolute rounded-full pointer-events-none hidden"></span>
+          </button>
+          <!-- ÚTVONAL -->
+          <button id="btn-mode-route" class="relative w-1/4 h-full cursor-pointer focus:outline-none flex items-center justify-center" title="Útvonaltervezés Mód">
+            <span class="mode-led mode-led-route absolute rounded-full pointer-events-none hidden"></span>
+          </button>
+          <!-- START -->
+          <button id="btn-mode-start" class="relative w-1/4 h-full cursor-pointer focus:outline-none flex items-center justify-center" title="Hajó Indítása">
+            <span class="mode-led mode-led-start absolute rounded-full pointer-events-none hidden"></span>
+          </button>
+        </div>
+
+<!-- 🧮 JOBB FELSŐ SZEKCIÓ: ABAKUSZ (Közvetlenül a fotó abakuszára illesztve) -->
+        <!-- ============================================================== -->
+        <div class="abacus-container" id="abacus">
+          <div class="abacus-row" data-row="0"></div>
+          <div class="abacus-row" data-row="1"></div>
+          <div class="abacus-row" data-row="2"></div>
+          <div class="abacus-row" data-row="3"></div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 🪙 JOBB KÖZÉP: MECHANIKUS ODOMETER SZÁMLÁLÓK ("Sorozat" & "Navi pont") -->
+        <!-- ============================================================== -->
+        <!-- Sorozat csúszósávos odometer -->
+        <div class="odometer" id="odometer-sorozat"
+             style="left:65.33%; top:35.68%; width:10.36%; height:5.21%;"></div>
+
+        <!-- Navi pont csúszósávos odometer -->
+        <div class="odometer" id="odometer-navi"
+             style="left:81.69%; top:35.68%; width:10.36%; height:5.21%;"></div>
+
+        <!-- ============================================================== -->
+        <!-- 🧭 JOBB KÖZÉP-LENT: SZONÁR & SZERKEZET MUTATÓK (Pixelpontosan az órákra) -->
+        <!-- ============================================================== -->
+        <div class="absolute pointer-events-none"
+             style="left: 61.74%; top: 47.79%; width: 8.07%; height: 14.45%;">
+          <canvas id="gauge-sonar-canvas" class="w-full h-full block bg-transparent"></canvas>
+        </div>
+
+        <div class="absolute pointer-events-none"
+             style="left: 72.20%; top: 47.79%; width: 8.07%; height: 14.45%;">
+          <canvas id="gauge-hull-canvas" class="w-full h-full block bg-transparent"></canvas>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 🎛️ JOBB ALSÓ: FÉM BILLENŐKAPCSOLÓK ("AN" & "INFO" fotóra illesztve) -->
+        <!-- ============================================================== -->
+        <div class="absolute cursor-pointer" style="left: 62.27%; top: 75.35%; width: 4.88%; height: 14.45%;" title="Automata Navigáció (AN) Kapcsoló">
+          <div id="switch-an" class="w-full h-full relative">
+            <img id="img-switch-an-down" src="assets/images/switch_an_down_fit.png" alt="AN Down" class="w-full h-full object-contain" />
+          </div>
+        </div>
+
+        <div class="absolute cursor-pointer" style="left: 69.91%; top: 75.35%; width: 4.88%; height: 14.45%;" title="Információ / Szabályzat Kapcsoló">
+          <div id="switch-info" class="w-full h-full relative">
+            <img id="img-switch-info-down" src="assets/images/switch_info_down_fit.png" alt="Info Down" class="w-full h-full object-contain" />
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 📡 JOBB ALUL: KÉK KÖR ALAKÚ RADAR & HANGHULLÁM KIJELZŐ -->
+        <!-- ============================================================== -->
+        <div class="absolute rounded-full overflow-hidden pointer-events-none"
+             style="left: 78.32%; top: 67.25%; width: 18.5%; height: 28.0%;">
+          <canvas id="radar-scope-canvas" class="w-full h-full block bg-transparent"></canvas>
+        </div><div id="vent-faders" class="absolute inset-0 pointer-events-none z-30"></div><script>window.addEventListener('DOMContentLoaded', () => { const wrap = document.getElementById('vent-faders'); if (!wrap) return; window.SonarVolumes = { SM: 0.5, SS: 0.5, GM: 0.5, GS: 0.5 }; const bgm = new Audio('assets/sounds/Gear and Gales.mp3'); bgm.loop = true; bgm.volume = 0.5; const gsAmb = new Audio('assets/sounds/ambient_sea.wav'); gsAmb.loop = true; gsAmb.volume = 0; const startAudio = () => { bgm.play().catch(() => {}); }; document.addEventListener('pointerdown', startAudio, { once: true }); const origPlay = Audio.prototype.play; const activeSfx = new Set(); Audio.prototype.play = function() { if (this !== bgm && this !== gsAmb && this.src && (this.src.includes('deepsea-sonar') || this.src.includes('sonar_short') || this.src.includes('alarm'))) { this.volume = window.SonarVolumes.SS; activeSfx.add(this); this.addEventListener('ended', () => activeSfx.delete(this), { once: true }); } return origPlay.apply(this, arguments); }; const cfgs = [{ key: 'SM', x: 83.76, init: 0.5, target: 0.5 }, { key: 'SS', x: 86.05, init: 0.5, target: 0.5 }, { key: 'GM', x: 89.10, init: 0.5, target: 0.0 }, { key: 'GS', x: 91.39, init: 0.5, target: 0.0 }]; const yTop = 49.8, yBot = 58.4; cfgs.forEach(c => { const track = document.createElement('div'); track.className = 'absolute pointer-events-auto'; track.style.cssText = `left:${c.x}%;top:${yTop}%;height:${yBot - yTop}%;width:1.6%;transform:translateX(-50%);`; const knob = document.createElement('div'); knob.style.cssText = `position:absolute;left:50%;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 32% 28%, #fff3d1 0%, #d8b878 30%, #9c7332 68%, #3d280a 100%);border:1px solid #2a1b06;box-shadow:0 2px 4px rgba(0,0,0,0.9),inset 0 1px 1px rgba(255,243,209,0.8);transform:translate(-50%,-50%);top:${(1 - c.init) * 100}%;transition:top 0.65s cubic-bezier(0.22,1,0.36,1);cursor:url('assets/images/grab.png') 7 15,grab;`; wrap.appendChild(track); track.appendChild(knob); const setVal = (v, anim) => { const cl = Math.max(0, Math.min(1, v)); window.SonarVolumes[c.key] = cl; knob.style.transition = anim ? 'top 0.65s cubic-bezier(0.22,1,0.36,1)' : 'none'; knob.style.top = `${(1 - cl) * 100}%`; if (c.key === 'SM') { bgm.volume = cl; if (cl > 0 && bgm.paused) bgm.play().catch(() => {}); } if (c.key === 'SS') activeSfx.forEach(a => { a.volume = cl; }); if (c.key === 'GS') { gsAmb.volume = cl; if (cl > 0 && gsAmb.paused) gsAmb.play().catch(() => {}); else if (cl === 0) gsAmb.pause(); } }; setTimeout(() => setVal(c.target, true), 450); const onMove = (clientY) => { const r = track.getBoundingClientRect(); setVal(1 - (clientY - r.top) / r.height, false); }; knob.addEventListener('pointerdown', (e) => { e.preventDefault(); knob.setPointerCapture(e.pointerId); knob.style.cursor = "url('assets/images/grabbing.png') 6 11,grabbing"; onMove(e.clientY); }); knob.addEventListener('pointermove', (e) => { if (knob.hasPointerCapture(e.pointerId)) onMove(e.clientY); }); knob.addEventListener('pointerup', (e) => { if (knob.hasPointerCapture(e.pointerId)) { knob.releasePointerCapture(e.pointerId); knob.style.cursor = "url('assets/images/grab.png') 7 15,grab"; } }); track.addEventListener('pointerdown', (e) => { if (e.target === track) onMove(e.clientY); }); }); });</script>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODULÁRIS SCRIPT BETÖLTÉSEK -->
+  <script src="i18n.js"></script>
+  <script src="config.js"></script>
+  <script src="oscilloscope.js"></script>
+  <script src="let_particles.js"></script>
+  <script src="gameplay.js"></script>
+  <script src="gauges.js"></script>
+
+  <script>
+    window.loadPage = window.loadPage || function(page) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ source: 'sonar-minigame', status: 'EXIT_TO_PORT', targetPage: page }, '*');
+      }
+    };
+    window.updateCreditDisplay = window.updateCreditDisplay || function() {};
+    window.logout = window.logout || function() {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ source: 'sonar-minigame', status: 'LOGOUT' }, '*');
+      }
+    };
+
+    window.toggleHeaderLangDropdown = function(event, forceState) {
+      if (event) event.stopPropagation();
+      const dd = document.getElementById('header-lang-dropdown');
+      const mob = document.getElementById('header-mobile-popup');
+      if (mob) mob.style.display = 'none';
+      if (!dd) return;
+      const show = (typeof forceState === 'boolean') ? forceState : (dd.style.display === 'none' || !dd.style.display);
+      dd.style.display = show ? 'flex' : 'none';
+    };
+
+    window.toggleHeaderMobileSettings = function(event, forceState) {
+      if (event) event.stopPropagation();
+      const mob = document.getElementById('header-mobile-popup');
+      const dd = document.getElementById('header-lang-dropdown');
+      if (dd) dd.style.display = 'none';
+      if (!mob) return;
+      const show = (typeof forceState === 'boolean') ? forceState : (mob.style.display === 'none' || !mob.style.display);
+      mob.style.display = show ? 'flex' : 'none';
+    };
+
+    document.addEventListener('click', () => {
+      const dd = document.getElementById('header-lang-dropdown');
+      const mob = document.getElementById('header-mobile-popup');
+      if (dd) dd.style.display = 'none';
+      if (mob) mob.style.display = 'none';
+    });
+
+    window.renderSonarInfoOverlay = function() {
+      const box = document.getElementById('crt-info-overlay');
+      if (!box || !window.SonarI18n) return;
+      const t = (k, v) => window.SonarI18n.t(k, v);
+      const d = window.SonarI18n.dict();
+      const rk = (window.SonarEngine && window.SonarEngine.state && window.SonarEngine.state.rockCounts) || { small: 4, medium: 2, large: 1, wreck: 0 };
+      const fmt = d.info_obs_fmt || ['{n} db 1-es', '{n} db 2-es', '{n} db 3-as', '{n} db 4-es'];
+      const parts = [
+        fmt[0].replace('{n}', rk.small),
+        fmt[1].replace('{n}', rk.medium),
+        fmt[2].replace('{n}', rk.large)
+      ];
+      if (rk.wreck > 0) parts.push(fmt[3].replace('{n}', rk.wreck));
+
+      box.innerHTML =
+        '<div class="overflow-y-auto pr-2 flex-1" style="scrollbar-width:thin;scrollbar-color:#39ff14 #040b07;">' +
+          `<div class="text-base font-bold tracking-widest border-b border-[#39ff14]/40 pb-1 mb-1 text-[#8aff70]">${t('info_title')}</div>` +
+          `<div class="mt-[6px] font-bold underline tracking-wider text-[#8aff70]">${t('info_goal_h')}</div>` +
+          `<div>${t('info_goal_b')}</div>` +
+          `<div class="mt-[6px] font-bold underline tracking-wider text-[#ff9933]">${t('info_obs_h')}</div>` +
+          `<div id="info-obstacles-line" class="text-[#ff9933] font-bold">${parts.join(', ')}</div>` +
+          `<div class="mt-[6px] font-bold underline tracking-wider text-[#8aff70]">${t('info_sonar_h')}</div>` +
+          `<div>${t('info_sonar_b')}</div>` +
+          `<div class="mt-[6px] font-bold underline tracking-wider text-[#8aff70]">${t('info_map_h')}</div>` +
+          `<div>${t('info_map_b')}</div>` +
+          `<div class="mt-[6px] font-bold underline tracking-wider text-[#8aff70]">${t('info_route_h')}</div>` +
+          `<div>${t('info_route_b')}</div>` +
+          `<div class="mt-[6px] font-bold underline tracking-wider text-[#8aff70]">${t('info_start_h')}</div>` +
+          `<div>${t('info_start_b')}</div>` +
+          `<div class="mt-[10px] font-bold underline tracking-wider text-[#8aff70]">${t('info_legend_h')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_streak')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_navi')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_sonar')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_hull')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_an')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_sm')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_ss')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_gm')}</div>` +
+          `<div class="mt-[4px]">${t('info_leg_gs')}</div>` +
+        '</div>' +
+        `<div class="text-center text-xs opacity-80 border-t border-[#39ff14]/30 pt-1.5 mt-1 cursor-pointer">${t('info_close')}</div>`;
+    };
+
+    window.switchLanguage = function(lang) {
+      if (!window.SonarI18n) return;
+      const active = window.SonarI18n.setLang(lang);
+      const t = (k, v) => window.SonarI18n.t(k, v);
+
+      document.title = t('page_title');
+      document.documentElement.lang = active;
+
+      const deskImg = document.querySelector('img[alt="Operating Desk"]');
+      if (deskImg) {
+        deskImg.src = (active === 'hu')
+          ? 'assets/images/operating_desk_abacus_clean.jpg'
+          : `assets/images/operating_desk_${active}.jpg`;
+      }
+
+      document.querySelectorAll('[data-lang]:not(.lang-flag-btn)').forEach(el => {
+        el.textContent = t(el.getAttribute('data-lang'));
+      });
+      document.querySelectorAll('[data-lang-title]').forEach(el => {
+        el.setAttribute('title', t(el.getAttribute('data-lang-title')));
+      });
+      document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        btn.classList.toggle('active-lang', btn.getAttribute('data-lang') === active);
+      });
+
+      const anTitle = document.getElementById('an-prompt-title');
+      const anSub = document.getElementById('an-prompt-sub');
+      const anYes = document.getElementById('btn-an-yes');
+      const anNo = document.getElementById('btn-an-no');
+      if (anTitle) anTitle.textContent = t('an_title');
+      if (anSub) anSub.textContent = t('an_sub');
+      if (anYes) anYes.textContent = t('an_yes');
+      if (anNo) anNo.textContent = t('an_no');
+
+      if (document.getElementById('crt-info-overlay')) {
+        window.renderSonarInfoOverlay();
+      }
+    };
+  </script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('dragstart', e => e.preventDefault());
+      // 1. TopBar toggle
+      const topbarWrapper = document.getElementById('portal-topbar-wrapper');
+      const toggleBtn = document.getElementById('btn-toggle-topbar');
+      const arrowSpan = document.getElementById('topbar-arrow');
+      const operatingWindow = document.getElementById('operating-window');
+      let isTopBarOpen = true;
+
+      toggleBtn.addEventListener('click', () => {
+        isTopBarOpen = !isTopBarOpen;
+        if (isTopBarOpen) {
+          topbarWrapper.classList.remove('collapsed');
+          arrowSpan.textContent = '▲';
+          operatingWindow.style.height = 'calc(100vh - 85px)';
+        } else {
+          topbarWrapper.classList.add('collapsed');
+          arrowSpan.textContent = '▼';
+          operatingWindow.style.height = 'calc(100vh - 35px)';
+        }
+        setTimeout(() => {
+          window.SonarLetParticles.resize();
+          window.SonarOscilloscope.resize();
+          window.SonarGauges.init();
+        }, 360);
+      });
+
+      // 2. Modulok inicializálása
+      window.SonarLetParticles.init('let-crt-canvas');
+      window.SonarOscilloscope.init('radar-scope-canvas');
+      window.SonarGauges.init();
+
+      // 3a. Csúszósávos odometer init
+      function initOdometer(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+          const wheel = document.createElement('div');
+          wheel.className = 'digit-wheel';
+          const strip = document.createElement('div');
+          strip.className = 'digit-strip';
+          for (let num = 0; num <= 9; num++) {
+            const span = document.createElement('span');
+            span.textContent = num;
+            strip.appendChild(span);
+          }
+          wheel.appendChild(strip);
+          container.appendChild(wheel);
+        }
+      }
+      window.setOdometerValue = function(containerId, value) {
+        const clamped = Math.max(0, Math.min(99999, Math.floor(value)));
+        const digits = String(clamped).padStart(5, '0');
+        const strips = document.querySelectorAll(`#${containerId} .digit-strip`);
+        strips.forEach((strip, index) => {
+          strip.style.transform = `translateY(-${parseInt(digits[index], 10) * 10}%)`;
+        });
+      };
+      initOdometer('odometer-sorozat');
+      initOdometer('odometer-navi');
+      window.setOdometerValue('odometer-sorozat', 0);
+      window.setOdometerValue('odometer-navi', 0);
+
+      // 3b. Abakusz (8, 6, 4, 2 golyó, húzható/kattintható)
+      const rowConfigs = [
+        { count: 8, widthPct: 5.2 },
+        { count: 6, widthPct: 6.0 },
+        { count: 4, widthPct: 7.0 },
+        { count: 2, widthPct: 8.2 }
+      ];
+      const abacusState = rowConfigs.map(cfg => Array(cfg.count).fill(false));
+
+      function layoutRow(rIdx) {
+        const rowEl = document.querySelector(`.abacus-row[data-row="${rIdx}"]`);
+        const beads = rowEl.querySelectorAll('.abacus-bead');
+        const { count, widthPct } = rowConfigs[rIdx];
+        beads.forEach((bead, bIdx) => {
+          const leftPct = abacusState[rIdx][bIdx]
+            ? 100 - ((count - bIdx) * widthPct)
+            : bIdx * widthPct;
+          bead.style.left = `${leftPct}%`;
+        });
+      }
+
+      function setBeadSide(rIdx, bIdx, moveToRight) {
+        const states = abacusState[rIdx];
+        if (moveToRight) { for (let i = bIdx; i < states.length; i++) states[i] = true; }
+        else { for (let i = 0; i <= bIdx; i++) states[i] = false; }
+        layoutRow(rIdx);
+      }
+
+      function setupBeadInteraction(bead, rowEl, rIdx, bIdx) {
+        let startX = 0, startLeftPct = 0, moved = false;
+        bead.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          bead.setPointerCapture(e.pointerId);
+          startX = e.clientX;
+          startLeftPct = parseFloat(bead.style.left) || 0;
+          moved = false;
+          bead.style.transition = 'none';
+        });
+        bead.addEventListener('pointermove', (e) => {
+          if (!bead.hasPointerCapture(e.pointerId)) return;
+          const dx = e.clientX - startX;
+          if (Math.abs(dx) > 4) moved = true;
+          const deltaPct = (dx / rowEl.getBoundingClientRect().width) * 100;
+          const { count, widthPct } = rowConfigs[rIdx];
+          const minLeft = bIdx * widthPct;
+          const maxLeft = 100 - ((count - bIdx) * widthPct);
+          bead.style.left = `${Math.max(minLeft, Math.min(maxLeft, startLeftPct + deltaPct))}%`;
+        });
+        bead.addEventListener('pointerup', (e) => {
+          if (!bead.hasPointerCapture(e.pointerId)) return;
+          bead.releasePointerCapture(e.pointerId);
+          bead.style.transition = 'left 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.15s';
+          if (!moved) {
+            setBeadSide(rIdx, bIdx, !abacusState[rIdx][bIdx]);
+          } else {
+            const { count, widthPct } = rowConfigs[rIdx];
+            const minLeft = bIdx * widthPct;
+            const maxLeft = 100 - ((count - bIdx) * widthPct);
+            setBeadSide(rIdx, bIdx, parseFloat(bead.style.left) >= (minLeft + maxLeft) / 2);
+          }
+        });
+      }
+
+      document.querySelectorAll('.abacus-row').forEach((rowEl, rIdx) => {
+        rowEl.innerHTML = '';
+        const { count, widthPct } = rowConfigs[rIdx];
+        for (let bIdx = 0; bIdx < count; bIdx++) {
+          const bead = document.createElement('div');
+          bead.className = 'abacus-bead';
+          bead.style.width = `${widthPct}%`;
+          setupBeadInteraction(bead, rowEl, rIdx, bIdx);
+          rowEl.appendChild(bead);
+        }
+        layoutRow(rIdx);
+      });
+      window.getAbacusCounts = () => abacusState.map(row => row.filter(Boolean).length);
+      window.resetAbacus = () => abacusState.forEach((row, rIdx) => { row.fill(false); layoutRow(rIdx); });
+
+      // 3. TŰÉLES CRT HAJÓNAPLÓ SZÖVEG
+      if (window.SonarI18n) {
+        window.switchLanguage(window.SonarI18n.getLang());
+      }
+      const d = window.SonarI18n ? window.SonarI18n.dict() : null;
+      const t = (k, v) => (window.SonarI18n ? window.SonarI18n.t(k, v) : k);
+      const reasons = (d && d.weather_reasons) || window.SonarConfig.WEATHER_REASONS;
+      const reason = reasons[Math.floor(Math.random() * reasons.length)];
+      
+      const rc = (window.SonarEngine && window.SonarEngine.state && window.SonarEngine.state.rockCounts) || { small: 4, medium: 2, large: 1, wreck: 0 };
+      const obsLines = [
+        t('briefing_obs_1', { n: rc.small }),
+        t('briefing_obs_2', { n: rc.medium }),
+        t('briefing_obs_3', { n: rc.large })
+      ];
+      if (rc.wreck > 0) obsLines.push(t('briefing_obs_4', { n: rc.wreck }));
+
+      const briefingLines = [
+        t('briefing_header'),
+        reason,
+        "",
+        t('briefing_obs_header'),
+        ...obsLines,
+        t('briefing_goal_note'),
+        "",
+        t('briefing_click_hint')
+      ];
+
+      window.SonarLetParticles.setText(briefingLines, 30, () => {
+        console.log("Morfolódás kész, tengeri háló aktív!");
+        document.getElementById('screen-nav-bar').classList.remove('hidden');
+        document.getElementById('screen-nav-bar').classList.add('flex');
+      });
+
+      // 4. Módválasztó rendszer (SZONÁR, TÉRKÉP, ÚTVONAL, START)
+      let currentMode = 'SONAR';
+      const modes = ['sonar', 'map', 'route', 'start'];
+      function setGameMode(mode) {
+        currentMode = mode.toUpperCase();
+        modes.forEach(m => {
+          const led = document.querySelector(`.mode-led-${m}`);
+          if (led) {
+            if (m === mode.toLowerCase() && !(m === 'sonar' && window.SonarEngine && window.SonarEngine.state && window.SonarEngine.state.pingsCur <= 0)) {
+              led.classList.remove('hidden');
+            } else {
+              led.classList.add('hidden');
+            }
+          }
+        });
+        if (window.SonarLetParticles && window.SonarLetParticles.setMode) {
+          window.SonarLetParticles.setMode(currentMode);
+        }
+        console.log("Aktív játékmód:", currentMode);
+      }
+
+      document.getElementById('btn-mode-sonar').addEventListener('click', () => setGameMode('sonar'));
+      document.getElementById('btn-mode-map').addEventListener('click', () => setGameMode('map'));
+      document.getElementById('btn-mode-route').addEventListener('click', () => setGameMode('route'));
+      document.getElementById('btn-mode-start').addEventListener('click', () => setGameMode('start'));
+
+      // 4. Útvonaltervezés & START gombok
+      const btnRoute = document.getElementById('btn-screen-route');
+      const btnStart = document.getElementById('btn-screen-start');
+      btnRoute.addEventListener('click', () => {
+        btnStart.classList.remove('hidden');
+        btnStart.classList.add('inline-flex');
+      });
+
+      // 5. CRT kattintás: szonár hullám a képernyőn + AKUSZTIKUS HULLÁM A KÖR RADARON!
+      const crtCanvas = document.getElementById('let-crt-canvas');
+      crtCanvas.addEventListener('click', (e) => {
+        if (window.SonarLetParticles.getState() === 'GRID') {
+          const isRockHit = Math.random() < 0.35;
+          window.SonarLetParticles.triggerSonarWave(3, 3);
+          window.SonarOscilloscope.triggerPing(isRockHit);
+        }
+      });
+
+      // 5. "AN" és "Info" kapcsolók
+      const switchAn = document.getElementById('switch-an');
+      const imgAnDown = document.getElementById('img-switch-an-down');
+      const anOverlay = document.getElementById('an-prompt-overlay');
+
+      switchAn.addEventListener('click', () => {
+        const crtEl = document.getElementById('let-crt-canvas');
+        const isCurrentlyDown = !imgAnDown.classList.contains('hidden');
+        if (isCurrentlyDown) {
+          imgAnDown.classList.add('hidden');
+          anOverlay.classList.remove('hidden');
+          anOverlay.classList.add('flex');
+          if (crtEl) crtEl.classList.add('invisible');
+        } else {
+          imgAnDown.classList.remove('hidden');
+          anOverlay.classList.add('hidden');
+          anOverlay.classList.remove('flex');
+          if (crtEl) crtEl.classList.remove('invisible');
+        }
+      });
+
+      document.getElementById('btn-an-yes').addEventListener('click', () => {
+        const crtEl = document.getElementById('let-crt-canvas');
+        anOverlay.classList.add('hidden');
+        anOverlay.classList.remove('flex');
+        if (crtEl) crtEl.classList.remove('invisible');
+        if (window.SonarLetParticles && window.SonarLetParticles.triggerAutoNav) {
+          window.SonarLetParticles.triggerAutoNav();
+        }
+      });
+
+      document.getElementById('btn-an-no').addEventListener('click', () => {
+        const crtEl = document.getElementById('let-crt-canvas');
+        imgAnDown.classList.remove('hidden');
+        anOverlay.classList.add('hidden');
+        anOverlay.classList.remove('flex');
+        if (crtEl) crtEl.classList.remove('invisible');
+      });
+
+      // 6. Végjáték & Hajónapló bejegyzés + terkeputazas01.mp4 + jutalom mentés
+      window.onSonarGameEnd = function(res) {
+        if (!res) return;
+        if (window.SonarEngine && window.SonarEngine.markSonarPlayed) window.SonarEngine.markSonarPlayed();
+        const crtEl = document.getElementById('let-crt-canvas');
+        const parentEl = crtEl ? crtEl.parentElement : null;
+        if (!parentEl) return;
+
+        try {
+          localStorage.setItem('ebook_pirates_ship_hp', String(res.hp));
+          if (res.status === 'WIN') {
+            const prev = JSON.parse(localStorage.getItem('ebook_pirates_sonar_rewards') || '{"navPoints":0,"credits":0,"hartya":0,"elelem":0,"rum":0}');
+            prev.navPoints += (res.navPoints || 0);
+            prev.credits += (res.extraReward && res.extraReward.type === 'CHEST' ? res.extraReward.amount : 0);
+            prev.hartya += (res.extraReward && res.extraReward.type === 'BARREL' ? res.extraReward.amount : 0);
+            if (res.extraReward && res.extraReward.type === 'BOTTLE') {
+              if (res.extraReward.subType === 'rum') prev.rum += 1;
+              else prev.elelem += 1;
+            }
+            localStorage.setItem('ebook_pirates_sonar_rewards', JSON.stringify(prev));
+          }
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ source: 'sonar-minigame', ...res }, '*');
+          }
+        } catch (e) {}
+
+        let box = document.getElementById('crt-result-overlay');
+        if (!box) {
+          box = document.createElement('div');
+          box.id = 'crt-result-overlay';
+          box.className = 'absolute bg-[#040b07]/[0.96] text-[#39ff14] font-mono text-[14px] px-6 py-5 flex flex-col justify-between z-40 pointer-events-auto leading-relaxed';
+          box.style.cssText = 'left:-3.2%;right:3.2%;top:-1.6%;bottom:-0.8%;text-shadow:0 0 6px rgba(57,255,20,0.45);';
+          parentEl.appendChild(box);
+        }
+
+        if (res.status === 'TOWED') {
+          const curLang = (window.SonarI18n && window.SonarI18n.getLang()) || window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+          const towDict = {
+            hu: 'A csónak nem bír ki még egy ütközést.\n\nHolzkopf mester most elvontat Hebokba.',
+            en: 'The boat cannot withstand another collision.\n\nMaster Holzkopf is now towing you to Hebok.',
+            de: 'Das Boot hält keinen weiteren Zusammenstoß aus.\n\nMeister Holzkopf schleppt dich jetzt nach Hebok ab.',
+            fr: 'La barque ne supportera pas une autre collision.\n\nMaître Holzkopf vous remorque maintenant jusqu\'à Hebok.',
+            es: 'La barca no resistirá otra colisión.\n\nEl maestro Holzkopf te remolca ahora a Hebok.',
+            pl: 'Łódź nie wytrzyma kolejnego zderzenia.\n\nMistrz Holzkopf odholowuje cię teraz do Hebok.',
+            ru: 'Лодка не выдержит еще одного столкновения.\n\nМастер Хольцкопф буксирует вас в Хебок.'
+          };
+          const msg = (towDict[curLang] || towDict.hu).replace(/\n\n/g, '<br><br>');
+          const logTitle = window.SonarI18n ? window.SonarI18n.t('log_title') : 'HAJÓNAPLÓ BEJEGYZÉS';
+          const towHint = window.SonarI18n ? window.SonarI18n.t('tow_click_hint') : '[Kattints vagy várj a vontatásra...]';
+          box.innerHTML = `<div class="border-b border-[#39ff14]/40 pb-2 text-base font-bold tracking-widest text-[#ff5555]">${logTitle}</div><div class="my-auto text-center text-[#bfffab] text-[15px]">${msg}</div><div class="text-center text-xs opacity-75 border-t border-[#39ff14]/30 pt-2">${towHint}</div>`;
+          box.classList.remove('hidden');
+          crtEl.classList.add('invisible');
+
+          let launched = false;
+          const startTowVideo = () => {
+            if (launched) return;
+            launched = true;
+            box.classList.add('hidden');
+            crtEl.classList.remove('invisible');
+            let vWrap = document.getElementById('sonar-departure-video-overlay');
+            if (!vWrap) {
+              vWrap = document.createElement('div');
+              vWrap.id = 'sonar-departure-video-overlay';
+              vWrap.style.cssText = 'position:fixed;inset:0;background:#000;z-index:999999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+              vWrap.innerHTML = '<video id="sonar-departure-video" preload="auto" playsinline style="width:100%;height:100%;object-fit:contain;" src="https://storage.googleapis.com/kalozsziget-assets/videos/terkeputazas01.mp4"></video>';
+              document.body.appendChild(vWrap);
+            }
+            const vid = document.getElementById('sonar-departure-video');
+            vWrap.style.display = 'flex';
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+            const finishVid = () => {
+              vWrap.style.display = 'none';
+              if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ source: 'sonar-minigame', status: 'EXIT_TO_PORT', targetPage: 'hajomuhely_oldal', hp: res.hp, maxHp: res.maxHp }, '*');
+              }
+            };
+            vid.onended = finishVid;
+            vWrap.onclick = finishVid;
+          };
+          box.onclick = startTowVideo;
+          setTimeout(startTowVideo, 4000);
+          return;
+        }
+
+        // WIN
+        const t = (k, fb) => (window.SonarI18n ? window.SonarI18n.t(k) : fb);
+        const rows = [`<li>• <b>+${res.navPoints} ${t('rew_nav', 'Navi pont')}</b></li>`];
+        if (res.extraReward) {
+          let rewLabel = res.extraReward.label;
+          if (res.extraReward.type === 'CHEST') rewLabel = `+${res.extraReward.amount} ${t('rew_credit', 'Kredit')}`;
+          else if (res.extraReward.type === 'BARREL') rewLabel = `+${res.extraReward.amount} ${t('rew_membrane', 'Hártya')}`;
+          else if (res.extraReward.type === 'BOTTLE') rewLabel = `+1 ${res.extraReward.subType === 'rum' ? t('rew_rum', 'Rum') : t('rew_food', 'Élelem')}`;
+          rows.push(`<li>• <b>${rewLabel}</b></li>`);
+        }
+        box.innerHTML = `
+          <div class="border-b border-[#39ff14]/40 pb-2 text-base font-bold tracking-widest text-[#8aff70]">${t('log_title', 'HAJÓNAPLÓ BEJEGYZÉS')}</div>
+          <div class="my-auto pb-[150px]">
+            <div class="text-xl font-bold text-[#bfffab] mb-6">${t('win_title', 'Átjutottál!')}</div>
+            <div class="text-xs uppercase tracking-wider text-[#8aff70] mb-3">${t('win_rewards_header', 'Megszerzett jutalmak:')}</div>
+            <ul class="space-y-1 text-[14px] text-[#ff9933]">${rows.join('')}</ul>
+          </div>
+          <div class="flex justify-center gap-3 border-t border-[#39ff14]/30 pt-3">
+            <button id="btn-sonar-next-sector" class="px-4 py-1.5 bg-[#39ff14]/20 hover:bg-[#39ff14]/35 border border-[#39ff14] hover:border-[#ffd700] hover:shadow-[0_0_14px_rgba(255,215,0,0.85)] transition-all duration-150 text-[#bfffab] font-bold text-xs tracking-wider cursor-pointer">${t('win_btn_continue', 'TOVÁBB')}</button>
+          </div>
+        `;
+        box.classList.remove('hidden');
+        crtEl.classList.add('invisible');
+        const nextBtn = document.getElementById('btn-sonar-next-sector');
+        if (nextBtn) nextBtn.onclick = () => { box.classList.add('hidden'); crtEl.classList.remove('invisible'); };
+      };
+
+      window.onSonarOutOfPings = function () {
+        const sonarLed = document.querySelector('.mode-led-sonar');
+        if (sonarLed) sonarLed.classList.add('hidden');
+        setTimeout(() => {
+          const crtEl = document.getElementById('let-crt-canvas');
+          const parentEl = crtEl && crtEl.parentElement;
+          if (!parentEl) return;
+          let box = document.getElementById('crt-result-overlay');
+          if (!box) {
+            box = document.createElement('div');
+            box.id = 'crt-result-overlay';
+            box.className = 'absolute bg-[#040b07]/[0.96] text-[#39ff14] font-mono text-[14px] px-6 py-5 flex flex-col justify-between z-40 pointer-events-auto leading-relaxed';
+            box.style.cssText = 'left:-3.2%;right:3.2%;top:-1.6%;bottom:-0.8%;text-shadow:0 0 6px rgba(57,255,20,0.45);';
+            parentEl.appendChild(box);
+          }
+          const t = (k, fb) => (window.SonarI18n ? window.SonarI18n.t(k) : fb);
+          box.innerHTML = `<div class="border-b border-[#39ff14]/40 pb-2 text-base font-bold tracking-widest text-[#8aff70]">${t('log_title', 'HAJÓNAPLÓ BEJEGYZÉS')}</div><div class="my-auto pb-[150px] text-center text-[#bfffab] text-[15px]">${t('out_of_pings_msg', 'Nincs több Szonár jel indítási lehetőséged.<br><br>Tervezd meg az útvonalt, vagy add át az AutoNavigációnak az irányítást!')}</div><div class="text-center text-xs opacity-75 border-t border-[#39ff14]/30 pt-2 cursor-pointer">${t('click_continue', '[Kattints ide a folytatáshoz]')}</div>`;
+          box.classList.remove('hidden');
+          crtEl.classList.add('invisible');
+          box.onclick = () => { box.classList.add('hidden'); crtEl.classList.remove('invisible'); };
+        }, 1600);
+      };
+
+      const switchInfo = document.getElementById('switch-info');
+      const imgInfoDown = document.getElementById('img-switch-info-down');
+      switchInfo.addEventListener('click', () => {
+        const isUp = imgInfoDown.classList.toggle('hidden');
+        const crtEl = document.getElementById('let-crt-canvas');
+        crtEl.classList.toggle('invisible', isUp);
+        let box = document.getElementById('crt-info-overlay');
+        if (!box) {
+          box = document.createElement('div');
+          box.id = 'crt-info-overlay';
+          box.className = 'absolute bg-[#040b07]/[0.97] text-[#39ff14] font-mono text-[13.5px] px-5 py-3.5 flex flex-col justify-between z-30 pointer-events-auto leading-snug';
+          box.style.cssText = 'left:-3.2%;right:3.2%;top:-1.6%;bottom:-0.8%;text-shadow:0 0 6px rgba(57,255,20,0.45);';
+          box.onclick = () => {
+            imgInfoDown.classList.remove('hidden');
+            box.classList.add('hidden');
+            crtEl.classList.remove('invisible');
+          };
+          crtEl.parentElement.appendChild(box);
+        }
+        if (window.renderSonarInfoOverlay) window.renderSonarInfoOverlay();
+        box.classList.toggle('hidden', !isUp);
+      });
+    });
+  </script>
+
+</body>
+</html>

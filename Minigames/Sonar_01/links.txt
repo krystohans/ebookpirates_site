@@ -1,0 +1,25 @@
+================================================================================
+🧭 SZONÁR MINIJÁTÉK (SONAR_01) - INDÍTÓLINKEK
+================================================================================
+
+🌟 1. ONLINE BÖNGÉSZŐS LINKEK (Google Cloud Storage - bárkinek, bármikor):
+   - Bemutató animáció (Walkthrough Autoplay + 7 Nyelv):
+     https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/walkthrough_preview.html
+
+   - Közvetlen Szonár Játék:
+     https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/sonar_01.html
+
+   - Képzettségi szintek (Navi Skill tesztelése):
+     0%:   https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/sonar_01.html?navSkill=0
+     50%:  https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/sonar_01.html?navSkill=50
+     95%:  https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/sonar_01.html?navSkill=95
+     100%: https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/sonar_01.html?navSkill=100
+
+💻 2. LOKÁLIS DEV SZERVER LINKEK (Helyi tesztelés, 8055-ös port):
+   - Bemutató animáció:
+     http://localhost:8055/Minigames/Sonar_01/walkthrough_preview.html
+
+   - Közvetlen Szonár Játék:
+     http://localhost:8055/Minigames/Sonar_01/sonar_01.html
+
+================================================================================

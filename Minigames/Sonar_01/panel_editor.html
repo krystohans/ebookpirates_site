@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sonar_01 – Panel Elrendező Szerkesztő</title>
+  <style>
+    * { box-sizing: border-box; user-select: none; }
+    body { margin: 0; background: #0b1116; color: #e5e7eb; font-family: system-ui, -apple-system, sans-serif; display: flex; height: 100vh; overflow: hidden; }
+    #stage-wrap { flex: 1; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; background: #06090c; padding: 16px; }
+    #canvas-container { position: relative; aspect-ratio: 2752 / 1536; width: 100%; max-width: 1200px; background: #000; box-shadow: 0 0 30px rgba(0,0,0,0.9); overflow: hidden; }
+    #canvas-container.zoom-top-right { aspect-ratio: 1100 / 700; max-width: 980px; }
+    #scene { position: absolute; inset: 0; transform-origin: 0 0; width: 100%; height: 100%; }
+    #bg-img { width: 100%; height: 100%; display: block; pointer-events: none; }
+    .layer-item { position: absolute; cursor: move; }
+    .layer-item img { width: 100%; height: 100%; display: block; pointer-events: none; }
+    .layer-item.selected { outline: 2px solid #39ff14; box-shadow: 0 0 12px rgba(57,255,20,0.45); }
+    .handle { position: absolute; width: 10px; height: 10px; background: #39ff14; border: 1px solid #000; display: none; z-index: 10; }
+    .layer-item.selected .handle { display: block; }
+    .h-nw { left: -5px; top: -5px; cursor: nwse-resize; }
+    .h-ne { right: -5px; top: -5px; cursor: nesw-resize; }
+    .h-sw { left: -5px; bottom: -5px; cursor: nesw-resize; }
+    .h-se { right: -5px; bottom: -5px; cursor: nwse-resize; }
+    .h-n  { left: 50%; top: -5px; transform: translateX(-50%); cursor: ns-resize; }
+    .h-s  { left: 50%; bottom: -5px; transform: translateX(-50%); cursor: ns-resize; }
+    .h-w  { left: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+    .h-e  { right: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+
+    #sidebar { width: 320px; background: #121a22; border-left: 1px solid #263340; display: flex; flex-direction: column; padding: 14px; gap: 12px; overflow-y: auto; }
+    h2 { margin: 0; font-size: 15px; color: #39ff14; letter-spacing: 0.5px; }
+    .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    button { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    button:hover { background: #293548; border-color: #39ff14; }
+    button.primary { background: #14532d; border-color: #39ff14; color: #bfffab; }
+    button.active { background: #1e3a2f; border-color: #39ff14; color: #39ff14; }
+    .layer-list { display: flex; flex-direction: column; gap: 4px; }
+    .layer-btn { text-align: left; display: flex; justify-content: space-between; align-items: center; }
+    .prop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #0d1318; padding: 10px; border-radius: 6px; border: 1px solid #24303c; }
+    .prop-field { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: #94a3b8; }
+    .prop-field input { background: #18222c; border: 1px solid #334155; color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 12px; width: 100%; }
+    label.chk { display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; }
+    textarea { width: 100%; height: 95px; background: #090d11; color: #8aff70; border: 1px solid #24303c; border-radius: 5px; font-family: monospace; font-size: 10.5px; padding: 6px; resize: vertical; }
+    .hint { font-size: 11px; color: #94a3b8; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <div id="stage-wrap">
+    <div id="canvas-container" class="zoom-top-right">
+      <div id="scene">
+        <img id="bg-img" src="assets/images/panel_parts/desk_clean_base.jpg" alt="Base" />
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <h2>Panel Elrendező Szerkesztő</h2>
+
+    <div class="btn-row">
+      <button id="btn-zoom" class="active">Zoom: Jobb felső</button>
+      <button id="btn-full">Teljes pult</button>
+      <button id="btn-reset">Alaphelyzet</button>
+    </div>
+
+    <div class="hint">
+      • Kattints egy elemre a kijelöléshez, húzd egérrel, vagy a zöld sarkokkal méretezd.<br>
+      • Nyilakkal 1px-enként mozgatható (Shift+Nyíl = 10px).
+    </div>
+
+    <div class="layer-list" id="layer-list"></div>
+
+    <div class="prop-grid" id="props">
+      <div class="prop-field">X (px)<input type="number" id="in-x"></div>
+      <div class="prop-field">Y (px)<input type="number" id="in-y"></div>
+      <div class="prop-field">Szélesség (px)<input type="number" id="in-w"></div>
+      <div class="prop-field">Magasság (px)<input type="number" id="in-h"></div>
+    </div>
+
+    <label class="chk">
+      <input type="checkbox" id="chk-aspect" checked /> Aránytartó méretezés (sarkoknál)
+    </label>
+
+    <div class="btn-row">
+      <button id="btn-export-jpg" class="primary" style="flex:1;">💾 Kész JPG mentése (2752×1536)</button>
+    </div>
+    <div class="btn-row">
+      <button id="btn-copy-json" style="flex:1;">📋 Koordináták másolása</button>
+    </div>
+
+    <textarea id="out-json" readonly></textarea>
+  </div>
+
+  <script>
+    const BASE_W = 2752, BASE_H = 1536;
+    const DEFAULTS = [
+      { id: 'frame',    name: 'Fém keret',     src: 'assets/images/panel_parts/frame.png',    x: 1765, y: 34,  w: 850, h: 472 },
+      { id: 'mini_crt', name: 'Kicsi kijelző', src: 'assets/images/panel_parts/mini_crt.png', x: 2045, y: 190, w: 460, h: 295 },
+      { id: 'btn_1',    name: 'Gomb 1',        src: 'assets/images/panel_parts/btn_1.png',    x: 1850, y: 72,  w: 112, h: 112 },
+      { id: 'btn_2',    name: 'Gomb 2',        src: 'assets/images/panel_parts/btn_2.png',    x: 1995, y: 72,  w: 112, h: 112 },
+      { id: 'btn_3',    name: 'Gomb 3',        src: 'assets/images/panel_parts/btn_3.png',    x: 2140, y: 72,  w: 112, h: 112 },
+      { id: 'btn_4',    name: 'Gomb 4',        src: 'assets/images/panel_parts/btn_4.png',    x: 2285, y: 72,  w: 112, h: 112 },
+      { id: 'btn_0',    name: 'Gomb 0',        src: 'assets/images/panel_parts/btn_0.png',    x: 1850, y: 205, w: 112, h: 112 },
+      { id: 'btn_ps',   name: 'PS Gomb',       src: 'assets/images/panel_parts/btn_ps.png',   x: 1850, y: 330, w: 108, h: 108 },
+      { id: 'ps_label', name: 'PS Felirat',    src: 'assets/images/panel_parts/ps_label.png', x: 1848, y: 442, w: 112, h: 44  }
+    ];
+
+    let layers = JSON.parse(localStorage.getItem('sonar_panel_editor_v1') || 'null') || JSON.parse(JSON.stringify(DEFAULTS));
+    let selectedId = 'frame';
+    let isZoomed = true;
+
+    const container = document.getElementById('canvas-container');
+    const scene = document.getElementById('scene');
+    const layerList = document.getElementById('layer-list');
+    const inX = document.getElementById('in-x');
+    const inY = document.getElementById('in-y');
+    const inW = document.getElementById('in-w');
+    const inH = document.getElementById('in-h');
+    const chkAspect = document.getElementById('chk-aspect');
+    const outJson = document.getElementById('out-json');
+
+    function applyZoom() {
+      if (isZoomed) {
+        container.classList.add('zoom-top-right');
+        // Jobb felső régió: x=1650..2750 (width=1100), y=0..700
+        const sx = BASE_W / 1100;
+        const sy = BASE_H / 700;
+        scene.style.transform = `scale(${sx}, ${sy}) translate(${-1650 / BASE_W * 100}%, 0%)`;
+      } else {
+        container.classList.remove('zoom-top-right');
+        scene.style.transform = 'none';
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('sonar_panel_editor_v1', JSON.stringify(layers));
+      const summary = layers.map(l => ({
+        id: l.id,
+        x: Math.round(l.x), y: Math.round(l.y), w: Math.round(l.w), h: Math.round(l.h),
+        leftPct: +(l.x / BASE_W * 100).toFixed(2),
+        topPct: +(l.y / BASE_H * 100).toFixed(2),
+        widthPct: +(l.w / BASE_W * 100).toFixed(2),
+        heightPct: +(l.h / BASE_H * 100).toFixed(2)
+      }));
+      outJson.value = JSON.stringify(summary, null, 2);
+    }
+
+    function updateDomPositions() {
+      layers.forEach(l => {
+        const el = document.getElementById('layer-' + l.id);
+        if (!el) return;
+        el.style.left = (l.x / BASE_W * 100) + '%';
+        el.style.top = (l.y / BASE_H * 100) + '%';
+        el.style.width = (l.w / BASE_W * 100) + '%';
+        el.style.height = (l.h / BASE_H * 100) + '%';
+        el.classList.toggle('selected', l.id === selectedId);
+      });
+      const sel = layers.find(l => l.id === selectedId);
+      if (sel) {
+        inX.value = Math.round(sel.x);
+        inY.value = Math.round(sel.y);
+        inW.value = Math.round(sel.w);
+        inH.value = Math.round(sel.h);
+      }
+      document.querySelectorAll('.layer-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.id === selectedId);
+      });
+      saveState();
+    }
+
+    function buildUI() {
+      scene.querySelectorAll('.layer-item').forEach(e => e.remove());
+      layerList.innerHTML = '';
+
+      layers.forEach(l => {
+        const div = document.createElement('div');
+        div.id = 'layer-' + l.id;
+        div.className = 'layer-item';
+        const img = document.createElement('img');
+        img.src = l.src;
+        div.appendChild(img);
+
+        ['nw','ne','sw','se','n','s','w','e'].forEach(dir => {
+          const h = document.createElement('div');
+          h.className = 'handle h-' + dir;
+          h.dataset.dir = dir;
+          div.appendChild(h);
+        });
+
+        div.addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          selectedId = l.id;
+          updateDomPositions();
+
+          const dir = e.target.dataset.dir || 'move';
+          const startX = e.clientX, startY = e.clientY;
+          const orig = { ...l };
+          const aspect = orig.w / orig.h;
+          const rect = container.getBoundingClientRect();
+          const pxPerClientX = (isZoomed ? 1100 : BASE_W) / rect.width;
+          const pxPerClientY = (isZoomed ? 700 : BASE_H) / rect.height;
+
+          const onMove = (ev) => {
+            const dx = (ev.clientX - startX) * pxPerClientX;
+            const dy = (ev.clientY - startY) * pxPerClientY;
+
+            if (dir === 'move') {
+              l.x = orig.x + dx;
+              l.y = orig.y + dy;
+            } else {
+              let nx = orig.x, ny = orig.y, nw = orig.w, nh = orig.h;
+              if (dir.includes('e')) nw = Math.max(20, orig.w + dx);
+              if (dir.includes('s')) nh = Math.max(20, orig.h + dy);
+              if (dir.includes('w')) { nw = Math.max(20, orig.w - dx); nx = orig.x + (orig.w - nw); }
+              if (dir.includes('n')) { nh = Math.max(20, orig.h - dy); ny = orig.y + (orig.h - nh); }
+
+              if (chkAspect.checked && ['nw','ne','sw','se'].includes(dir)) {
+                nh = nw / aspect;
+                if (dir.includes('n')) ny = orig.y + (orig.h - nh);
+              }
+              l.x = nx; l.y = ny; l.w = nw; l.h = nh;
+            }
+            updateDomPositions();
+          };
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+          };
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+        });
+
+        scene.appendChild(div);
+
+        const btn = document.createElement('button');
+        btn.className = 'layer-btn';
+        btn.dataset.id = l.id;
+        btn.textContent = l.name;
+        btn.onclick = () => { selectedId = l.id; updateDomPositions(); };
+        layerList.appendChild(btn);
+      });
+
+      applyZoom();
+      updateDomPositions();
+    }
+
+    [inX, inY, inW, inH].forEach((inp, idx) => {
+      inp.addEventListener('input', () => {
+        const sel = layers.find(l => l.id === selectedId);
+        if (!sel) return;
+        const v = parseFloat(inp.value) || 0;
+        if (idx === 0) sel.x = v;
+        if (idx === 1) sel.y = v;
+        if (idx === 2) sel.w = Math.max(10, v);
+        if (idx === 3) sel.h = Math.max(10, v);
+        updateDomPositions();
+      });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (document.activeElement.tagName === 'INPUT') return;
+      const sel = layers.find(l => l.id === selectedId);
+      if (!sel) return;
+      const step = e.shiftKey ? 10 : 1;
+      if (e.key === 'ArrowLeft')  { sel.x -= step; e.preventDefault(); }
+      if (e.key === 'ArrowRight') { sel.x += step; e.preventDefault(); }
+      if (e.key === 'ArrowUp')    { sel.y -= step; e.preventDefault(); }
+      if (e.key === 'ArrowDown')  { sel.y += step; e.preventDefault(); }
+      updateDomPositions();
+    });
+
+    document.getElementById('btn-zoom').onclick = () => {
+      isZoomed = true;
+      document.getElementById('btn-zoom').classList.add('active');
+      document.getElementById('btn-full').classList.remove('active');
+      applyZoom();
+    };
+    document.getElementById('btn-full').onclick = () => {
+      isZoomed = false;
+      document.getElementById('btn-full').classList.add('active');
+      document.getElementById('btn-zoom').classList.remove('active');
+      applyZoom();
+    };
+    document.getElementById('btn-reset').onclick = () => {
+      layers = JSON.parse(JSON.stringify(DEFAULTS));
+      localStorage.removeItem('sonar_panel_editor_v1');
+      buildUI();
+    };
+
+    document.getElementById('btn-copy-json').onclick = () => {
+      outJson.select();
+      document.execCommand('copy');
+      alert('Koordináták kimásolva a vágólapra!');
+    };
+
+    document.getElementById('btn-export-jpg').onclick = async () => {
+      const c = document.createElement('canvas');
+      c.width = BASE_W; c.height = BASE_H;
+      const ctx = c.getContext('2d');
+      const loadImg = (src) => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = src; });
+      const bg = await loadImg('assets/images/panel_parts/desk_clean_base.jpg');
+      ctx.drawImage(bg, 0, 0, BASE_W, BASE_H);
+      for (const l of layers) {
+        const img = await loadImg(l.src);
+        ctx.drawImage(img, l.x, l.y, l.w, l.h);
+      }
+      const a = document.createElement('a');
+      a.download = 'operatingdesk_new.jpg';
+      a.href = c.toDataURL('image/jpeg', 0.95);
+      a.click();
+    };
+
+    buildUI();
+  </script>
+</body>
+</html>

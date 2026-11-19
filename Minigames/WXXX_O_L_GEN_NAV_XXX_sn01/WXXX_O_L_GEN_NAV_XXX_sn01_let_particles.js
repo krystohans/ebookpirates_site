@@ -49,7 +49,7 @@ window.SonarLetParticles = (function() {
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', () => { hoveredCell = null; });
 
-    if (!animId) animate();
+    if (!animId) animate(); setTimeout(capturePrintScreen, 150);
   }
 
   function resize() {

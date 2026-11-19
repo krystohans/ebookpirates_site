@@ -1234,7 +1234,7 @@
         box.classList.toggle('hidden', !isUp);
       });
  
-      if (!localStorage.getItem('ebook_pirates_sonar_played')) { setTimeout(() => { if (window.SonarWalkthrough && !window.SonarWalkthrough.isRunning()) window.SonarWalkthrough.start(); }, 1200); }
+      if (window.parent === window) { setTimeout(() => { if (window.SonarWalkthrough && window.SonarWalkthrough.showStandaloneIntroPrompt) window.SonarWalkthrough.showStandaloneIntroPrompt(); }, 600); } else if (!localStorage.getItem('ebook_pirates_sonar_played')) { setTimeout(() => { if (window.SonarWalkthrough && !window.SonarWalkthrough.isRunning()) window.SonarWalkthrough.start(); }, 1200); }
     });
   </script>
 

@@ -565,10 +565,107 @@ window.SonarWalkthrough = (function() {
     }
   }
 
+  async function demoSelectLanguage(lang) {
+    createUI();
+    if (cursorEl) {
+      cursorEl.classList.remove('hidden');
+      cursorEl.style.display = 'block';
+    }
+    const tbWrap = document.getElementById('portal-topbar-wrapper');
+    if (tbWrap && tbWrap.classList.contains('collapsed')) {
+      const tgl = document.getElementById('btn-toggle-topbar');
+      if (tgl) tgl.click();
+      await new Promise(r => setTimeout(r, 350));
+    }
+    const globeBtn = document.getElementById('header-lang-globe-btn');
+    if (globeBtn) {
+      await moveCursorToElement(globeBtn);
+      await clickAnimation();
+      const dd = document.getElementById('header-lang-dropdown');
+      if (dd) dd.style.display = 'flex';
+      await new Promise(r => setTimeout(r, 400));
+      const langBtn = document.querySelector(`#header-lang-dropdown button[data-lang="${lang}"]`);
+      if (langBtn) {
+        await moveCursorToElement(langBtn);
+        await clickAnimation();
+      }
+      if (typeof window.switchLanguage === 'function') window.switchLanguage(lang);
+      if (dd) dd.style.display = 'none';
+      await new Promise(r => setTimeout(r, 350));
+    } else if (typeof window.switchLanguage === 'function') {
+      window.switchLanguage(lang);
+    }
+    if (cursorEl) {
+      cursorEl.classList.add('hidden');
+      cursorEl.style.display = 'none';
+    }
+    showStandaloneIntroPrompt();
+  }
+
+  function showStandaloneIntroPrompt() {
+    const crtEl = document.getElementById('let-crt-canvas');
+    const parentEl = crtEl ? crtEl.parentElement : null;
+    if (!parentEl) return;
+    let box = document.getElementById('crt-result-overlay');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'crt-result-overlay';
+      box.className = 'absolute bg-[#040b07]/[0.96] text-[#39ff14] font-mono text-[14px] px-6 py-5 flex flex-col justify-between z-40 pointer-events-auto leading-relaxed';
+      box.style.cssText = 'left:-3.2%;right:3.2%;top:-1.6%;bottom:-0.8%;text-shadow:0 0 6px rgba(57,255,20,0.45);';
+      parentEl.appendChild(box);
+    }
+    const t = (k, fb) => (window.SonarI18n ? window.SonarI18n.t(k) : fb);
+    const langs = ['hu', 'en', 'de', 'fr', 'es', 'pl', 'ru'];
+    const flagsHtml = langs.map(l =>
+      `<button type="button" data-prompt-lang="${l}" class="p-1 border border-[#39ff14]/45 hover:border-[#ffd700] rounded bg-[#07160d] hover:bg-[#11331d] cursor-pointer transition-all"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_${l}-removebg-preview.png" alt="${l.toUpperCase()}" style="width:28px;height:18px;display:block;object-fit:cover;"></button>`
+    ).join('');
+    box.innerHTML =
+      `<div class="border-b border-[#39ff14]/40 pb-2 text-base font-bold tracking-widest text-[#8aff70]">${t('log_title', 'HAJÓNAPLÓ BEJEGYZÉS')}</div>` +
+      `<div class="my-auto flex flex-col items-center gap-5 text-center">` +
+        `<div class="text-xl font-bold text-[#bfffab] tracking-wide">${t('info_play_intro', 'Bemutató indítása')}</div>` +
+        `<div class="flex justify-center gap-4">` +
+          `<button id="btn-intro-prompt-yes" class="px-6 py-2 bg-[#39ff14]/20 hover:bg-[#39ff14]/35 border border-[#39ff14] hover:border-[#ffd700] text-[#bfffab] font-bold text-sm tracking-wider cursor-pointer rounded">${t('an_yes', 'Igen')}</button>` +
+          `<button id="btn-intro-prompt-no" class="px-6 py-2 bg-[#0a1d11] hover:bg-[#163822] border border-[#39ff14]/60 hover:border-[#ffd700] text-[#8aff70] font-bold text-sm tracking-wider cursor-pointer rounded">${t('an_no', 'Nem')}</button>` +
+        `</div>` +
+        `<div class="flex flex-wrap justify-center gap-2 pt-2">${flagsHtml}</div>` +
+      `</div>` +
+      `<div class="border-t border-[#39ff14]/25 pt-1 text-[11px] text-center opacity-60">WXXX_O_L_GEN_NAV_XXX_sn01</div>`;
+    box.onclick = null;
+    box.classList.remove('hidden');
+    crtEl.classList.add('invisible');
+
+    const btnYes = document.getElementById('btn-intro-prompt-yes');
+    if (btnYes) btnYes.onclick = (e) => {
+      e.stopPropagation();
+      box.classList.add('hidden');
+      crtEl.classList.remove('invisible');
+      startWalkthrough();
+    };
+    const btnNo = document.getElementById('btn-intro-prompt-no');
+    if (btnNo) btnNo.onclick = (e) => {
+      e.stopPropagation();
+      box.classList.add('hidden');
+      crtEl.classList.remove('invisible');
+      if (window.SonarEngine && window.SonarEngine.markSonarPlayed) window.SonarEngine.markSonarPlayed();
+      if (window.SonarLetParticles && window.SonarLetParticles.finishMorphNow) window.SonarLetParticles.finishMorphNow();
+    };
+    box.querySelectorAll('button[data-prompt-lang]').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const chosen = btn.getAttribute('data-prompt-lang');
+        box.classList.add('hidden');
+        crtEl.classList.remove('invisible');
+        demoSelectLanguage(chosen);
+      };
+    });
+  }
+
   return {
     start: startWalkthrough,
     stop: stopWalkthrough,
     togglePause: togglePause,
+    showStandaloneIntroPrompt: showStandaloneIntroPrompt,
+    demoSelectLanguage: demoSelectLanguage,
     isRunning: () => isRunning,
     isPaused: () => isPaused
   };

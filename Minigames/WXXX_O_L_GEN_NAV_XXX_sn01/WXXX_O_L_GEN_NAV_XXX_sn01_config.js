@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - KÖDHASÍTÓ (Konfigurációs és Paraméter Fájl)
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - KÖDHASÍTÓ (Konfigurációs és Paraméter Fájl)
  * Krystohans Architektúra - Steampunk Vezérlőpult & Zöld Let-por Rendszer
  */
 

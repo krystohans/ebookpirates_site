@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - KÖR ALAKÚ RADAR & AKUSZTIKUS HANGHULLÁM (oscilloscope.js)
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - KÖR ALAKÚ RADAR & AKUSZTIKUS HANGHULLÁM (oscilloscope.js)
  * Közvetlenül a jobb alsó kék radar kijelzőre illesztve
  * Külső peremen 3 rovátka (1, 2, 3 óra), forgatható belső perem + cápauszony kar.
  * Pásztázáskor 1, 2 vagy 3 egymás utáni akusztikus hanghullám fut át a képernyőn.

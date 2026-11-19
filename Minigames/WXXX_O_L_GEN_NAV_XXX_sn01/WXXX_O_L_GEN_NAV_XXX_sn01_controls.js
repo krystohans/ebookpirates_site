@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - Vezérlés és Grafikai Renderelő (Canvas, Animációk & Események)
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - Vezérlés és Grafikai Renderelő (Canvas, Animációk & Események)
  */
 
 window.SonarControls = (function() {
@@ -14,13 +14,13 @@ window.SonarControls = (function() {
   // Kép-gyorsítótár (Preloaded Sprites)
   const sprites = {};
   const SPRITE_URLS = {
-    ship: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/ship_simple-r.png',
-    rockSmall: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/rock_small.png',
-    rockMedium: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/rock_medium.png',
-    rockLarge: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/rock_large.png',
-    sonarDevice: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/sonar_device.png',
-    buoy: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/perk_buoy.png',
-    hp: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/hp_boat.png'
+    ship: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/ship_simple-r.png',
+    rockSmall: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/rock_small.png',
+    rockMedium: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/rock_medium.png',
+    rockLarge: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/rock_large.png',
+    sonarDevice: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/sonar_device.png',
+    buoy: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/perk_buoy.png',
+    hp: 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/hp_boat.png'
   };
 
   let radarAngle = 0;

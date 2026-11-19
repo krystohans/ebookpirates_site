@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - 7-Language Localization Dictionary (hu, en, de, fr, es, pl, ru)
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - 7-Language Localization Dictionary (hu, en, de, fr, es, pl, ru)
  */
 window.SonarI18n = (function () {
   const SUPPORTED = ['hu', 'en', 'de', 'fr', 'es', 'pl', 'ru'];
@@ -8,7 +8,7 @@ window.SonarI18n = (function () {
     hu: {
       info_walkthrough_btn: '▶ BEMUTATÓ MEGTEKINTÉSE (HOGYAN JÁTSSZ?)',
       wt_step1: '1. lépés: Válts <b>SZONÁR</b> módra és pásztázd a vizet a hajó előtt!',
-      wt_step2: '2. lépés: Nyomd meg a <b>Print Screen (PS)</b> gombot a hullámkép rögzítéséhez a mini képernyőre!',
+      wt_step2: '2. lépés: Nyomd meg a <b>Pillanatkép (PS)</b> gombot a hullámkép rögzítéséhez a mini képernyőre!',
       wt_step3: '3. lépés: Jelöld meg a felismert számot (1-es) a gombsorral!',
       wt_step4: '4. lépés: Válts <b>TÉRKÉP</b> módra és jelöld be a veszélyes zátonyt (X)!',
       wt_step5: '5. lépés: <b>ÚTVONAL</b> módban rajzolj tiszta utat a kincsig, kikerülve a zátonyt!',
@@ -77,19 +77,20 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Szonár:</b> Az indítható szonár jelek száma.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Szerkezet:</b> A hajó életereje – minden ütközéssel eggyel csökken.',
       info_leg_numpad: '<b class="text-[#bfffab] underline">1–6 gombok:</b> A jobb felső gombsorral kiválasztott számot a rácsra kattintva a cellába írhatod, így feljegyezheted a feltételezett sziklaméretet.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">PS gomb & Mini CRT kijelző:</b> Pillanatfelvétel a radarról; a mini képernyőn a bejegyzett mezők a gombok színkódjaival jelennek meg (1=ciánkék, 2=barna, 3=sárga, 4=zöld, 5=lila, 6=ciklámen).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Pillanatkép (PS) gomb & Mini CRT kijelző:</b> Pillanatfelvétel a radarról; a mini képernyőn a bejegyzett mezők a gombok színkódjaival jelennek meg (1=ciánkék, 2=barna, 3=sárga, 4=zöld, 5=lila, 6=ciklámen).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Szonár erősítő (forgatótárcsa):</b> Maximum 3x-os szonárjelet indíthatsz egyszerre. Minden erősítés növeli az egyszerre felfedett pálya méretét.',
       info_leg_an: '<b class="text-[#bfffab] underline">AN kapcsoló:</b> Az AutoNavigáció bekapcsolása. Biztonságos átkelés a szektoron, de <b class="text-[#bfffab]">0 Navi pont</b> jár érte.',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM:</b> A Szonár játék zenéje.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS:</b> A Szonár hangok hangereje.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM:</b> A főjáték zenéje.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS:</b> A főjáték háttérhangja.',
-      info_close: '[Kapcsold le az INFÓ kapcsolót vagy kattints ide a bezáráshoz]'
+      info_close: '[Kapcsold le az INFÓ kapcsolót vagy kattints ide a bezáráshoz]',
+      info_play_intro: 'Bemutató indítása'
     },
     en: {
       info_walkthrough_btn: '▶ WATCH WALKTHROUGH (HOW TO PLAY?)',
       wt_step1: 'Step 1: Switch to <b>SONAR</b> mode and ping the water ahead of the ship!',
-      wt_step2: 'Step 2: Press <b>Print Screen (PS)</b> to capture the wave onto the mini CRT!',
+      wt_step2: 'Step 2: Press <b>Snapshot (PS)</b> to capture the wave onto the mini CRT!',
       wt_step3: 'Step 3: Mark the detected number (1) using the keypad!',
       wt_step4: 'Step 4: Switch to <b>MAP</b> mode and mark the hazardous reef (X)!',
       wt_step5: 'Step 5: In <b>ROUTE</b> mode, plot a safe path to the treasure, avoiding the reef!',
@@ -158,19 +159,20 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Sonar:</b> Remaining sonar pings.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Hull:</b> Ship durability – decreases by 1 per collision.',
       info_leg_numpad: '<b class="text-[#bfffab] underline">1–6 Buttons:</b> Select a number on the top right panel and click a cell to record suspected rock size.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">PS Button & Mini CRT Display:</b> Takes a snapshot of the radar grid; marked cells appear on the mini CRT in matching button color codes (1=cyan, 2=brown, 3=yellow, 4=green, 5=purple, 6=magenta).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Snapshot (PS) Button & Mini CRT Display:</b> Takes a snapshot of the radar grid; marked cells appear on the mini CRT in matching button color codes (1=cyan, 2=brown, 3=yellow, 4=green, 5=purple, 6=magenta).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Sonar Amplifier (Dial):</b> Deploy up to 3x sonar pings at once. Each boost level increases the area revealed simultaneously.',
       info_leg_an: '<b class="text-[#bfffab] underline">AN Switch:</b> Activates AutoNavigation. Safe crossing, but yields <b class="text-[#bfffab]">0 Navi Pts</b>.',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM:</b> Sonar music volume.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS:</b> Sonar sound effects volume.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM:</b> Main game music volume.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS:</b> Main game ambient volume.',
-      info_close: '[Turn off the INFO switch or click here to close]'
+      info_close: '[Turn off the INFO switch or click here to close]',
+      info_play_intro: 'Play Intro Demo'
     },
     de: {
       info_walkthrough_btn: '▶ DEMO ANSEHEN (SPIELANLEITUNG)',
       wt_step1: 'Schritt 1: Auf <b>SONAR</b>-Modus schalten und das Wasser vor dem Schiff scannen!',
-      wt_step2: 'Schritt 2: <b>Print Screen (PS)</b> drücken, um das Wellenmuster auf dem Mini-CRT zu speichern!',
+      wt_step2: 'Schritt 2: <b>Schnappschuss (PS)</b> drücken, um das Wellenmuster auf dem Mini-CRT zu speichern!',
       wt_step3: 'Schritt 3: Die erkannte Zahl (1) mit der Tastatur markieren!',
       wt_step4: 'Schritt 4: Auf <b>KARTEN</b>-Modus wechseln und das gefährliche Riff (X) markieren!',
       wt_step5: 'Schritt 5: Im <b>ROUTEN</b>-Modus einen sicheren Weg zum Schatz zeichnen!',
@@ -239,19 +241,20 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Sonar:</b> Verfügbare Sonarsignale.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Rumpf:</b> Schiffszustand – sinkt um 1 pro Kollision.',
       info_leg_numpad: '<b class="text-[#bfffab] underline">Tasten 1–6:</b> Wähle oben rechts eine Zahl und klicke auf das Raster, um die geschätzte Felsgröße zu notieren.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">PS-Taste & Mini-CRT-Bildschirm:</b> Erstellt einen Schnappschuss; markierte Felder erscheinen im Mini-CRT in den Farbcodes der Tasten (1=Cyan, 2=Braun, 3=Gelb, 4=Grün, 5=Lila, 6=Magenta).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Schnappschuss-Taste (PS) & Mini-CRT-Bildschirm:</b> Erstellt einen Schnappschuss; markierte Felder erscheinen im Mini-CRT in den Farbcodes der Tasten (1=Cyan, 2=Braun, 3=Gelb, 4=Grün, 5=Lila, 6=Magenta).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Sonar-Verstärker (Drehrad):</b> Bis zu 3x Sonarsignale gleichzeitig aussenden. Jede Stufe vergrößert den aufgedeckten Bereich.',
       info_leg_an: '<b class="text-[#bfffab] underline">AN-Schalter:</b> Aktiviert AutoNavigation. Sichere Passage, aber <b class="text-[#bfffab]">0 Navi-Pkt</b>.',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM:</b> Sonarmusik.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS:</b> Sonareffekte.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM:</b> Hauptspiel-Musik.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS:</b> Hauptspiel-Hintergrund.',
-      info_close: '[INFO-Schalter umlegen oder hier klicken zum Schließen]'
+      info_close: '[INFO-Schalter umlegen oder hier klicken zum Schließen]',
+      info_play_intro: 'Intro-Demo starten'
     },
     fr: {
       info_walkthrough_btn: '▶ VOIR LA DÉMO (COMMENT JOUER ?)',
       wt_step1: 'Étape 1 : Passez en mode <b>SONAR</b> et sondez l’eau devant le navire !',
-      wt_step2: 'Étape 2 : Appuyez sur <b>Print Screen (PS)</b> pour capturer l’écho sur le mini CRT !',
+      wt_step2: 'Étape 2 : Appuyez sur <b>Instantané (PS)</b> pour capturer l’écho sur le mini CRT !',
       wt_step3: 'Étape 3 : Marquez le chiffre détecté (1) avec le pavé numérique !',
       wt_step4: 'Étape 4 : Passez en mode <b>CARTE</b> et marquez le récif dangereux (X) !',
       wt_step5: 'Étape 5 : En mode <b>ROUTE</b>, tracez une voie sûre vers le trésor !',
@@ -320,19 +323,20 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Sonar :</b> Signaux sonar restants.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Coque :</b> Santé du navire (-1 par choc).',
       info_leg_numpad: '<b class="text-[#bfffab] underline">Touches 1–6 :</b> Choisissez un chiffre en haut à droite et cliquez sur la grille pour noter la taille estimée du rocher.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">Bouton PS & Mini écran CRT :</b> Capture instantanée du radar ; les cellules marquées s’affichent en couleur sur le mini CRT (1=cyan, 2=marron, 3=jaune, 4=vert, 5=violet, 6=magenta).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Bouton Instantané (PS) & Mini écran CRT :</b> Capture instantanée du radar ; les cellules marquées s’affichent en couleur sur le mini CRT (1=cyan, 2=marron, 3=jaune, 4=vert, 5=violet, 6=magenta).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Amplificateur Sonar (Molette) :</b> Lancez jusqu’à 3 impulsions simultanées. Chaque niveau élargit la zone dévoilée.',
       info_leg_an: '<b class="text-[#bfffab] underline">Bouton AN :</b> Active l’AutoNavigation (traversée sûre, <b class="text-[#bfffab]">0 Pts Navi</b>).',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM :</b> Musique du Sonar.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS :</b> Effets sonores du Sonar.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM :</b> Musique du jeu principal.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS :</b> Ambiance du jeu principal.',
-      info_close: '[Coupez le bouton INFO ou cliquez ici pour fermer]'
+      info_close: '[Coupez le bouton INFO ou cliquez ici pour fermer]',
+      info_play_intro: 'Lancer la démo'
     },
     es: {
       info_walkthrough_btn: '▶ VER DEMOSTRACIÓN (¿CÓMO JUGAR?)',
       wt_step1: 'Paso 1: ¡Cambia a modo <b>SÓNAR</b> y escanea el agua frente al barco!',
-      wt_step2: 'Paso 2: ¡Pulsa <b>Print Screen (PS)</b> para capturar la onda en el mini CRT!',
+      wt_step2: 'Paso 2: ¡Pulsa <b>Instantánea (PS)</b> para capturar la onda en el mini CRT!',
       wt_step3: 'Paso 3: ¡Marca el número detectado (1) con el teclado!',
       wt_step4: 'Paso 4: ¡Cambia a modo <b>MAPA</b> y marca el arrecife peligroso (X)!',
       wt_step5: 'Paso 5: En modo <b>RUTA</b>, ¡traza un camino seguro esquivando el arrecife!',
@@ -401,19 +405,20 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Sonar:</b> Señales de sonar restantes.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Casco:</b> Salud del barco (-1 por choque).',
       info_leg_numpad: '<b class="text-[#bfffab] underline">Botones 1–6:</b> Selecciona un número arriba a la derecha y haz clic en la cuadrícula para registrar el tamaño estimado de la roca.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">Botón PS y Pantalla Mini CRT:</b> Captura el radar; las celdas marcadas aparecen en la pantalla mini con los colores correspondientes (1=cian, 2=marrón, 3=amarillo, 4=verde, 5=púrpura, 6=magenta).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Botón Instantánea (PS) y Pantalla Mini CRT:</b> Captura el radar; las celdas marcadas aparecen en la pantalla mini con los colores correspondientes (1=cian, 2=marrón, 3=amarillo, 4=verde, 5=púrpura, 6=magenta).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Amplificador de Sónar (Dial):</b> Envía hasta 3 pulsos simultáneos. Cada nivel amplía el área revelada.',
       info_leg_an: '<b class="text-[#bfffab] underline">Interruptor AN:</b> Activa AutoNavegación (cruce seguro, <b class="text-[#bfffab]">0 Pts Navi</b>).',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM:</b> Música del Sonar.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS:</b> Efectos del Sonar.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM:</b> Música principal.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS:</b> Ambiente principal.',
-      info_close: '[Apaga el interruptor INFO o haz clic aquí para cerrar]'
+      info_close: '[Apaga el interruptor INFO o haz clic aquí para cerrar]',
+      info_play_intro: 'Iniciar demo intro'
     },
     pl: {
       info_walkthrough_btn: '▶ ZOBACZ DEMO (JAK GRAĆ?)',
       wt_step1: 'Krok 1: Włącz tryb <b>SONAR</b> i zbadaj wodę przed statkiem!',
-      wt_step2: 'Krok 2: Naciśnij <b>Print Screen (PS)</b>, aby zapisać obraz fali na mini CRT!',
+      wt_step2: 'Krok 2: Naciśnij <b>Migawka (PS)</b>, aby zapisać obraz fali na mini CRT!',
       wt_step3: 'Krok 3: Oznacz wykrytą liczbę (1) za pomocą klawiatury!',
       wt_step4: 'Krok 4: Włącz tryb <b>MAPY</b> i oznacz niebezpieczną rafę (X)!',
       wt_step5: 'Krok 5: W trybie <b>TRASY</b> wyznacz bezpieczną drogę omijającą rafę!',
@@ -482,19 +487,20 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Sonar:</b> Pozostałe impulsy sonaru.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Kadłub:</b> Wytrzymałość statku (-1 za kolizję).',
       info_leg_numpad: '<b class="text-[#bfffab] underline">Przyciski 1–6:</b> Wybierz cyfrę w prawym górnym rogu i kliknij siatkę, aby zapisać przypuszczalny rozmiar skały.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">Przycisk PS i Mini ekran CRT:</b> Robi migawkę radaru; oznaczone pola wyświetlają się w kolorach przycisków (1=cyjan, 2=brązowy, 3=żółty, 4=zielony, 5=fioletowy, 6=magenta).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Przycisk Migawka (PS) i Mini ekran CRT:</b> Robi migawkę radaru; oznaczone pola wyświetlają się w kolorach przycisków (1=cyjan, 2=brązowy, 3=żółty, 4=zielony, 5=fioletowy, 6=magenta).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Wzmacniacz sonaru (Pokrętło):</b> Uruchamia do 3 impulsów naraz. Każdy poziom zwiększa odsłonięty obszar.',
       info_leg_an: '<b class="text-[#bfffab] underline">Przełącznik AN:</b> Włącza AutoNawigację (bezpieczne przejście, <b class="text-[#bfffab]">0 Pkt Navi</b>).',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM:</b> Muzyka Sonaru.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS:</b> Dźwięki Sonaru.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM:</b> Muzyka gry głównej.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS:</b> Tło gry głównej.',
-      info_close: '[Wyłącz przełącznik INFO lub kliknij tutaj, aby zamknąć]'
+      info_close: '[Wyłącz przełącznik INFO lub kliknij tutaj, aby zamknąć]',
+      info_play_intro: 'Uruchom demo'
     },
     ru: {
       info_walkthrough_btn: '▶ СМОТРЕТЬ ОБУЧЕНИЕ (КАК ИГРАТЬ?)',
       wt_step1: 'Шаг 1: Включите <b>СОНАР</b> и просканируйте воду перед кораблем!',
-      wt_step2: 'Шаг 2: Нажмите <b>Print Screen (PS)</b>, чтобы зафиксировать эхо на мини CRT!',
+      wt_step2: 'Шаг 2: Нажмите <b>Снимок (PS)</b>, чтобы зафиксировать эхо на мини CRT!',
       wt_step3: 'Шаг 3: Отметьте обнаруженное число (1) на клавиатуре!',
       wt_step4: 'Шаг 4: Перейдите в режим <b>КАРТЫ</b> и отметьте опасный риф (X)!',
       wt_step5: 'Шаг 5: В режиме <b>МАРШРУТА</b> проложите безопасный путь к сокровищу!',
@@ -563,14 +569,15 @@ window.SonarI18n = (function () {
       info_leg_sonar: '<b class="text-[#bfffab] underline">Сонар:</b> Оставшиеся сигналы.',
       info_leg_hull: '<b class="text-[#bfffab] underline">Корпус:</b> Прочность (-1 за столкновение).',
       info_leg_numpad: '<b class="text-[#bfffab] underline">Кнопки 1–6:</b> Выберите число справа вверху и кликните по сетке, чтобы отметить предполагаемый размер скалы.',
-      info_leg_ps: '<b class="text-[#bfffab] underline">Кнопка PS и мини-экран ЭЛТ:</b> Снимок радара; отмеченные клетки отображаются на мини-экране в цветах кнопок (1=циан, 2=коричневый, 3=желтый, 4=зеленый, 5=фиолетовый, 6=маджента).',
+      info_leg_ps: '<b class="text-[#bfffab] underline">Кнопка Снимок (PS) и мини-экран ЭЛТ:</b> Снимок радара; отмеченные клетки отображаются на мини-экране в цветах кнопок (1=циан, 2=коричневый, 3=желтый, 4=зеленый, 5=фиолетовый, 6=маджента).',
       info_leg_amp: '<b class="text-[#bfffab] underline">Усилитель сонара (Диск):</b> До 3 импульсов одновременно. Каждый уровень усилителя увеличивает открываемую область.',
       info_leg_an: '<b class="text-[#bfffab] underline">Тумблер AN:</b> АвтоНавигация (безопасно, <b class="text-[#bfffab]">0 очков навиг.</b>).',
       info_leg_sm: '<b class="text-[#bfffab] underline">SM:</b> Музыка Сонара.',
       info_leg_ss: '<b class="text-[#bfffab] underline">SS:</b> Звуки Сонара.',
       info_leg_gm: '<b class="text-[#bfffab] underline">GM:</b> Музыка основной игры.',
       info_leg_gs: '<b class="text-[#bfffab] underline">GS:</b> Фон основной игры.',
-      info_close: '[Выключите тумблер ИНФО или нажмите здесь, чтобы закрыть]'
+      info_close: '[Выключите тумблер ИНФО или нажмите здесь, чтобы закрыть]',
+      info_play_intro: 'Запустить демо'
     }
   };
 

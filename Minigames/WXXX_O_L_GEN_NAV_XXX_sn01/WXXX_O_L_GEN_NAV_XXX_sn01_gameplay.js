@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - Ködhasító
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - Ködhasító
  * Játékmenet és Térképgeneráló Logika (Core Engine)
  */
 
@@ -380,7 +380,7 @@ window.SonarEngine = (function() {
     if (candidates.length === 0) return null;
 
     // Nehezebben megközelíthető, de elérhető sorok (felső 50% távolság)
-    candidates.sort((a, b) => b.dist - a.dist);
+    const minD = Math.min(...candidates.map(x => x.dist)); const nonShort = candidates.filter(x => x.dist > minD); if (nonShort.length > 0) { candidates.length = 0; candidates.push(...nonShort); } candidates.sort((a, b) => b.dist - a.dist);
     const poolSize = Math.max(1, Math.ceil(candidates.length * 0.5));
     const chosen = candidates[Math.floor(Math.random() * poolSize)];
 

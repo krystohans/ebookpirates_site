@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - MŰSZEREK ÉS ABAKUSZ (gauges.js)
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - MŰSZEREK ÉS ABAKUSZ (gauges.js)
  * Tiszta analóg vintage számlap az első (Szonár) műszerhez,
  * benzintank-stílusú skálával (10..3 fekete, 2..1 piros zóna).
  * Csak a számlapot jeleníti meg, semmi mást.
@@ -31,8 +31,8 @@ window.SonarGauges = (function() {
 
     // Szonár vintage benzintank skála számlap betöltése
     sonarFaceImg = new Image();
-    sonarFaceImg.src = 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/dial_sonar_face.png';
-    sonarFaceImg.onload = () => renderSonarNeedle(currentSonar, maxSonar); needleImg = new Image(); needleImg.src = 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/needle_sonar.png'; needleImg.onload = () => { renderSonarNeedle(currentSonar, maxSonar); renderHullNeedle(currentHp, maxHp, isCriticalHp); };
+    sonarFaceImg.src = 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/dial_sonar_face.png';
+    sonarFaceImg.onload = () => renderSonarNeedle(currentSonar, maxSonar); needleImg = new Image(); needleImg.src = 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/needle_sonar.png'; needleImg.onload = () => { renderSonarNeedle(currentSonar, maxSonar); renderHullNeedle(currentHp, maxHp, isCriticalHp); };
 
     if (window.SonarEngine && window.SonarEngine.state) {
       currentSonar = window.SonarEngine.state.pingsCur;

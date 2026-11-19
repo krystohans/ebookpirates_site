@@ -83,7 +83,7 @@ window.SonarWalkthrough = (function() {
       cursorEl.id = 'walkthrough-cursor';
       cursorEl.className = 'absolute pointer-events-none z-50 hidden';
       cursorEl.style.cssText = 'position:absolute;width:32px;height:48px;transition:left 0.65s cubic-bezier(0.25,1,0.5,1), top 0.65s cubic-bezier(0.25,1,0.5,1), transform 0.18s ease;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.9));pointer-events:none;z-index:9999;';
-      cursorEl.innerHTML = '<img src="assets/images/pointer.png" alt="" class="w-full h-full block" />';
+      cursorEl.innerHTML = '<img src="https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/pointer.png" alt="" class="w-full h-full block" />';
       opWin.appendChild(cursorEl);
     }
 
@@ -320,7 +320,7 @@ window.SonarWalkthrough = (function() {
     if (!isRunning) return;
 
     // --- 2. LÉPÉS: PRINT SCREEN (PS) & GOMBOK ---
-    lastStepInfo.key = 'wt_step2'; showBubble(2, 5, t('wt_step2', '2. lépés: A hullám gyorsan lecseng! Nyomd meg a <b>Print Screen (PS)</b> gombot a hullámkép rögzítéséhez a mini képernyőre!'));
+    lastStepInfo.key = 'wt_step2'; showBubble(2, 5, t('wt_step2', '2. lépés: A hullám gyorsan lecseng! Nyomd meg a <b>Pillanatkép (PS)</b> gombot a hullámkép rögzítéséhez a mini képernyőre!'));
     const btnPs = document.getElementById('btn-num-ps');
     await moveCursorToElement(btnPs);
     if (!isRunning) return;

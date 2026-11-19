@@ -1,5 +1,5 @@
 /**
- * SONAR_01 - CRT SZÖVEG ÉS LET-POR RÉSZECSKEMOTOR (let_particles.js)
+ * WXXX_O_L_GEN_NAV_XXX_sn01 - CRT SZÖVEG ÉS LET-POR RÉSZECSKEMOTOR (let_particles.js)
  * Tűéles szöveg -> szétoszló Let-por -> az operating_desk.jpg EREDETI tengeri hálójának használata!
  */
 
@@ -27,7 +27,7 @@ window.SonarLetParticles = (function() {
     return Math.max(0, Math.min(100, (window.SonarEngine && window.SonarEngine.state && Number(window.SonarEngine.state.navSkill)) || 0));
   }
   const rewardSprites = {};
-  [['CHEST', 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/reward_chest.png'], ['BARREL', 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/reward_barrel.png'], ['BOTTLE', 'https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/images/reward_bottle.png']].forEach(([k, src]) => {
+  [['CHEST', 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/reward_chest.png'], ['BARREL', 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/reward_barrel.png'], ['BOTTLE', 'https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/images/reward_bottle.png']].forEach(([k, src]) => {
     const img = new Image(); img.src = src; rewardSprites[k] = img;
   });
   function playSfx(path) {
@@ -125,7 +125,7 @@ window.SonarLetParticles = (function() {
     revealStartTime = performance.now();
     onRevealDone = onDone;
     revealedRocks = [];
-    const grid = window.SonarEngine && window.SonarEngine.state ? window.SonarEngine.state.grid : null;
+    const grid = window._lastFinishedGrid || (window.SonarEngine && window.SonarEngine.state ? window.SonarEngine.state.grid : null); window._lastFinishedGrid = null;
     if (grid) {
       for (let r = 0; r < gridConfig.rows; r++) {
         for (let c = 0; c < gridConfig.cols; c++) {
@@ -142,7 +142,7 @@ window.SonarLetParticles = (function() {
     }, revealScanDuration + 2000);
   }
 
-  function finishRevealNow() {
+  function finishRevealNow() { displayState = 'GRID';
     if (onRevealDone) {
       const cb = onRevealDone;
       onRevealDone = null;
@@ -183,14 +183,14 @@ window.SonarLetParticles = (function() {
       if (!isSailing && hoveredCell) {
         const idx = routeCells.findIndex(p => p.r === hoveredCell.r && p.c === hoveredCell.c);
         if (idx !== -1) {
-          routeCells.splice(idx);
+          if (idx >= (window._sailStartIdx || 0)) routeCells.splice(idx);
         } else if ((routeCells.length === 0 && hoveredCell.c === 9 && Math.abs(hoveredCell.r - ((window.SonarEngine && window.SonarEngine.state.secretPath[0]) ? window.SonarEngine.state.secretPath[0].r : hoveredCell.r)) <= 1) || (routeCells.length > 0 && Math.abs(hoveredCell.r - routeCells[routeCells.length - 1].r) <= 1 && Math.abs(hoveredCell.c - routeCells[routeCells.length - 1].c) <= 1)) {
           routeCells.push({ r: hoveredCell.r, c: hoveredCell.c });
         }
       }
       return;
     }
-    if (currentMode !== 'SONAR') return; const pwr = (window.SonarOscilloscope && window.SonarOscilloscope.getPower) ? window.SonarOscilloscope.getPower() : 1; const tr = hoveredCell ? hoveredCell.r : r, tc = hoveredCell ? hoveredCell.c : c, st = window.SonarEngine && window.SonarEngine.state, g = st && st.grid; if (st) { if (st.pingsCur < pwr) { if (window.onSonarOutOfPings) window.onSonarOutOfPings(); return; } if (g && g[tr] && g[tr][tc] && g[tr][tc].isScanned) return; if (g && g[tr] && g[tr][tc]) g[tr][tc].isScanned = true; st.pingsCur = Math.max(0, st.pingsCur - pwr); const cw = new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/clock-wheel.mp3'); cw.volume = 1.0; cw.play().catch(() => {}); setTimeout(() => { cw.pause(); cw.currentTime = 0; }, 1000); if (window.SonarGauges) window.SonarGauges.renderSonarNeedle(st.pingsCur, st.pingsMax); } const isRk = !!(g && g[tr] && g[tr][tc] && g[tr][tc].isRock); if (window.SonarOscilloscope && window.SonarOscilloscope.triggerPing) window.SonarOscilloscope.triggerPing(isRk, pwr); for (let pi = 0; pi < pwr; pi++) setTimeout(() => new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/deepsea-sonar.mp3').play().catch(() => {}), pi * 280); if (isRk) { new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/sonar_short.wav').play().catch(() => {}); setTimeout(() => new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/sonar_short.wav').play().catch(() => {}), 380); }
+    if (currentMode !== 'SONAR') return; const pwr = (window.SonarOscilloscope && window.SonarOscilloscope.getPower) ? window.SonarOscilloscope.getPower() : 1; const tr = hoveredCell ? hoveredCell.r : r, tc = hoveredCell ? hoveredCell.c : c, st = window.SonarEngine && window.SonarEngine.state, g = st && st.grid; if (st) { if (st.pingsCur < pwr) { if (window.onSonarOutOfPings) window.onSonarOutOfPings(); return; } if (g && g[tr] && g[tr][tc] && g[tr][tc].isScanned) return; if (g && g[tr] && g[tr][tc]) g[tr][tc].isScanned = true; st.pingsCur = Math.max(0, st.pingsCur - pwr); const cw = new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/clock-wheel.mp3'); cw.volume = 1.0; cw.play().catch(() => {}); setTimeout(() => { cw.pause(); cw.currentTime = 0; }, 1000); if (window.SonarGauges) window.SonarGauges.renderSonarNeedle(st.pingsCur, st.pingsMax); } const isRk = !!(g && g[tr] && g[tr][tc] && g[tr][tc].isRock); if (window.SonarOscilloscope && window.SonarOscilloscope.triggerPing) window.SonarOscilloscope.triggerPing(isRk, pwr); for (let pi = 0; pi < pwr; pi++) setTimeout(() => new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/deepsea-sonar.mp3').play().catch(() => {}), pi * 280); if (isRk) { new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/sonar_short.wav').play().catch(() => {}); setTimeout(() => new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/sonar_short.wav').play().catch(() => {}), 380); }
     const sk = getNavSkill();
     if (sk >= 50 && g && g.length > 0) {
       const pRad = sk >= 90 ? 10 : Math.floor((sk - 50) / 10);
@@ -554,7 +554,7 @@ window.SonarLetParticles = (function() {
         ctx.restore();
       }
       ctx.save();
-      let drawX = window._parkedBoat ? window._parkedBoat.x : boatX, drawY = window._parkedBoat ? window._parkedBoat.y : boatY, drawAng = window._parkedBoat ? window._parkedBoat.ang : 0; const pts = [{ x: boatX, y: boatY, r: startPt.r, c: 9 }, ...routeCells.map(p => ({ x: padL + p.c * cellW + cellW / 2, y: padT + p.r * cellH + cellH / 2, r: p.r, c: p.c }))]; if (window._crashIdx !== undefined && routeCells.length > window._crashIdx) { ctx.save(); ctx.strokeStyle = '#ff00aa'; ctx.fillStyle = '#ff00aa'; ctx.shadowColor = '#ff00aa'; ctx.shadowBlur = 10; ctx.lineWidth = 3.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); const sp = pts[window._crashIdx]; ctx.moveTo(sp.x, sp.y); for (let i = window._crashIdx; i < routeCells.length; i++) ctx.lineTo(padL + routeCells[i].c * cellW + cellW / 2, padT + routeCells[i].r * cellH + cellH / 2); ctx.stroke(); for (let i = window._crashIdx; i < routeCells.length; i++) { ctx.beginPath(); ctx.arc(padL + routeCells[i].c * cellW + cellW / 2, padT + routeCells[i].r * cellH + cellH / 2, Math.max(3.5, cellW * 0.12), 0, Math.PI * 2); ctx.fill(); } ctx.restore(); } if (window._crashedRocks && window._crashedRocks.size > 0) { ctx.save(); const pulseR = cellW * (0.33 + 0.08 * Math.sin(now * 0.008)); const pulseA = 0.65 + 0.35 * Math.sin(now * 0.008); ctx.strokeStyle = `rgba(255, 23, 68, ${pulseA})`; ctx.shadowColor = '#ff0033'; ctx.shadowBlur = 12; ctx.lineWidth = 2.5; window._crashedRocks.forEach(rk => { const [rr, rc] = rk.split(',').map(Number); ctx.beginPath(); ctx.arc(padL + rc * cellW + cellW / 2, padT + rr * cellH + cellH / 2, pulseR, 0, Math.PI * 2); ctx.stroke(); }); ctx.restore(); } if (currentMode === 'START' && !isSailing && routeCells.length > (window._sailStartIdx || 0)) { isSailing = true; window._sailT0 = now; } if (isSailing && routeCells.length > 0) { const sIdx = window._sailStartIdx || 0; const prog = sIdx + (now - (window._sailT0 || now)) / 380; const idx = Math.floor(prog); const t = prog - idx; if (idx < pts.length - 1) { const p0 = pts[idx], p1 = pts[idx + 1]; drawX = p0.x + (p1.x - p0.x) * t; drawY = p0.y + (p1.y - p0.y) * t; drawAng = Math.atan2(p1.y - p0.y, p1.x - p0.x) - Math.PI; const g = window.SonarEngine && window.SonarEngine.state.grid; if (t > 0.35 && g && g[p1.r] && g[p1.r][p1.c] && g[p1.r][p1.c].isRock) { isSailing = false; currentMode = 'ROUTE'; markedCells.add(`${p1.r},${p1.c}`); (window._crashedRocks = window._crashedRocks || new Set()).add(`${p1.r},${p1.c}`); window._parkedBoat = { x: p0.x, y: p0.y, ang: drawAng, r: p0.r, c: p0.c }; window._crashIdx = idx; window._sailStartIdx = idx; routeCells.splice(idx); if (window.SonarEngine) { const st = window.SonarEngine.state; st.hp = Math.max(0, st.hp - 1); st.crashesThisCourse = (st.crashesThisCourse || 0) + 1; if (window.SonarGauges) window.SonarGauges.renderHullNeedle(st.hp, st.maxHp || 10, st.hp < 2); if (st.hp < 2) { playSfx('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/failfare.mp3'); if (window.onSonarGameEnd) window.onSonarGameEnd({ status: 'TOWED', hp: st.hp, maxHp: st.maxHp || 10 }); } else { const al = new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/alarm.mp3'); if (window.SonarVolumes) al.volume = window.SonarVolumes.SS; al.play().catch(() => {}); setTimeout(() => { al.pause(); al.currentTime = 0; }, 3580); const btnR = document.getElementById('btn-mode-route'); if (btnR) btnR.click(); } } } } else { const last = pts[pts.length - 1]; isSailing = false; if (last.c === 0 && window.SonarEngine) { const st = window.SonarEngine.state; if (st.isAutoNav) { st.isAutoNav = false; const imgAn = document.getElementById('img-switch-an-down'); if (imgAn) imgAn.classList.remove('hidden'); routeCells = []; markedCells.clear(); persistentHints.clear(); activeWaves = []; window._parkedBoat = null; window._crashIdx = undefined; window._sailStartIdx = 0; if (window._crashedRocks) window._crashedRocks.clear(); const nextMode = window.SonarEngine.getDifficultyForStreak(st.streak); window.SonarEngine.initCourse(nextMode); if (window.SonarGauges) window.SonarGauges.renderSonarNeedle(st.pingsCur, st.pingsMax); const btnS = document.getElementById('btn-mode-sonar'); if (btnS) btnS.click(); } else { playSfx('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/victory.mp3'); const wonExtra = (st.extraReward && last.r === st.extraReward.row) ? st.extraReward : null; const gainedNp = window.SonarEngine.calculateWinNavPoints(routeCells.length, !!wonExtra); st.streak = (st.streak || 0) + 1; st.navPoints = (st.navPoints || 0) + gainedNp; if (window.setOdometerValue) { window.setOdometerValue('odometer-navi', st.navPoints); } routeCells = []; markedCells.clear(); persistentHints.clear(); activeWaves = []; window._parkedBoat = null; window._crashIdx = undefined; window._sailStartIdx = 0; if (window._crashedRocks) window._crashedRocks.clear(); const nextMode = window.SonarEngine.getDifficultyForStreak(st.streak); window.SonarEngine.initCourse(nextMode); if (window.SonarGauges) window.SonarGauges.renderSonarNeedle(st.pingsCur, st.pingsMax); const btnS = document.getElementById('btn-mode-sonar'); if (btnS) btnS.click(); if (window.onSonarGameEnd) window.onSonarGameEnd({ status: 'WIN', navPoints: gainedNp, extraReward: wonExtra, hp: st.hp, maxHp: st.maxHp || 10, streak: st.streak }); } } else { window._parkedBoat = { x: last.x, y: last.y, ang: drawAng, r: last.r, c: last.c }; window._sailStartIdx = pts.length - 1; const btnR = document.getElementById('btn-mode-route'); if (btnR) btnR.click(); } } } ctx.translate(drawX, drawY); ctx.rotate(drawAng);
+      let drawX = window._parkedBoat ? window._parkedBoat.x : boatX, drawY = window._parkedBoat ? window._parkedBoat.y : boatY, drawAng = window._parkedBoat ? window._parkedBoat.ang : 0; const pts = [{ x: boatX, y: boatY, r: startPt.r, c: 9 }, ...routeCells.map(p => ({ x: padL + p.c * cellW + cellW / 2, y: padT + p.r * cellH + cellH / 2, r: p.r, c: p.c }))]; if (window._crashIdx !== undefined && routeCells.length > window._crashIdx) { ctx.save(); ctx.strokeStyle = '#ff00aa'; ctx.fillStyle = '#ff00aa'; ctx.shadowColor = '#ff00aa'; ctx.shadowBlur = 10; ctx.lineWidth = 3.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); const sp = pts[window._crashIdx]; ctx.moveTo(sp.x, sp.y); for (let i = window._crashIdx; i < routeCells.length; i++) ctx.lineTo(padL + routeCells[i].c * cellW + cellW / 2, padT + routeCells[i].r * cellH + cellH / 2); ctx.stroke(); for (let i = window._crashIdx; i < routeCells.length; i++) { ctx.beginPath(); ctx.arc(padL + routeCells[i].c * cellW + cellW / 2, padT + routeCells[i].r * cellH + cellH / 2, Math.max(3.5, cellW * 0.12), 0, Math.PI * 2); ctx.fill(); } ctx.restore(); } if (window._crashedRocks && window._crashedRocks.size > 0) { ctx.save(); const pulseR = cellW * (0.33 + 0.08 * Math.sin(now * 0.008)); const pulseA = 0.65 + 0.35 * Math.sin(now * 0.008); ctx.strokeStyle = `rgba(255, 23, 68, ${pulseA})`; ctx.shadowColor = '#ff0033'; ctx.shadowBlur = 12; ctx.lineWidth = 2.5; window._crashedRocks.forEach(rk => { const [rr, rc] = rk.split(',').map(Number); ctx.beginPath(); ctx.arc(padL + rc * cellW + cellW / 2, padT + rr * cellH + cellH / 2, pulseR, 0, Math.PI * 2); ctx.stroke(); }); ctx.restore(); } if (currentMode === 'START' && !isSailing && routeCells.length > (window._sailStartIdx || 0)) { isSailing = true; window._sailT0 = now; } if (isSailing && routeCells.length > 0) { const sIdx = window._sailStartIdx || 0; const prog = sIdx + (now - (window._sailT0 || now)) / 380; const idx = Math.floor(prog); const t = prog - idx; if (idx < pts.length - 1) { const p0 = pts[idx], p1 = pts[idx + 1]; drawX = p0.x + (p1.x - p0.x) * t; drawY = p0.y + (p1.y - p0.y) * t; drawAng = Math.atan2(p1.y - p0.y, p1.x - p0.x) - Math.PI; const g = window.SonarEngine && window.SonarEngine.state.grid; if (t > 0.35 && g && g[p1.r] && g[p1.r][p1.c] && g[p1.r][p1.c].isRock) { isSailing = false; currentMode = 'ROUTE'; markedCells.add(`${p1.r},${p1.c}`); (window._crashedRocks = window._crashedRocks || new Set()).add(`${p1.r},${p1.c}`); window._parkedBoat = { x: p0.x, y: p0.y, ang: drawAng, r: p0.r, c: p0.c }; window._crashIdx = idx; window._sailStartIdx = idx; routeCells.splice(idx); if (window.SonarEngine) { const st = window.SonarEngine.state; st.hp = Math.max(0, st.hp - 1); st.crashesThisCourse = (st.crashesThisCourse || 0) + 1; if (window.SonarGauges) window.SonarGauges.renderHullNeedle(st.hp, st.maxHp || 10, st.hp < 2); if (st.hp < 2) { playSfx('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/failfare.mp3'); if (window.onSonarGameEnd) window.onSonarGameEnd({ status: 'TOWED', hp: st.hp, maxHp: st.maxHp || 10 }); } else { const al = new Audio('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/alarm.mp3'); if (window.SonarVolumes) al.volume = window.SonarVolumes.SS; al.play().catch(() => {}); setTimeout(() => { al.pause(); al.currentTime = 0; }, 3580); const btnR = document.getElementById('btn-mode-route'); if (btnR) btnR.click(); } } } } else { const last = pts[pts.length - 1]; isSailing = false; if (last.c === 0 && window.SonarEngine) { const st = window.SonarEngine.state; if (st.isAutoNav) { st.isAutoNav = false; const imgAn = document.getElementById('img-switch-an-down'); if (imgAn) imgAn.classList.remove('hidden'); routeCells = []; markedCells.clear(); persistentHints.clear(); activeWaves = []; window._parkedBoat = null; window._crashIdx = undefined; window._sailStartIdx = 0; if (window._crashedRocks) window._crashedRocks.clear(); window._lastFinishedGrid = st.grid.map(row => row.map(c => ({ isRock: !!c.isRock }))); const nextMode = window.SonarEngine.getDifficultyForStreak(st.streak); window.SonarEngine.initCourse(nextMode); if (window.SonarGauges) window.SonarGauges.renderSonarNeedle(st.pingsCur, st.pingsMax); const btnS = document.getElementById('btn-mode-sonar'); if (btnS) btnS.click(); } else { playSfx('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/victory.mp3'); const wonExtra = (st.extraReward && last.r === st.extraReward.row) ? st.extraReward : null; const gainedNp = window.SonarEngine.calculateWinNavPoints(routeCells.length, !!wonExtra); st.streak = (st.streak || 0) + 1; st.navPoints = (st.navPoints || 0) + gainedNp; if (window.setOdometerValue) { window.setOdometerValue('odometer-navi', st.navPoints); } routeCells = []; markedCells.clear(); persistentHints.clear(); activeWaves = []; window._parkedBoat = null; window._crashIdx = undefined; window._sailStartIdx = 0; if (window._crashedRocks) window._crashedRocks.clear(); window._lastFinishedGrid = st.grid.map(row => row.map(c => ({ isRock: !!c.isRock }))); const nextMode = window.SonarEngine.getDifficultyForStreak(st.streak); window.SonarEngine.initCourse(nextMode); if (window.SonarGauges) window.SonarGauges.renderSonarNeedle(st.pingsCur, st.pingsMax); const btnS = document.getElementById('btn-mode-sonar'); if (btnS) btnS.click(); if (window.onSonarGameEnd) window.onSonarGameEnd({ status: 'WIN', navPoints: gainedNp, extraReward: wonExtra, hp: st.hp, maxHp: st.maxHp || 10, streak: st.streak }); } } else { window._parkedBoat = { x: last.x, y: last.y, ang: drawAng, r: last.r, c: last.c }; window._sailStartIdx = pts.length - 1; const btnR = document.getElementById('btn-mode-route'); if (btnR) btnR.click(); } } } ctx.translate(drawX, drawY); ctx.rotate(drawAng);
       ctx.strokeStyle = '#39ff14';
       ctx.fillStyle = 'rgba(57, 255, 20, 0.22)';
       ctx.shadowColor = '#00ff66';
@@ -650,7 +650,7 @@ window.SonarLetParticles = (function() {
   function triggerAutoNav() {
     if (!window.SonarEngine || !window.SonarEngine.state) return;
     const st = window.SonarEngine.state;
-    playSfx('https://storage.googleapis.com/kalozsziget-assets/Minigames/Sonar_01/assets/sounds/failfare.mp3');
+    playSfx('https://storage.googleapis.com/kalozsziget-assets/Minigames/WXXX_O_L_GEN_NAV_XXX_sn01/assets/sounds/failfare.mp3');
     st.isAutoNav = true;
     const avoidRow = st.extraReward ? st.extraReward.row : null;
     const startPt = st.secretPath && st.secretPath[0] ? st.secretPath[0] : { r: 4, c: 9 };
@@ -699,19 +699,37 @@ window.SonarLetParticles = (function() {
         }
       }
     });
-    const COLS = { '1': '#22d3ee', '2': '#b85b28', '3': '#d4a345', '4': '#2eb85c', '5': '#5865f2', '6': '#ba438a', '0': '#0369a1', 'X': '#ff3333' };
+    const COLS = { '1': '#22d3ee', '2': '#b85b28', '3': '#d4a345', '4': '#2eb85c', '5': '#5865f2', '6': '#ba438a', '0': '#38bdf8', 'X': '#ff3333' };
     const mw = mc.width / gridConfig.cols, mh = mc.height / gridConfig.rows;
+    mctx.save();
+    mctx.fillStyle = 'rgba(4, 18, 9, 0.72)';
+    mctx.fillRect(0, 0, mc.width, mc.height);
+    mctx.strokeStyle = 'rgba(57, 255, 20, 0.22)';
+    mctx.lineWidth = Math.max(0.75, mc.width * 0.004);
+    for (let i = 1; i < gridConfig.cols; i++) {
+      mctx.beginPath(); mctx.moveTo(i * mw, 0); mctx.lineTo(i * mw, mc.height); mctx.stroke();
+    }
+    for (let j = 1; j < gridConfig.rows; j++) {
+      mctx.beginPath(); mctx.moveTo(0, j * mh); mctx.lineTo(mc.width, j * mh); mctx.stroke();
+    }
+    mctx.restore();
     snap.forEach((val, k) => {
       const [r, c] = k.split(',').map(Number);
       const col = COLS[val] || '#39ff14';
-      mctx.save(); mctx.fillStyle = col; mctx.shadowColor = col; mctx.shadowBlur = 4;
+      const x0 = c * mw, y0 = r * mh, pad = Math.max(1, mw * 0.10);
+      mctx.save();
+      mctx.fillStyle = col; mctx.globalAlpha = 0.22;
+      mctx.fillRect(x0 + pad, y0 + pad, mw - pad * 2, mh - pad * 2);
+      mctx.globalAlpha = 1.0; mctx.shadowColor = col; mctx.shadowBlur = 4;
       if (val === 'X') {
         mctx.strokeStyle = col; mctx.lineWidth = Math.max(1.5, mw * 0.16);
-        const p = mw * 0.24, x0 = c * mw, y0 = r * mh;
+        const p = mw * 0.25;
         mctx.beginPath(); mctx.moveTo(x0 + p, y0 + p); mctx.lineTo(x0 + mw - p, y0 + mh - p); mctx.moveTo(x0 + mw - p, y0 + p); mctx.lineTo(x0 + p, y0 + mh - p); mctx.stroke();
       } else {
-        const pad = mw * 0.18;
-        mctx.fillRect(c * mw + pad, r * mh + pad, mw - pad * 2, mh - pad * 2);
+        mctx.fillStyle = col;
+        mctx.font = `bold ${Math.max(8, Math.floor(Math.min(mw, mh) * 0.72))}px monospace`;
+        mctx.textAlign = 'center'; mctx.textBaseline = 'middle';
+        mctx.fillText(val, x0 + mw / 2, y0 + mh / 2 + 0.5);
       }
       mctx.restore();
     });

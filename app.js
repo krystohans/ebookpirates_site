@@ -70,6 +70,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 });
             }
         } else if (event.data.action === 'tutorial_completed') {
+            window.userTutorialCompleted = true;
             callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function(res) {
                 console.log('Tutorial befejezve és felírva válasz:', res);
                 window.userTutorialCompleted = true;
@@ -100,13 +101,13 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 }
             }
         } else if (event.data.action === 'start_hartyahalaszat') {
-            console.log('🎣 Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)...');
+            console.log('🎣 Átlépés a hivatalos Hártyahalászat minijátékba (WXXX_G_R_GEN_WHL_X0X_wb01_wrapper.html)...');
             var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
             var host = document.getElementById('tutorial-unity-host');
             if (host) {
                 host.innerHTML = '';
                 var iframe = document.createElement('iframe');
-                iframe.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&v=' + Date.now();
+                iframe.src = 'WXXX_G_R_GEN_WHL_X0X_wb01_wrapper.html?token=' + encodeURIComponent(token) + '&from=tutorial&v=' + Date.now();
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = '0';
@@ -756,9 +757,11 @@ function loadPage(pageName) {
     if (pageName === 'tutorial_oldal' || pageName === 'game_oldal') {
         contentDiv.style.padding = '0';
         contentDiv.style.overflow = 'hidden';
+        if (document.getElementById('header')) document.getElementById('header').style.display = (pageName === 'tutorial_oldal') ? 'none' : 'flex';
     } else {
         contentDiv.style.padding = '20px';
         contentDiv.style.overflowY = 'auto';
+        if (document.getElementById('header')) document.getElementById('header').style.display = 'flex';
     }
 
     contentDiv.innerHTML = '';
@@ -838,7 +841,7 @@ function loadPage(pageName) {
                     if (pageName === 'tutorial_oldal') {
                         runTutorialScript();
                     } else {
-                        initializePage(pageName);
+                        initializePage(pageName); if (pageName === 'fedelzet_oldal' && typeof initFedelzetOldal === 'function') initFedelzetOldal();
                     }
                 }
             );
@@ -1227,7 +1230,7 @@ function runTutorialScript() {
             return;
         }
 
-        var unityUrl = 'demojatek/tutorial_fixed.html';
+        var unityUrl = 'demojatek/TUTORIAL_game.html';
         var mode = (flow && flow.tutorialCompleted) ? 'completed' : 'tutorial';
         var isLoadParam = (flow && flow.isLoad) ? '&load=1' : '';
         unityTargetUrl = unityUrl + '?mode=' + mode + '&new=1' + isLoadParam;
@@ -10593,7 +10596,7 @@ function loadGamePage(sessionData) {
             
             var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
             var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
-            minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
+            minigameFrame.src = 'WXXX_G_R_GEN_WHL_X0X_wb01_wrapper.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
         });
         return;
     }

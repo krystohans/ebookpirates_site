@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>eBookPirates – Hártyavadász 3D</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #2c3848 0%, #1a222e 60%, #0d1219 100%) !important;
+      padding: 12px;
+      box-sizing: border-box;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #game-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <iframe id="game-frame" allow="autoplay; fullscreen" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+  <script>
+    (function () {
+      window.callBackend = function () { if (window.parent && typeof window.parent.callBackend === 'function') return window.parent.callBackend.apply(window.parent, arguments); };
+      const frame = document.getElementById('game-frame');
+      const search = window.location.search || '';
+      const params = new URLSearchParams(search);
+
+      // Kényszerített fishing mód beállítása
+      params.set('mode', 'fishing');
+      if (!params.has('lang')) {
+        const storedLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+        params.set('lang', storedLang);
+      }
+      if (!params.has('v')) {
+        params.set('v', Date.now().toString());
+      }
+
+      const targetUrl = 'WXXX_G_R_GEN_WHL_X0X_wb01/WXXX_G_R_GEN_WHL_X0X_wb01_game.html?' + params.toString();
+      frame.src = targetUrl;
+
+      // Üzenetek közvetítése a szülő ablak (app.js) felé vagy önálló Live Server átirányítás
+      window.addEventListener('message', function (event) {
+        if (event.data && (event.data.source === 'threejs-minigame' || event.data.action === 'threejs_loaded' || event.data.action === 'save_game_state' || event.data.type === 'EBOOK_PIRATES_TUTORIAL')) {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage(event.data, '*');
+          } else if (event.data.status === 'COMPLETED') {
+            if (event.data.exitType === 'DESTROYED' || event.data.targetPage === 'MainMenuTutorial') {
+              window.location.href = 'demojatek/TUTORIAL_MainMenu.html';
+            } else {
+              const targetPage = event.data.targetPage || 'fedelzet_oldal';
+              window.location.href = targetPage + '.html';
+            }
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

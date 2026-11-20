@@ -99,13 +99,7 @@ window.SonarLetParticles = (function() {
     displayState = 'TEXT';
     textStartTime = performance.now();
     onMorphComplete = onComplete;
-
-    const totalTypingTime = (lines.length * 110) + 4000;
-    setTimeout(() => {
-      if (displayState === 'TEXT') {
-        startScanWipeToGrid(10, 10);
-      }
-    }, totalTypingTime);
+    // A játék eleji hajónapló bejegyzés kizárólag kattintással léptethető (nincs automatikus továbblépés)
   }
 
   function startScanWipeToGrid(cols, rows) {
@@ -716,20 +710,18 @@ window.SonarLetParticles = (function() {
     snap.forEach((val, k) => {
       const [r, c] = k.split(',').map(Number);
       const col = COLS[val] || '#39ff14';
-      const x0 = c * mw, y0 = r * mh, pad = Math.max(1, mw * 0.10);
+      const x0 = c * mw, y0 = r * mh, pad = Math.max(1.2, mw * 0.14);
       mctx.save();
-      mctx.fillStyle = col; mctx.globalAlpha = 0.22;
-      mctx.fillRect(x0 + pad, y0 + pad, mw - pad * 2, mh - pad * 2);
-      mctx.globalAlpha = 1.0; mctx.shadowColor = col; mctx.shadowBlur = 4;
+      mctx.shadowColor = col; mctx.shadowBlur = 4;
       if (val === 'X') {
-        mctx.strokeStyle = col; mctx.lineWidth = Math.max(1.5, mw * 0.16);
-        const p = mw * 0.25;
-        mctx.beginPath(); mctx.moveTo(x0 + p, y0 + p); mctx.lineTo(x0 + mw - p, y0 + mh - p); mctx.moveTo(x0 + mw - p, y0 + p); mctx.lineTo(x0 + p, y0 + mh - p); mctx.stroke();
+        mctx.fillStyle = col; mctx.globalAlpha = 0.88;
+        mctx.fillRect(x0 + pad, y0 + pad, mw - pad * 2, mh - pad * 2);
+      } else if (val === '0') {
+        mctx.fillStyle = col; mctx.globalAlpha = 0.28;
+        mctx.fillRect(x0 + pad, y0 + pad, mw - pad * 2, mh - pad * 2);
       } else {
-        mctx.fillStyle = col;
-        mctx.font = `bold ${Math.max(8, Math.floor(Math.min(mw, mh) * 0.72))}px monospace`;
-        mctx.textAlign = 'center'; mctx.textBaseline = 'middle';
-        mctx.fillText(val, x0 + mw / 2, y0 + mh / 2 + 0.5);
+        mctx.fillStyle = col; mctx.globalAlpha = 0.85;
+        mctx.fillRect(x0 + pad, y0 + pad, mw - pad * 2, mh - pad * 2);
       }
       mctx.restore();
     });

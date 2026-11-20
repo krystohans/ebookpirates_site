@@ -16,21 +16,33 @@ window.SonarWalkthrough = (function() {
   let isRunning = false;
   let isPaused = false;
   let pausePromiseResolve = null;
+  let nextPromiseResolve = null;
+  let nextEnableTimer = null;
+  let pendingStepAction = null;
   let cursorEl = null;
   let bubbleEl = null;
   let completeModalEl = null;
 
-  let lastStepInfo = { stepNum: 1, totalSteps: 5, key: 'wt_step1' };
+  const TOTAL_STEPS = 8;
+  let lastStepInfo = { stepNum: 1, totalSteps: TOTAL_STEPS, key: 'wt_step1' };
 
   window.addEventListener('sonar:language-changed', () => {
     if (bubbleEl && !bubbleEl.classList.contains('hidden') && lastStepInfo) {
-      document.getElementById('wt-counter').textContent = `${lastStepInfo.stepNum} / ${lastStepInfo.totalSteps} ${t('wt_step_word', 'LÉPÉS')}`;
+      document.getElementById('wt-counter').textContent = lastStepInfo.stepNum === 0
+        ? t('wt_audio_title', 'HANGVEZÉRLŐK')
+        : `${lastStepInfo.stepNum} / ${lastStepInfo.totalSteps} ${t('wt_step_word', 'LÉPÉS')}`;
       document.getElementById('wt-text').innerHTML = t(lastStepInfo.key, '');
+      const nextBtn = document.getElementById('wt-next-btn');
+      if (nextBtn) nextBtn.textContent = t('wt_next_btn', 'Tovább ▶');
+      const backBtn = document.getElementById('wt-back-btn');
+      if (backBtn) backBtn.textContent = t('wt_back_btn', '◀ Vissza');
     }
     const subEl = document.getElementById('wt-complete-sub');
     if (subEl) subEl.textContent = t('wt_complete_sub', '');
     const startBtn = document.getElementById('wt-start-real-btn');
     if (startBtn) startBtn.textContent = t('wt_start_game_btn', 'JÁTÉK INDÍTÁSA');
+    const replayBtn = document.getElementById('wt-replay-btn');
+    if (replayBtn) replayBtn.textContent = t('wt_replay_btn', '▶ BEMUTATÓ');
   });
 
 
@@ -47,13 +59,6 @@ window.SonarWalkthrough = (function() {
 
   function togglePause() {
     isPaused = !isPaused;
-    const btn = document.getElementById('wt-pause-btn');
-    if (btn) {
-      btn.innerHTML = isPaused ? '▶ Resume' : '⏸ Pause';
-      btn.style.borderColor = isPaused ? '#ffcc00' : 'rgba(57,255,20,0.5)';
-      btn.style.color = isPaused ? '#ffcc00' : '#8aff70';
-      btn.style.background = isPaused ? 'rgba(255,204,0,0.18)' : 'rgba(57,255,20,0.12)';
-    }
     if (!isPaused && pausePromiseResolve) {
       const res = pausePromiseResolve;
       pausePromiseResolve = null;
@@ -64,8 +69,8 @@ window.SonarWalkthrough = (function() {
   async function wait(ms) {
     let elapsed = 0;
     const step = 40;
-    while (elapsed < ms && isRunning) {
-      while (isPaused && isRunning) {
+    while (elapsed < ms && isRunning && !pendingStepAction) {
+      while (isPaused && isRunning && !pendingStepAction) {
         await new Promise(r => { pausePromiseResolve = r; });
       }
       await new Promise(r => setTimeout(r, step));
@@ -73,7 +78,61 @@ window.SonarWalkthrough = (function() {
     }
   }
 
-  // 1. Vizuális elemek: lebegő mutató kéz (pointer.png), feliratbuborék és záró modal
+  function closeInfoOverlayIfOpen() {
+    const infoBox = document.getElementById('crt-info-overlay');
+    const imgInfoDown = document.getElementById('img-switch-info-down');
+    if (infoBox && !infoBox.classList.contains('hidden')) {
+      infoBox.classList.add('hidden');
+      if (imgInfoDown) imgInfoDown.classList.remove('hidden');
+      const crtEl = document.getElementById('let-crt-canvas');
+      if (crtEl) crtEl.classList.remove('invisible');
+    }
+  }
+
+  function showCompleteModal() {
+    isRunning = false;
+    isPaused = false;
+    if (nextEnableTimer) { clearTimeout(nextEnableTimer); nextEnableTimer = null; }
+    if (pausePromiseResolve) { pausePromiseResolve(); pausePromiseResolve = null; }
+    if (nextPromiseResolve) { nextPromiseResolve('close'); nextPromiseResolve = null; }
+    closeInfoOverlayIfOpen();
+    hideBubble();
+    if (cursorEl) { cursorEl.classList.add('hidden'); cursorEl.style.display = 'none'; }
+    if (completeModalEl) {
+      const startBtn = document.getElementById('wt-start-real-btn');
+      if (startBtn) startBtn.textContent = t('wt_start_game_btn', 'JÁTÉK INDÍTÁSA');
+      const replayBtn = document.getElementById('wt-replay-btn');
+      if (replayBtn) replayBtn.textContent = t('wt_replay_btn', '▶ BEMUTATÓ');
+      completeModalEl.style.display = 'flex';
+      completeModalEl.classList.remove('hidden');
+    }
+  }
+
+  function waitForStepAction(stepNum, delayMs = 1000) {
+    return new Promise(resolve => {
+      if (!isRunning) return resolve('close');
+      if (pendingStepAction) {
+        const act = pendingStepAction;
+        pendingStepAction = null;
+        return resolve(act);
+      }
+      const nextBtn = document.getElementById('wt-next-btn');
+      const backBtn = document.getElementById('wt-back-btn');
+      if (backBtn) {
+        backBtn.textContent = t('wt_back_btn', '◀ Vissza');
+        backBtn.style.visibility = stepNum <= 0 ? 'hidden' : 'visible';
+        backBtn.disabled = stepNum <= 0;
+      }
+      if (nextBtn && !nextEnableTimer) {
+        nextBtn.textContent = t('wt_next_btn', 'Tovább ▶');
+        nextBtn.style.visibility = 'visible';
+        nextBtn.disabled = false;
+      }
+      nextPromiseResolve = resolve;
+    });
+  }
+
+  // 1. Vizuális elemek: lebegő mutató kéz, keskenyebb magyarázó panel (SM/SS/GM/GS szabadon!), jobb felső ✕, Vissza/Tovább és záró modal
   function createUI() {
     const opWin = getOpWindow();
     if (!opWin) return;
@@ -91,21 +150,44 @@ window.SonarWalkthrough = (function() {
       bubbleEl = document.createElement('div');
       bubbleEl.id = 'walkthrough-bubble';
       bubbleEl.className = 'absolute z-50 hidden font-mono';
-      // Pontosan a felhasználó által megjelölt helyre: a radar jobb felső sarka (G, H, I, J oszlopok, 9-10 sorok) és a réz oszlop közé!
-      bubbleEl.style.cssText = 'position:absolute;left:29.5%;top:18.8%;width:320px;max-width:330px;background:rgba(4,14,8,0.96);border:1.5px solid #39ff14;border-radius:10px;padding:14px 16px;color:#8aff70;box-shadow:0 0 25px rgba(57,255,20,0.45);backdrop-filter:blur(4px);pointer-events:auto;z-index:9998;transition:opacity 0.3s ease;';
+      // Keskenyebb panel (left: 53.0%, width: 28.0% -> 81.0%-nál véget ér, így a jobb oldali SM/SS/GM/GS hangcsúszkák végig elérhetők!)
+      bubbleEl.style.cssText = 'position:absolute;left:53.0%;top:31%;width:28.0%;max-width:345px;min-width:255px;background:rgba(4,14,8,0.97);border:2px solid #39ff14;border-radius:12px;padding:14px 16px;color:#8aff70;box-shadow:0 0 28px rgba(57,255,20,0.48);backdrop-filter:blur(5px);pointer-events:auto;z-index:9998;transition:opacity 0.25s ease, left 0.35s ease, top 0.35s ease;';
       bubbleEl.innerHTML = `
-        <div style="border-bottom:1px solid rgba(57,255,20,0.35);padding-bottom:4px;margin-bottom:8px;">
-          <span id="wt-counter" style="font-size:11px;letter-spacing:1.5px;font-weight:bold;color:#bfffab;">BEMUTATÓ</span>
+        <div style="border-bottom:1px solid rgba(57,255,20,0.35);padding-bottom:6px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;">
+          <span id="wt-counter" style="font-size:11.5px;letter-spacing:1.4px;font-weight:bold;color:#bfffab;">BEMUTATÓ</span>
+          <button id="wt-close-x" title="Bezárás" style="width:22px;height:22px;line-height:18px;text-align:center;font-size:13px;font-weight:bold;color:#ff9933;border:1px solid rgba(255,153,51,0.55);border-radius:4px;background:rgba(255,153,51,0.12);cursor:pointer;padding:0;">✕</button>
         </div>
-        <div id="wt-text" style="font-size:14px;color:#e8ffe5;line-height:1.45;min-height:58px;"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:6px;border-top:1px solid rgba(57,255,20,0.25);gap:8px;">
-          <button id="wt-pause-btn" style="flex:1;font-size:12.5px;color:#8aff70;border:1px solid rgba(57,255,20,0.5);border-radius:4px;padding:6px 10px;background:rgba(57,255,20,0.12);cursor:pointer;font-weight:bold;">⏸ Pause</button>
-          <button id="wt-skip-btn" style="flex:1;font-size:12.5px;color:#ff9933;border:1px solid rgba(255,153,51,0.5);border-radius:4px;padding:6px 10px;background:rgba(255,153,51,0.12);cursor:pointer;font-weight:bold;">✕ Skip</button>
+        <div id="wt-text" style="font-size:13.5px;color:#e8ffe5;line-height:1.5;min-height:84px;"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:9px;border-top:1px solid rgba(57,255,20,0.28);gap:8px;">
+          <button id="wt-back-btn" style="font-size:12.5px;color:#8aff70;border:1px solid rgba(57,255,20,0.55);border-radius:6px;padding:7px 12px;background:rgba(57,255,20,0.12);cursor:pointer;font-weight:bold;visibility:hidden;">${t('wt_back_btn', '◀ Vissza')}</button>
+          <button id="wt-next-btn" style="flex:1;font-size:13.5px;color:#041208;border:1px solid #39ff14;border-radius:6px;padding:7px 14px;background:#39ff14;cursor:pointer;font-weight:bold;letter-spacing:0.6px;box-shadow:0 0 12px rgba(57,255,20,0.45);visibility:hidden;">${t('wt_next_btn', 'Tovább ▶')}</button>
         </div>
       `;
       opWin.appendChild(bubbleEl);
-      document.getElementById('wt-pause-btn').addEventListener('click', togglePause);
-      document.getElementById('wt-skip-btn').addEventListener('click', () => stopWalkthrough(true));
+      document.getElementById('wt-next-btn').addEventListener('click', () => {
+        const btn = document.getElementById('wt-next-btn');
+        if (btn) { btn.style.visibility = 'hidden'; btn.disabled = true; }
+        if (nextPromiseResolve) {
+          const res = nextPromiseResolve;
+          nextPromiseResolve = null;
+          res('next');
+        } else {
+          pendingStepAction = 'next';
+        }
+      });
+      document.getElementById('wt-back-btn').addEventListener('click', () => {
+        if (nextEnableTimer) { clearTimeout(nextEnableTimer); nextEnableTimer = null; }
+        if (nextPromiseResolve) {
+          const res = nextPromiseResolve;
+          nextPromiseResolve = null;
+          res('back');
+        } else {
+          pendingStepAction = 'back';
+        }
+      });
+      document.getElementById('wt-close-x').addEventListener('click', () => {
+        showCompleteModal();
+      });
     }
 
     if (!completeModalEl) {
@@ -114,16 +196,24 @@ window.SonarWalkthrough = (function() {
       completeModalEl.className = 'absolute inset-0 z-50 flex items-center justify-center hidden';
       completeModalEl.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.82);display:none;align-items:center;justify-content:center;z-index:10000;';
       completeModalEl.innerHTML = `
-        <div style="background:#07140b;border:2px solid #39ff14;border-radius:14px;padding:26px 32px;max-width:440px;width:90%;text-align:center;box-shadow:0 0 35px rgba(57,255,20,0.5);font-family:monospace;">
+        <div style="background:#07140b;border:2px solid #39ff14;border-radius:14px;padding:26px 32px;max-width:480px;width:90%;text-align:center;box-shadow:0 0 35px rgba(57,255,20,0.5);font-family:monospace;">
           <div style="color:#8aff70;font-size:20px;font-weight:bold;letter-spacing:2px;margin-bottom:12px;">🏆 ${t('wt_complete', 'Készen állsz a tengeri küldetésre!')}</div>
-          <div id="wt-complete-sub" style="color:#bfffab;font-size:14px;line-height:1.5;margin-bottom:22px;">${t('wt_complete_sub', 'Most már mindent tudsz a szonár kezeléséről, a mini CRT rögzítéséről és a zátonyok kikerüléséről. Kezdődjék a valódi küldetés!')}</div>
-          <button id="wt-start-real-btn" style="background:#2eb85c;color:#000;font-weight:bold;font-size:15px;letter-spacing:1.5px;padding:10px 24px;border-radius:8px;border:none;cursor:pointer;box-shadow:0 4px 15px rgba(46,184,92,0.6);">${t('wt_start_game_btn', 'JÁTÉK INDÍTÁSA')}</button>
+          <div id="wt-complete-sub" style="color:#bfffab;font-size:14.5px;line-height:1.55;margin-bottom:22px;">${t('wt_complete_sub', 'Most már mindent tudsz a szonár kezeléséről, a mini CRT rögzítéséről és a zátonyok kikerüléséről. Kezdődjék a valódi küldetés!')}</div>
+          <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+            <button id="wt-replay-btn" style="background:rgba(57,255,20,0.14);color:#8aff70;font-weight:bold;font-size:14px;letter-spacing:1.2px;padding:10px 20px;border-radius:8px;border:1.5px solid #39ff14;cursor:pointer;">${t('wt_replay_btn', '▶ BEMUTATÓ')}</button>
+            <button id="wt-start-real-btn" style="background:#2eb85c;color:#000;font-weight:bold;font-size:15px;letter-spacing:1.5px;padding:10px 24px;border-radius:8px;border:none;cursor:pointer;box-shadow:0 4px 15px rgba(46,184,92,0.6);">${t('wt_start_game_btn', 'JÁTÉK INDÍTÁSA')}</button>
+          </div>
         </div>
       `;
       opWin.appendChild(completeModalEl);
       document.getElementById('wt-start-real-btn').addEventListener('click', () => {
         completeModalEl.style.display = 'none';
         stopWalkthrough(true);
+      });
+      document.getElementById('wt-replay-btn').addEventListener('click', () => {
+        completeModalEl.style.display = 'none';
+        completeModalEl.classList.add('hidden');
+        startWalkthrough();
       });
     }
   }
@@ -144,7 +234,7 @@ window.SonarWalkthrough = (function() {
       cursorEl.style.left = `${targetX}px`;
       cursorEl.style.top = `${targetY}px`;
 
-      setTimeout(resolve, 680);
+      setTimeout(resolve, 650);
     });
   }
 
@@ -178,11 +268,11 @@ window.SonarWalkthrough = (function() {
       cursorEl.style.left = `${targetX}px`;
       cursorEl.style.top = `${targetY}px`;
 
-      setTimeout(resolve, 550);
+      setTimeout(resolve, 480);
     });
   }
 
-  // 4. Valós kattintás szimulálása a radar cellájára (mousemove -> click az eseménykezelőknek)
+  // 4. Valós kattintás szimulálása a radar cellájára (mousemove -> click)
   function clickRadarCell(r, c) {
     const canvas = document.getElementById('let-crt-canvas');
     if (!canvas) return;
@@ -199,9 +289,7 @@ window.SonarWalkthrough = (function() {
     const clientX = rect.left + padL + (c + 0.5) * cellW;
     const clientY = rect.top + padT + (r + 0.5) * cellH;
 
-    // mousemove esemény: beállítja a hoveredCell = { r, c }-t a let_particles.js-ben!
     canvas.dispatchEvent(new MouseEvent('mousemove', { clientX, clientY, bubbles: true }));
-    // click esemény: kiváltja a triggerSonarWave-et (módtól függően hullám, X vagy útvonal!)
     canvas.dispatchEvent(new MouseEvent('click', { clientX, clientY, bubbles: true }));
   }
 
@@ -212,17 +300,49 @@ window.SonarWalkthrough = (function() {
       setTimeout(() => {
         cursorEl.style.transform = 'scale(1)';
         resolve();
-      }, 160);
+      }, 150);
     });
   }
 
-  function showBubble(stepNum, totalSteps, text) {
+  function showBubble(stepNum, totalSteps, text, posOverride = null) {
     createUI();
     if (!bubbleEl) return;
-    document.getElementById('wt-counter').textContent = `${stepNum} / ${totalSteps} ${t('wt_step_word', 'LÉPÉS')}`; if (lastStepInfo) { lastStepInfo.stepNum = stepNum; lastStepInfo.totalSteps = totalSteps; }
+    pendingStepAction = null;
+    if (nextEnableTimer) { clearTimeout(nextEnableTimer); nextEnableTimer = null; }
+    document.getElementById('wt-counter').textContent = stepNum === 0
+      ? t('wt_audio_title', 'HANGVEZÉRLŐK')
+      : `${stepNum} / ${totalSteps} ${t('wt_step_word', 'LÉPÉS')}`;
+    if (lastStepInfo) { lastStepInfo.stepNum = stepNum; lastStepInfo.totalSteps = totalSteps; }
     document.getElementById('wt-text').innerHTML = text;
+    if (posOverride) {
+      bubbleEl.style.left = posOverride.left;
+      bubbleEl.style.top = posOverride.top;
+    } else {
+      bubbleEl.style.left = '53.0%';
+      bubbleEl.style.top = '31%';
+    }
+    const nextBtn = document.getElementById('wt-next-btn');
+    if (nextBtn) {
+      nextBtn.textContent = t('wt_next_btn', 'Tovább ▶');
+      nextBtn.style.visibility = 'hidden';
+      nextBtn.disabled = true;
+    }
+    const backBtn = document.getElementById('wt-back-btn');
+    if (backBtn) {
+      backBtn.textContent = t('wt_back_btn', '◀ Vissza');
+      backBtn.style.visibility = stepNum <= 0 ? 'hidden' : 'visible';
+      backBtn.disabled = stepNum <= 0;
+    }
     bubbleEl.classList.remove('hidden');
     bubbleEl.style.display = 'block';
+    // Pontosan 1 másodperc múlva megjelenik a Tovább ▶ gomb (a panel felnyílásától mérve!)
+    nextEnableTimer = setTimeout(() => {
+      nextEnableTimer = null;
+      if (isRunning && nextBtn) {
+        nextBtn.style.visibility = 'visible';
+        nextBtn.disabled = false;
+      }
+    }, 1000);
   }
 
   function hideBubble() {
@@ -232,7 +352,9 @@ window.SonarWalkthrough = (function() {
     }
   }
 
-  // 5. Egyszerű bemutató pálya felállítása
+  // 5. Determinisztikus, 100%-ban valós bemutató pálya (nem random!)
+  //    Hajó: (5, 9), Kincs: (2, 0) (szándékosan NEM a legrövidebb 5. sorban!),
+  //    2 szomszédos zátony: (5, 4) és (5, 3) -> így maga a zátony is kap 1-es számot!
   function setupDemoCourse() {
     const engine = window.SonarEngine;
     if (!engine || !engine.state) return;
@@ -240,15 +362,20 @@ window.SonarWalkthrough = (function() {
     const st = engine.state;
     st.cols = 10;
     st.rows = 10;
-    st.pingsMax = 6;
-    st.pingsCur = 6;
-    st.streak = 0;
-    st.shipPos = { r: 5, c: 9 }; // Jobb szél: 6. sor, J oszlop
-    st.bonusTarget = { r: 5, c: 0, type: 'chest' }; // Bal szél: 6. sor, A oszlop (kincs)
+    st.pingsMax = 8;
+    st.pingsCur = 8;
+    st.hullMax = 3;
+    st.hullCur = 3;
+    st.crashesThisCourse = 0;
+    st.phase = 'PLANNING';
+    st.playerPath = [];
+    st.bonusType = 'CHEST';
+    st.bonusIcon = 'CHEST';
+
     st.secretPath = [
       { r: 5, c: 9 }, { r: 5, c: 8 }, { r: 5, c: 7 }, { r: 5, c: 6 },
-      { r: 4, c: 5 }, { r: 4, c: 4 }, { r: 4, c: 3 },
-      { r: 5, c: 2 }, { r: 5, c: 1 }, { r: 5, c: 0 }
+      { r: 4, c: 5 }, { r: 3, c: 4 }, { r: 2, c: 3 },
+      { r: 2, c: 2 }, { r: 2, c: 1 }, { r: 2, c: 0 }
     ];
 
     st.grid = [];
@@ -262,158 +389,248 @@ window.SonarWalkthrough = (function() {
           rockSize: 0,
           adjacentCount: 0,
           isScanned: false,
-          isBonus: (r === 5 && c === 0),
-          bonusType: (r === 5 && c === 0) ? 'chest' : null
+          isFogged: true,
+          isPath: false,
+          isStart: (r === 5 && c === 9),
+          isGoal: (r === 2 && c === 0)
         };
       }
     }
 
-    // 1 db egyszerű zátony pontosan az (5, 4) mezőn
-    st.grid[5][4].isRock = true;
-    st.grid[5][4].rockId = 1;
-    st.grid[5][4].rockSize = 1;
+    st.grid[5][9].isFogged = false;
+    st.grid[2][0].isFogged = false;
+    st.ship = { x: 9, y: 5, angle: 0 };
 
-    // Szomszédsági számok (1-esek a zátony körül)
-    const nbs = [
-      [4, 3], [4, 4], [4, 5],
-      [5, 3],         [5, 5],
-      [6, 3], [6, 4], [6, 5]
-    ];
-    nbs.forEach(([nr, nc]) => {
-      st.grid[nr][nc].adjacentCount = 1;
-    });
+    // 2 szomszédos zátony: (5, 4) és (5, 3) -> mindkettő mellett 1 másik zátony van!
+    st.grid[5][4].isRock = true; st.grid[5][4].rockId = 1; st.grid[5][4].rockSize = 2;
+    st.grid[5][3].isRock = true; st.grid[5][3].rockId = 1; st.grid[5][3].rockSize = 2;
 
-    st.path = [{ r: 5, c: 9 }];
-    st.markedRocks = new Set();
-    st.isGameOver = false;
-    st.isWon = false;
+    // Valódi 8-szomszédos zátonyszámítás minden cellára (a zátonyokra is!)
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        let cnt = 0;
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const nr = r + dr, nc = c + dc;
+            if (nr >= 0 && nr < 10 && nc >= 0 && nc < 10 && st.grid[nr][nc].isRock) cnt++;
+          }
+        }
+        st.grid[r][c].adjacentCount = cnt;
+      }
+    }
 
+    if (window.SonarOscilloscope && window.SonarOscilloscope.setPower) {
+      window.SonarOscilloscope.setPower(1);
+    }
     if (window.SonarLetParticles && window.SonarLetParticles.clearUserMarks) {
       window.SonarLetParticles.clearUserMarks();
+      window.SonarLetParticles.capturePrintScreen?.();
     }
   }
 
-  // 6. Lépésről lépésre végrehajtás
+  // 6. Kattintásos ("◀ Vissza" / "Tovább ▶") interaktív bemutató – számozatlan Hangvezérlők + 8 átfogó lépés
   async function runStepSequence() {
     if (!isRunning) return;
+    let stepIdx = -1;
 
-    // --- 1. LÉPÉS: SZONÁR PÁSZTÁZÁS ---
-    lastStepInfo.key = 'wt_step1'; showBubble(1, 5, t('wt_step1', '1. lépés: Válts <b>SZONÁR</b> módra és pásztázd a vizet a hajó előtt!'));
-    const btnSonar = document.getElementById('btn-mode-sonar');
-    await moveCursorToElement(btnSonar);
-    if (!isRunning) return;
-    await clickAnimation();
-    btnSonar.click();
+    while (isRunning && stepIdx < TOTAL_STEPS) {
+      closeInfoOverlayIfOpen();
 
-    await wait(600);
-    if (!isRunning) return;
+      if (stepIdx === -1) {
+        // --- SZÁMOZÁS NÉLKÜLI BEVEZETŐ: HANGERŐ POTIK (SM FELHÚZÁSA 1/3-IG) ---
+        setupDemoCourse();
+        lastStepInfo.key = 'wt_step0';
+        showBubble(0, TOTAL_STEPS, t('wt_step0', 'Hangerő szabályzók'));
+        const smTrack = document.querySelector('[data-fader-track="SM"]');
+        if (smTrack) {
+          await moveCursorToElement(smTrack, 0.5, 0.96);
+          if (!isRunning) return;
+          await clickAnimation();
+          if (typeof window.setSonarFader === 'function') {
+            window.setSonarFader('SM', 0.33, true);
+          }
+          await moveCursorToElement(smTrack, 0.5, 0.67);
+        }
+      } else if (stepIdx === 0) {
+        // --- 1. LÉPÉS: CÉL & SZONÁR PÁSZTÁZÁS (8 szomszéd) ---
+        setupDemoCourse();
+        lastStepInfo.key = 'wt_step1';
+        showBubble(1, TOTAL_STEPS, t('wt_step1', '1. Cél & Szonár'));
+        const btnSonar = document.getElementById('btn-mode-sonar');
+        await moveCursorToElement(btnSonar);
+        if (!isRunning) return;
+        await clickAnimation();
+        btnSonar.click();
+        await wait(300);
+        if (!isRunning) return;
+        await moveCursorToGridCell(5, 5);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 5);
+      } else if (stepIdx === 1) {
+        // --- 2. LÉPÉS: SZONÁR ERŐSÍTŐ (2x) & ZÁTONY IS KAP SZÁMOT ---
+        lastStepInfo.key = 'wt_step2';
+        showBubble(2, TOTAL_STEPS, t('wt_step2', '2. Szonár erősítő & Zátony-számítás'));
+        const btnSonar = document.getElementById('btn-mode-sonar');
+        if (btnSonar) btnSonar.click();
+        const ampEl = document.getElementById('radar-scope-canvas');
+        if (ampEl) {
+          await moveCursorToElement(ampEl, 0.72, 0.35);
+          if (!isRunning) return;
+          await clickAnimation();
+          if (window.SonarOscilloscope && window.SonarOscilloscope.setPower) {
+            window.SonarOscilloscope.setPower(2);
+          }
+        }
+        await wait(400);
+        if (!isRunning) return;
+        await moveCursorToGridCell(5, 4);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 4);
+        await wait(800);
+        if (!isRunning) return;
+        if (window.SonarOscilloscope && window.SonarOscilloscope.setPower) {
+          window.SonarOscilloscope.setPower(1);
+        }
+      } else if (stepIdx === 2) {
+        // --- 3. LÉPÉS: PILLANATKÉP & MINI CRT ---
+        lastStepInfo.key = 'wt_step3';
+        showBubble(3, TOTAL_STEPS, t('wt_step3', '3. Pillanatkép & Mini CRT'));
+        const btnSonar = document.getElementById('btn-mode-sonar');
+        if (btnSonar) btnSonar.click();
+        await moveCursorToGridCell(5, 5);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 5);
+        await wait(650);
+        if (!isRunning) return;
+        const btnPs = document.getElementById('btn-num-ps');
+        await moveCursorToElement(btnPs);
+        if (!isRunning) return;
+        await clickAnimation();
+        btnPs.click();
+      } else if (stepIdx === 3) {
+        // --- 4. LÉPÉS: 1–6 SZÁMGOMBOK (BEÍRÁS ÉS VISSZATÖRLÉS) ---
+        lastStepInfo.key = 'wt_step4';
+        showBubble(4, TOTAL_STEPS, t('wt_step4', '4. 1–6 számgombok (beírás & törlés)'));
+        const btn1 = document.getElementById('btn-num-1');
+        await moveCursorToElement(btn1);
+        if (!isRunning) return;
+        await clickAnimation();
+        btn1.click();
+        await moveCursorToGridCell(5, 5);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 5);
+        await wait(600);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 5);
+        await wait(500);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 5);
+      } else if (stepIdx === 4) {
+        // --- 5. LÉPÉS: TÉRKÉP MÓD (X ZÁTONY & DUPLA KATTINTÁS = 0 ÜRES VÍZ) ---
+        lastStepInfo.key = 'wt_step5';
+        showBubble(5, TOTAL_STEPS, t('wt_step5', '5. Térkép mód (X és dupla kattintás = 0)'));
+        const btnMap = document.getElementById('btn-mode-map');
+        await moveCursorToElement(btnMap);
+        if (!isRunning) return;
+        await clickAnimation();
+        btnMap.click();
+        await wait(300);
+        if (!isRunning) return;
+        await moveCursorToGridCell(5, 4);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(5, 4);
+        await wait(400);
+        if (!isRunning) return;
+        await moveCursorToGridCell(4, 5);
+        if (!isRunning) return;
+        await clickAnimation();
+        clickRadarCell(4, 5);
+        await wait(110);
+        clickRadarCell(4, 5);
+      } else if (stepIdx === 5) {
+        // --- 6. LÉPÉS: ÚTVONALTERVEZÉS A VALÓDI KINCSHEZ (2, 0) & KOCKÁZAT ---
+        lastStepInfo.key = 'wt_step6';
+        showBubble(6, TOTAL_STEPS, t('wt_step6', '6. Útvonaltervezés & Kincs kockázata'));
+        const btnRoute = document.getElementById('btn-mode-route');
+        await moveCursorToElement(btnRoute);
+        if (!isRunning) return;
+        await clickAnimation();
+        btnRoute.click();
+        await wait(300);
+        if (!isRunning) return;
+        const routeCells = [
+          [5, 9], [5, 8], [5, 7], [5, 6],
+          [4, 5], [3, 4], [2, 3],
+          [2, 2], [2, 1], [2, 0]
+        ];
+        for (const [rr, cc] of routeCells) {
+          if (!isRunning) return;
+          await moveCursorToGridCell(rr, cc);
+          clickRadarCell(rr, cc);
+          await wait(175);
+        }
+      } else if (stepIdx === 6) {
+        // --- 7. LÉPÉS: START, ÜTKÖZÉS & NAVIGÁCIÓS FEJLŐDÉS ---
+        lastStepInfo.key = 'wt_step7';
+        showBubble(7, TOTAL_STEPS, t('wt_step7', '7. Indítás, Ütközés & Fejlődés'));
+        const btnStart = document.getElementById('btn-mode-start');
+        await moveCursorToElement(btnStart);
+        if (!isRunning) return;
+        await clickAnimation();
+        btnStart.click();
+      } else if (stepIdx === 7) {
+        // --- 8. LÉPÉS: INFÓ KAPCSOLÓ BEMUTATÁSA ---
+        lastStepInfo.key = 'wt_step8';
+        showBubble(8, TOTAL_STEPS, t('wt_step8', '8. Teljes Útmutató (INFÓ)'), { left: '53.0%', top: '31%' });
+        const switchInfo = document.getElementById('switch-info');
+        if (switchInfo) {
+          await moveCursorToElement(switchInfo);
+          if (!isRunning) return;
+          await clickAnimation();
+          switchInfo.click();
+        }
+      }
 
-    // Mutató rámegy a radarra a zátony előtti (5, 5) mezőre
-    await moveCursorToGridCell(5, 5);
-    if (!isRunning) return;
-    await clickAnimation();
-    // Valós radar kattintás -> elindul a zöld hullám és a mélytengeri hang!
-    clickRadarCell(5, 5);
+      const delayMs = 1000;
+      const action = await waitForStepAction(stepIdx + 1, delayMs);
+      if (!isRunning || action === 'close') return;
 
-    // VÁRUNK 1200 ms-ot, amikor a hullám a legnagyobb kiterjedésében van (eléri az 5,4 zátonyt és a szomszédokat)!
-    await wait(1200);
-    if (!isRunning) return;
+      if (action === 'back') {
+        if (stepIdx === 7) {
+          closeInfoOverlayIfOpen();
+        }
+        stepIdx = Math.max(-1, stepIdx - 1);
+        if (stepIdx <= 5) {
+          setupDemoCourse();
+        }
+        continue;
+      }
 
-    // --- 2. LÉPÉS: PRINT SCREEN (PS) & GOMBOK ---
-    lastStepInfo.key = 'wt_step2'; showBubble(2, 5, t('wt_step2', '2. lépés: A hullám gyorsan lecseng! Nyomd meg a <b>Pillanatkép (PS)</b> gombot a hullámkép rögzítéséhez a mini képernyőre!'));
-    const btnPs = document.getElementById('btn-num-ps');
-    await moveCursorToElement(btnPs);
-    if (!isRunning) return;
-    await clickAnimation();
-    btnPs.click(); // Rögzíti a kiterjedt hullámképet a mini CRT-re!
-
-    await wait(1600);
-    if (!isRunning) return;
-
-    // Gomb kijelölés (1-es gomb a gombsoron)
-    lastStepInfo.key = 'wt_step3'; showBubble(2, 5, t('wt_step3', '3. lépés: A mini képernyőről leolvasható az 1-es jelzés. Jelöld meg a gombsorral a radaron!'));
-    const btn1 = document.getElementById('btn-num-1');
-    await moveCursorToElement(btn1);
-    if (!isRunning) return;
-    await clickAnimation();
-    btn1.click(); // Aktiválja az 1-es számot
-
-    // Rákattint a radaron az (5, 5) mezőre -> beíródik a maradandó 1-es!
-    await moveCursorToGridCell(5, 5);
-    if (!isRunning) return;
-    await clickAnimation();
-    clickRadarCell(5, 5);
-
-    await wait(1100);
-    if (!isRunning) return;
-
-    // --- 3. LÉPÉS: TÉRKÉP MÓD & ZÁTONY JELÖLÉS ---
-    lastStepInfo.key = 'wt_step4'; showBubble(3, 5, t('wt_step4', '4. lépés: Válts <b>TÉRKÉP</b> módra és jelöld be a veszélyes zátonyt (X)!'));
-    const btnMap = document.getElementById('btn-mode-map');
-    await moveCursorToElement(btnMap);
-    if (!isRunning) return;
-    await clickAnimation();
-    btnMap.click();
-
-    await wait(600);
-    if (!isRunning) return;
-
-    // Zátony megjelölése (5, 4) cellán -> megjelenik a piros X a radaron!
-    await moveCursorToGridCell(5, 4);
-    if (!isRunning) return;
-    await clickAnimation();
-    clickRadarCell(5, 4);
-
-    await wait(1200);
-    if (!isRunning) return;
-
-    // --- 4. LÉPÉS: ÚTVONALTERVEZÉS ---
-    lastStepInfo.key = 'wt_step5'; showBubble(4, 5, t('wt_step5', '5. lépés: <b>ÚTVONAL</b> módban rajzolj tiszta utat a kincsig, kikerülve a zátonyt!'));
-    const btnRoute = document.getElementById('btn-mode-route');
-    await moveCursorToElement(btnRoute);
-    if (!isRunning) return;
-    await clickAnimation();
-    btnRoute.click();
-
-    await wait(600);
-    if (!isRunning) return;
-
-    // Útvonal végighúzása celláról cellára a hajótól (5, 9) indulva a kincsig (5, 0)
-    const routeCells = [
-      [5, 9], [5, 8], [5, 7], [5, 6],
-      [4, 5], [4, 4], [4, 3],
-      [5, 2], [5, 1], [5, 0]
-    ];
-
-    for (const [rr, cc] of routeCells) {
-      if (!isRunning) return;
-      await moveCursorToGridCell(rr, cc);
-      clickRadarCell(rr, cc); // Hozzáadja az útvonalhoz és kirajzolja a zöld vonalat!
-      await wait(280);
+      // Ha a 8. lépésnél kattintott Tovább-ra, a kurzor lekapcsolja az INFÓ kapcsolót
+      if (stepIdx === 7) {
+        const switchInfo = document.getElementById('switch-info');
+        const infoBox = document.getElementById('crt-info-overlay');
+        if (switchInfo && infoBox && !infoBox.classList.contains('hidden')) {
+          await moveCursorToElement(switchInfo);
+          if (!isRunning) return;
+          await clickAnimation();
+          switchInfo.click();
+          await wait(300);
+        }
+      }
+      stepIdx++;
     }
 
-    await wait(900);
     if (!isRunning) return;
-
-    // --- 5. LÉPÉS: START ---
-    lastStepInfo.key = 'wt_step6'; showBubble(5, 5, t('wt_step6', '6. lépés: Indítsd el a hajót a <b>START</b> gombbal és gyűjtsd be a bónuszt!'));
-    const btnStart = document.getElementById('btn-mode-start');
-    await moveCursorToElement(btnStart);
-    if (!isRunning) return;
-    await clickAnimation();
-    btnStart.click(); // Elindítja a hajó vitorlázását a kirajzolt útvonalon!
-
-    // Végigvárjuk a hajó átkelését (kb. 4.2 másodperc)
-    await wait(4200);
-    if (!isRunning) return;
-
-    // --- BEFEJEZÉS: SIKER MODAL ---
-    hideBubble();
-    if (cursorEl) cursorEl.style.display = 'none';
-    if (completeModalEl) {
-      completeModalEl.style.display = 'flex';
-      completeModalEl.classList.remove('hidden');
-    }
+    showCompleteModal();
   }
 
   function startWalkthrough() {
@@ -421,21 +638,10 @@ window.SonarWalkthrough = (function() {
     isPaused = false;
     createUI();
 
-    // 1. Azonnal befejezzük a nyitó szöveges animációt, hogy a radar GRID állapotba lépjen és azonnal reagáljon a kattintásokra!
     if (window.SonarLetParticles && window.SonarLetParticles.finishMorphNow) {
       window.SonarLetParticles.finishMorphNow();
     }
 
-    // 2. Frissítjük a gomb feliratát induláskor
-    const pBtn = document.getElementById('wt-pause-btn');
-    if (pBtn) {
-      pBtn.innerHTML = '⏸ Pause';
-      pBtn.style.color = '#8aff70';
-      pBtn.style.borderColor = 'rgba(57,255,20,0.5)';
-      pBtn.style.background = 'rgba(57,255,20,0.12)';
-    }
-
-    // 3. Bezárjuk az infó panelt ha nyitva van
     const infoBox = document.getElementById('crt-info-overlay');
     const imgInfoDown = document.getElementById('img-switch-info-down');
     if (infoBox && !infoBox.classList.contains('hidden')) {
@@ -545,9 +751,22 @@ window.SonarWalkthrough = (function() {
   function stopWalkthrough(startNewGame = true) {
     isRunning = false;
     isPaused = false;
+    if (nextEnableTimer) { clearTimeout(nextEnableTimer); nextEnableTimer = null; }
     if (pausePromiseResolve) {
       pausePromiseResolve();
       pausePromiseResolve = null;
+    }
+    if (nextPromiseResolve) {
+      nextPromiseResolve();
+      nextPromiseResolve = null;
+    }
+    const infoBox = document.getElementById('crt-info-overlay');
+    const imgInfoDown = document.getElementById('img-switch-info-down');
+    if (infoBox && !infoBox.classList.contains('hidden')) {
+      infoBox.classList.add('hidden');
+      if (imgInfoDown) imgInfoDown.classList.remove('hidden');
+      const crtEl = document.getElementById('let-crt-canvas');
+      if (crtEl) crtEl.classList.remove('invisible');
     }
 
     hideBubble();
@@ -624,8 +843,8 @@ window.SonarWalkthrough = (function() {
       `<div class="my-auto flex flex-col items-center gap-5 text-center">` +
         `<div class="text-xl font-bold text-[#bfffab] tracking-wide">${t('info_play_intro', 'Bemutató indítása')}</div>` +
         `<div class="flex justify-center gap-4">` +
-          `<button id="btn-intro-prompt-yes" class="px-6 py-2 bg-[#39ff14]/20 hover:bg-[#39ff14]/35 border border-[#39ff14] hover:border-[#ffd700] text-[#bfffab] font-bold text-sm tracking-wider cursor-pointer rounded">${t('an_yes', 'Igen')}</button>` +
-          `<button id="btn-intro-prompt-no" class="px-6 py-2 bg-[#0a1d11] hover:bg-[#163822] border border-[#39ff14]/60 hover:border-[#ffd700] text-[#8aff70] font-bold text-sm tracking-wider cursor-pointer rounded">${t('an_no', 'Nem')}</button>` +
+          `<button id="btn-intro-prompt-yes" class="px-6 py-2 bg-[#39ff14]/20 hover:bg-[#39ff14]/35 border border-[#39ff14] hover:border-[#ffd700] text-[#bfffab] font-bold text-sm tracking-wider cursor-pointer rounded">${t('an_yes', 'Igen').split('(')[0].trim()}</button>` +
+          `<button id="btn-intro-prompt-no" class="px-6 py-2 bg-[#0a1d11] hover:bg-[#163822] border border-[#39ff14]/60 hover:border-[#ffd700] text-[#8aff70] font-bold text-sm tracking-wider cursor-pointer rounded">${t('an_no', 'Nem').split('(')[0].trim()}</button>` +
         `</div>` +
         `<div class="flex flex-wrap justify-center gap-2 pt-2">${flagsHtml}</div>` +
       `</div>` +

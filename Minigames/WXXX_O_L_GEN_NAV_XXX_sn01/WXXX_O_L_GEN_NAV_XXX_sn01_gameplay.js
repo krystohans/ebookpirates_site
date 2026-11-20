@@ -249,6 +249,7 @@ window.SonarEngine = (function() {
     state.cols = diff.cols;
     state.rows = diff.rows;
     state.playerPath = [];
+    if (window.SonarLetParticles) { window.SonarLetParticles.clearUserMarks?.(); window.SonarLetParticles.capturePrintScreen?.(); }
     state.phase = 'BRIEFING';
     
     // Szonárok kalkulálása: a megmaradt szonárok elvesznek (nincs továbbvitel)

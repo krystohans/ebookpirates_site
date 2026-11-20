@@ -1,8 +1,8 @@
 {
   "TRUE": [
     {
-      "uid": "MHDEMQTET1OKHU10001",
-      "baseId": "MHDEMQTET1OK0001",
+      "uid": "GEN_HU_000001_0",
+      "baseId": "GEN_000001",
       "id": 1,
       "category": "TRUE",
       "question": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
@@ -13,40 +13,18 @@
         "Jézus"
       ],
       "answerUids": [
-        "MHDEMATET1OKHU20001",
-        "MHDEMATET1OKHU30001_1",
-        "MHDEMATET1OKHU30001_2",
-        "MHDEMATET1OKHU30001_3"
+        "GEN_HU_000001_1",
+        "GEN_HU_000001_2",
+        "GEN_HU_000001_3",
+        "GEN_HU_000001_4"
       ],
       "correctIndex": 0,
       "isStaked": true,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET1OKHU10011",
-      "baseId": "MHDEMQTET1OK0011",
-      "id": 11,
-      "category": "TRUE",
-      "question": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
-      "answers": [
-        "Boldogasszony",
-        "Santa Maria",
-        "Pinta",
-        "Szent Jupát"
-      ],
-      "answerUids": [
-        "MHDEMATET1OKHU20011",
-        "MHDEMATET1OKHU30011_1",
-        "MHDEMATET1OKHU30011_2",
-        "MHDEMATET1OKHU30011_3"
-      ],
-      "correctIndex": 0,
-      "isStaked": true,
-      "weight": 1
-    },
-    {
-      "uid": "MHDEMQTET1OKHU10012",
-      "baseId": "MHDEMQTET1OK0012",
+      "uid": "GEN_HU_000012_0",
+      "baseId": "GEN_000012",
       "id": 12,
       "category": "TRUE",
       "question": "Ki a Farkastestvérek című fantasy regény főszereplője?",
@@ -57,32 +35,32 @@
         "Ravasz Cugell"
       ],
       "answerUids": [
-        "MHDEMATET1OKHU20012",
-        "MHDEMATET1OKHU30012_1",
-        "MHDEMATET1OKHU30012_2",
-        "MHDEMATET1OKHU30012_3"
+        "GEN_HU_000012_1",
+        "GEN_HU_000012_2",
+        "GEN_HU_000012_3",
+        "GEN_HU_000012_4"
       ],
       "correctIndex": 0,
       "isStaked": true,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET1OKHU10013",
-      "baseId": "MHDEMQTET1OK0013",
-      "id": 13,
+      "uid": "GEN_HU_000032_0",
+      "baseId": "GEN_000032",
+      "id": 32,
       "category": "TRUE",
-      "question": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+      "question": "Melyik regény főhőse Skandar Graun?",
       "answers": [
-        "Sci-fi",
-        "Romantikus",
-        "Krimi",
-        "Történelmi fantasy"
+        "A káosz szava",
+        "Harc az éj kövéért",
+        "Kristályszilánk",
+        "A Végtelen Történet"
       ],
       "answerUids": [
-        "MHDEMATET1OKHU20013",
-        "MHDEMATET1OKHU30013_1",
-        "MHDEMATET1OKHU30013_2",
-        "MHDEMATET1OKHU30013_3"
+        "GEN_HU_000032_1",
+        "GEN_HU_000032_2",
+        "GEN_HU_000032_3",
+        "GEN_HU_000032_4"
       ],
       "correctIndex": 0,
       "isStaked": true,
@@ -91,8 +69,8 @@
   ],
   "FALSE": [
     {
-      "uid": "MHDEMQTET0OKHU10002",
-      "baseId": "MHDEMQTET0OK0002",
+      "uid": "GEN_HU_000002_0",
+      "baseId": "GEN_000002",
       "id": 2,
       "category": "FALSE",
       "question": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
@@ -103,18 +81,18 @@
         "Víz és vér"
       ],
       "answerUids": [
-        "MHDEMATET0OKHU20002",
-        "MHDEMATET0OKHU30002_1",
-        "MHDEMATET0OKHU30002_2",
-        "MHDEMATET0OKHU30002_3"
+        "GEN_HU_000002_1",
+        "GEN_HU_000002_2",
+        "GEN_HU_000002_3",
+        "GEN_HU_000002_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET0OKHU10003",
-      "baseId": "MHDEMQTET0OK0003",
+      "uid": "GEN_HU_000003_0",
+      "baseId": "GEN_000003",
       "id": 3,
       "category": "FALSE",
       "question": "Kinek az írói álneve Raymond Darieni?",
@@ -125,18 +103,18 @@
         "Szigeti Sándor"
       ],
       "answerUids": [
-        "MHDEMATET0OKHU20003",
-        "MHDEMATET0OKHU30003_1",
-        "MHDEMATET0OKHU30003_2",
-        "MHDEMATET0OKHU30003_3"
+        "GEN_HU_000003_1",
+        "GEN_HU_000003_2",
+        "GEN_HU_000003_3",
+        "GEN_HU_000003_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET0OKHU10004",
-      "baseId": "MHDEMQTET0OK0004",
+      "uid": "GEN_HU_000004_0",
+      "baseId": "GEN_000004",
       "id": 4,
       "category": "FALSE",
       "question": "Kinek az írói álneve Jessica J. Brutal?",
@@ -147,18 +125,18 @@
         "Szántó Tibor"
       ],
       "answerUids": [
-        "MHDEMATET0OKHU20004",
-        "MHDEMATET0OKHU30004_1",
-        "MHDEMATET0OKHU30004_2",
-        "MHDEMATET0OKHU30004_3"
+        "GEN_HU_000004_1",
+        "GEN_HU_000004_2",
+        "GEN_HU_000004_3",
+        "GEN_HU_000004_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET0OKHU10005",
-      "baseId": "MHDEMQTET0OK0005",
+      "uid": "GEN_HU_000005_0",
+      "baseId": "GEN_000005",
       "id": 5,
       "category": "FALSE",
       "question": "Melyik írói álnév Szélesi Sándoré?",
@@ -169,18 +147,18 @@
         "Gabriel Wraith"
       ],
       "answerUids": [
-        "MHDEMATET0OKHU20005",
-        "MHDEMATET0OKHU30005_1",
-        "MHDEMATET0OKHU30005_2",
-        "MHDEMATET0OKHU30005_3"
+        "GEN_HU_000005_1",
+        "GEN_HU_000005_2",
+        "GEN_HU_000005_3",
+        "GEN_HU_000005_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET0OKHU10006",
-      "baseId": "MHDEMQTET0OK0006",
+      "uid": "GEN_HU_000006_0",
+      "baseId": "GEN_000006",
       "id": 6,
       "category": "FALSE",
       "question": "Melyik sorozat része az \"Éjféli horizont\"?",
@@ -191,18 +169,18 @@
         "MARVEL"
       ],
       "answerUids": [
-        "MHDEMATET0OKHU20006",
-        "MHDEMATET0OKHU30006_1",
-        "MHDEMATET0OKHU30006_2",
-        "MHDEMATET0OKHU30006_3"
+        "GEN_HU_000006_1",
+        "GEN_HU_000006_2",
+        "GEN_HU_000006_3",
+        "GEN_HU_000006_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
       "weight": 1
     },
     {
-      "uid": "MHDEMQTET2OKHU10007",
-      "baseId": "MHDEMQTET2OK0007",
+      "uid": "GEN_HU_000007_0",
+      "baseId": "GEN_000007",
       "id": 7,
       "category": "FALSE",
       "question": "Melyik NEM Sheila Martens műve?",
@@ -213,18 +191,18 @@
         "Aranykalitka"
       ],
       "answerUids": [
-        "MHDEMATET2OKHU20007",
-        "MHDEMATET2OKHU30007_1",
-        "MHDEMATET2OKHU30007_2",
-        "MHDEMATET2OKHU30007_3"
+        "GEN_HU_000007_1",
+        "GEN_HU_000007_2",
+        "GEN_HU_000007_3",
+        "GEN_HU_000007_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
       "weight": 2
     },
     {
-      "uid": "MHDEMQTET0OKHU10010",
-      "baseId": "MHDEMQTET0OK0010",
+      "uid": "GEN_HU_000010_0",
+      "baseId": "GEN_000010",
       "id": 10,
       "category": "FALSE",
       "question": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
@@ -235,10 +213,32 @@
         "Ammerúnia bukása"
       ],
       "answerUids": [
-        "MHDEMATET0OKHU20010",
-        "MHDEMATET0OKHU30010_1",
-        "MHDEMATET0OKHU30010_2",
-        "MHDEMATET0OKHU30010_3"
+        "GEN_HU_000010_1",
+        "GEN_HU_000010_2",
+        "GEN_HU_000010_3",
+        "GEN_HU_000010_4"
+      ],
+      "correctIndex": 0,
+      "isStaked": false,
+      "weight": 1
+    },
+    {
+      "uid": "GEN_HU_000036_0",
+      "baseId": "GEN_000036",
+      "id": 36,
+      "category": "FALSE",
+      "question": "Ki nem varázsolt a Földön?",
+      "answers": [
+        "Gandalf",
+        "Merlin",
+        "Dumbledor",
+        "Panoramix"
+      ],
+      "answerUids": [
+        "GEN_HU_000036_1",
+        "GEN_HU_000036_2",
+        "GEN_HU_000036_3",
+        "GEN_HU_000036_4"
       ],
       "correctIndex": 0,
       "isStaked": false,
@@ -247,409 +247,109 @@
   ],
   "TUTORZEP": [
     {
-      "uid": "TUTMHDEMQTU0OKHU10015",
-      "baseId": "TUTMHDEMQTU0OK0015",
-      "id": 15,
+      "uid": "ZEP_HU_000008_0",
+      "baseId": "ZEP_000008",
+      "id": 8,
       "category": "TUTORZEP",
-      "question": "Kinek az idézetével kezdődik A hercegnő nyakéke című könyv?",
+      "question": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
       "answers": [
-        "Hamvas Béla",
-        "Alexandre Dumas",
-        "Weöres Sándor",
-        "Lao-ce"
+        "Októberben",
+        "Szeptemberben",
+        "Júniusban",
+        "Májusban"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20015",
-        "TUTMHDEMATU0OKHU30015_1",
-        "TUTMHDEMATU0OKHU30015_2",
-        "TUTMHDEMATU0OKHU30015_3"
+        "ZEP_HU_000008_1",
+        "ZEP_HU_000008_2",
+        "ZEP_HU_000008_3",
+        "ZEP_HU_000008_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10016",
-      "baseId": "TUTMHDEMQTU0OK0016",
-      "id": 16,
+      "uid": "ZEP_HU_000009_0",
+      "baseId": "ZEP_000009",
+      "id": 9,
       "category": "TUTORZEP",
-      "question": "Hány karja van a boldogságnak Shelby Van Pelt szerint?",
+      "question": "Milyen nemzetiségű volt Selma Lagerlöf?",
       "answers": [
-        "Nyolc",
-        "Négy",
-        "Három és fél",
-        "Kettő"
+        "Svéd",
+        "Dán",
+        "Finn",
+        "Norvég"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20016",
-        "TUTMHDEMATU0OKHU30016_1",
-        "TUTMHDEMATU0OKHU30016_2",
-        "TUTMHDEMATU0OKHU30016_3"
+        "ZEP_HU_000009_1",
+        "ZEP_HU_000009_2",
+        "ZEP_HU_000009_3",
+        "ZEP_HU_000009_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10017",
-      "baseId": "TUTMHDEMQTU0OK0017",
-      "id": 17,
-      "category": "TUTORZEP",
-      "question": "Hol írta meg Agatha Christie a híres krimijei egy jelentős részét?",
-      "answers": [
-        "A fürdőkádjában ülve",
-        "A kiadója irodájában",
-        "Egy londoni kávéházban",
-        "A dolgozószobájában"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20017",
-        "TUTMHDEMATU0OKHU30017_1",
-        "TUTMHDEMATU0OKHU30017_2",
-        "TUTMHDEMATU0OKHU30017_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10018",
-      "baseId": "TUTMHDEMQTU0OK0018",
-      "id": 18,
-      "category": "TUTORZEP",
-      "question": "Miért írta J.K. Rowling az első Harry Potter könyvet egy kávéházban?",
-      "answers": [
-        "Mert otthon fázott",
-        "Imádta a háttérzajt",
-        "A vendégekről mintázta a szereplőket",
-        "Ingyen kapott kávét és süteményt"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20018",
-        "TUTMHDEMATU0OKHU30018_1",
-        "TUTMHDEMATU0OKHU30018_2",
-        "TUTMHDEMATU0OKHU30018_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10019",
-      "baseId": "TUTMHDEMQTU0OK0019",
-      "id": 19,
-      "category": "TUTORZEP",
-      "question": "Melyik könyvének megírására nem emlékszik Stephen King a drog miatt?",
-      "answers": [
-        "Cujo",
-        "Ragyogás (The Shining)",
-        "Az (It)",
-        "Kedvencek temetője (Pet Sematary)"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20019",
-        "TUTMHDEMATU0OKHU30019_1",
-        "TUTMHDEMATU0OKHU30019_2",
-        "TUTMHDEMATU0OKHU30019_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10020",
-      "baseId": "TUTMHDEMQTU0OK0020",
-      "id": 20,
-      "category": "TUTORZEP",
-      "question": "Melyik rockzenész akarta eljátszani Gollam szerepét a megfilmesített Gyűrűk Urában?",
-      "answers": [
-        "John Lennon",
-        "Bon Jovi",
-        "Axl Rose",
-        "Ozzy Osbourne"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20020",
-        "TUTMHDEMATU0OKHU30020_1",
-        "TUTMHDEMATU0OKHU30020_2",
-        "TUTMHDEMATU0OKHU30020_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10021",
-      "baseId": "TUTMHDEMQTU0OK0021",
-      "id": 21,
-      "category": "TUTORZEP",
-      "question": "Mi ihlette Frank Herbertet a Dűne megírására?",
-      "answers": [
-        "Egy kormányzati projekt",
-        "Egy NASA-jelentés a Mars felszínéről",
-        "Egy oregoni sivatagi nyaralás",
-        "Egy rémálom"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20021",
-        "TUTMHDEMATU0OKHU30021_1",
-        "TUTMHDEMATU0OKHU30021_2",
-        "TUTMHDEMATU0OKHU30021_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10022",
-      "baseId": "TUTMHDEMQTU0OK0022",
+      "uid": "ZEP_HU_000022_0",
+      "baseId": "ZEP_000022",
       "id": 22,
-      "category": "TUTORZEP",
-      "question": "Mit védetett le Edgar Rice Burroughs?",
-      "answers": [
-        "Tarzan üvöltését",
-        "A gorillanyelvet",
-        "A Tarzan nevet",
-        "A \"Dzsungel Ura\" titulust"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20022",
-        "TUTMHDEMATU0OKHU30022_1",
-        "TUTMHDEMATU0OKHU30022_2",
-        "TUTMHDEMATU0OKHU30022_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10023",
-      "baseId": "TUTMHDEMQTU0OK0023",
-      "id": 23,
-      "category": "TUTORZEP",
-      "question": "Mit csinál az eredeti könyvben Pinokkió a tücsökkel?",
-      "answers": [
-        "Egy kalapáccsal szétlapítja",
-        "Bezárja egy sötét gyufásdobozba",
-        "Eladja egy vándorcirkusznak",
-        "Kidobja az ablakon"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20023",
-        "TUTMHDEMATU0OKHU30023_1",
-        "TUTMHDEMATU0OKHU30023_2",
-        "TUTMHDEMATU0OKHU30023_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10024",
-      "baseId": "TUTMHDEMQTU0OK0024",
-      "id": 24,
-      "category": "TUTORZEP",
-      "question": "Melyik könyv ihlette a Batmant?",
-      "answers": [
-        "Drakula gróf",
-        "Frankenstein",
-        "A láthatatlan ember",
-        "Dr. Jekyll és Mr. Hyde"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20024",
-        "TUTMHDEMATU0OKHU30024_1",
-        "TUTMHDEMATU0OKHU30024_2",
-        "TUTMHDEMATU0OKHU30024_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10025",
-      "baseId": "TUTMHDEMQTU0OK0025",
-      "id": 25,
-      "category": "TUTORZEP",
-      "question": "Honnan származik a Matrix ikonikus, zöld, digitális kódja?",
-      "answers": [
-        "A tervező feleségének japán szakácskönyvéből",
-        "Egy orosz fizika tankönyvből",
-        "Egy régi svéd bútorgyári katalógusból",
-        "Egy ókori egyiptomi papiruszról"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20025",
-        "TUTMHDEMATU0OKHU30025_1",
-        "TUTMHDEMATU0OKHU30025_2",
-        "TUTMHDEMATU0OKHU30025_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10026",
-      "baseId": "TUTMHDEMQTU0OK0026",
-      "id": 26,
-      "category": "TUTORZEP",
-      "question": "Milyen valóságos esemény ihlette a Trónok harca \"Vörös Nász\"-át?",
-      "answers": [
-        "Egy középkori skót mészárlás, a Fekete Vacsora",
-        "A kijev-i Olga hercegnő bosszú-esküvője",
-        "A francia Szent Bertalan-éji mészárlás",
-        "II. Eduárd angol király botrányos esküvői vacsorája"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20026",
-        "TUTMHDEMATU0OKHU30026_1",
-        "TUTMHDEMATU0OKHU30026_2",
-        "TUTMHDEMATU0OKHU30026_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10027",
-      "baseId": "TUTMHDEMQTU0OK0027",
-      "id": 27,
-      "category": "TUTORZEP",
-      "question": "A Da Vinci-kódban szereplő melyik kamu tényt cáfolta hivatalosan a Louvre?",
-      "answers": [
-        "Hogy az üvegpiramis 666 üveglapból áll",
-        "Hogy a Mona Lisa mögött egy földönkívüli látható",
-        "Hogy a múzeum alatt van Jézus valódi sírja",
-        "Hogy a múzeum igazgatója egy középkori lovagrend nagymestere volt"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20027",
-        "TUTMHDEMATU0OKHU30027_1",
-        "TUTMHDEMATU0OKHU30027_2",
-        "TUTMHDEMATU0OKHU30027_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10028",
-      "baseId": "TUTMHDEMQTU0OK0028",
-      "id": 28,
-      "category": "TUTORZEP",
-      "question": "Mi vagy ki adta William Steig-nek az ötletet Shrek nevéhez?",
-      "answers": [
-        "A jiddish \"Schreck\" szó",
-        "A Skriech nevű skót mocsár",
-        "Egy Shreck nevű középkori, német zsoldos",
-        "A szomszédja, akit Shrecknek hívtak"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20028",
-        "TUTMHDEMATU0OKHU30028_1",
-        "TUTMHDEMATU0OKHU30028_2",
-        "TUTMHDEMATU0OKHU30028_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10029",
-      "baseId": "TUTMHDEMQTU0OK0029",
-      "id": 29,
-      "category": "TUTORZEP",
-      "question": "Kiről mintázta Ian Fleming a James Bond történetek Q-ját?",
-      "answers": [
-        "Egy II. világháborús bombaszakértőről",
-        "Egy londoni órásmesterről",
-        "Albert Einstein asszisztenséről",
-        "Saját magáról"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20029",
-        "TUTMHDEMATU0OKHU30029_1",
-        "TUTMHDEMATU0OKHU30029_2",
-        "TUTMHDEMATU0OKHU30029_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10030",
-      "baseId": "TUTMHDEMQTU0OK0030",
-      "id": 30,
-      "category": "TUTORZEP",
-      "question": "Ki volt Drakula gróf a valóságban?",
-      "answers": [
-        "Vlad Țepeș fejedelem",
-        "Egy őrült bajor király",
-        "Egy spanyol inkvizítor",
-        "Egy londoni sorozatgyilkos"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20030",
-        "TUTMHDEMATU0OKHU30030_1",
-        "TUTMHDEMATU0OKHU30030_2",
-        "TUTMHDEMATU0OKHU30030_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10031",
-      "baseId": "TUTMHDEMQTU0OK0031",
-      "id": 31,
-      "category": "TUTORZEP",
-      "question": "Milyen fóbiája ihlette Stan Leet a Pókember megírására?",
-      "answers": [
-        "Utálta a legyeket, de a Légyember rosszul hangzott",
-        "Tériszonya volt",
-        "Pókiszonya volt",
-        "Utálta a maszkokat"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20031",
-        "TUTMHDEMATU0OKHU30031_1",
-        "TUTMHDEMATU0OKHU30031_2",
-        "TUTMHDEMATU0OKHU30031_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10032",
-      "baseId": "TUTMHDEMQTU0OK0032",
-      "id": 32,
-      "category": "TUTORZEP",
-      "question": "Mi adta Michael Crichton-nak az ötletet a Jurassic Park megírásához?",
-      "answers": [
-        "Érdekelte a génklónozás",
-        "Ki akarta találni a legdrágább húst",
-        "Egy dinós rémálom",
-        "A kislánya iskolai projektje"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20032",
-        "TUTMHDEMATU0OKHU30032_1",
-        "TUTMHDEMATU0OKHU30032_2",
-        "TUTMHDEMATU0OKHU30032_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10033",
-      "baseId": "TUTMHDEMQTU0OK0033",
-      "id": 33,
-      "category": "TUTORZEP",
-      "question": "Melyik híres irodalmi karaktert ihlette egy valóságos, dundi kisfiú?",
-      "answers": [
-        "Róbert Gidát a Micimackóból",
-        "Neville Longbottomot A Harry Potterből",
-        "Augustus Gloopot a Charlie és a csokigyárból",
-        "Gombóc Artúrt a Pom Pom meséiből"
-      ],
-      "answerUids": [
-        "TUTMHDEMATU0OKHU20033",
-        "TUTMHDEMATU0OKHU30033_1",
-        "TUTMHDEMATU0OKHU30033_2",
-        "TUTMHDEMATU0OKHU30033_3"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "uid": "TUTMHDEMQTU0OKHU10034",
-      "baseId": "TUTMHDEMQTU0OK0034",
-      "id": 34,
       "category": "TUTORZEP",
       "question": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
       "answers": [
         "Long John Silver",
-        "Grand kapitány",
+        "Flint kapitány",
         "Hook kapitány",
         "Jack Sparrow"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20034",
-        "TUTMHDEMATU0OKHU30034_1",
-        "TUTMHDEMATU0OKHU30034_2",
-        "TUTMHDEMATU0OKHU30034_3"
+        "ZEP_HU_000022_1",
+        "ZEP_HU_000022_2",
+        "ZEP_HU_000022_3",
+        "ZEP_HU_000022_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10035",
-      "baseId": "TUTMHDEMQTU0OK0035",
-      "id": 35,
+      "uid": "ZEP_HU_000023_0",
+      "baseId": "ZEP_000023",
+      "id": 23,
+      "category": "TUTORZEP",
+      "question": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+      "answers": [
+        "Ahab kapitány",
+        "Nemo kapitány",
+        "Jim Hawkins",
+        "Robinson Crusoe"
+      ],
+      "answerUids": [
+        "ZEP_HU_000023_1",
+        "ZEP_HU_000023_2",
+        "ZEP_HU_000023_3",
+        "ZEP_HU_000023_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000024_0",
+      "baseId": "ZEP_000024",
+      "id": 24,
+      "category": "TUTORZEP",
+      "question": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+      "answers": [
+        "Kétévi vakáció",
+        "A rejtelmes sziget",
+        "Nemo kapitány",
+        "Grant kapitány gyermekei"
+      ],
+      "answerUids": [
+        "ZEP_HU_000024_1",
+        "ZEP_HU_000024_2",
+        "ZEP_HU_000024_3",
+        "ZEP_HU_000024_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000025_0",
+      "baseId": "ZEP_000025",
+      "id": 25,
       "category": "TUTORZEP",
       "question": "Hogy hívják Robinson Crusoe bennszülött társát?",
       "answers": [
@@ -659,17 +359,37 @@
         "Jim"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20035",
-        "TUTMHDEMATU0OKHU30035_1",
-        "TUTMHDEMATU0OKHU30035_2",
-        "TUTMHDEMATU0OKHU30035_3"
+        "ZEP_HU_000025_1",
+        "ZEP_HU_000025_2",
+        "ZEP_HU_000025_3",
+        "ZEP_HU_000025_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10036",
-      "baseId": "TUTMHDEMQTU0OK0036",
-      "id": 36,
+      "uid": "ZEP_HU_000026_0",
+      "baseId": "ZEP_000026",
+      "id": 26,
+      "category": "TUTORZEP",
+      "question": "Ki Peter Pan esküdt ellensége?",
+      "answers": [
+        "Hook kapitány",
+        "Feketeszakáll",
+        "Morgan kapitány",
+        "Barbosa kapitány"
+      ],
+      "answerUids": [
+        "ZEP_HU_000026_1",
+        "ZEP_HU_000026_2",
+        "ZEP_HU_000026_3",
+        "ZEP_HU_000026_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000027_0",
+      "baseId": "ZEP_000027",
+      "id": 27,
       "category": "TUTORZEP",
       "question": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
       "answers": [
@@ -679,17 +399,17 @@
         "Sellők"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20036",
-        "TUTMHDEMATU0OKHU30036_1",
-        "TUTMHDEMATU0OKHU30036_2",
-        "TUTMHDEMATU0OKHU30036_3"
+        "ZEP_HU_000027_1",
+        "ZEP_HU_000027_2",
+        "ZEP_HU_000027_3",
+        "ZEP_HU_000027_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10037",
-      "baseId": "TUTMHDEMQTU0OK0037",
-      "id": 37,
+      "uid": "ZEP_HU_000028_0",
+      "baseId": "ZEP_000028",
+      "id": 28,
       "category": "TUTORZEP",
       "question": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
       "answers": [
@@ -699,17 +419,17 @@
         "Hunjadok"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20037",
-        "TUTMHDEMATU0OKHU30037_1",
-        "TUTMHDEMATU0OKHU30037_2",
-        "TUTMHDEMATU0OKHU30037_3"
+        "ZEP_HU_000028_1",
+        "ZEP_HU_000028_2",
+        "ZEP_HU_000028_3",
+        "ZEP_HU_000028_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10038",
-      "baseId": "TUTMHDEMQTU0OK0038",
-      "id": 38,
+      "uid": "ZEP_HU_000029_0",
+      "baseId": "ZEP_000029",
+      "id": 29,
       "category": "TUTORZEP",
       "question": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
       "answers": [
@@ -719,17 +439,17 @@
         "Porthos"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20038",
-        "TUTMHDEMATU0OKHU30038_1",
-        "TUTMHDEMATU0OKHU30038_2",
-        "TUTMHDEMATU0OKHU30038_3"
+        "ZEP_HU_000029_1",
+        "ZEP_HU_000029_2",
+        "ZEP_HU_000029_3",
+        "ZEP_HU_000029_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10039",
-      "baseId": "TUTMHDEMQTU0OK0039",
-      "id": 39,
+      "uid": "ZEP_HU_000030_0",
+      "baseId": "ZEP_000030",
+      "id": 30,
       "category": "TUTORZEP",
       "question": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
       "answers": [
@@ -739,37 +459,57 @@
         "Kilátókat"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20039",
-        "TUTMHDEMATU0OKHU30039_1",
-        "TUTMHDEMATU0OKHU30039_2",
-        "TUTMHDEMATU0OKHU30039_3"
+        "ZEP_HU_000030_1",
+        "ZEP_HU_000030_2",
+        "ZEP_HU_000030_3",
+        "ZEP_HU_000030_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10040",
-      "baseId": "TUTMHDEMQTU0OK0040",
-      "id": 40,
+      "uid": "ZEP_HU_000031_0",
+      "baseId": "ZEP_000031",
+      "id": 31,
       "category": "TUTORZEP",
-      "question": "Melyik regény főhőse Skandar Graun?",
+      "question": "Ki R. A. Salvatore főhőse?",
       "answers": [
-        "A káosz szava",
-        "Harc az éj kövéért",
-        "Kristályszilánk",
-        "A Végtelen Történet"
+        "Drizzt Do'Urden",
+        "Sand dan Glokta",
+        "Druss",
+        "Raistlin"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20040",
-        "TUTMHDEMATU0OKHU30040_1",
-        "TUTMHDEMATU0OKHU30040_2",
-        "TUTMHDEMATU0OKHU30040_3"
+        "ZEP_HU_000031_1",
+        "ZEP_HU_000031_2",
+        "ZEP_HU_000031_3",
+        "ZEP_HU_000031_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10041",
-      "baseId": "TUTMHDEMQTU0OK0041",
-      "id": 41,
+      "uid": "ZEP_HU_000033_0",
+      "baseId": "ZEP_000033",
+      "id": 33,
+      "category": "TUTORZEP",
+      "question": "Melyik író hőse Lord Kozimo de Lodoci?",
+      "answers": [
+        "Terry Pratchett",
+        "R. A. Salvatore",
+        "Michael Ende",
+        "Jeffrey Stone"
+      ],
+      "answerUids": [
+        "ZEP_HU_000033_1",
+        "ZEP_HU_000033_2",
+        "ZEP_HU_000033_3",
+        "ZEP_HU_000033_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000034_0",
+      "baseId": "ZEP_000034",
+      "id": 34,
       "category": "TUTORZEP",
       "question": "Melyik hőst játszotta Arnold Swarzenegger?",
       "answers": [
@@ -779,17 +519,17 @@
         "Bombadil Toma"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20041",
-        "TUTMHDEMATU0OKHU30041_1",
-        "TUTMHDEMATU0OKHU30041_2",
-        "TUTMHDEMATU0OKHU30041_3"
+        "ZEP_HU_000034_1",
+        "ZEP_HU_000034_2",
+        "ZEP_HU_000034_3",
+        "ZEP_HU_000034_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10042",
-      "baseId": "TUTMHDEMQTU0OK0042",
-      "id": 42,
+      "uid": "ZEP_HU_000035_0",
+      "baseId": "ZEP_000035",
+      "id": 35,
       "category": "TUTORZEP",
       "question": "Melyik világ hőse Leon Silver?",
       "answers": [
@@ -799,30 +539,470 @@
         "Ammerúnia"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20042",
-        "TUTMHDEMATU0OKHU30042_1",
-        "TUTMHDEMATU0OKHU30042_2",
-        "TUTMHDEMATU0OKHU30042_3"
+        "ZEP_HU_000035_1",
+        "ZEP_HU_000035_2",
+        "ZEP_HU_000035_3",
+        "ZEP_HU_000035_4"
       ],
       "correctIndex": 0
     },
     {
-      "uid": "TUTMHDEMQTU0OKHU10065",
-      "baseId": "TUTMHDEMQTU0OK0065",
+      "uid": "ZEP_HU_000037_0",
+      "baseId": "ZEP_000037",
+      "id": 37,
+      "category": "TUTORZEP",
+      "question": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+      "answers": [
+        "Hetvenkilenc",
+        "Nyolcvan",
+        "Nyolcvanegy",
+        "Végül nem sikerült"
+      ],
+      "answerUids": [
+        "ZEP_HU_000037_1",
+        "ZEP_HU_000037_2",
+        "ZEP_HU_000037_3",
+        "ZEP_HU_000037_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000038_0",
+      "baseId": "ZEP_000038",
+      "id": 38,
+      "category": "TUTORZEP",
+      "question": "Minek a kerekéről írt Brandon Sanderson?",
+      "answers": [
+        "Az idő",
+        "A sors",
+        "A szekér",
+        "A szerencse"
+      ],
+      "answerUids": [
+        "ZEP_HU_000038_1",
+        "ZEP_HU_000038_2",
+        "ZEP_HU_000038_3",
+        "ZEP_HU_000038_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000039_0",
+      "baseId": "ZEP_000039",
+      "id": 39,
+      "category": "TUTORZEP",
+      "question": "Hanyadik házról írt Leigh Bardugo?",
+      "answers": [
+        "Kilencedik",
+        "Tizedik",
+        "Hetedik",
+        "Első"
+      ],
+      "answerUids": [
+        "ZEP_HU_000039_1",
+        "ZEP_HU_000039_2",
+        "ZEP_HU_000039_3",
+        "ZEP_HU_000039_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000040_0",
+      "baseId": "ZEP_000040",
+      "id": 40,
+      "category": "TUTORZEP",
+      "question": "Kinek az idézetével kezdődik A hercegnő nyakéke című könyv?",
+      "answers": [
+        "Hamvas Béla",
+        "Alexandre Dumas",
+        "Weöres Sándor",
+        "Lao-ce"
+      ],
+      "answerUids": [
+        "ZEP_HU_000040_1",
+        "ZEP_HU_000040_2",
+        "ZEP_HU_000040_3",
+        "ZEP_HU_000040_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000041_0",
+      "baseId": "ZEP_000041",
+      "id": 41,
+      "category": "TUTORZEP",
+      "question": "Hány karja van a boldogságnak Shelby Van Pelt szerint?",
+      "answers": [
+        "Nyolc",
+        "Négy",
+        "Három és fél",
+        "Kettő"
+      ],
+      "answerUids": [
+        "ZEP_HU_000041_1",
+        "ZEP_HU_000041_2",
+        "ZEP_HU_000041_3",
+        "ZEP_HU_000041_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000043_0",
+      "baseId": "ZEP_000043",
+      "id": 43,
+      "category": "TUTORZEP",
+      "question": "Hol írta meg Agatha Christie a híres krimijei egy jelentős részét?",
+      "answers": [
+        "A fürdőkádjában ülve",
+        "A kiadója irodájában",
+        "Egy londoni kávéházban",
+        "A dolgozószobájában"
+      ],
+      "answerUids": [
+        "ZEP_HU_000043_1",
+        "ZEP_HU_000043_2",
+        "ZEP_HU_000043_3",
+        "ZEP_HU_000043_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000044_0",
+      "baseId": "ZEP_000044",
+      "id": 44,
+      "category": "TUTORZEP",
+      "question": "Miért írta J.K. Rowlingaz első Harry Potter könyvet egy kávéházban?",
+      "answers": [
+        "Mert otthon fázott",
+        "Imádta a háttérzajt",
+        "A vendégekről mintázta a szereplőket",
+        "Ingyen kapott kávét és süteményt"
+      ],
+      "answerUids": [
+        "ZEP_HU_000044_1",
+        "ZEP_HU_000044_2",
+        "ZEP_HU_000044_3",
+        "ZEP_HU_000044_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000045_0",
+      "baseId": "ZEP_000045",
+      "id": 45,
+      "category": "TUTORZEP",
+      "question": "Melyik könyvének megírására nem emlékszik Stephen King a drog miatt?",
+      "answers": [
+        "Cujo",
+        "Ragyogás (The Shining)",
+        "Az (It)",
+        "Kedvencek temetője (Pet Sematary)"
+      ],
+      "answerUids": [
+        "ZEP_HU_000045_1",
+        "ZEP_HU_000045_2",
+        "ZEP_HU_000045_3",
+        "ZEP_HU_000045_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000046_0",
+      "baseId": "ZEP_000046",
+      "id": 46,
+      "category": "TUTORZEP",
+      "question": "Melyik rockzenész akarta eljétszani Gollam szerepét a megfilmesített Gyűrűk Urában?",
+      "answers": [
+        "John Lennon",
+        "Bon Jovi",
+        "Axl Rose",
+        "Ozzy Osbourne"
+      ],
+      "answerUids": [
+        "ZEP_HU_000046_1",
+        "ZEP_HU_000046_2",
+        "ZEP_HU_000046_3",
+        "ZEP_HU_000046_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000047_0",
+      "baseId": "ZEP_000047",
+      "id": 47,
+      "category": "TUTORZEP",
+      "question": "Mi ihlette Frank Herbertet a Dűne megírására?",
+      "answers": [
+        "Egy kormányzati projekt",
+        "Egy NASA-jelentés a Mars felszínéről",
+        "Egy oregoni sivatagi nyaralás",
+        "Egy rémálom"
+      ],
+      "answerUids": [
+        "ZEP_HU_000047_1",
+        "ZEP_HU_000047_2",
+        "ZEP_HU_000047_3",
+        "ZEP_HU_000047_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000048_0",
+      "baseId": "ZEP_000048",
+      "id": 48,
+      "category": "TUTORZEP",
+      "question": "Mit védetett le Edgar Rice Burroughs?",
+      "answers": [
+        "Tarzan üvöltését",
+        "A gorillanyelvet",
+        "A Tarzan nevet",
+        "A \"Dzsungel Ura\" titulust"
+      ],
+      "answerUids": [
+        "ZEP_HU_000048_1",
+        "ZEP_HU_000048_2",
+        "ZEP_HU_000048_3",
+        "ZEP_HU_000048_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000049_0",
+      "baseId": "ZEP_000049",
+      "id": 49,
+      "category": "TUTORZEP",
+      "question": "Mit csinál az eredeti könyvben Pinokkió a tücsökkel?",
+      "answers": [
+        "Egy kalapáccsal szétlapítja",
+        "Bezárja egy sötét gyufásdobozba",
+        "Eladja egy vándorcirkusznak",
+        "Kidobja az ablakon"
+      ],
+      "answerUids": [
+        "ZEP_HU_000049_1",
+        "ZEP_HU_000049_2",
+        "ZEP_HU_000049_3",
+        "ZEP_HU_000049_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000050_0",
+      "baseId": "ZEP_000050",
+      "id": 50,
+      "category": "TUTORZEP",
+      "question": "Melyik könyv ihlette a Batmant?",
+      "answers": [
+        "Drakula gróf",
+        "Frankenstein",
+        "A láthatatlan ember",
+        "Dr. Jekyll és Mr. Hyde"
+      ],
+      "answerUids": [
+        "ZEP_HU_000050_1",
+        "ZEP_HU_000050_2",
+        "ZEP_HU_000050_3",
+        "ZEP_HU_000050_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000051_0",
+      "baseId": "ZEP_000051",
+      "id": 51,
+      "category": "TUTORZEP",
+      "question": "Honnan származik a Matrix ikonikus, zöld, digitális kódja?",
+      "answers": [
+        "A tervező feleségének japán szakácskönyvéből",
+        "Egy orosz fizika tankönyvből",
+        "Egy régi svéd bútorgyári katalógusból",
+        "Egy ókori egyiptomi papiruszról"
+      ],
+      "answerUids": [
+        "ZEP_HU_000051_1",
+        "ZEP_HU_000051_2",
+        "ZEP_HU_000051_3",
+        "ZEP_HU_000051_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000052_0",
+      "baseId": "ZEP_000052",
+      "id": 52,
+      "category": "TUTORZEP",
+      "question": "Milyen valóságos esemény ihlette a Trónok harca \"Vörös Nász\"-át?",
+      "answers": [
+        "Egy középkori skót mészárlás, a Fekete Vacsora",
+        "A kijev-i Olga hercegnő bosszú-esküvője",
+        "A francia Szent Bertalan-éji mészárlás",
+        "II. Eduárd angol király botrányos esküvői vacsorája"
+      ],
+      "answerUids": [
+        "ZEP_HU_000052_1",
+        "ZEP_HU_000052_2",
+        "ZEP_HU_000052_3",
+        "ZEP_HU_000052_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000062_0",
+      "baseId": "ZEP_000062",
+      "id": 62,
+      "category": "TUTORZEP",
+      "question": "A Da Vinci-kódban szereplő melyik kamu tényt cáfolta hivatalosan a Louvre?",
+      "answers": [
+        "Hogy az üvegpiramis 666 üveglapból áll",
+        "Hogy a Mona Lisa mögött egy földönkívüli látható",
+        "Hogy a múzeum alatt van Jézus valódi sírja",
+        "Hogy a múzeum igazgatója egy középkori lovagrend nagymestere volt"
+      ],
+      "answerUids": [
+        "ZEP_HU_000062_1",
+        "ZEP_HU_000062_2",
+        "ZEP_HU_000062_3",
+        "ZEP_HU_000062_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000063_0",
+      "baseId": "ZEP_000063",
+      "id": 63,
+      "category": "TUTORZEP",
+      "question": "Mi vagy ki adta William Steig-nek az ötletet Shrek nevéhez?",
+      "answers": [
+        "A jiddish \"Schreck\" szó",
+        "A Skriech nevű skót mocsár",
+        "Egy Shreck nevű középkori, német zsoldos",
+        "A szomszédja, akit Shrecknek hívtak"
+      ],
+      "answerUids": [
+        "ZEP_HU_000063_1",
+        "ZEP_HU_000063_2",
+        "ZEP_HU_000063_3",
+        "ZEP_HU_000063_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000064_0",
+      "baseId": "ZEP_000064",
+      "id": 64,
+      "category": "TUTORZEP",
+      "question": "Kiről mintázta Ian Fleming a James Bond törénetek Q-ját?",
+      "answers": [
+        "Egy II. világháborús bombaszakértőről",
+        "Egy londoni órásmesterről",
+        "Albert Einstein asszisztenséről",
+        "Saját magáról"
+      ],
+      "answerUids": [
+        "ZEP_HU_000064_1",
+        "ZEP_HU_000064_2",
+        "ZEP_HU_000064_3",
+        "ZEP_HU_000064_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000065_0",
+      "baseId": "ZEP_000065",
       "id": 65,
       "category": "TUTORZEP",
-      "question": "Mit zártak be Victor Hugo halálakor a tiszteletére?",
+      "question": "Ki volt Drakula gróf a valóságban?",
+      "answers": [
+        "Vlad Țepeș fejedelem",
+        "Egy őrült bajor király",
+        "Egy spanyol inkvizítor",
+        "Egy londoni sorozatgyilkos"
+      ],
+      "answerUids": [
+        "ZEP_HU_000065_1",
+        "ZEP_HU_000065_2",
+        "ZEP_HU_000065_3",
+        "ZEP_HU_000065_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000066_0",
+      "baseId": "ZEP_000066",
+      "id": 66,
+      "category": "TUTORZEP",
+      "question": "Milyen fóbiája ihlette Stan Leet a Pókember megírására?",
+      "answers": [
+        "Utálta a legyeket",
+        "Tériszonya volt",
+        "Pókiszonya volt",
+        "Utálta a maszkokat"
+      ],
+      "answerUids": [
+        "ZEP_HU_000066_1",
+        "ZEP_HU_000066_2",
+        "ZEP_HU_000066_3",
+        "ZEP_HU_000066_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000067_0",
+      "baseId": "ZEP_000067",
+      "id": 67,
+      "category": "TUTORZEP",
+      "question": "Mi adta Michael Crichton-nak az ötletet a Jurassic Park megírásához?",
+      "answers": [
+        "Érdekelte a génklónozás",
+        "Ki akarta találni a legdrágább húst",
+        "Egy dinós rémálom",
+        "A kislánya iskolai projektje"
+      ],
+      "answerUids": [
+        "ZEP_HU_000067_1",
+        "ZEP_HU_000067_2",
+        "ZEP_HU_000067_3",
+        "ZEP_HU_000067_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000068_0",
+      "baseId": "ZEP_000068",
+      "id": 68,
+      "category": "TUTORZEP",
+      "question": "Melyik híres irodalmi karaktert ihlette egy valóságos, dundi kisfiú?",
+      "answers": [
+        "Róbert Gidát a Micimackóból",
+        "Neville Longbottomot A Harry Potterből",
+        "Augustus Gloopot a Charlie és a csokigyárból",
+        "Gombóc Artúrt a Pom Pom meséiből"
+      ],
+      "answerUids": [
+        "ZEP_HU_000068_1",
+        "ZEP_HU_000068_2",
+        "ZEP_HU_000068_3",
+        "ZEP_HU_000068_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_HU_000069_0",
+      "baseId": "ZEP_000069",
+      "id": 69,
+      "category": "TUTORZEP",
+      "question": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
       "answers": [
         "Párizs összes bordélyházát",
         "A kedvenc kávéházát",
         "A lóversenypályát",
-        "A kedvenc kocsmáját"
+        "A kedvenc kocsmáit"
       ],
       "answerUids": [
-        "TUTMHDEMATU0OKHU20065",
-        "TUTMHDEMATU0OKHU30065_1",
-        "TUTMHDEMATU0OKHU30065_2",
-        "TUTMHDEMATU0OKHU30065_3"
+        "ZEP_HU_000069_1",
+        "ZEP_HU_000069_2",
+        "ZEP_HU_000069_3",
+        "ZEP_HU_000069_4"
       ],
       "correctIndex": 0
     }

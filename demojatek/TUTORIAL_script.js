@@ -11834,6 +11834,18 @@ function frame(now) {
 
               }
 
+              else if (count === 11) {
+
+                if (!window.monologState.hasSeen[33]) window.showInGameMonolog(33, 33);
+
+              }
+
+              else if (count === 12) {
+
+                if (!window.monologState.hasSeen[34]) window.showInGameMonolog(34, 34);
+
+              }
+
             };
 
 // === [#TUTOR.04.35.00] END ===
@@ -17074,7 +17086,7 @@ window.showEogSuccessChoicePanel = function () {
           window.location.href = '../WXXX_G_R_GEN_WHL_X0X_wb01/WXXX_G_R_GEN_WHL_X0X_wb01_game.html?mode=fishing&lang=' + (window.currentLanguage || localStorage.getItem('ebook_pirates_language') || 'hu');
         }
       };
-      if (false && typeof window.showMhIntroPanel === 'function') {
+      if (typeof window.showMhIntroPanel === 'function') {
         window.showMhIntroPanel(doNavigate);
       } else {
         doNavigate();

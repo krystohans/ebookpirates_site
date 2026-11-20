@@ -929,11 +929,11 @@ class QuizManager {
 
     }
 
-    if (this.currentQuestion && (this.currentQuestion.id === 30 || this.currentQuestion.id === 31)) {
+    if (this.currentQuestion && (this.currentQuestion.id === 52 || this.currentQuestion.id === 62)) {
 
       let lIdx = -1;
 
-      if (this.currentQuestion.id === 30) {
+      if (this.currentQuestion.id === 52) {
 
         lIdx = answers.findIndex(a => (a || '').includes('II.') || /(?:edward|eduárd|édouard|эдуард)/i.test(a || ''));
 
@@ -1237,7 +1237,7 @@ class QuizManager {
 
       const cleanAnsText = rawAnsText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
-      const isTwoLinePlank = (this.currentQuestion && (this.currentQuestion.id === 30 || this.currentQuestion.id === 31) && displayPos === 1);
+      const isTwoLinePlank = (this.currentQuestion && (this.currentQuestion.id === 52 || this.currentQuestion.id === 62) && displayPos === 1);
 
       if (isTwoLinePlank) {
 

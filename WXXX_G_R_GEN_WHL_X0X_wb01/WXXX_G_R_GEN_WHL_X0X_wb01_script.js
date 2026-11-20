@@ -2887,7 +2887,6 @@ window.showMhTowPanel = function () {
 };
 // === [#TUTOR.04.MH.TOW] END ===
 
-if (new URLSearchParams(window.location.search).get('from') === 'tutorial' && !window._mhIntroShown) { window._mhIntroShown = true; window.showMhIntroPanel(); }
 // === [#TUTOR.04.08.00] END ===
   }
 }

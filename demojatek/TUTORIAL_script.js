@@ -86,7 +86,7 @@ window.getAssetUrl = function (path) {
 
                   window.location.protocol === 'file:';
 
-  if (isLocal || window.location.hostname.includes('krystahans.github.io')) {
+  if (false) {
 
     return clean;
 

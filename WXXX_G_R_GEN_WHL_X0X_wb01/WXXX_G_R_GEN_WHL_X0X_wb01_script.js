@@ -42,7 +42,7 @@ window.getAssetUrl = function (path) {
                   window.location.hostname === '127.0.0.1' || 
                   window.location.hostname.startsWith('192.168.') || 
                   window.location.protocol === 'file:';
-  if (isLocal || window.location.hostname.includes('krystahans.github.io')) {
+  if (false) {
     if (clean.startsWith('assets/') || clean.startsWith('models/')) {
       return '../demojatek/' + clean;
     }

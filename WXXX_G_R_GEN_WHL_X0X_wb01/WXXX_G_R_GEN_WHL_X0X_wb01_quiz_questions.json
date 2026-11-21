@@ -1,0 +1,2909 @@
+[
+  {
+    "id": 1,
+    "category": "TRUE",
+    "question": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "correctIndex": 0,
+    "isStaked": true,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers_en": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "question_de": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers_de": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "question_fr": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers_fr": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "question_es": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers_es": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "question_pl": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers_pl": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ],
+    "question_ru": "Ki írta: \"Mi atyánk, ki vagy a Mennyekben\"?",
+    "answers_ru": [
+      "Lukács Laci",
+      "Szt. Lukács",
+      "VII. Konstantin",
+      "Jézus"
+    ]
+  },
+  {
+    "id": 2,
+    "category": "FALSE",
+    "question": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers_en": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "question_de": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers_de": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "question_fr": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers_fr": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "question_es": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers_es": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "question_pl": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers_pl": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ],
+    "question_ru": "Mi a címe Bukros Zsolt 2024-ben negjelent antológiájának?",
+    "answers_ru": [
+      "Vodka és vér",
+      "Tükör és vér",
+      "Tűz és vér",
+      "Víz és vér"
+    ]
+  },
+  {
+    "id": 3,
+    "category": "FALSE",
+    "question": "Kinek az írói álneve Raymond Darieni?",
+    "answers": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Kinek az írói álneve Raymond Darieni?",
+    "answers_en": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "question_de": "Kinek az írói álneve Raymond Darieni?",
+    "answers_de": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "question_fr": "Kinek az írói álneve Raymond Darieni?",
+    "answers_fr": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "question_es": "Kinek az írói álneve Raymond Darieni?",
+    "answers_es": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "question_pl": "Kinek az írói álneve Raymond Darieni?",
+    "answers_pl": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ],
+    "question_ru": "Kinek az írói álneve Raymond Darieni?",
+    "answers_ru": [
+      "Nemere István",
+      "Nemes István",
+      "Lőrinc L. László",
+      "Szigeti Sándor"
+    ]
+  },
+  {
+    "id": 4,
+    "category": "FALSE",
+    "question": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers_en": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "question_de": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers_de": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "question_fr": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers_fr": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "question_es": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers_es": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "question_pl": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers_pl": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ],
+    "question_ru": "Kinek az írói álneve Jessica J. Brutal?",
+    "answers_ru": [
+      "Nemes István",
+      "Nemere István",
+      "Szélesi Sándor",
+      "Szántó Tibor"
+    ]
+  },
+  {
+    "id": 5,
+    "category": "FALSE",
+    "question": "Melyik írói álnév Szélesi Sándoré?",
+    "answers": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Melyik írói álnév Szélesi Sándoré?",
+    "answers_en": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "question_de": "Melyik írói álnév Szélesi Sándoré?",
+    "answers_de": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "question_fr": "Melyik írói álnév Szélesi Sándoré?",
+    "answers_fr": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "question_es": "Melyik írói álnév Szélesi Sándoré?",
+    "answers_es": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "question_pl": "Melyik írói álnév Szélesi Sándoré?",
+    "answers_pl": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ],
+    "question_ru": "Melyik írói álnév Szélesi Sándoré?",
+    "answers_ru": [
+      "Anthony Sheenard",
+      "Gordon Spencer",
+      "Jay Henorex",
+      "Gabriel Wraith"
+    ]
+  },
+  {
+    "id": 6,
+    "category": "FALSE",
+    "question": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers_en": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "question_de": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers_de": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "question_fr": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers_fr": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "question_es": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers_es": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "question_pl": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers_pl": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ],
+    "question_ru": "Melyik sorozat része az \"Éjféli horizont\"?",
+    "answers_ru": [
+      "STAR WARS",
+      "World of WarCraft",
+      "WarHammer",
+      "MARVEL"
+    ]
+  },
+  {
+    "id": 7,
+    "category": "FALSE",
+    "question": "Melyik NEM Sheila Martens műve?",
+    "answers": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 2,
+    "tag": "",
+    "question_en": "Melyik NEM Sheila Martens műve?",
+    "answers_en": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "question_de": "Melyik NEM Sheila Martens műve?",
+    "answers_de": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "question_fr": "Melyik NEM Sheila Martens műve?",
+    "answers_fr": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "question_es": "Melyik NEM Sheila Martens műve?",
+    "answers_es": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "question_pl": "Melyik NEM Sheila Martens műve?",
+    "answers_pl": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ],
+    "question_ru": "Melyik NEM Sheila Martens műve?",
+    "answers_ru": [
+      "Mézédes boldogság",
+      "Sivatagi forgatás",
+      "Sodródj az árral",
+      "Aranykalitka"
+    ]
+  },
+  {
+    "id": 8,
+    "category": "TUTORZEP",
+    "question": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers_en": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "question_de": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers_de": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "question_fr": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers_fr": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "question_es": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers_es": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "question_pl": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers_pl": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ],
+    "question_ru": "Mikor tartják a Budapesti Nemzetközi Könyvfesztivált?",
+    "answers_ru": [
+      "Októberben",
+      "Szeptemberben",
+      "Júniusban",
+      "Májusban"
+    ]
+  },
+  {
+    "id": 9,
+    "category": "TUTORZEP",
+    "question": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers_en": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "question_de": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers_de": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "question_fr": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers_fr": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "question_es": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers_es": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "question_pl": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers_pl": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ],
+    "question_ru": "Milyen nemzetiségű volt Selma Lagerlöf?",
+    "answers_ru": [
+      "Svéd",
+      "Dán",
+      "Finn",
+      "Norvég"
+    ]
+  },
+  {
+    "id": 10,
+    "category": "FALSE",
+    "question": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers_en": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "question_de": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers_de": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "question_fr": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers_fr": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "question_es": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers_es": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "question_pl": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers_pl": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ],
+    "question_ru": "Milyen címen jelent meg könyv 2025-ben Koppány Tímeától?",
+    "answers_ru": [
+      "A Tóúrnő bajnoka",
+      "A Tóúrnő áldása",
+      "Ammerúnia felemelkedése",
+      "Ammerúnia bukása"
+    ]
+  },
+  {
+    "id": 11,
+    "category": "TRUE",
+    "question": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "correctIndex": 0,
+    "isStaked": true,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers_en": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "question_de": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers_de": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "question_fr": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers_fr": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "question_es": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers_es": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "question_pl": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers_pl": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ],
+    "question_ru": "Mi a neve Hunyadi hajójának a Steampunk Hunyadi című könyvben?",
+    "answers_ru": [
+      "Boldogasszony",
+      "Santa Maria",
+      "Pinta",
+      "Szent Jupát"
+    ]
+  },
+  {
+    "id": 12,
+    "category": "TRUE",
+    "question": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "correctIndex": 0,
+    "isStaked": true,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers_en": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "question_de": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers_de": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "question_fr": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers_fr": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "question_es": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers_es": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "question_pl": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers_pl": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ],
+    "question_ru": "Ki a Farkastestvérek című fantasy regény főszereplője?",
+    "answers_ru": [
+      "Sárkánysisakos Olmud",
+      "Gyíkfejű Hessgeron",
+      "Álomittas Kvazel",
+      "Ravasz Cugell"
+    ]
+  },
+  {
+    "id": 13,
+    "category": "TRUE",
+    "question": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "correctIndex": 0,
+    "isStaked": true,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers_en": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "question_de": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers_de": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "question_fr": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers_fr": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "question_es": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers_es": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "question_pl": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers_pl": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ],
+    "question_ru": "Az \"Álomba ébredve\" című könyv melyik zsánerhez tartozik?",
+    "answers_ru": [
+      "Sci-fi",
+      "Romantikus",
+      "Krimi",
+      "Történelmi fantasy"
+    ]
+  },
+  {
+    "id": 14,
+    "category": "TUTORZEP",
+    "question": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers_en": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "question_de": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers_de": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "question_fr": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers_fr": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "question_es": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers_es": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "question_pl": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers_pl": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ],
+    "question_ru": "Ki a Kincses sziget című regény félelmetes kalózvezére?",
+    "answers_ru": [
+      "Long John Silver",
+      "Flint kapitány",
+      "Hook kapitány",
+      "Jack Sparrow"
+    ]
+  },
+  {
+    "id": 15,
+    "category": "TUTORZEP",
+    "question": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers_en": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "question_de": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers_de": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "question_fr": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers_fr": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "question_es": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers_es": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "question_pl": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers_pl": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ],
+    "question_ru": "Ki vezeti a Pequod bálnavadászhajót Moby Dick ellen?",
+    "answers_ru": [
+      "Ahab kapitány",
+      "Nemo kapitány",
+      "Jim Hawkins",
+      "Robinson Crusoe"
+    ]
+  },
+  {
+    "id": 16,
+    "category": "TUTORZEP",
+    "question": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers_en": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "question_de": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers_de": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "question_fr": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers_fr": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "question_es": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers_es": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "question_pl": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers_pl": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ],
+    "question_ru": "Jules Verne melyik regénye szól egy csapat iskolásfiúról?",
+    "answers_ru": [
+      "Kétévi vakáció",
+      "A rejtelmes sziget",
+      "Nemo kapitány",
+      "Grant kapitány gyermekei"
+    ]
+  },
+  {
+    "id": 17,
+    "category": "TUTORZEP",
+    "question": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers_en": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "question_de": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers_de": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "question_fr": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers_fr": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "question_es": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers_es": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "question_pl": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers_pl": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ],
+    "question_ru": "Hogy hívják Robinson Crusoe bennszülött társát?",
+    "answers_ru": [
+      "Péntek",
+      "Szombat",
+      "Csütörtök",
+      "Jim"
+    ]
+  },
+  {
+    "id": 18,
+    "category": "TUTORZEP",
+    "question": "Ki Peter Pan esküdt ellensége?",
+    "answers": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki Peter Pan esküdt ellensége?",
+    "answers_en": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "question_de": "Ki Peter Pan esküdt ellensége?",
+    "answers_de": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "question_fr": "Ki Peter Pan esküdt ellensége?",
+    "answers_fr": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "question_es": "Ki Peter Pan esküdt ellensége?",
+    "answers_es": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "question_pl": "Ki Peter Pan esküdt ellensége?",
+    "answers_pl": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ],
+    "question_ru": "Ki Peter Pan esküdt ellensége?",
+    "answers_ru": [
+      "Hook kapitány",
+      "Feketeszakáll",
+      "Morgan kapitány",
+      "Barbosa kapitány"
+    ]
+  },
+  {
+    "id": 19,
+    "category": "TUTORZEP",
+    "question": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers_en": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "question_de": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers_de": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "question_fr": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers_fr": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "question_es": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers_es": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "question_pl": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers_pl": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ],
+    "question_ru": "Mely tengeri lények dala elől dugaszolja be fülét viasszal Odüsszeusz?",
+    "answers_ru": [
+      "Egyik sem",
+      "Szirének",
+      "Hárpiák",
+      "Sellők"
+    ]
+  },
+  {
+    "id": 20,
+    "category": "TUTORZEP",
+    "question": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers_en": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "question_de": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers_de": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "question_fr": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers_fr": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "question_es": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers_es": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "question_pl": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers_pl": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ],
+    "question_ru": "Milyen lények lakják azt a szigetet Jonathan Swift szatírájában?",
+    "answers_ru": [
+      "Liliputiak",
+      "Gigantok",
+      "Juhúk",
+      "Hunjadok"
+    ]
+  },
+  {
+    "id": 21,
+    "category": "TUTORZEP",
+    "question": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers_en": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "question_de": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers_de": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "question_fr": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers_fr": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "question_es": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers_es": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "question_pl": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers_pl": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ],
+    "question_ru": "Ki az a fiatal nemes, aki negyedikként csatlakozik a királyi testőrökhöz?",
+    "answers_ru": [
+      "D'Artagnan",
+      "Athos",
+      "Aramis",
+      "Porthos"
+    ]
+  },
+  {
+    "id": 22,
+    "category": "TUTORZEP",
+    "question": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers_en": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "question_de": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers_de": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "question_fr": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers_fr": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "question_es": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers_es": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "question_pl": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers_pl": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ],
+    "question_ru": "Milyen hétköznapi építményeket vél gonosz óriásoknak Don Quijote?",
+    "answers_ru": [
+      "Szélmalmokat",
+      "Világítótornyokat",
+      "Klastromokat",
+      "Kilátókat"
+    ]
+  },
+  {
+    "id": 23,
+    "category": "TUTORZEP",
+    "question": "Ki R. A. Salvatore főhőse?",
+    "answers": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki R. A. Salvatore főhőse?",
+    "answers_en": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "question_de": "Ki R. A. Salvatore főhőse?",
+    "answers_de": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "question_fr": "Ki R. A. Salvatore főhőse?",
+    "answers_fr": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "question_es": "Ki R. A. Salvatore főhőse?",
+    "answers_es": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "question_pl": "Ki R. A. Salvatore főhőse?",
+    "answers_pl": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ],
+    "question_ru": "Ki R. A. Salvatore főhőse?",
+    "answers_ru": [
+      "Drizzt Do'Urden",
+      "Sand dan Glokta",
+      "Druss",
+      "Raistlin"
+    ]
+  },
+  {
+    "id": 24,
+    "category": "TRUE",
+    "question": "Melyik regény főhőse Skandar Graun?",
+    "answers": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "correctIndex": 0,
+    "isStaked": true,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Melyik regény főhőse Skandar Graun?",
+    "answers_en": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "question_de": "Melyik regény főhőse Skandar Graun?",
+    "answers_de": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "question_fr": "Melyik regény főhőse Skandar Graun?",
+    "answers_fr": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "question_es": "Melyik regény főhőse Skandar Graun?",
+    "answers_es": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "question_pl": "Melyik regény főhőse Skandar Graun?",
+    "answers_pl": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ],
+    "question_ru": "Melyik regény főhőse Skandar Graun?",
+    "answers_ru": [
+      "A káosz szava",
+      "Harc az éj kövéért",
+      "Kristályszilánk",
+      "A Végtelen Történet"
+    ]
+  },
+  {
+    "id": 25,
+    "category": "TUTORZEP",
+    "question": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers_en": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "question_de": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers_de": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "question_fr": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers_fr": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "question_es": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers_es": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "question_pl": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers_pl": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ],
+    "question_ru": "Melyik író hőse Lord Kozimo de Lodoci?",
+    "answers_ru": [
+      "Terry Pratchett",
+      "R. A. Salvatore",
+      "Michael Ende",
+      "Jeffrey Stone"
+    ]
+  },
+  {
+    "id": 26,
+    "category": "TUTORZEP",
+    "question": "Melyik hőst játszotta Arnold Swarzenegger?",
+    "answers": [
+      "Conan a barbár",
+      "Legendás Druss",
+      "Sötét Mersant",
+      "Bombadil Toma"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which fantasy warrior was played<br>by Arnold Schwarzenegger?",
+    "answers_en": [
+      "Conan the Barbarian",
+      "Druss the Legend",
+      "Dark Mersant",
+      "Tom Bombadil"
+    ],
+    "question_de": "Welchen Fantasy-Helden spielte<br>Arnold Schwarzenegger?",
+    "answers_de": [
+      "Conan der Barbar",
+      "Druss die Legende",
+      "Dunkler Mersant",
+      "Tom Bombadil"
+    ],
+    "question_fr": "Quel guerrier héroïque Arnold Schwarzenegger<br>a-t-il incarné au cinéma ?",
+    "answers_fr": [
+      "Conan le Barbare",
+      "Druss la Légende",
+      "Mersant le Sombre",
+      "Tom Bombadil"
+    ],
+    "question_es": "¿A qué legendario guerrero interpretó<br>Arnold Schwarzenegger en el cine?",
+    "answers_es": [
+      "Conan el Bárbaro",
+      "Druss la Leyenda",
+      "Mersant el Oscuro",
+      "Tom Bombadil"
+    ],
+    "question_pl": "W postać którego bohatera fantasy<br>wcielił się Arnold Schwarzenegger?",
+    "answers_pl": [
+      "Conan Barbarzyńca",
+      "Legenda Drussa",
+      "Mroczny Mersant",
+      "Tom Bombadil"
+    ],
+    "question_ru": "Какого легендарного воина сыграл<br>Арнольд Шварценеггер?",
+    "answers_ru": [
+      "Конан-варвар",
+      "Друсс Легенда",
+      "Темный Мерсант",
+      "Том Бомбадил"
+    ]
+  },
+  {
+    "id": 27,
+    "category": "TUTORZEP",
+    "question": "Melyik világ hőse Leon Silver?",
+    "answers": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerúnia"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which fantasy world is home<br>to the hero Leon Silver?",
+    "answers_en": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerunia"
+    ],
+    "question_de": "Welcher Fantasy-Welt entstammt<br>der Held Leon Silver?",
+    "answers_de": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerunia"
+    ],
+    "question_fr": "Dans quel univers imaginaire évolue<br>le héros Leon Silver ?",
+    "answers_fr": [
+      "Chérubion",
+      "Ynev",
+      "Worluk",
+      "Ammerunia"
+    ],
+    "question_es": "¿En qué mundo de fantasía lucha<br>el héroe Leon Silver?",
+    "answers_es": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerunia"
+    ],
+    "question_pl": "Z jakiego świata fantasy pochodzi<br>bohater Leon Silver?",
+    "answers_pl": [
+      "Cherubion",
+      "Ynev",
+      "Worluk",
+      "Ammerunia"
+    ],
+    "question_ru": "В каком фантастическом мире совершает<br>подвиги герой Леон Сильвер?",
+    "answers_ru": [
+      "Херувион (Cherubion)",
+      "Инев (Ynev)",
+      "Ворлук (Worluk)",
+      "Аммеруния"
+    ]
+  },
+  {
+    "id": 28,
+    "category": "FALSE",
+    "question": "Ki nem varázsolt a Földön?",
+    "answers": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Ki nem varázsolt a Földön?",
+    "answers_en": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "question_de": "Ki nem varázsolt a Földön?",
+    "answers_de": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "question_fr": "Ki nem varázsolt a Földön?",
+    "answers_fr": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "question_es": "Ki nem varázsolt a Földön?",
+    "answers_es": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "question_pl": "Ki nem varázsolt a Földön?",
+    "answers_pl": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ],
+    "question_ru": "Ki nem varázsolt a Földön?",
+    "answers_ru": [
+      "Gandalf",
+      "Merlin",
+      "Dumbledor",
+      "Panoramix"
+    ]
+  },
+  {
+    "id": 29,
+    "category": "TUTORZEP",
+    "question": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers_en": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "question_de": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers_de": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "question_fr": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers_fr": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "question_es": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers_es": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "question_pl": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers_pl": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ],
+    "question_ru": "Hány nap alatt utazta körbe a Földet Willy Fogg?",
+    "answers_ru": [
+      "Hetvenkilenc",
+      "Nyolcvan",
+      "Nyolcvanegy",
+      "Végül nem sikerült"
+    ]
+  },
+  {
+    "id": 30,
+    "category": "TUTORZEP",
+    "question": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers_en": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "question_de": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers_de": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "question_fr": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers_fr": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "question_es": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers_es": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "question_pl": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers_pl": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ],
+    "question_ru": "Minek a kerekéről írt Brandon Sanderson?",
+    "answers_ru": [
+      "Az idő",
+      "A sors",
+      "A szekér",
+      "A szerencse"
+    ]
+  },
+  {
+    "id": 31,
+    "category": "TUTORZEP",
+    "question": "Hanyadik házról írt Leigh Bardugo?",
+    "answers": [
+      "Kilencedik",
+      "Tizedik",
+      "Hetedik",
+      "Első"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Hanyadik házról írt Leigh Bardugo?",
+    "answers_en": [
+      "Kilencedik",
+      "Tizedik",
+      "Hetedik",
+      "Első"
+    ],
+    "question_de": "Hat Leigh Bardugo über das dritte Haus geschrieben?",
+    "answers_de": [
+      "Neunte",
+      "Zehntel",
+      "Siebte",
+      "Erste"
+    ],
+    "question_fr": "Leigh Bardugo a-t-il écrit sur la troisième maison ?",
+    "answers_fr": [
+      "Neuvième",
+      "Dixième",
+      "Septième",
+      "D'abord"
+    ],
+    "question_es": "¿Leigh Bardugo escribió sobre la tercera casa?",
+    "answers_es": [
+      "Noveno",
+      "Décimo",
+      "Séptimo",
+      "Primero"
+    ],
+    "question_pl": "Czy Leigh Bardugo pisał o trzecim domu?",
+    "answers_pl": [
+      "Dziewiąty",
+      "Dziesiąty",
+      "Siódmy",
+      "Pierwszy"
+    ],
+    "question_ru": "Писал ли Ли Бардуго о третьем доме?",
+    "answers_ru": [
+      "Девятый",
+      "Десятый",
+      "Седьмой",
+      "Первый"
+    ]
+  },
+  {
+    "id": 32,
+    "category": "TUTORZEP",
+    "question": "Kinek az idézetével kezdődik A hercegnő nyakéke című könyv?",
+    "answers": [
+      "Hamvas Béla",
+      "Alexandre Dumas",
+      "Weöres Sándor",
+      "Lao-ce"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Whose quote does the book The Princess's Necklace begin with?",
+    "answers_en": [
+      "Béla Hamvas",
+      "Alexandre Dumas",
+      "Sándor Weöres",
+      "Lao Tzu"
+    ],
+    "question_de": "Mit wessen Zitat beginnt das Buch „Die Halskette der Prinzessin“?",
+    "answers_de": [
+      "Béla Hamvas",
+      "Alexandre Dumas",
+      "Sándor Weöres",
+      "Laotse"
+    ],
+    "question_fr": "Par quelle citation commence le livre Le collier de la princesse ?",
+    "answers_fr": [
+      "Béla Hamvas",
+      "Alexandre Dumas",
+      "Sándor Weöres",
+      "Lao Tseu"
+    ],
+    "question_es": "¿Con qué cita comienza el libro El collar de la princesa?",
+    "answers_es": [
+      "Béla Hamvas",
+      "Alejandro Dumas",
+      "Sándor Weöres",
+      "Lao Tsé"
+    ],
+    "question_pl": "Od czyjego cytatu rozpoczyna się książka „Naszyjnik księżniczki”?",
+    "answers_pl": [
+      "Béli Hamvasa",
+      "Aleksandra Dumasa",
+      "Sándor Weöres",
+      "Lao Tzu"
+    ],
+    "question_ru": "С чьей цитаты начинается книга «Ожерелье принцессы»?",
+    "answers_ru": [
+      "Бела Хамвас",
+      "Александр Дюма",
+      "Шандор Веорес",
+      "Лао Цзы"
+    ]
+  },
+  {
+    "id": 33,
+    "category": "TUTORZEP",
+    "question": "Hány karja van a boldogságnak Shelby Van Pelt szerint?",
+    "answers": [
+      "Nyolc",
+      "Négy",
+      "Három és fél",
+      "Kettő"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "According to Shelby Van Pelt, how many arms does happiness have?",
+    "answers_en": [
+      "Eight",
+      "Four",
+      "It's half past three",
+      "Two"
+    ],
+    "question_de": "Wie viele Arme hat das Glück laut Shelby Van Pelt?",
+    "answers_de": [
+      "Acht",
+      "Vier",
+      "Es ist halb drei",
+      "Zwei"
+    ],
+    "question_fr": "Selon Shelby Van Pelt, combien de bras le bonheur a-t-il ?",
+    "answers_fr": [
+      "Huit",
+      "Quatre",
+      "Il est trois heures et demie",
+      "Deux"
+    ],
+    "question_es": "Según Shelby Van Pelt ¿cuántos brazos tiene la felicidad?",
+    "answers_es": [
+      "Ocho",
+      "cuatro",
+      "son las tres y media",
+      "Dos"
+    ],
+    "question_pl": "Według Shelby Van Pelt, ile ramion ma szczęście?",
+    "answers_pl": [
+      "Osiem",
+      "Cztery",
+      "Jest wpół do trzeciej",
+      "Dwa"
+    ],
+    "question_ru": "По мнению Шелби Ван Пелт, сколько рук у счастья?",
+    "answers_ru": [
+      "Восемь",
+      "Четыре",
+      "Сейчас половина четвертого",
+      "Два"
+    ]
+  },
+  {
+    "id": 34,
+    "category": "TUTORZEP",
+    "question": "Hol írta meg Agatha Christie a híres krimijei egy jelentős részét?",
+    "answers": [
+      "A fürdőkádjában ülve",
+      "A kiadója irodájában",
+      "Egy londoni kávéházban",
+      "A dolgozószobájában"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Where did Agatha Christie write a significant part of her famous crime novels?",
+    "answers_en": [
+      "Sitting in his bathtub",
+      "In his publisher's office",
+      "In a coffee shop in London",
+      "In his study"
+    ],
+    "question_de": "Wo hat Agatha Christie einen wesentlichen Teil ihrer berühmten Kriminalromane geschrieben?",
+    "answers_de": [
+      "Sitzt in seiner Badewanne",
+      "Im Büro seines Verlegers",
+      "In einem Café in London",
+      "In seinem Arbeitszimmer"
+    ],
+    "question_fr": "Où Agatha Christie a-t-elle écrit une partie importante de ses célèbres romans policiers ?",
+    "answers_fr": [
+      "Assis dans sa baignoire",
+      "Dans le bureau de son éditeur",
+      "Dans un café à Londres",
+      "Dans son étude"
+    ],
+    "question_es": "¿Dónde escribió Agatha Christie una parte importante de sus famosas novelas policiales?",
+    "answers_es": [
+      "Sentado en su bañera",
+      "En la oficina de su editor",
+      "En una cafetería de Londres",
+      "en su estudio"
+    ],
+    "question_pl": "Gdzie Agatha Christie napisała znaczną część swoich słynnych kryminałów?",
+    "answers_pl": [
+      "Siedzi w swojej wannie",
+      "W biurze swojego wydawcy",
+      "W kawiarni w Londynie",
+      "W swoim gabinecie"
+    ],
+    "question_ru": "Где Агата Кристи написала значительную часть своих знаменитых криминальных романов?",
+    "answers_ru": [
+      "Сидя в своей ванне",
+      "В офисе своего издательства",
+      "В кофейне в Лондоне",
+      "В своем кабинете"
+    ]
+  },
+  {
+    "id": 35,
+    "category": "TUTORZEP",
+    "question": "Miért írta J.K. Rowlingaz első Harry Potter könyvet egy kávéházban?",
+    "answers": [
+      "Mert otthon fázott",
+      "Imádta a háttérzajt",
+      "A vendégekről mintázta a szereplőket",
+      "Ingyen kapott kávét és süteményt"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Why did J.K. Rowling's first Harry Potter book in a coffee shop?",
+    "answers_en": [
+      "Because he was cold at home",
+      "He loved the background noise",
+      "He modeled the characters on the guests",
+      "He got free coffee and cake"
+    ],
+    "question_de": "Warum hat J.K. Rowlings erstes Harry-Potter-Buch in einem Café?",
+    "answers_de": [
+      "Weil ihm zu Hause kalt war",
+      "Er liebte die Hintergrundgeräusche",
+      "Er modellierte die Charaktere nach dem Vorbild der Gäste",
+      "Er bekam kostenlosen Kaffee und Kuchen"
+    ],
+    "question_fr": "Pourquoi J.K. Le premier livre Harry Potter de Rowling dans un café ?",
+    "answers_fr": [
+      "Parce qu'il avait froid à la maison",
+      "Il adorait le bruit de fond",
+      "Il a modelé les personnages sur les invités",
+      "Il a reçu du café et des gâteaux gratuits"
+    ],
+    "question_es": "¿Por qué J.K. ¿El primer libro de Harry Potter de Rowling en una cafetería?",
+    "answers_es": [
+      "porque tenia frio en casa",
+      "Le encantaba el ruido de fondo.",
+      "Modeló los personajes a partir de los invitados.",
+      "Obtuvo café y pastel gratis."
+    ],
+    "question_pl": "Dlaczego J.K. Pierwsza książka Rowling o Harrym Potterze w kawiarni?",
+    "answers_pl": [
+      "Bo w domu było mu zimno",
+      "Uwielbiał hałas w tle",
+      "Wzorował się na postaciach gości",
+      "Dostał darmową kawę i ciasto"
+    ],
+    "question_ru": "Почему Дж.К. Первая книга Роулинг о Гарри Поттере в кофейне?",
+    "answers_ru": [
+      "Потому что ему было холодно дома",
+      "Ему нравился фоновый шум",
+      "Он смоделировал персонажей по гостям.",
+      "Он получил бесплатный кофе и пирожное"
+    ]
+  },
+  {
+    "id": 36,
+    "category": "TUTORZEP",
+    "question": "Melyik könyvének megírására nem emlékszik Stephen King a drog miatt?",
+    "answers": [
+      "Cujo",
+      "Ragyogás (The Shining)",
+      "Az (It)",
+      "Kedvencek temetője (Pet Sematary)"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which book does Stephen King not remember writing because of the drug?",
+    "answers_en": [
+      "Cool",
+      "The Shining",
+      "The (It)",
+      "Pet Sematary"
+    ],
+    "question_de": "An welches Buch erinnert sich Stephen King wegen der Droge nicht?",
+    "answers_de": [
+      "Cool",
+      "Das Leuchtende",
+      "Das (Es)",
+      "Haustierfriedhof"
+    ],
+    "question_fr": "Quel livre Stephen King ne se souvient-il pas avoir écrit à cause de la drogue ?",
+    "answers_fr": [
+      "Cool",
+      "Le brillant",
+      "Le (Il)",
+      "Sématiste pour animaux de compagnie"
+    ],
+    "question_es": "¿Qué libro no recuerda Stephen King haber escrito debido a la droga?",
+    "answers_es": [
+      "Fresco",
+      "el resplandor",
+      "El (eso)",
+      "Cementerio de mascotas"
+    ],
+    "question_pl": "Jakiej książki Stephen King nie pamięta, że ​​pisał z powodu narkotyku?",
+    "answers_pl": [
+      "Fajny",
+      "Lśnienie",
+      "(To)",
+      "Smętarz dla zwierząt"
+    ],
+    "question_ru": "Какую книгу Стивен Кинг не помнит, как написал из-за наркотика?",
+    "answers_ru": [
+      "Прохладный",
+      "Сияние",
+      "(Оно)",
+      "Кладбище домашних животных"
+    ]
+  },
+  {
+    "id": 37,
+    "category": "TUTORZEP",
+    "question": "Melyik rockzenész akarta eljétszani Gollam szerepét a megfilmesített Gyűrűk Urában?",
+    "answers": [
+      "John Lennon",
+      "Bon Jovi",
+      "Axl Rose",
+      "Ozzy Osbourne"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which rock musician wanted to play the role of Gollum in the Lord of the Rings film?",
+    "answers_en": [
+      "John Lennon",
+      "Bon Jovi",
+      "Axl Rose",
+      "Ozzy Osbourne"
+    ],
+    "question_de": "Welcher Rockmusiker wollte im Film „Der Herr der Ringe“ die Rolle des Gollum spielen?",
+    "answers_de": [
+      "John Lennon",
+      "Bon Jovi",
+      "Axl Rose",
+      "Ozzy Osbourne"
+    ],
+    "question_fr": "Quel musicien de rock voulait jouer le rôle de Gollum dans le film Le Seigneur des Anneaux ?",
+    "answers_fr": [
+      "John Lennon",
+      "Bon Jovi",
+      "Axel Rose",
+      "Ozzy Osbourne"
+    ],
+    "question_es": "¿Qué músico de rock quería interpretar el papel de Gollum en la película El señor de los anillos?",
+    "answers_es": [
+      "John Lennon",
+      "Bonjovi",
+      "axl rosa",
+      "Ozzy Osborne"
+    ],
+    "question_pl": "Który muzyk rockowy chciał zagrać rolę Golluma w filmie Władca Pierścieni?",
+    "answers_pl": [
+      "Johna Lennona",
+      "Bon Joviego",
+      "Axla Rose'a",
+      "Ozzy’ego Osbourne’a"
+    ],
+    "question_ru": "Какой рок-музыкант хотел сыграть роль Голлума в фильме «Властелин колец»?",
+    "answers_ru": [
+      "Джон Леннон",
+      "Бон Джови",
+      "Эксл Роуз",
+      "Оззи Осборн"
+    ]
+  },
+  {
+    "id": 38,
+    "category": "TUTORZEP",
+    "question": "Mi ihlette Frank Herbertet a Dűne megírására?",
+    "answers": [
+      "Egy kormányzati projekt",
+      "Egy NASA-jelentés a Mars felszínéről",
+      "Egy oregoni sivatagi nyaralás",
+      "Egy rémálom"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What inspired Frank Herbert<br>to write 'Dune'?",
+    "answers_en": [
+      "A government project",
+      "A NASA report on Mars",
+      "An Oregon desert vacation",
+      "A nightmare"
+    ],
+    "question_de": "Was inspirierte Frank Herbert<br>zum Schreiben von „Dune“?",
+    "answers_de": [
+      "Ein Regierungsprojekt",
+      "Ein NASA-Bericht über den Mars",
+      "Ein Urlaub in der Wüste Oregons",
+      "Ein Albtraum"
+    ],
+    "question_fr": "Qu'est-ce qui a inspiré Frank Herbert<br>pour écrire « Dune » ?",
+    "answers_fr": [
+      "Un projet gouvernemental",
+      "Un rapport de la NASA sur Mars",
+      "Des vacances dans le désert",
+      "Un cauchemar"
+    ],
+    "question_es": "¿Qué inspiró a Frank Herbert<br>para escribir 'Dune'?",
+    "answers_es": [
+      "Un proyecto gubernamental",
+      "Un informe de la NASA sobre Marte",
+      "Vacaciones en el desierto de Oregón",
+      "Una pesadilla"
+    ],
+    "question_pl": "Co zainspirowało Franka Herberta<br>do napisania „Diuny”?",
+    "answers_pl": [
+      "Projekt rządowy",
+      "Raport NASA o powierzchni Marsa",
+      "Wakacje na pustyni w Oregonie",
+      "Koszmar senny"
+    ],
+    "question_ru": "Что вдохновило Фрэнка Герберта<br>на написание «Дюны»?",
+    "answers_ru": [
+      "Правительственный проект",
+      "Отчет NASA о поверхности Марса",
+      "Отпуск в пустыне Орегона",
+      "Кошмарный сон"
+    ]
+  },
+  {
+    "id": 39,
+    "category": "TUTORZEP",
+    "question": "Mit védetett le Edgar Rice Burroughs?",
+    "answers": [
+      "Tarzan üvöltését",
+      "A gorillanyelvet",
+      "A Tarzan nevet",
+      "A \"Dzsungel Ura\" titulust"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What did Edgar Rice Burroughs trademark?",
+    "answers_en": [
+      "Tarzan's yell",
+      "The gorilla language",
+      "The name Tarzan",
+      "The title \"Lord of the Jungle\""
+    ],
+    "question_de": "Was ließ Edgar Rice Burroughs markenrechtlich schützen?",
+    "answers_de": [
+      "Tarzans Schrei",
+      "Die Gorillasprache",
+      "Den Namen Tarzan",
+      "Den Titel „Herr des Dschungels“"
+    ],
+    "question_fr": "Qu'a fait protéger légalement Edgar Rice Burroughs ?",
+    "answers_fr": [
+      "Le cri de Tarzan",
+      "Le langage des gorilles",
+      "Le nom de Tarzan",
+      "Le titre « Seigneur de la jungle »"
+    ],
+    "question_es": "¿Qué patentó Edgar Rice Burroughs?",
+    "answers_es": [
+      "El grito de Tarzán",
+      "El idioma gorila",
+      "El nombre Tarzán",
+      "El título de \"Rey de la Selva\""
+    ],
+    "question_pl": "Co zastrzegł prawnie Edgar Rice Burroughs?",
+    "answers_pl": [
+      "Krzyk Tarzana",
+      "Język goryli",
+      "Imię Tarzan",
+      "Tytuł „Władca Dżungli”"
+    ],
+    "question_ru": "Что зарегистрировал как товарный знак Эдгар Райс Берроуз?",
+    "answers_ru": [
+      "Крик Тарзана",
+      "Язык горилл",
+      "Имя Тарзан",
+      "Титул «Властелин джунглей»"
+    ]
+  },
+  {
+    "id": 40,
+    "category": "TUTORZEP",
+    "question": "Mit csinál az eredeti könyvben Pinokkió a tücsökkel?",
+    "answers": [
+      "Egy kalapáccsal szétlapítja",
+      "Bezárja egy sötét gyufásdobozba",
+      "Eladja egy vándorcirkusznak",
+      "Kidobja az ablakon"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What does Pinocchio do with the crickets in the original book?",
+    "answers_en": [
+      "He flattens it with a hammer",
+      "He locks it in a dark matchbox",
+      "He sells it to a traveling circus",
+      "He throws it out the window"
+    ],
+    "question_de": "Was macht Pinocchio im Originalbuch mit den Grillen?",
+    "answers_de": [
+      "Er glättet es mit einem Hammer",
+      "Er schließt es in eine dunkle Streichholzschachtel ein",
+      "Er verkauft es an einen Wanderzirkus",
+      "Er wirft es aus dem Fenster"
+    ],
+    "question_fr": "Que fait Pinocchio avec les grillons dans le livre original ?",
+    "answers_fr": [
+      "Il l'aplatit avec un marteau",
+      "Il l'enferme dans une boîte d'allumettes sombre",
+      "Il le vend à un cirque ambulant",
+      "Il le jette par la fenêtre"
+    ],
+    "question_es": "¿Qué hace Pinocho con los grillos en el libro original?",
+    "answers_es": [
+      "Lo aplana con un martillo.",
+      "Lo encierra en una caja de cerillas oscura.",
+      "Se lo vende a un circo ambulante.",
+      "Lo tira por la ventana"
+    ],
+    "question_pl": "Co Pinokio zrobił ze świerszczami w oryginalnej książce?",
+    "answers_pl": [
+      "Spłaszcza go młotkiem",
+      "Zamyka go w ciemnym pudełku zapałek",
+      "Sprzedaje go wędrownemu cyrkowi",
+      "Wyrzuca go przez okno"
+    ],
+    "question_ru": "Что Пиноккио делает со сверчками в оригинальной книге?",
+    "answers_ru": [
+      "Он расплющит его молотком",
+      "Он запирает его в темном спичечном коробке",
+      "Он продает его бродячему цирку.",
+      "Он выбрасывает его в окно"
+    ]
+  },
+  {
+    "id": 41,
+    "category": "TUTORZEP",
+    "question": "Melyik könyv ihlette a Batmant?",
+    "answers": [
+      "Drakula gróf",
+      "Frankenstein",
+      "A láthatatlan ember",
+      "Dr. Jekyll és Mr. Hyde"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which classic book inspired Batman?",
+    "answers_en": [
+      "Count Dracula",
+      "Frankenstein",
+      "The Invisible Man",
+      "Dr. Jekyll and Mr. Hyde"
+    ],
+    "question_de": "Welches klassische Buch inspirierte Batman?",
+    "answers_de": [
+      "Graf Dracula",
+      "Frankenstein",
+      "Der Unsichtbare",
+      "Dr. Jekyll und Mr. Hyde"
+    ],
+    "question_fr": "Quel livre classique a inspiré Batman ?",
+    "answers_fr": [
+      "Dracula",
+      "Frankenstein",
+      "L'Homme invisible",
+      "Dr Jekyll et Mr Hyde"
+    ],
+    "question_es": "¿Qué libro clásico inspiró a Batman?",
+    "answers_es": [
+      "Drácula",
+      "Frankenstein",
+      "El hombre invisible",
+      "El extraño caso del Dr. Jekyll"
+    ],
+    "question_pl": "Jaka klasyczna książka zainspirowała Batmana?",
+    "answers_pl": [
+      "Drakula",
+      "Frankenstein",
+      "Niewidzialny człowiek",
+      "Doktor Jekyll i pan Hyde"
+    ],
+    "question_ru": "Какая классическая книга вдохновила создателей Бэтмена?",
+    "answers_ru": [
+      "Дракула",
+      "Франкенштейн",
+      "Человек-невидимка",
+      "Доктор Джекил и мистер Хайд"
+    ]
+  },
+  {
+    "id": 42,
+    "category": "TUTORZEP",
+    "question": "Honnan származik a Matrix ikonikus, zöld, digitális kódja?",
+    "answers": [
+      "A tervező feleségének japán szakácskönyvéből",
+      "Egy orosz fizika tankönyvből",
+      "Egy régi svéd bútorgyári katalógusból",
+      "Egy ókori egyiptomi papiruszról"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Where did the Matrix's iconic green digital code come from?",
+    "answers_en": [
+      "From the Japanese cookbook of the designer's wife",
+      "From a Russian physics textbook",
+      "From an old Swedish furniture factory catalog",
+      "From an ancient Egyptian papyrus"
+    ],
+    "question_de": "Woher kommt der ikonische grüne digitale Code der Matrix?",
+    "answers_de": [
+      "Aus dem japanischen Kochbuch der Frau des Designers",
+      "Aus einem russischen Physiklehrbuch",
+      "Aus einem alten Katalog einer schwedischen Möbelfabrik",
+      "Aus einem altägyptischen Papyrus"
+    ],
+    "question_fr": "D'où vient le code numérique vert emblématique de Matrix ?",
+    "answers_fr": [
+      "Extrait du livre de cuisine japonaise de la femme du créateur",
+      "Extrait d'un manuel de physique russe",
+      "Extrait d'un ancien catalogue d'une usine de meubles suédoise",
+      "D'un papyrus égyptien ancien"
+    ],
+    "question_es": "¿De dónde vino el icónico código digital verde de Matrix?",
+    "answers_es": [
+      "Del libro de cocina japonés de la esposa del diseñador.",
+      "De un libro de texto de física ruso.",
+      "De un antiguo catálogo de una fábrica de muebles sueca.",
+      "De un papiro egipcio antiguo"
+    ],
+    "question_pl": "Skąd wziął się kultowy zielony kod cyfrowy Matrixa?",
+    "answers_pl": [
+      "Z japońskiej książki kucharskiej żony projektanta",
+      "Z rosyjskiego podręcznika fizyki",
+      "Ze starego katalogu szwedzkiej fabryki mebli",
+      "Ze starożytnego egipskiego papirusu"
+    ],
+    "question_ru": "Откуда взялся знаменитый зеленый цифровой код Матрицы?",
+    "answers_ru": [
+      "Из японской кулинарной книги жены дизайнера",
+      "Из учебника русской физики.",
+      "Из каталога старой шведской мебельной фабрики.",
+      "Из древнеегипетского папируса"
+    ]
+  },
+  {
+    "id": 43,
+    "category": "TUTORZEP",
+    "question": "Milyen valóságos esemény ihlette a Trónok harca \"Vörös Nász\"-át?",
+    "answers": [
+      "Egy középkori skót mészárlás, a Fekete Vacsora",
+      "A kijev-i Olga hercegnő bosszú-esküvője",
+      "A francia Szent Bertalan-éji mészárlás",
+      "II. Eduárd angol király botrányos esküvői vacsorája"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What real event inspired Game of Thrones' \"Red Wedding\"?",
+    "answers_en": [
+      "A medieval Scottish massacre, the Black Supper",
+      "The revenge wedding of Princess Olga of Kiev",
+      "The French St. Bartholomew's Night Massacre",
+      "II. The scandalous wedding dinner of King Edward of England"
+    ],
+    "question_de": "Welches reale Ereignis hat die „Rote Hochzeit“ von Game of Thrones inspiriert?",
+    "answers_de": [
+      "Ein mittelalterliches schottisches Massaker, das Black Supper",
+      "Die Rachehochzeit der Prinzessin Olga von Kiew",
+      "Das französische St.-Bartholomäus-Nachtmassaker",
+      "II. Das skandalöse Hochzeitsessen von König Edward von England"
+    ],
+    "question_fr": "Quel événement réel a inspiré le « Mariage rouge » de Game of Thrones ?",
+    "answers_fr": [
+      "Un massacre médiéval écossais, le Black Supper",
+      "Le mariage de vengeance de la princesse Olga de Kiev",
+      "Le massacre nocturne de la Saint-Barthélemy en France",
+      "II. Le scandaleux dîner de noces du roi Édouard d'Angleterre"
+    ],
+    "question_es": "¿Qué evento real inspiró la \"Boda Roja\" de Juego de Tronos?",
+    "answers_es": [
+      "Una masacre medieval escocesa, la Cena Negra",
+      "La boda de venganza de la princesa Olga de Kiev",
+      "La masacre nocturna francesa de San Bartolomé",
+      "II. La escandalosa cena de bodas del rey Eduardo de Inglaterra"
+    ],
+    "question_pl": "Jakie prawdziwe wydarzenie zainspirowało „Czerwone wesele” z Gry o Tron?",
+    "answers_pl": [
+      "Średniowieczna masakra w Szkocji, Czarna Wieczerza",
+      "Ślub zemsty księżniczki Olgi kijowskiej",
+      "Francuska nocna masakra św. Bartłomieja",
+      "II. Skandaliczny obiad weselny króla Anglii Edwarda"
+    ],
+    "question_ru": "Какое реальное событие вдохновило «Красную свадьбу» «Игры престолов»?",
+    "answers_ru": [
+      "Средневековая шотландская резня, Черная вечеря.",
+      "Свадьба-месть киевской княгини Ольги",
+      "Французская Варфоломеевская ночь",
+      "II. Скандальный свадебный ужин короля Англии Эдуарда"
+    ]
+  },
+  {
+    "id": 44,
+    "category": "TUTORZEP",
+    "question": "A Da Vinci-kódban szereplő melyik kamu tényt cáfolta hivatalosan a Louvre?",
+    "answers": [
+      "Hogy az üvegpiramis 666 üveglapból áll",
+      "Hogy a Mona Lisa mögött egy földönkívüli látható",
+      "Hogy a múzeum alatt van Jézus valódi sírja",
+      "Hogy a múzeum igazgatója egy középkori lovagrend nagymestere volt"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which bogus fact in The Da Vinci Code was officially denied by the Louvre?",
+    "answers_en": [
+      "That the glass pyramid consists of 666 glass plates",
+      "That an alien can be seen behind the Mona Lisa",
+      "That under the museum is the real tomb of Jesus",
+      "That the director of the museum was the grand master of a medieval order of knights"
+    ],
+    "question_de": "Welche falsche Tatsache im Da Vinci Code wurde vom Louvre offiziell dementiert?",
+    "answers_de": [
+      "Dass die Glaspyramide aus 666 Glasplatten besteht",
+      "Dass hinter der Mona Lisa ein Außerirdischer zu sehen ist",
+      "Unter dem Museum befindet sich das wahre Grab Jesu",
+      "Dass der Direktor des Museums der Großmeister eines mittelalterlichen Ritterordens war"
+    ],
+    "question_fr": "Quel faux fait contenu dans le Da Vinci Code a été officiellement démenti par le Louvre ?",
+    "answers_fr": [
+      "Que la pyramide de verre est composée de 666 plaques de verre",
+      "Qu'un extraterrestre puisse être vu derrière la Joconde",
+      "Que sous le musée se trouve le véritable tombeau de Jésus",
+      "Que le directeur du musée était le grand maître d'un ordre médiéval de chevaliers"
+    ],
+    "question_es": "¿Qué hecho falso del Código Da Vinci fue negado oficialmente por el Louvre?",
+    "answers_es": [
+      "Que la pirámide de cristal consta de 666 placas de vidrio",
+      "Que se puede ver un extraterrestre detrás de la Mona Lisa",
+      "Que debajo del museo se encuentra la verdadera tumba de Jesús",
+      "Que el director del museo era el gran maestre de una orden de caballeros medieval"
+    ],
+    "question_pl": "Który fałszywy fakt z „Kodu Da Vinci” został oficjalnie zdementowany przez Luwr?",
+    "answers_pl": [
+      "Że szklana piramida składa się z 666 szklanych płytek",
+      "Że za Mona Lisą widać kosmitę",
+      "Że pod muzeum znajduje się prawdziwy grób Jezusa",
+      "Że dyrektorem muzeum był wielki mistrz średniowiecznego zakonu rycerskiego"
+    ],
+    "question_ru": "Какой фиктивный факт в «Коде да Винчи» официально опроверг Лувр?",
+    "answers_ru": [
+      "Стеклянная пирамида состоит из 666 стеклянных пластин.",
+      "За Моной Лизой можно увидеть инопланетянина",
+      "Что под музеем находится настоящая могила Иисуса",
+      "Что директором музея был гроссмейстер средневекового рыцарского ордена."
+    ]
+  },
+  {
+    "id": 45,
+    "category": "TUTORZEP",
+    "question": "Mi vagy ki adta William Steig-nek az ötletet Shrek nevéhez?",
+    "answers": [
+      "A jiddish \"Schreck\" szó",
+      "A Skriech nevű skót mocsár",
+      "Egy Shreck nevű középkori, német zsoldos",
+      "A szomszédja, akit Shrecknek hívtak"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What or who gave William Steig the idea for Shrek's name?",
+    "answers_en": [
+      "The Yiddish word for \"Schreck\".",
+      "A Scottish bog called Skriech",
+      "A medieval German mercenary named Shreck",
+      "His neighbor named Shreck"
+    ],
+    "question_de": "Was oder wer brachte William Steig auf die Idee für Shreks Namen?",
+    "answers_de": [
+      "Das jiddische Wort für „Schreck“.",
+      "Ein schottisches Moor namens Skriech",
+      "Ein mittelalterlicher deutscher Söldner namens Shreck",
+      "Sein Nachbar namens Shreck"
+    ],
+    "question_fr": "Qu'est-ce qui a donné à William Steig l'idée du nom de Shrek ?",
+    "answers_fr": [
+      "Le mot yiddish pour « Schreck ».",
+      "Une tourbière écossaise appelée Skriech",
+      "Un mercenaire allemand médiéval nommé Shreck",
+      "Son voisin nommé Shreck"
+    ],
+    "question_es": "¿Qué o quién le dio a William Steig la idea del nombre de Shrek?",
+    "answers_es": [
+      "La palabra yiddish para \"Schreck\".",
+      "Un pantano escocés llamado Skriech",
+      "Un mercenario alemán medieval llamado Shreck.",
+      "Su vecino llamado Shreck"
+    ],
+    "question_pl": "Co lub kto podsunął Williamowi Steigowi pomysł na imię Shreka?",
+    "answers_pl": [
+      "Słowo w jidysz oznaczające „Schreck”.",
+      "Szkockie torfowisko Skriech",
+      "Średniowieczny niemiecki najemnik imieniem Shreck",
+      "Jego sąsiad o imieniu Shreck"
+    ],
+    "question_ru": "Что или кто подал Уильяму Стейгу идею имени Шрека?",
+    "answers_ru": [
+      "На идише слово «Шрек».",
+      "Шотландское болото под названием Скрик.",
+      "Средневековый немецкий наемник по имени Шрек.",
+      "Его сосед по имени Шрек"
+    ]
+  },
+  {
+    "id": 46,
+    "category": "TUTORZEP",
+    "question": "Kiről mintázta Ian Fleming a James Bond törénetek Q-ját?",
+    "answers": [
+      "Egy II. világháborús bombaszakértőről",
+      "Egy londoni órásmesterről",
+      "Albert Einstein asszisztenséről",
+      "Saját magáról"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Who did Ian Fleming model the Q of the James Bond episodes on?",
+    "answers_en": [
+      "A II. about a World War II bomb expert",
+      "About a London watchmaker",
+      "About Albert Einstein's assistant",
+      "About yourself"
+    ],
+    "question_de": "Wem diente Ian Fleming als Vorbild für das Q der James-Bond-Folgen?",
+    "answers_de": [
+      "A II. über einen Bombenexperten aus dem Zweiten Weltkrieg",
+      "Über einen Londoner Uhrmacher",
+      "Über Albert Einsteins Assistenten",
+      "Über dich selbst"
+    ],
+    "question_fr": "Sur qui Ian Fleming a-t-il modelé le Q des épisodes de James Bond ?",
+    "answers_fr": [
+      "Un II. à propos d'un expert en bombes de la Seconde Guerre mondiale",
+      "À propos d'un horloger londonien",
+      "À propos de l'assistant d'Albert Einstein",
+      "À propos de vous"
+    ],
+    "question_es": "¿En quién modeló Ian Fleming la Q de los episodios de James Bond?",
+    "answers_es": [
+      "Un II. sobre un experto en bombas de la Segunda Guerra Mundial",
+      "Sobre un relojero londinense",
+      "Sobre el asistente de Albert Einstein",
+      "Sobre ti"
+    ],
+    "question_pl": "Na kim Ian Fleming wzorował się na Q w odcinkach Jamesa Bonda?",
+    "answers_pl": [
+      "II. o ekspertze od bomb z II wojny światowej",
+      "O londyńskim zegarmistrzu",
+      "O asystencie Alberta Einsteina",
+      "O sobie"
+    ],
+    "question_ru": "На ком Ян Флеминг смоделировал Q из эпизодов о Джеймсе Бонде?",
+    "answers_ru": [
+      "А II. об эксперте по бомбам времен Второй мировой войны",
+      "О лондонском часовщике",
+      "О помощнике Альберта Эйнштейна",
+      "О себе"
+    ]
+  },
+  {
+    "id": 47,
+    "category": "TUTORZEP",
+    "question": "Ki volt Drakula gróf a valóságban?",
+    "answers": [
+      "Vlad Țepeș fejedelem",
+      "Egy őrült bajor király",
+      "Egy spanyol inkvizítor",
+      "Egy londoni sorozatgyilkos"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Who was the real historical figure<br>behind Count Dracula?",
+    "answers_en": [
+      "Prince Vlad the Impaler (Vlad Țepeș)",
+      "A mad Bavarian king",
+      "A Spanish inquisitor",
+      "A London serial killer"
+    ],
+    "question_de": "Wer war Graf Dracula in Wirklichkeit?",
+    "answers_de": [
+      "Fürst Vlad der Pfähler (Vlad Țepeș)",
+      "Ein verrückter bayerischer König",
+      "Ein spanischer Inquisitor",
+      "Ein Londoner Serienmörder"
+    ],
+    "question_fr": "Qui était réellement le comte Dracula<br>dans l'Histoire ?",
+    "answers_fr": [
+      "Le prince Vlad l'Empaleur (Vlad Țepeș)",
+      "Un roi bavarois fou",
+      "Un inquisiteur espagnol",
+      "Un tueur en série londonien"
+    ],
+    "question_es": "¿Quién fue el conde Drácula en la realidad?",
+    "answers_es": [
+      "El príncipe Vlad el Empalador (Vlad Țepeș)",
+      "Un rey loco de Baviera",
+      "Un inquisidor español",
+      "Un asesino en serie de Londres"
+    ],
+    "question_pl": "Kim w rzeczywistości był hrabia Drakula?",
+    "answers_pl": [
+      "Książę Wład Palownik (Vlad Țepeș)",
+      "Szalony król bawarski",
+      "Hiszpański inkwizytor",
+      "Londyński seryjny morderca"
+    ],
+    "question_ru": "Кем был граф Дракула в реальной истории?",
+    "answers_ru": [
+      "Князь Влад Цепеш (Колосажатель)",
+      "Безумный баварский король",
+      "Испанский инквизитор",
+      "Лондонский серийный убийца"
+    ]
+  },
+  {
+    "id": 48,
+    "category": "TUTORZEP",
+    "question": "Milyen fóbiája ihlette Stan Leet a Pókember megírására?",
+    "answers": [
+      "Utálta a legyeket",
+      "Tériszonya volt",
+      "Pókiszonya volt",
+      "Utálta a maszkokat"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What phobia inspired Stan Lee to write Spider-Man?",
+    "answers_en": [
+      "He hated flies",
+      "It was spacious",
+      "He was a spider",
+      "He hated masks"
+    ],
+    "question_de": "Welche Phobie hat Stan Lee dazu inspiriert, Spider-Man zu schreiben?",
+    "answers_de": [
+      "Er hasste Fliegen",
+      "Es war geräumig",
+      "Er war eine Spinne",
+      "Er hasste Masken"
+    ],
+    "question_fr": "Quelle phobie a inspiré Stan Lee à écrire Spider-Man ?",
+    "answers_fr": [
+      "Il détestait les mouches",
+      "C'était spacieux",
+      "C'était une araignée",
+      "Il détestait les masques"
+    ],
+    "question_es": "¿Qué fobia inspiró a Stan Lee a escribir Spider-Man?",
+    "answers_es": [
+      "Odiaba las moscas",
+      "era espacioso",
+      "el era una araña",
+      "Odiaba las máscaras"
+    ],
+    "question_pl": "Jaka fobia zainspirowała Stana Lee do napisania Spider-Mana?",
+    "answers_pl": [
+      "Nienawidził much",
+      "Było przestronnie",
+      "Był pająkiem",
+      "Nienawidził masek"
+    ],
+    "question_ru": "Какая фобия вдохновила Стэна Ли написать «Человека-паука»?",
+    "answers_ru": [
+      "Он ненавидел мух",
+      "Это было просторно",
+      "Он был пауком",
+      "Он ненавидел маски"
+    ]
+  },
+  {
+    "id": 49,
+    "category": "TUTORZEP",
+    "question": "Mi adta Michael Crichton-nak az ötletet a Jurassic Park megírásához?",
+    "answers": [
+      "Érdekelte a génklónozás",
+      "Ki akarta találni a legdrágább húst",
+      "Egy dinós rémálom",
+      "A kislánya iskolai projektje"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "What gave Michael Crichton the idea to write Jurassic Park?",
+    "answers_en": [
+      "He was interested in gene cloning",
+      "He wanted to find the most expensive meat",
+      "A dino nightmare",
+      "Her little girl's school project"
+    ],
+    "question_de": "Was brachte Michael Crichton auf die Idee, Jurassic Park zu schreiben?",
+    "answers_de": [
+      "Er interessierte sich für das Klonen von Genen",
+      "Er wollte das teuerste Fleisch finden",
+      "Ein Dino-Albtraum",
+      "Das Schulprojekt ihrer kleinen Tochter"
+    ],
+    "question_fr": "Qu'est-ce qui a donné à Michael Crichton l'idée d'écrire Jurassic Park ?",
+    "answers_fr": [
+      "Il s'intéressait au clonage de gènes",
+      "Il voulait trouver la viande la plus chère",
+      "Un cauchemar de dinosaures",
+      "Le projet scolaire de sa petite fille"
+    ],
+    "question_es": "¿Qué le dio a Michael Crichton la idea de escribir Jurassic Park?",
+    "answers_es": [
+      "Estaba interesado en la clonación de genes.",
+      "Quería encontrar la carne más cara.",
+      "Una pesadilla de dinosaurios",
+      "El proyecto escolar de su pequeña"
+    ],
+    "question_pl": "Co podsunęło Michaelowi Crichtonowi pomysł napisania Parku Jurajskiego?",
+    "answers_pl": [
+      "Interesował się klonowaniem genów",
+      "Chciał znaleźć najdroższe mięso",
+      "Koszmar dinozaura",
+      "Projekt szkolny jej małej dziewczynki"
+    ],
+    "question_ru": "Что натолкнуло Майкла Крайтона на мысль написать «Парк Юрского периода»?",
+    "answers_ru": [
+      "Он интересовался клонированием генов.",
+      "Он хотел найти самое дорогое мясо",
+      "Кошмар динозавра",
+      "Школьный проект ее маленькой девочки"
+    ]
+  },
+  {
+    "id": 50,
+    "category": "TUTORZEP",
+    "question": "Melyik híres irodalmi karaktert ihlette egy valóságos, dundi kisfiú?",
+    "answers": [
+      "Róbert Gidát a Micimackóból",
+      "Neville Longbottomot A Harry Potterből",
+      "Augustus Gloopot a Charlie és a csokigyárból",
+      "Gombóc Artúrt a Pom Pom meséiből"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "Which famous literary character was inspired by a real-life little boy from Dundee?",
+    "answers_en": [
+      "Róbert Gida from Winnie the Pooh",
+      "Neville Longbottom from Harry Potter",
+      "Augustus Gloop from Charlie and the Chocolate Factory",
+      "Artúr Gombóc from the Pom Pom tales"
+    ],
+    "question_de": "Welche berühmte literarische Figur wurde von einem echten kleinen Jungen aus Dundee inspiriert?",
+    "answers_de": [
+      "Róbert Gida aus Winnie the Pooh",
+      "Neville Longbottom aus Harry Potter",
+      "Augustus Gloop aus Charlie und die Schokoladenfabrik",
+      "Artúr Gombóc aus den Pom-Pom-Geschichten"
+    ],
+    "question_fr": "Quel personnage littéraire célèbre a été inspiré par un vrai petit garçon de Dundee ?",
+    "answers_fr": [
+      "Róbert Gida de Winnie l'ourson",
+      "Neville Londubat de Harry Potter",
+      "Augustus Gloop de Charlie et la Chocolaterie",
+      "Artúr Gombóc des contes Pom Pom"
+    ],
+    "question_es": "¿Qué personaje literario famoso se inspiró en un niño de la vida real de Dundee?",
+    "answers_es": [
+      "Robert Gida de Winnie the Pooh",
+      "Neville Longbottom de Harry Potter",
+      "Augustus Gloop de Charlie y la fábrica de chocolate",
+      "Artúr Gombóc de los cuentos de Pom Pom"
+    ],
+    "question_pl": "Która słynna postać literacka została zainspirowana prawdziwym chłopcem z Dundee?",
+    "answers_pl": [
+      "Robert Gida z Kubusia Puchatka",
+      "Neville Longbottom z Harry'ego Pottera",
+      "Augustus Gloop z Charliego i fabryki czekolady",
+      "Artúr Gombóc z opowieści Pom Pom"
+    ],
+    "question_ru": "Какой известный литературный персонаж был вдохновлен реальным маленьким мальчиком из Данди?",
+    "answers_ru": [
+      "Роберт Жида из Винни-Пуха",
+      "Невилл Лонгботтом из Гарри Поттера",
+      "Огастес Глуп из «Чарли и шоколадной фабрики»",
+      "Артур Гомбок из сказок о Пом Пом"
+    ]
+  },
+  {
+    "id": 51,
+    "category": "TUTORZEP",
+    "question": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ],
+    "correctIndex": 0,
+    "isStaked": false,
+    "weight": 1,
+    "tag": "",
+    "question_en": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers_en": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ],
+    "question_de": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers_de": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ],
+    "question_fr": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers_fr": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ],
+    "question_es": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers_es": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ],
+    "question_pl": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers_pl": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ],
+    "question_ru": "MIt zártak be Victor Hugo halálakor a tiszteletére?",
+    "answers_ru": [
+      "Párizs összes bordélyházát",
+      "A kedvenc kávéházát",
+      "A lóversenypályát",
+      "A kedvenc kocsmáit"
+    ]
+  }
+]

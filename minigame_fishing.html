@@ -45,11 +45,15 @@
 
       // Kényszerített fishing mód beállítása
       params.set('mode', 'fishing');
+      if (!params.has('lang')) {
+        const storedLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
+        params.set('lang', storedLang);
+      }
       if (!params.has('v')) {
         params.set('v', Date.now().toString());
       }
 
-      const targetUrl = 'Membrane_Hunting/tutorial_fixed.html?' + params.toString();
+      const targetUrl = 'WXXX_G_R_GEN_WHL_X0X_wb01/WXXX_G_R_GEN_WHL_X0X_wb01_game.html?' + params.toString();
       frame.src = targetUrl;
 
       // Backend hívások továbbítása a fő alkalmazás (app.js) felé

@@ -1,0 +1,1046 @@
+{
+  "GameInfo": [
+    {
+      "uid": "TUT_FR_000014_0",
+      "baseId": "TUT_000014",
+      "id": 14,
+      "category": "GameInfo",
+      "question": "Quel est le nom du port pirate sur la mer des Lettres ?",
+      "answers": [
+        "Hebok",
+        "L'Île aux Pirates",
+        "Le Rocher Noir",
+        "L'Île du Crâne"
+      ],
+      "answerUids": [
+        "TUT_FR_000014_1",
+        "TUT_FR_000014_2",
+        "TUT_FR_000014_3",
+        "TUT_FR_000014_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000015_0",
+      "baseId": "TUT_000015",
+      "id": 15,
+      "category": "GameInfo",
+      "question": "Comment garder en sécurité vos membranes lors d'une expédition ?",
+      "answers": [
+        "En retournant à la Base du port",
+        "En les cachant du dirigeable",
+        "En les jetant dans la mer",
+        "En les enfermant sous le pont"
+      ],
+      "answerUids": [
+        "TUT_FR_000015_1",
+        "TUT_FR_000015_2",
+        "TUT_FR_000015_3",
+        "TUT_FR_000015_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000016_0",
+      "baseId": "TUT_000016",
+      "id": 16,
+      "category": "GameInfo",
+      "question": "Avec quelles touches de contrôle peux-tu naviguer avec ton bateau ?",
+      "answers": [
+        "Avec les touches W, A, S, D",
+        "Uniquement en cliquant avec la souris",
+        "Avec les touches Espace et Entrée",
+        "Avec les touches F1 et F2"
+      ],
+      "answerUids": [
+        "TUT_FR_000016_1",
+        "TUT_FR_000016_2",
+        "TUT_FR_000016_3",
+        "TUT_FR_000016_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000019_0",
+      "baseId": "TUT_000019",
+      "id": 19,
+      "category": "GameInfo",
+      "question": "Que dois-tu faire pour t'échapper si le Dirigeable t'attrape ?",
+      "answers": [
+        "Tu dois répondre correctement à la question du quiz",
+        "Tu dois ramer plus vite",
+        "Tu dois abattre le dirigeable",
+        "Tu dois sauter à l'eau"
+      ],
+      "answerUids": [
+        "TUT_FR_000019_1",
+        "TUT_FR_000019_2",
+        "TUT_FR_000019_3",
+        "TUT_FR_000019_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000042_0",
+      "baseId": "TUT_000042",
+      "id": 42,
+      "category": "GameInfo",
+      "question": "Où puis-je consulter les règles du didacticiel ?",
+      "answers": [
+        "En ouvrant le panneau d'information",
+        "En consultant la page principale",
+        "En visitant la page Patreon",
+        "Sur la page Facebook"
+      ],
+      "answerUids": [
+        "TUT_FR_000042_1",
+        "TUT_FR_000042_2",
+        "TUT_FR_000042_3",
+        "TUT_FR_000042_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000053_0",
+      "baseId": "TUT_000053",
+      "id": 53,
+      "category": "GameInfo",
+      "question": "Quelles sont les monnaies utilisées dans le jeu ?",
+      "answers": [
+        "Crédit Pirate et Talent",
+        "Or et Argent",
+        "Gros et Denier",
+        "Sous et Thalairs"
+      ],
+      "answerUids": [
+        "TUT_FR_000053_1",
+        "TUT_FR_000053_2",
+        "TUT_FR_000053_3",
+        "TUT_FR_000053_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000054_0",
+      "baseId": "TUT_000054",
+      "id": 54,
+      "category": "GameInfo",
+      "question": "Que faut-il pour la consécration d'un livre au Sanctuaire en plus de la Copie ?",
+      "answers": [
+        "Du Talent",
+        "Une prière",
+        "200 crédits pirates",
+        "Un sacrifice"
+      ],
+      "answerUids": [
+        "TUT_FR_000054_1",
+        "TUT_FR_000054_2",
+        "TUT_FR_000054_3",
+        "TUT_FR_000054_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000055_0",
+      "baseId": "TUT_000055",
+      "id": 55,
+      "category": "GameInfo",
+      "question": "Comment pouvez-vous soutenir le jeu eBookPirates ?",
+      "answers": [
+        "Patreon, PayPal",
+        "Avec des éloges",
+        "En regardant des publicités",
+        "Par un sacrifice de sang"
+      ],
+      "answerUids": [
+        "TUT_FR_000055_1",
+        "TUT_FR_000055_2",
+        "TUT_FR_000055_3",
+        "TUT_FR_000055_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000056_0",
+      "baseId": "TUT_000056",
+      "id": 56,
+      "category": "GameInfo",
+      "question": "Combien de membranes sont nécessaires pour fabriquer un rouleau ?",
+      "answers": [
+        "Trente",
+        "Cinquante",
+        "Une par paragraphe",
+        "Douze"
+      ],
+      "answerUids": [
+        "TUT_FR_000056_1",
+        "TUT_FR_000056_2",
+        "TUT_FR_000056_3",
+        "TUT_FR_000056_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000057_0",
+      "baseId": "TUT_000057",
+      "id": 57,
+      "category": "GameInfo",
+      "question": "Combien de rouleaux sont nécessaires pour fabriquer une copie ?",
+      "answers": [
+        "Tous les rouleaux du livre",
+        "Trente",
+        "Douze",
+        "Cinquante"
+      ],
+      "answerUids": [
+        "TUT_FR_000057_1",
+        "TUT_FR_000057_2",
+        "TUT_FR_000057_3",
+        "TUT_FR_000057_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000058_0",
+      "baseId": "TUT_000058",
+      "id": 58,
+      "category": "GameInfo",
+      "question": "Où pouvez-vous accepter des quêtes ?",
+      "answers": [
+        "À la Taverne",
+        "Chez le Maître du port",
+        "Au Sanctuaire du Livre",
+        "À la Bibliothèque"
+      ],
+      "answerUids": [
+        "TUT_FR_000058_1",
+        "TUT_FR_000058_2",
+        "TUT_FR_000058_3",
+        "TUT_FR_000058_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000059_0",
+      "baseId": "TUT_000059",
+      "id": 59,
+      "category": "GameInfo",
+      "question": "Où pouvez-vous lire vos parchemins et rouleaux ?",
+      "answers": [
+        "À la Bibliothèque",
+        "À la Taverne",
+        "Chez le Capitaine du port",
+        "Au Sanctuaire du Livre"
+      ],
+      "answerUids": [
+        "TUT_FR_000059_1",
+        "TUT_FR_000059_2",
+        "TUT_FR_000059_3",
+        "TUT_FR_000059_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000060_0",
+      "baseId": "TUT_000060",
+      "id": 60,
+      "category": "GameInfo",
+      "question": "Quel est le résultat de la consécration d'un livre ?",
+      "answers": [
+        ".ePub téléchargeable + 10 copies",
+        "Le livre peut être revendu ensuite",
+        "Le joueur monte d'un niveau",
+        "1000 crédits pirates"
+      ],
+      "answerUids": [
+        "TUT_FR_000060_1",
+        "TUT_FR_000060_2",
+        "TUT_FR_000060_3",
+        "TUT_FR_000060_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "TUT_FR_000061_0",
+      "baseId": "TUT_000061",
+      "id": 61,
+      "category": "GameInfo",
+      "question": "Quelle est la punition réservée aux voleurs de livres ?",
+      "answers": [
+        "Prison des Livres, mur de la honte",
+        "Supplice de la cale",
+        "Bannissement immédiat",
+        "Une simple amende"
+      ],
+      "answerUids": [
+        "TUT_FR_000061_1",
+        "TUT_FR_000061_2",
+        "TUT_FR_000061_3",
+        "TUT_FR_000061_4"
+      ],
+      "correctIndex": 0
+    }
+  ],
+  "TUTORZEP": [
+    {
+      "uid": "ZEP_FR_000008_0",
+      "baseId": "ZEP_000008",
+      "id": 8,
+      "category": "TUTORZEP",
+      "question": "Quand a lieu le Festival international du livre de Budapest ?",
+      "answers": [
+        "En octobre",
+        "En septembre",
+        "En juin",
+        "En mai"
+      ],
+      "answerUids": [
+        "ZEP_FR_000008_1",
+        "ZEP_FR_000008_2",
+        "ZEP_FR_000008_3",
+        "ZEP_FR_000008_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000009_0",
+      "baseId": "ZEP_000009",
+      "id": 9,
+      "category": "TUTORZEP",
+      "question": "De quelle nationalité était Selma Lagerlöf ?",
+      "answers": [
+        "suédois",
+        "danois",
+        "finlandais",
+        "norvégien"
+      ],
+      "answerUids": [
+        "ZEP_FR_000009_1",
+        "ZEP_FR_000009_2",
+        "ZEP_FR_000009_3",
+        "ZEP_FR_000009_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000022_0",
+      "baseId": "ZEP_000022",
+      "id": 22,
+      "category": "TUTORZEP",
+      "question": "Qui est le terrifiant capitaine pirate du roman L'Île au Trésor ?",
+      "answers": [
+        "Long John Argent",
+        "Capitaine Flint",
+        "Capitaine Crochet",
+        "Jack Sparrow"
+      ],
+      "answerUids": [
+        "ZEP_FR_000022_1",
+        "ZEP_FR_000022_2",
+        "ZEP_FR_000022_3",
+        "ZEP_FR_000022_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000023_0",
+      "baseId": "ZEP_000023",
+      "id": 23,
+      "category": "TUTORZEP",
+      "question": "Qui mène le baleinier Pequod contre Moby Dick ?",
+      "answers": [
+        "Capitaine Achab",
+        "Capitaine Némo",
+        "Jim Hawkins",
+        "Robinson Crusoé"
+      ],
+      "answerUids": [
+        "ZEP_FR_000023_1",
+        "ZEP_FR_000023_2",
+        "ZEP_FR_000023_3",
+        "ZEP_FR_000023_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000024_0",
+      "baseId": "ZEP_000024",
+      "id": 24,
+      "category": "TUTORZEP",
+      "question": "Quel roman de Jules Verne parle d'un groupe d'écoliers ?",
+      "answers": [
+        "Vacances de deux ans",
+        "L'île mystérieuse",
+        "Capitaine Némo",
+        "Enfants du capitaine Grant"
+      ],
+      "answerUids": [
+        "ZEP_FR_000024_1",
+        "ZEP_FR_000024_2",
+        "ZEP_FR_000024_3",
+        "ZEP_FR_000024_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000025_0",
+      "baseId": "ZEP_000025",
+      "id": 25,
+      "category": "TUTORZEP",
+      "question": "Quel est le nom du compagnon indigène de Robinson Crusoé ?",
+      "answers": [
+        "Vendredi",
+        "Samedi",
+        "Jeudi",
+        "Jim"
+      ],
+      "answerUids": [
+        "ZEP_FR_000025_1",
+        "ZEP_FR_000025_2",
+        "ZEP_FR_000025_3",
+        "ZEP_FR_000025_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000026_0",
+      "baseId": "ZEP_000026",
+      "id": 26,
+      "category": "TUTORZEP",
+      "question": "Qui est l'ennemi juré de Peter Pan ?",
+      "answers": [
+        "Capitaine Crochet",
+        "Barbe Noire",
+        "Capitaine Morgan",
+        "Capitaine Barbosa"
+      ],
+      "answerUids": [
+        "ZEP_FR_000026_1",
+        "ZEP_FR_000026_2",
+        "ZEP_FR_000026_3",
+        "ZEP_FR_000026_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000027_0",
+      "baseId": "ZEP_000027",
+      "id": 27,
+      "category": "TUTORZEP",
+      "question": "Ulysse se bouche les oreilles avec de la cire pour entendre le chant de quelles créatures marines ?",
+      "answers": [
+        "Aucun d'entre eux",
+        "Sirènes",
+        "Harpies",
+        "Sirènes"
+      ],
+      "answerUids": [
+        "ZEP_FR_000027_1",
+        "ZEP_FR_000027_2",
+        "ZEP_FR_000027_3",
+        "ZEP_FR_000027_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000028_0",
+      "baseId": "ZEP_000028",
+      "id": 28,
+      "category": "TUTORZEP",
+      "question": "Quelles créatures habitent cette île dans la satire de Jonathan Swift ?",
+      "answers": [
+        "Lilliputiens",
+        "Géants",
+        "Mouton",
+        "je hausse les épaules"
+      ],
+      "answerUids": [
+        "ZEP_FR_000028_1",
+        "ZEP_FR_000028_2",
+        "ZEP_FR_000028_3",
+        "ZEP_FR_000028_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000029_0",
+      "baseId": "ZEP_000029",
+      "id": 29,
+      "category": "TUTORZEP",
+      "question": "Qui est le jeune noble qui est le quatrième à rejoindre les gardes du corps royaux ?",
+      "answers": [
+        "D'Artagnan",
+        "Athos",
+        "Aramis",
+        "Porthos"
+      ],
+      "answerUids": [
+        "ZEP_FR_000029_1",
+        "ZEP_FR_000029_2",
+        "ZEP_FR_000029_3",
+        "ZEP_FR_000029_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000030_0",
+      "baseId": "ZEP_000030",
+      "id": 30,
+      "category": "TUTORZEP",
+      "question": "Quelles structures ordinaires Don Quichotte considère-t-il comme des géants maléfiques ?",
+      "answers": [
+        "Moulins à vent",
+        "Phares",
+        "Groupes",
+        "Points de vue"
+      ],
+      "answerUids": [
+        "ZEP_FR_000030_1",
+        "ZEP_FR_000030_2",
+        "ZEP_FR_000030_3",
+        "ZEP_FR_000030_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000031_0",
+      "baseId": "ZEP_000031",
+      "id": 31,
+      "category": "TUTORZEP",
+      "question": "Qui est le personnage principal de R. A. Salvatore ?",
+      "answers": [
+        "Drizzt Do'Urden",
+        "Sable et Glokta",
+        "Drus",
+        "Raistlin"
+      ],
+      "answerUids": [
+        "ZEP_FR_000031_1",
+        "ZEP_FR_000031_2",
+        "ZEP_FR_000031_3",
+        "ZEP_FR_000031_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000033_0",
+      "baseId": "ZEP_000033",
+      "id": 33,
+      "category": "TUTORZEP",
+      "question": "Quel héros d'écrivain est Lord Havelock Vétérini ?",
+      "answers": [
+        "Terry Pratchett",
+        "R. A. Salvatore",
+        "Michael Ende",
+        "Jeffrey Stone"
+      ],
+      "answerUids": [
+        "ZEP_FR_000033_1",
+        "ZEP_FR_000033_2",
+        "ZEP_FR_000033_3",
+        "ZEP_FR_000033_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000034_0",
+      "baseId": "ZEP_000034",
+      "id": 34,
+      "category": "TUTORZEP",
+      "question": "Quel guerrier héroïque Arnold Schwarzenegger a-t-il incarné au cinéma ?",
+      "answers": [
+        "Conan le Barbare",
+        "Druss la Légende",
+        "Mersant le Sombre",
+        "Tom Bombadil"
+      ],
+      "answerUids": [
+        "ZEP_FR_000034_1",
+        "ZEP_FR_000034_2",
+        "ZEP_FR_000034_3",
+        "ZEP_FR_000034_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000035_0",
+      "baseId": "ZEP_000035",
+      "id": 35,
+      "category": "TUTORZEP",
+      "question": "Dans quel univers imaginaire évolue le héros Leon Silver ?",
+      "answers": [
+        "Chérubion",
+        "Ynev",
+        "Worluk",
+        "Ammerunia"
+      ],
+      "answerUids": [
+        "ZEP_FR_000035_1",
+        "ZEP_FR_000035_2",
+        "ZEP_FR_000035_3",
+        "ZEP_FR_000035_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000037_0",
+      "baseId": "ZEP_000037",
+      "id": 37,
+      "category": "TUTORZEP",
+      "question": "Combien de jours Willy Fogg a-t-il voyagé autour du monde ?",
+      "answers": [
+        "soixante dix neuf",
+        "Quatre-vingts",
+        "Quatre-vingt-un",
+        "Finalement ça n'a pas marché"
+      ],
+      "answerUids": [
+        "ZEP_FR_000037_1",
+        "ZEP_FR_000037_2",
+        "ZEP_FR_000037_3",
+        "ZEP_FR_000037_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000038_0",
+      "baseId": "ZEP_000038",
+      "id": 38,
+      "category": "TUTORZEP",
+      "question": "Sur quelle roue Brandon Sanderson a-t-il écrit ?",
+      "answers": [
+        "Le temps",
+        "Destin",
+        "Le char",
+        "La chance"
+      ],
+      "answerUids": [
+        "ZEP_FR_000038_1",
+        "ZEP_FR_000038_2",
+        "ZEP_FR_000038_3",
+        "ZEP_FR_000038_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000039_0",
+      "baseId": "ZEP_000039",
+      "id": 39,
+      "category": "TUTORZEP",
+      "question": "Leigh Bardugo a-t-il écrit sur la troisième maison ?",
+      "answers": [
+        "Neuvième",
+        "Dixième",
+        "Septième",
+        "D'abord"
+      ],
+      "answerUids": [
+        "ZEP_FR_000039_1",
+        "ZEP_FR_000039_2",
+        "ZEP_FR_000039_3",
+        "ZEP_FR_000039_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000040_0",
+      "baseId": "ZEP_000040",
+      "id": 40,
+      "category": "TUTORZEP",
+      "question": "Par quelle citation commence le livre Le collier de la princesse ?",
+      "answers": [
+        "Béla Hamvas",
+        "Alexandre Dumas",
+        "Sándor Weöres",
+        "Lao Tseu"
+      ],
+      "answerUids": [
+        "ZEP_FR_000040_1",
+        "ZEP_FR_000040_2",
+        "ZEP_FR_000040_3",
+        "ZEP_FR_000040_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000041_0",
+      "baseId": "ZEP_000041",
+      "id": 41,
+      "category": "TUTORZEP",
+      "question": "Selon Shelby Van Pelt, combien de bras le bonheur a-t-il ?",
+      "answers": [
+        "Huit",
+        "Quatre",
+        "Il est trois heures et demie",
+        "Deux"
+      ],
+      "answerUids": [
+        "ZEP_FR_000041_1",
+        "ZEP_FR_000041_2",
+        "ZEP_FR_000041_3",
+        "ZEP_FR_000041_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000043_0",
+      "baseId": "ZEP_000043",
+      "id": 43,
+      "category": "TUTORZEP",
+      "question": "Où Agatha Christie a-t-elle écrit une partie importante de ses célèbres romans policiers ?",
+      "answers": [
+        "Assis dans sa baignoire",
+        "Dans le bureau de son éditeur",
+        "Dans un café à Londres",
+        "Dans son étude"
+      ],
+      "answerUids": [
+        "ZEP_FR_000043_1",
+        "ZEP_FR_000043_2",
+        "ZEP_FR_000043_3",
+        "ZEP_FR_000043_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000044_0",
+      "baseId": "ZEP_000044",
+      "id": 44,
+      "category": "TUTORZEP",
+      "question": "Pourquoi J.K. Le premier livre Harry Potter de Rowling dans un café ?",
+      "answers": [
+        "Parce qu'il avait froid à la maison",
+        "Il adorait le bruit de fond",
+        "Il a modelé les personnages sur les invités",
+        "Il a reçu du café et des gâteaux gratuits"
+      ],
+      "answerUids": [
+        "ZEP_FR_000044_1",
+        "ZEP_FR_000044_2",
+        "ZEP_FR_000044_3",
+        "ZEP_FR_000044_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000045_0",
+      "baseId": "ZEP_000045",
+      "id": 45,
+      "category": "TUTORZEP",
+      "question": "Quel livre Stephen King ne se souvient-il pas avoir écrit à cause de la drogue ?",
+      "answers": [
+        "Cool",
+        "Le brillant",
+        "Le (Il)",
+        "Sématiste pour animaux de compagnie"
+      ],
+      "answerUids": [
+        "ZEP_FR_000045_1",
+        "ZEP_FR_000045_2",
+        "ZEP_FR_000045_3",
+        "ZEP_FR_000045_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000046_0",
+      "baseId": "ZEP_000046",
+      "id": 46,
+      "category": "TUTORZEP",
+      "question": "Quel musicien de rock voulait jouer le rôle de Gollum dans le film Le Seigneur des Anneaux ?",
+      "answers": [
+        "John Lennon",
+        "Bon Jovi",
+        "Axel Rose",
+        "Ozzy Osbourne"
+      ],
+      "answerUids": [
+        "ZEP_FR_000046_1",
+        "ZEP_FR_000046_2",
+        "ZEP_FR_000046_3",
+        "ZEP_FR_000046_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000047_0",
+      "baseId": "ZEP_000047",
+      "id": 47,
+      "category": "TUTORZEP",
+      "question": "Qu'est-ce qui a inspiré Frank Herbert pour écrire « Dune » ?",
+      "answers": [
+        "Un projet gouvernemental",
+        "Un rapport de la NASA sur Mars",
+        "Des vacances dans le désert",
+        "Un cauchemar"
+      ],
+      "answerUids": [
+        "ZEP_FR_000047_1",
+        "ZEP_FR_000047_2",
+        "ZEP_FR_000047_3",
+        "ZEP_FR_000047_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000048_0",
+      "baseId": "ZEP_000048",
+      "id": 48,
+      "category": "TUTORZEP",
+      "question": "Qu'a fait protéger légalement Edgar Rice Burroughs ?",
+      "answers": [
+        "Le cri de Tarzan",
+        "Le langage des gorilles",
+        "Le nom de Tarzan",
+        "Le titre « Seigneur de la jungle »"
+      ],
+      "answerUids": [
+        "ZEP_FR_000048_1",
+        "ZEP_FR_000048_2",
+        "ZEP_FR_000048_3",
+        "ZEP_FR_000048_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000049_0",
+      "baseId": "ZEP_000049",
+      "id": 49,
+      "category": "TUTORZEP",
+      "question": "Que fait Pinocchio avec les grillons dans le livre original ?",
+      "answers": [
+        "Il l'aplatit avec un marteau",
+        "Il l'enferme dans une boîte d'allumettes sombre",
+        "Il le vend à un cirque ambulant",
+        "Il le jette par la fenêtre"
+      ],
+      "answerUids": [
+        "ZEP_FR_000049_1",
+        "ZEP_FR_000049_2",
+        "ZEP_FR_000049_3",
+        "ZEP_FR_000049_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000050_0",
+      "baseId": "ZEP_000050",
+      "id": 50,
+      "category": "TUTORZEP",
+      "question": "Quel livre classique a inspiré Batman ?",
+      "answers": [
+        "Dracula",
+        "Frankenstein",
+        "L'Homme invisible",
+        "Dr Jekyll et Mr Hyde"
+      ],
+      "answerUids": [
+        "ZEP_FR_000050_1",
+        "ZEP_FR_000050_2",
+        "ZEP_FR_000050_3",
+        "ZEP_FR_000050_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000051_0",
+      "baseId": "ZEP_000051",
+      "id": 51,
+      "category": "TUTORZEP",
+      "question": "D'où vient le code numérique vert emblématique de Matrix ?",
+      "answers": [
+        "Extrait du livre de cuisine japonaise de la femme du créateur",
+        "Extrait d'un manuel de physique russe",
+        "Extrait d'un ancien catalogue d'une usine de meubles suédoise",
+        "D'un papyrus égyptien ancien"
+      ],
+      "answerUids": [
+        "ZEP_FR_000051_1",
+        "ZEP_FR_000051_2",
+        "ZEP_FR_000051_3",
+        "ZEP_FR_000051_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000052_0",
+      "baseId": "ZEP_000052",
+      "id": 52,
+      "category": "TUTORZEP",
+      "question": "Quel événement réel a inspiré le « Mariage rouge » de Game of Thrones ?",
+      "answers": [
+        "Un massacre médiéval écossais, le Black Supper",
+        "Le mariage de vengeance de la princesse Olga de Kiev",
+        "Le massacre nocturne de la Saint-Barthélemy en France",
+        "II. Le scandaleux dîner de noces du roi Édouard d'Angleterre"
+      ],
+      "answerUids": [
+        "ZEP_FR_000052_1",
+        "ZEP_FR_000052_2",
+        "ZEP_FR_000052_3",
+        "ZEP_FR_000052_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000062_0",
+      "baseId": "ZEP_000062",
+      "id": 62,
+      "category": "TUTORZEP",
+      "question": "Quel faux fait contenu dans le Da Vinci Code a été officiellement démenti par le Louvre ?",
+      "answers": [
+        "Que la pyramide de verre est composée de 666 plaques de verre",
+        "Qu'un extraterrestre puisse être vu derrière la Joconde",
+        "Que sous le musée se trouve le véritable tombeau de Jésus",
+        "Que le directeur du musée était le grand maître d'un ordre médiéval de chevaliers"
+      ],
+      "answerUids": [
+        "ZEP_FR_000062_1",
+        "ZEP_FR_000062_2",
+        "ZEP_FR_000062_3",
+        "ZEP_FR_000062_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000063_0",
+      "baseId": "ZEP_000063",
+      "id": 63,
+      "category": "TUTORZEP",
+      "question": "Qu'est-ce qui a donné à William Steig l'idée du nom de Shrek ?",
+      "answers": [
+        "Le mot yiddish pour « Schreck ».",
+        "Une tourbière écossaise appelée Skriech",
+        "Un mercenaire allemand médiéval nommé Shreck",
+        "Son voisin nommé Shreck"
+      ],
+      "answerUids": [
+        "ZEP_FR_000063_1",
+        "ZEP_FR_000063_2",
+        "ZEP_FR_000063_3",
+        "ZEP_FR_000063_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000064_0",
+      "baseId": "ZEP_000064",
+      "id": 64,
+      "category": "TUTORZEP",
+      "question": "Sur qui Ian Fleming a-t-il modelé le Q des épisodes de James Bond ?",
+      "answers": [
+        "Un II. à propos d'un expert en bombes de la Seconde Guerre mondiale",
+        "À propos d'un horloger londonien",
+        "À propos de l'assistant d'Albert Einstein",
+        "À propos de vous"
+      ],
+      "answerUids": [
+        "ZEP_FR_000064_1",
+        "ZEP_FR_000064_2",
+        "ZEP_FR_000064_3",
+        "ZEP_FR_000064_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000065_0",
+      "baseId": "ZEP_000065",
+      "id": 65,
+      "category": "TUTORZEP",
+      "question": "Qui était réellement le comte Dracula dans l'Histoire ?",
+      "answers": [
+        "Le prince Vlad l'Empaleur (Vlad Țepeș)",
+        "Un roi bavarois fou",
+        "Un inquisiteur espagnol",
+        "Un tueur en série londonien"
+      ],
+      "answerUids": [
+        "ZEP_FR_000065_1",
+        "ZEP_FR_000065_2",
+        "ZEP_FR_000065_3",
+        "ZEP_FR_000065_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000066_0",
+      "baseId": "ZEP_000066",
+      "id": 66,
+      "category": "TUTORZEP",
+      "question": "Quelle phobie a inspiré Stan Lee à écrire Spider-Man ?",
+      "answers": [
+        "Il détestait les mouches",
+        "C'était spacieux",
+        "C'était une araignée",
+        "Il détestait les masques"
+      ],
+      "answerUids": [
+        "ZEP_FR_000066_1",
+        "ZEP_FR_000066_2",
+        "ZEP_FR_000066_3",
+        "ZEP_FR_000066_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000067_0",
+      "baseId": "ZEP_000067",
+      "id": 67,
+      "category": "TUTORZEP",
+      "question": "Qu'est-ce qui a donné à Michael Crichton l'idée d'écrire Jurassic Park ?",
+      "answers": [
+        "Il s'intéressait au clonage de gènes",
+        "Il voulait trouver la viande la plus chère",
+        "Un cauchemar de dinosaures",
+        "Le projet scolaire de sa petite fille"
+      ],
+      "answerUids": [
+        "ZEP_FR_000067_1",
+        "ZEP_FR_000067_2",
+        "ZEP_FR_000067_3",
+        "ZEP_FR_000067_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000068_0",
+      "baseId": "ZEP_000068",
+      "id": 68,
+      "category": "TUTORZEP",
+      "question": "Quel personnage littéraire célèbre a été inspiré par un vrai petit garçon dodu ?",
+      "answers": [
+        "Jean-Christophe de Winnie l'ourson",
+        "Neville Londubat de Harry Potter",
+        "Augustus Gloop de Charlie et la Chocolaterie",
+        "Arthur Gombóc des contes Pom Pom"
+      ],
+      "answerUids": [
+        "ZEP_FR_000068_1",
+        "ZEP_FR_000068_2",
+        "ZEP_FR_000068_3",
+        "ZEP_FR_000068_4"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "uid": "ZEP_FR_000069_0",
+      "baseId": "ZEP_000069",
+      "id": 69,
+      "category": "TUTORZEP",
+      "question": "Ce qui a été fermé en l'honneur de Victor Hugo à sa mort",
+      "answers": [
+        "Tous les bordels de Paris",
+        "Votre café préféré",
+        "L'hippodrome",
+        "Vos pubs préférés"
+      ],
+      "answerUids": [
+        "ZEP_FR_000069_1",
+        "ZEP_FR_000069_2",
+        "ZEP_FR_000069_3",
+        "ZEP_FR_000069_4"
+      ],
+      "correctIndex": 0
+    }
+  ]
+}

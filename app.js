@@ -767,7 +767,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
         }
 
         // 2. Tutorial Iframe események
-        if (event.data.type !== 'EBOOK_PIRATES_TUTORIAL') return;
+        if (event.data.type !== 'EBOOK_PIRATES_TUTORIAL' && event.data.action !== 'navigate_to_page') return;
         console.log('🎮 [Global] Tutorial Iframe esemény érkezett:', event.data);
 
         if (event.data.action === 'saveTutorialState') {
@@ -780,6 +780,7 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 });
             }
         } else if (event.data.action === 'tutorial_completed') {
+            window.userTutorialCompleted = true;
 // === [#HEX:F.06.02.00] START | name: callBackend | lines: 18 ===
 // @calls: [#HEX:B.06.06.00], [#HEX:F.04.FC.00], [#HEX:D.07.2B.00] | @calledBy: none
             callBackend('markTutorialCompleted', ['3d_tutorial', event.data], function (res) {
@@ -813,16 +814,17 @@ if (typeof window !== 'undefined' && !window._ebpGlobalTutorialMessageBound) {
                 }
             }
         } else if (event.data.action === 'start_hartyahalaszat') {
-            console.log('🎣 Átlépés a hivatalos Hártyahalászat minijátékba (minigame_fishing.html)...');
+            console.log('🎣 Átlépés a hivatalos Hártyahalászat minijátékba (WXXX_G_R_GEN_WHL_X0X_wb01_wrapper.html)...');
             var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
             var host = document.getElementById('tutorial-unity-host');
             if (host) {
                 host.innerHTML = '';
                 var iframe = document.createElement('iframe');
-                iframe.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&v=' + Date.now();
+                iframe.src = 'WXXX_G_R_GEN_WHL_X0X_wb01_wrapper.html?token=' + encodeURIComponent(token) + '&from=tutorial&v=' + Date.now();
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = '0';
+                iframe.setAttribute('allowfullscreen', 'true');
                 iframe.setAttribute('allow', 'autoplay; fullscreen');
                 iframe.setAttribute('title', 'eBookPirates Hártyahalászat');
                 host.appendChild(iframe);
@@ -3299,6 +3301,7 @@ function runTutorialScript() {
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.style.border = '0';
+        iframe.setAttribute('allowfullscreen', 'true');
         iframe.setAttribute('allow', 'autoplay; fullscreen');
         iframe.setAttribute('title', 'eBookPirates Tutorial');
 
@@ -3339,11 +3342,11 @@ function runTutorialScript() {
         var isLoadParam = (flow && flow.isLoad === true) ? '&load=1' : '';
         var tokenParam = token ? ('&token=' + encodeURIComponent(token)) : '';
 
-        // OK jelzés híján a játék közvetlenül a tutorial_fixed.html indításával indul, NE a MainMenuTutorialt töltse be!
+        // OK jelzés híján a játék közvetlenül a TUTORIAL_game.html indításával indul, NE a MainMenuTutorialt töltse be!
         if (!isCompleted) {
-            unityTargetUrl = 'demojatek/tutorial_fixed.html?lang=' + encodeURIComponent(curLang) + isLoadParam + tokenParam + '&v=' + Date.now();
+            unityTargetUrl = 'demojatek/TUTORIAL_game.html?mode=tutorial&new=1&lang=' + encodeURIComponent(curLang) + isLoadParam + tokenParam + '&v=' + Date.now();
         } else {
-            unityTargetUrl = 'demojatek/MainMenuTutorial.html?mode=completed&lang=' + encodeURIComponent(curLang) + isLoadParam + tokenParam + '&v=' + Date.now();
+            unityTargetUrl = 'demojatek/TUTORIAL_MainMenu.html?mode=completed&lang=' + encodeURIComponent(curLang) + isLoadParam + tokenParam + '&v=' + Date.now();
         }
 
         gamePanel.style.display = 'block';
@@ -29729,7 +29732,7 @@ function loadGamePage(sessionData) {
 
                     var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || '';
                     var shipId = (typeof selectedShipForDeparture !== 'undefined' && selectedShipForDeparture) ? selectedShipForDeparture.id : '';
-                    minigameFrame.src = 'minigame_fishing.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
+                    minigameFrame.src = 'WXXX_G_R_GEN_WHL_X0X_wb01_wrapper.html?token=' + encodeURIComponent(token) + '&shipId=' + encodeURIComponent(shipId) + '&v=' + Date.now();
                 });
 // === [#HEX:F.07.0E.00] END ===
                 return;

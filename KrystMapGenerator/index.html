@@ -1,0 +1,2687 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kryst Kartográfiai Térkép Műhely (v3.2)</title>
+
+  <script type="module" crossorigin src="./bundles/index-BjINurpp.js"></script>
+  <link rel="stylesheet" crossorigin href="./bundles/index-2zeFE-3q.css">
+  <script>
+    (function () {
+      if (window.location.search.indexOf('fullscreen=1') === -1 || window.self !== window.top) return;
+      function enterFs() {
+        var el = document.documentElement;
+        var rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (rfs && !document.fullscreenElement && !document.webkitFullscreenElement) {
+          try { rfs.call(el).catch(function () {}); } catch (e) {}
+        }
+        document.removeEventListener('click', enterFs, true);
+      }
+      window.addEventListener('DOMContentLoaded', enterFs);
+      document.addEventListener('click', enterFs, true);
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <span class="brand-icon">🧭</span>
+      <div>
+        <div class="brand-title">KRYST KARTOGRÁFIAI TÉRKÉP MŰHELY</div>
+        <div class="brand-subtitle">Procedurális Szigetvilág, Hajónapló AI & Pecsétnyomó Stúdió</div>
+      </div>
+    </div>
+    <div class="header-status">
+      <!-- Térkép Nagyítás & Görgethető Felület Vezérlő -->
+      <div class="zoom-control-group"
+        style="display: flex; align-items: center; gap: 4px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-brass, #c29b38); border-radius: 4px; padding: 2px 8px;">
+        <span style="font-size: 12px;" title="Térkép Nagyítás / Lépték">🔍</span>
+        <label for="inputMapZoomPercent"
+          style="font-size: 10px; color: #d4af37; font-weight: bold; margin-right: 2px;">Nagyítás:</label>
+        <button id="btnZoomOut" class="btn-zoom-step" title="Kicsinyítés (-10%)"
+          style="background: none; border: none; color: #fef08a; cursor: pointer; padding: 0 4px; font-weight: bold; font-size: 13px; line-height: 1;">−</button>
+        <input type="number" id="inputMapZoomPercent" class="field-input" value="100" min="25" max="400" step="5"
+          style="width: 52px; height: 22px; text-align: center; padding: 2px; font-size: 11px; font-family: monospace; background: #0f172a; color: #fef08a; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 3px;">
+        <span style="font-size: 11px; color: #fef08a; font-family: monospace; margin-right: 4px;">%</span>
+        <button id="btnZoomIn" class="btn-zoom-step" title="Nagyítás (+10%)"
+          style="background: none; border: none; color: #fef08a; cursor: pointer; padding: 0 4px; font-weight: bold; font-size: 13px; line-height: 1;">+</button>
+        <button id="btnZoomFit" class="btn-secondary" title="Illesztés a szerkesztő ablakhoz (Auto-Fit)"
+          style="padding: 1px 6px; font-size: 10px; height: 22px; line-height: 20px;">Fit</button>
+        <button id="btnZoom100" class="btn-secondary" title="100% Valós méret (1:1 képpont)"
+          style="padding: 1px 6px; font-size: 10px; height: 22px; line-height: 20px;">100%</button>
+      </div>
+
+      <!-- Térkép Méretarány (Lépték) & Vektorgrafikus Mérőrúd Vezérlő -->
+      <div class="scale-ratio-group"
+        style="display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-brass, #c29b38); border-radius: 4px; padding: 2px 10px; height: 28px;">
+        <span style="font-size: 13px;" title="Térkép Méretarány / Lépték">📐</span>
+        <label for="selectMapScaleRatio"
+          style="font-size: 10px; color: #d4af37; font-weight: bold; margin-right: 2px;">Lépték:</label>
+        <select id="selectMapScaleRatio" class="field-select"
+          style="height: 22px; padding: 1px 6px; font-size: 11px; font-family: monospace; background: #0f172a; color: #fef08a; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 3px; cursor: pointer;">
+          <optgroup label="Szobabelső, Tárna & Épület (Szint 4-5)">
+            <option value="1:10">1:10 (Szobabelső / Részlet)</option>
+            <option value="1:25">1:25 (Folyosó / Raktár / Terem)</option>
+            <option value="1:50">1:50 (Épületszint / Tárna)</option>
+            <option value="1:100">1:100 (Épület / Kazamata)</option>
+            <option value="1:250">1:250 (Udvarház / Erődítmény)</option>
+            <option value="1:500">1:500 (Bányajárat / Barlangrendszer)</option>
+          </optgroup>
+          <optgroup label="Település, Kikötő & Helyszín (Szint 3)">
+            <option value="1:1000">1:1 000 (Városrész / Kikötőmedence)</option>
+            <option value="1:2500">1:2 500 (Kisváros / Falu / Öböl)</option>
+            <option value="1:5000">1:5 000 (Várostérkép / Helyszín)</option>
+            <option value="1:10000">1:10 000 (Nagyváros & Környéke)</option>
+          </optgroup>
+          <optgroup label="Körzet, Sziget & Régió (Szint 1-2)">
+            <option value="1:25000">1:25 000 (Helyi / Részletes Táj)</option>
+            <option value="1:50000" selected>1:50 000 (Körzet / Sziget)</option>
+            <option value="1:100000">1:100 000 (Kis Régió / Szigetcsoport)</option>
+            <option value="1:250000">1:250 000 (Közepes Régió)</option>
+            <option value="1:500000">1:500 000 (Nagy Térség / Tartomány)</option>
+          </optgroup>
+          <optgroup label="Kontinentális & Világtérkép (Szint 0)">
+            <option value="1:1000000">1:1 000 000 (Főrégió / Tenger)</option>
+            <option value="1:2500000">1:2 500 000 (Abrigó Kontinentális Világtérkép)</option>
+            <option value="1:5000000">1:5 000 000 (Bolygó / Óceáni Félgömb)</option>
+          </optgroup>
+          <option value="custom">✏️ Egyéni lépték (1:N)...</option>
+        </select>
+        <input type="text" id="inputCustomScaleRatio" class="field-input" placeholder="1:750"
+          title="Szabadon beírható egyéni lépték (pl. 1:75, 1:1500, 1:2500000)"
+          style="display: none; width: 76px; height: 22px; padding: 1px 5px; font-size: 11px; font-family: monospace; background: #0f172a; color: #6ee7b7; border: 1px solid #34d399; border-radius: 3px;">
+
+        <!-- Megfogható Mérőrúd Kapcsoló / Gomb -->
+        <button id="btnToggleScaleBar" class="btn-secondary"
+          style="padding: 1px 8px; font-size: 10px; height: 22px; line-height: 20px; display: flex; align-items: center; gap: 4px; border-color: #fde68a; color: #fef08a;"
+          title="Fekete-fehér tengerészeti mérőrúd megjelenítése a vásznon (kurzorral megfogható, vonszolható, forgatás: Shift + klikk)">
+          <span>📏</span> Mérőrúd
+        </button>
+      </div>
+
+      <!-- BYOK (Bring Your Own Key) Beállítások Gomb -->
+      <button id="btnOpenByokModal" class="btn-secondary"
+        style="padding: 2px 8px; font-size: 11px; height: 26px; display: flex; align-items: center; gap: 4px; border-color: rgba(212, 175, 55, 0.5); color: #cbd5e1;"
+        title="Saját Gemini API Kulcs Beállítása (BYOK)">
+        <span>🔑</span> BYOK
+      </button>
+
+      <!-- Zárolt Alaptérkép Jelvény (Kaland-szerkesztő Mód) -->
+      <span class="status-badge" id="readOnlyBasemapBadge"
+        style="display: none; background: rgba(180, 83, 9, 0.4); border-color: #f59e0b; color: #fde68a; font-weight: bold;"
+        title="Abrigó Kánon Térkép Védve! Csak a 6. (Útvonalak) és 7. (Döntési Gráf) réteg szerkeszthető.">🔒 Kánon
+        Védve (Kaland Mód)</span>
+
+      <span style="font-family: monospace; font-size: 11px; color: var(--text-muted);" id="resolutionBadge">1408 × 768
+        px</span>
+    </div>
+  </header>
+
+  <!-- Workspace -->
+  <main class="app-workspace">
+    <!-- Left Configuration Sidebar -->
+    <aside class="sidebar-panel">
+      <!-- 1. Alapvető Térkép Tulajdonságok -->
+      <section class="section-group">
+        <h3 class="section-title">
+          <span>📜 Kartográfiai Paraméterek</span>
+        </h3>
+
+        <div class="field-row">
+          <label class="field-label" for="mapTitleInput">Térkép Címe</label>
+          <input type="text" id="mapTitleInput" class="field-input" value="A Viharpart Ismeretlen Zátonyai">
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="captainNameInput">Térképész / Kapitány Neve</label>
+          <input type="text" id="captainNameInput" class="field-input" value="Korvettkapitány">
+        </div>
+
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="mapWidthInput">Szélesség (px)</label>
+            <input type="number" id="mapWidthInput" class="field-input" value="1408">
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="mapHeightInput">Magasság (px)</label>
+            <input type="number" id="mapHeightInput" class="field-input" value="768">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label">Szárazföld:Víz Arány</label>
+          <div class="range-wrap">
+            <input type="range" id="islandDensitySlider" class="range-slider" min="0.10" max="0.90" step="0.01"
+              value="0.48">
+            <span class="range-val" id="islandDensityVal">48:52</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="mapSeedInput">Alaptérkép Generálás (Seed)</label>
+          <div class="field-row-horizontal">
+            <input type="number" id="mapSeedInput" class="field-input" value="48291">
+            <button id="btnRandomSeed" class="btn-secondary" title="Új véletlenszerű mag és azonnali generálás">🎲 Új</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Szemantikai Hajónapló & Dokumentum Dokkoló -->
+      <section class="section-group">
+        <h3 class="section-title">
+          <span>📖 Hajónapló & Kézirat AI Dokkoló</span>
+          <span style="font-size: 9px; color: var(--brass-bright);">POI & Kép Kinyerő</span>
+        </h3>
+
+        <!-- Fájl Dokkoló Doboz -->
+        <div class="dropzone-box" id="docDropzone" style="margin-bottom: 8px;">
+          <input type="file" id="fileDocInput" accept=".docx,.epub,.md,.markdown,.txt,.html,.xhtml,.json,.png,.kryst"
+            style="display: none;">
+          <div class="dropzone-content">
+            <span class="dropzone-icon">📜</span>
+            <div class="dropzone-text"><strong>Dokkold a Hajónaplót, Kéziratot vagy Hibrid Térképet!</strong></div>
+            <div class="dropzone-hint">.kryst.map.png, .epub, .kryst, .docx, .md, .txt, .json (7-rétegű visszaállítás)</div>
+          </div>
+        </div>
+
+        <!-- Dokkolt Dokumentum Státuszkártya -->
+        <div class="doc-status-card" id="docStatusCard" style="display: none; margin-bottom: 8px;">
+          <div class="doc-status-header">
+            <span style="font-size: 16px;">📜</span>
+            <div style="flex: 1; overflow: hidden;">
+              <div class="doc-status-title" id="lblDocTitle">hajonaplo_viharpart.docx</div>
+              <div class="doc-status-meta" id="lblDocMeta">1 240 szó · docx · Forrás összekapcsolva</div>
+            </div>
+            <button id="btnRemoveDoc" class="btn-image-del" title="Dokumentum leválasztása">✕</button>
+          </div>
+          <div class="doc-status-badge" id="lblDocImageBadge" style="display: none;">
+            🖼️ Beágyazott térképvázlat kinyerve és a Kép Dropzone-ba töltve!
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="shipLogInput">Hajónapló Szövege / Fejezet Kivonat</label>
+          <textarea id="shipLogInput" class="field-textarea"
+            placeholder="Írd be vagy dokkold a hajónapló szövegét...">Viharos orkán tört ki a Viharpart és a Paideia-öböl zátonyainál. A sziklák megrongálták a hajótestet, de a kapitánynak sikerült menedékbe navigálnia. A parthoz közeli ősi szentély barlangjában egy vasalt kincsesládát rejtettek el, melyben rubintokat és ősi rúnákat őriznek.</textarea>
+        </div>
+      </section>
+
+      <!-- 3. Kanonikus Kapu & Bióma Választó (Step 3) -->
+      <section class="section-group">
+        <h3 class="section-title">
+          <span>🌍 Kanonikus Kapu & Abrigo Bióma</span>
+        </h3>
+
+        <div class="field-row">
+          <label class="field-label" for="selectWorldType">Ontológiai Világkánon</label>
+          <select id="selectWorldType" class="field-select">
+            <option value="abrigo_canonical" selected>Abrigo Óvilág Kánon (16 Régió)</option>
+            <option value="kryst_book_universe">.kryst Kristálykönyv Univerzum</option>
+          </select>
+        </div>
+
+        <div class="field-row" id="rowAbrigoRegion">
+          <label class="field-label" for="selectAbrigoRegion">16 Kanonikus Abrigo Régió</label>
+          <select id="selectAbrigoRegion" class="field-select">
+            <option value="viharpart" selected>A Viharpart / Viharportál (X: 737-870, Y: 520-660)</option>
+            <option value="sarkanygerinc">A Sárkánygerinc-hegység (X: 386-720, Y: 146-480)</option>
+            <option value="katarakbis">A Katarakbis Medencéje (X: 620-750, Y: 350-565)</option>
+            <option value="yogga">A Yogga-szigetek (X: 650-870, Y: 570-720)</option>
+            <option value="aria_szivfoldje">Aria Szívföldje (X: 985-1100, Y: 435-650)</option>
+            <option value="letter_tenger">A Letter-tenger (X: 230-550, Y: 470-680)</option>
+            <option value="deltavidek">A Deltavidék (X: 300-450, Y: 220-410)</option>
+            <option value="suttogo_fjordok">A Suttogó Fjordok (X: 80-280, Y: 18-250)</option>
+            <option value="agave">Az Agave Szigetbirodalom (X: 180-365, Y: 360-480)</option>
+            <option value="ovo_erdo">Az Óvó Erdő (X: 1040-1160, Y: 390-455)</option>
+            <option value="kiralydombok">A Királyok Dombjai (X: 970-1050, Y: 330-440)</option>
+            <option value="kiralysikok">A Keleti Királyok Síkja (X: 1080-1260, Y: 290-460)</option>
+            <option value="lektur_tenger">A Zsáner-tenger (X: 1180-1230, Y: 340-430)</option>
+            <option value="tuani">A Tu-a-ni Birodalom (X: 1060-1280, Y: 90-270)</option>
+            <option value="cultur_ocean">A Cultur-óceán (X: 0-1408, Y: 600-768)</option>
+            <option value="fagyvidek">Az Örök Fagy Koronája (X: 200-1060, Y: 0-150)</option>
+          </select>
+        </div>
+
+        <div class="field-row" id="rowBookUniverse" style="display: none;">
+          <label class="field-label" for="inputBookUniverse">Kapcsolt Kryst Könyv ID / Cím</label>
+          <input type="text" id="inputBookUniverse" class="field-input" placeholder="Pl. book_katarakbis_chronicles_01">
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="selectBiomeStyle">Kartográfiai Bióma & Tónus</label>
+          <select id="selectBiomeStyle" class="field-select">
+            <option value="tropical" selected>🏝️ Trópusi Szigetvilág & Korallzátony (Arany szépia)</option>
+            <option value="fjord">🏔️ Suttogó Fjordok & Jégtáblák (Hűvös szikla)</option>
+            <option value="swamp">🌾 Mocsaras Deltavidék (Zöldesbarna lagúna)</option>
+            <option value="volcanic">🌋 Parázs-hegy Vulkáni Zátonyok (Obszidián szépia)</option>
+          </select>
+        </div>
+
+        <!-- Szélrózsa, Tengeri Címer & Vektorgrafikus Cím-Kartus Eszközdoboz -->
+        <div class="compass-crest-toolbox" id="compassCrestToolbox">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11px; font-weight: bold; color: var(--brass-bright); font-family: 'Cinzel', serif;">
+              🧭 Szélrózsa, Címer & Vektoros Kartus
+            </span>
+            <span id="lblCompassCatalogCount" style="font-size: 9px; color: #6ee7b7; font-family: monospace;">262 elem</span>
+          </div>
+
+          <!-- Vektorgrafikus Alaptérkép Réteg Kapcsolók -->
+          <div style="display: flex; flex-direction: column; gap: 4px; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 4px; border: 1px solid rgba(194, 155, 56, 0.25); margin-bottom: 8px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 10px; color: #fef08a; cursor: pointer;">
+              <input type="checkbox" id="chkShowVectorBorder" checked style="accent-color: var(--brass-bright);">
+              <span>🖼️ Vektorgrafikus Margódíszítő Vonal & Keret</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 10px; color: #fef08a; cursor: pointer;">
+              <input type="checkbox" id="chkShowVectorCartouche" checked style="accent-color: var(--brass-bright);">
+              <span>📜 Dinamikusan Méreteződő Vektoros Cím-Kartus</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 10px; color: #fef08a; cursor: pointer;">
+              <input type="checkbox" id="chkShowCompassRose" checked style="accent-color: var(--brass-bright);">
+              <span>🧭 Antik Szélrózsa / Tengeri Címer Megjelenítése</span>
+            </label>
+          </div>
+
+          <!-- Kategória / Alcsoport szűrő & Kereső -->
+          <div class="field-row" style="margin-bottom: 5px;">
+            <label class="field-label" for="selectCompassSubgroup" style="font-size: 9px;">Címer & Szélrózsa Alcsoport</label>
+            <select id="selectCompassSubgroup" class="field-select" style="font-size: 10px; height: 26px; padding: 2px 6px; line-height: 1.2;">
+              <option value="all" selected>📚 Összes Szélrózsa & Tengeri Címer (7 Alcsoport)</option>
+            </select>
+          </div>
+
+          <div class="field-row" style="margin-bottom: 5px;">
+            <input type="text" id="inputCompassSearch" class="field-input" placeholder="🔍 Keresés név vagy sorszám szerint..."
+              style="font-size: 10px; height: 24px; padding: 2px 6px;">
+          </div>
+
+          <div class="field-row" style="margin-bottom: 6px;">
+            <label class="field-label" for="selectCompassOrCrest" style="font-size: 9px;">Aktív Szélrózsa / Tengeri Címer</label>
+            <select id="selectCompassOrCrest" class="field-select" style="font-size: 10px;">
+              <option value="canonical_vector" selected>🧭 Kanonikus Barokk Vektor Szélrózsa</option>
+              <!-- Dinamikusan feltöltve a compass_crest_catalog.json-ből -->
+            </select>
+          </div>
+
+          <!-- Kilistázott Vizuális Szélrózsa-Címer Galéria -->
+          <div class="compass-crest-grid" id="compassCrestGrid">
+            <!-- Dinamikusan renderelt címer/szélrózsa kártyák -->
+          </div>
+
+          <!-- Szélrózsa & Kartus Pozíció / Méret / Forgatás Finomhangoló -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                <label for="inputCompassScale">Szélrózsa Méret:</label>
+                <span id="lblCompassScaleVal" style="color: var(--brass-bright); font-family: monospace;">100%</span>
+              </div>
+              <input type="range" id="inputCompassScale" min="35" max="240" value="100" class="range-slider">
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                <label for="inputCompassRot">Forgatás:</label>
+                <span id="lblCompassRotVal" style="color: var(--brass-bright); font-family: monospace;">0°</span>
+              </div>
+              <input type="range" id="inputCompassRot" min="0" max="360" value="0" class="range-slider">
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                <label for="inputCompassX">Pozíció X:</label>
+                <span id="lblCompassXVal" style="color: var(--brass-bright); font-family: monospace;">88%</span>
+              </div>
+              <input type="range" id="inputCompassX" min="6" max="94" value="88" class="range-slider">
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                <label for="inputCompassY">Pozíció Y:</label>
+                <span id="lblCompassYVal" style="color: var(--brass-bright); font-family: monospace;">20%</span>
+              </div>
+              <input type="range" id="inputCompassY" min="8" max="92" value="20" class="range-slider">
+            </div>
+          </div>
+
+          <div class="field-row" style="margin-top: 6px; margin-bottom: 0;">
+            <label class="field-label" for="selectCartouchePosition" style="font-size: 9px;">Vektoros Cím-Kartus Pozíciója</label>
+            <select id="selectCartouchePosition" class="field-select" style="font-size: 10px; height: 26px; padding: 2px 6px; line-height: 1.2;">
+              <option value="bottom-right" selected>↘ Jobb alsó sarok (Klasszikus)</option>
+              <option value="bottom-left">↙ Bal alsó sarok</option>
+              <option value="bottom-center">⬇ Alsó közép (Széles pergamen szalag)</option>
+              <option value="top-right">↗ Jobb felső sarok</option>
+              <option value="top-left">↖ Bal felső sarok</option>
+              <option value="top-center">⬆ Felső közép (Széles pergamen szalag)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Saját Kép Bevitele (Zero-Metadata Dropzone) -->
+      <section class="section-group">
+        <h3 class="section-title">
+          <span>🛡️ Saját Kép Dropzone</span>
+          <span style="font-size: 9px; color: var(--brass-bright);">Zero-Metadata</span>
+        </h3>
+
+        <div class="dropzone-box" id="imageDropzone">
+          <input type="file" id="fileImageInput" accept="image/png,image/jpeg,image/webp" style="display: none;">
+          <div class="dropzone-content">
+            <span class="dropzone-icon">📥</span>
+            <div class="dropzone-text"><strong>Húzz ide egy képet</strong> vagy kattints a feltöltéshez!</div>
+            <div class="dropzone-hint">PNG, JPG, WEBP (Automatikus EXIF/GPS megsemmisítés)</div>
+          </div>
+        </div>
+
+        <!-- Feltöltött kép előnézet és beállítások -->
+        <div class="image-preview-card" id="imagePreviewCard" style="display: none;">
+          <div class="image-preview-thumb">
+            <img id="imgSanitizedThumb" src="" alt="Feltöltött kép">
+          </div>
+          <div class="image-preview-info">
+            <div class="image-preview-title" id="lblImageFileName">terkep_vazlat.png</div>
+            <div class="image-preview-badge">🛡️ EXIF Tisztítva (Tiszta Bitráta)</div>
+            <div class="image-preview-hash" id="lblImageHash">KRYST_FPR_...</div>
+          </div>
+          <button id="btnRemoveImage" class="btn-image-del" title="Kép eltávolítása">✕</button>
+        </div>
+
+        <div class="field-row" id="rowImageUsage" style="display: none;">
+          <label class="field-label" for="selectImageUsage">Kép Felhasználási Módja</label>
+          <select id="selectImageUsage" class="field-select">
+            <option value="background" selected>🖼️ Alaptérkép Háttérként (Helyi X-Y Pozicionálással, 0 Token)</option>
+            <option value="contour_mask">🧭 Kontúr & Szigetmaszkként (Pergamen rézkarccal)</option>
+            <option value="none">Nem használt (Csak referencia)</option>
+          </select>
+        </div>
+
+        <!-- 0-Token Háttérkép Vezérlők (Opacitás, Skála, X-Y Pozíció) -->
+        <div id="rowImageTransformControls" style="display: none; margin-top: 8px; flex-direction: column; gap: 6px; background: rgba(15, 23, 42, 0.75); padding: 8px; border-radius: 6px; border: 1px solid rgba(194, 155, 56, 0.35);">
+          <div class="field-row" style="margin-bottom: 2px;">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+              <label for="inputBgImageOpacity">Háttérkép Átlátszóság:</label>
+              <span id="lblBgImageOpacityVal" style="color: var(--brass-bright); font-family: monospace;">85%</span>
+            </div>
+            <input type="range" id="inputBgImageOpacity" min="10" max="100" value="85" class="range-slider" style="accent-color: var(--brass-bright);">
+          </div>
+          <div class="field-row" style="margin-bottom: 2px;">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+              <label for="inputBgImageScale">Háttérkép Méretarány:</label>
+              <span id="lblBgImageScaleVal" style="color: var(--brass-bright); font-family: monospace;">100%</span>
+            </div>
+            <input type="range" id="inputBgImageScale" min="15" max="300" value="100" class="range-slider" style="accent-color: var(--brass-bright);">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <div class="field-row" style="margin-bottom: 0;">
+              <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                <label for="inputBgImageOffsetX">Eltolás X:</label>
+                <span id="lblBgImageOffsetXVal" style="color: #6ee7b7; font-family: monospace;">0 px</span>
+              </div>
+              <input type="range" id="inputBgImageOffsetX" min="-1000" max="1000" value="0" step="2" class="range-slider" style="accent-color: #10b981;">
+            </div>
+            <div class="field-row" style="margin-bottom: 0;">
+              <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                <label for="inputBgImageOffsetY">Eltolás Y:</label>
+                <span id="lblBgImageOffsetYVal" style="color: #6ee7b7; font-family: monospace;">0 px</span>
+              </div>
+              <input type="range" id="inputBgImageOffsetY" min="-1000" max="1000" value="0" step="2" class="range-slider" style="accent-color: #10b981;">
+            </div>
+          </div>
+          <button type="button" id="btnResetBgImageTransform" class="btn-secondary" style="font-size: 10px; padding: 3px 6px; margin-top: 2px;">
+            🔄 Háttérkép Középre Igazítása (X:0, Y:0, 100%)
+          </button>
+        </div>
+      </section>
+
+      <!-- 5. Térkép-Hierarchia (Parent-Child Zoom & Regisztrációs Szám) -->
+      <section class="section-group">
+        <h3 class="section-title">
+          <span>🏛️ Térkép-Hierarchia & Beágyazás</span>
+        </h3>
+
+        <div class="field-row">
+          <label class="field-label" for="inputMapRegistrationNumber">Elsődleges Regisztrációs Szám</label>
+          <input type="text" id="inputMapRegistrationNumber" class="field-input" value="REG-0000-ABRIGO"
+            placeholder="Pl. REG-0301-OLTARIS" style="font-family: monospace; color: #fef08a; font-weight: bold;">
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="selectMapLevel">Hierarchia Szint</label>
+          <select id="selectMapLevel" class="field-select">
+            <option value="0" selected>Szint 0: Világtérkép (Abrigó - REG-0000-ABRIGO)</option>
+            <option value="1">Szint 1: Régiótérkép (Nagy kiterjedés)</option>
+            <option value="2">Szint 2: Körzettérkép / Szigetcsoport</option>
+            <option value="3">Szint 3: Helyszín / Várostérkép</option>
+            <option value="4">Szint 4: Épület / Katakomba / Barlang</option>
+            <option value="5">🌀 Szint 5: Belső Tér / Virtuális Kapu</option>
+          </select>
+        </div>
+
+        <div class="field-row" id="rowParentMapId">
+          <label class="field-label" for="inputParentMapId">Beágyazás Szülő Reg. Számba</label>
+          <input type="text" id="inputParentMapId" class="field-input" value="REG-0000-ABRIGO"
+            placeholder="Pl. REG-0000-ABRIGO vagy REG-0301-OLTARIS" style="font-family: monospace;">
+        </div>
+
+        <button id="btnLoadAbrigoMasterSidebar" class="btn-secondary"
+          style="margin-top: 4px; width: 100%; border-color: #10b981; color: #6ee7b7; font-size: 11px;"
+          title="Az Abrigó 7-rétegű Mester Világtérkép (REG-0000-ABRIGO) betöltése a szerkesztővászonra">
+          🌍 Abrigó 7-Rétegű Mestertérkép Betöltése
+        </button>
+
+        <div class="field-row" id="rowVirtualGate" style="display: none;">
+          <label class="field-label" for="inputVirtualGate">Virtuális Kapu Célvilág / Aréna</label>
+          <input type="text" id="inputVirtualGate" class="field-input" placeholder="Pl. minigame_threejs_harbor">
+        </div>
+      </section>
+
+      <!-- 6. Generálás és Exportálás -->
+      <section class="section-group">
+        <button id="btnVaultFallbackManual" class="btn-secondary"
+          style="margin-top: 6px; width: 100%; border-color: rgba(238, 200, 108, 0.4);"
+          title="Vektorizált alaptérkép behívása a 666-os tárból (0 Token)">
+          🏛️ Behívás a 666-os Alaptárból
+        </button>
+
+        <button id="btnOpenGamemasterModal" class="btn-primary"
+          style="margin-top: 6px; width: 100%; background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);"
+          title="Játékmester Kaland Betöltése, Generálása & 3D Játékindítás">
+          🤖 Játékmester Kaland & 3D Színpad
+        </button>
+
+        <button id="btnOpenMapRegistrarSidebar" class="btn-primary"
+          style="margin-top: 6px; width: 100%; background: linear-gradient(180deg, #059669 0%, #047857 100%); border-color: #34d399;"
+          title="Jelenlegi Térkép Regisztrálása (Az előzetes beállítások szerint a Kánon Világtérképre vagy a Fiktív Térképtárba)">
+          🌍 Térkép Regisztrálása
+        </button>
+
+        <button id="btnFinalizeMapUpdate" class="btn-primary"
+          style="margin-top: 6px; width: 100%; background: linear-gradient(180deg, #d97706 0%, #92400e 100%); border-color: #fbbf24;"
+          title="Véglegesen felülírja a már korábban elmentett térképet (főleg Abrigó Világtérképét REG-0000-ABRIGO az erre jogosultaknak) és elmenti az OPFS Monk Virtuális Lemezre">
+          💾🔒 Térképfrissítés Véglegesítése (Felülírás)
+        </button>
+
+        <div class="field-row" style="margin-top: 8px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+          <label class="field-label" for="selectPngExportScale" style="margin: 0; font-size: 11px;"
+            title="PNG és Mapbook export felbontási szorzó a nagyított pecsétnyomók és finom vektoros vonalak élességéhez">
+            🔍 Export Felbontás:
+          </label>
+          <select id="selectPngExportScale" class="field-select"
+            style="flex: 1; height: 24px; padding: 1px 6px; font-size: 11px; font-family: monospace;">
+            <option value="1">1× (Alap felbontás)</option>
+            <option value="2" selected>2× HD (Éles pecsétek)</option>
+            <option value="4">4× Ultra (Nagyítható / Nyomdai)</option>
+          </select>
+        </div>
+
+        <div class="action-bar-row">
+          <button id="btnDownloadPng" class="btn-secondary" style="flex: 1.2;"
+            title="Hibrid .kryst.map.png letöltése: szerkesztői jelektől mentes tiszta térképkép, beágyazott 7-rétegű JSON-nel és eBook olvasó metaadatokkal">
+            🖼️📦 Hibrid PNG (+JSON)
+          </button>
+          <button id="btnDownloadMapbookEpub" class="btn-secondary" style="flex: 1;"
+            title="Szabványos eBook olvasókban is megnyitható Mapbook (.kryst.map.epub) tiszta térképképpel, POI metaadat-táblával és 7-rétegű JSON-nel">
+            📖 Mapbook (.epub)
+          </button>
+          <button id="btnDownloadJson" class="btn-secondary" style="flex: 0.8;"
+            title="Teljes .kryst.map.json adathalmaz mentése">
+            📜 JSON
+          </button>
+        </div>
+
+        <button id="btnCopyJson" class="btn-primary"
+          style="margin-top: 6px; width: 100%; background: linear-gradient(180deg, #7c3aed 0%, #4c1d95 100%); border-color: #c084fc;"
+          title="A JSON adathalmazt és a tiszta PNG térképet közvetlenül a LET.kryst Szinkron Stúdióba (3. Arc: Térképszinkronizáló) küldi, és megnyitja a Stúdiót">
+          🎙️ Küldés a LET.kryst Szinkron Stúdióba (3. Arc)
+        </button>
+      </section>
+    </aside>
+
+    <!-- Center Viewport Panel -->
+    <section class="viewport-panel">
+      <!-- Toolbar -->
+      <div class="viewport-toolbar">
+        <div class="toolbar-info">
+          <span id="mapInfoLabel">🧭 Nincs generált térkép</span>
+          <span id="regionBadge" style="display:none;" class="status-badge">Kánoni Régió</span>
+        </div>
+        <div class="mode-switch-group">
+          <button id="btnModeLandmass" class="btn-mode"
+            title="1. Réteg: Szárazföld Formáló (Sziget-építés és tenger-faragás 2D vektoros unióval és kivonással)">
+            🏝️ Szárazföld
+          </button>
+          <button id="btnModeElevation" class="btn-mode"
+            title="2. Réteg: Domborzati szintek kifestése (16 színű szintvonal-festő)">
+            🏔️ Domborzat
+          </button>
+          <button id="btnModeSymbols" class="btn-mode"
+            title="3. Réteg: Konszenzusos Térképjelek & Felületi Textúrák (Vektoros POI ikonok és felületkitöltő minták)">
+            🏛️ Térképjelek & Textúrák
+          </button>
+          <button id="btnModeVectorZone" class="btn-mode"
+            title="4. Réteg: Láthatatlan Vektorterület Festő (Fekete, Fehér, Piros, Rózsaszín zónák)">
+            🛡️ Zónák
+          </button>
+          <button id="btnModeStamp" class="btn-mode active"
+            title="5. Réteg: Pecsétek lehelyezése és horgonyok kijelölése">
+            🧭 Pecsét Mód
+          </button>
+          <button id="btnModeTravelogue" class="btn-mode" title="6. Réteg: Szekvenciális utaztató útvonal láncolása">
+            🚩 Utaztató Útvonal
+          </button>
+          <button id="btnModeGamebook" class="btn-mode"
+            title="7. Réteg: Kaland-Játék-Kockázat döntési elágazások húzása">
+            🔀 Döntési Gráf
+          </button>
+        </div>
+        <div class="toolbar-actions-right">
+          <button id="btnToggleDrawer" class="btn-drawer-tab" title="Műhely / Pecséttár Oldalsáv Ki/Be">
+            🎨 Pecséttár Fiók
+          </button>
+        </div>
+      </div>
+
+      <!-- Stamp / Narrative Tool Active Banner -->
+      <div class="stamp-tool-banner" id="stampToolBanner">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span id="bannerIcon">🎨</span>
+          <span id="bannerStampLabel"><strong>PECSÉT KÉZBEN:</strong> Kattints a térképre a lehelyezéshez! (Görgő:
+            Méret, Shift+Görgő: Forgatás)</span>
+        </div>
+        <button id="btnCancelActiveStamp" class="btn-secondary" style="padding: 2px 8px; font-size: 10px;">✕
+          Letétel</button>
+      </div>
+
+      <!-- Lebegő Figyelmeztető Toast (Zóna Egybefüggőség Eldobásakor) -->
+      <div id="zoneWarningToast" class="zone-warning-toast" style="display: none;">
+        <span class="toast-icon">⚠️</span>
+        <span id="zoneWarningToastText">Nem engedélyezett művelet!</span>
+      </div>
+
+      <!-- Lebegő 666-os Tár & AI Tokenhiány Riasztás Toast -->
+      <div id="vaultAlertToast" class="vault-alert-toast" style="display: none;">
+        <span class="toast-icon">🏛️</span>
+        <div class="vault-toast-body">
+          <div class="vault-toast-title" id="vaultToastTitle">AI TOKENHIÁNY / LIMITTÚLLÉPÉS ÉSZLELVE!</div>
+          <div class="vault-toast-desc" id="vaultToastDesc">A külső AI kapcsolat nem elérhető. A 666-os tárolt
+            alaptárból betöltöttünk egy vektorizált alaptérképet.</div>
+        </div>
+        <button id="btnCloseVaultToast" class="btn-image-del"
+          style="margin-left: 12px; width: 22px; height: 22px; font-size: 11px; padding: 0; line-height: 22px;"
+          title="Értesítés bezárása">✕</button>
+      </div>
+
+      <!-- Canvas Container -->
+      <div class="canvas-container" id="canvasContainer">
+        <!-- Zárolt Alaptérkép Lebegő Sáv -->
+        <div id="readOnlyBasemapBanner" class="readonly-basemap-banner" style="display: none;">
+          <span style="font-size: 14px;">🔒</span>
+          <span>Kánon Alaptérkép ZÁROLVA — A földrajzi rétegek (1-5.) védettek. Kizárólag a 6. (Útvonalak) és 7.
+            (Döntési Gráf) szerkeszthető!</span>
+          <button id="btnUnlockBasemapFictional" class="btn-secondary"
+            style="background: rgba(0,0,0,0.4); border-color: #fde68a; color: #fde68a; padding: 1px 8px; font-size: 10px; margin-left: 6px;">Másolás
+            Fiktív Térképként (Szabad szerkesztés)</button>
+        </div>
+        <div class="parchment-frame">
+          <canvas id="mapCanvas" width="1408" height="768"></canvas>
+        </div>
+      </div>
+
+      <!-- POI Inspector Drawer -->
+      <div class="poi-inspector-bar">
+        <div class="poi-bar-title">
+          <span>📍 Horgonypontok & Pecsétnyomók Leltára</span>
+          <span id="poiCountBadge" style="color: var(--text-muted); font-size: 10px;">0 POI</span>
+        </div>
+        <div class="poi-cards-grid" id="poiGrid">
+          <div style="font-size: 11px; color: var(--text-muted); padding: 8px;">Generálj egy térképet vagy helyezz el
+            egy pecsétet!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right-Hand Workshop Drawer Panel (Domborzat & Pecséttár) -->
+    <aside class="stamp-drawer-panel" id="stampDrawerPanel">
+      <div class="section-title"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span id="drawerTitle">🎨 Pecsétnyomó Műhely</span>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span id="stampTotalBadge" class="stamp-total-badge" title="Pecsétek száma az aktuális kategóriában">...
+            db</span>
+          <button id="btnCloseDrawer" class="btn-image-del" title="Oldalsáv összecsukása"
+            style="width: 22px; height: 22px; font-size: 11px; padding: 0; line-height: 22px;">✕</button>
+        </div>
+      </div>
+
+      <!-- 0. Szárazföld Formáló Szekció (1. Réteg Oldalsáv) -->
+      <div id="landmassDrawerSection" class="drawer-section" style="display: none;">
+        <div class="elevation-toolbar" id="landmassToolbar">
+
+          <!-- 1. 2D Vektoros Szárazföld-Formáló Eszköztár -->
+          <div class="elev-group">
+            <div class="elev-group-header">
+              <span class="elev-label">Formáló Művelet:</span>
+              <span id="landActiveModeBadge" class="elev-active-badge"
+                style="background: rgba(34,197,94,0.18); color: #4ade80; border-color: rgba(34,197,94,0.4);">➕
+                Szárazföld Építés</span>
+            </div>
+            <div class="elev-actions-row" style="margin-top: 6px;">
+              <button id="btnLandAdd" class="btn-secondary btn-elev-action active active-add"
+                title="Szárazföld hozzáadása (Unió halmazművelet)">
+                ➕ Szárazföld Építés
+              </button>
+              <button id="btnLandCarve" class="btn-secondary btn-elev-action"
+                title="Tenger faragása (Kivonás halmazművelet)">
+                🌊 Tenger Faragás
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Ecsetméret -->
+          <div class="elev-group">
+            <div class="elev-drawer-sliders">
+              <div class="elev-slider-unit">
+                <div class="transform-label">
+                  <span>Ecsetméret:</span>
+                  <span id="valLandBrushSize" class="elev-val">36px</span>
+                </div>
+                <input type="range" id="inputLandBrushSize" min="4" max="120" value="36"
+                  class="transform-slider elev-slider">
+              </div>
+            </div>
+
+            <!-- 4. Történetvezérlés & Műveletek -->
+            <div class="elev-actions-row" style="margin-top: 8px;">
+              <button id="btnLandUndo" class="btn-secondary btn-elev-action" title="Utolsó vonás visszavonása (Undo)">
+                ↩️ Vissza
+              </button>
+              <button id="btnLandRedo" class="btn-secondary btn-elev-action"
+                title="Visszavont vonás újra végrehajtása (Redo)">
+                ↪️ Előre
+              </button>
+              <button id="btnLandReset" class="btn-secondary btn-elev-action"
+                title="Visszaállítás az eredetileg generált szigetekre">
+                🔄 Alaphelyzet
+              </button>
+              <button id="btnLandClear" class="btn-secondary btn-elev-action"
+                title="Teljes tengerre tisztítás (0 szárazföld)" style="color: #ff9999;">
+                🌊 Tiszta Tenger
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. Kanonikus Tipp Doboz -->
+          <div class="elev-drawer-hint">
+            💡 <strong>1. Réteg: Alaptérkép & Szárazföld:</strong><br>
+            • A <strong>Determinisztikus Mag</strong> és <strong>Sűrűség</strong> alapján bármikor újragenerálhatod az
+            alaptérképet.<br>
+            • A ➕ <strong>Szárazföld Építés</strong> unióval ($A \cup B$) növeli a szigeteket.<br>
+            • A 🌊 <strong>Tenger Faragás</strong> ($A \setminus B$) csatornákat és öblöket vág a szárazföldbe.<br>
+            • A vásznon az <strong>egérgörgővel</strong> fokozatmentesen állíthatod az ecsetméretet!
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. Domborzati Kifestő Szekció (2. Réteg Oldalsáv) -->
+      <div id="elevationDrawerSection" class="drawer-section" style="display: none;">
+        <div class="elevation-toolbar" id="elevationToolbar">
+          <div class="elev-group elev-palette-section">
+            <div class="elev-group-header">
+              <span class="elev-label">Kiválasztott Szint:</span>
+              <span id="elevActiveBadge" class="elev-active-badge">Alföld (0..100m)</span>
+            </div>
+            <div class="elev-swatches-grid" id="elevSwatchesGrid"></div>
+          </div>
+
+          <div class="elev-group elev-controls-section">
+            <div class="elev-drawer-sliders">
+              <div class="elev-slider-unit">
+                <div class="transform-label">
+                  <span>Ecsetméret:</span>
+                  <span id="valElevBrushSize" class="elev-val">22px</span>
+                </div>
+                <input type="range" id="inputElevBrushSize" min="4" max="80" value="22"
+                  class="transform-slider elev-slider">
+              </div>
+
+              <div class="elev-slider-unit">
+                <div class="transform-label">
+                  <span>Áttetszőség:</span>
+                  <span id="valElevOpacity" class="elev-val">65%</span>
+                </div>
+                <input type="range" id="inputElevOpacity" min="10" max="100" value="65"
+                  class="transform-slider elev-slider">
+              </div>
+            </div>
+
+            <div class="elev-actions-row">
+              <button id="btnElevEraser" class="btn-secondary btn-elev-action"
+                title="Radír (Színek visszatörlése az alaptérképig)">
+                🧹 Radír
+              </button>
+              <button id="btnElevUndo" class="btn-secondary btn-elev-action" title="Visszavonás (Undo)">
+                ↩️ Vissza
+              </button>
+              <button id="btnElevRedo" class="btn-secondary btn-elev-action" title="Újra (Redo)">
+                ↪️ Előre
+              </button>
+              <button id="btnElevToggle" class="btn-secondary btn-elev-action active"
+                title="Domborzati réteg ki/bekapcsolása">
+                👁️ Látható
+              </button>
+              <button id="btnElevClear" class="btn-secondary btn-elev-action" title="Teljes domborzati színezés törlése"
+                style="color: #ff9999;">
+                🗑️ Törlés
+              </button>
+            </div>
+
+            <div class="elev-drawer-hint">
+              💡 <strong>Tipp:</strong> A vásznon a kurzor <strong>+</strong> jelének nagysága közvetlenül az ecset
+              méretét mutatja! Görgővel is növelhető/csökkenthető.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.5. Konszenzusos Térképjelek & Textúrák Szekció (3. Réteg Oldalsáv) -->
+      <div id="symbolsDrawerSection" class="drawer-section" style="display: none;">
+        <div class="symbols-toolbar" id="symbolsToolbar">
+
+          <!-- 1. Fülváltó: Térképjelek & Ikonok vs. Felületi Textúrák -->
+          <div class="symbols-tabs-header">
+            <button id="tabBtnSymbols" class="symbols-tab-btn active" type="button">
+              📍 Térképjelek & Ikonok
+            </button>
+            <button id="tabBtnTextures" class="symbols-tab-btn" type="button">
+              🧱 Felületi Textúrák
+            </button>
+          </div>
+
+          <!-- ======================================================== -->
+          <!-- A. FÜL: TÉRKÉPJELEK & IKONOK                             -->
+          <!-- ======================================================== -->
+          <div id="tabContentSymbols" class="symbols-tab-content">
+            <!-- Szöveges szabadszavas kereső -->
+            <div class="symbols-search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="inputSymbolSearch" class="symbols-search-input"
+                placeholder="Keresés térképjelek között (pl. torony, vár, kút)...">
+              <button id="btnClearSymbolSearch" class="symbols-clear-btn" title="Keresés törlése"
+                style="display:none;">✕</button>
+            </div>
+
+            <!-- Kategória Szűrőchipek -->
+            <div class="symbols-chips-row" id="symbolCategoryChips">
+              <button class="symbols-chip active" data-cat="all">Mind (700+)</button>
+              <button class="symbols-chip" data-cat="interior">🚪 Belső Tér & Berendezés</button>
+              <button class="symbols-chip" data-cat="navigation">⚓ Tengerészet & Vizek</button>
+              <button class="symbols-chip" data-cat="settlement">🏘️ Város & Épület</button>
+              <button class="symbols-chip" data-cat="structure">🏛️ Építmény & Fal</button>
+              <button class="symbols-chip" data-cat="fantasy">🏰 Fantasy & Kaland</button>
+              <button class="symbols-chip" data-cat="nature">🌲 Természet</button>
+              <button class="symbols-chip" data-cat="domborzat">⛰️ Domborzat</button>
+              <button class="symbols-chip" data-cat="hazard">📍 Jelzők & Veszélyek</button>
+              <button class="symbols-chip" data-cat="military">🎖️ Katonai & Veszély</button>
+              <button class="symbols-chip" data-cat="modern">🏙️ Modern Város</button>
+              <button class="symbols-chip" data-cat="transport">✈️ Közlekedés</button>
+              <button class="symbols-chip" data-cat="industrial">🏭 Ipar & Sci-Fi</button>
+            </div>
+
+            <!-- Szimbólumok rácsa -->
+            <div class="symbols-grid-container" id="symbolsGrid">
+              <!-- Dinamikusan renderelt szimbólum kártyák -->
+            </div>
+
+            <!-- Transzformációs & Stílus Vezérlő Panel -->
+            <div class="elev-group" style="margin-top: 10px;">
+              <div class="elev-group-header">
+                <span class="elev-label">Aktív Térképjel:</span>
+                <span id="symbolSelectedBadge" class="elev-active-badge">Világítótorony</span>
+              </div>
+
+              <!-- Méretarány csúszka -->
+              <div class="elev-control-row">
+                <div class="elev-control-label">
+                  <span>Méretarány:</span>
+                  <span id="valSymbolScale" class="elev-control-value">1.0x</span>
+                </div>
+                <input type="range" id="inputSymbolScale" class="elev-slider" min="30" max="250" value="100">
+              </div>
+
+              <!-- Forgatás csúszka -->
+              <div class="elev-control-row">
+                <div class="elev-control-label">
+                  <span>Forgatás:</span>
+                  <span id="valSymbolRot" class="elev-control-value">0°</span>
+                </div>
+                <input type="range" id="inputSymbolRot" class="elev-slider" min="0" max="360" value="0">
+              </div>
+
+              <!-- Színpaletta (8 kanonikus tus-szín) -->
+              <div class="symbol-color-section" style="margin-top: 8px;">
+                <div class="elev-control-label" style="margin-bottom: 6px;">
+                  <span>Tus Szín:</span>
+                  <span id="valSymbolColorHex"
+                    style="font-family: monospace; font-size: 11px; color: var(--gold-bright);">#2a1a0e</span>
+                </div>
+                <div class="symbol-swatches-grid" id="symbolSwatchesGrid">
+                  <button class="symbol-swatch active" data-color="#2a1a0e" style="background:#2a1a0e;"
+                    title="Antik Tus (#2a1a0e)"></button>
+                  <button class="symbol-swatch" data-color="#c29b38" style="background:#c29b38;"
+                    title="Királyi Arany (#c29b38)"></button>
+                  <button class="symbol-swatch" data-color="#e11d48" style="background:#e11d48;"
+                    title="Vérvörös (#e11d48)"></button>
+                  <button class="symbol-swatch" data-color="#0284c7" style="background:#0284c7;"
+                    title="Tengerkék (#0284c7)"></button>
+                  <button class="symbol-swatch" data-color="#166534" style="background:#166534;"
+                    title="Smaragdzöld (#166534)"></button>
+                  <button class="symbol-swatch" data-color="#111827" style="background:#111827;"
+                    title="Éjfekete (#111827)"></button>
+                  <button class="symbol-swatch" data-color="#7c3aed" style="background:#7c3aed;"
+                    title="Misztikus Lila (#7c3aed)"></button>
+                  <button class="symbol-swatch" data-color="#ffffff"
+                    style="background:#ffffff; border:1px solid #71717a;" title="Pergamenfehér (#ffffff)"></button>
+                </div>
+              </div>
+
+              <!-- Műveleti gombok -->
+              <div class="elev-actions-row" style="margin-top: 10px;">
+                <button id="btnDeleteSelectedSymbol" class="btn-elev-action btn-danger"
+                  title="Kijelölt jelölő törlése a térképről">
+                  🗑️ Kijelölt Törlése
+                </button>
+                <button id="btnClearAllSymbols" class="btn-elev-action" title="Minden lehelyezett szimbólum törlése">
+                  🧹 Összes Törlése
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ======================================================== -->
+          <!-- B. FÜL: FELÜLETI TEXTÚRÁK                                -->
+          <!-- ======================================================== -->
+          <div id="tabContentTextures" class="symbols-tab-content" style="display: none;">
+            <!-- Valós idejű kereső -->
+            <div class="symbols-search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="inputTextureSearch" class="symbols-search-input"
+                placeholder="Keresés textúrák között (macskakő, szikla, erdő)...">
+              <button id="btnClearTextureSearch" class="symbols-clear-btn" title="Keresés törlése"
+                style="display:none;">✕</button>
+            </div>
+
+            <!-- Kategória Szűrőchipek -->
+            <div class="symbols-chips-row" id="textureCategoryChips">
+              <button class="symbols-chip active" data-cat="all">Mind (Vektor)</button>
+              <button class="symbols-chip" data-cat="procedural">📐 Vektor Minták</button>
+              <button class="symbols-chip" data-cat="interior">🚪 Belső Padló & Tető</button>
+              <button class="symbols-chip" data-cat="cobblestone">🛣️ Macskakő & Utak</button>
+              <button class="symbols-chip" data-cat="stone">🧗 Szikla & Kőzet</button>
+              <button class="symbols-chip" data-cat="vegetation">🌲 Erdő & Nádas</button>
+              <button class="symbols-chip" data-cat="water">🌊 Víz & Áramlat</button>
+              <button class="symbols-chip" data-cat="sand">🏜️ Dűne & Homok</button>
+              <button class="symbols-chip" data-cat="brick">🧱 Várfal & Kötés</button>
+              <button class="symbols-chip" data-cat="fields">🌾 Szántó & Mező</button>
+            </div>
+
+            <!-- Textúrák rácsa -->
+            <div class="textures-grid-container" id="texturesGrid">
+              <!-- Dinamikusan generált kártyák -->
+            </div>
+
+            <!-- Ecset és Minta Vezérlők -->
+            <div class="elev-group" style="margin-top: 10px;">
+              <div class="elev-group-header">
+                <span class="elev-label">Textúra Ecset:</span>
+                <span id="textureActiveBadge" class="elev-active-badge">Antik Macskakő</span>
+              </div>
+
+              <!-- Festés vs. Radír Módkapcsoló -->
+              <div class="elev-mode-toggle-row">
+                <button id="btnTexturePaintMode" class="btn-toggle-submode active"
+                  title="Textúra felhordása a felületre">
+                  🖌️ Textúra Festés
+                </button>
+                <button id="btnTextureEraserMode" class="btn-toggle-submode" title="Textúra visszaradírozása">
+                  🧹 Textúra Radír
+                </button>
+              </div>
+
+              <!-- Ecsetméret -->
+              <div class="elev-control-row">
+                <div class="elev-control-label">
+                  <span>Ecsetméret:</span>
+                  <span id="valTextureBrushSize" class="elev-control-value">40 px</span>
+                </div>
+                <input type="range" id="inputTextureBrushSize" class="elev-slider" min="10" max="150" value="40">
+              </div>
+
+              <!-- Csempe Méretarány (Tile Scale) -->
+              <div class="elev-control-row">
+                <div class="elev-control-label">
+                  <span>Minta Méretarány:</span>
+                  <span id="valTextureTileScale" class="elev-control-value">1.0x</span>
+                </div>
+                <input type="range" id="inputTextureTileScale" class="elev-slider" min="25" max="300" value="100">
+              </div>
+
+              <!-- Opacitás -->
+              <div class="elev-control-row">
+                <div class="elev-control-label">
+                  <span>Átlátszatlanság:</span>
+                  <span id="valTextureOpacity" class="elev-control-value">85%</span>
+                </div>
+                <input type="range" id="inputTextureOpacity" class="elev-slider" min="10" max="100" value="85">
+              </div>
+
+              <!-- Műveleti gombok -->
+              <div class="elev-actions-row">
+                <button id="btnTextureUndo" class="btn-elev-action" title="Visszavonás (Ctrl+Z)">
+                  ↩️ Undo
+                </button>
+                <button id="btnTextureRedo" class="btn-elev-action" title="Újra (Ctrl+Y)">
+                  ↪️ Redo
+                </button>
+                <button id="btnClearAllTextures" class="btn-elev-action btn-danger"
+                  title="Minden festett textúra törlése">
+                  🗑️ Törlés
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Réteg Láthatóság & Globális Kapcsoló -->
+          <div class="elev-actions-row"
+            style="margin-top: 10px; border-top: 1px solid var(--border-gold); padding-top: 8px;">
+            <button id="btnSymbolsToggleVisibility" class="btn-elev-action" style="flex: 1;"
+              title="3. Réteg ki/bekapcsolása">
+              👁️ 3. Réteg Elrejtése
+            </button>
+          </div>
+
+          <!-- 3. Réteg Kanonikus Tipp Doboz -->
+          <div class="elev-drawer-hint" style="margin-top: 10px;">
+            💡 <strong>3. Réteg: Térképjelek & Textúrák Műhely:</strong><br>
+            • A 📍 <strong>Térképjelek & Ikonok</strong> kártyáira kattintva helyezhetsz el vektoros POI-kat a térképen.<br>
+            • A 🧱 <strong>Felületi Textúrák</strong> ecsettel macskaköves utakat, sziklás partokat és erdőségeket festhetsz a tájra.<br>
+            • A méretarány, forgatás és a 8 antik tus-szín tetszés szerint testreszabható!
+          </div>
+
+        </div>
+      </div>
+      <div id="vectorZoneDrawerSection" class="drawer-section" style="display: none;">
+        <div class="zone-toolbar" id="zoneToolbar">
+          <!-- Vektorterületek / Zónák Menedzser Listája -->
+          <div class="elev-group zone-selector-section">
+            <div class="elev-group-header">
+              <span class="elev-label">Kiválasztott Vektorterület:</span>
+              <span id="zoneCountBadge" class="status-badge"
+                style="background: rgba(194, 155, 56, 0.2); color: var(--brass-bright);">3 zóna</span>
+            </div>
+            <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px; position: relative;">
+              <!-- Egzakt CSS Színes Négyzetes Zónaválasztó (#e11d48, #000000, #ffffff, #ec4899) -->
+              <div id="customZoneDropdown" class="custom-zone-dropdown">
+                <button type="button" id="btnZoneDropdownTrigger" class="custom-zone-trigger">
+                  <span id="triggerZoneSquare" class="zone-square-badge" style="background-color: #e11d48;"></span>
+                  <span id="triggerZoneName" class="zone-name-text">HAJÓSIRATÓ ZÁTONY</span>
+                  <span id="triggerZoneDanger" class="zone-danger-tag">(Halálos)</span>
+                  <span class="dropdown-chevron">▼</span>
+                </button>
+                <div id="zoneDropdownMenu" class="custom-zone-menu" style="display: none;">
+                  <!-- Dinamikusan feltöltve a zónaelemekkel és valódi CSS négyzetekkel -->
+                </div>
+              </div>
+              <select id="selectActiveZone" style="display: none;">
+                <!-- Rejtett kompatibilitási select -->
+              </select>
+              <button id="btnCreateZone" class="btn-primary"
+                style="padding: 5px 8px; font-size: 11px; white-space: nowrap;"
+                title="Új független vektorterület hozzáadása">
+                ➕ Új Zóna
+              </button>
+              <button id="btnDeleteZone" class="btn-image-del" title="Aktív Zóna Törlése"
+                style="width: 28px; height: 28px; font-size: 12px; line-height: 28px; flex-shrink: 0;">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <!-- Kiválasztott Zóna Attribútum Szerkesztő Panel -->
+          <div class="elev-group zone-metadata-box">
+            <div class="zone-meta-header">
+              <span id="zoneMetaTitle">📋 Zóna Attribútumok</span>
+              <span id="zoneMetaKeyBadge" class="status-badge" style="background:#e11d48; color:#fff;">red</span>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label" for="inputZoneName">Zóna / Földrajzi Terület Neve</label>
+              <input type="text" id="inputZoneName" class="field-input"
+                placeholder="Pl. HAJÓSIRATÓ ZÁTONY vagy Ork-hegység">
+              <div id="zoneNameErrorNotice" class="zone-name-error-badge" style="display: none;">
+                <span>⚠️</span>
+                <span id="zoneNameErrorText">Ez a név már foglalt! Minden zónának egyedi névvel kell
+                  rendelkeznie.</span>
+              </div>
+            </div>
+
+            <!-- 4 Kanonikus Határoló Színválasztó a szomszédos területek elválasztására (Négyszín-tétel) -->
+            <div class="field-row">
+              <label class="field-label">Elhatároló Szín (Négyszín-tétel / Unióvédelem)</label>
+              <div class="zone-swatches-grid">
+                <button type="button" class="zone-swatch-btn active" data-zone-color="red" id="btnZoneRed"
+                  title="Piros (#e11d48) elhatároló szín">
+                  <span class="zone-swatch-dot" style="background-color: #e11d48;"></span>
+                </button>
+                <button type="button" class="zone-swatch-btn" data-zone-color="white" id="btnZoneWhite"
+                  title="Fehér (#ffffff) elhatároló szín">
+                  <span class="zone-swatch-dot" style="background-color: #ffffff; border: 1px solid #71717a;"></span>
+                </button>
+                <button type="button" class="zone-swatch-btn" data-zone-color="black" id="btnZoneBlack"
+                  title="Fekete (#000000) elhatároló szín">
+                  <span class="zone-swatch-dot" style="background-color: #000000; border: 1px solid #52525b;"></span>
+                </button>
+                <button type="button" class="zone-swatch-btn" data-zone-color="pink" id="btnZonePink"
+                  title="Rózsaszín (#ec4899) elhatároló szín">
+                  <span class="zone-swatch-dot" style="background-color: #ec4899;"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label" for="selectZoneDanger">Veszélyességi Besorolás</label>
+              <select id="selectZoneDanger" class="field-select">
+                <option value="1">1: 🟢 Békés (Menedék, falu, kereskedelmi rév)</option>
+                <option value="2">2: 🟡 Figyelmeztetés (Zord hegyvidék, vadállatok)</option>
+                <option value="3" selected>3: 🔴 Halálos (Hajózhatatlan zátonyok, ellenséges klánok)</option>
+                <option value="4">4: 🟣 Misztikus (Mágikus anomália, portál, örvény)</option>
+              </select>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label" for="inputZoneDesc">Földrajzi / Környezeti Tájleírás</label>
+              <textarea id="inputZoneDesc" class="field-textarea" rows="3"
+                placeholder="Írd le a terület természeti adottságait, a célkereszt alatt ez a leírás fog megjelenni..."></textarea>
+            </div>
+          </div>
+
+          <!-- Zóna Ecset & Csúszkák -->
+          <div class="elev-group elev-controls-section">
+            <div class="elev-drawer-sliders">
+              <div class="elev-slider-unit">
+                <div class="transform-label">
+                  <span>Zóna Ecsetméret:</span>
+                  <span id="valZoneBrushSize" class="elev-val">28px</span>
+                </div>
+                <input type="range" id="inputZoneBrushSize" min="4" max="100" value="28"
+                  class="transform-slider elev-slider">
+              </div>
+
+              <div class="elev-slider-unit">
+                <div class="transform-label">
+                  <span>Átfedési Opacitás:</span>
+                  <span id="valZoneOpacity" class="elev-val">38%</span>
+                </div>
+                <input type="range" id="inputZoneOpacity" min="10" max="90" value="38"
+                  class="transform-slider elev-slider">
+              </div>
+            </div>
+
+            <!-- Halmazműveleti gombok -->
+            <div class="elev-actions-row">
+              <button id="btnZoneEraser" class="btn-secondary btn-elev-action" title="Radír (Kivonás halmazművelet)">
+                🧹 Zóna Radír
+              </button>
+              <button id="btnZoneUndo" class="btn-secondary btn-elev-action" title="Visszavonás (Undo)">
+                ↩️ Vissza
+              </button>
+              <button id="btnZoneRedo" class="btn-secondary btn-elev-action" title="Újra (Redo)">
+                ↪️ Előre
+              </button>
+              <button id="btnZoneToggle" class="btn-secondary btn-elev-action active"
+                title="Vektorozó réteg ki/bekapcsolása">
+                👁️ Látható
+              </button>
+              <button id="btnZoneClear" class="btn-secondary btn-elev-action" title="Minden zóna törlése"
+                style="color: #ff9999;">
+                🗑️ Törlés
+              </button>
+            </div>
+          </div>
+
+          <div class="elev-drawer-hint">
+            💡 <strong>Többszáz Egyedi Vektorterület:</strong><br>
+            • Minden zónának <strong>saját egyedi neve és leírása</strong> van!<br>
+            • A 3 elhatároló szín a szomszédos területek <strong>összeolvadásának megelőzésére</strong> szolgál.<br>
+            • A térképen a célkereszttel rákattintva egy zónára azonnal kiválasztódik a listában!
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Pecsétnyomó Szekció (5. Réteg Oldalsáv) -->
+      <div id="stampDrawerSection" class="drawer-section">
+        <!-- Aktív Pecsét Transzformációs Vezérlő HUD -->
+        <div class="active-stamp-box" id="activeStampBox" style="display: none;">
+          <div class="active-stamp-header">
+            <div class="active-stamp-preview" id="activeStampPreview">
+              <span>📜</span>
+            </div>
+            <div class="active-stamp-info">
+              <div class="active-stamp-name" id="activeStampName">Nincs pecsét</div>
+              <div class="active-stamp-cat" id="activeStampCat">Kattints a térképre a lerakáshoz</div>
+            </div>
+          </div>
+
+          <div class="transform-controls-grid">
+            <div class="transform-item">
+              <div class="transform-label">
+                <span>Méretarány</span>
+                <span id="valScale">100%</span>
+              </div>
+              <input type="range" id="inputScale" class="transform-slider" min="20" max="300" value="100">
+            </div>
+
+            <div class="transform-item">
+              <div class="transform-label">
+                <span>Forgatás</span>
+                <span id="valRot">0°</span>
+              </div>
+              <input type="range" id="inputRot" class="transform-slider" min="0" max="360" value="0">
+            </div>
+
+            <div class="transform-item">
+              <div class="transform-label">
+                <span>Opacitás</span>
+                <span id="valOpacity">100%</span>
+              </div>
+              <input type="range" id="inputOpacity" class="transform-slider" min="20" max="100" value="100">
+            </div>
+
+            <div class="transform-item" style="justify-content: flex-end;">
+              <div class="checkbox-row">
+                <label>
+                  <input type="checkbox" id="chkFlipX"> Flip X
+                </label>
+                <label>
+                  <input type="checkbox" id="chkFlipY"> Flip Y
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pecsétkereső és Paletta Helye -->
+        <div id="stampOrganizerMount">
+          <div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 20px;">
+            ⏳ Pecsétkatalógus betöltése...
+          </div>
+        </div>
+
+        <!-- 5. Réteg Kanonikus Tipp Doboz -->
+        <div class="elev-drawer-hint" style="margin-top: 10px;">
+          💡 <strong>5. Réteg: Pecsét Mód & Horgonypontok:</strong><br>
+          • Válassz egy pecsétet a lenti leltárból, majd <strong>kattints a térképre</strong> a lehelyezéshez!<br>
+          • <strong>Egérgörgő:</strong> Átméretezés • <strong>Shift + Egérgörgő:</strong> Finom forgatás.<br>
+          • Minden lehelyezett pecsét automatikusan <strong>Horgonyponttá (POI)</strong> válik, amit az útvonalak és a kalandgráf is bevonhat.
+        </div>
+      </div>
+
+      <!-- 6. Utaztató Útvonal Szekció (6. Réteg Oldalsáv Műhely) -->
+      <div id="travelogueDrawerSection" class="drawer-section" style="display: none;">
+        <div class="travelogue-toolbar" id="travelogueToolbar">
+
+          <!-- 0/A. ELŐZETES ALAPTÉRKÉP & LÉPTÉK ÖSSZEOLVASZTÓ LÉPÉS (KrystNarrativeGraphService Kalibráció) -->
+          <div class="pre-merge-calibration-card" id="preMergeCalibrationCard">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 11px; font-weight: bold; color: #6ee7b7; font-family: 'Cinzel', serif;">
+                📐 Előzetes PNG & Lépték Összeolvasztó Lépés
+              </span>
+              <span id="lblPreMergeStatusBadge" class="status-badge" style="background: rgba(16, 185, 129, 0.25); border-color: #10b981; color: #a7f3d0; font-size: 9px;">Kalibrált</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; line-height: 1.35; margin-bottom: 6px;">
+              A <code>KrystNarrativeGraphService</code> a kész PNG térkép mérete és a fejlécen beállított <strong>Lépték</strong> alapján számítja ki az útvonalak és horgonyok valós távolságát.
+            </div>
+            <div class="pre-merge-metrics-grid">
+              <div class="pre-merge-metric-item">
+                <div class="pre-merge-metric-label">PNG Képméret</div>
+                <div class="pre-merge-metric-val" id="lblPreMergePngSize">1408 × 768 px</div>
+              </div>
+              <div class="pre-merge-metric-item">
+                <div class="pre-merge-metric-label">Aktív Lépték</div>
+                <div class="pre-merge-metric-val" id="lblPreMergeScale" style="color: #fef08a;">1:50 000</div>
+              </div>
+              <div class="pre-merge-metric-item">
+                <div class="pre-merge-metric-label">Valós Kiterjedés</div>
+                <div class="pre-merge-metric-val" id="lblPreMergeRealSpan">50.0 × 27.3 km</div>
+              </div>
+              <div class="pre-merge-metric-item">
+                <div class="pre-merge-metric-label">Pixel-Arány (1 px)</div>
+                <div class="pre-merge-metric-val" id="lblPreMergePixelPitch">1 px = 35.5 m</div>
+              </div>
+            </div>
+            <div id="lblPreMergeRouteLength" style="font-size: 10px; font-family: monospace; color: #fde68a; background: rgba(0,0,0,0.35); padding: 4px 6px; border-radius: 4px; margin-bottom: 6px;">
+              ⚓ 0 horgonypont • Útvonal összhossza: 0 m (0 px)
+            </div>
+            <div id="lblPreMergeWarning" style="display: none; font-size: 10px; color: #fca5a5; background: rgba(185, 28, 28, 0.25); border: 1px solid #ef4444; padding: 5px 7px; border-radius: 4px; margin-bottom: 6px;">
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" id="btnPreMergeAdjustScale" class="btn-secondary" style="flex: 1; font-size: 10px; padding: 4px 6px; border-color: #f59e0b; color: #fef08a;"
+                title="Ha nem megfelelő a lépték, visszalép az alaptérkép lépték-beállító mezőjéhez korrekcióra">
+                ⏪ Lépték Korrekció / Visszalépés
+              </button>
+              <button type="button" id="btnPreMergeLockApprove" class="btn-primary" style="flex: 1; font-size: 10px; padding: 4px 6px; background: linear-gradient(180deg, #059669 0%, #047857 100%); border-color: #34d399;"
+                title="Jóváhagyja a kész PNG képet és a léptéket az útvonal- és kalandgráf-számításhoz">
+                ✅ PNG & Lépték Összeolvasztása
+              </button>
+            </div>
+          </div>
+
+          <!-- 0. Úthálózati Rendszer (Multi-Route Manager) -->
+          <div class="travel-route-manager-card">
+            <div class="travel-route-manager-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="route-color-dot" id="activeRouteColorDot" style="background-color: #c29b38;"></span>
+                <span class="elev-label"
+                  style="margin: 0; font-size: 12px; font-weight: bold; color: var(--brass-bright);">🛣️
+                  Úthálózat:</span>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" id="btnAddRoute" class="btn-primary" style="font-size: 11px; padding: 3px 8px;"
+                  title="Új útvonal hozzáadása a hálózathoz (más járműhöz vagy szakaszhoz)">
+                  ➕ Új Út
+                </button>
+                <button type="button" id="btnDeleteRoute" class="btn-image-del"
+                  style="width: 24px; height: 24px; font-size: 11px; line-height: 24px;"
+                  title="Kijelölt útvonal törlése a hálózatból">
+                  🗑️
+                </button>
+              </div>
+            </div>
+
+            <!-- Útvonal választó dropdown és átnevező mező -->
+            <div class="field-row" style="margin-top: 6px; margin-bottom: 4px;">
+              <select id="selectActiveRoute" class="field-select"
+                style="font-weight: 600; font-size: 12px; background: rgba(15, 23, 42, 0.9); border-color: var(--brass-bright); color: #fff;">
+                <!-- Dinamikusan feltöltött útvonal opciók -->
+              </select>
+            </div>
+
+            <div class="field-row" style="margin-bottom: 2px;">
+              <input type="text" id="inputRouteName" class="field-input"
+                placeholder="Útvonal elnevezése (pl. Déli Gályajárat)" style="font-size: 11px; padding: 5px 8px;">
+            </div>
+
+            <!-- Színpötty-paletta: Új járat indítása szín alapján -->
+            <div class="field-row" style="margin-top: 6px; margin-bottom: 2px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <label class="field-label" style="font-size: 10px; color: var(--text-muted); margin: 0;">➕ Új Járat ezen
+                  a színen:</label>
+                <span id="routeColorHint" style="font-size: 9px; color: var(--brass-bright);">Kattints egy
+                  színre!</span>
+              </div>
+              <div class="path-color-swatches" id="routeColorSwatches"
+                style="display: flex; gap: 6px; justify-content: space-between; padding: 2px 0;">
+                <button type="button" class="color-swatch-circle active" data-color="#c29b38"
+                  style="background-color: #c29b38;" title="➕ Új Arany járat indítása"></button>
+                <button type="button" class="color-swatch-circle" data-color="#e11d48"
+                  style="background-color: #e11d48;" title="➕ Új Rubin járat indítása"></button>
+                <button type="button" class="color-swatch-circle" data-color="#3b82f6"
+                  style="background-color: #3b82f6;" title="➕ Új Zafír járat indítása"></button>
+                <button type="button" class="color-swatch-circle" data-color="#10b981"
+                  style="background-color: #10b981;" title="➕ Új Smaragd járat indítása"></button>
+                <button type="button" class="color-swatch-circle" data-color="#ffffff"
+                  style="background-color: #ffffff;" title="➕ Új Fehér járat indítása"></button>
+                <button type="button" class="color-swatch-circle" data-color="#2a1a0e"
+                  style="background-color: #2a1a0e; border: 1px solid var(--brass-bright);"
+                  title="➕ Új Fekete járat indítása"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1. Összesítő Kártya (Távolság, Menetidő, Állomások) -->
+          <div class="travel-summary-card">
+            <div class="travel-summary-header">
+              <span class="travel-summary-title">🧭 Expedíciós Menetlevél</span>
+              <span id="travelVehicleBadge" class="status-badge"
+                style="background: rgba(194, 155, 56, 0.2); color: var(--brass-bright);">⛵ Gálya</span>
+            </div>
+            <div class="travel-stats-grid">
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valTravelTotalKm">0</span>
+                <span class="stat-unit">km</span>
+                <span class="stat-sublabel" id="valTravelTotalNm">0 NM</span>
+              </div>
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valTravelTotalDays">0</span>
+                <span class="stat-unit">nap</span>
+                <span class="stat-sublabel">menetidő</span>
+              </div>
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valTravelWaypointsCount">0</span>
+                <span class="stat-unit">állomás</span>
+                <span class="stat-sublabel">útvonalon</span>
+              </div>
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valTravelSignpostsCount">0</span>
+                <span class="stat-unit">útjelző</span>
+                <span class="stat-sublabel">rendezői</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Jármű & Menetsebesség Választó Paletta (3x3 Rács) -->
+          <div class="elev-group">
+            <div class="elev-group-header">
+              <span class="elev-label">Jármű & Menetsebesség (3×3 Flotta):</span>
+              <span id="travelSpeedLabel" style="font-size: 11px; color: var(--brass-bright);">100 km/nap</span>
+            </div>
+            <div class="vehicle-selector-grid" id="vehicleSelectorGrid">
+              <!-- 1. Sor: Vízi & Gyalogos -->
+              <button type="button" class="vehicle-btn active" data-vehicle="galley"
+                title="Vitorlás Gálya (100 km/nap, tengeri vízi út, partmenti és nyílt tengeri hajózás)">
+                <span class="vehicle-icon">⛵</span>
+                <span class="vehicle-name">Gálya</span>
+                <span class="vehicle-speed">100 km/n</span>
+              </button>
+              <button type="button" class="vehicle-btn" data-vehicle="steamer"
+                title="Gőzhajó (500 km/nap, gyors mélytengeri átkelés, sekély vizeket kerüli)">
+                <span class="vehicle-icon">🚢</span>
+                <span class="vehicle-name">Gőzhajó</span>
+                <span class="vehicle-speed">500 km/n</span>
+              </button>
+              <button type="button" class="vehicle-btn" data-vehicle="walking"
+                title="Gyalogos Vándor (30 km/nap, szárazföldi ösvények, nehéz terep)">
+                <span class="vehicle-icon">🥾</span>
+                <span class="vehicle-name">Gyalogos</span>
+                <span class="vehicle-speed">30 km/n</span>
+              </button>
+
+              <!-- 2. Sor: Szárazföldi Állati & Mechanikus -->
+              <button type="button" class="vehicle-btn" data-vehicle="horse_wagon"
+                title="Szekér / Postakocsi (35 km/nap, szárazföldi szekérutak, csomag- és teherhordás)">
+                <span class="vehicle-icon">🛒</span>
+                <span class="vehicle-name">Szekér</span>
+                <span class="vehicle-speed">35 km/n</span>
+              </button>
+              <button type="button" class="vehicle-btn" data-vehicle="mount"
+                title="Hátasló / Lovas (60 km/nap, gyors szárazföldi futár és felderítés)">
+                <span class="vehicle-icon">🐎</span>
+                <span class="vehicle-name">Hátasló</span>
+                <span class="vehicle-speed">60 km/n</span>
+              </button>
+              <button type="button" class="vehicle-btn" data-vehicle="bicycle"
+                title="Kerékpáros Futár (100 km/nap, burkolt és döngölt utak, gyors egyéni közlekedés)">
+                <span class="vehicle-icon">🚲</span>
+                <span class="vehicle-name">Bicikli</span>
+                <span class="vehicle-speed">100 km/n</span>
+              </button>
+
+              <!-- 3. Sor: Vasút, Légi & Sci-Fi -->
+              <button type="button" class="vehicle-btn" data-vehicle="steam_train"
+                title="Gőzmozdony / Vasút (350 km/nap, kiépített kötött pálya, nagy tömegszállítás)">
+                <span class="vehicle-icon">🚂</span>
+                <span class="vehicle-name">Vasút</span>
+                <span class="vehicle-speed">350 km/n</span>
+              </button>
+              <button type="button" class="vehicle-btn" data-vehicle="airship"
+                title="Léghajó / Zeppelin (2000 km/nap, felhők feletti sztratoszféra járat, akadálytalan légi híd)">
+                <span class="vehicle-icon">🛸</span>
+                <span class="vehicle-name">Zeppelin</span>
+                <span class="vehicle-speed">2000 km/n</span>
+              </button>
+              <button type="button" class="vehicle-btn" data-vehicle="antigrav_speeder"
+                title="Antigravitációs Lebegő Suhanó (1000 km/nap, víz és szárazföld felett lebegő repulzor)">
+                <span class="vehicle-icon">⚡</span>
+                <span class="vehicle-name">Suhanó</span>
+                <span class="vehicle-speed">1000 km/n</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Útvonal Geometria & Vonalstílus -->
+          <div class="elev-group">
+            <div class="elev-group-header">
+              <span class="elev-label">Útvonal Vonalvastagság & Védelem:</span>
+            </div>
+
+            <!-- Interaktív Arany Bója Elhelyező Eszköz -->
+            <div style="margin-bottom: 8px;">
+              <button type="button" id="btnToolAddBuoy" class="travel-btn-tool"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 7px 10px; background: rgba(194, 155, 56, 0.15); border: 1.5px solid var(--brass-bright); border-radius: 6px; color: #fff; font-weight: 600; font-size: 11px; cursor: pointer; transition: all 0.2s;"
+                title="Új Interaktív Arany Bója Elhelyezése: Kattints ide az eszköz aktiválásához, majd a térképen az útvonal tetszőleges pontjára kattintva köss hozzá egy új bóját! (Törlés: Jobb klikk a bójára)">
+                <span style="font-size: 15px;">⚓</span>
+                <span id="btnToolAddBuoyLabel">➕ Új Arany Bója Eszköz</span>
+              </button>
+            </div>
+
+            <!-- Vonalvastagság csúszka -->
+            <div class="field-row" style="margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+                <label class="field-label" for="inputPathStrokeWidth">Vonalvastagság:</label>
+                <span id="labelStrokeWidthVal" style="color: var(--brass-bright); font-weight: bold;">3 px</span>
+              </div>
+              <input type="range" id="inputPathStrokeWidth" min="1" max="8" value="3" step="1"
+                style="width: 100%; accent-color: var(--brass-bright);">
+            </div>
+
+            <!-- Intelligens Akadály-kikerülés kapcsoló -->
+            <div class="field-row"
+              style="margin-top: 6px; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; border: 1px solid var(--border-brass-dim);">
+              <label
+                style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 11px; color: var(--text-main); margin: 0;">
+                <input type="checkbox" id="chkAvoidObstacles" checked
+                  style="accent-color: var(--brass-bright); width: 16px; height: 16px;">
+                <span>🛡️ <strong>Akadály-kikerülés</strong> (Automatikus kitérés veszélyes zónák és szirtek
+                  elől)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 4. Állomások (Waypoints) Szekció -->
+          <div class="elev-group">
+            <div class="elev-group-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="elev-label">🗺️ Állomás-szekvencia:</span>
+              <div style="display: flex; gap: 4px;">
+                <button type="button" id="btnAutoChainRoute" class="btn-secondary"
+                  style="font-size: 10px; padding: 3px 6px;"
+                  title="Optimális legközelebbi szomszéd útvonal automata felépítése">
+                  ⚡ Auto-Láncolás
+                </button>
+                <button type="button" id="btnClearTravelRoute" class="btn-image-del"
+                  style="width: 22px; height: 22px; font-size: 10px; line-height: 22px;" title="Teljes útvonal törlése">
+                  🗑️
+                </button>
+              </div>
+            </div>
+            <div id="travelWaypointsList" class="travel-waypoints-scroll">
+              <!-- Dinamikusan renderelt állomáskártyák fel/le/törlés gombokkal -->
+            </div>
+          </div>
+
+          <!-- 5. Rendezői Útjelzők (Director's Signposts) Szekció -->
+          <div class="elev-group">
+            <div class="elev-group-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="elev-label">🎬 Rendezői Útjelzők (Story):</span>
+              <button type="button" id="btnAddSignpostFromDrawer" class="btn-primary"
+                style="font-size: 10px; padding: 3px 6px;" title="Új Útjelző Tábla rögzítése a kiválasztott szakaszon">
+                ➕ Új Útjelző
+              </button>
+            </div>
+            <div id="travelSignpostsList" class="travel-signposts-scroll">
+              <!-- Dinamikusan renderelt signpost kártyák -->
+            </div>
+          </div>
+
+          <!-- 6. Horgonypont / Pecsét / Útjelző Átmozgatás-Eszköz (6. Réteg Alul) -->
+          <div class="elev-group" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(14, 165, 233, 0.08);">
+            <div class="elev-group-header"
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span class="elev-label" style="color: #7dd3fc;">✥ Horgony & Útjelző Mozgatás:</span>
+              <span style="font-size: 9px; color: #bae6fd;">Viszi az útvonalakat és éleket</span>
+            </div>
+            <button type="button" id="btnTravelMoveAnchorTool" class="btn-secondary"
+              style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; border-color: #38bdf8; color: #bae6fd; background: rgba(14, 165, 233, 0.16); font-weight: 600; font-size: 11px;"
+              title="Horgonypont és Útjelző Átmozgatás-Eszköz: Kattints egy horgonypontra vagy húzd át egérrel új helyre! Automatikusan viszi magával a 3. réteg térképjelét, a 6. réteg útvonalait és a 7. réteg döntési gráf éleit.">
+              <span>✥</span>
+              <span>Horgony Átmozgatás Eszköz</span>
+            </button>
+          </div>
+
+          <!-- 6. Réteg Kanonikus Tipp Doboz -->
+          <div class="elev-drawer-hint" style="margin-top: 10px;">
+            💡 <strong>6. Réteg: Utaztató Útvonal & Hálózat:</strong><br>
+            • Az útvonal pontjai kanonikus <strong>szaggatott Bézier ívekkel</strong> kötődnek össze.<br>
+            • <strong>Interaktív Arany Bójákkal (⚓)</strong> kikerülheted a szárazföldet vagy a veszélyes zátonyokat.<br>
+            • A 9-járműves flotta sebességei alapján automatikusan kalkulálódik a valós <strong>menetidő (nap)</strong> és távolság (km/NM).
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 7. Döntési Gráf Szekció (7. Réteg Oldalsáv Műhely) -->
+      <div id="gamebookDrawerSection" class="drawer-section" style="display: none;">
+        <div class="gamebook-toolbar" id="gamebookToolbar">
+
+          <!-- 0. Expedíciós Állapot & Élvezérlő Kártya -->
+          <div class="travel-summary-card">
+            <div class="travel-summary-header">
+              <span class="travel-summary-title">🔀 Döntési Gráf & Expedíció</span>
+              <span id="gamebookStatusBadge" class="status-badge"
+                style="background: rgba(194, 155, 56, 0.2); color: var(--brass-bright);">0 Döntés</span>
+            </div>
+
+            <!-- Küldetés Neve & Indító Gombok -->
+            <div class="field-row" style="margin-top: 6px; margin-bottom: 4px;">
+              <input type="text" id="inputGamebookMissionName" class="field-input"
+                placeholder="Küldetés / Kaland megnevezése"
+                style="font-weight: 600; font-size: 12px; background: rgba(15, 23, 42, 0.9); border-color: var(--brass-bright); color: #fff;">
+            </div>
+
+            <!-- Gyors Műveleti Gombok -->
+            <div style="display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap;">
+              <button type="button" id="btnAddDecisionEdgeManual" class="btn-primary"
+                style="flex: 1; font-size: 11px; padding: 6px 8px;"
+                title="Új döntési elágazás felvétele a lebegő szerkesztő panelen">
+                ➕ Új Döntési Él
+              </button>
+              <button type="button" id="btnAutoBuildDecisionGraph" class="btn-secondary"
+                style="font-size: 11px; padding: 6px 8px;"
+                title="Automatikus KJK döntési fa generálása a meglévő horgonypontokból">
+                ⚡ Auto-Gráf
+              </button>
+              <button type="button" id="btnClearDecisionGraph" class="btn-image-del"
+                style="width: 28px; height: 28px; font-size: 12px; line-height: 28px;"
+                title="Minden döntési él törlése a gráfból">
+                🗑️
+              </button>
+            </div>
+
+            <!-- Expedíciós Erőforrás Statisztikák Grid -->
+            <div class="travel-stats-grid" style="margin-top: 8px;">
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valGamebookNodesCount">0</span>
+                <span class="stat-unit">pont</span>
+                <span class="stat-sublabel">állomás</span>
+              </div>
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valGamebookEdgesCount">0</span>
+                <span class="stat-unit">ág</span>
+                <span class="stat-sublabel">döntési él</span>
+              </div>
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valGamebookFoodDays">10</span>
+                <span class="stat-unit">nap</span>
+                <span class="stat-sublabel">élelem</span>
+              </div>
+              <div class="travel-stat-box">
+                <span class="stat-num" id="valGamebookGold">50</span>
+                <span class="stat-unit">arany</span>
+                <span class="stat-sublabel">költségvetés</span>
+              </div>
+            </div>
+
+            <!-- Expedíció Állapot Csúszkák & Jármű Beállítások -->
+            <div class="field-row-horizontal" style="margin-top: 8px;">
+              <div class="field-row" style="flex: 1; margin: 0;">
+                <label class="field-label" style="font-size: 10px;" for="selectGamebookVehicle">Jármű:</label>
+                <select id="selectGamebookVehicle" class="field-select" style="font-size: 11px; padding: 3px 6px;">
+                  <option value="sloop">Gyors Szlúp</option>
+                  <option value="galley" selected>Vitorlás Gálya</option>
+                  <option value="brigantine">Brigantin</option>
+                  <option value="frigate">Fregatt</option>
+                  <option value="airship">Léghajó</option>
+                </select>
+              </div>
+              <div class="field-row" style="flex: 1; margin: 0;">
+                <label class="field-label" style="font-size: 10px;" for="selectGamebookDifficulty">Nehézség:</label>
+                <select id="selectGamebookDifficulty" class="field-select" style="font-size: 11px; padding: 3px 6px;">
+                  <option value="normal" selected>Normál</option>
+                  <option value="hard">Nehéz</option>
+                  <option value="legendary">Legendás</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-row-horizontal" style="margin-top: 6px;">
+              <div class="field-row" style="flex: 1; margin: 0;">
+                <label class="field-label" style="font-size: 10px;" for="inputGamebookFood">🍖 Élelem:</label>
+                <input type="number" id="inputGamebookFood" class="field-input" min="1" max="100" value="10"
+                  style="font-size: 11px; padding: 3px 6px;">
+              </div>
+              <div class="field-row" style="flex: 1; margin: 0;">
+                <label class="field-label" style="font-size: 10px;" for="inputGamebookGold">💰 Arany:</label>
+                <input type="number" id="inputGamebookGold" class="field-input" min="0" max="10000" value="50"
+                  style="font-size: 11px; padding: 3px 6px;">
+              </div>
+              <div class="field-row" style="flex: 1; margin: 0;">
+                <label class="field-label" style="font-size: 10px;" for="inputGamebookDanger">⚔️ Veszély:</label>
+                <input type="number" id="inputGamebookDanger" class="field-input" min="1" max="5" value="2"
+                  style="font-size: 11px; padding: 3px 6px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- 1. Döntési Pontok & Élek Hierarchikus Listája -->
+          <div class="elev-group">
+            <div class="elev-group-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="elev-label">📜 Döntési Pontok & Élek Fája:</span>
+              <span id="gamebookSequenceHint" style="font-size: 10px; color: var(--brass-bright);">Időrendi
+                folyamat</span>
+            </div>
+
+            <div id="gamebookDecisionTree" class="gamebook-tree-scroll"
+              style="max-height: calc(100vh - 530px); overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 2px;">
+              <!-- Dinamikusan renderelt döntési csomópont és él kártyák -->
+            </div>
+          </div>
+
+          <!-- 2. Horgonypont / Pecsét / Útjelző Átmozgatás-Eszköz (7. Réteg Alul) -->
+          <div class="elev-group" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(14, 165, 233, 0.08);">
+            <div class="elev-group-header"
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span class="elev-label" style="color: #7dd3fc;">✥ Horgony & Csomópont Mozgatás:</span>
+              <span style="font-size: 9px; color: #bae6fd;">Viszi a gráf éleket és útvonalakat</span>
+            </div>
+            <button type="button" id="btnGamebookMoveAnchorTool" class="btn-secondary"
+              style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; border-color: #38bdf8; color: #bae6fd; background: rgba(14, 165, 233, 0.16); font-weight: 600; font-size: 11px;"
+              title="Horgonypont és Útjelző Átmozgatás-Eszköz: Kattints egy horgonypontra vagy húzd át egérrel új helyre! Automatikusan viszi magával a 3. réteg térképjelét, a 6. réteg útvonalait és a 7. réteg döntési gráf éleit.">
+              <span>✥</span>
+              <span>Horgony Átmozgatás Eszköz</span>
+            </button>
+          </div>
+
+          <!-- 7. Réteg Kanonikus Tipp Doboz -->
+          <div class="elev-drawer-hint" style="margin-top: 10px;">
+            💡 <strong>7. Réteg: Kaland-Játék-Kockázat Döntési Gráf:</strong><br>
+            • A ➕ <strong>Új Döntési Él</strong> gombbal vagy két pont összekötésével interaktív elágazásokat hozhatsz létre.<br>
+            • Minden döntési élhez rendelhető <strong>3D Three.js minijáték</strong> (kockadobás, ügyességi, rejtvény), fejezetszám és kockázat.<br>
+            • A döntési gráf közvetlenül exportálható a <strong>game_oldal.html</strong> 3D színpadára vagy a LET-LIT Olvasóba!
+          </div>
+
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Döntési Él Szerkesztő Modális Ablak (Gamebook Decision Modal) -->
+  <div class="modal-backdrop" id="decisionEdgeModal" style="display: none;">
+    <div class="decision-modal-card">
+      <div class="decision-modal-header">
+        <h3 id="modalEdgeTitle">🔀 Új Döntési Elágazás</h3>
+        <button id="btnModalClose" class="btn-modal-close" title="Bezárás">✕</button>
+      </div>
+      <div class="decision-modal-body">
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectEdgeFromAnchor">📍 Kiindulási Pont (Honnan)</label>
+            <select id="selectEdgeFromAnchor" class="field-select"></select>
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectEdgeToAnchor">🏁 Célállomás (Hová)</label>
+            <select id="selectEdgeToAnchor" class="field-select"></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="inputEdgeLabel">Döntés Szövege / Cselekvés</label>
+          <input type="text" id="inputEdgeLabel" class="field-input" placeholder="Pl. Ha a sziklaösvényt választod...">
+        </div>
+
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="inputTargetSection">Fejezetszám (Lapozz a...)</label>
+            <input type="number" id="inputTargetSection" class="field-input" placeholder="Pl. 42" min="1" max="999">
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectEdgeDanger">Kockázat / Típus</label>
+            <select id="selectEdgeDanger" class="field-select">
+              <option value="safe">🟢 Biztonságos Út</option>
+              <option value="check" selected>🟡 Feltételes / Próba</option>
+              <option value="danger">🔴 Veszélyes / Zátony</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectEdgeGameType">🎮 3D Minijáték (game_oldal)</label>
+            <select id="selectEdgeGameType" class="field-select">
+              <option value="none">📖 Tiszta Narráció (Nincs minijáték)</option>
+              <option value="szerencsejáték">🎲 Three.js Kockadobás (D100 / 2k6)</option>
+              <option value="ügyességi">⚔️ Ügyességi Próba / Hártyavadászat</option>
+              <option value="logikai">🧠 Logikai Feladvány / Kódzár</option>
+              <option value="puzzle">🧩 Rúnarejtvény / Puzzle</option>
+              <option value="kvíz">❓ Kaland Kvíz / Lore Kérdés</option>
+              <option value="szókirakós">🔤 Szókirakós / Kódfejtés</option>
+              <option value="útkereső">🧭 Tengeri Útkereső / Navigáció</option>
+            </select>
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectConditionType">Feltétel Típusa</label>
+            <select id="selectConditionType" class="field-select">
+              <option value="none">Nincs feltétel (Szabad döntés)</option>
+              <option value="item_check">🎒 Tárgy megléte szükséges</option>
+              <option value="skill_check">⚔️ Képességpróba (Ügyesség/Erő)</option>
+              <option value="dice_roll">🎲 Dobókocka próba (DC ellen)</option>
+              <option value="minigame_victory">🏆 Minijáték győzelem kötelező</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row" id="conditionDetailRow" style="display: none;">
+          <label class="field-label" id="labelConditionDetail" for="inputConditionDetail">Feltétel Paraméter (Tárgy neve
+            vagy Célszám DC)</label>
+          <input type="text" id="inputConditionDetail" class="field-input" placeholder="Pl. arany_kulcs vagy DC: 8">
+        </div>
+
+        <!-- Erőforrás-költségek & Következmények -->
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="inputEdgeCostFood">🍖 Élelem Fogyás (nap)</label>
+            <input type="number" id="inputEdgeCostFood" class="field-input" placeholder="0" min="0" max="99" value="0">
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="inputEdgeCostHull">🛡️ Hajókár Kockázat (%)</label>
+            <input type="number" id="inputEdgeCostHull" class="field-input" placeholder="0" min="0" max="100" value="0">
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="inputEdgeRewardGold">💰 Arany / Kredit Jutalom</label>
+            <input type="number" id="inputEdgeRewardGold" class="field-input" placeholder="0" min="0" max="10000"
+              value="0">
+          </div>
+        </div>
+
+        <!-- Terepalapú Kényszerkitérés kudarc esetén -->
+        <div class="field-row">
+          <label class="field-label" for="selectEdgeDeviation">⚠️ Terepalapú Kényszerkitérés (Kudarc esetén ide
+            sodródik)</label>
+          <select id="selectEdgeDeviation" class="field-select">
+            <option value="">Nincs kitérés (Újrapróbálkozás helyben)</option>
+          </select>
+        </div>
+
+        <!-- Forgatókönyv / Szövegkönyv jelenet a 3D játékhoz -->
+        <div class="field-row">
+          <label class="field-label" for="inputEdgeNarrative">📜 Forgatókönyv Jelenet (game_oldal.html Narráció)</label>
+          <textarea id="inputEdgeNarrative" class="field-input" rows="2"
+            style="resize: vertical; font-size: 11px; line-height: 1.4;"
+            placeholder="A 3D színpadon és az overlay ablakban megjelenő jelenetleírás és narráció..."></textarea>
+        </div>
+      </div>
+      <div class="decision-modal-footer">
+        <button id="btnModalCancel" class="btn-secondary">Mégse</button>
+        <button id="btnModalSaveEdge" class="btn-primary"
+          style="background: linear-gradient(180deg, #c29b38 0%, #8e681b 100%);">
+          💾 Döntési Él Rögzítése
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Director's Signpost (Útjelző Tábla) Modal (Layer 6) -->
+  <div class="modal-backdrop floating-panel-backdrop" id="signpostModal" style="display: none;">
+    <div class="decision-modal-card" id="signpostModalCard">
+      <div class="decision-modal-header draggable-header" id="signpostModalHeader">
+        <h3 id="modalSignpostTitle" style="display: flex; align-items: center; gap: 8px;">
+          <span style="cursor: grab; font-size: 14px;" title="Megragadva áthúzható bárhová">✥</span>
+          <span>🎬 Rendezői Útjelző Tábla</span>
+        </h3>
+        <button id="btnSignpostModalClose" class="btn-modal-close" title="Bezárás">✕</button>
+      </div>
+      <div class="decision-modal-body">
+        <div class="field-row">
+          <label class="field-label" for="inputSignpostTitle" id="labelSignpostTitle">Útjelző Megnevezése /
+            Helyszín</label>
+          <input type="text" id="inputSignpostTitle" class="field-input" placeholder="Pl. Paideia-öböl sziklaszirtjei">
+        </div>
+
+        <!-- Pecsétnyomat specifikus mezők (Kategória, Szerepkör & Veszélyességi szint) -->
+        <div id="rowSignpostStampClass" style="display: none; flex-direction: column; gap: 8px;">
+          <div class="field-row-horizontal">
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="selectSignpostCategory">Pecsétkategória (Fizikai Tár)</label>
+              <select id="selectSignpostCategory" class="field-select">
+                <option value="settlements_docks">🏰 Kikötők, Városok & Dokkok</option>
+                <option value="cartographic_ornaments">🧭 Iránytűk, Díszek & Kartográfia</option>
+                <option value="caves_dungeons">⛏️ Barlangok, Kripták & Aknák</option>
+                <option value="traps_hazards">⚠️ Csapdák, Zátonyok & Veszélyek</option>
+                <option value="underwater_sunken">🌊 Víz alatti Dómok & Romok</option>
+                <option value="mazes_labyrinths">🌀 Útvesztők & Labirintusok</option>
+                <option value="paths_trails">🛤️ Földutak, Hágók & Ösvények</option>
+                <option value="signpost">🎬 Rendezői Útjelző Tábla</option>
+                <option value="misc">📜 Egyéb Kartográfiai Horgony</option>
+              </select>
+            </div>
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="selectSignpostDanger">Veszélyességi Besorolás</label>
+              <select id="selectSignpostDanger" class="field-select">
+                <option value="Biztonságos">🟢 Biztonságos</option>
+                <option value="Mérsékelt">🟡 Mérsékelt</option>
+                <option value="Közepes">🟠 Közepes</option>
+                <option value="Veszélyes Zátony">🔴 Veszélyes Zátony</option>
+                <option value="Végzetes Zátony">☠️ Végzetes Zátony</option>
+                <option value="Rejtélyes Örvény">🌀 Rejtélyes Örvény</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label" for="selectSignpostNodeType">Narratív Szerepkör (Döntési Gráf Csomópont)</label>
+            <select id="selectSignpostNodeType" class="field-select">
+              <option value="waypoint">🚩 Szekvenciális Állomás (Regény útvonal)</option>
+              <option value="choice_fork">🔀 Döntési Elágazás (KJK Interaktív Választás)</option>
+              <option value="encounter">⚔️ Kaland & Harci Találkozás</option>
+              <option value="puzzle">🧩 Rúnarejtvény & Kódfejtés</option>
+              <option value="checkpoint">⚓ Menedék & Mentési Pont</option>
+              <option value="death_trap">☠️ Végzetes Zátony & Csapda</option>
+              <option value="victory_ending">🏆 Küldetés Vége / Fő Kincslelet</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pecsétnyomat Jegyzet / Kézirat Leírás & 12 Beszédintonációs Emoji Paletta -->
+        <div class="field-row" id="rowSignpostNote" style="display: none;">
+          <label class="field-label" for="textareaSignpostNote">Helyszín Jegyzet / Kéziratos Történet</label>
+          
+          <!-- 12 Tiszta Beszédintonációs Emoji Paletta Hover Arany Buborékkal -->
+          <div class="intonation-emoji-bar" id="intonationEmojiBar" style="display: flex; gap: 4px; align-items: center; margin: 4px 0 6px 0; padding: 4px 6px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-brass, #c29b38); border-radius: 4px;">
+            <span style="font-size: 10px; color: var(--brass-bright); font-weight: bold; margin-right: 2px;">Intonáció:</span>
+            <button type="button" class="btn-intonation-emoji" data-emoji="🤫" data-instruction="Suttogva" data-tip="Halk, titokzatos, bizalmas tónus" title="🤫 Suttogva • Halk, titokzatos, bizalmas tónus">🤫</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="📢" data-instruction="Kiáltva / Parancsolóan" data-tip="Erőteljes, harsány vezényszó" title="📢 Kiáltva / Parancsolóan • Erőteljes, harsány vezényszó">📢</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😂" data-instruction="Nevetve / Vidáman" data-tip="Könnyed, jókedvű, derűs előadás" title="😂 Nevetve / Vidáman • Könnyed, jókedvű, derűs előadás">😂</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😢" data-instruction="Síró / Megrendült hangon" data-tip="Szomorú, elcsukló, gyászos hanghordozás" title="😢 Síró / Megrendült hangon • Szomorú, elcsukló, gyászos hanghordozás">😢</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😡" data-instruction="Dühösen / Feszülten" data-tip="Haragos, fojtott, agresszív tónus" title="😡 Dühösen / Feszülten • Haragos, fojtott, agresszív tónus">😡</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😨" data-instruction="Félelemmel / Remegve" data-tip="Rémült, zaklatott, szaggatott légzés" title="😨 Félelemmel / Remegve • Rémült, zaklatott, szaggatott légzés">😨</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😏" data-instruction="Gúnyosan / Cinkosan" data-tip="Ironikus, félmosolyos, cinikus hangsúly" title="😏 Gúnyosan / Cinkosan • Ironikus, félmosolyos, cinikus hangsúly">😏</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="🤔" data-instruction="Töprengve / Kételkedve" data-tip="Lassú, megfontolt, töprengő tempó" title="🤔 Töprengve / Kételkedve • Lassú, megfontolt, töprengő tempó">🤔</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😮" data-instruction="Csodálkozva / Ámulva" data-tip="Meglepett, tágra nyílt szemű ámulat" title="😮 Csodálkozva / Ámulva • Meglepett, tágra nyílt szemű ámulat">😮</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="😴" data-instruction="Álmosan / Fáradtan" data-tip="Lassú, elnyújtott, kimerült beszéd" title="😴 Álmosan / Fáradtan • Lassú, elnyújtott, kimerült beszéd">😴</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="🧐" data-instruction="Hivatalosan / Elemzően" data-tip="Precíz, távolságtartó, tudományos dictio" title="🧐 Hivatalosan / Elemzően • Precíz, távolságtartó, tudományos dictio">🧐</button>
+            <button type="button" class="btn-intonation-emoji" data-emoji="✨" data-instruction="Ünnepélyesen / Misztikusan" data-tip="Emelkedett, rituális, orákulum tónus" title="✨ Ünnepélyesen / Misztikusan • Emelkedett, rituális, orákulum tónus">✨</button>
+          </div>
+
+          <textarea id="textareaSignpostNote" class="field-input" rows="3"
+            placeholder="Helyszín leírása, történelmi feljegyzés, kaland-feladvány vagy kéziratból kinyert részlet..."></textarea>
+        </div>
+
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="inputSignpostChapter">Kristálykönyv Fejezet Cím / ID</label>
+            <input type="text" id="inputSignpostChapter" class="field-input" placeholder="Pl. fejezet_03_viadukt">
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectSignpostTts">TTS Felolvasó Hang (Persona)</label>
+            <select id="selectSignpostTts" class="field-select">
+              <option value="argon" selected>🧠 Argon Mester (Bölcs elbeszélő)</option>
+              <option value="narrator_male">🎙️ Férfi Krónikás</option>
+              <option value="narrator_female">✨ Női Rejtélyes Hang</option>
+              <option value="pirate_captain">🏴‍☠️ Kalózkapitány (Érdes tenor)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row-horizontal">
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectSignpostMusic">Háttérzenei Hangulat (Music Cue)</label>
+            <select id="selectSignpostMusic" class="field-select">
+              <option value="storm_sea" selected>🌊 Viharos Tenger & Veszély</option>
+              <option value="ancient_temple">🏛️ Ősi Misztikus Szentély</option>
+              <option value="tavern_jovial">🍺 Vidám Kikötői Kocsma</option>
+              <option value="calm_breeze">⛵ Nyugodt Vitorlázás & Szelek</option>
+            </select>
+          </div>
+          <div class="field-row" style="flex: 1;">
+            <label class="field-label" for="selectSignpostSfx">Környezeti Hangeffekt (SFX Cue)</label>
+            <select id="selectSignpostSfx" class="field-select">
+              <option value="thunder_rain" selected>⚡ Mennydörgés & Vihar</option>
+              <option value="seagulls_waves">🕊️ Sirályok & Hullámtörés</option>
+              <option value="creaking_timbers">🪵 Recsegő Hajógerenda</option>
+              <option value="cave_dripping">💧 Csepegő Barlangfal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="inputSignpostTrigger">Játékos Esemény Trigger (KJK / Minigame JSON)</label>
+          <input type="text" id="inputSignpostTrigger" class="field-input"
+            placeholder="Pl. trigger_boss_encounter_kraken">
+        </div>
+      </div>
+      <div class="decision-modal-footer">
+        <button id="btnSignpostModalCancel" class="btn-secondary">Mégse</button>
+        <button id="btnSignpostModalRelocate" class="btn-secondary"
+          style="border-color: #38bdf8; color: #bae6fd; background: rgba(14, 165, 233, 0.16);"
+          title="Kijelölés átmozgatásra: kattints a térképen az új célterületre (az útvonalak és döntési élek automatikusan követik)!">
+          ✥ Átmozgatás Új Helyre
+        </button>
+        <button id="btnSignpostModalSave" class="btn-primary"
+          style="background: linear-gradient(180deg, #c29b38 0%, #8e681b 100%);">
+          💾 Útjelző Rögzítése
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Játékmester Kaland Betöltése, Generálása & 3D Színpad Modal -->
+  <div class="modal-backdrop" id="gamemasterModal" style="display: none;">
+    <div class="decision-modal-card" style="max-width: 650px; width: 92%;">
+      <div class="decision-modal-header" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);">
+        <h3 style="color: #60a5fa; display: flex; align-items: center; gap: 8px;">
+          <span>🤖</span>
+          <span>Játékmester Kaland & 3D Színpad Híd</span>
+        </h3>
+        <button id="btnGamemasterModalClose" class="btn-modal-close" title="Bezárás">✕</button>
+      </div>
+      <div class="decision-modal-body">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;">
+          A Játékmester AI által a Tavernában vagy küldetés-beszélgetésben generált <strong>7-rétegű Kryst Kalandtérkép
+            (.kryst.map.json)</strong> közvetlenül betölthető, szerkeszthető és azonnal elindítható a
+          <strong>game_oldal.html</strong> Three.js 3D színpadán.
+        </div>
+
+        <!-- 1. Gyors Kalandgeneráló Sablon -->
+        <div
+          style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 6px; padding: 12px; margin-bottom: 14px;">
+          <h4
+            style="margin: 0 0 10px 0; font-size: 12px; color: #93c5fd; display: flex; align-items: center; gap: 6px;">
+            <span>⚡</span>
+            <span>Gyors Kaland-Szintézis (666-os Alaptár & Útvonal Hálózat)</span>
+          </h4>
+          <div class="field-row">
+            <label class="field-label" for="inputGmExpeditionName">Expedíció Neve</label>
+            <input type="text" id="inputGmExpeditionName" class="field-input"
+              placeholder="Pl. A Vörös Kristály Nyomában" value="A Vörös Kristály Nyomában">
+          </div>
+          <div class="field-row-horizontal">
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="selectGmExpeditionType">Küldetés Típusa</label>
+              <select id="selectGmExpeditionType" class="field-select">
+                <option value="SZERZÉS" selected>💎 Zsákmányszerző (Kincs / Kristály)</option>
+                <option value="MENTŐEXPEDÍCIÓ">🆘 Mentőexpedíció (Túlélő keresés)</option>
+                <option value="KATONAI">⚔️ Katonai Bevetés (Erőd / Harc)</option>
+                <option value="FELFEDEZÉS">🗺️ Felfedezés (Ismeretlen vidék)</option>
+              </select>
+            </div>
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="selectGmVehicle">Expedíciós Jármű</label>
+              <select id="selectGmVehicle" class="field-select">
+                <option value="galley" selected>⛵ Gálya (Evezős, Sekély vízálló)</option>
+                <option value="steamer">🚢 Gőzhajó (Gyors, Szénigényes)</option>
+                <option value="airship">🎈 Léghajó (Repülő, Hegyeket átszelő)</option>
+                <option value="horse_wagon">🐎 Szekérkaraván (Szárazföldi)</option>
+                <option value="walking">🥾 Gyalogos Expedíció</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row-horizontal">
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="inputGmBet">Kredittét (Arany)</label>
+              <input type="number" id="inputGmBet" class="field-input" placeholder="200" min="0" max="10000"
+                value="200">
+            </div>
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="inputGmFood">Induló Élelem (nap)</label>
+              <input type="number" id="inputGmFood" class="field-input" placeholder="14" min="1" max="60" value="14">
+            </div>
+            <div class="field-row" style="flex: 1;">
+              <label class="field-label" for="selectGmDifficulty">Nehézség</label>
+              <select id="selectGmDifficulty" class="field-select">
+                <option value="1">1: Kezdő</option>
+                <option value="2">2: Mérsékelt</option>
+                <option value="3" selected>3: Kihívást jelentő</option>
+                <option value="4">4: Veszélyes</option>
+                <option value="5">5: Halálos</option>
+              </select>
+            </div>
+          </div>
+          <button id="btnGmQuickSynthesize" class="btn-primary"
+            style="margin-top: 8px; width: 100%; background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);">
+            ⚡ Kaland & Döntési Térháló Szintézise
+          </button>
+        </div>
+
+        <!-- 2. Nyers JSON Beillesztés -->
+        <div class="field-row">
+          <label class="field-label" for="textareaGmJson">📋 Vagy illeszd be a Játékmester JSON kódját ide:</label>
+          <textarea id="textareaGmJson" class="field-input" rows="5"
+            style="font-family: monospace; font-size: 10px; resize: vertical;"
+            placeholder='{"mission_name": "...", "expeditionState": { ... }, "anchors": [ ... ]}'></textarea>
+        </div>
+      </div>
+      <div class="decision-modal-footer">
+        <button id="btnGmModalCancel" class="btn-secondary">Bezárás</button>
+        <button id="btnGmApplyJson" class="btn-secondary" style="border-color: #60a5fa; color: #93c5fd;">
+          📥 JSON Beolvasása & Térképre Húzása
+        </button>
+        <button id="btnGmLaunchGamePage" class="btn-primary"
+          style="background: linear-gradient(180deg, #10b981 0%, #047857 100%);"
+          title="Indítás a game_oldal.html felületen">
+          🚀 3D Kaland Indítása (game_oldal)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- Abrigó Világtérkép, Térkép Regisztráló & Adatbázis Modal -->
+  <!-- ============================================================================== -->
+  <div class="modal-backdrop" id="worldMapRegistryModal" style="display: none;">
+    <div class="decision-modal-card world-map-modal-card"
+      style="max-width: 1240px; width: 96%; height: 92vh; display: flex; flex-direction: column;">
+      <!-- Header -->
+      <div class="decision-modal-header"
+        style="background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%); border-bottom: 2px solid var(--border-brass, #c29b38);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">🌍</span>
+          <div>
+            <h3 style="margin: 0; font-size: 16px; color: #6ee7b7; font-family: 'Cinzel', serif;">Abrigó Világtérkép &
+              Kartográfiai Regiszter (REG-0000-ABRIGO)</h3>
+            <div style="font-size: 11px; color: #a7f3d0;">Antarktisz méretű kontinens és szigetvilág (~3 000 km átmérő ·
+              1 px = 2.5 km) • Regisztráció, Vaktérkép Helykijelölő & Ütközés-Ellenőrző</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="btnLoadAbrigoMasterToWorkshop" class="btn-primary"
+            style="padding: 4px 10px; font-size: 11px; background: linear-gradient(180deg, #059669 0%, #065f46 100%); border-color: #34d399;"
+            title="Abrigó 7-rétegű Mestertérképének (REG-0000-ABRIGO) közvetlen megnyitása a Kartográfiai Műhelyben">
+            🌍 Abrigó 7-Rétegű Mestertérkép Megnyitása (REG-0000-ABRIGO)
+          </button>
+          <button id="btnWorldMapModalClose" class="btn-modal-close" title="Bezárás">✕</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="world-map-nav-tabs">
+        <button id="tabBtnWorldMapCanvas" class="world-map-tab-btn active">
+          <span>🗺️</span> 1. Abrigó Világtérkép & Elhelyezés
+        </button>
+        <button id="tabBtnMapRegistrar" class="world-map-tab-btn">
+          <span>📋</span> 2. Térkép Besoroló & Ütközés-Ellenőrző
+        </button>
+        <button id="tabBtnCanonicalVault" class="world-map-tab-btn">
+          <span>🏛️</span> 3. Abrigó Kánon Térképtár (<span id="badgeCanonCount">0</span>)
+        </button>
+        <button id="tabBtnFictionalVault" class="world-map-tab-btn">
+          <span>🌀</span> 4. Fiktív & Privát Térképtár (<span id="badgeFictionalCount">0</span>)
+        </button>
+      </div>
+
+      <!-- Modal Body (Tab contents) -->
+      <div class="decision-modal-body"
+        style="flex: 1; overflow: hidden; display: flex; flex-direction: column; padding: 12px; background: #0b0f14;">
+
+        <!-- TAB 1: VILÁGTÉRKÉP KONTÉNER -->
+        <div id="worldMapCanvasTab" class="world-map-tab-pane active"
+          style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          <!-- Toolbar -->
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.85); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(194, 155, 56, 0.4); margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 12px; color: #d4af37; font-weight: bold;">Ugrás Régióra:</span>
+              <select id="selectWorldMapQuickRegion" class="field-input"
+                style="width: 200px; height: 26px; padding: 2px 6px; font-size: 11px;">
+                <option value="">-- Válassz tájegységet --</option>
+              </select>
+              <label
+                style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #cbd5e1; cursor: pointer;">
+                <input type="checkbox" id="chkShowWorldRegionLabels" checked>
+                <span>Zóna nevek mutatása</span>
+              </label>
+              <label
+                style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #6ee7b7; cursor: pointer;"
+                title="Térképjelzések, ikonok és zónafeliratok nélküli tiszta vaktérkép nézet">
+                <input type="checkbox" id="chkWorldMapBlindMode">
+                <span>🗺️ Vaktérkép (Jelzések nélkül)</span>
+              </label>
+              <span id="worldMapHoverRegionLabel"
+                style="font-size: 11px; color: #fef08a; font-family: 'Cinzel', serif; padding: 2px 8px; background: rgba(0,0,0,0.5); border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.3);">Vidd
+                az egeret a tájegységek fölé</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span
+                style="font-family: monospace; font-size: 10px; color: #fde68a; background: rgba(15, 23, 42, 0.9); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.35);"
+                title="Abrigó kontinens és szigetvilág valós mérete: átlagosan 3000 km átmérő (Antarktisz méretű kontinens)">📏
+                Lépték: ~3 000 km (2.5 km/px)</span>
+              <span id="worldMapCoordsBadge"
+                style="font-family: monospace; font-size: 11px; color: #34d399; background: #064e3b; padding: 2px 8px; border-radius: 4px; border: 1px solid #059669;">X:
+                704, Y: 384</span>
+              <button id="btnApplyCoordsToRegistrar" class="btn-primary"
+                style="padding: 2px 10px; font-size: 11px; height: 26px; background: linear-gradient(180deg, #d97706 0%, #b45309 100%); border-color: #f59e0b;"
+                title="Kijelölt pozíció átvitele a 2. Besoroló fülre">
+                📌 Koordináták Küldése a Besorolóba »
+              </button>
+            </div>
+          </div>
+
+          <!-- World Map Viewport (Scrollable / Interactive) -->
+          <div class="world-map-viewport" id="worldMapViewport"
+            style="flex: 1; position: relative; overflow: auto; background: #050a10; border: 1px solid rgba(194, 155, 56, 0.5); border-radius: 6px; text-align: center;">
+            <div id="worldMapCanvasWrapper"
+              style="position: relative; display: inline-block; width: 1408px; height: 768px; user-select: none; cursor: crosshair;">
+              <!-- Background painted world map -->
+              <img src="https://storage.googleapis.com/kalozsziget-assets/kryst/map_generator/assets/abrigo_world_map.jpg" crossorigin="anonymous" alt="Abrigó Világtérkép"
+                style="position: absolute; top: 0; left: 0; width: 1408px; height: 768px; object-fit: fill; pointer-events: none; opacity: 0.96;">
+
+              <!-- Interactive SVG Layer -->
+              <svg id="svgWorldMapOverlay" viewBox="0 0 1408 768"
+                style="position: absolute; top: 0; left: 0; width: 1408px; height: 768px;">
+                <defs>
+                  <filter id="glow-gold" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                </defs>
+                <!-- Régiók group -->
+                <g id="gWorldMapRegions"></g>
+                <!-- Registered maps group -->
+                <g id="gWorldMapRegisteredMaps"></g>
+                <!-- Landmarks group -->
+                <g id="gWorldMapLandmarks"></g>
+                <!-- Selection rectangle & reticle -->
+                <rect id="rectWorldMapSelection" x="0" y="0" width="0" height="0"
+                  style="display: none; fill: rgba(16, 185, 129, 0.2); stroke: #34d399; stroke-width: 2; stroke-dasharray: 4,4; pointer-events: none;">
+                </rect>
+                <circle id="circleWorldMapCursor" cx="704" cy="384" r="6"
+                  style="fill: #f59e0b; stroke: #fff; stroke-width: 2; pointer-events: none;"></circle>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Bottom Region Lore Accordion / Info Box -->
+          <div id="worldMapRegionInfoStrip"
+            style="height: 78px; background: rgba(15, 23, 42, 0.98); border: 1px solid rgba(194, 155, 56, 0.5); border-radius: 4px; margin-top: 8px; padding: 6px 12px; display: flex; gap: 12px; align-items: center; overflow-y: auto;">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div id="loreRegionTitle"
+                  style="font-weight: bold; color: #eec86c; font-size: 13px; font-family: 'Cinzel', serif;">A
+                  Sárkánygerinc-hegység</div>
+                <button id="btnClearWorldSelection" class="btn-secondary"
+                  style="display: none; padding: 1px 6px; font-size: 9px; color: #fef08a; border-color: #d97706;">🔓
+                  Kijelölés Feloldása</button>
+              </div>
+              <div id="loreRegionText" style="font-size: 11px; color: #e2e8f0; line-height: 1.4; margin-top: 2px;">
+                Kattints bármelyik régióra, kanonikus jelölőre vagy regisztrált térképre a rögzített adatok
+                megtekintéséhez!</div>
+            </div>
+            <div id="loreRegionLandmarks"
+              style="width: 300px; font-size: 10px; color: #cbd5e1; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 10px;">
+              <strong>Kapcsolódó Adat / Regisztráció:</strong> <span id="valLoreLandmarks">Vaskapu Bánya, Fellegvár,
+                Vihartorony</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: TÉRKÉP BESOROLÓ & ÜTKÖZÉS-ELLENŐRZŐ -->
+        <div id="mapRegistrarTab" class="world-map-tab-pane"
+          style="flex: 1; flex-direction: column; overflow-y: auto; padding: 10px; gap: 12px;">
+          <div
+            style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(194, 155, 56, 0.35); border-radius: 6px; padding: 14px;">
+            <div
+              style="font-size: 14px; font-weight: bold; color: #fef08a; font-family: 'Cinzel', serif; margin-bottom: 10px;">
+              📋 Készülő Térkép Pozicionálása, Regisztrációs Száma & Hierarchikus Beágyazása
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <!-- Bal Oszlop -->
+              <div>
+                <div class="field-row">
+                  <label class="field-label" for="inputRegTitle">Térkép Címe</label>
+                  <input type="text" id="inputRegTitle" class="field-input"
+                    placeholder="Pl. Pageborn-kikötő alsó dokkjai">
+                </div>
+
+                <div class="field-row-horizontal">
+                  <div class="field-row" style="flex: 1;">
+                    <label class="field-label" for="inputRegNumber" style="color: #6ee7b7;">Elsődleges Regisztrációs
+                      Szám</label>
+                    <input type="text" id="inputRegNumber" class="field-input" placeholder="Pl. REG-0309-YOGGA"
+                      style="font-family: monospace; color: #6ee7b7; font-weight: bold;">
+                  </div>
+                  <div class="field-row" style="flex: 1;">
+                    <label class="field-label" for="inputRegAuthor">Tulajdonos Kalóznév</label>
+                    <input type="text" id="inputRegAuthor" class="field-input" value="Krystohans">
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <label class="field-label" for="inputRegPassword" style="color: #fcd34d;">🔐 Tulajdonosi Jelszó (A
+                    térkép későbbi módosításához kötelező!)</label>
+                  <input type="password" id="inputRegPassword" class="field-input"
+                    placeholder="Jelszó a térkép védelméhez (pl. abrigo7)" value="abrigo7">
+                </div>
+
+                <div class="field-row">
+                  <label class="field-label" for="inputRegDescription">Térkép Leírása / Lore Jegyzetek</label>
+                  <textarea id="inputRegDescription" class="field-input" rows="2"
+                    placeholder="Földrajzi, narratív vagy stratégiai jellemzők..."></textarea>
+                </div>
+
+                <div class="field-row" id="rowRegRegion">
+                  <label class="field-label" for="selectRegRegion">Földrajzi Tájegység (Abrigó Régió)</label>
+                  <select id="selectRegRegion" class="field-input">
+                    <!-- Dinamikusan feltöltve -->
+                  </select>
+                </div>
+
+                <div class="field-row" id="rowRegBookUniverse" style="display: none;">
+                  <label class="field-label" for="inputRegBookUniverse" style="color: #c4b5fd;">📖 Kapcsolt Kryst Könyv ID / Cím (Időeltolódás / Univerzum)</label>
+                  <input type="text" id="inputRegBookUniverse" class="field-input"
+                    placeholder="Pl. book_katarakbis_chronicles_01 vagy Időeltolódás">
+                </div>
+              </div>
+
+              <!-- Jobb Oszlop -->
+              <div>
+                <!-- Koordináták -->
+                <div class="field-row"
+                  style="background: rgba(0,0,0,0.3); border: 1px solid rgba(194, 155, 56, 0.25); border-radius: 4px; padding: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-size: 11px; font-weight: bold; color: #d4af37;">Világtérkép Koordináták (0-1408 x
+                      0-768):</span>
+                    <button id="btnRegPullCurrentMapData" class="btn-secondary"
+                      style="padding: 1px 6px; font-size: 10px;" title="Cím és mag átvétele a szerkesztőből">
+                      🔄 Adatok Átvétele a Műhelyből
+                    </button>
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+                    <div>
+                      <label class="field-label" style="font-size: 9px;" for="inputRegX">Bal X</label>
+                      <input type="number" id="inputRegX" class="field-input" value="620">
+                    </div>
+                    <div>
+                      <label class="field-label" style="font-size: 9px;" for="inputRegY">Felső Y</label>
+                      <input type="number" id="inputRegY" class="field-input" value="370">
+                    </div>
+                    <div>
+                      <label class="field-label" style="font-size: 9px;" for="inputRegW">Szélesség</label>
+                      <input type="number" id="inputRegW" class="field-input" value="60">
+                    </div>
+                    <div>
+                      <label class="field-label" style="font-size: 9px;" for="inputRegH">Magasság</label>
+                      <input type="number" id="inputRegH" class="field-input" value="60">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hierarchia Szint Választó -->
+                <div class="field-row">
+                  <label class="field-label" for="selectRegHierarchyLevel">
+                    <span>Hierarchia Szint</span>
+                    <span style="font-size: 9px; color: #94a3b8;">(Megakadályozza az azonos szintű ütközést)</span>
+                  </label>
+                  <select id="selectRegHierarchyLevel" class="field-input">
+                    <option value="0">0. Világtérkép (Abrigó Mestertérkép)</option>
+                    <option value="1">1. Régió / Nagyobb Tájegység</option>
+                    <option value="2">2. Sziget / Helyi Táj / Körzet / Völgy</option>
+                    <option value="3" selected>3. Település / Város / Kikötő / Erőd</option>
+                    <option value="4">4. Épület / Helyszín / Barlangkomplexum</option>
+                    <option value="5">5. Belső Tér / Épületszintek</option>
+                  </select>
+                </div>
+
+                <!-- 5. Szint: Belső Épületszint (Csak ha szint = 5) -->
+                <div class="field-row" id="boxRegSubLevel"
+                  style="display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; padding: 6px 8px;">
+                  <label class="field-label" for="selectRegSubLevel" style="color: #93c5fd;">
+                    <span>🏢 Belső Épületszint Megadása:</span>
+                  </label>
+                  <select id="selectRegSubLevel" class="field-input">
+                    <option value="ground" selected>0. Földszint</option>
+                    <option value="floor_1">1. Emelet (+1)</option>
+                    <option value="floor_2">2. Emelet (+2)</option>
+                    <option value="attic">Padlásszint</option>
+                    <option value="roof">Tetőterasz</option>
+                    <option value="basement">-1. Pince / Alagsor</option>
+                    <option value="basement_2">-2. Mélypince</option>
+                    <option value="tunnel">Föld alatti tárna / titkos járat</option>
+                  </select>
+                </div>
+
+                <!-- Szülő Térkép Beágyazás (Elsődleges Regisztrációs Szám alapján) -->
+                <div class="field-row">
+                  <label class="field-label" for="selectRegParentMap" style="color: #93c5fd;">🔗 Beágyazás Szülő
+                    Reg. Számba (Fiktívnél csak ha Abrigó területén van)</label>
+                  <select id="selectRegParentMap" class="field-input">
+                    <option value="canon_map_abrigo_master">[REG-0000-ABRIGO] Abrigó Kontinens — 7-Rétegű Mestertérkép
+                      (Szint 0)</option>
+                  </select>
+                  <div id="lblParentChainedChildrenBadge"
+                    style="margin-top: 4px; font-size: 10px; font-family: monospace; color: #fde68a; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 4px; padding: 4px 6px;">
+                    🔗 Szülő lefelé láncolt gyerek térképei: 0 db
+                  </div>
+                </div>
+
+                <!-- Idővonal / Kánon Besorolás -->
+                <div class="field-row">
+                  <label class="field-label" for="selectRegTimeline">
+                    <span>Idővonal & Kánon Besorolás</span>
+                  </label>
+                  <select id="selectRegTimeline" class="field-input">
+                    <option value="present_canonical" selected>🏛️ Abrigó Jelenkori Kánon (Nyilvános Világtérkép, P2P
+                      hálózat)</option>
+                    <option value="fictional_alternate">🌀 Fiktív / Alternatív / Múltbéli Térkép (Privát Helyi
+                      Nyilvántartás)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- ========================================================================== -->
+            <!-- INTERAKTÍV SZÜLŐ VAKTÉRKÉP HELYKIJELÖLŐ (Dinamikus Szülő Térkép Betöltéssel) -->
+            <!-- ========================================================================== -->
+            <div id="registrarBlindMapSection"
+              style="margin-top: 12px; margin-bottom: 12px; background: rgba(6, 20, 35, 0.92); border: 1.5px solid rgba(52, 211, 153, 0.45); border-radius: 6px; padding: 10px;">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 15px;">🗺️</span>
+                  <div>
+                    <div id="lblRegistrarBlindMapTitle" style="font-size: 12px; font-weight: bold; color: #6ee7b7; font-family: 'Cinzel', serif;">
+                      Szülő Vaktérkép: [REG-0000-ABRIGO] Abrigó Kontinens (Lépték: 1:2 500 000)
+                    </div>
+                    <div id="lblRegistrarBlindMapSubtitle" style="font-size: 10px; color: #94a3b8;">
+                      A kiválasztott szülő térkép dinamikus vaktérképe és a már bejegyzett gyermek térképek (sárga kerettel) az egymásra csúszás megelőzéséhez.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vaktérkép Navigációs és Kijelölő Vezérlők -->
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                  <span id="registrarBlindMapScaleInfo"
+                    style="font-family: monospace; font-size: 10px; color: #fde68a; background: rgba(15, 23, 42, 0.9); padding: 3px 7px; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.35);">
+                    📍 X: 620, Y: 370 (60×60 px ≈ 150×150 km)
+                  </span>
+                  <button type="button" id="btnRegBlindModeSelect" class="btn-primary"
+                    style="padding: 2px 8px; font-size: 10px; height: 24px; background: linear-gradient(180deg, #059669 0%, #047857 100%); border-color: #34d399;"
+                    title="Kattintással vagy egérhúzással kijelölheted a térkép pontos helyét a vaktérképen">
+                    🎯 Helykijelölés
+                  </button>
+                  <button type="button" id="btnRegBlindModePan" class="btn-secondary"
+                    style="padding: 2px 8px; font-size: 10px; height: 24px;"
+                    title="A vaktérkép szabad mozgatása / pásztázása egérrel">
+                    🖐️ Mozgatás (Pan)
+                  </button>
+                  <div
+                    style="display: flex; align-items: center; gap: 3px; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(194, 155, 56, 0.4); border-radius: 4px; padding: 1px 5px;">
+                    <button type="button" id="btnRegBlindZoomOut" class="btn-zoom-step"
+                      style="background: none; border: none; color: #fef08a; cursor: pointer; font-weight: bold; font-size: 12px; padding: 0 4px;"
+                      title="Kicsinyítés">−</button>
+                    <span id="lblRegBlindZoom"
+                      style="font-family: monospace; font-size: 10px; color: #fef08a; min-width: 36px; text-align: center;">100%</span>
+                    <button type="button" id="btnRegBlindZoomIn" class="btn-zoom-step"
+                      style="background: none; border: none; color: #fef08a; cursor: pointer; font-weight: bold; font-size: 12px; padding: 0 4px;"
+                      title="Nagyítás">+</button>
+                    <button type="button" id="btnRegBlindZoomFit" class="btn-secondary"
+                      style="padding: 0 5px; font-size: 9px; height: 18px;"
+                      title="Teljes kontinens áttekintése">Fit</button>
+                    <button type="button" id="btnRegBlindZoomCenter" class="btn-secondary"
+                      style="padding: 0 5px; font-size: 9px; height: 18px; color: #6ee7b7; border-color: #10b981;"
+                      title="Ugrás az aktuálisan kijelölt koordinátára">🎯 Fókusz</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Görgethető / Navigálható Dinamikus Szülő Vaktérkép Ablak -->
+              <div id="registrarBlindMapViewport"
+                style="width: 100%; height: 320px; overflow: auto; position: relative; background: #04080e; border: 1px solid rgba(194, 155, 56, 0.5); border-radius: 4px; text-align: center;">
+                <div id="registrarBlindMapWrapper"
+                  style="position: relative; display: inline-block; width: 1408px; height: 768px; user-select: none; cursor: crosshair; transform-origin: top left;">
+                  <img id="imgRegistrarBlindMap" src="https://storage.googleapis.com/kalozsziget-assets/kryst/map_generator/assets/abrigo_world_map.jpg" crossorigin="anonymous" alt="Dinamikus Szülő Vaktérkép"
+                    style="position: absolute; top: 0; left: 0; width: 1408px; height: 768px; object-fit: fill; pointer-events: none; opacity: 0.98;">
+                  <svg id="svgRegistrarBlindOverlay" viewBox="0 0 1408 768"
+                    style="position: absolute; top: 0; left: 0; width: 1408px; height: 768px;">
+                    <!-- Finom koordinátarács -->
+                    <g id="gRegistrarBlindGrid" style="pointer-events: none; opacity: 0.22;">
+                      <line x1="200" y1="0" x2="200" y2="768" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="400" y1="0" x2="400" y2="768" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="600" y1="0" x2="600" y2="768" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="800" y1="0" x2="800" y2="768" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="1000" y1="0" x2="1000" y2="768" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="1200" y1="0" x2="1200" y2="768" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="0" y1="200" x2="1408" y2="200" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="0" y1="400" x2="1408" y2="400" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                      <line x1="0" y1="600" x2="1408" y2="600" stroke="#fef08a" stroke-width="1"
+                        stroke-dasharray="4,4" />
+                    </g>
+                    <!-- Szülő térképhez már lefelé láncolt testvér-gyerek térképek (ütközés & egymásra csúszás elleni védelem) -->
+                    <g id="gRegistrarSiblingMaps"></g>
+                    <!-- Aktuálisan kijelölt térkép befoglaló kerete (Bounding Box) -->
+                    <rect id="rectRegistrarBlindBox" x="620" y="370" width="60" height="60"
+                      style="fill: rgba(16, 185, 129, 0.26); stroke: #34d399; stroke-width: 2.5; stroke-dasharray: 5,3; pointer-events: none;">
+                    </rect>
+                    <!-- Célkereszt szálak az aktuálisan kijelölt középponton -->
+                    <line id="lineRegistrarBlindCrossH" x1="630" y1="400" x2="670" y2="400"
+                      style="stroke: #fef08a; stroke-width: 1.8; pointer-events: none;" />
+                    <line id="lineRegistrarBlindCrossV" x1="650" y1="380" x2="650" y2="420"
+                      style="stroke: #fef08a; stroke-width: 1.8; pointer-events: none;" />
+                    <circle id="circleRegistrarBlindCenter" cx="650" cy="400" r="6"
+                      style="fill: #f59e0b; stroke: #ffffff; stroke-width: 2; pointer-events: none;"></circle>
+                    <!-- Lebegő koordináta címke a kijelölt pont felett -->
+                    <g id="gRegistrarBlindLabel" transform="translate(650, 358)" style="pointer-events: none;">
+                      <rect x="-95" y="-18" width="190" height="20" rx="4" fill="rgba(6, 20, 35, 0.92)" stroke="#34d399"
+                        stroke-width="1.2" />
+                      <text id="txtRegistrarBlindCoord" x="0" y="-5" text-anchor="middle" fill="#6ee7b7"
+                        font-size="10px" font-family="monospace" font-weight="bold">X:620, Y:370 (150×150 km)</text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Valós Idejű Ütközés-Állapot Doboz -->
+            <div id="regCollisionBox" class="collision-alert-card alert-safe">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="collisionIcon" style="font-size: 16px;">✅</span>
+                <span id="collisionTitle" style="font-weight: bold; font-size: 12px;">Szabad Terület</span>
+              </div>
+              <div id="collisionMessage" style="font-size: 11px; line-height: 1.4;">
+                A megadott koordinátákon és hierarchia szinten nincs átfedés. A térkép ütközésmentesen bejegyezhető a
+                kánonba.
+              </div>
+              <div id="collisionActionGroup" class="conflict-btn-group" style="display: none;">
+                <button id="btnResolveUseExisting" class="btn-primary"
+                  style="background: linear-gradient(180deg, #d97706 0%, #b45309 100%); border-color: #f59e0b; font-size: 10px; padding: 3px 8px;">
+                  🏛️ Meglévő Térkép Kérése (Zárolt Alap, 6-7. Kaland Mód)
+                </button>
+                <button id="btnResolveMakeFictional" class="btn-primary"
+                  style="background: linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%); border-color: #a78bfa; font-size: 10px; padding: 3px 8px;">
+                  🌀 Mentés Fiktív Térképként (Szabad Szerkesztés, Privát Tár)
+                </button>
+                <button id="btnResolveChangeLevel" class="btn-secondary" style="font-size: 10px; padding: 3px 8px;">
+                  📐 Szint Módosítása
+                </button>
+              </div>
+            </div>
+
+            <!-- Műveleti gombok -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+              <button id="btnCheckCollisionManual" class="btn-secondary" style="font-size: 11px;">
+                🔍 Ütközés Újraellenőrzése
+              </button>
+              <button id="btnSaveToRegistry" class="btn-primary"
+                style="background: linear-gradient(180deg, #059669 0%, #047857 100%); border-color: #34d399; font-size: 11px; padding: 4px 16px;">
+                💾 Térkép Véglegesítése & Regisztrálása
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: ABRIGÓ KÁNON TÉRKÉPTÁR -->
+        <div id="canonicalVaultTab" class="world-map-tab-pane"
+          style="flex: 1; flex-direction: column; overflow: hidden; padding: 8px; gap: 8px;">
+          <!-- Kereső és szűrő -->
+          <div
+            style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.85); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(194, 155, 56, 0.35);">
+            <input type="text" id="inputSearchCanon" class="field-input"
+              placeholder="🔍 Keresés kánon térképek között (regisztrációs szám, cím, leírás)..."
+              style="flex: 2; height: 26px; font-size: 11px;">
+            <select id="selectFilterCanonRegion" class="field-input" style="flex: 1; height: 26px; font-size: 11px;">
+              <option value="all">Minden Régió</option>
+            </select>
+            <select id="selectFilterCanonLevel" class="field-input" style="flex: 1; height: 26px; font-size: 11px;">
+              <option value="-1">Minden Szint</option>
+              <option value="0">0. Világtérkép (Abrigó)</option>
+              <option value="1">1. Régió</option>
+              <option value="2">2. Sziget / Táj</option>
+              <option value="3">3. Település / Város</option>
+              <option value="4">4. Épület</option>
+              <option value="5">5. Belső Tér</option>
+            </select>
+          </div>
+          <!-- Lista -->
+          <div class="registry-grid" id="canonMapsListContainer"></div>
+        </div>
+
+        <!-- TAB 4: FIKTÍV & PRIVÁT TÉRKÉPTÁR -->
+        <div id="fictionalVaultTab" class="world-map-tab-pane"
+          style="flex: 1; flex-direction: column; overflow: hidden; padding: 8px; gap: 8px;">
+          <div
+            style="background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: 6px; padding: 8px 12px; font-size: 11px; color: #ddd6fe; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">🌀</span>
+            <span><strong>Fiktív & Helyi Térképtár:</strong> Ezek a térképek privátak: a böngésződ helyi tárában élnek,
+              a P2P rendszer nem szórja szét a hálózaton. Nincs ütközési korlát, mind a 7 réteg szabadon
+              alakítható!</span>
+          </div>
+          <!-- Kereső -->
+          <div
+            style="display: flex; gap: 10px; align-items: center; background: rgba(15, 23, 42, 0.85); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(167, 139, 250, 0.35);">
+            <input type="text" id="inputSearchFictional" class="field-input"
+              placeholder="🔍 Keresés fiktív térképek között..." style="flex: 1; height: 26px; font-size: 11px;">
+          </div>
+          <!-- Lista -->
+          <div class="registry-grid" id="fictionalMapsListContainer"></div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="decision-modal-footer"
+        style="background: #0f172a; border-top: 1px solid rgba(194, 155, 56, 0.35); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 10px; color: var(--text-muted);">Abrigó Kontinentális Koordináta Rendszer (~3 000 km
+          átmérő · 1408 × 768 px · 1 px = 2.5 km) • Kryst Engine v5.0 (7-Layer Master)</span>
+        <button id="btnWorldMapFooterClose" class="btn-secondary">Bezárás</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- Kalóznév és Jelszó Hitelesítő Modal (Védett Kánon Térképek Módosításához) -->
+  <!-- ============================================================================== -->
+  <div class="modal-backdrop" id="mapOwnerAuthModal" style="display: none; z-index: 3000;">
+    <div class="decision-modal-card"
+      style="max-width: 520px; width: 92%; border: 2px solid #f59e0b; box-shadow: 0 20px 50px rgba(0,0,0,0.9);">
+      <div class="decision-modal-header"
+        style="background: linear-gradient(135deg, #78350f 0%, #0f172a 100%); border-bottom: 1px solid #f59e0b;">
+        <h3
+          style="margin: 0; font-size: 15px; color: #fde68a; font-family: 'Cinzel', serif; display: flex; align-items: center; gap: 8px;">
+          <span>🔐</span>
+          <span>Védett Kánon Térkép — Tulajdonosi Hitelesítés</span>
+        </h3>
+        <button id="btnAuthModalClose" class="btn-modal-close" title="Bezárás">✕</button>
+      </div>
+      <div class="decision-modal-body" style="padding: 16px; background: #0b0f14;">
+        <div
+          style="font-size: 12px; color: #e2e8f0; margin-bottom: 12px; line-height: 1.5; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 6px; padding: 10px;">
+          A(z) <strong id="authModalTargetMapTitle" style="color: #fef08a;">Abrigó Mestertérkép
+            (REG-0000-ABRIGO)</strong> az Abrigó Világtérképre regisztrált kánon térkép.<br>
+          <span style="color: #cbd5e1; font-size: 11px;">Általános szabály: a Világtérképre regisztrált térképeket
+            kizárólag a főtulajdonos (<strong>Krystohans</strong>) és a térkép bejegyzett tulajdonosa módosíthatja a
+            Kalóznév és Jelszó megadása után! <em>(Ha Fiktív Térképként másolod a saját táradba, jelszó nélkül szabadon
+              szerkesztheted!)</em></span>
+        </div>
+
+        <div class="field-row">
+          <label class="field-label" for="inputAuthPirateName" style="color: #fcd34d;">🏴‍☠️ Kalóznév (Tulajdonos /
+            Főépítész)</label>
+          <input type="text" id="inputAuthPirateName" class="field-input" placeholder="Pl. Krystohans"
+            autocomplete="username">
+        </div>
+
+        <div class="field-row" style="margin-top: 10px;">
+          <label class="field-label" for="inputAuthPiratePass" style="color: #fcd34d;">🔑 Belépési Jelszó</label>
+          <input type="password" id="inputAuthPiratePass" class="field-input" placeholder="Jelszó megadása..."
+            autocomplete="current-password">
+        </div>
+
+        <div id="authModalErrorBox"
+          style="display: none; margin-top: 10px; padding: 8px 10px; border-radius: 4px; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; font-size: 11px;">
+          Hibás kalóznév vagy jelszó!
+        </div>
+      </div>
+      <div class="decision-modal-footer"
+        style="background: #0f172a; border-top: 1px solid rgba(245, 158, 11, 0.35); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <button id="btnAuthModalBranchFictional" class="btn-primary"
+          style="background: linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%); border-color: #a78bfa; font-size: 10px; padding: 5px 10px;"
+          title="A térkép másolása a Fiktív Térképtárba: NEM kér jelszót, nem módosítja a Kánon térképet, és mind a 7 réteg szabadon szerkeszthető!">
+          🌀 Másolás Fiktív Térképként (Jelszó nélkül)
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button id="btnAuthModalCancel" class="btn-secondary" style="font-size: 11px;">Mégse (6-7. Kaland
+            Mód)</button>
+          <button id="btnAuthModalSubmit" class="btn-primary"
+            style="background: linear-gradient(180deg, #d97706 0%, #b45309 100%); border-color: #f59e0b; font-size: 11px;">
+            🔓 Hitelesítés & Feloldás
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BYOK (Bring Your Own Key) Beállítások Modális Ablak -->
+  <div class="modal-backdrop" id="byokModal" style="display: none; z-index: 3100;">
+    <div class="decision-modal-card" style="max-width: 480px; width: 90%; border: 1px solid var(--border-brass, #c29b38);">
+      <div class="decision-modal-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+        <h3 style="margin: 0; font-size: 14px; color: #fde68a; font-family: 'Cinzel', serif; display: flex; align-items: center; gap: 8px;">
+          <span>🔑</span>
+          <span>Saját Gemini API Kulcs (BYOK)</span>
+        </h3>
+        <button id="btnByokModalClose" class="btn-modal-close" title="Bezárás">✕</button>
+      </div>
+      <div class="decision-modal-body" style="padding: 16px; background: #0b0f14;">
+        <div style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-bottom: 12px;">
+          Add meg a saját Google AI Studio Gemini API kulcsodat a kliensoldali AI műveletekhez (pl. Hajónapló AI elemzés). A kulcs kizárólag a te böngésződ helyi tárában (LocalStorage) tárolódik titkosítva, külső szerverre nem kerül továbbításra!
+        </div>
+        <div class="field-row">
+          <label class="field-label" for="inputByokApiKey" style="color: #fcd34d;">Gemini API Kulcs (AI Studio)</label>
+          <input type="password" id="inputByokApiKey" class="field-input" placeholder="AIzaSy..." style="font-family: monospace;">
+        </div>
+        <div id="byokStatusNotice" style="display: none; margin-top: 8px; font-size: 11px; padding: 6px 10px; border-radius: 4px;"></div>
+      </div>
+      <div class="decision-modal-footer" style="background: #0f172a; border-top: 1px solid rgba(194, 155, 56, 0.35); display: flex; justify-content: flex-end; gap: 8px;">
+        <button id="btnByokClearKey" class="btn-secondary" style="font-size: 11px; color: #f87171;">Kulcs Törlése</button>
+        <button id="btnByokSaveKey" class="btn-primary" style="font-size: 11px; background: linear-gradient(180deg, #059669 0%, #047857 100%); border-color: #34d399;">💾 Mentés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Titkos Weboldal-Háttértár & Saját Mapparendszer Engedélykérő Kapu -->
+  <div class="modal-backdrop" id="storageConsentModal" style="display: none; z-index: 9999; background: rgba(6, 10, 16, 0.94); backdrop-filter: blur(6px);">
+    <div class="decision-modal-card" style="max-width: 560px; width: 92%; border: 1px solid #d4af37; box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div class="decision-modal-header" style="background: linear-gradient(135deg, #1b2432 0%, #0d131c 100%);">
+        <h3 style="margin: 0; font-size: 14px; color: #fde68a; font-family: 'Cinzel', serif; display: flex; align-items: center; gap: 8px;">
+          <span>🛡️</span>
+          <span>Telepítési &amp; Háttértár Engedélykérés</span>
+        </h3>
+      </div>
+      <div class="decision-modal-body" style="padding: 18px; background: #0b0f14; color: #cbd5e1; font-size: 12px; line-height: 1.55;">
+        <p style="margin: 0 0 12px 0; color: #f8fafc;">
+          A <strong style="color: #eec86c;">Kryst Térképgenerátor &amp; Játékkönyv Stúdió</strong> elindításához az alábbi két rendszerjogosultság engedélyezése kötelező:
+        </p>
+        <div style="background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(194, 155, 56, 0.35); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px;">
+          <div style="font-weight: 700; color: #fde68a; margin-bottom: 4px;">1. Titkos weboldal-háttértár használata (OPFS + Tartós Tároló)</div>
+          <div style="font-size: 11px; color: #94a3b8;">
+            A böngésző privát, más webhelyektől elszigetelt háttértárában (Origin Private File System / IndexedDB / Persistent Storage) tárolja a Monk Virtuális Lemezt, a 666-os Vektoros Alaptárat és a térkép-nyilvántartót.
+          </div>
+        </div>
+        <div style="background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(194, 155, 56, 0.35); border-radius: 6px; padding: 10px 12px; margin-bottom: 12px;">
+          <div style="font-weight: 700; color: #fde68a; margin-bottom: 4px;">2. Saját mapparendszer kialakítása</div>
+          <div style="font-size: 11px; color: #94a3b8;">
+            Létrehozza a saját munkakönyvtár-struktúrát (<code style="color:#bae6fd;">kryst_monk_disk/maps</code>, <code style="color:#bae6fd;">incoming</code>, <code style="color:#bae6fd;">exports</code>, <code style="color:#bae6fd;">vault_backup</code>) a térképek biztonságos mentéséhez.
+          </div>
+        </div>
+        <div id="storageConsentDeniedNotice" style="display: none; background: rgba(127, 29, 29, 0.45); border: 1px solid #ef4444; border-radius: 6px; padding: 10px 12px; color: #fecaca; font-size: 11px;">
+          🚫 <strong>Engedély megtagadva!</strong> A Térképgenerátor telepítése és inicializálása leállt: engedély nélkül nem ír a háttértárba és nem hozza létre a mapparendszert.
+        </div>
+      </div>
+      <div class="decision-modal-footer" style="background: #0f172a; border-top: 1px solid rgba(194, 155, 56, 0.35); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+        <button id="btnDenyStorageConsent" class="btn-secondary" style="font-size: 11px; border-color: #ef4444; color: #fca5a5;">
+          ✕ Nem adok engedélyt (Leállítás)
+        </button>
+        <button id="btnGrantStorageConsent" class="btn-primary" style="font-size: 11px; background: linear-gradient(180deg, #059669 0%, #047857 100%); border-color: #34d399;">
+          ✅ Engedélyezem és Indítom
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

@@ -696,7 +696,7 @@ const translations = {
         'monastery_upload_title': '📜 Beküldés a Kolostorba (Ár: 10 Tálentum)',
         'monastery_upload_type_work': 'Új mű (Regény/Novella)',
         'monastery_upload_type_application': 'Jelentkezés Szerzetesnek',
-        'monastery_upload_desc': 'Támogatott szerkeszthető formátumok: <b>.docx, .doc, .txt, .rtf</b> (automatikus konverzió GDoc-ká).',
+        'monastery_upload_desc': 'Támogatott formátumok: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (helyi AES-256-GCM titkosított HTML fejezetek az OPFS Monk Lemezre – LET.kryst Szinkron Stúdió).',
         'monastery_upload_title_placeholder': 'A mű címe',
         'monastery_upload_file_label': 'Kézirat fájl:',
         'monastery_upload_cover_label': 'Borítókép (PNG) - Opcionális:',
@@ -1099,9 +1099,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Töltsd fel a referenciádat és add meg a neved.',
         'monk_publish_done_html': '✅ A mű publikálása befejeződött!',
         'monk_publish_in_progress_html': '⏳ Publikálás folyamatban...',
-        'monk_publish_missing_gdoc': 'Hiányzó GDoc azonosító.',
+        'monk_publish_missing_gdoc': 'Hiányzó kézirat / OPFS azonosító.',
         'monk_publish_timeout_html': '⚠️ A publikálás időtúllépés miatt megszakadt.',
-        'gdoc_button': 'GDoc megnyitása',
+        'gdoc_button': 'Megnyitás (LET.kryst)',
         'author_label': 'Szerző:',
         'open_button': 'Megnyitás',
         'delete_confirm_title': 'Végleges Törlés',
@@ -1580,7 +1580,7 @@ const translations = {
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
 // === [#HEX:F.04.17E.00] START | name: does | lines: 1046 ===
-// @calls: [#HEX:D.01.7E.00], [#HEX:F.04.1CF.00], [#HEX:F.04.13.00], [#HEX:K.05.19.00], [#HEX:A.06.10.08] | @calledBy: none
+// @calls: [#HEX:F.04.1F.00], [#HEX:K.05.19.00], [#HEX:A.05.12.00], [#HEX:F.01.00.00], [#HEX:F.04.13.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -2001,7 +2001,7 @@ const translations = {
         'monastery_upload_title': '📜 Submit to the Monastery (Price: 10 Talentum)',
         'monastery_upload_type_work': 'New work (Novel/Novella)',
         'monastery_upload_type_application': 'Apply to be a Monk',
-        'monastery_upload_desc': 'Supported editable formats: <b>.docx, .doc, .txt, .rtf</b> (auto conversion to GDoc).',
+        'monastery_upload_desc': 'Supported formats: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (local AES-256-GCM encrypted HTML chapters to OPFS Monk Disk – LET.kryst Sync Studio).',
         'monastery_upload_title_placeholder': 'Title of the work',
         'monastery_upload_file_label': 'Manuscript file:',
         'monastery_upload_cover_label': 'Cover image (PNG) - Optional:',
@@ -2318,9 +2318,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Upload your reference and provide your name.',
         'monk_publish_done_html': '✅ Publishing completed!',
         'monk_publish_in_progress_html': '⏳ Publishing in progress...',
-        'monk_publish_missing_gdoc': 'Missing GDoc ID.',
+        'monk_publish_missing_gdoc': 'Missing manuscript / OPFS ID.',
         'monk_publish_timeout_html': '⚠️ Publishing timed out.',
-        'gdoc_button': 'Open GDoc',
+        'gdoc_button': 'Open in LET.kryst',
         'author_label': 'Author:',
         'open_button': 'Open',
         'delete_confirm_title': 'Permanent Deletion',
@@ -3229,7 +3229,7 @@ const translations = {
         'monastery_upload_title': '📜 Dem Kloster uebergeben (Preis: 10 Talentum)',
         'monastery_upload_type_work': 'Neues Werk (Roman/Novelle)',
         'monastery_upload_type_application': 'Als Moench bewerben',
-        'monastery_upload_desc': 'Unterstuetzte bearbeitbare Formate: <b>.docx, .doc, .txt, .rtf</b> (automatische Konvertierung zu GDoc).',
+        'monastery_upload_desc': 'Unterstützte Formate: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (lokal AES-256-GCM-verschlüsselte HTML-Kapitel auf dem OPFS-Monk-Laufwerk – LET.kryst Sync Studio).',
         'monastery_upload_title_placeholder': 'Titel des Werkes',
         'monastery_upload_file_label': 'Manuskriptdatei:',
         'monastery_upload_cover_label': 'Coverbild (PNG) - Optional:',
@@ -3431,9 +3431,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Lade deine Referenz hoch und gib deinen Namen an.',
         'monk_publish_done_html': '✅ Veröffentlichung abgeschlossen!',
         'monk_publish_in_progress_html': '⏳ Veröffentlichung läuft...',
-        'monk_publish_missing_gdoc': 'Fehlende GDoc-ID.',
+        'monk_publish_missing_gdoc': 'Fehlende Manuskript- / OPFS-ID.',
         'monk_publish_timeout_html': '⚠️ Veröffentlichung hat eine Zeitüberschreitung erlitten.',
-        'gdoc_button': 'GDoc öffnen',
+        'gdoc_button': 'In LET.kryst öffnen',
         'author_label': 'Autor:',
         'open_button': 'Öffnen',
         'delete_confirm_title': 'Endgültige Löschung',
@@ -4518,7 +4518,7 @@ const translations = {
         'monastery_upload_title': '📜 Soumettre au monastere (Prix : 10 Talent)',
         'monastery_upload_type_work': 'Nouvelle oeuvre (Roman/Novella)',
         'monastery_upload_type_application': 'Postuler pour etre moine',
-        'monastery_upload_desc': 'Formats editables pris en charge : <b>.docx, .doc, .txt, .rtf</b> (conversion automatique en GDoc).',
+        'monastery_upload_desc': 'Formats pris en charge : <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (chapitres HTML chiffrés localement en AES-256-GCM sur le disque OPFS Monk – LET.kryst Sync Studio).',
         'monastery_upload_title_placeholder': 'Titre de l\'oeuvre',
         'monastery_upload_file_label': 'Fichier du manuscrit:',
         'monastery_upload_cover_label': 'Image de couverture (PNG) - Optionnel:',
@@ -4719,9 +4719,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Téléchargez votre référence et indiquez votre nom.',
         'monk_publish_done_html': '✅ Publication terminée!',
         'monk_publish_in_progress_html': '⏳ Publication en cours...',
-        'monk_publish_missing_gdoc': 'ID GDoc manquant.',
+        'monk_publish_missing_gdoc': 'Identifiant de manuscrit / OPFS manquant.',
         'monk_publish_timeout_html': '⚠️ La publication a expiré.',
-        'gdoc_button': 'Ouvrir GDoc',
+        'gdoc_button': 'Ouvrir dans LET.kryst',
         'author_label': 'Auteur:',
         'open_button': 'Ouvrir',
         'delete_confirm_title': 'Suppression définitive',
@@ -5815,7 +5815,7 @@ const translations = {
         'monastery_upload_title': '📜 Enviar al monasterio (Precio: 10 Talento)',
         'monastery_upload_type_work': 'Nueva obra (Novela/Novella)',
         'monastery_upload_type_application': 'Postular para ser monje',
-        'monastery_upload_desc': 'Formatos editables soportados: <b>.docx, .doc, .txt, .rtf</b> (conversion automatica a GDoc).',
+        'monastery_upload_desc': 'Formatos soportados: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (capítulos HTML cifrados localmente con AES-256-GCM en el disco OPFS Monk – LET.kryst Sync Studio).',
         'monastery_upload_title_placeholder': 'Titulo de la obra',
         'monastery_upload_file_label': 'Archivo del manuscrito:',
         'monastery_upload_cover_label': 'Imagen de portada (PNG) - Opcional:',
@@ -6016,9 +6016,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Sube tu referencia e indica tu nombre.',
         'monk_publish_done_html': '✅ ¡Publicación completada!',
         'monk_publish_in_progress_html': '⏳ Publicando...',
-        'monk_publish_missing_gdoc': 'ID de GDoc faltante.',
+        'monk_publish_missing_gdoc': 'Falta el ID del manuscrito / OPFS.',
         'monk_publish_timeout_html': '⚠️ La publicación ha caducado.',
-        'gdoc_button': 'Abrir GDoc',
+        'gdoc_button': 'Abrir en LET.kryst',
         'author_label': 'Autor:',
         'open_button': 'Abrir',
         'delete_confirm_title': 'Eliminación permanente',
@@ -7103,7 +7103,7 @@ const translations = {
         'monastery_upload_title': '📜 Zloz w klasztorze (Cena: 10 Talentow)',
         'monastery_upload_type_work': 'Nowe dzielo (Powiesc/Nowela)',
         'monastery_upload_type_application': 'Zgloszenie na mnicha',
-        'monastery_upload_desc': 'Obslugiwane edytowalne formaty: <b>.docx, .doc, .txt, .rtf</b> (automatyczna konwersja do GDoc).',
+        'monastery_upload_desc': 'Obsługiwane formaty: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (lokalnie szyfrowane AES-256-GCM rozdziały HTML na dysku OPFS Monk – LET.kryst Sync Studio).',
         'monastery_upload_title_placeholder': 'Tytul dziela',
         'monastery_upload_file_label': 'Plik manuskryptu:',
         'monastery_upload_cover_label': 'Okladka (PNG) - opcjonalnie:',
@@ -7304,9 +7304,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Prześlij swoje referencje i podaj swoje imię.',
         'monk_publish_done_html': '✅ Publikacja ukończona!',
         'monk_publish_in_progress_html': '⏳ Publikowanie w toku...',
-        'monk_publish_missing_gdoc': 'Brakujący identyfikator GDoc.',
+        'monk_publish_missing_gdoc': 'Brakujący identyfikator rękopisu / OPFS.',
         'monk_publish_timeout_html': '⚠️ Publikacja przekroczyła limit czasu.',
-        'gdoc_button': 'Otwórz GDoc',
+        'gdoc_button': 'Otwórz w LET.kryst',
         'author_label': 'Autor:',
         'open_button': 'Otwórz',
         'delete_confirm_title': 'Trwałe usunięcie',
@@ -8391,7 +8391,7 @@ const translations = {
         'monastery_upload_title': '📜 Передать в монастырь (Цена: 10 Талантов)',
         'monastery_upload_type_work': 'Новое произведение (Роман/Новелла)',
         'monastery_upload_type_application': 'Заявка в монахи',
-        'monastery_upload_desc': 'Поддерживаемые форматы: <b>.docx, .doc, .txt, .rtf</b> (автоконверсия в GDoc).',
+        'monastery_upload_desc': 'Поддерживаемые форматы: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (локальное шифрование AES-256-GCM HTML-глав на диск OPFS Monk – LET.kryst Sync Studio).',
         'monastery_upload_title_placeholder': 'Название произведения',
         'monastery_upload_file_label': 'Файл рукописи:',
         'monastery_upload_cover_label': 'Обложка (PNG) - необязательно:',
@@ -8592,9 +8592,9 @@ const translations = {
         'monk_upload_desc_application_html': 'Загрузите своё резюме и укажите имя.',
         'monk_publish_done_html': '✅ Публикация завершена!',
         'monk_publish_in_progress_html': '⏳ Публикация в процессе...',
-        'monk_publish_missing_gdoc': 'Отсутствует идентификатор GDoc.',
+        'monk_publish_missing_gdoc': 'Отсутствует идентификатор рукописи / OPFS.',
         'monk_publish_timeout_html': '⚠️ Публикация превысила время ожидания.',
-        'gdoc_button': 'Открыть GDoc',
+        'gdoc_button': 'Открыть в LET.kryst',
         'author_label': 'Автор:',
         'open_button': 'Открыть',
         'delete_confirm_title': 'Окончательное удаление',
@@ -9394,7 +9394,7 @@ Object.keys(registrationDeletionTranslations).forEach(function(langKey) {
  * Megkeres minden 'data-lang' attribútummal rendelkező elemet a HTML-ben.
  */
 // === [#HEX:F.08.07.00] START | name: updateLanguageUI | lines: 80 ===
-// @calls: [#HEX:F.08.08.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.17F.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00]
+// @calls: [#HEX:F.08.08.00] | @calledBy: [#HEX:F.04.FC.00], [#HEX:F.04.114.00], [#HEX:F.04.17F.00], [#HEX:F.04.C8.00], [#HEX:F.01.0B.00]
 function updateLanguageUI() {
     var storedLang = localStorage.getItem('siteLang');
     if ((!currentLang || !translations[currentLang]) && storedLang && translations[storedLang]) {
@@ -9543,7 +9543,7 @@ function t(key) {
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
 // === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
-// @calls: [#HEX:F.08.0B.00], [#HEX:F.04.180.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
+// @calls: [#HEX:F.08.07.00], [#HEX:F.08.0B.00], [#HEX:F.04.180.00] | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;
@@ -9577,7 +9577,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 3D KOZMOSZ TERMINÁL SZÓTÁR KINYERŐ SEGÉDFÜGGVÉNY
 // ----------------------------------------------------------------
 // === [#HEX:F.04.181.00] START | name: getTerminalLabels | lines: 30 ===
-// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15A.00], [#HEX:F.04.1C9.00]
+// @calls: none | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.01.0B.00], [#HEX:F.04.15A.00], [#HEX:F.04.1C9.00]
 function getTerminalLabels(lang) {
     var l = lang || currentLang || 'hu';
     if (typeof translations === 'undefined' || !translations[l]) l = 'hu';

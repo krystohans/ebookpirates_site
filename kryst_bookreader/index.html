@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LET-Könyvtár Kiolvasó Gépezet · v3.2 Master Final</title>
+  <script type="module" crossorigin src="./bundles/index-P_lz3YmW.js"></script>
+  <link rel="stylesheet" crossorigin href="./bundles/index-D1OmF3qp.css">
+</head>
+<body>
+
+  <!-- KÉSZÜLÉKEN KÍVÜLI TÁJOLÁSVÁLTÓ GOMB (EXTERNAL META-CONTROLLER) -->
+  <div class="workspace-meta-toolbar">
+    <button class="meta-orientation-toggle" id="btn-toggle-orientation" title="Készülék Kijelző Tájolás Váltása (Fekvő ↔ Álló)">
+      <span class="orientation-icon" id="orientation-icon">🖥️</span>
+      <span class="btn-text" id="orientation-text">Fekvő</span>
+    </button>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- A 3D GÉPEZET ERGONOMIKUS TESTE (CHASSIS)                                 -->
+  <!-- ========================================================================= -->
+  <main class="reader-chassis" id="reader-chassis">
+
+    <!-- Oldalsó Ragyogó LETkristály Cella -->
+    <div class="reader-crystal-cell" title="LETkristály Adattároló"></div>
+
+    <!-- FELSŐ FEJLÉC ÉS SAROKGOMBOK -->
+    <header class="reader-header">
+      <!-- Bal Felső Sarok: Könyvjelző & Jegyzetelő (Térkép módban: Vissza) -->
+      <button class="corner-btn" id="btn-open-bookmarks" title="Könyvjelzők és Jegyzetek Megnyitása">
+        <span class="btn-text">Könyvjelzők</span>
+      </button>
+
+      <!-- Bal Segédgombok Csoportja (Fekvőben a bal főgomb és a cím kijelző közötti szabad területen) -->
+      <div class="header-aux-group aux-left">
+        <!-- 3. Bal: Visszatérés a Letkristály Adattárba (B - Basis / Bottom) -->
+        <button class="sub-dial-btn basis-back-btn" id="btn-basis-back" title="Visszatérés a Letkristály Adattárba (B - Basis)">
+          <span class="b-basis">B</span>
+        </button>
+
+        <!-- 1. Bal: Betűméret Csökkentése (Aᴀ - nagyobb A és kisebb A) -->
+        <button class="sub-dial-btn font-dec-btn" id="btn-font-decrease" title="Betűméret csökkentése (Aᴀ)">
+          <span class="a-big">A</span><span class="a-small">A</span>
+        </button>
+      </div>
+
+      <!-- Készülék Kétsoros Cím- és Koordináta Kijelző (Másolható) -->
+      <div class="reader-branding reader-coords-display" id="reader-coords-display" title="Kattints az automatikus másoláshoz, vagy jelöld ki a kívánt részt!">
+        <span class="display-main-line">The LET-Library Machine</span>
+        <span class="display-sub-line">v3.2 Master Console</span>
+      </div>
+
+      <!-- Jobb Segédgombok Csoportja (Fekvőben a cím kijelző és a jobb főgomb közötti szabad területen) -->
+      <div class="header-aux-group aux-right">
+        <!-- 2. Jobb: Betűméret Növelése (ᴀA - kisebb A és nagyobb A) -->
+        <button class="sub-dial-btn font-inc-btn" id="btn-font-increase" title="Betűméret növelése (ᴀA)">
+          <span class="a-small">A</span><span class="a-big">A</span>
+        </button>
+
+        <!-- 4. Jobb: Kísérő Felolvasás / Szinkron és Animációk Szüneteltetése (Pause / Play) -->
+        <button class="sub-dial-btn pause-play-btn" id="btn-media-pause-play" title="Lejátszás / Szünet (Felolvasás & Animációk)">
+          <span class="pause-icon" id="icon-pause-play">⏸</span>
+        </button>
+      </div>
+
+      <!-- Jobb Felső Sarok: Fejezetválasztó (Térkép módban: Térképtár) -->
+      <button class="corner-btn" id="btn-open-chapters" title="Fejezetválasztó Gyorslista">
+        <span class="btn-text">Fejezetek</span>
+      </button>
+    </header>
+
+    <!-- KÖZPONTI SZEMBARÁT OVÁLIS LENCSE (THE READING LENS) -->
+    <section class="reader-lens-container" id="reader-lens-container" title="Koppints a tartalomra a megállításhoz és menübe lépéshez">
+
+      <!-- 1. TALLÓZÓ ÉRINTŐKONZOL NÉZET (Kezdeti állapot) -->
+      <div id="view-browser" class="browser-scroll-viewport clean-scroll-container" style="position: absolute; inset: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; z-index: 5;">
+        
+        <!-- FIX / STICKY KERESŐ ÉS SZŰRŐ FEJLÉC -->
+        <div class="browser-controls-header">
+          <div style="text-align: center; margin-bottom: 2px;">
+            <h2 class="browser-header-title">LETkristály Adattár</h2>
+            <p class="browser-header-desc">Böngéssz és szűrj könyvek, tekercsek és térképek között!</p>
+          </div>
+
+          <!-- 1. SZINT: ÉLŐ SZÖVEGES KERESŐSÁV -->
+          <div class="browser-search-wrapper">
+            <span class="browser-search-icon">🔍</span>
+            <input type="text" id="browser-search-input" class="browser-search-input" placeholder="Keresés cím, szerző, fejezet vagy térkép szerint..." autocomplete="off" spellcheck="false">
+            <button id="btn-clear-browser-search" class="browser-search-clear-btn" title="Keresés törlése" style="display: none;">✕</button>
+          </div>
+
+          <!-- 2. SZINT: KATEGÓRIA SZŰRŐ CHIPEK -->
+          <div class="browser-filter-chips clean-scroll-container">
+            <button class="browser-filter-chip active" data-category="all">Mind</button>
+            <button class="browser-filter-chip" data-category="crystal_book">💎 Könyvek</button>
+            <button class="browser-filter-chip" data-category="copy">📘 Másolatok</button>
+            <button class="browser-filter-chip" data-category="scroll">📜 Tekercsek</button>
+            <button class="browser-filter-chip" data-category="log">📓 Naplók</button>
+            <button class="browser-filter-chip" data-category="map">🧭 Térképek</button>
+          </div>
+
+          <!-- 3. SZINT: TALÁLATI STATISZTIKA & ÖSSZESÍTŐ -->
+          <div id="browser-search-stats" class="browser-search-stats">
+            <span id="browser-stats-text" class="browser-stats-text">Összes tétel: ...</span>
+          </div>
+
+          <!-- 4. SZINT: ÖKOSZISZTÉMA HÍD (4-SZINTŰ BEMUTATÁS + OPFS MONK LEMEZ + HIBRID PNG/JSON IMPORT) -->
+          <div id="kryst-ecosystem-bridge-bar" class="kryst-ecosystem-bridge-bar">
+            <div class="ecosystem-level-pills" title="A LET-LIT olvasó 4 bemutatási szintje">
+              <span class="ecosystem-level-pill">📖 1. eBook</span>
+              <span class="ecosystem-level-pill">🎧 2. Audiobook</span>
+              <span class="ecosystem-level-pill">🎬 3. Multimedia-Book</span>
+              <span class="ecosystem-level-pill">🗺️⛵ 4. Mapbook</span>
+            </div>
+            <div class="ecosystem-import-actions">
+              <input type="file" id="ecosystem-file-input" accept=".png,.json,.epub,.kryst" style="display: none;">
+              <button type="button" id="btn-import-ecosystem-file" class="ecosystem-btn" title="Hibrid térkép (.kryst.map.png / .json) vagy Kristálykönyv (.kryst) közvetlen megnyitása">
+                📂 Bemenet (.png / .json / .kryst)
+              </button>
+              <button type="button" id="btn-sync-monk-disk" class="ecosystem-btn" title="Térképek és kristálykönyvek szinkronizálása az OPFS Monk Virtuális Lemezről">
+                💿 OPFS Monk Lemez Szinkron
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LISTA KONTÉNEREK -->
+        <div id="browser-books-section">
+          <h4 class="browser-section-title" id="browser-books-title">📚 Kristálykönyvtár & Tekercsek</h4>
+          <div id="browser-books-list" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Dinamikusan feltöltve -->
+          </div>
+        </div>
+
+        <div id="browser-maps-section" style="margin-top: 10px; border-top: 1px dashed rgba(184, 151, 88, 0.3); padding-top: 10px;">
+          <h4 class="browser-section-title" id="browser-maps-title">🗺️ Kartográfiai Fényasztal</h4>
+          <div id="browser-maps-list" style="display: flex; flex-direction: column; gap: 6px;">
+            <!-- Dinamikusan feltöltve -->
+          </div>
+        </div>
+
+        <!-- ÜRES TALÁLATI ÁLLAPOT -->
+        <div id="browser-empty-state" class="browser-empty-state" style="display: none;">
+          <div class="browser-empty-icon">💎🔍</div>
+          <div class="browser-empty-title">Nincs találat az Adattárban</div>
+          <div class="browser-empty-desc">A megadott keresési feltételeknek vagy kategóriának egyetlen tétel sem felel meg.</div>
+          <button id="btn-reset-browser-filters" class="card-action-btn browser-reset-btn">🔄 Keresési feltételek törlése</button>
+        </div>
+
+      </div>
+
+      <!-- 2. SZÖVEGMEGJELENÍTŐ RÉTEG (Olvasás & Olvasás+Hang) -->
+      <div class="reader-text-viewport" id="view-text" style="display: none;">
+        <div id="text-tokens-container">
+          <!-- Szavak és tokenek a reflow motortól -->
+        </div>
+      </div>
+
+      <!-- 3. 3D ÁLOMSZÍNPAD RÉTEG (KIZÁRÓLAG tiszta hangoskönyv módban) -->
+      <div class="reader-dream-stage-overlay" id="view-dream-stage">
+        <!-- Three.js Canvas konténer -->
+      </div>
+
+      <!-- 4. HAJSZÁLOPTIKÁS TÉRKÉPNÉZŐ & 2D MAPBOOK ÚTVONAL-ANIMÁTOR RÉTEG -->
+      <div class="reader-map-overlay" id="view-map">
+        <div class="map-image-wrapper" id="map-image-wrapper">
+          <img id="map-target-image" src="" alt="Térkép">
+          <svg id="map-route-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" class="map-route-svg-overlay"></svg>
+        </div>
+
+        <!-- 2D MAPBOOK ÚTVONAL-ANIMÁTOR VEZÉRLŐSÁV (A pontból B pontba utazó jármű + zene + narráció + vágóeffekt) -->
+        <div class="mapbook-route-hud" id="mapbook-route-hud" style="display: none;">
+          <button type="button" class="mapbook-hud-btn" id="btn-mapbook-prev-stage" title="Előző gráfpont útszakasz">⏮</button>
+          <select id="mapbook-stage-select" class="mapbook-stage-select" title="Gráfpontok közötti útszakasz kiválasztása"></select>
+          <button type="button" class="mapbook-hud-btn" id="btn-mapbook-play-route" title="2D Útvonal-Animáció indítása (A → B utazás + hangulatzene + narráció)">▶ 2D Utazás</button>
+          <button type="button" class="mapbook-hud-btn" id="btn-mapbook-next-stage" title="Következő gráfpont útszakasz">⏭</button>
+          <span class="mapbook-route-status" id="mapbook-route-status">⛵ Mapbook Kész</span>
+        </div>
+
+        <!-- 2D VÁGÓEFFEKT OVERLAY -->
+        <div class="mapbook-cut-effect-overlay" id="mapbook-cut-effect-overlay"></div>
+
+        <!-- Finom Arany Hajszáloptikás Célkereszt -->
+        <div class="reticle-crosshair">
+          <div class="reticle-center-circle"></div>
+          <div class="reticle-line-h"></div>
+          <div class="reticle-line-v"></div>
+        </div>
+
+        <!-- LEVÁLASZTOTT ALSÓ SÁV (LÁBLÉC) - Csak akciópont / horgony fölött ugrik fel -->
+        <div class="map-footer-dock" id="map-footer-dock" style="display: none;">
+          <div class="map-footer-header">
+            <div class="map-footer-title-row">
+              <span class="map-footer-icon">🎯</span>
+              <span class="map-footer-title" id="map-footer-title">Akciópont Neve</span>
+            </div>
+            <span class="map-footer-danger" id="map-footer-danger">Veszélyesség: --</span>
+          </div>
+          <div class="map-footer-body">
+            <p class="map-footer-text" id="map-footer-text"></p>
+            <div class="map-footer-action-row" id="map-footer-action-row" style="display: none;">
+              <button class="map-poi-more-btn" id="btn-poi-more">Tovább 📜</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 85% OPACITÁSÚ TELJES LENCSÉS PERGAMEN KITERJESZTETT OLVASÓ RÉTEG -->
+        <div class="map-parchment-overlay" id="map-parchment-overlay" style="display: none;">
+          <div class="parchment-scroll-area" id="parchment-scroll-area">
+            <div class="parchment-badge" id="parchment-badge">EXPEDÍCIÓS FELJEGYZÉS</div>
+            <h2 class="parchment-title" id="parchment-title">Célpont Neve</h2>
+            <div class="parchment-meta" id="parchment-meta">Veszélyesség · Koordináták</div>
+            <div class="parchment-divider">❦ ❦ ❦</div>
+            <div class="parchment-text-content" id="parchment-text-content">
+              <!-- Részletes akciópont tartalom, lore, leírás -->
+            </div>
+            <div class="parchment-return-notice">
+              ⚖️ <em>Kattints a bal felső «Vissza» gombra vagy koppints duplán bárhová a visszatéréshez a térképre!</em>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 5. FEJEZET-ILLUSZTRÁCIÓK & BORÍTÓ GYORSGOMB + LIGHTBOX (Szöveg-lencse reflow megzavarása nélkül) -->
+      <button type="button" id="chapter-media-pill" class="chapter-media-pill" style="display: none;" title="Borító és beágyazott illusztrációk megtekintése">
+        🖼️ Illusztrációk (<span id="chapter-media-count">0</span>)
+      </button>
+
+      <div id="chapter-media-lightbox" class="chapter-media-lightbox" style="display: none;">
+        <div class="chapter-media-lightbox-header">
+          <span id="chapter-media-lightbox-title">🖼️ Illusztrációk & Borító</span>
+          <button type="button" id="btn-close-media-lightbox" class="card-action-btn">✕ Bezárás</button>
+        </div>
+        <div class="chapter-media-lightbox-stage">
+          <img id="chapter-media-active-img" src="" alt="Illusztráció">
+        </div>
+        <div id="chapter-media-thumbs" class="chapter-media-thumbs clean-scroll-container"></div>
+      </div>
+
+      <!-- 6. ON-DEMAND LETKRISTÁLY KIOLVASÁS / OPFS-DRIVE BETÖLTŐ & B-VERZIÓ FALLBACK -->
+      <div id="library-hydration-overlay" class="library-hydration-overlay" style="display: none;">
+        <div class="library-hydration-card">
+          <div class="library-hydration-spinner" id="library-hydration-spinner">💎</div>
+          <div class="library-hydration-title" id="library-hydration-title">LETkristály kiolvasása...</div>
+          <div class="library-hydration-desc" id="library-hydration-desc">Adatok lekérése az OPFS adattárból / felhőből...</div>
+          <div class="library-hydration-actions">
+            <button type="button" id="btn-hydration-fallback-legacy" class="card-action-btn" style="display: none;">🔄 Megnyitás B-verzióban (Klasszikus)</button>
+            <button type="button" id="btn-hydration-cancel" class="card-action-btn">✕ Vissza az Adattárba</button>
+          </div>
+        </div>
+      </div>
+
+    <!-- ========================================================================= -->
+    <!-- KERESHETŐ ÉS SZERKESZTHETŐ KÖNYVJELZŐ & JEGYZET MODÁL                     -->
+    <!-- ========================================================================= -->
+    <div class="bookmark-modal-overlay" id="bookmark-modal-overlay">
+      <div class="bookmark-modal-header">
+        <h3>Könyvjelzők & Jegyzetek</h3>
+      </div>
+
+      <!-- Valós idejű élő keresősáv -->
+      <input type="text" class="bookmark-search-input" id="bookmark-search-input" placeholder="🔍 Keresés címben, jegyzetben vagy idézetben...">
+
+      <!-- Új könyvjelző hozzáadása gomb -->
+      <button class="corner-btn" id="btn-create-bookmark" style="width: 100%; justify-content: center; margin-bottom: 12px;">
+        + Új Könyvjelző Rögzítése Jegyzetével
+      </button>
+
+      <!-- Kártyák görgethető listája -->
+      <div class="bookmark-cards-scroll clean-scroll-container" id="bookmark-cards-scroll">
+        <!-- JavaScript által dinamikusan renderelt kártyák -->
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- FEJEZETVÁLASZTÓ GYORSLISTA MODÁL                                          -->
+    <!-- ========================================================================= -->
+    <div class="bookmark-modal-overlay" id="chapter-modal-overlay">
+      <div class="bookmark-modal-header">
+        <h3>Fejezetválasztó</h3>
+      </div>
+
+      <div class="bookmark-cards-scroll clean-scroll-container" id="chapter-cards-scroll">
+        <!-- JavaScript által dinamikusan renderelt fejezetek -->
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TÉRKÉPTÁR GYORSLISTA MODÁL                                                -->
+    <!-- ========================================================================= -->
+    <div class="bookmark-modal-overlay" id="map-modal-overlay">
+      <div class="bookmark-modal-header">
+        <h3>Kartográfiai Térképtár</h3>
+      </div>
+
+      <div class="bookmark-cards-scroll clean-scroll-container" id="map-cards-scroll">
+        <!-- JavaScript által dinamikusan renderelt térképek -->
+      </div>
+    </div>
+
+    </section>
+
+    <!-- ALSÓ HÜVELYKUJJAS KEZELŐPULT (THUMB-ZONE DOCK) -->
+    <footer class="reader-dock">
+      <!-- Bal Alsó Sarok: HÁTRA Léptetőgomb / Térkép módban: Kicsinyítés (Zoom -) -->
+      <button class="thumb-step-btn" id="btn-thumb-prev" title="Hátra Léptetés">
+        ◀
+      </button>
+
+      <!-- Középső Tolópotméter Blokk -->
+      <div class="slider-console">
+        <!-- 1. Csúszka: Zene / SFX Hangerő -->
+        <div class="slider-group">
+          <label for="slider-bgm">Zene/SFX</label>
+          <input type="range" id="slider-bgm" class="reader-pot-slider" min="0" max="100" value="60">
+          <span id="label-bgm-val" style="width: 28px; text-align: right;">60%</span>
+        </div>
+
+        <!-- 2. Csúszka: Kísérő Szinkron / Felolvasás Hangerő -->
+        <div class="slider-group">
+          <label for="slider-voice">Szinkron</label>
+          <input type="range" id="slider-voice" class="reader-pot-slider" min="0" max="100" value="90">
+          <span id="label-voice-val" style="width: 28px; text-align: right;">90%</span>
+        </div>
+
+        <!-- 3. Csúszka: Tempó / Sebesség (Alapérték: 0 -> 1.0x) -->
+        <div class="slider-group">
+          <label for="slider-speed">Sebesség</label>
+          <input type="range" id="slider-speed" class="reader-pot-slider" min="-40" max="60" step="5" value="0">
+          <span id="label-speed-val" style="width: 28px; text-align: right;">1.0×</span>
+        </div>
+      </div>
+
+      <!-- Jobb Alsó Sarok: ELŐRE Léptetőgomb / Térkép módban: Nagyítás (Zoom +) -->
+      <button class="thumb-step-btn" id="btn-thumb-next" title="Előre Léptetés">
+        ▶
+      </button>
+    </footer>
+
+  </main>
+
+</body>
+</html>

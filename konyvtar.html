@@ -11,6 +11,21 @@
 
   <div class="page-container">
 
+    <!-- LET-KÖNYVTÁR KIOLVASÓ GÉPEZET (.kryst 4-Szintű Olvasó & Mapbook) -->
+    <div class="page-section" style="background: linear-gradient(135deg, #1a120b 0%, #2d1e12 100%); border: 2px solid #d4af37; border-radius: 8px; padding: 16px; margin-bottom: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.45);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h3 style="margin: 0 0 6px 0; color: #ffd700; font-family: var(--font-serif);"><i class="fas fa-gem"></i> 💎📖 LET-Könyvtár Kiolvasó Gépezet</h3>
+          <p style="margin: 0; color: #ecd9c6; font-size: 0.92em;">4-szintű Krystálykönyv megjelenítő: <b>1. eBook</b> &bull; <b>2. Audiobook</b> &bull; <b>3. Multimedia-Book</b> &bull; <b>4. Mapbook (2D Útvonal-Animátor)</b></p>
+          <p id="konyvtar-letlit-summary" style="margin: 6px 0 0 0; color: #d4b886; font-size: 0.84em;">⏳ Saját LETkristály Adattár szinkronizálása...</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="open-kryst-reader-btn" class="btn" style="background: linear-gradient(180deg, #c29b38 0%, #8b6938 100%); border: 1px solid #ffd700; color: #1a0f00; font-weight: bold; padding: 10px 18px;" onclick="openKrystBookReaderModal()">💎 Kiolvasó Gépezet Megnyitása</button>
+          <button class="btn btn-secondary" style="padding: 10px 14px;" onclick="openKrystBookReaderNewTab()">↗ Teljes Képernyős Lap</button>
+        </div>
+      </div>
+    </div>
+
     <div style="text-align: right; margin-bottom: 15px;">
         <button id="upload-map-button" class="btn" style="display: none;" data-lang="library_upload_map_button">Új térkép feltöltése</button>
     </div>
@@ -117,6 +132,24 @@
             <div class="content-display" id="reader-content-display"></div>
             <button class="reader-close-btn" onclick="document.getElementById('reader-modal').style.display='none'" data-lang="library_reader_close_button">Bezárás</button>
         </div>
+    </div>
+</div>
+
+<!-- LET-KÖNYVTÁR KIOLVASÓ GÉPEZET UNIVERZÁLIS KONTÉNER MODAL -->
+<div id="kryst-book-reader-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 4500;">
+    <div class="gamemode-modal-content" style="width: 98vw; max-width: 1680px; height: 94vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #120c07; border: 2px solid #d4af37; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,0.92);">
+        <div style="background: linear-gradient(90deg, #2d1e12, #1a120b); color: #ffd700; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d4af37; position: relative; z-index: 10;">
+            <div style="display: flex; align-items: center; gap: 10px; font-weight: bold;">
+                <span>💎📖 LET-Könyvtár Kiolvasó Gépezet (eBook &bull; Audiobook &bull; Multimedia-Book &bull; Mapbook)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" id="kryst-reader-legacy-fallback-btn" class="kryst-modal-action-btn" style="display: none; position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 0.85em; border-color: #94a3b8; color: #e2e8f0;" onclick="switchCurrentLetLitItemToLegacyFallback()" title="Váltás a klasszikus HTML olvasóra / egyszerű térképnézőre (B-verzió)">🔄 B-verzió</button>
+                <button type="button" class="kryst-modal-action-btn" style="position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 0.85em;" onclick="toggleKrystModalFullscreen('kryst-book-reader-modal')" title="Teljes képernyős mód váltása">⛶ Teljes képernyő</button>
+                <button type="button" class="kryst-modal-action-btn" style="position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 0.85em;" onclick="openKrystBookReaderNewTab()" title="Megnyitás egészoldalas külön lapon">↗ Megnyitás külön lapon</button>
+                <button type="button" class="kryst-modal-close-btn" style="position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 1.05em; line-height: 1;" onclick="closeKrystBookReaderModal()" title="Bezárás">✕</button>
+            </div>
+        </div>
+        <iframe id="kryst-book-reader-iframe" src="about:blank" style="flex: 1; width: 100%; height: 100%; border: none; background: #120c07;" allow="autoplay; fullscreen"></iframe>
     </div>
 </div>
 

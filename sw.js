@@ -3,7 +3,7 @@
 // Version: 20261018_v2
 // ==========================================================================
 
-const CACHE_NAME = 'ebp-cache-v20261018_v2';
+const CACHE_NAME = 'ebp-cache-v20261119_m339';
 
 // Előre gyorstárazandó statikus alapfájlok (Core App Shell)
 const PRECACHE_ASSETS = [

@@ -69,6 +69,7 @@
         <!-- Gyorsgombok a kolostor állomásaihoz -->
         <p style="color: #e8d8c8; font-size: 0.95rem; margin-bottom: 10px;">Válassz a kolostori állomások közül:</p>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+            <button class="btn" style="background: linear-gradient(135deg, #4c1d95, #1e1b4b); border: 1px solid #c084fc; color: #f3e8ff; font-weight: bold;" onclick="openKrystSyncStudioModal()"><i class="fas fa-microphone-alt"></i> 🎙️💎 LET.kryst Szinkron Stúdió</button>
             <button class="btn" style="background-color: #5d3a1a; border: 1px solid var(--color-gold);" onclick="openMonasteryWorkbenchModal()"><i class="fas fa-feather-alt"></i> 📜 Szkriptórium Munkapad</button>
             <button class="btn" style="background-color: #b38600; border: 1px solid var(--color-gold);" onclick="openQuizBookModal()"><i class="fas fa-book"></i> 📖 Kvízkérdések Könyve</button>
             <button class="btn" style="background-color: #37474f; border: 1px solid var(--color-gold);" onclick="openMonasteryForumModal()"><i class="fas fa-users"></i> 🏛️ Közös Terem</button>
@@ -101,6 +102,15 @@
             <h3 style="color: #ffd700; border-bottom: 2px solid var(--color-gold); padding-bottom: 8px; margin-top: 0; font-family: var(--font-serif); font-size: 1.3em;">
                 <i class="fas fa-feather-alt"></i> 📜 Szkriptórium Munkapad – Kéziratok és Lektorálás
             </h3>
+
+            <!-- LET.kryst Szinkron Stúdió Indító Sáv -->
+            <div style="background: linear-gradient(135deg, rgba(76, 29, 149, 0.85), rgba(30, 27, 75, 0.92)); border: 1px solid #c084fc; border-radius: 6px; padding: 12px 14px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <div>
+                    <div style="color: #f3e8ff; font-weight: bold; font-size: 1.05em;">🎙️💎 LET.kryst Szinkron Stúdió &amp; Térképszinkronizáló (1–3. Arc)</div>
+                    <div style="color: #d8b4fe; font-size: 0.85em;">Krystálykönyv szinkronizálás, TTS karakterhangok, intonációs szövegbuborékok és 2D útvonal-animátor.</div>
+                </div>
+                <button class="btn" style="background: linear-gradient(180deg, #7c3aed 0%, #4c1d95 100%); border: 1px solid #e9d5ff; color: #fff; font-weight: bold; padding: 8px 14px;" onclick="openKrystSyncStudioModal()">🎙️ Stúdió Megnyitása</button>
+            </div>
 
             <!-- Kvízkérdés Jóváhagyó Panel (Szerzeteseknek) -->
             <div id="monk-quiz-approval-panel" style="display: none; background: rgba(50, 40, 10, 0.8); padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #ffd700;">
@@ -144,14 +154,14 @@
                 </div>
 
                 <p id="upload-description" style="font-size:0.88em; color:#d4c5b9;" data-lang-html="monastery_upload_desc">
-                    Támogatott formátumok: <b>.docx, .doc, .txt, .rtf</b> (automatikus konverzió GDoc-ká).
+                    Támogatott formátumok: <b>.docx, .txt, .md, .html, .epub, .kryst, .rtf</b> (helyi AES-256-GCM titkosított HTML fejezetek az OPFS Monk Lemezre – LET.kryst Szinkron Stúdió).
                 </p>
                 
                 <input type="text" id="monk-upload-title" placeholder="A mű címe" data-lang-placeholder="monastery_upload_title_placeholder" style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 10px; border-radius:4px; border:1px solid #d4af37; background:#fff; color:#000;">
                 
                 <div class="form-group" style="margin-bottom:10px;">
                     <label for="monk-upload-file" id="upload-file-label" style="display:block; margin-bottom:4px; font-weight:bold; color:#ffd700;" data-lang="monastery_upload_file_label">Kézirat fájl:</label>
-                    <input type="file" id="monk-upload-file" accept=".docx,.doc,.txt,.rtf,.odt" style="width: 100%; color:#fdf5e6;">
+                    <input type="file" id="monk-upload-file" accept=".docx,.doc,.txt,.md,.html,.htm,.epub,.kryst,.rtf" style="width: 100%; color:#fdf5e6;">
                 </div>
 
                 <div class="form-group" id="cover-upload-container" style="margin-bottom:10px;">
@@ -227,6 +237,23 @@
                 <button class="btn" style="background-color: #27ae60; border: 1px solid #ffd700;" onclick="executeFelhokolostorExitToKikoto()">Igen, visszatérek</button>
                 <button class="btn btn-secondary" onclick="cancelFelhokolostorExitToKikoto()">Maradok még</button>
             </div>
+        </div>
+    </div>
+
+    <!-- E. LET.KRYST SZINKRON STÚDIÓ UNIVERZÁLIS KONTÉNER MODAL -->
+    <div id="kryst-sync-studio-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 4500;">
+        <div class="gamemode-modal-content" style="width: 98vw; max-width: 1680px; height: 94vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #090d16; border: 2px solid #c084fc; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,0.92);">
+            <div style="background: linear-gradient(90deg, #1e1b4b, #3b0764); color: #f3e8ff; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #c084fc; position: relative; z-index: 10;">
+                <div style="display: flex; align-items: center; gap: 10px; font-weight: bold;">
+                    <span>🎙️💎 LET.kryst Szinkron Stúdió – Felhőkolostor Mesterállomás</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button type="button" class="kryst-modal-action-btn" style="position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 0.85em;" onclick="toggleKrystModalFullscreen('kryst-sync-studio-modal')" title="Teljes képernyős mód váltása">⛶ Teljes képernyő</button>
+                    <button type="button" class="kryst-modal-action-btn" style="position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 0.85em;" onclick="openKrystSyncStudioNewTab()" title="Megnyitás egészoldalas külön lapon">↗ Megnyitás külön lapon</button>
+                    <button type="button" class="kryst-modal-close-btn" style="position: static; width: auto; margin: 0; padding: 5px 12px; font-size: 1.05em; line-height: 1;" onclick="closeKrystSyncStudioModal()" title="Bezárás">✕</button>
+                </div>
+            </div>
+            <iframe id="kryst-sync-studio-iframe" src="about:blank" style="flex: 1; width: 100%; height: 100%; border: none; background: #090d16;" allow="autoplay; fullscreen; microphone"></iframe>
         </div>
     </div>
 

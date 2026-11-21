@@ -543,6 +543,7 @@ html {
     position: absolute !important;
     top: 10px !important;
     right: 10px !important;
+    width: auto !important;
     background: transparent !important;
     border: none !important;
     font-size: 1.5em !important;
@@ -5846,4 +5847,95 @@ html.ebp-force-landscape .info-modal-content {
 html.ebp-force-landscape .loading-orientation-hint,
 html.ebp-force-landscape .loading-orientation-hint.mobile-portrait-active {
     display: none !important;
+}
+
+
+/* ==========================================================
+   === M339: KRYST HÁRMAS MODUL MODÁL & TELJES KÉPERNYŐS MÓD ===
+   ========================================================== */
+#kryst-sync-studio-modal .gamemode-modal-content,
+#kryst-map-workshop-modal .gamemode-modal-content,
+#kryst-book-reader-modal .gamemode-modal-content {
+    width: 98vw !important;
+    max-width: 1720px !important;
+    height: calc(100vh - var(--header-height, 66px) - 16px) !important;
+    max-height: calc(100vh - var(--header-height, 66px) - 16px) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.kryst-modal-action-btn,
+.kryst-modal-close-btn {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    border-radius: 5px !important;
+    font-weight: bold !important;
+    line-height: 1.1 !important;
+}
+
+.kryst-modal-action-btn {
+    padding: 5px 12px !important;
+    font-size: 0.85em !important;
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%) !important;
+    border: 1px solid #94a3b8 !important;
+    color: #f8fafc !important;
+}
+
+.kryst-modal-action-btn:hover {
+    background: linear-gradient(180deg, #475569 0%, #334155 100%) !important;
+    border-color: #ffd700 !important;
+    color: #ffd700 !important;
+}
+
+.kryst-modal-close-btn {
+    padding: 5px 12px !important;
+    font-size: 1.05em !important;
+    background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%) !important;
+    border: 1px solid #f87171 !important;
+    color: #ffffff !important;
+}
+
+.kryst-modal-close-btn:hover {
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%) !important;
+    color: #ffffff !important;
+}
+
+#kryst-sync-studio-modal.kryst-fullscreen-active,
+#kryst-map-workshop-modal.kryst-fullscreen-active,
+#kryst-book-reader-modal.kryst-fullscreen-active {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    z-index: 99999 !important;
+}
+
+#kryst-sync-studio-modal.kryst-fullscreen-active .gamemode-modal-content,
+#kryst-map-workshop-modal.kryst-fullscreen-active .gamemode-modal-content,
+#kryst-book-reader-modal.kryst-fullscreen-active .gamemode-modal-content {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }

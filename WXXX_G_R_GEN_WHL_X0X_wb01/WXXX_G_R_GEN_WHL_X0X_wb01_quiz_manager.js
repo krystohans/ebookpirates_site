@@ -134,6 +134,8 @@ window.QuizConfig = {
 };
 
 class QuizManager {
+// === [#HEX:D.07.137.00] START | name: constructor | lines: 33 ===
+// @calls: [#HEX:D.07.14E.00], [#HEX:D.07.143.00], [#HEX:D.07.13E.00], [#HEX:D.07.145.00], [#HEX:D.07.138.00] | @calledBy: none
   constructor() {
     this.questions = [];
     this.questionsByBaseId = {}; // { HU: { baseId: q }, EN: { ... } }
@@ -167,8 +169,11 @@ class QuizManager {
       this.loadUI();
     }
   }
+// === [#HEX:D.07.137.00] END ===
 
   // ─── 💾 [ASKED PROTOKOLL]: SESSION STORAGE ÁLLAPOTKEZELÉS ───
+// === [#HEX:D.07.138.00] START | name: initSessionState | lines: 9 ===
+// @calls: [#HEX:D.07.139.00] | @calledBy: [#HEX:D.07.137.00]
   initSessionState() {
     const state = this.getSessionState();
     Object.keys(state).forEach(baseId => {
@@ -178,7 +183,10 @@ class QuizManager {
       if (rec.answeredCorrectly === false) this.missedQuestionIds.add(baseId);
     });
   }
+// === [#HEX:D.07.138.00] END ===
 
+// === [#HEX:D.07.139.00] START | name: getSessionState | lines: 8 ===
+// @calls: none | @calledBy: [#HEX:D.07.138.00], [#HEX:D.07.13B.00], [#HEX:D.07.13C.00]
   getSessionState() {
     try {
       const raw = sessionStorage.getItem('WXXX_G_R_GEN_WHL_X0X_wb01_quiz_session_state');
@@ -187,7 +195,10 @@ class QuizManager {
       return {};
     }
   }
+// === [#HEX:D.07.139.00] END ===
 
+// === [#HEX:D.07.13A.00] START | name: saveSessionState | lines: 7 ===
+// @calls: none | @calledBy: [#HEX:D.07.13B.00]
   saveSessionState(state) {
     try {
       sessionStorage.setItem('WXXX_G_R_GEN_WHL_X0X_wb01_quiz_session_state', JSON.stringify(state));
@@ -195,29 +206,41 @@ class QuizManager {
       console.warn("Nem sikerült menteni a sessionStorage-ba:", e);
     }
   }
+// === [#HEX:D.07.13A.00] END ===
 
+// === [#HEX:D.07.13B.00] START | name: setSessionRecord | lines: 6 ===
+// @calls: [#HEX:D.07.139.00], [#HEX:D.07.13A.00] | @calledBy: [#HEX:D.07.147.00], [#HEX:D.07.14B.00]
   setSessionRecord(baseId, updates) {
     if (!baseId) return;
     const state = this.getSessionState();
     state[baseId] = Object.assign(state[baseId] || { baseId: baseId, asked: false, answeredCorrectly: null, shuffledOrder: null }, updates);
     this.saveSessionState(state);
   }
+// === [#HEX:D.07.13B.00] END ===
 
+// === [#HEX:D.07.13C.00] START | name: getSessionRecord | lines: 5 ===
+// @calls: [#HEX:D.07.139.00] | @calledBy: [#HEX:D.07.148.00]
   getSessionRecord(baseId) {
     if (!baseId) return null;
     const state = this.getSessionState();
     return state[baseId] || null;
   }
+// === [#HEX:D.07.13C.00] END ===
 
   // ─── 🌐 AKTUÁLIS NYELV MEGHATÁROZÁSA ───
+// === [#HEX:D.07.13D.00] START | name: getCurrentLang | lines: 6 ===
+// @calls: none | @calledBy: [#HEX:D.07.13E.00], [#HEX:D.07.148.00], [#HEX:D.07.14B.00]
   getCurrentLang() {
     let lang = window.currentLanguage || localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
     lang = String(lang).trim().toUpperCase();
     const validLangs = ['HU', 'EN', 'DE', 'FR', 'ES', 'PL', 'RU'];
     return validLangs.includes(lang) ? lang : 'HU';
   }
+// === [#HEX:D.07.13D.00] END ===
 
   // ─── 📥 [LOAD PROTOKOLL]: NYELVI FÁJLOK BETÖLTÉSE ───
+// === [#HEX:D.07.13E.00] START | name: loadQuestions | lines: 26 ===
+// @calls: [#HEX:D.07.13D.00], [#HEX:D.07.140.00], [#HEX:D.07.13F.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.141.00]
   async loadQuestions(targetLang = null) {
     const lang = targetLang || this.getCurrentLang();
     if (this.questionsByBaseId[lang]) {
@@ -244,7 +267,10 @@ class QuizManager {
     }
     return this.questions;
   }
+// === [#HEX:D.07.13E.00] END ===
 
+// === [#HEX:D.07.13F.00] START | name: indexQuestionsForLang | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:D.07.13E.00]
   indexQuestionsForLang(lang, data) {
     if (!this.questionsByBaseId[lang]) {
       this.questionsByBaseId[lang] = {};
@@ -258,7 +284,10 @@ class QuizManager {
       });
     });
   }
+// === [#HEX:D.07.13F.00] END ===
 
+// === [#HEX:D.07.140.00] START | name: buildFlatQuestionList | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:D.07.13E.00], [#HEX:D.07.141.00]
   buildFlatQuestionList(lang) {
     const data = this.rawLanguageData[lang];
     if (!data) return [];
@@ -268,8 +297,11 @@ class QuizManager {
     if (Array.isArray(data.TUTORZEP)) list = list.concat(data.TUTORZEP);
     return list;
   }
+// === [#HEX:D.07.140.00] END ===
 
   // ─── 🔄 [IDSEARCH PROTOKOLL]: VALÓS IDEJŰ NYELVVÁLTÁS A KVÍZ KÖZBEN ───
+// === [#HEX:D.07.141.00] START | name: onLanguageChanged | lines: 22 ===
+// @calls: [#HEX:D.07.148.00], [#HEX:D.07.140.00], [#HEX:D.07.13E.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.07.AA.00], [#HEX:D.07.145.00]
   async onLanguageChanged(newLang) {
     const targetLang = String(newLang || 'HU').trim().toUpperCase();
     console.log(`🌐 QuizManager: Nyelvváltás esemény fogadva: -> ${targetLang}`);
@@ -292,8 +324,11 @@ class QuizManager {
       }
     }
   }
+// === [#HEX:D.07.141.00] END ===
 
   // ─── 📐 PANEL SKÁLÁZÁS ───
+// === [#HEX:D.07.142.00] START | name: updateScale | lines: 17 ===
+// @calls: none | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.05.17.00], [#HEX:D.07.AA.00], [#HEX:D.07.B0.00], [#HEX:D.07.145.00]
   updateScale() {
     const panel = document.getElementById('quiz-panel-box');
     if (!panel) return;
@@ -311,8 +346,11 @@ class QuizManager {
     panel.style.transform = `scale(${scale})`;
     panel.style.transformOrigin = 'center center';
   }
+// === [#HEX:D.07.142.00] END ===
 
   // ─── 🖼️ UI BETÖLTÉSE ───
+// === [#HEX:D.07.143.00] START | name: loadUI | lines: 24 ===
+// @calls: [#HEX:D.07.14E.00], [#HEX:D.07.144.00], [#HEX:D.07.145.00] | @calledBy: [#HEX:D.07.137.00]
   async loadUI() {
     try {
       const res = await fetch('WXXX_G_R_GEN_WHL_X0X_wb01_quiz_panel.html?t=' + Date.now());
@@ -320,6 +358,8 @@ class QuizManager {
         const html = await res.text();
         const div = document.createElement('div');
         div.innerHTML = html;
+// === [#HEX:D.07.144.00] START | name: appendToDoc | lines: 11 ===
+// @calls: [#HEX:D.07.14E.00], [#HEX:D.07.145.00] | @calledBy: [#HEX:D.07.143.00]
         const appendToDoc = () => {
           if (document.body) {
             document.body.appendChild(div);
@@ -331,14 +371,18 @@ class QuizManager {
             setTimeout(appendToDoc, 50);
           }
         };
+// === [#HEX:D.07.144.00] END ===
         appendToDoc();
       }
     } catch (e) {
       console.error("Hiba a kvíz UI betöltésekor:", e);
     }
   }
+// === [#HEX:D.07.143.00] END ===
 
   // ─── 🖱️ ESEMÉNYEK BEKÖTÉSE ───
+// === [#HEX:D.07.145.00] START | name: bindEvents | lines: 21 ===
+// @calls: [#HEX:D.07.141.00], [#HEX:D.07.B6.00], [#HEX:D.07.14B.00], [#HEX:D.07.142.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.143.00], [#HEX:D.07.144.00]
   bindEvents() {
     window.addEventListener('resize', () => {
       if (this.uiReady && this.isQuizModalOpen) this.updateScale();
@@ -360,12 +404,18 @@ class QuizManager {
       });
     }
   }
+// === [#HEX:D.07.145.00] END ===
 
+// === [#HEX:D.07.146.00] START | name: getQuestionId | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:D.07.147.00]
   getQuestionId(q) {
     return q.baseId || q.uid || q.id || q.Kerdes || q.question;
   }
+// === [#HEX:D.07.146.00] END ===
 
   // ─── 🚀 [TRIGGER PROTOKOLL]: KVÍZ MEGNYITÁSA ───
+// === [#HEX:D.07.147.00] START | name: openQuiz | lines: 114 ===
+// @calls: [#HEX:D.07.13B.00], [#HEX:D.07.146.00], [#HEX:D.07.148.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.04.05.00], [#HEX:D.07.E7.00], [#HEX:D.07.120.00], [#HEX:D.07.14E.00]
   openQuiz(category, onComplete) {
     if (!this.uiReady || this.questions.length === 0) {
       setTimeout(() => this.openQuiz(category, onComplete), 100);
@@ -480,8 +530,11 @@ class QuizManager {
     this.isQuizModalOpen = true;
     this.renderQuestion(false);
   }
+// === [#HEX:D.07.147.00] END ===
 
   // ─── 🎨 [DISPLAY, LAYOUT, SETUP & RENDER PROTOKOLLOK] ───
+// === [#HEX:D.07.148.00] START | name: renderQuestion | lines: 478 ===
+// @calls: [#HEX:D.07.13D.00], [#HEX:D.07.14B.00], [#HEX:D.07.142.00], [#HEX:D.07.149.00], [#HEX:D.07.13C.00] | @calledBy: [#HEX:D.07.141.00], [#HEX:D.07.147.00]
   renderQuestion(isMidQuizSwitch = false) {
     const overlay = document.getElementById('quiz-overlay');
     const panel = document.getElementById('quiz-panel-box');
@@ -611,6 +664,8 @@ class QuizManager {
       if (!qBox2) { qBox2 = document.createElement('div'); qBox2.id = 'quiz-qbox-2'; panel.appendChild(qBox2); }
       if (!qBox3) { qBox3 = document.createElement('div'); qBox3.id = 'quiz-qbox-3'; panel.appendChild(qBox3); }
 
+// === [#HEX:D.07.149.00] START | name: applyBoxStyle | lines: 27 ===
+// @calls: none | @calledBy: [#HEX:D.07.148.00]
       const applyBoxStyle = (box, cfg) => {
         if (!cfg) {
           box.style.display = 'none';
@@ -638,6 +693,7 @@ class QuizManager {
         box.style.userSelect = 'none';
         box.style.border = window._quizDebugBorders ? '2px dashed cyan' : 'none';
       };
+// === [#HEX:D.07.149.00] END ===
 
       applyBoxStyle(qBox1, activeSetup.question_line1);
       applyBoxStyle(qBox2, activeSetup.question_line2);
@@ -960,8 +1016,11 @@ class QuizManager {
     overlay.style.opacity = '1';
     overlay.style.zIndex = '99995'; // Topbar alatt (topbar: 100000)
   }
+// === [#HEX:D.07.148.00] END ===
 
   // ─── 🚪 KVÍZ ABLAK BEZÁRÁSA ───
+// === [#HEX:D.07.14A.00] START | name: closeQuizUI | lines: 22 ===
+// @calls: none | @calledBy: [#HEX:D.07.14B.00], [#HEX:D.07.14C.00]
   closeQuizUI() {
     const overlay = document.getElementById('quiz-overlay');
     if (overlay) overlay.style.display = 'none';
@@ -984,8 +1043,11 @@ class QuizManager {
       }
     }
   }
+// === [#HEX:D.07.14A.00] END ===
 
   // ─── ⚖️ [ANSWER PROTOKOLL]: VÁLASZ KIÉRTÉKELÉSE ÉS EREDMÉNYKEZELÉS ───
+// === [#HEX:D.07.14B.00] START | name: handleAnswer | lines: 154 ===
+// @calls: [#HEX:D.07.13D.00], [#HEX:K.05.12.00], [#HEX:D.07.14A.00], [#HEX:D.07.13B.00], [#HEX:D.07.E2.00] | @calledBy: [#HEX:D.07.145.00], [#HEX:D.07.148.00]
   handleAnswer(selectedIdx) {
     // Kvízfelület és szövegdobozok azonnali, tiszta bezárása
     this.closeQuizUI();
@@ -1004,6 +1066,8 @@ class QuizManager {
       this.setSessionRecord(qId, { answeredCorrectly: false });
     }
 
+// === [#HEX:D.07.14C.00] START | name: finishQuiz | lines: 8 ===
+// @calls: [#HEX:K.05.12.00], [#HEX:D.07.14A.00] | @calledBy: [#HEX:D.07.14B.00], [#HEX:D.07.14D.00]
     const finishQuiz = () => {
       this.closeQuizUI();
       if (this.onCompleteCallback) {
@@ -1012,6 +1076,7 @@ class QuizManager {
         try { cb(isCorrect, wasDoubleOrNothing); } catch (err) { console.error('Quiz callback hiba:', err); }
       }
     };
+// === [#HEX:D.07.14C.00] END ===
 
     if (this.currentMode === 'TUTORZEP') {
       const curL = (this.getCurrentLang() || 'HU').toLowerCase();
@@ -1062,6 +1127,8 @@ class QuizManager {
             finishQuiz();
           }
         } else {
+// === [#HEX:D.07.14D.00] START | name: onMonologClosed | lines: 11 ===
+// @calls: [#HEX:D.07.14C.00] | @calledBy: [#HEX:D.07.14B.00]
           const onMonologClosed = () => {
             if (window.boat && window.homePos) {
               window.boat.position.set(window.homePos.x, 0, window.homePos.z);
@@ -1073,6 +1140,7 @@ class QuizManager {
             }
             finishQuiz();
           };
+// === [#HEX:D.07.14D.00] END ===
 
           const msg = tutorzepEmptyMsgs[curL] || tutorzepEmptyMsgs.hu;
           if (typeof window.showPopUp === 'function') {
@@ -1140,8 +1208,11 @@ class QuizManager {
       if (typeof window.updateTopBarCounts === 'function') window.updateTopBarCounts();
     }
   }
+// === [#HEX:D.07.14B.00] END ===
 
   // ─── 🛠️ ÉLŐ VIZUÁLIS SZERKESZTŐ PANEL ───
+// === [#HEX:D.07.14E.00] START | name: initVisualEditor | lines: 151 ===
+// @calls: [#HEX:D.07.14F.00], [#HEX:D.07.150.00], [#HEX:D.07.147.00], [#HEX:D.07.152.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.143.00], [#HEX:D.07.144.00]
   initVisualEditor() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('edit') !== '1' && params.get('editor') !== '1') {
@@ -1235,6 +1306,8 @@ class QuizManager {
 
     document.getElementById('qve-close').onclick = () => { editor.style.display = 'none'; window._quizDebugBorders = false; this.applyLiveStyles(); };
 
+// === [#HEX:D.07.14F.00] START | name: updateLive | lines: 41 ===
+// @calls: [#HEX:D.07.152.00] | @calledBy: [#HEX:D.07.14E.00]
     const updateLive = () => {
       const cfg = window.QuizConfig.TUTORZEP;
       const qTop = parseInt(document.getElementById('qve-q-top').value, 10);
@@ -1276,6 +1349,7 @@ class QuizManager {
       window._quizDebugBorders = document.getElementById('qve-borders').checked;
       this.applyLiveStyles();
     };
+// === [#HEX:D.07.14F.00] END ===
 
     const inputs = editor.querySelectorAll('input');
     inputs.forEach(inp => inp.addEventListener('input', updateLive));
@@ -1293,12 +1367,18 @@ class QuizManager {
       this.openQuiz('TUTORZEP');
     };
   }
+// === [#HEX:D.07.14E.00] END ===
 
+// === [#HEX:D.07.150.00] START | name: populateVisualEditorFields | lines: 25 ===
+// @calls: [#HEX:D.07.151.00] | @calledBy: [#HEX:D.07.14E.00]
   populateVisualEditorFields() {
     const cfg = window.QuizConfig.TUTORZEP;
     const qCfg = (cfg && cfg.question) || { top: 220, height: 59, left: 121, width: 589, fontSize: 19 };
 
+// === [#HEX:D.07.151.00] START | name: setVal | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:D.07.150.00]
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+// === [#HEX:D.07.151.00] END ===
     setVal('qve-q-top', qCfg.top);
     setVal('qve-q-height', qCfg.height);
     setVal('qve-q-left', qCfg.left);
@@ -1319,7 +1399,10 @@ class QuizManager {
     setVal('qve-ans-width', (ans[0] && ans[0].width) || 560);
     setVal('qve-ans-font', (ans[0] && ans[0].fontSize) || 19);
   }
+// === [#HEX:D.07.150.00] END ===
 
+// === [#HEX:D.07.152.00] START | name: applyLiveStyles | lines: 28 ===
+// @calls: none | @calledBy: [#HEX:D.07.14E.00], [#HEX:D.07.14F.00]
   applyLiveStyles() {
     if (this.currentMode !== 'TUTORZEP') return;
     const cfg = window.QuizConfig.TUTORZEP;
@@ -1348,6 +1431,7 @@ class QuizManager {
       }
     }
   }
+// === [#HEX:D.07.152.00] END ===
 }
 
 if (typeof window !== 'undefined') {

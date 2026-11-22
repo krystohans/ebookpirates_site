@@ -448,6 +448,8 @@
       // Ha éles GitHub Pages-en fut, a Toolbox KIZÁRÓLAG 0 terheléssel teljesen inaktív!
       if (!isLocal) return;
 
+// === [#HEX:D.06.50.00] START | name: initDevToolbox | lines: 7 ===
+// @calls: none | @calledBy: none
       function initDevToolbox() {
         if (window.toolboxInitialized) return;
         window.toolboxInitialized = true;
@@ -455,6 +457,7 @@
         s.src = 'Toolbox/toolbox_loader.js?t=' + Date.now();
         document.body.appendChild(s);
       }
+// === [#HEX:D.06.50.00] END ===
 
       if (window.location.search.includes('toolbox=1') || window.location.search.includes('dev=1')) {
         if (document.readyState === 'loading') {

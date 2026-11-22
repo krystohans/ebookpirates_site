@@ -41,6 +41,8 @@
 
   <script>
     (function () {
+// === [#HEX:F.06.6F.00] START | name: callBackend | lines: 8 ===
+// @calls: none | @calledBy: none
       window.callBackend = function () {
         if (window.parent && window.parent !== window && typeof window.parent.callBackend === 'function') {
           return window.parent.callBackend.apply(window.parent, arguments);
@@ -49,6 +51,7 @@
           return window.top.callBackend.apply(window.top, arguments);
         }
       };
+// === [#HEX:F.06.6F.00] END ===
       const frame = document.getElementById('game-frame');
       const search = window.location.search || '';
       const params = new URLSearchParams(search);

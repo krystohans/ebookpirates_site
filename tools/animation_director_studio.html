@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBookPirates // 3D Animációs &amp; LET.kryst Rendezői Stúdió</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <style>
+        :root {
+            --bg-deep: #0b0e14;
+            --bg-panel: #121824;
+            --bg-card: #182232;
+            --gold: #d4af37;
+            --gold-bright: #ffd700;
+            --cyan: #38bdf8;
+            --emerald: #34d399;
+            --rose: #fb7185;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-gold: rgba(212, 175, 55, 0.35);
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 13px;
+        }
+        .studio-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 360px;
+            grid-template-rows: 48px 1fr;
+            width: 100vw;
+            height: 100vh;
+        }
+        .topbar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            background: linear-gradient(90deg, #16110a 0%, #101928 50%, #16110a 100%);
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .topbar-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--gold-bright);
+            letter-spacing: 0.6px;
+        }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-family: 'Share Tech Mono', monospace;
+            background: rgba(56, 189, 248, 0.14);
+            color: var(--cyan);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        .badge-ok {
+            background: rgba(52, 211, 153, 0.14);
+            color: var(--emerald);
+            border-color: rgba(52, 211, 153, 0.4);
+        }
+        .panel {
+            background: var(--bg-panel);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .panel-left { border-right: 1px solid var(--border-gold); }
+        .panel-right { border-left: 1px solid var(--border-gold); }
+        .panel-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        select, input[type="text"], textarea {
+            width: 100%;
+            background: #0b1019;
+            color: var(--text-main);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 12px;
+            outline: none;
+        }
+        select:focus, input[type="text"]:focus, textarea:focus {
+            border-color: var(--gold-bright);
+        }
+        button {
+            background: #1f2937;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 6px;
+            padding: 5px 9px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        button:hover { background: #2c3a4f; border-color: var(--gold); }
+        button.btn-gold {
+            background: linear-gradient(180deg, #d4af37 0%, #9a7416 100%);
+            color: #110c05;
+            font-weight: 700;
+            border-color: var(--gold-bright);
+        }
+        button.btn-gold:hover { filter: brightness(1.1); }
+        button.btn-cyan {
+            background: rgba(56, 189, 248, 0.16);
+            color: var(--cyan);
+            border-color: rgba(56, 189, 248, 0.45);
+        }
+        button.btn-active {
+            background: rgba(52, 211, 153, 0.22);
+            color: var(--emerald);
+            border-color: var(--emerald);
+            font-weight: 600;
+        }
+        button.btn-danger {
+            background: rgba(251, 113, 133, 0.16);
+            color: var(--rose);
+            border-color: rgba(251, 113, 133, 0.45);
+        }
+        .drop-zone {
+            border: 1px dashed var(--border-gold);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            cursor: pointer;
+            margin-top: 6px;
+            background: rgba(212, 175, 55, 0.04);
+        }
+        .drop-zone.dragover {
+            border-color: var(--gold-bright);
+            background: rgba(212, 175, 55, 0.18);
+            color: var(--gold-bright);
+        }
+        .diag-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+        }
+        .diag-warn {
+            margin-top: 6px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            background: rgba(251, 113, 133, 0.12);
+            border: 1px solid rgba(251, 113, 133, 0.4);
+            color: #fecdd3;
+        }
+        .diag-info {
+            margin-top: 6px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #bae6fd;
+        }
+        .clip-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+        .clip-item {
+            background: #0e1420;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 6px;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .clip-item.active {
+            border-color: var(--gold-bright);
+            background: rgba(212, 175, 55, 0.12);
+        }
+        .clip-item-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+        .clip-name {
+            font-weight: 600;
+            font-size: 11.5px;
+            word-break: break-all;
+        }
+        .clip-meta {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10.5px;
+            color: var(--text-muted);
+        }
+        .clip-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .clip-actions button {
+            padding: 2px 6px;
+            font-size: 10.5px;
+        }
+
+        /* CENTER STAGE */
+        .stage-wrap {
+            position: relative;
+            background: radial-gradient(circle at 50% 35%, #192436 0%, #090d14 75%);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        #canvas-host {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+        }
+        .stage-hud-top {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .stage-hud-top > div {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            pointer-events: auto;
+        }
+        .stage-hud-sub {
+            position: absolute;
+            bottom: 62px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 85%;
+            background: rgba(10, 14, 22, 0.88);
+            border: 1px solid var(--border-gold);
+            border-radius: 10px;
+            padding: 8px 14px;
+            text-align: center;
+            z-index: 5;
+            display: none;
+        }
+        .stage-controls {
+            background: rgba(13, 19, 30, 0.96);
+            border-top: 1px solid var(--border-gold);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 6;
+        }
+        .ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+        }
+        .ctrl-group input[type="range"] { width: 85px; accent-color: var(--gold); }
+
+        /* RIGHT TABS */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border-gold);
+            background: #0d121c;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 9px 4px;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+        .tab-btn.active {
+            color: var(--gold-bright);
+            background: rgba(212, 175, 55, 0.12);
+            border-bottom: 2px solid var(--gold-bright);
+        }
+        .tab-pane { display: none; flex-direction: column; gap: 10px; }
+        .tab-pane.active { display: flex; }
+        .mimic-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .mimic-btn {
+            text-align: left;
+            padding: 7px 8px;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .mimic-btn.kryst-official { border-color: rgba(56, 189, 248, 0.35); }
+        .mimic-btn.active {
+            border-color: var(--gold-bright);
+            background: rgba(212, 175, 55, 0.18);
+            color: var(--gold-bright);
+        }
+        .json-box {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            min-height: 220px;
+            resize: vertical;
+            line-height: 1.4;
+        }
+        .row-gap { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cat-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+        .cat-pill {
+            font-size: 10.5px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: #0d131d;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            user-select: none;
+        }
+        .cat-pill.selected {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(56, 189, 248, 0.15);
+        }
+    </style>
+</head>
+<body>
+<div class="studio-layout">
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="topbar-title">
+            <span>⚓ eBookPirates // Központi 3D Animációs &amp; LET.kryst Rendezői Stúdió</span>
+            <span id="bank-status-badge" class="badge">⏳ Bank betöltése...</span>
+        </div>
+        <div class="row-gap" style="align-items:center;">
+            <span id="active-clip-badge" class="badge">Nincs aktív klip</span>
+            <span id="toast-msg" style="font-size:11.5px; color:var(--emerald);"></span>
+        </div>
+    </header>
+
+    <!-- LEFT PANEL: CHARACTER & CLIPS -->
+    <aside class="panel panel-left">
+        <div class="panel-scroll">
+            <div class="card">
+                <h2 class="card-title">1. Karaktermodell</h2>
+                <select id="model-select">
+                    <option value="../assets/models/karakterek/Zozo_animalt.glb">Zozo_animalt.glb (Zozó)</option>
+                    <option value="../assets/models/karakterek/BarbaNegra_animalt.glb">BarbaNegra_animalt.glb (Barba Negra)</option>
+                    <option value="../assets/models/karakterek/Paideia_animalt.glb">Paideia_animalt.glb (Paideia)</option>
+                    <option value="../assets/models/karakterek/HortenziMama_animalt.glb">HortenziMama_animalt.glb</option>
+                    <option value="../assets/models/karakterek/HortenziMama_kicsi.glb">HortenziMama_kicsi.glb</option>
+                    <option value="../assets/models/karakterek/Anonymus_animalt.glb">Anonymus_animalt.glb (Anonymus)</option>
+                    <option value="../assets/models/karakterek/SzokeRozmar_animalt.glb">SzokeRozmar_animalt.glb (Szőke Rozmár)</option>
+                    <option value="../assets/models/karakterek/Jatekmester_animalt.glb">Jatekmester_animalt.glb (Játékmester)</option>
+                    <option value="../assets/models/karakterek/Holckopf_animalt.glb">Holckopf_animalt.glb (Holckopf)</option>
+                    <option value="../assets/models/karakterek/Tekercsmester_animalt.glb">Tekercsmester_animalt.glb</option>
+                    <option value="../assets/models/karakterek/Masolo_animalt.glb">Masolo_animalt.glb (Térképmásoló)</option>
+                    <option value="../assets/models/karakterek/Kalandorcsaj_animalt.glb">Kalandorcsaj_animalt.glb</option>
+                    <option value="../assets/models/karakterek/LoanShark_animalt.glb">LoanShark_animalt.glb (Bankár)</option>
+                    <option value="../assets/models/karakterek/Felszemu_animalt.glb">Felszemu_animalt.glb</option>
+                    <option value="../assets/models/karakterek/Zsoldosviking_animalt.glb">Zsoldosviking_animalt.glb</option>
+                </select>
+                <div id="drop-zone" class="drop-zone">
+                    📦 Húzz ide új .glb / .gltf modellt, vagy kattints a tallózáshoz
+                    <input id="file-input" type="file" accept=".glb,.gltf" style="display:none;">
+                </div>
+                <div id="rig-diagnostics" style="margin-top:8px;"></div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">
+                    <span>2. Animációs Könyvtár</span>
+                    <span id="clip-count-lbl" class="clip-meta">0 klip</span>
+                </h2>
+                <div class="row-gap" style="margin-bottom:6px;">
+                    <select id="bank-mode-select" style="flex:1;">
+                        <option value="packs">⚡ Kategória Packok (gyors betöltés)</option>
+                        <option value="master">📦 Teljes Mester GLB</option>
+                    </select>
+                </div>
+                <div class="row-gap" style="margin-bottom:6px;">
+                    <select id="cat-select">
+                        <option value="all">Mind</option>
+                    </select>
+                </div>
+                <input id="clip-search" type="text" placeholder="Keresés magyarul vagy angolul (pl. kardhárítás, séta, ivás)..." style="margin-bottom:6px;">
+                <label style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); margin-bottom:8px; cursor:pointer;">
+                    <input id="chk-hide-turns" type="checkbox">
+                    <span>Csak forgásmentes / álló-haladó mozgások</span>
+                </label>
+                <div id="clip-list" class="clip-list"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CENTER PANEL: 3D STAGE -->
+    <main class="stage-wrap">
+        <div id="canvas-host">
+            <div class="stage-hud-top">
+                <div>
+                    <button class="btn-cam" data-cam="closeup">🔍 Közelkép</button>
+                    <button class="btn-cam" data-cam="medium">🎬 Középkép</button>
+                    <button class="btn-cam" data-cam="full">🧍 Teljes alak</button>
+                    <button class="btn-cam" data-cam="vr110">🥽 VR 110°</button>
+                </div>
+                <div>
+                    <button id="btn-toggle-skel">🦴 Csontváz</button>
+                    <button id="btn-lock-xz">⚓ Hips XZ Lock (helyben)</button>
+                </div>
+            </div>
+            <div id="stage-subtitle" class="stage-hud-sub"></div>
+        </div>
+
+        <div class="stage-controls">
+            <button id="btn-play-pause" class="btn-gold">⏸ Szünet</button>
+            <div class="ctrl-group">
+                <label>Sebesség:</label>
+                <input id="rng-speed" type="range" min="0.25" max="2.0" step="0.05" value="1.0">
+                <span id="lbl-speed">1.00x</span>
+            </div>
+            <div class="ctrl-group">
+                <label>CrossFade:</label>
+                <input id="rng-fade" type="range" min="0" max="1.5" step="0.05" value="0.30">
+                <span id="lbl-fade">0.30s</span>
+            </div>
+            <div class="ctrl-group">
+                <input id="chk-loop" type="checkbox" checked>
+                <label for="chk-loop">Loop</label>
+            </div>
+            <button id="btn-stop-upper" class="btn-danger" style="display:none;">⏹ Felsőtest réteg leállítása</button>
+        </div>
+    </main>
+
+    <!-- RIGHT PANEL: MIMIC, AI JSON, CODE EXPORT -->
+    <aside class="panel panel-right">
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="mimic">🎭 Mimika</button>
+            <button class="tab-btn" data-tab="ai">🤖 AI JSON &amp; LET.kryst</button>
+            <button class="tab-btn" data-tab="code">💻 Kód Export</button>
+        </div>
+        <div class="panel-scroll">
+            <!-- TAB 1: MIMIC -->
+            <div id="tab-mimic" class="tab-pane active">
+                <div class="card">
+                    <h2 class="card-title">3D Sablon Arc-Maszk (Fogópont &amp; Tapadás)</h2>
+                    <div class="row-gap" style="margin-bottom:6px; align-items:center;">
+                        <button id="btn-toggle-facemask" class="btn-cyan" style="flex:1;">📐 Arc-Maszk Igazítás: KI</button>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:11px; cursor:pointer;">
+                            <input id="chk-mask-symmetry" type="checkbox" checked>
+                            <span>Szimmetria</span>
+                        </label>
+                    </div>
+                    <div class="ctrl-group" style="justify-content:space-between; margin-bottom:6px;">
+                        <label>Zóna méret:</label>
+                        <input id="rng-mask-scale" type="range" min="0.6" max="1.6" step="0.05" value="1.0" style="width:110px;">
+                        <span id="lbl-mask-scale">1.00x</span>
+                        <button id="btn-mask-reset" style="padding:2px 6px; font-size:11px;">↺ Alap sablon</button>
+                    </div>
+                    <button id="btn-bind-facemask" class="btn-gold" style="width:100%; margin-bottom:6px;">🧲 Maszk rögzítése a hálóhoz (Tapadás)</button>
+                    <div class="row-gap" style="margin-bottom:6px;">
+                        <button id="btn-toggle-mask-mesh" style="flex:1; font-size:11px;">👁️ Rács mutatása</button>
+                        <button id="btn-download-facemasks" class="btn-cyan" style="flex:1; font-size:11px;">💾 ebp_face_masks.json</button>
+                    </div>
+                    <div id="facemask-status" style="font-size:11px; color:var(--text-muted); line-height:1.35;">
+                        Húzd a 7 színes gömböt a szemöldökre, szemekre és szájra, majd kattints a Tapadás gombra!
+                    </div>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">Arcmimika Presetek (ARKit52 + Csont-Fallback)</h2>
+                    <div id="mimic-grid" class="mimic-grid"></div>
+                    <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                        <div class="ctrl-group" style="justify-content:space-between;">
+                            <label>Mimika intenzitás:</label>
+                            <input id="rng-mimic-weight" type="range" min="0" max="1" step="0.05" value="1.0" style="width:120px;">
+                            <span id="lbl-mimic-weight">100%</span>
+                        </div>
+                        <div class="row-gap">
+                            <button id="btn-toggle-speak" class="btn-cyan" style="flex:1;">🗣️ Beszéd szimuláció: KI</button>
+                            <button id="btn-toggle-blink" class="btn-active" style="flex:1;">👁️ Auto-pislogás: BE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2 class="card-title">Aktív Mimika / ARKit Állapot</h2>
+                    <pre id="mimic-debug" style="margin:0; font-family:'Share Tech Mono',monospace; font-size:11px; white-space:pre-wrap; color:var(--text-muted);"></pre>
+                </div>
+            </div>
+
+            <!-- TAB 2: AI JSON & LET.kryst -->
+            <div id="tab-ai" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title">Gyári Példák &amp; Készítő</h2>
+                    <div class="row-gap" style="margin-bottom:6px;">
+                        <select id="example-select" style="flex:1;"></select>
+                        <button id="btn-load-example" class="btn-cyan">Betölt</button>
+                    </div>
+                    <button id="btn-append-pose" style="width:100%;">➕ Jelenlegi póz + mimika → Idővonal</button>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">EBPChoreographyScript / Kryst3DScenePrompt JSON</h2>
+                    <textarea id="ai-json-editor" class="json-box" spellcheck="false"></textarea>
+                    <div id="ai-validation-out" style="margin-top:6px; font-size:11px;"></div>
+                    <div class="row-gap" style="margin-top:8px;">
+                        <button id="btn-validate-json">✔️ Validál</button>
+                        <button id="btn-play-choreo" class="btn-gold">▶ Lejátszás</button>
+                        <button id="btn-stop-choreo" class="btn-danger">⏹ Stop</button>
+                        <button id="btn-copy-json">📋 Másol</button>
+                        <button id="btn-download-json">💾 Letölt</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">LET.kryst AI Rendszerprompt Szűrés</h2>
+                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">
+                        Válassz kategóriákat a token-takarékos AI prompt generáláshoz (üres = teljes 206 klip):
+                    </div>
+                    <div id="prompt-cat-pills" class="cat-pills" style="margin-bottom:8px;"></div>
+                    <div class="row-gap">
+                        <button id="btn-copy-prompt-hu" class="btn-cyan" style="flex:1;">🤖 AI Prompt Másolása (HU)</button>
+                        <button id="btn-copy-prompt-en" style="flex:1;">🌐 AI Prompt (EN)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: CODE EXPORT -->
+            <div id="tab-code" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title">
+                        <span>Three.js Integrációs Kód</span>
+                        <button id="btn-copy-code" class="btn-cyan">📋 Kód Másolása</button>
+                    </h2>
+                    <textarea id="code-export-box" class="json-box" style="min-height:360px;" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EBPAnimationBank, FACE_MASK_LANDMARKS, normalizeModelKey } from '../ebp_animation_bank.js';
+
+const DOM = {
+    bankBadge: document.getElementById('bank-status-badge'),
+    activeClipBadge: document.getElementById('active-clip-badge'),
+    toastMsg: document.getElementById('toast-msg'),
+    modelSelect: document.getElementById('model-select'),
+    dropZone: document.getElementById('drop-zone'),
+    fileInput: document.getElementById('file-input'),
+    rigDiag: document.getElementById('rig-diagnostics'),
+    bankModeSelect: document.getElementById('bank-mode-select'),
+    catSelect: document.getElementById('cat-select'),
+    clipSearch: document.getElementById('clip-search'),
+    chkHideTurns: document.getElementById('chk-hide-turns'),
+    clipCountLbl: document.getElementById('clip-count-lbl'),
+    clipList: document.getElementById('clip-list'),
+    canvasHost: document.getElementById('canvas-host'),
+    subtitle: document.getElementById('stage-subtitle'),
+    btnPlayPause: document.getElementById('btn-play-pause'),
+    rngSpeed: document.getElementById('rng-speed'),
+    lblSpeed: document.getElementById('lbl-speed'),
+    rngFade: document.getElementById('rng-fade'),
+    lblFade: document.getElementById('lbl-fade'),
+    chkLoop: document.getElementById('chk-loop'),
+    btnToggleSkel: document.getElementById('btn-toggle-skel'),
+    btnLockXz: document.getElementById('btn-lock-xz'),
+    btnStopUpper: document.getElementById('btn-stop-upper'),
+    btnToggleFacemask: document.getElementById('btn-toggle-facemask'),
+    chkMaskSymmetry: document.getElementById('chk-mask-symmetry'),
+    rngMaskScale: document.getElementById('rng-mask-scale'),
+    lblMaskScale: document.getElementById('lbl-mask-scale'),
+    btnMaskReset: document.getElementById('btn-mask-reset'),
+    btnBindFacemask: document.getElementById('btn-bind-facemask'),
+    btnToggleMaskMesh: document.getElementById('btn-toggle-mask-mesh'),
+    btnDownloadFacemasks: document.getElementById('btn-download-facemasks'),
+    facemaskStatus: document.getElementById('facemask-status'),
+    mimicGrid: document.getElementById('mimic-grid'),
+    rngMimicWeight: document.getElementById('rng-mimic-weight'),
+    lblMimicWeight: document.getElementById('lbl-mimic-weight'),
+    btnToggleSpeak: document.getElementById('btn-toggle-speak'),
+    btnToggleBlink: document.getElementById('btn-toggle-blink'),
+    mimicDebug: document.getElementById('mimic-debug'),
+    exampleSelect: document.getElementById('example-select'),
+    btnLoadExample: document.getElementById('btn-load-example'),
+    btnAppendPose: document.getElementById('btn-append-pose'),
+    aiJsonEditor: document.getElementById('ai-json-editor'),
+    aiValidationOut: document.getElementById('ai-validation-out'),
+    btnValidateJson: document.getElementById('btn-validate-json'),
+    btnPlayChoreo: document.getElementById('btn-play-choreo'),
+    btnStopChoreo: document.getElementById('btn-stop-choreo'),
+    btnCopyJson: document.getElementById('btn-copy-json'),
+    btnDownloadJson: document.getElementById('btn-download-json'),
+    promptCatPills: document.getElementById('prompt-cat-pills'),
+    btnCopyPromptHu: document.getElementById('btn-copy-prompt-hu'),
+    btnCopyPromptEn: document.getElementById('btn-copy-prompt-en'),
+    codeExportBox: document.getElementById('code-export-box'),
+    btnCopyCode: document.getElementById('btn-copy-code')
+};
+
+// === [#HEX:F.0C.34.00] START | name: showToast | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00], [#HEX:F.07.1B.00], [#HEX:F.07.1C.00], [#HEX:F.0C.40.00]
+function showToast(text) {
+    DOM.toastMsg.textContent = text;
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => { DOM.toastMsg.textContent = ''; }, 2600);
+}
+// === [#HEX:F.0C.34.00] END ===
+
+// ============================================================================
+// 1. THREE.JS 3D SZINPAD (30 FPS pacing + document.hidden 0% GPU vedelme)
+// ============================================================================
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0f17);
+scene.fog = new THREE.FogExp2(0x0b0f17, 0.045);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.05, 120);
+camera.position.set(0, 1.55, 3.3);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+DOM.canvasHost.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.095;
+controls.target.set(0, 1.0, 0);
+
+// 3-pontos steampunk vilagitas
+const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x2a1c11, 1.15);
+scene.add(hemiLight);
+
+const keyLight = new THREE.DirectionalLight(0xffe7bd, 2.0);
+keyLight.position.set(3.2, 5.5, 3.8);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024, 1024);
+keyLight.shadow.camera.near = 0.5;
+keyLight.shadow.camera.far = 20;
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.1);
+rimLight.position.set(-3.5, 3.0, -3.5);
+scene.add(rimLight);
+
+const gridHelper = new THREE.GridHelper(14, 28, 0xd4af37, 0x1e293b);
+scene.add(gridHelper);
+
+const shadowFloor = new THREE.Mesh(
+    new THREE.CircleGeometry(6, 48),
+    new THREE.ShadowMaterial({ opacity: 0.35 })
+);
+shadowFloor.rotation.x = -Math.PI / 2;
+shadowFloor.receiveShadow = true;
+scene.add(shadowFloor);
+
+// === [#HEX:F.0C.35.00] START | name: resizeStage | lines: 7 ===
+// @calls: none | @calledBy: none
+function resizeStage() {
+    const w = DOM.canvasHost.clientWidth || 640;
+    const h = DOM.canvasHost.clientHeight || 480;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+}
+// === [#HEX:F.0C.35.00] END ===
+new ResizeObserver(resizeStage).observe(DOM.canvasHost);
+resizeStage();
+
+// ============================================================================
+// 2. ALLAPOT & ANIMACIOS BANK INICIALIZALAS
+// ============================================================================
+const bank = new EBPAnimationBank({ mode: 'packs' });
+const gltfLoader = new GLTFLoader();
+
+const state = {
+    actorRoot: null,
+    actorModelPath: DOM.modelSelect.value,
+    controller: null,
+    skelHelper: null,
+    showSkel: false,
+    lockRootXZ: false,
+    paused: false,
+    speed: 1.0,
+    fadeIn: 0.3,
+    loop: true,
+    activeClip: 'Idle_8',
+    upperClip: '',
+    activeMimic: 'neutral',
+    speak: false,
+    autoBlink: true,
+    selectedPromptCats: new Set(),
+    modelHeight: 1.8,
+    faceMaskEdit: false,
+    faceMaskVisible: false,
+    faceMaskProfile: null,
+    faceMaskOverlay: null,
+    faceMaskHeadBone: null,
+    faceMaskHandles: new Map(),
+    faceMaskPickMeshes: [],
+    faceMaskLines: null,
+    draggingHandleId: null
+};
+
+const FACE_MASK_STORAGE_KEY = 'ebp_face_masks_v1';
+const FACE_WIRE_LINKS = [
+    ['browL', 'browR'],
+    ['browL', 'eyeL'],
+    ['browR', 'eyeR'],
+    ['eyeL', 'eyeR'],
+    ['eyeL', 'mouthL'],
+    ['eyeR', 'mouthR'],
+    ['mouthL', 'mouthCenter'],
+    ['mouthCenter', 'mouthR']
+];
+
+// === [#HEX:F.0C.36.00] START | name: loadStoredFaceMasks | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.0C.37.00], [#HEX:F.0C.3F.00]
+function loadStoredFaceMasks() {
+    try {
+        const raw = localStorage.getItem(FACE_MASK_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (_e) {
+        return {};
+    }
+}
+// === [#HEX:F.0C.36.00] END ===
+
+// === [#HEX:F.0C.37.00] START | name: saveStoredFaceMask | lines: 8 ===
+// @calls: [#HEX:F.0C.36.00] | @calledBy: [#HEX:F.0C.3E.00]
+function saveStoredFaceMask(modelKey, profile) {
+    if (!modelKey || !profile) return;
+    try {
+        const all = loadStoredFaceMasks();
+        all[modelKey] = profile;
+        localStorage.setItem(FACE_MASK_STORAGE_KEY, JSON.stringify(all));
+    } catch (_e) { /* storage unavailable */ }
+}
+// === [#HEX:F.0C.37.00] END ===
+
+// === [#HEX:F.02.31.00] START | name: setCameraPreset | lines: 29 ===
+// @calls: [#HEX:F.0C.14.00] | @calledBy: [#HEX:F.0C.3F.00]
+function setCameraPreset(presetName) {
+    const h = state.modelHeight || 1.8;
+    if (presetName === 'closeup') {
+        camera.fov = 38;
+        if (state.faceMaskHeadBone) {
+            const hp = new THREE.Vector3();
+            state.faceMaskHeadBone.getWorldPosition(hp);
+            camera.position.set(hp.x, hp.y + 0.06, hp.z + 0.65);
+            controls.target.set(hp.x, hp.y + 0.05, hp.z);
+        } else {
+            camera.position.set(0, h * 0.85, h * 0.72);
+            controls.target.set(0, h * 0.80, 0);
+        }
+    } else if (presetName === 'medium') {
+        camera.fov = 45;
+        camera.position.set(0, h * 0.74, h * 1.45);
+        controls.target.set(0, h * 0.62, 0);
+    } else if (presetName === 'vr110') {
+        camera.fov = 110;
+        camera.position.set(0, h * 0.72, h * 1.05);
+        controls.target.set(0, h * 0.75, 0);
+    } else {
+        camera.fov = 45;
+        camera.position.set(0, h * 0.68, h * 2.1);
+        controls.target.set(0, h * 0.50, 0);
+    }
+    camera.updateProjectionMatrix();
+    controls.update();
+}
+// === [#HEX:F.02.31.00] END ===
+
+document.querySelectorAll('.btn-cam').forEach((btn) => {
+    btn.addEventListener('click', () => setCameraPreset(btn.dataset.cam));
+});
+
+// === [#HEX:F.0C.38.00] START | name: refreshCodeExport | lines: 14 ===
+// @calls: [#HEX:F.0C.04.00], [#HEX:F.0C.33.00], [#HEX:F.0C.1A.00] | @calledBy: [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00], [#HEX:F.07.1B.00], [#HEX:F.07.1C.00], [#HEX:F.0C.42.00]
+function refreshCodeExport() {
+    const mKey = normalizeModelKey(state.actorModelPath);
+    const diag = state.controller ? state.controller.getDiagnostics() : null;
+    DOM.codeExportBox.value = bank.generateCodeSnippet({
+        modelPath: state.actorModelPath.replace(/^\.\.\//, ''),
+        modelKey: (diag && diag.faceMaskBound) ? mKey : '',
+        clipName: state.activeClip,
+        upperClipName: state.upperClip,
+        mimicId: state.activeMimic,
+        lockRootXZ: state.lockRootXZ,
+        speed: state.speed,
+        speak: state.speak
+    });
+}
+// === [#HEX:F.0C.38.00] END ===
+
+// === [#HEX:F.0C.39.00] START | name: renderRigDiagnostics | lines: 22 ===
+// @calls: [#HEX:F.0C.1A.00] | @calledBy: [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00]
+function renderRigDiagnostics() {
+    if (!state.controller) {
+        DOM.rigDiag.innerHTML = '';
+        return;
+    }
+    const d = state.controller.getDiagnostics();
+    const morphLabel = d.faceMaskBound
+        ? `${d.morphTargetCount} db (3D Arc-Maszk aktív)`
+        : `${d.morphTargetCount} db (${d.morphTargetCount > 0 ? 'ARKit' : 'Fallback'})`;
+    let html = `<div class="diag-grid">
+        <div>Csontváz egyezés:</div><div><b>${d.matchedBones}/${d.totalCanonicalBones}</b></div>
+        <div>Csípőarány:</div><div><b>${d.hipRatio}x</b> (${d.hipY} m)</div>
+        <div>T-póz korrekció:</div><div><b>${d.poseCompensation || 'T-póz'}</b></div>
+        <div>MorphTargetek:</div><div><b>${morphLabel}</b></div>
+    </div>`;
+    if (!d.isRigged) {
+        html += `<div class="diag-warn">⚠️ Ez a modell statikus (nincs benne riggelt Mixamo/SmartRig csontváz), ezért nem tud csontváz-mozgást kölcsönözni!</div>`;
+    } else if (d.morphTargetCount === 0) {
+        html += `<div class="diag-info">ℹ️ A modellben még nincs beépített arcmorph. Használd a <b>🎭 Mimika</b> fül <b>3D Sablon Arc-Maszk</b> eszközét az arcra igazításhoz és tapadáshoz!</div>`;
+    }
+    DOM.rigDiag.innerHTML = html;
+}
+// === [#HEX:F.0C.39.00] END ===
+
+// === [#HEX:F.0C.3A.00] START | name: disposeFaceMaskOverlay | lines: 17 ===
+// @calls: [#HEX:F.04.1F.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.0C.3C.00], [#HEX:F.0C.3F.00]
+function disposeFaceMaskOverlay() {
+    if (state.faceMaskOverlay) {
+        if (state.faceMaskOverlay.parent) {
+            state.faceMaskOverlay.parent.remove(state.faceMaskOverlay);
+        }
+        state.faceMaskOverlay.traverse((obj) => {
+            if (obj.geometry) obj.geometry.dispose();
+            if (obj.material) obj.material.dispose();
+        });
+    }
+    state.faceMaskOverlay = null;
+    state.faceMaskHeadBone = null;
+    state.faceMaskHandles.clear();
+    state.faceMaskPickMeshes = [];
+    state.faceMaskLines = null;
+    state.draggingHandleId = null;
+}
+// === [#HEX:F.0C.3A.00] END ===
+
+// === [#HEX:F.0C.3B.00] START | name: syncFaceMaskOverlayGeometry | lines: 23 ===
+// @calls: none | @calledBy: [#HEX:F.0C.3C.00]
+function syncFaceMaskOverlayGeometry() {
+    if (!state.faceMaskProfile || !state.faceMaskOverlay) return;
+    const pts = state.faceMaskProfile.points;
+    for (const lm of FACE_MASK_LANDMARKS) {
+        const mesh = state.faceMaskHandles.get(lm.id);
+        const p = pts[lm.id];
+        if (mesh && Array.isArray(p)) {
+            mesh.position.set(p[0], p[1], p[2]);
+        }
+    }
+    if (state.faceMaskLines) {
+        const arr = [];
+        for (const [aId, bId] of FACE_WIRE_LINKS) {
+            const pa = pts[aId];
+            const pb = pts[bId];
+            if (pa && pb) {
+                arr.push(pa[0], pa[1], pa[2], pb[0], pb[1], pb[2]);
+            }
+        }
+        state.faceMaskLines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(arr, 3));
+        state.faceMaskLines.geometry.computeBoundingSphere();
+    }
+}
+// === [#HEX:F.0C.3B.00] END ===
+
+// === [#HEX:F.0C.3C.00] START | name: rebuildFaceMaskOverlay | lines: 57 ===
+// @calls: [#HEX:F.0C.3B.00], [#HEX:F.0C.1B.00], [#HEX:F.0C.3A.00] | @calledBy: [#HEX:F.0C.3F.00]
+function rebuildFaceMaskOverlay(rigInfo) {
+    disposeFaceMaskOverlay();
+    if (!rigInfo || !rigInfo.bonesByKey) return;
+    const headBone = rigInfo.bonesByKey.get('head');
+    if (!headBone) return;
+
+    const grp = new THREE.Group();
+    grp.name = 'EBP_FaceMaskOverlay';
+    grp.visible = state.faceMaskEdit || state.faceMaskVisible;
+
+    const visGeo = new THREE.SphereGeometry(0.0055, 16, 12);
+    const hitGeo = new THREE.SphereGeometry(0.013, 10, 8);
+
+    for (const lm of FACE_MASK_LANDMARKS) {
+        const mat = new THREE.MeshBasicMaterial({
+            color: lm.color,
+            depthTest: false,
+            depthWrite: false,
+            transparent: true,
+            opacity: 0.95
+        });
+        const handleMesh = new THREE.Mesh(visGeo.clone(), mat);
+        handleMesh.renderOrder = 999;
+        handleMesh.userData.landmarkId = lm.id;
+        handleMesh.userData.landmarkLabel = lm.labelHu;
+
+        const pickMat = new THREE.MeshBasicMaterial({ visible: false });
+        const pickMesh = new THREE.Mesh(hitGeo.clone(), pickMat);
+        pickMesh.userData.landmarkId = lm.id;
+        pickMesh.userData.landmarkLabel = lm.labelHu;
+        handleMesh.add(pickMesh);
+
+        grp.add(handleMesh);
+        state.faceMaskHandles.set(lm.id, handleMesh);
+        state.faceMaskPickMeshes.push(pickMesh);
+    }
+    visGeo.dispose();
+    hitGeo.dispose();
+
+    const lineGeo = new THREE.BufferGeometry();
+    const lineMat = new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
+        depthTest: false,
+        depthWrite: false,
+        transparent: true,
+        opacity: 0.85
+    });
+    const lineSegs = new THREE.LineSegments(lineGeo, lineMat);
+    lineSegs.renderOrder = 998;
+    grp.add(lineSegs);
+    state.faceMaskLines = lineSegs;
+
+    headBone.add(grp);
+    state.faceMaskOverlay = grp;
+    state.faceMaskHeadBone = headBone;
+    syncFaceMaskOverlayGeometry();
+}
+// === [#HEX:F.0C.3C.00] END ===
+
+// === [#HEX:F.0C.3D.00] START | name: updateFaceMaskUi | lines: 16 ===
+// @calls: none | @calledBy: [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00]
+function updateFaceMaskUi() {
+    if (!DOM.btnToggleFacemask) return;
+    const overlayOn = state.faceMaskEdit || state.faceMaskVisible;
+    if (state.faceMaskOverlay) {
+        state.faceMaskOverlay.visible = overlayOn;
+    }
+    DOM.btnToggleFacemask.textContent = state.faceMaskEdit ? '📐 Arc-Maszk Igazítás: BE' : '📐 Arc-Maszk Igazítás: KI';
+    DOM.btnToggleFacemask.classList.toggle('btn-active', state.faceMaskEdit);
+    DOM.btnToggleMaskMesh.classList.toggle('btn-active', overlayOn);
+    DOM.btnToggleMaskMesh.textContent = overlayOn ? '👁️ Rács elrejtése' : '👁️ Rács mutatása';
+    if (state.faceMaskProfile) {
+        const sc = Number(state.faceMaskProfile.maskScale || 1.0);
+        DOM.rngMaskScale.value = String(sc);
+        DOM.lblMaskScale.textContent = sc.toFixed(2) + 'x';
+    }
+}
+// === [#HEX:F.0C.3D.00] END ===
+
+// === [#HEX:F.0C.3E.00] START | name: applyFaceMaskBinding | lines: 18 ===
+// @calls: [#HEX:F.0C.3D.00], [#HEX:F.0C.2D.00], [#HEX:F.0C.39.00], [#HEX:F.0C.37.00], [#HEX:F.0C.04.00] | @calledBy: none
+function applyFaceMaskBinding(saveToStorage = true) {
+    if (!state.controller || !state.actorRoot || !state.faceMaskProfile) return;
+    const res = bank.bindFaceMaskToModel(state.controller.rigInfo, state.actorRoot, state.faceMaskProfile);
+    if (saveToStorage) {
+        const mKey = normalizeModelKey(state.actorModelPath);
+        if (mKey) {
+            bank.faceMasks[mKey] = JSON.parse(JSON.stringify(state.faceMaskProfile));
+            saveStoredFaceMask(mKey, state.faceMaskProfile);
+        }
+    }
+    state.faceMaskEdit = false;
+    state.faceMaskVisible = false;
+    updateFaceMaskUi();
+    renderRigDiagnostics();
+    refreshCodeExport();
+    DOM.facemaskStatus.innerHTML = `<span style="color:var(--emerald);">✅ Tapadva (${res.morphCount} mimika zóna, ${res.affectedVertices} arc-vertex). Teszteld lent a Beszédet és Presetet!</span>`;
+    showToast(`Arc-maszk rögzítve (${res.affectedVertices} vertex)`);
+}
+// === [#HEX:F.0C.3E.00] END ===
+
+// === [#HEX:F.0C.3F.00] START | name: loadCharacterModel | lines: 94 ===
+// @calls: [#HEX:F.0C.36.00], [#HEX:F.0C.3D.00], [#HEX:F.0C.39.00], [#HEX:F.0C.30.00], [#HEX:F.07.1B.00] | @calledBy: none
+async function loadCharacterModel(url, displayLabel) {
+    try {
+        DOM.activeClipBadge.textContent = '⏳ Modell betöltése...';
+        const gltf = await gltfLoader.loadAsync(url);
+
+        if (state.controller) {
+            state.controller.dispose();
+            state.controller = null;
+        }
+        disposeFaceMaskOverlay();
+        state.faceMaskEdit = false;
+        state.faceMaskVisible = false;
+        if (state.skelHelper) {
+            scene.remove(state.skelHelper);
+            state.skelHelper.dispose();
+            state.skelHelper = null;
+        }
+        if (state.actorRoot) {
+            scene.remove(state.actorRoot);
+            state.actorRoot = null;
+        }
+
+        const root = gltf.scene;
+        root.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.castShadow = true;
+                obj.receiveShadow = true;
+            }
+        });
+
+        // Padlo-illesztes es kamerakeretezes
+        const box = new THREE.Box3().setFromObject(root);
+        const size = new THREE.Vector3();
+        const center = new THREE.Vector3();
+        box.getSize(size);
+        box.getCenter(center);
+        root.position.set(-center.x, -box.min.y, -center.z);
+        state.modelHeight = Math.max(0.8, size.y || 1.8);
+        scene.add(root);
+
+        state.actorRoot = root;
+        state.actorModelPath = displayLabel || url;
+
+        state.skelHelper = new THREE.SkeletonHelper(root);
+        state.skelHelper.visible = state.showSkel;
+        scene.add(state.skelHelper);
+
+        const mKey = normalizeModelKey(state.actorModelPath);
+        const localSavedMasks = loadStoredFaceMasks();
+        const savedMask = (mKey && (localSavedMasks[mKey] || (bank.faceMasks && bank.faceMasks[mKey]))) || null;
+
+        state.controller = bank.attachModel(root, {
+            lockRootXZ: state.lockRootXZ,
+            speed: state.speed,
+            modelKey: mKey,
+            faceMaskProfile: savedMask || undefined
+        });
+        state.controller.setMimic(state.activeMimic, {
+            weight: Number(DOM.rngMimicWeight.value),
+            speak: state.speak
+        });
+        state.controller.setAutoBlink(state.autoBlink);
+
+        if (state.controller.rigInfo.morphTargetCount === 0 || state.controller.rigInfo.faceMaskBound) {
+            state.faceMaskProfile = savedMask
+                ? JSON.parse(JSON.stringify(savedMask))
+                : bank.estimateDefaultFaceMask(state.controller.rigInfo, root);
+            rebuildFaceMaskOverlay(state.controller.rigInfo);
+            updateFaceMaskUi();
+            DOM.facemaskStatus.innerHTML = savedMask
+                ? `<span style="color:var(--emerald);">✅ Mentett arc-maszk betöltve és rátapasztva (${mKey}).</span>`
+                : `Sablon előkészítve. Kapcsold be az <b>Arc-Maszk Igazítás</b> módot, majd tapassz!`;
+        } else {
+            state.faceMaskProfile = null;
+            updateFaceMaskUi();
+            DOM.facemaskStatus.innerHTML = `<span style="color:var(--cyan);">ℹ️ A modell eleve tartalmaz natív ARKit morphTargeteket.</span>`;
+        }
+
+        renderRigDiagnostics();
+        setCameraPreset('full');
+
+        if (state.controller.getDiagnostics().isRigged) {
+            await playSelectedClip(state.activeClip || 'Idle_8');
+        } else {
+            DOM.activeClipBadge.textContent = '⚠️ Statikus modell (0 csont)';
+        }
+        refreshCodeExport();
+        showToast('Modell betöltve: ' + (displayLabel || url).split('/').pop());
+    } catch (err) {
+        console.error(err);
+        DOM.activeClipBadge.textContent = '❌ Betöltési hiba';
+        showToast('Hiba: ' + err.message);
+    }
+}
+// === [#HEX:F.0C.3F.00] END ===
+
+// === [#HEX:F.07.1B.00] START | name: playSelectedClip | lines: 25 ===
+// @calls: [#HEX:F.0C.41.00], [#HEX:F.0C.24.00], [#HEX:F.0C.34.00], [#HEX:F.0C.38.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.0C.3F.00], [#HEX:F.0C.41.00]
+async function playSelectedClip(clipName) {
+    if (!state.controller) return;
+    if (!state.controller.getDiagnostics().isRigged) {
+        showToast('Statikus modellhez nem alkalmazható csontváz-klip.');
+        return;
+    }
+    try {
+        DOM.activeClipBadge.textContent = '⏳ Klip betöltése...';
+        const resolved = await state.controller.play(clipName, {
+            fadeIn: state.fadeIn,
+            loop: state.loop,
+            speed: state.speed,
+            lockRootXZ: state.lockRootXZ
+        });
+        state.activeClip = resolved;
+        const meta = bank.getClipMeta(resolved);
+        DOM.activeClipBadge.textContent = `▶ ${(meta && meta.titleHu) ? meta.titleHu : resolved} [${resolved}]`;
+        renderClipList();
+        refreshCodeExport();
+    } catch (err) {
+        console.error(err);
+        DOM.activeClipBadge.textContent = '❌ Klip hiba';
+        showToast('Hiba: ' + err.message);
+    }
+}
+// === [#HEX:F.07.1B.00] END ===
+
+// === [#HEX:F.07.1C.00] START | name: playUpperBodyClip | lines: 17 ===
+// @calls: [#HEX:F.07.19.00], [#HEX:F.0C.34.00], [#HEX:F.0C.38.00], [#HEX:F.0C.1A.00] | @calledBy: [#HEX:F.0C.41.00]
+async function playUpperBodyClip(clipName) {
+    if (!state.controller || !state.controller.getDiagnostics().isRigged) return;
+    try {
+        const resolved = await state.controller.playUpperBody(clipName, {
+            fadeIn: Math.min(0.4, state.fadeIn),
+            loop: state.loop,
+            speed: state.speed,
+            weight: 0.9
+        });
+        state.upperClip = resolved;
+        DOM.btnStopUpper.style.display = 'inline-block';
+        refreshCodeExport();
+        showToast('Felsőtest réteg aktív: ' + resolved);
+    } catch (err) {
+        showToast('Hiba: ' + err.message);
+    }
+}
+// === [#HEX:F.07.1C.00] END ===
+
+// === [#HEX:F.0C.40.00] START | name: appendClipToTimeline | lines: 28 ===
+// @calls: [#HEX:F.0C.24.00], [#HEX:F.0C.43.00], [#HEX:F.0C.34.00] | @calledBy: [#HEX:F.0C.41.00]
+function appendClipToTimeline(clipName) {
+    let obj;
+    try {
+        obj = JSON.parse(DOM.aiJsonEditor.value);
+    } catch (_e) {
+        obj = { schemaVersion: '1.0', title: 'Egyedi Koreográfia', actor: 'zozo_animalt', timeline: [] };
+    }
+    if (!Array.isArray(obj.timeline)) {
+        obj = { schemaVersion: '1.0', title: obj.title || 'Egyedi Koreográfia', actor: obj.actor || 'zozo_animalt', timeline: [] };
+    }
+    const last = obj.timeline[obj.timeline.length - 1];
+    const nextAt = last ? Number(((last.atSec || 0) + (last.durationSec || 3.5)).toFixed(2)) : 0;
+    const meta = bank.getClipMeta(clipName);
+    obj.timeline.push({
+        atSec: nextAt,
+        durationSec: meta ? Math.max(1.5, Number(meta.durationSec.toFixed(2))) : 3.5,
+        clip: clipName,
+        mimic: state.activeMimic,
+        loop: state.loop,
+        speed: state.speed,
+        fadeInSec: state.fadeIn,
+        weight: 1.0,
+        speak: state.speak
+    });
+    DOM.aiJsonEditor.value = JSON.stringify(obj, null, 2);
+    validateCurrentJson();
+    showToast('Hozzáadva az idővonalhoz: ' + clipName);
+}
+// === [#HEX:F.0C.40.00] END ===
+
+// === [#HEX:F.0C.41.00] START | name: renderClipList | lines: 43 ===
+// @calls: [#HEX:F.0C.25.00], [#HEX:F.07.1B.00], [#HEX:F.0C.40.00], [#HEX:F.07.1C.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.07.1B.00]
+function renderClipList() {
+    if (!bank.manifest) return;
+    const cat = DOM.catSelect.value;
+    const query = DOM.clipSearch.value;
+    const hideTurns = Boolean(DOM.chkHideTurns && DOM.chkHideTurns.checked);
+    const results = bank.searchClips(query, cat, { hideTurns });
+    DOM.clipCountLbl.textContent = `${results.length} klip`;
+
+    const aliasTargets = new Map();
+    const mAliases = (bank.manifest.krystStudioAliases && bank.manifest.krystStudioAliases.motion) || {};
+    for (const [alias, target] of Object.entries(mAliases)) {
+        if (!aliasTargets.has(target)) aliasTargets.set(target, []);
+        aliasTargets.get(target).push(alias);
+    }
+
+    const frag = document.createDocumentFragment();
+    for (const c of results) {
+        const div = document.createElement('div');
+        div.className = 'clip-item' + (c.name === state.activeClip ? ' active' : '');
+        const aliases = aliasTargets.get(c.name);
+        const aliasBadge = aliases ? ` · 💎 ${aliases.join(', ')}` : '';
+        const flags = Array.isArray(c.motionFlags) ? c.motionFlags : [];
+        const flagBadges = (flags.includes('full_turn') ? ' · 🔄 360°' : '') + (flags.includes('acrobatic') ? ' · 🤸 akrobatikus' : '');
+        const huTitle = c.titleHu || c.name;
+        div.innerHTML = `
+            <div class="clip-item-head">
+                <span class="clip-name">${huTitle}</span>
+                <span class="clip-meta">${c.durationSec.toFixed(2)}s</span>
+            </div>
+            <div class="clip-meta">${c.name} · ${c.loopable ? 'ciklus' : 'egyszeri'}${c.hasRootMotion ? ' · elmozduló' : ''}${flagBadges}${aliasBadge}</div>
+            <div class="clip-actions">
+                <button class="btn-gold act-play">▶ Lejátszás</button>
+                <button class="btn-cyan act-upper">+ Felsőtest</button>
+                <button class="act-tl">+ Idővonal</button>
+            </div>`;
+        div.querySelector('.act-play').addEventListener('click', () => playSelectedClip(c.name));
+        div.querySelector('.act-upper').addEventListener('click', () => playUpperBodyClip(c.name));
+        div.querySelector('.act-tl').addEventListener('click', () => appendClipToTimeline(c.name));
+        frag.appendChild(div);
+    }
+    DOM.clipList.innerHTML = '';
+    DOM.clipList.appendChild(frag);
+}
+// === [#HEX:F.0C.41.00] END ===
+
+// === [#HEX:F.0C.42.00] START | name: renderMimicGrid | lines: 20 ===
+// @calls: [#HEX:F.0C.0D.00], [#HEX:F.0C.38.00] | @calledBy: [#HEX:F.0C.46.00]
+function renderMimicGrid() {
+    if (!bank.mimics || !bank.mimics.presets) return;
+    const krystSet = new Set(Object.keys((bank.manifest.krystStudioAliases && bank.manifest.krystStudioAliases.mimic) || {}));
+    DOM.mimicGrid.innerHTML = '';
+    for (const [id, preset] of Object.entries(bank.mimics.presets)) {
+        const btn = document.createElement('button');
+        const isKryst = krystSet.has(id);
+        btn.className = 'mimic-btn' + (isKryst ? ' kryst-official' : '') + (id === state.activeMimic ? ' active' : '');
+        btn.innerHTML = `<strong>${isKryst ? '💎 ' : ''}${preset.labelHu}</strong><span class="clip-meta">${id}</span>`;
+        btn.addEventListener('click', () => {
+            state.activeMimic = id;
+            if (state.controller) {
+                state.controller.setMimic(id, { weight: Number(DOM.rngMimicWeight.value), restart: true });
+            }
+            renderMimicGrid();
+            refreshCodeExport();
+        });
+        DOM.mimicGrid.appendChild(btn);
+    }
+}
+// === [#HEX:F.0C.42.00] END ===
+
+// === [#HEX:F.0C.43.00] START | name: validateCurrentJson | lines: 16 ===
+// @calls: [#HEX:F.0C.31.00] | @calledBy: [#HEX:F.0C.40.00]
+function validateCurrentJson() {
+    try {
+        const parsed = JSON.parse(DOM.aiJsonEditor.value);
+        const res = bank.validateChoreography(parsed);
+        if (res.valid) {
+            const warnHtml = res.warnings.length ? `<div style="color:var(--gold); margin-top:4px;">⚠️ ${res.warnings.join('<br>')}</div>` : '';
+            DOM.aiValidationOut.innerHTML = `<span style="color:var(--emerald);">✅ Érvényes (${res.inputKind}, ${res.normalizedScript.timeline.length} lépés)</span>` + warnHtml;
+            return res;
+        }
+        DOM.aiValidationOut.innerHTML = `<span style="color:var(--rose);">❌ ${res.errors.join('<br>')}</span>`;
+        return res;
+    } catch (e) {
+        DOM.aiValidationOut.innerHTML = `<span style="color:var(--rose);">❌ JSON szintaxis hiba: ${e.message}</span>`;
+        return null;
+    }
+}
+// === [#HEX:F.0C.43.00] END ===
+
+// ============================================================================
+// 3. UI ESEMENYKEZELOK
+// ============================================================================
+document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+});
+
+DOM.modelSelect.addEventListener('change', () => loadCharacterModel(DOM.modelSelect.value, DOM.modelSelect.value));
+DOM.dropZone.addEventListener('click', () => DOM.fileInput.click());
+DOM.dropZone.addEventListener('dragover', (e) => { e.preventDefault(); DOM.dropZone.classList.add('dragover'); });
+DOM.dropZone.addEventListener('dragleave', () => DOM.dropZone.classList.remove('dragover'));
+DOM.dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    DOM.dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) loadCharacterModel(URL.createObjectURL(file), file.name);
+});
+DOM.fileInput.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) loadCharacterModel(URL.createObjectURL(file), file.name);
+});
+
+DOM.bankModeSelect.addEventListener('change', async () => {
+    bank.mode = DOM.bankModeSelect.value;
+    const nClips = bank.manifest ? bank.manifest.totalClips : '?';
+    if (bank.mode === 'master') {
+        DOM.bankBadge.textContent = '⏳ Mester GLB töltése...';
+        await bank.loadMaster();
+        DOM.bankBadge.textContent = `📦 Mester GLB aktív (${nClips} klip · Float32)`;
+    } else {
+        DOM.bankBadge.textContent = `⚡ Kategória Pack mód (${nClips} klip · Float32)`;
+    }
+});
+
+DOM.catSelect.addEventListener('change', renderClipList);
+DOM.clipSearch.addEventListener('input', renderClipList);
+DOM.chkHideTurns.addEventListener('change', renderClipList);
+
+DOM.btnPlayPause.addEventListener('click', () => {
+    state.paused = !state.paused;
+    if (state.controller) state.controller.setPaused(state.paused);
+    DOM.btnPlayPause.textContent = state.paused ? '▶ Folytatás' : '⏸ Szünet';
+});
+DOM.rngSpeed.addEventListener('input', () => {
+    state.speed = Number(DOM.rngSpeed.value);
+    DOM.lblSpeed.textContent = state.speed.toFixed(2) + 'x';
+    if (state.controller) state.controller.setSpeed(state.speed);
+    refreshCodeExport();
+});
+DOM.rngFade.addEventListener('input', () => {
+    state.fadeIn = Number(DOM.rngFade.value);
+    DOM.lblFade.textContent = state.fadeIn.toFixed(2) + 's';
+});
+DOM.chkLoop.addEventListener('change', () => {
+    state.loop = DOM.chkLoop.checked;
+    playSelectedClip(state.activeClip);
+});
+DOM.btnToggleSkel.addEventListener('click', () => {
+    state.showSkel = !state.showSkel;
+    if (state.skelHelper) state.skelHelper.visible = state.showSkel;
+    DOM.btnToggleSkel.classList.toggle('btn-active', state.showSkel);
+});
+DOM.btnLockXz.addEventListener('click', () => {
+    state.lockRootXZ = !state.lockRootXZ;
+    DOM.btnLockXz.classList.toggle('btn-active', state.lockRootXZ);
+    playSelectedClip(state.activeClip);
+});
+DOM.btnStopUpper.addEventListener('click', () => {
+    if (state.controller) state.controller.stopUpperBody(0.25);
+    state.upperClip = '';
+    DOM.btnStopUpper.style.display = 'none';
+    refreshCodeExport();
+});
+
+DOM.rngMimicWeight.addEventListener('input', () => {
+    const w = Number(DOM.rngMimicWeight.value);
+    DOM.lblMimicWeight.textContent = Math.round(w * 100) + '%';
+    if (state.controller) state.controller.setMimic(state.activeMimic, { weight: w });
+});
+DOM.btnToggleSpeak.addEventListener('click', () => {
+    state.speak = !state.speak;
+    DOM.btnToggleSpeak.textContent = state.speak ? '🗣️ Beszéd szimuláció: BE' : '🗣️ Beszéd szimuláció: KI';
+    DOM.btnToggleSpeak.classList.toggle('btn-active', state.speak);
+    if (state.controller) state.controller.setSpeaking(state.speak, 0.75);
+    refreshCodeExport();
+});
+DOM.btnToggleBlink.addEventListener('click', () => {
+    state.autoBlink = !state.autoBlink;
+    DOM.btnToggleBlink.textContent = state.autoBlink ? '👁️ Auto-pislogás: BE' : '👁️ Auto-pislogás: KI';
+    DOM.btnToggleBlink.classList.toggle('btn-active', state.autoBlink);
+    if (state.controller) state.controller.setAutoBlink(state.autoBlink);
+});
+
+// 3D Sablon Arc-Maszk vezerles es egeres raycast fogopont-huzas
+const maskRaycaster = new THREE.Raycaster();
+const maskPointerNdc = new THREE.Vector2();
+const dragPlane = new THREE.Plane();
+const dragPlaneNormal = new THREE.Vector3();
+const dragWorldTmp = new THREE.Vector3();
+
+// === [#HEX:F.0C.44.00] START | name: updatePointerNdc | lines: 5 ===
+// @calls: none | @calledBy: none
+function updatePointerNdc(ev) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    maskPointerNdc.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+    maskPointerNdc.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+}
+// === [#HEX:F.0C.44.00] END ===
+
+// === [#HEX:F.03.1E.00] START | name: collectActorMeshes | lines: 11 ===
+// @calls: none | @calledBy: none
+function collectActorMeshes() {
+    const out = [];
+    if (state.actorRoot) {
+        state.actorRoot.traverse((obj) => {
+            if (obj.isMesh && (!state.faceMaskOverlay || !state.faceMaskOverlay.getObjectById(obj.id))) {
+                out.push(obj);
+            }
+        });
+    }
+    return out;
+}
+// === [#HEX:F.03.1E.00] END ===
+
+DOM.btnToggleFacemask.addEventListener('click', () => {
+    if (!state.faceMaskOverlay || !state.faceMaskProfile) {
+        showToast('Ehhez a modellhez nincs elérhető fej-csont (Head).');
+        return;
+    }
+    state.faceMaskEdit = !state.faceMaskEdit;
+    if (state.faceMaskEdit) {
+        state.faceMaskVisible = true;
+        if (state.actorRoot) {
+            state.actorRoot.traverse((obj) => {
+                if (obj.isSkinnedMesh) obj.computeBoundingSphere();
+            });
+        }
+        setCameraPreset('closeup');
+        showToast('Húzd a színes gömböket a karakter arcán!');
+    }
+    updateFaceMaskUi();
+});
+
+DOM.btnToggleMaskMesh.addEventListener('click', () => {
+    if (!state.faceMaskOverlay) return;
+    const next = !(state.faceMaskEdit || state.faceMaskVisible);
+    state.faceMaskVisible = next;
+    if (!next) state.faceMaskEdit = false;
+    updateFaceMaskUi();
+});
+
+DOM.rngMaskScale.addEventListener('input', () => {
+    const sc = Number(DOM.rngMaskScale.value) || 1.0;
+    DOM.lblMaskScale.textContent = sc.toFixed(2) + 'x';
+    if (state.faceMaskProfile) {
+        state.faceMaskProfile.maskScale = sc;
+    }
+});
+
+DOM.btnMaskReset.addEventListener('click', () => {
+    if (!state.controller || !state.actorRoot) return;
+    state.faceMaskProfile = bank.estimateDefaultFaceMask(state.controller.rigInfo, state.actorRoot);
+    syncFaceMaskOverlayGeometry();
+    updateFaceMaskUi();
+    showToast('Sablon visszaállítva az alap becslésre.');
+});
+
+DOM.btnBindFacemask.addEventListener('click', () => {
+    applyFaceMaskBinding(true);
+});
+
+DOM.btnDownloadFacemasks.addEventListener('click', () => {
+    const merged = { ...(bank.faceMasks || {}), ...loadStoredFaceMasks() };
+    const mKey = normalizeModelKey(state.actorModelPath);
+    if (mKey && state.faceMaskProfile) {
+        merged[mKey] = state.faceMaskProfile;
+    }
+    const payload = {
+        schemaVersion: '1.0',
+        updatedAt: new Date().toISOString(),
+        descriptionHu: 'eBookPirates 3D Sablon Arc-Maszk profilok karakterenként (Head-lokális fogópontok).',
+        masks: merged
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ebp_face_masks.json';
+    a.click();
+    showToast('ebp_face_masks.json letöltve (' + Object.keys(merged).length + ' karakter)');
+});
+
+renderer.domElement.addEventListener('pointerdown', (ev) => {
+    if (!state.faceMaskEdit || !state.faceMaskOverlay || state.faceMaskPickMeshes.length === 0) return;
+    updatePointerNdc(ev);
+    maskRaycaster.setFromCamera(maskPointerNdc, camera);
+    const hits = maskRaycaster.intersectObjects(state.faceMaskPickMeshes, false);
+    if (hits.length === 0) return;
+
+    const pickObj = hits[0].object;
+    const lmId = pickObj.userData.landmarkId;
+    if (!lmId) return;
+
+    state.draggingHandleId = lmId;
+    controls.enabled = false;
+    const visHandle = state.faceMaskHandles.get(lmId);
+    if (visHandle) {
+        visHandle.scale.setScalar(1.45);
+        visHandle.getWorldPosition(dragWorldTmp);
+        camera.getWorldDirection(dragPlaneNormal).negate();
+        dragPlane.setFromNormalAndCoplanarPoint(dragPlaneNormal, dragWorldTmp);
+    }
+    if (state.actorRoot) {
+        state.actorRoot.traverse((obj) => {
+            if (obj.isSkinnedMesh) obj.computeBoundingSphere();
+        });
+    }
+    DOM.facemaskStatus.textContent = `Fogópont mozgatása: ${pickObj.userData.landmarkLabel || lmId}`;
+    ev.stopPropagation();
+}, true);
+
+window.addEventListener('pointermove', (ev) => {
+    if (!state.draggingHandleId || !state.faceMaskHeadBone || !state.faceMaskProfile) return;
+    updatePointerNdc(ev);
+    maskRaycaster.setFromCamera(maskPointerNdc, camera);
+
+    const meshHits = maskRaycaster.intersectObjects(collectActorMeshes(), false);
+    let localPt = null;
+    if (meshHits.length > 0) {
+        dragWorldTmp.copy(meshHits[0].point);
+        localPt = state.faceMaskHeadBone.worldToLocal(dragWorldTmp.clone());
+        localPt.z += 0.0025;
+    } else if (maskRaycaster.ray.intersectPlane(dragPlane, dragWorldTmp)) {
+        localPt = state.faceMaskHeadBone.worldToLocal(dragWorldTmp.clone());
+    }
+    if (!localPt) return;
+
+    const pts = state.faceMaskProfile.points;
+    const lmId = state.draggingHandleId;
+    pts[lmId] = [Number(localPt.x.toFixed(5)), Number(localPt.y.toFixed(5)), Number(localPt.z.toFixed(5))];
+
+    if (DOM.chkMaskSymmetry && DOM.chkMaskSymmetry.checked) {
+        const meta = FACE_MASK_LANDMARKS.find((m) => m.id === lmId);
+        if (meta && meta.pair) {
+            pts[meta.pair] = [Number((-localPt.x).toFixed(5)), Number(localPt.y.toFixed(5)), Number(localPt.z.toFixed(5))];
+        }
+    }
+    syncFaceMaskOverlayGeometry();
+});
+
+// === [#HEX:F.0C.45.00] START | name: stopFaceHandleDrag | lines: 7 ===
+// @calls: none | @calledBy: none
+const stopFaceHandleDrag = () => {
+    if (!state.draggingHandleId) return;
+    const prev = state.faceMaskHandles.get(state.draggingHandleId);
+    if (prev) prev.scale.setScalar(1.0);
+    state.draggingHandleId = null;
+    controls.enabled = true;
+};
+// === [#HEX:F.0C.45.00] END ===
+window.addEventListener('pointerup', stopFaceHandleDrag);
+window.addEventListener('pointercancel', stopFaceHandleDrag);
+
+DOM.btnLoadExample.addEventListener('click', () => {
+    const idx = Number(DOM.exampleSelect.value) || 0;
+    const ex = bank.aiSchema && bank.aiSchema.examples && bank.aiSchema.examples[idx];
+    if (ex) {
+        DOM.aiJsonEditor.value = JSON.stringify(ex, null, 2);
+        validateCurrentJson();
+    }
+});
+DOM.btnAppendPose.addEventListener('click', () => appendClipToTimeline(state.activeClip));
+DOM.btnValidateJson.addEventListener('click', validateCurrentJson);
+DOM.btnPlayChoreo.addEventListener('click', async () => {
+    if (!state.controller) return;
+    try {
+        const parsed = JSON.parse(DOM.aiJsonEditor.value);
+        await state.controller.playChoreography(parsed, {
+// === [#HEX:F.0C.46.00] START | name: onStepChange | lines: 12 ===
+// @calls: [#HEX:F.0C.42.00] | @calledBy: [#HEX:F.0C.13.00]
+            onStepChange: (step, idx, total) => {
+                state.activeClip = step.clip;
+                state.activeMimic = step.mimic || 'neutral';
+                DOM.activeClipBadge.textContent = `🎬 [${idx + 1}/${total}] ${step.clip}`;
+                if (step.dialogueText) {
+                    DOM.subtitle.style.display = 'block';
+                    DOM.subtitle.textContent = `"${step.dialogueText}"`;
+                } else {
+                    DOM.subtitle.style.display = 'none';
+                }
+                renderMimicGrid();
+            },
+// === [#HEX:F.0C.46.00] END ===
+// === [#HEX:F.02.32.00] START | name: onCameraDirective | lines: 11 ===
+// @calls: [#HEX:F.0C.14.00] | @calledBy: [#HEX:F.0C.13.00]
+            onCameraDirective: (cam) => {
+                if (cam.cameraPos && cam.cameraLookAt) {
+                    camera.position.set(cam.cameraPos[0], cam.cameraPos[1], cam.cameraPos[2]);
+                    controls.target.set(cam.cameraLookAt[0], cam.cameraLookAt[1], cam.cameraLookAt[2]);
+                    if (cam.fovDegrees) {
+                        camera.fov = cam.fovDegrees;
+                        camera.updateProjectionMatrix();
+                    }
+                    controls.update();
+                }
+            },
+// === [#HEX:F.02.32.00] END ===
+// === [#HEX:F.0C.47.00] START | name: onFinish | lines: 4 ===
+// @calls: [#HEX:F.0C.34.00] | @calledBy: [#HEX:F.0C.14.00]
+            onFinish: () => {
+                DOM.subtitle.style.display = 'none';
+                showToast('Koreográfia lejátszása véget ért.');
+            }
+// === [#HEX:F.0C.47.00] END ===
+        });
+    } catch (err) {
+        showToast('Hiba: ' + err.message);
+    }
+});
+DOM.btnStopChoreo.addEventListener('click', () => {
+    if (state.controller) state.controller.stopChoreography();
+    DOM.subtitle.style.display = 'none';
+});
+DOM.btnCopyJson.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(DOM.aiJsonEditor.value);
+    showToast('JSON vágólapra másolva!');
+});
+DOM.btnDownloadJson.addEventListener('click', () => {
+    const blob = new Blob([DOM.aiJsonEditor.value], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ebp_choreography.json';
+    a.click();
+});
+DOM.btnCopyPromptHu.addEventListener('click', async () => {
+    const cats = state.selectedPromptCats.size > 0 ? [...state.selectedPromptCats] : null;
+    await navigator.clipboard.writeText(bank.getAiDirectorPrompt('hu', cats));
+    showToast('Magyar AI Rendszerprompt másolva!');
+});
+DOM.btnCopyPromptEn.addEventListener('click', async () => {
+    const cats = state.selectedPromptCats.size > 0 ? [...state.selectedPromptCats] : null;
+    await navigator.clipboard.writeText(bank.getAiDirectorPrompt('en', cats));
+    showToast('English AI System Prompt copied!');
+});
+DOM.btnCopyCode.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(DOM.codeExportBox.value);
+    showToast('Three.js kód vágólapra másolva!');
+});
+
+// ============================================================================
+// 4. BOOTSTRAP & 30 FPS RENDER HUROK (0% GPU/CPU rejtett fulon)
+// ============================================================================
+let lastTime = performance.now();
+const MIN_FRAME_MS = 1000 / 30;
+let rafId = null;
+
+// === [#HEX:F.0C.48.00] START | name: animate | lines: 38 ===
+// @calls: [#HEX:F.0C.19.00], [#HEX:F.0C.14.00] | @calledBy: none
+function animate(now) {
+    if (document.hidden) {
+        rafId = null;
+        return;
+    }
+    rafId = requestAnimationFrame(animate);
+    const elapsedMs = now - lastTime;
+    if (elapsedMs < MIN_FRAME_MS - 1) return;
+    const dt = Math.min(elapsedMs / 1000, 0.066);
+    lastTime = now;
+
+    if (state.controller) {
+        state.controller.update(dt);
+        const mInfo = state.controller.getActiveMimicInfo();
+        if (mInfo && mInfo.preset) {
+            const dbg = {
+                mimic: mInfo.id,
+                mode: mInfo.usingBoneFallback ? 'Mixamo Bone Fallback' : 'ARKit 3D MorphTargets',
+                speaking: mInfo.isSpeaking
+            };
+            if (mInfo.sequencePhase) {
+                dbg.phase = `${mInfo.sequencePhase.phaseHu} (${mInfo.sequencePhase.timeSec}s / ${mInfo.sequencePhase.durationSec}s)`;
+            }
+            if (mInfo.sequencePhase || mInfo.conversationalTalk || mInfo.isSpeaking) {
+                const compactWeights = {};
+                for (const [wk, wv] of Object.entries(mInfo.liveWeights || {})) {
+                    if (wv > 0.01) compactWeights[wk] = Number(wv.toFixed(2));
+                }
+                dbg.liveWeights = compactWeights;
+            } else {
+                dbg.arkitWeights = mInfo.preset.arkitWeights;
+            }
+            DOM.mimicDebug.textContent = JSON.stringify(dbg, null, 2);
+        }
+    }
+    controls.update();
+    renderer.render(scene, camera);
+}
+// === [#HEX:F.0C.48.00] END ===
+
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && rafId === null) {
+        lastTime = performance.now();
+        rafId = requestAnimationFrame(animate);
+    }
+});
+
+// === [#HEX:F.0C.49.00] START | name: populateCategoryDropdown | lines: 29 ===
+// @calls: none | @calledBy: none
+function populateCategoryDropdown() {
+    if (!bank.manifest) return;
+    const prev = DOM.catSelect.value || 'all';
+    DOM.catSelect.innerHTML = '';
+    const optAll = document.createElement('option');
+    optAll.value = 'all';
+    optAll.textContent = `Mind (${bank.manifest.totalClips} klip)`;
+    DOM.catSelect.appendChild(optAll);
+
+    const aliasCount = Object.keys((bank.manifest.krystStudioAliases && bank.manifest.krystStudioAliases.motion) || {}).length;
+    const optAlias = document.createElement('option');
+    optAlias.value = 'kryst_aliases';
+    optAlias.textContent = `💎 Kryst Stúdió Aliasok (${aliasCount})`;
+    DOM.catSelect.appendChild(optAlias);
+
+    const icons = {
+        locomotion: '🚶', social_talk: '💬', combat: '⚔️', dance_celebrate: '💃',
+        sit_work: '🪑', climb_parkour: '🧗', swim_magic_fx: '✨', reactions_idle: '🛡️', facial: '🎭'
+    };
+    for (const [catKey, pInfo] of Object.entries(bank.manifest.packs || {})) {
+        const opt = document.createElement('option');
+        opt.value = catKey;
+        opt.textContent = `${icons[catKey] || '📦'} ${pInfo.titleHu || catKey} (${pInfo.clipCount})`;
+        DOM.catSelect.appendChild(opt);
+    }
+    if ([...DOM.catSelect.options].some((o) => o.value === prev)) {
+        DOM.catSelect.value = prev;
+    }
+}
+// === [#HEX:F.0C.49.00] END ===
+
+(async () => {
+    try {
+        await bank.init();
+        const qTag = bank.manifest.qualityProfile === 'lossless_float32' ? 'Float32' : (bank.manifest.qualityProfile || 'GLB');
+        DOM.bankBadge.textContent = `✅ ${bank.manifest.totalClips} klip (${qTag}) · ${Object.keys(bank.mimics.presets).length} mimika`;
+        DOM.bankBadge.classList.add('badge-ok');
+        populateCategoryDropdown();
+
+        // Pelda koreografiak + AI prompt kategoria pill-ek
+        const exList = (bank.aiSchema && bank.aiSchema.examples) || [];
+        exList.forEach((ex, i) => {
+            const opt = document.createElement('option');
+            opt.value = String(i);
+            opt.textContent = `${i + 1}. ${ex.title}`;
+            DOM.exampleSelect.appendChild(opt);
+        });
+        if (exList[0]) {
+            DOM.aiJsonEditor.value = JSON.stringify(exList[0], null, 2);
+            validateCurrentJson();
+        }
+        Object.entries(bank.manifest.packs || {}).forEach(([cat, pInfo]) => {
+            const pill = document.createElement('span');
+            pill.className = 'cat-pill';
+            pill.textContent = pInfo.titleHu || cat;
+            pill.dataset.cat = cat;
+            pill.addEventListener('click', () => {
+                if (state.selectedPromptCats.has(cat)) state.selectedPromptCats.delete(cat);
+                else state.selectedPromptCats.add(cat);
+                pill.classList.toggle('selected', state.selectedPromptCats.has(cat));
+            });
+            DOM.promptCatPills.appendChild(pill);
+        });
+
+        renderClipList();
+        renderMimicGrid();
+        await loadCharacterModel(DOM.modelSelect.value, DOM.modelSelect.value);
+        rafId = requestAnimationFrame(animate);
+    } catch (err) {
+        console.error(err);
+        DOM.bankBadge.textContent = '❌ Init hiba: ' + err.message;
+    }
+})();
+</script>
+</body>
+</html>

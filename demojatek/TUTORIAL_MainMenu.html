@@ -354,7 +354,7 @@
     const isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
 
 // === [#HEX:D.06.51.00] START | name: returnToHarbor | lines: 8 | action: 'navigate_to_page' ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:D.06.5A.00] | @calledBy: none
+// @calls: [#HEX:D.06.5A.00], [#HEX:F.04.2C1.00] | @calledBy: none
     function returnToHarbor() {
       stopAccSpeech();
       if (window.parent && window.parent !== window) {
@@ -507,7 +507,7 @@
 // === [#HEX:D.06.54.00] END ===
 
 // === [#HEX:D.06.55.00] START | name: applyMenuLanguage | lines: 29 ===
-// @calls: [#HEX:D.06.59.00], [#HEX:D.06.53.00] | @calledBy: [#HEX:D.06.56.00]
+// @calls: [#HEX:D.06.53.00], [#HEX:D.06.59.00] | @calledBy: [#HEX:D.06.56.00]
     function applyMenuLanguage(lang) {
       const t = MENU_TRANSLATIONS[lang] || MENU_TRANSLATIONS.hu;
       const btnNew = document.getElementById('btn-new-game');
@@ -556,7 +556,7 @@
 // === [#HEX:D.03.3B.00] END ===
 
 // === [#HEX:D.06.56.00] START | name: changeLanguage | lines: 12 ===
-// @calls: [#HEX:D.03.3B.00], [#HEX:D.06.55.00] | @calledBy: none
+// @calls: [#HEX:D.06.55.00], [#HEX:D.03.3B.00] | @calledBy: none
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);
@@ -717,7 +717,7 @@
 // === [#HEX:D.06.5B.00] END ===
 
 // === [#HEX:D.06.5C.00] START | name: speakAccIntro | lines: 15 ===
-// @calls: [#HEX:D.06.52.00], [#HEX:D.06.5B.00] | @calledBy: none
+// @calls: [#HEX:D.06.5B.00], [#HEX:D.06.52.00] | @calledBy: none
     function speakAccIntro(btn) {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const t = getAccTranslations(curLang);
@@ -867,7 +867,7 @@
 // === [#HEX:D.06.5F.00] END ===
 
 // === [#HEX:D.06.60.00] START | name: closeAccessibilityTutorial | lines: 29 | action: 'navigate_to_page' ===
-// @calls: [#HEX:D.07.104.00], [#HEX:A.02.05.00], [#HEX:D.06.5A.00], [#HEX:F.04.2C1.00], [#HEX:B.15.07.00] | @calledBy: none
+// @calls: [#HEX:B.15.07.00], [#HEX:A.02.05.00], [#HEX:F.04.2C1.00], [#HEX:D.06.5A.00], [#HEX:F.07.18.00] | @calledBy: none
     function closeAccessibilityTutorial() {
       stopAccSpeech();
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -1023,7 +1023,7 @@
 // === [#HEX:D.04.51.00] END ===
 
 // === [#HEX:D.04.52.00] START | name: handleAccQuizAnswer | lines: 37 ===
-// @calls: [#HEX:D.06.52.00], [#HEX:D.04.51.00] | @calledBy: [#HEX:D.04.51.00]
+// @calls: [#HEX:D.04.51.00], [#HEX:D.06.52.00] | @calledBy: [#HEX:D.04.51.00]
     function handleAccQuizAnswer(selectedIdx, correctIdx, btnElement, currentQuestion) {
       if (accIsAnswering) return;
       accIsAnswering = true;
@@ -1275,7 +1275,7 @@
       // Autoplay policy miatt az első felhasználói interakcióra indítjuk el a háttérzenét
       let audioStarted = false;
 // === [#HEX:D.06.65.00] START | name: tryAudio | lines: 7 ===
-// @calls: none | @calledBy: none
+// @calls: [#HEX:F.07.18.00] | @calledBy: none
       const tryAudio = () => {
         if (!audioStarted) {
           if (musicVol > 0) menuMusic.play().catch(e => {});

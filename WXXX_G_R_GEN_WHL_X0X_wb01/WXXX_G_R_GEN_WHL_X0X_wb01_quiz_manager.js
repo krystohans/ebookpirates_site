@@ -135,7 +135,7 @@ window.QuizConfig = {
 
 class QuizManager {
 // === [#HEX:D.07.137.00] START | name: constructor | lines: 33 ===
-// @calls: [#HEX:D.07.13E.00], [#HEX:D.07.143.00], [#HEX:D.07.138.00], [#HEX:D.07.145.00], [#HEX:D.07.14E.00] | @calledBy: none
+// @calls: [#HEX:D.07.138.00], [#HEX:D.07.145.00], [#HEX:D.07.143.00], [#HEX:D.07.14E.00], [#HEX:D.07.13E.00] | @calledBy: none
   constructor() {
     this.questions = [];
     this.questionsByBaseId = {}; // { HU: { baseId: q }, EN: { ... } }
@@ -240,7 +240,7 @@ class QuizManager {
 
   // ─── 📥 [LOAD PROTOKOLL]: NYELVI FÁJLOK BETÖLTÉSE ───
 // === [#HEX:D.07.13E.00] START | name: loadQuestions | lines: 26 ===
-// @calls: [#HEX:D.07.13F.00], [#HEX:D.07.13D.00], [#HEX:D.07.140.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.141.00]
+// @calls: [#HEX:D.07.140.00], [#HEX:D.07.13D.00], [#HEX:D.07.13F.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.141.00]
   async loadQuestions(targetLang = null) {
     const lang = targetLang || this.getCurrentLang();
     if (this.questionsByBaseId[lang]) {
@@ -301,7 +301,7 @@ class QuizManager {
 
   // ─── 🔄 [IDSEARCH PROTOKOLL]: VALÓS IDEJŰ NYELVVÁLTÁS A KVÍZ KÖZBEN ───
 // === [#HEX:D.07.141.00] START | name: onLanguageChanged | lines: 22 ===
-// @calls: [#HEX:D.07.148.00], [#HEX:D.07.13E.00], [#HEX:D.07.140.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.07.AA.00], [#HEX:D.07.145.00]
+// @calls: [#HEX:D.07.140.00], [#HEX:D.07.13E.00], [#HEX:D.07.148.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.07.AA.00], [#HEX:D.07.145.00]
   async onLanguageChanged(newLang) {
     const targetLang = String(newLang || 'HU').trim().toUpperCase();
     console.log(`🌐 QuizManager: Nyelvváltás esemény fogadva: -> ${targetLang}`);
@@ -359,7 +359,7 @@ class QuizManager {
         const div = document.createElement('div');
         div.innerHTML = html;
 // === [#HEX:D.07.144.00] START | name: appendToDoc | lines: 11 ===
-// @calls: [#HEX:D.07.14E.00], [#HEX:D.07.145.00] | @calledBy: [#HEX:D.07.143.00]
+// @calls: [#HEX:D.07.145.00], [#HEX:D.07.14E.00] | @calledBy: [#HEX:D.07.143.00]
         const appendToDoc = () => {
           if (document.body) {
             document.body.appendChild(div);
@@ -382,7 +382,7 @@ class QuizManager {
 
   // ─── 🖱️ ESEMÉNYEK BEKÖTÉSE ───
 // === [#HEX:D.07.145.00] START | name: bindEvents | lines: 21 ===
-// @calls: [#HEX:D.07.141.00], [#HEX:D.07.B6.00], [#HEX:D.07.14B.00], [#HEX:D.07.142.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.143.00], [#HEX:D.07.144.00], [#HEX:K.07.15.00]
+// @calls: [#HEX:D.07.142.00], [#HEX:D.07.B6.00], [#HEX:D.07.141.00], [#HEX:D.07.14B.00] | @calledBy: [#HEX:D.07.137.00], [#HEX:D.07.143.00], [#HEX:D.07.144.00], [#HEX:K.07.15.00]
   bindEvents() {
     window.addEventListener('resize', () => {
       if (this.uiReady && this.isQuizModalOpen) this.updateScale();
@@ -415,7 +415,7 @@ class QuizManager {
 
   // ─── 🚀 [TRIGGER PROTOKOLL]: KVÍZ MEGNYITÁSA ───
 // === [#HEX:D.07.147.00] START | name: openQuiz | lines: 114 ===
-// @calls: [#HEX:D.07.146.00], [#HEX:D.07.148.00], [#HEX:D.07.13B.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.04.05.00], [#HEX:D.07.E7.00], [#HEX:D.07.120.00], [#HEX:D.07.14E.00]
+// @calls: [#HEX:D.07.146.00], [#HEX:D.07.13B.00], [#HEX:D.07.148.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.04.05.00], [#HEX:D.07.E7.00], [#HEX:D.07.120.00], [#HEX:D.07.14E.00]
   openQuiz(category, onComplete) {
     if (!this.uiReady || this.questions.length === 0) {
       setTimeout(() => this.openQuiz(category, onComplete), 100);
@@ -534,7 +534,7 @@ class QuizManager {
 
   // ─── 🎨 [DISPLAY, LAYOUT, SETUP & RENDER PROTOKOLLOK] ───
 // === [#HEX:D.07.148.00] START | name: renderQuestion | lines: 478 ===
-// @calls: [#HEX:D.07.14B.00], [#HEX:D.07.142.00], [#HEX:D.07.13C.00], [#HEX:D.07.149.00], [#HEX:D.07.13D.00] | @calledBy: [#HEX:D.07.141.00], [#HEX:D.07.147.00]
+// @calls: [#HEX:D.07.142.00], [#HEX:D.07.13C.00], [#HEX:D.07.149.00], [#HEX:D.07.13D.00], [#HEX:D.07.14B.00] | @calledBy: [#HEX:D.07.141.00], [#HEX:D.07.147.00]
   renderQuestion(isMidQuizSwitch = false) {
     const overlay = document.getElementById('quiz-overlay');
     const panel = document.getElementById('quiz-panel-box');
@@ -1047,7 +1047,7 @@ class QuizManager {
 
   // ─── ⚖️ [ANSWER PROTOKOLL]: VÁLASZ KIÉRTÉKELÉSE ÉS EREDMÉNYKEZELÉS ───
 // === [#HEX:D.07.14B.00] START | name: handleAnswer | lines: 154 ===
-// @calls: [#HEX:K.05.12.00], [#HEX:D.07.A3.00], [#HEX:D.07.14A.00], [#HEX:D.07.E2.00], [#HEX:D.07.13D.00] | @calledBy: [#HEX:D.07.145.00], [#HEX:D.07.148.00]
+// @calls: [#HEX:D.07.E2.00], [#HEX:D.07.A3.00], [#HEX:D.07.13B.00], [#HEX:D.07.13D.00], [#HEX:K.05.12.00] | @calledBy: [#HEX:D.07.145.00], [#HEX:D.07.148.00]
   handleAnswer(selectedIdx) {
     // Kvízfelület és szövegdobozok azonnali, tiszta bezárása
     this.closeQuizUI();
@@ -1067,7 +1067,7 @@ class QuizManager {
     }
 
 // === [#HEX:D.07.14C.00] START | name: finishQuiz | lines: 8 ===
-// @calls: [#HEX:D.07.14A.00], [#HEX:K.05.12.00] | @calledBy: [#HEX:D.07.14B.00], [#HEX:D.07.14D.00]
+// @calls: [#HEX:K.05.12.00], [#HEX:D.07.14A.00] | @calledBy: [#HEX:D.07.14B.00], [#HEX:D.07.14D.00]
     const finishQuiz = () => {
       this.closeQuizUI();
       if (this.onCompleteCallback) {

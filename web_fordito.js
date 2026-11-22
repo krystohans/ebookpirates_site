@@ -1592,7 +1592,7 @@ const translations = {
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
 // === [#HEX:F.04.17E.00] START | name: does | lines: 1046 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:A.02.05.00], [#HEX:F.04.2C1.00], [#HEX:F.01.00.00], [#HEX:K.05.19.00] | @calledBy: none
+// @calls: [#HEX:B.06.00.00], [#HEX:A.05.12.00], [#HEX:B.07.38.00], [#HEX:A.02.05.00], [#HEX:F.04.2C1.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -9585,7 +9585,7 @@ function t(key) {
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
 // === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
-// @calls: [#HEX:F.08.0B.00], [#HEX:F.04.180.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
+// @calls: [#HEX:F.04.180.00], [#HEX:F.08.0B.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;

@@ -354,7 +354,7 @@
     const isCompletedMode = urlParams.get('mode') === 'completed' || urlParams.get('completed') === '1';
 
 // === [#HEX:D.07.154.00] START | name: returnToHarbor | lines: 8 | action: 'navigate_to_page' ===
-// @calls: [#HEX:D.07.15F.00], [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.2C1.00], [#HEX:D.07.15F.00] | @calledBy: none
     function returnToHarbor() {
       stopAccSpeech();
       if (window.parent && window.parent !== window) {
@@ -428,7 +428,7 @@
 // === [#HEX:D.07.155.00] END ===
 
 // === [#HEX:D.07.156.00] START | name: applyAccTutorialLanguage | lines: 66 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:D.07.155.00] | @calledBy: [#HEX:D.07.158.00], [#HEX:D.07.165.00]
+// @calls: [#HEX:D.07.155.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.07.158.00], [#HEX:D.07.165.00]
     function applyAccTutorialLanguage(lang) {
       const t = getAccTranslations(lang);
       if (!t) {
@@ -556,7 +556,7 @@
 // === [#HEX:D.07.15A.00] END ===
 
 // === [#HEX:D.07.15B.00] START | name: changeLanguage | lines: 12 ===
-// @calls: [#HEX:D.07.158.00], [#HEX:D.07.15A.00] | @calledBy: none
+// @calls: [#HEX:D.07.15A.00], [#HEX:D.07.158.00] | @calledBy: none
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);
@@ -713,7 +713,7 @@
 // === [#HEX:D.07.160.00] END ===
 
 // === [#HEX:D.07.161.00] START | name: speakAccIntro | lines: 15 ===
-// @calls: [#HEX:D.07.160.00], [#HEX:D.07.155.00] | @calledBy: none
+// @calls: [#HEX:D.07.155.00], [#HEX:D.07.160.00] | @calledBy: none
     function speakAccIntro(btn) {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const t = getAccTranslations(curLang);
@@ -833,7 +833,7 @@
 // === [#HEX:D.07.164.00] END ===
 
 // === [#HEX:D.07.165.00] START | name: openAccessibilityTutorial | lines: 26 ===
-// @calls: [#HEX:A.02.05.00], [#HEX:D.07.156.00] | @calledBy: none
+// @calls: [#HEX:D.07.156.00], [#HEX:A.02.05.00] | @calledBy: none
     function openAccessibilityTutorial() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       applyAccTutorialLanguage(curLang);
@@ -863,7 +863,7 @@
 // === [#HEX:D.07.165.00] END ===
 
 // === [#HEX:D.07.166.00] START | name: closeAccessibilityTutorial | lines: 29 | action: 'navigate_to_page' ===
-// @calls: [#HEX:A.02.05.00], [#HEX:D.07.104.00], [#HEX:F.04.2C1.00], [#HEX:D.07.15F.00], [#HEX:B.15.07.00] | @calledBy: none
+// @calls: [#HEX:D.07.104.00], [#HEX:A.02.05.00], [#HEX:D.07.15F.00], [#HEX:F.04.2C1.00], [#HEX:B.15.07.00] | @calledBy: none
     function closeAccessibilityTutorial() {
       stopAccSpeech();
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -916,7 +916,7 @@
 // === [#HEX:D.07.167.00] END ===
 
 // === [#HEX:D.07.168.00] START | name: startAccessibilityQuiz | lines: 35 ===
-// @calls: [#HEX:D.07.169.00], [#HEX:D.07.15F.00] | @calledBy: none
+// @calls: [#HEX:D.07.15F.00], [#HEX:D.07.169.00] | @calledBy: none
     async function startAccessibilityQuiz() {
       stopAccSpeech();
       const infoView = document.getElementById('acc-info-view');
@@ -955,7 +955,7 @@
 // === [#HEX:D.07.168.00] END ===
 
 // === [#HEX:D.07.169.00] START | name: renderAccQuizQuestion | lines: 60 ===
-// @calls: [#HEX:D.07.16A.00], [#HEX:D.07.155.00], [#HEX:D.07.16B.00] | @calledBy: [#HEX:D.07.168.00], [#HEX:D.07.16A.00]
+// @calls: [#HEX:D.07.16B.00], [#HEX:D.07.16A.00], [#HEX:D.07.155.00] | @calledBy: [#HEX:D.07.168.00], [#HEX:D.07.16A.00]
     function renderAccQuizQuestion() {
       accIsAnswering = false;
       const qTextEl = document.getElementById('acc-quiz-question-text');
@@ -1019,7 +1019,7 @@
 // === [#HEX:D.07.169.00] END ===
 
 // === [#HEX:D.07.16A.00] START | name: handleAccQuizAnswer | lines: 37 ===
-// @calls: [#HEX:D.07.169.00], [#HEX:D.07.155.00] | @calledBy: [#HEX:D.07.169.00]
+// @calls: [#HEX:D.07.155.00], [#HEX:D.07.169.00] | @calledBy: [#HEX:D.07.169.00]
     function handleAccQuizAnswer(selectedIdx, correctIdx, btnElement, currentQuestion) {
       if (accIsAnswering) return;
       accIsAnswering = true;
@@ -1081,7 +1081,7 @@
 // === [#HEX:D.07.16B.00] END ===
 
 // === [#HEX:D.07.16C.00] START | name: submitAccBoatName | lines: 13 ===
-// @calls: [#HEX:D.07.16E.00], [#HEX:D.07.155.00] | @calledBy: none
+// @calls: [#HEX:D.07.155.00], [#HEX:D.07.16E.00] | @calledBy: none
     function submitAccBoatName() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const t = getAccTranslations(curLang) || {};
@@ -1146,7 +1146,7 @@
 // === [#HEX:D.07.16E.00] END ===
 
 // === [#HEX:D.07.16F.00] START | name: finalizeAccTutorialAndDepart | lines: 52 | action: 'tutorial_completed' ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:B.12.26.00] | @calledBy: none
+// @calls: [#HEX:B.12.26.00], [#HEX:F.04.2C1.00] | @calledBy: none
     function finalizeAccTutorialAndDepart() {
       const nameInput = document.getElementById('acc-boat-name-input');
 

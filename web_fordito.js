@@ -255,6 +255,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Merülő:',
         'treasures_vehicle_airship_label': 'Léghajó:',
         'treasures_logout_button': 'Kijelentkezés',
+        'treasures_vault_title': '💎🧭 LET-Kincstár & Lajstrom Konzol',
+        'treasures_vault_subtitle': 'Mélységi kapitányi adatbázis: Vagyon • Kincsek • Könyvtár • Flotta & Felszereltség • Képzettségek • Legénység • Scriptes/SQL/AI Kereső',
+        'treasures_open_vault_btn': '💎 Kincstár Gépezet Megnyitása',
+        'treasures_open_assistant_btn': '🤖 Keresőasszisztens',
+        'treasures_open_newtab_btn': '↗ Teljes Képernyős Lap',
+        'treasures_skills_title': 'Képzettségek (HEBOK)',
 
         'loading_overlay_text': 'Kis türelmet, kalóz...',
 
@@ -1558,6 +1564,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Submersible:',
         'treasures_vehicle_airship_label': 'Airship:',
         'treasures_logout_button': 'Log out',
+        'treasures_vault_title': '💎🧭 LET-Vault & Ledger Console',
+        'treasures_vault_subtitle': 'Deep captain database: Wealth • Treasures • Library • Fleet & Equipment • Skills • Crew • Script/SQL/AI Search',
+        'treasures_open_vault_btn': '💎 Open Vault Machine',
+        'treasures_open_assistant_btn': '🤖 Search Assistant',
+        'treasures_open_newtab_btn': '↗ Fullscreen Tab',
+        'treasures_skills_title': 'Skills (HEBOK)',
 
         'loading_overlay_text': 'One moment, pirate...',
 
@@ -1580,7 +1592,7 @@ const translations = {
         'html_load_error': 'HTML load error',
         'auth_error_missing_token_private': 'AUTH_ERROR: Missing token, but the operation is private.',
 // === [#HEX:F.04.17E.00] START | name: does | lines: 1046 ===
-// @calls: [#HEX:A.02.05.00], [#HEX:F.04.2C1.00], [#HEX:A.05.12.00], [#HEX:F.04.1CF.00], [#HEX:F.04.1F.00] | @calledBy: none
+// @calls: [#HEX:F.04.13.00], [#HEX:A.02.05.00], [#HEX:F.04.2C1.00], [#HEX:F.01.00.00], [#HEX:K.05.19.00] | @calledBy: none
         'critical_getuserbytoken_missing': 'CRITICAL: getUserByToken function does not exist!',
         'auth_error_invalid_token': 'AUTH_ERROR: Invalid token.',
         'auth_error_login_required': 'AUTH_ERROR: Login is required for this operation!',
@@ -2868,6 +2880,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Tauchboot:',
         'treasures_vehicle_airship_label': 'Luftschiff:',
         'treasures_logout_button': 'Abmelden',
+        'treasures_vault_title': '💎🧭 LET-Schatzkammer & Register-Konsole',
+        'treasures_vault_subtitle': 'Kapitäns-Datenbank: Vermögen • Schätze • Bibliothek • Flotte & Ausrüstung • Fähigkeiten • Mannschaft • Skript/SQL/KI-Suche',
+        'treasures_open_vault_btn': '💎 Schatzkammer-Gerät öffnen',
+        'treasures_open_assistant_btn': '🤖 Suchassistent',
+        'treasures_open_newtab_btn': '↗ Vollbild-Tab',
+        'treasures_skills_title': 'Fähigkeiten (HEBOK)',
 
         'loading_overlay_text': 'Einen Moment, Pirat...',
 
@@ -4157,6 +4175,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Sous-marin:',
         'treasures_vehicle_airship_label': 'Dirigeable:',
         'treasures_logout_button': 'Se déconnecter',
+        'treasures_vault_title': '💎🧭 Console LET-Coffre & Registre',
+        'treasures_vault_subtitle': 'Base de données du capitaine : Richesse • Trésors • Bibliothèque • Flotte & Équipement • Compétences • Équipage • Recherche Script/SQL/IA',
+        'treasures_open_vault_btn': '💎 Ouvrir le Coffre',
+        'treasures_open_assistant_btn': '🤖 Assistant de recherche',
+        'treasures_open_newtab_btn': '↗ Onglet plein écran',
+        'treasures_skills_title': 'Compétences (HEBOK)',
 
         'loading_overlay_text': 'Un instant, pirate...',
 
@@ -5454,6 +5478,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Submarino:',
         'treasures_vehicle_airship_label': 'Dirigible:',
         'treasures_logout_button': 'Cerrar sesión',
+        'treasures_vault_title': '💎🧭 Consola LET-Bóveda y Registro',
+        'treasures_vault_subtitle': 'Base de datos del capitán: Riqueza • Tesoros • Biblioteca • Flota y Equipo • Habilidades • Tripulación • Búsqueda Script/SQL/IA',
+        'treasures_open_vault_btn': '💎 Abrir Consola de Bóveda',
+        'treasures_open_assistant_btn': '🤖 Asistente de búsqueda',
+        'treasures_open_newtab_btn': '↗ Pestaña completa',
+        'treasures_skills_title': 'Habilidades (HEBOK)',
 
         'loading_overlay_text': 'Un momento, pirata...',
 
@@ -6742,6 +6772,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Lodz podwodna:',
         'treasures_vehicle_airship_label': 'Sterowiec:',
         'treasures_logout_button': 'Wyloguj',
+        'treasures_vault_title': '💎🧭 Konsola LET-Skarbiec i Rejestr',
+        'treasures_vault_subtitle': 'Baza danych kapitana: Majątek • Skarby • Biblioteka • Flota i Wyposażenie • Umiejętności • Załoga • Wyszukiwarka Skrypt/SQL/AI',
+        'treasures_open_vault_btn': '💎 Otwórz Maszynę Skarbca',
+        'treasures_open_assistant_btn': '🤖 Asystent wyszukiwania',
+        'treasures_open_newtab_btn': '↗ Pełna karta',
+        'treasures_skills_title': 'Umiejętności (HEBOK)',
 
         'loading_overlay_text': 'Chwila cierpliwości, piracie...',
 
@@ -8030,6 +8066,12 @@ const translations = {
         'treasures_vehicle_sub_label': 'Подводный:',
         'treasures_vehicle_airship_label': 'Дирижабль:',
         'treasures_logout_button': 'Выйти',
+        'treasures_vault_title': '💎🧭 Консоль LET-Хранилище и Реестр',
+        'treasures_vault_subtitle': 'База данных капитана: Богатство • Сокровища • Библиотека • Флот и Оснащение • Навыки • Экипаж • Поиск Скрипт/SQL/ИИ',
+        'treasures_open_vault_btn': '💎 Открыть Консоль Хранилища',
+        'treasures_open_assistant_btn': '🤖 Поисковый ассистент',
+        'treasures_open_newtab_btn': '↗ Вкладка на весь экран',
+        'treasures_skills_title': 'Навыки (HEBOK)',
 
         'loading_overlay_text': 'Минуточку, пират...',
 
@@ -9543,7 +9585,7 @@ function t(key) {
  * Ezt hívd meg a zászlókra kattintáskor: onclick="switchLanguage('en')"
  */
 // === [#HEX:F.08.0A.00] START | name: switchLanguage | lines: 17 ===
-// @calls: [#HEX:F.08.0B.00], [#HEX:F.08.07.00], [#HEX:F.04.180.00] | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
+// @calls: [#HEX:F.08.0B.00], [#HEX:F.04.180.00], [#HEX:F.08.07.00] | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.01.0B.00], [#HEX:F.08.06.00], [#HEX:F.08.09.00], [#HEX:F.08.0B.00]
 function switchLanguage(lang) {
     if (translations[lang]) {
         currentLang = lang;

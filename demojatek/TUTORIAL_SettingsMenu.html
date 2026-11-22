@@ -393,7 +393,7 @@
 // === [#HEX:D.06.67.00] END ===
 
 // === [#HEX:D.06.68.00] START | name: selectLanguage | lines: 9 ===
-// @calls: [#HEX:D.06.01.00], [#HEX:D.06.67.00] | @calledBy: none
+// @calls: [#HEX:D.06.67.00], [#HEX:D.06.01.00] | @calledBy: none
     function selectLanguage(lang, event) {
       if (event && event.currentTarget) {
         event.currentTarget.classList.add('porthole-clicked');
@@ -467,7 +467,7 @@
 // === [#HEX:D.03.3D.00] END ===
 
 // === [#HEX:D.06.01.00] START | name: changeLanguage | lines: 12 ===
-// @calls: [#HEX:D.03.3D.00], [#HEX:D.06.6A.00] | @calledBy: [#HEX:D.06.68.00]
+// @calls: [#HEX:D.06.6A.00], [#HEX:D.03.3D.00] | @calledBy: [#HEX:D.06.68.00]
     function changeLanguage(lang) {
       localStorage.setItem('ebook_pirates_language', lang);
       localStorage.setItem('siteLang', lang);

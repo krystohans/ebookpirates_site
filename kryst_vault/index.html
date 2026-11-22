@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LET-Kincstár &amp; Lajstrom Konzol · v1.0</title>
+  <script type="module" crossorigin src="./bundles/index-BY45qllb.js"></script>
+  <link rel="stylesheet" crossorigin href="./bundles/index-JhQdCDEz.css">
+</head>
+<body>
+
+  <!-- KÉSZÜLÉKEN KÍVÜLI TÁJOLÁSVÁLTÓ GOMB -->
+  <div class="workspace-meta-toolbar">
+    <button type="button" class="meta-orientation-toggle" id="btn-toggle-orientation" title="Készülék Kijelző Tájolás Váltása (Fekvő ↔ Álló)">
+      <span class="orientation-icon" id="orientation-icon">🖥️</span>
+      <span class="btn-text" id="orientation-text">Fekvő</span>
+    </button>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- A 3D GÉPEZET ERGONOMIKUS TESTE (CHASSIS)                                 -->
+  <!-- ========================================================================= -->
+  <main class="vault-chassis" id="vault-chassis">
+
+    <!-- Oldalsó Ragyogó Smaragd-Arany LETkristály Cella -->
+    <div class="vault-crystal-cell" title="LET-Kincstár Kristálymag"></div>
+
+    <!-- FELSŐ FEJLÉC ÉS SAROKGOMBOK -->
+    <header class="vault-header">
+      <!-- Bal Felső Sarok: Vissza a Törzslapra -->
+      <button type="button" class="corner-btn" id="btn-vault-home" title="Visszatérés a Kapitányi Áttekintő Törzslapra">
+        <span class="btn-text">⚓ Törzslap</span>
+      </button>
+
+      <!-- Bal Segédgombok Csoportja -->
+      <div class="header-aux-group aux-left">
+        <button type="button" class="sub-dial-btn refresh-btn" id="btn-vault-refresh" title="Adatok frissítése a felhőből">
+          <span>↻</span>
+        </button>
+
+        <button type="button" class="sub-dial-btn font-dec-btn" id="btn-font-decrease" title="Betűméret csökkentése (Aᴀ)">
+          <span class="a-big">A</span><span class="a-small">A</span>
+        </button>
+      </div>
+
+      <!-- Készülék Kétsoros Cím- és Státusz Kijelző (Másolható) -->
+      <div class="vault-branding vault-coords-display" id="vault-coords-display" title="Kattints az azonosító másolásához!">
+        <span class="display-main-line">The LET-Vault &amp; Ledger Machine</span>
+        <span class="display-sub-line" id="vault-status-subline">Kapitányi Lajstrom &amp; Keresőkonzol · v1.0</span>
+      </div>
+
+      <!-- Jobb Segédgombok Csoportja -->
+      <div class="header-aux-group aux-right">
+        <button type="button" class="sub-dial-btn font-inc-btn" id="btn-font-increase" title="Betűméret növelése (ᴀA)">
+          <span class="a-small">A</span><span class="a-big">A</span>
+        </button>
+
+        <button type="button" class="sub-dial-btn byok-btn" id="btn-open-byok" title="AI Asszisztens &amp; Saját Gemini API Kulcs Beállítása">
+          <span>🔑</span>
+        </button>
+      </div>
+
+      <!-- Jobb Felső Sarok: Keresőasszisztens Gyorsugrás -->
+      <button type="button" class="corner-btn accent-assistant" id="btn-open-assistant" title="Hibrid Scriptes + SQL + AI Keresőasszisztens">
+        <span class="btn-text">🤖 Kereső</span>
+      </button>
+    </header>
+
+    <!-- KÖZPONTI SZEMBARÁT OVÁLIS LENCSE (THE VAULT LENS) -->
+    <section class="vault-lens-container" id="vault-lens-container">
+
+      <!-- STICKY FELSŐ NAVIGÁCIÓ & GYORSKERESŐ -->
+      <div class="vault-nav-header">
+        <div class="vault-quick-row">
+          <div class="vault-quick-search-wrapper">
+            <span class="vault-search-icon">🔍</span>
+            <input type="text" id="vault-quick-search-input" class="vault-search-input" placeholder="Villámkeresés vagy kérdés (Enter → Keresőasszisztens)..." autocomplete="off" spellcheck="false">
+            <button type="button" id="btn-clear-quick-search" class="vault-search-clear-btn" title="Keresőmező törlése" style="display: none;">✕</button>
+            <button type="button" id="btn-quick-search-go" class="vault-search-go-btn" title="Keresés futtatása">Ugrás</button>
+          </div>
+          <span id="vault-sync-pill" class="vault-sync-pill source-loading" title="Adatforrás és gyorsítótár állapota">⏳ Szinkron...</span>
+        </div>
+
+        <!-- 7 FÜLES KATEGÓRIAVÁLTÓ -->
+        <div class="vault-tab-bar clean-scroll-container" role="tablist">
+          <button type="button" class="vault-tab-chip active" data-tab="overview" role="tab">
+            ⚓ Áttekintés <span class="tab-count" data-count-for="overview"></span>
+          </button>
+          <button type="button" class="vault-tab-chip" data-tab="treasures" role="tab">
+            🎒 Kincsek &amp; Piac <span class="tab-count" data-count-for="treasures">0</span>
+          </button>
+          <button type="button" class="vault-tab-chip" data-tab="library" role="tab">
+            📚 Könyvtár-Lajstrom <span class="tab-count" data-count-for="library">0</span>
+          </button>
+          <button type="button" class="vault-tab-chip" data-tab="vehicles" role="tab">
+            ⛵ Flotta &amp; Műszaki <span class="tab-count" data-count-for="vehicles">0</span>
+          </button>
+          <button type="button" class="vault-tab-chip" data-tab="skills" role="tab">
+            🧭 Képzettségek <span class="tab-count" data-count-for="skills">0</span>
+          </button>
+          <button type="button" class="vault-tab-chip" data-tab="crew" role="tab">
+            👥 Emberek &amp; Legénység <span class="tab-count" data-count-for="crew">0</span>
+          </button>
+          <button type="button" class="vault-tab-chip" data-tab="assistant" role="tab">
+            🤖 Keresőasszisztens <span class="tab-count" data-count-for="assistant">AI</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GÖRGETHETŐ KONZOL TARTALMI NÉZET -->
+      <div id="vault-viewport" class="vault-scroll-viewport clean-scroll-container">
+
+        <!-- 1. ÁTTEKINTÉS PANEL -->
+        <div id="panel-overview" class="vault-panel active"></div>
+
+        <!-- 2. KINCSEK, KELLÉKEK & PIAC PANEL -->
+        <div id="panel-treasures" class="vault-panel"></div>
+
+        <!-- 3. KÖNYVTÁR-LAJSTROM PANEL -->
+        <div id="panel-library" class="vault-panel"></div>
+
+        <!-- 4. FLOTTA & MŰSZAKI TELEMETRIA PANEL -->
+        <div id="panel-vehicles" class="vault-panel">
+          <div id="vehicles-category-bar" class="vault-subfilter-bar clean-scroll-container"></div>
+          <div id="vehicles-list-view"></div>
+          <div id="vehicle-detail-view" style="display: none;"></div>
+        </div>
+
+        <!-- 5. KÉPZETTSÉGEK PANEL (gid=667526717) -->
+        <div id="panel-skills" class="vault-panel">
+          <div id="skills-header-meta"></div>
+          <div id="skills-viz-controls" class="skills-viz-controls">
+            <div class="skills-viz-left">
+              <button type="button" id="btn-toggle-skills-3d" class="vault-mini-btn">🧊 3D Hologram Nézet</button>
+              <select id="skills-category-filter" class="vault-select" title="Képzettség kategória szűrése">
+                <option value="all">Minden kategória</option>
+                <option value="Hajózás">Hajózás</option>
+                <option value="Harc &amp; Felderítés">Harc &amp; Felderítés</option>
+                <option value="Műszaki &amp; Műhely">Műszaki &amp; Műhely</option>
+                <option value="Tudomány &amp; Kolostor">Tudomány &amp; Kolostor</option>
+                <option value="Egyéb">Egyéb</option>
+              </select>
+            </div>
+            <div class="skills-viz-right">
+              <select id="skills-sort-select" class="vault-select" title="Képzettségek rendezése">
+                <option value="desc">Erősség szerint (↓)</option>
+                <option value="asc">Fejlesztendő elöl (↑)</option>
+                <option value="alpha">Névsorban (A–Z)</option>
+              </select>
+            </div>
+          </div>
+          <div id="skills-radar-stage" class="skills-radar-stage">
+            <div id="skills-2d-svg-host" class="skills-2d-svg-host"></div>
+            <div id="skills-3d-canvas-host" class="skills-3d-canvas-host" style="display: none;"></div>
+          </div>
+          <div id="skills-bars-list" class="skills-bars-list"></div>
+        </div>
+
+        <!-- 6. EMBEREK & LEGÉNYSÉG PANEL -->
+        <div id="panel-crew" class="vault-panel">
+          <div id="crew-filter-bar" class="vault-subfilter-bar clean-scroll-container"></div>
+          <div id="crew-cards-list" class="vault-cards-grid"></div>
+        </div>
+
+        <!-- 7. HIBRID KERESŐASSZISZTENS PANEL -->
+        <div id="panel-assistant" class="vault-panel">
+          <div class="assistant-shell">
+            <div class="assistant-mode-bar">
+              <button type="button" id="btn-mode-script" class="assistant-mode-btn active">⚡ Scriptes + SQL Villámmotor (0 ms)</button>
+              <button type="button" id="btn-mode-ai" class="assistant-mode-btn">🧠 AI Mélyelemző (Gemini)</button>
+              <button type="button" id="btn-toggle-sql-help" class="vault-mini-btn" title="SQL lekérdezési súgó és táblasémák">📘 SQL Súgó</button>
+            </div>
+
+            <div class="assistant-input-row">
+              <input type="text" id="assistant-query-input" class="assistant-query-input" placeholder="Pl.: Melyik hajómon van szigonyágyú? vagy SELECT nev, elettartam FROM vehicles..." autocomplete="off" spellcheck="false">
+              <button type="button" id="btn-assistant-run" class="assistant-run-btn">Keresés</button>
+            </div>
+
+            <div id="assistant-presets" class="assistant-presets clean-scroll-container"></div>
+
+            <div id="assistant-sql-help" class="assistant-sql-help" style="display: none;">
+              <div class="sql-help-title">Beépített SQL-szintaxisú Tábla-Lekérdező (kliensoldali, azonnali)</div>
+              <p class="sql-help-desc">
+                Táblák: <code>vehicles</code>, <code>crew</code>, <code>skills</code>, <code>books</code>, <code>copies</code>, <code>scrolls</code>, <code>maps</code>, <code>logs</code>, <code>treasures</code>, <code>listings</code>, <code>gear</code>
+              </p>
+              <p class="sql-help-desc">
+                Szintaxis: <code>SELECT col1, col2 FROM tabla [WHERE feltetel (AND/OR)] [ORDER BY col ASC|DESC] [LIMIT n]</code>
+              </p>
+              <p class="sql-help-desc">
+                Operátorok: <code>=</code>, <code>!=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>LIKE</code>, <code>CONTAINS</code>
+              </p>
+            </div>
+
+            <div id="assistant-results-container" class="assistant-results-container"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BETÖLTÉSI / SZINKRONIZÁLÁSI RÉTEG -->
+      <div id="vault-loading-overlay" class="vault-loading-overlay" style="display: none;">
+        <div class="vault-loading-card">
+          <div class="vault-loading-spinner">💎</div>
+          <div id="vault-loading-title" class="vault-loading-title">LET-Kincstár szinkronizálása...</div>
+          <div id="vault-loading-desc" class="vault-loading-desc">Kapitányi adatok, hajók, képzettségek és legénység kiolvasása...</div>
+          <div class="vault-loading-actions">
+            <button type="button" id="btn-vault-fallback-legacy" class="vault-mini-btn">🔄 Klasszikus B-verzió</button>
+            <button type="button" id="btn-vault-load-demo" class="vault-mini-btn">🧪 Előnézeti Mintaadat</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI & BYOK BEÁLLÍTÓ MODÁL -->
+      <div id="vault-byok-modal" class="vault-overlay-modal" style="display: none;">
+        <div class="vault-modal-card">
+          <div class="vault-modal-header">
+            <span>🔑 AI Keresőasszisztens Beállítása</span>
+            <button type="button" id="btn-byok-close" class="vault-mini-btn">✕</button>
+          </div>
+          <p class="vault-modal-desc">
+            Alapértelmezésben a bejelentkezett szerveroldali Google Apps Script Gemini kaszkád válaszol. Opcionálisan megadhatsz saját Gemini API kulcsot (kizárólag a saját böngésződ <code>localStorage</code>-ában tárolva, min. <code>gemini-2.5-flash</code>).
+          </p>
+          <label class="vault-field-label" for="byok-provider-select">AI Végrehajtási Útvonal:</label>
+          <select id="byok-provider-select" class="vault-select vault-full-input">
+            <option value="server">Szerveroldali GAS AI Motor (Alapértelmezett)</option>
+            <option value="byok">Saját Böngészős Gemini API Kulcs (BYOK · gemini-2.5-flash)</option>
+          </select>
+
+          <label class="vault-field-label" for="byok-key-input">Saját Gemini API Kulcs (opcionális):</label>
+          <input type="password" id="byok-key-input" class="vault-search-input vault-full-input" placeholder="AIza..." autocomplete="off">
+
+          <div class="vault-modal-actions">
+            <button type="button" id="btn-byok-save" class="assistant-run-btn">💾 Mentés</button>
+            <button type="button" id="btn-byok-clear" class="vault-mini-btn">🗑️ Kulcs törlése</button>
+          </div>
+          <div id="byok-status-msg" class="byok-status-msg"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ALSÓ HÜVELYKUJJAS KEZELŐPULT (THUMB-ZONE DOCK) -->
+    <footer class="vault-dock">
+      <button type="button" class="thumb-step-btn" id="btn-dock-prev" title="Előző fül">◀</button>
+
+      <div class="dock-telemetry-strip">
+        <div class="dock-stat" title="Kredit egyenleg">
+          <span class="dock-stat-label">Kredit</span>
+          <span class="dock-stat-val" id="dock-kredit">0 Kr</span>
+        </div>
+        <div class="dock-stat" title="Járművek száma">
+          <span class="dock-stat-label">Flotta</span>
+          <span class="dock-stat-val" id="dock-fleet">0</span>
+        </div>
+        <div class="dock-stat" title="Felvett emberek száma">
+          <span class="dock-stat-label">Legénység</span>
+          <span class="dock-stat-val" id="dock-crew">0</span>
+        </div>
+        <div class="dock-stat" title="Átlagos képzettség">
+          <span class="dock-stat-label">Képz. átlag</span>
+          <span class="dock-stat-val" id="dock-skill-avg">0%</span>
+        </div>
+        <div class="dock-stat dock-tab-indicator">
+          <span class="dock-stat-label">Aktív modul</span>
+          <span class="dock-stat-val" id="dock-active-tab-label">Áttekintés</span>
+        </div>
+      </div>
+
+      <button type="button" class="thumb-step-btn" id="btn-dock-next" title="Következő fül">▶</button>
+    </footer>
+
+  </main>
+
+</body>
+</html>

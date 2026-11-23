@@ -642,7 +642,7 @@ export class EBPActorController {
 // === [#HEX:F.0C.12.00] END ===
 
 // === [#HEX:F.0C.13.00] START | name: _advanceChoreographyStep | lines: 29 ===
-// @calls: [#HEX:F.07.18.00], [#HEX:F.02.32.00], [#HEX:F.0C.0D.00], [#HEX:F.0C.46.00] | @calledBy: [#HEX:F.0C.14.00]
+// @calls: [#HEX:F.0C.46.00], [#HEX:F.0C.0D.00], [#HEX:F.02.32.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.0C.14.00]
     async _advanceChoreographyStep(targetIdx) {
         if (!this._choreography) return;
         const timeline = this._choreography.timeline;
@@ -678,7 +678,7 @@ export class EBPActorController {
      * Frame-enkenti frissites (30 FPS / clampelt delta mellett is sima).
      */
 // === [#HEX:F.0C.14.00] START | name: update | lines: 38 ===
-// @calls: [#HEX:D.07.E7.00], [#HEX:F.0C.16.00], [#HEX:F.0C.13.00], [#HEX:F.0C.17.00], [#HEX:F.0C.15.00] | @calledBy: [#HEX:F.04.17E.00], [#HEX:F.04.18A.00], [#HEX:F.05.2D.00], [#HEX:F.05.2F.00], [#HEX:F.05.30.00]
+// @calls: [#HEX:F.0C.16.00], [#HEX:F.0C.47.00], [#HEX:F.0C.13.00], [#HEX:F.0C.12.00], [#HEX:F.0C.15.00] | @calledBy: [#HEX:F.04.17E.00], [#HEX:F.04.18A.00], [#HEX:F.05.2D.00], [#HEX:F.05.2F.00], [#HEX:F.05.30.00]
     update(deltaSec) {
         // Eloszor levesszuk az elozo frame boneFallback deltajat, igy paused/LoopOnce eseten sem kumulalodik!
         this._revertBoneFallback();
@@ -720,7 +720,7 @@ export class EBPActorController {
 // === [#HEX:F.0C.14.00] END ===
 
 // === [#HEX:F.0C.15.00] START | name: _updateFadeWeights | lines: 37 ===
-// @calls: [#HEX:F.04.14.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:F.0C.14.00]
+// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.14.00] | @calledBy: [#HEX:F.0C.14.00]
     _updateFadeWeights(dt) {
         if (this.mainAction && this.mainCurrentWeight < this.mainTargetWeight) {
             this.mainCurrentWeight = Math.min(
@@ -1167,7 +1167,7 @@ export class EBPAnimationBank {
     }
 
 // === [#HEX:F.0C.1F.00] START | name: _buildCanonicalRestMaps | lines: 50 ===
-// @calls: [#HEX:F.0C.06.00], [#HEX:F.0C.00.00], [#HEX:F.04.1F.00] | @calledBy: none
+// @calls: [#HEX:F.04.1F.00], [#HEX:F.0C.06.00], [#HEX:F.0C.00.00] | @calledBy: none
     _buildCanonicalRestMaps() {
         this.canonRestLocal.clear();
         this.canonRestWorld.clear();
@@ -1263,7 +1263,7 @@ export class EBPAnimationBank {
 // === [#HEX:F.0C.20.00] END ===
 
 // === [#HEX:F.0C.21.00] START | name: loadPack | lines: 20 ===
-// @calls: [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00], [#HEX:F.0C.1E.00], [#HEX:F.0C.22.00] | @calledBy: [#HEX:F.0C.26.00]
+// @calls: [#HEX:F.0C.1E.00], [#HEX:F.0C.22.00], [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00] | @calledBy: [#HEX:F.0C.26.00]
     async loadPack(category) {
         await this.init();
         if (this.masterLoaded || this.loadedPacks.has(category)) return this.rawClipsMap;
@@ -1395,7 +1395,7 @@ export class EBPAnimationBank {
     }
 
 // === [#HEX:F.0C.26.00] START | name: ensureClipLoaded | lines: 24 ===
-// @calls: [#HEX:F.0C.23.00], [#HEX:F.0C.24.00], [#HEX:F.0C.21.00], [#HEX:F.0C.1E.00], [#HEX:F.0C.20.00] | @calledBy: none
+// @calls: [#HEX:F.0C.24.00], [#HEX:F.0C.1E.00], [#HEX:F.0C.23.00], [#HEX:F.0C.20.00], [#HEX:F.0C.21.00] | @calledBy: none
     async ensureClipLoaded(clipOrAlias) {
         await this.init();
         const clipName = this.resolveClipName(clipOrAlias);
@@ -1426,7 +1426,7 @@ export class EBPAnimationBank {
      * Kinyeri es rogziti a celmodell érintetlen rest-pozat, csontfajlalasat es morphTarget-jeit.
      */
 // === [#HEX:F.0C.27.00] START | name: inspectAndExtractRig | lines: 152 ===
-// @calls: [#HEX:F.0C.06.00], [#HEX:F.0C.00.00], [#HEX:F.0C.28.00] | @calledBy: none
+// @calls: [#HEX:F.0C.28.00], [#HEX:F.0C.06.00], [#HEX:F.0C.00.00] | @calledBy: none
     inspectAndExtractRig(targetRoot) {
         targetRoot.updateMatrixWorld(true);
 
@@ -1920,7 +1920,7 @@ export class EBPAnimationBank {
      * Kiszamitja az alapertelmezett 7 fogopontos sablon arc-maszkot (Head-lokalis terben).
      */
 // === [#HEX:F.0C.2B.00] START | name: estimateDefaultFaceMask | lines: 49 ===
-// @calls: [#HEX:F.0C.01.00], [#HEX:F.0C.2A.00], [#HEX:F.0C.2C.00] | @calledBy: [#HEX:F.0C.3F.00]
+// @calls: [#HEX:F.0C.2A.00], [#HEX:F.0C.2C.00], [#HEX:F.0C.01.00] | @calledBy: [#HEX:F.0C.3F.00]
     estimateDefaultFaceMask(rigInfo, targetRoot) {
         const data = this._collectHeadFaceData(rigInfo, targetRoot);
         const H = data.topYEst || 0.22;
@@ -1980,7 +1980,7 @@ export class EBPAnimationBank {
      * (19 valodi GPU ARKit MorphTarget zonava forditva, barmilyen skinning-sulyrongalas nelkul).
      */
 // === [#HEX:F.0C.2D.00] START | name: bindFaceMaskToModel | lines: 246 ===
-// @calls: [#HEX:F.0C.01.00], [#HEX:F.0C.2A.00], [#HEX:F.0C.03.00], [#HEX:F.0C.2E.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.0C.3E.00]
+// @calls: [#HEX:F.0C.2A.00], [#HEX:F.0C.02.00], [#HEX:F.0C.01.00], [#HEX:F.0C.03.00], [#HEX:F.0C.2E.00] | @calledBy: [#HEX:F.0C.3E.00]
     bindFaceMaskToModel(rigInfo, targetRoot, maskProfile) {
         if (!rigInfo || !targetRoot || !maskProfile || !maskProfile.points) {
             return { boundMeshes: 0, affectedVertices: 0, morphCount: 0 };
@@ -1998,7 +1998,7 @@ export class EBPAnimationBank {
         }
 
 // === [#HEX:F.0C.2E.00] START | name: toVec | lines: 217 ===
-// @calls: [#HEX:F.0C.01.00], [#HEX:F.0C.03.00], [#HEX:F.0C.1B.00], [#HEX:F.0C.02.00] | @calledBy: [#HEX:F.0C.2D.00]
+// @calls: [#HEX:F.0C.02.00], [#HEX:F.0C.01.00], [#HEX:F.0C.03.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.0C.2D.00]
         const toVec = (arr) => new THREE.Vector3(Number(arr[0]) || 0, Number(arr[1]) || 0, Number(arr[2]) || 0);
         const browL = toVec(pts.browL);
         const browR = toVec(pts.browR);

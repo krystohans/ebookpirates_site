@@ -837,7 +837,7 @@ document.querySelectorAll('.btn-cam').forEach((btn) => {
 });
 
 // === [#HEX:F.0C.38.00] START | name: refreshCodeExport | lines: 14 ===
-// @calls: [#HEX:F.0C.04.00], [#HEX:F.0C.33.00], [#HEX:F.0C.1A.00] | @calledBy: [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00], [#HEX:F.07.1B.00], [#HEX:F.07.1C.00], [#HEX:F.0C.42.00]
+// @calls: [#HEX:F.0C.33.00], [#HEX:F.0C.04.00], [#HEX:F.0C.1A.00] | @calledBy: [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00], [#HEX:F.07.1B.00], [#HEX:F.07.1C.00], [#HEX:F.0C.42.00]
 function refreshCodeExport() {
     const mKey = normalizeModelKey(state.actorModelPath);
     const diag = state.controller ? state.controller.getDiagnostics() : null;
@@ -929,7 +929,7 @@ function syncFaceMaskOverlayGeometry() {
 // === [#HEX:F.0C.3B.00] END ===
 
 // === [#HEX:F.0C.3C.00] START | name: rebuildFaceMaskOverlay | lines: 57 ===
-// @calls: [#HEX:F.0C.3B.00], [#HEX:F.0C.1B.00], [#HEX:F.0C.3A.00] | @calledBy: [#HEX:F.0C.3F.00]
+// @calls: [#HEX:F.0C.3A.00], [#HEX:F.0C.3B.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.0C.3F.00]
 function rebuildFaceMaskOverlay(rigInfo) {
     disposeFaceMaskOverlay();
     if (!rigInfo || !rigInfo.bonesByKey) return;
@@ -1010,7 +1010,7 @@ function updateFaceMaskUi() {
 // === [#HEX:F.0C.3D.00] END ===
 
 // === [#HEX:F.0C.3E.00] START | name: applyFaceMaskBinding | lines: 18 ===
-// @calls: [#HEX:F.0C.3D.00], [#HEX:F.0C.2D.00], [#HEX:F.0C.39.00], [#HEX:F.0C.37.00], [#HEX:F.0C.04.00] | @calledBy: none
+// @calls: [#HEX:F.0C.38.00], [#HEX:F.0C.3D.00], [#HEX:F.0C.04.00], [#HEX:F.0C.2D.00], [#HEX:F.0C.34.00] | @calledBy: none
 function applyFaceMaskBinding(saveToStorage = true) {
     if (!state.controller || !state.actorRoot || !state.faceMaskProfile) return;
     const res = bank.bindFaceMaskToModel(state.controller.rigInfo, state.actorRoot, state.faceMaskProfile);
@@ -1032,7 +1032,7 @@ function applyFaceMaskBinding(saveToStorage = true) {
 // === [#HEX:F.0C.3E.00] END ===
 
 // === [#HEX:F.0C.3F.00] START | name: loadCharacterModel | lines: 94 ===
-// @calls: [#HEX:F.0C.36.00], [#HEX:F.0C.3D.00], [#HEX:F.0C.39.00], [#HEX:F.0C.30.00], [#HEX:F.07.1B.00] | @calledBy: none
+// @calls: [#HEX:F.07.1B.00], [#HEX:F.0C.38.00], [#HEX:F.0C.3C.00], [#HEX:F.0C.0D.00], [#HEX:F.02.31.00] | @calledBy: none
 async function loadCharacterModel(url, displayLabel) {
     try {
         DOM.activeClipBadge.textContent = '⏳ Modell betöltése...';
@@ -1130,7 +1130,7 @@ async function loadCharacterModel(url, displayLabel) {
 // === [#HEX:F.0C.3F.00] END ===
 
 // === [#HEX:F.07.1B.00] START | name: playSelectedClip | lines: 25 ===
-// @calls: [#HEX:F.0C.41.00], [#HEX:F.0C.24.00], [#HEX:F.0C.34.00], [#HEX:F.0C.38.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.0C.3F.00], [#HEX:F.0C.41.00]
+// @calls: [#HEX:F.0C.41.00], [#HEX:F.0C.24.00], [#HEX:F.0C.38.00], [#HEX:F.0C.1A.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.0C.3F.00], [#HEX:F.0C.41.00]
 async function playSelectedClip(clipName) {
     if (!state.controller) return;
     if (!state.controller.getDiagnostics().isRigged) {
@@ -1159,7 +1159,7 @@ async function playSelectedClip(clipName) {
 // === [#HEX:F.07.1B.00] END ===
 
 // === [#HEX:F.07.1C.00] START | name: playUpperBodyClip | lines: 17 ===
-// @calls: [#HEX:F.07.19.00], [#HEX:F.0C.34.00], [#HEX:F.0C.38.00], [#HEX:F.0C.1A.00] | @calledBy: [#HEX:F.0C.41.00]
+// @calls: [#HEX:F.0C.38.00], [#HEX:F.07.19.00], [#HEX:F.0C.1A.00], [#HEX:F.0C.34.00] | @calledBy: [#HEX:F.0C.41.00]
 async function playUpperBodyClip(clipName) {
     if (!state.controller || !state.controller.getDiagnostics().isRigged) return;
     try {
@@ -1180,7 +1180,7 @@ async function playUpperBodyClip(clipName) {
 // === [#HEX:F.07.1C.00] END ===
 
 // === [#HEX:F.0C.40.00] START | name: appendClipToTimeline | lines: 28 ===
-// @calls: [#HEX:F.0C.24.00], [#HEX:F.0C.43.00], [#HEX:F.0C.34.00] | @calledBy: [#HEX:F.0C.41.00]
+// @calls: [#HEX:F.0C.43.00], [#HEX:F.0C.24.00], [#HEX:F.0C.34.00] | @calledBy: [#HEX:F.0C.41.00]
 function appendClipToTimeline(clipName) {
     let obj;
     try {
@@ -1212,7 +1212,7 @@ function appendClipToTimeline(clipName) {
 // === [#HEX:F.0C.40.00] END ===
 
 // === [#HEX:F.0C.41.00] START | name: renderClipList | lines: 43 ===
-// @calls: [#HEX:F.0C.25.00], [#HEX:F.07.1B.00], [#HEX:F.0C.40.00], [#HEX:F.07.1C.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.07.1B.00]
+// @calls: [#HEX:F.07.1C.00], [#HEX:F.07.1B.00], [#HEX:F.0C.25.00], [#HEX:F.07.18.00], [#HEX:F.0C.40.00] | @calledBy: [#HEX:F.07.1B.00]
 function renderClipList() {
     if (!bank.manifest) return;
     const cat = DOM.catSelect.value;

@@ -177,7 +177,7 @@ window.getGameLanguage = function () {
 
 
 // === [#HEX:D.01.D0.00] START | name: loadDialogues | lines: 125 ===
-// @calls: [#HEX:D.06.4B.00], [#HEX:D.01.CF.00], [#HEX:D.01.D1.00], [#HEX:D.01.D2.00] | @calledBy: [#HEX:D.01.D9.00]
+// @calls: [#HEX:D.01.CF.00], [#HEX:D.01.D1.00], [#HEX:D.01.D2.00], [#HEX:D.06.4B.00] | @calledBy: [#HEX:D.01.D9.00]
 async function loadDialogues() {
 
   try {
@@ -4917,7 +4917,7 @@ window.getLoggedInUserData = function () {
 
 
 // === [#HEX:D.01.D6.00] START | name: checkStartupAuth | lines: 75 ===
-// @calls: [#HEX:D.01.D5.00], [#HEX:B.15.01.00], [#HEX:B.12.0F.00] | @calledBy: none
+// @calls: [#HEX:B.15.01.00], [#HEX:D.01.D5.00], [#HEX:B.12.0F.00] | @calledBy: none
 window.checkStartupAuth = function () {
 
   const isLocal = window.location.hostname === 'localhost' || 
@@ -5025,7 +5025,7 @@ window.updateTopBarPlayerName = function () {
 
 
 // === [#HEX:D.01.D8.00] START | name: loadTopBarModule | lines: 45 ===
-// @calls: [#HEX:D.01.D7.00], [#HEX:D.01.D9.00], [#HEX:D.01.131.00] | @calledBy: none
+// @calls: [#HEX:D.01.D9.00], [#HEX:D.01.D7.00], [#HEX:D.01.131.00] | @calledBy: none
 async function loadTopBarModule() {
 
   try {
@@ -5094,7 +5094,7 @@ if (document.readyState === 'loading') {
 
 
 // === [#HEX:D.01.D9.00] START | name: setupTopBarEvents | lines: 530 ===
-// @calls: [#HEX:D.07.99.00], [#HEX:D.06.43.00], [#HEX:D.01.CF.00], [#HEX:D.06.44.00], [#HEX:K.03.01.00] | @calledBy: [#HEX:D.01.D8.00], [#HEX:D.01.131.00]
+// @calls: [#HEX:D.07.142.00], [#HEX:D.01.D0.00], [#HEX:D.01.CF.00], [#HEX:D.01.131.00], [#HEX:D.01.DB.00] | @calledBy: [#HEX:D.01.D8.00], [#HEX:D.01.131.00]
 function setupTopBarEvents() {
 
   const btnInfo = document.getElementById('btn-tb-info');
@@ -5515,7 +5515,7 @@ function setupTopBarEvents() {
 
 
 // === [#HEX:D.06.43.00] START | name: showMhIntroPanel | lines: 72 ===
-// @calls: [#HEX:D.06.44.00], [#HEX:K.03.01.00], [#HEX:D.01.CF.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.125.00]
+// @calls: [#HEX:D.01.CF.00], [#HEX:K.03.01.00], [#HEX:D.06.44.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.125.00]
 window.showMhIntroPanel = function (onClose) {
   const overlay = document.getElementById('mh-intro-overlay');
   if (!overlay) {
@@ -5610,7 +5610,7 @@ window.showMhTowPanel = function () {
 
   let triggered = false;
 // === [#HEX:D.01.DC.00] START | name: triggerTow | lines: 15 ===
-// @calls: [#HEX:D.07.99.00], [#HEX:D.01.129.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.DB.00]
+// @calls: [#HEX:D.01.129.00], [#HEX:D.07.99.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.DB.00]
   function triggerTow(e) {
     if (triggered) return;
     if (e && e.type === 'keydown' && e.code !== 'Space' && e.key !== ' ') return;
@@ -6052,7 +6052,7 @@ window._dockSequenceRan = true; // A játék a kikötőben indul, ne fusson le a
 
 
 // === [#HEX:D.01.DF.00] START | name: togglePauseGame | lines: 117 ===
-// @calls: [#HEX:D.01.3A.00], [#HEX:F.07.18.00] | @calledBy: none
+// @calls: [#HEX:F.07.18.00], [#HEX:D.01.3A.00] | @calledBy: none
 window.togglePauseGame = function() {
 
   window.isPaused = !window.isPaused;
@@ -6298,11 +6298,11 @@ window.tempOrbit.dampingFactor = 0.095;
 
 
 // === [#HEX:D.01.E1.00] START | name: getOrbH | lines: 7 ===
-// @calls: [#HEX:D.01.E2.00], [#HEX:D.01.E3.00], [#HEX:D.01.E4.00] | @calledBy: [#HEX:D.01.120.00]
+// @calls: [#HEX:D.01.E2.00], [#HEX:D.01.E4.00], [#HEX:D.01.E3.00] | @calledBy: [#HEX:D.01.120.00]
 window.getOrbH = () => orbH;
 
 // === [#HEX:D.01.E2.00] START | name: getOrbV | lines: 5 ===
-// @calls: [#HEX:D.01.E3.00], [#HEX:D.01.E4.00] | @calledBy: [#HEX:D.01.E1.00], [#HEX:D.01.120.00]
+// @calls: [#HEX:D.01.E4.00], [#HEX:D.01.E3.00] | @calledBy: [#HEX:D.01.E1.00], [#HEX:D.01.120.00]
 window.getOrbV = () => orbV;
 
 // === [#HEX:D.01.E3.00] START | name: getOrbDist | lines: 3 ===
@@ -8114,7 +8114,7 @@ gltfLoader.load(window.getAssetUrl('models/pirates_assets/SM_Prop_Lantern_01.glb
 
 
 // === [#HEX:D.02.04.00] START | name: applyFinalRockOffsets | lines: 15 ===
-// @calls: [#HEX:D.01.EA.00], [#HEX:D.01.E9.00] | @calledBy: none
+// @calls: [#HEX:D.01.E9.00], [#HEX:D.01.EA.00] | @calledBy: none
   window.applyFinalRockOffsets = function () {
 
     if (window.moveRockAndLantern && window.mainTargetRock && window.mainRockLantern) {
@@ -8501,7 +8501,7 @@ let touchQuadrant = null;
 
 
 // === [#HEX:D.01.EB.00] START | name: setupMobileControls | lines: 264 ===
-// @calls: [#HEX:D.01.ED.00], [#HEX:D.05.18.00], [#HEX:D.01.EC.00] | @calledBy: none
+// @calls: [#HEX:D.05.18.00], [#HEX:D.01.EC.00], [#HEX:D.01.ED.00] | @calledBy: none
 function setupMobileControls() {
 
   const modeBtn = document.getElementById('mobile-mode-btn');
@@ -9079,7 +9079,7 @@ function getPooledMembrane() {
 
 
 // === [#HEX:D.03.30.00] START | name: loadMembraneModel | lines: 109 ===
-// @calls: [#HEX:D.01.EE.00], [#HEX:D.01.121.00], [#HEX:D.03.32.00], [#HEX:D.01.3A.00], [#HEX:D.03.2E.00] | @calledBy: none
+// @calls: [#HEX:D.01.EE.00], [#HEX:D.01.121.00], [#HEX:D.03.2E.00], [#HEX:D.01.3A.00], [#HEX:D.03.32.00] | @calledBy: none
 function loadMembraneModel() {
 
   const modelUrl = window.getAssetUrl('models/hartya_golden_membrane.glb');
@@ -9495,7 +9495,7 @@ window.isSafeWaterSpawnPoint = function (x, z) {
 
 
 // === [#HEX:D.03.34.00] START | name: spawnHartyaWave | lines: 95 ===
-// @calls: [#HEX:D.03.33.00], [#HEX:D.03.2F.00], [#HEX:D.03.2E.00] | @calledBy: [#HEX:D.03.31.00], [#HEX:D.01.FF.00], [#HEX:D.01.121.00]
+// @calls: [#HEX:D.03.2E.00], [#HEX:D.03.33.00], [#HEX:D.03.2F.00] | @calledBy: [#HEX:D.03.31.00], [#HEX:D.01.FF.00], [#HEX:D.01.121.00]
 window.spawnHartyaWave = function (count, originType) {
 
   window.initMembranePool();
@@ -9789,7 +9789,7 @@ window.setZozoTTSButtonState = function (isPlaying) {
 
 
 // === [#HEX:D.06.46.00] START | name: toggleZozoAutoRead | lines: 49 ===
-// @calls: [#HEX:D.06.49.00], [#HEX:D.06.45.00], [#HEX:D.06.47.00] | @calledBy: none
+// @calls: [#HEX:D.06.47.00], [#HEX:D.06.49.00], [#HEX:D.06.45.00] | @calledBy: none
 window.toggleZozoAutoRead = function (event) {
 
   if (event) {
@@ -9998,7 +9998,7 @@ window.resolveActiveZozoTTSKey = function () {
 
 
 // === [#HEX:D.06.49.00] START | name: triggerZozoAutoReadCurrent | lines: 123 ===
-// @calls: [#HEX:D.06.47.00], [#HEX:D.01.36.00], [#HEX:D.06.45.00], [#HEX:D.06.48.00], [#HEX:D.01.FC.00] | @calledBy: [#HEX:D.06.46.00], [#HEX:D.01.F2.00]
+// @calls: [#HEX:D.06.48.00], [#HEX:D.01.CF.00], [#HEX:D.01.36.00], [#HEX:D.01.F1.00], [#HEX:D.06.47.00] | @calledBy: [#HEX:D.06.46.00], [#HEX:D.01.F2.00]
 window.triggerZozoAutoReadCurrent = function () {
 
   const ttsKey = window.resolveActiveZozoTTSKey();
@@ -10068,7 +10068,7 @@ window.triggerZozoAutoReadCurrent = function () {
 
 
 // === [#HEX:D.01.F1.00] START | name: onFinish | lines: 29 ===
-// @calls: [#HEX:D.01.FC.00], [#HEX:D.06.45.00] | @calledBy: [#HEX:D.06.49.00]
+// @calls: [#HEX:D.06.45.00], [#HEX:D.01.FC.00] | @calledBy: [#HEX:D.06.49.00]
   const onFinish = function () {
 
     if (window.currentZozoTTSAudio === audio) {
@@ -10153,7 +10153,7 @@ window.checkAndPlayAutoRead = function () {
 
 
 // === [#HEX:D.06.4A.00] START | name: closeZozoWelcome | lines: 33 ===
-// @calls: [#HEX:D.01.F3.00], [#HEX:D.03.32.00], [#HEX:D.06.47.00] | @calledBy: [#HEX:D.06.4D.00]
+// @calls: [#HEX:D.06.47.00], [#HEX:D.01.F3.00], [#HEX:D.03.32.00] | @calledBy: [#HEX:D.06.4D.00]
 window.closeZozoWelcome = function () {
 
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
@@ -10196,7 +10196,7 @@ window.closeZozoWelcome = function () {
 
 
 // === [#HEX:D.01.F3.00] START | name: showInGameMonolog | lines: 47 ===
-// @calls: [#HEX:D.01.FC.00], [#HEX:D.01.F4.00] | @calledBy: [#HEX:D.06.4A.00], [#HEX:D.01.F8.00], [#HEX:D.01.F9.00], [#HEX:D.01.FF.00], [#HEX:D.03.35.00]
+// @calls: [#HEX:D.01.F4.00], [#HEX:D.01.FC.00] | @calledBy: [#HEX:D.06.4A.00], [#HEX:D.01.F8.00], [#HEX:D.01.F9.00], [#HEX:D.01.FF.00], [#HEX:D.03.35.00]
 window.showInGameMonolog = function (startIndex, endIndex, onComplete) {
 
   if (window.isFishingMode) {
@@ -10253,7 +10253,7 @@ window.showInGameMonolog = function (startIndex, endIndex, onComplete) {
 
 
 // === [#HEX:D.01.F4.00] START | name: renderCurrentMonolog | lines: 117 ===
-// @calls: [#HEX:D.01.D3.00], [#HEX:D.06.47.00], [#HEX:D.01.F7.00], [#HEX:D.01.F2.00], [#HEX:D.01.D4.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.F3.00], [#HEX:D.01.F5.00], [#HEX:D.01.F6.00]
+// @calls: [#HEX:D.01.D4.00], [#HEX:D.01.D3.00], [#HEX:D.06.47.00], [#HEX:D.01.F7.00], [#HEX:D.01.F2.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.F3.00], [#HEX:D.01.F5.00], [#HEX:D.01.F6.00]
 window.renderCurrentMonolog = function () {
 
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
@@ -10415,7 +10415,7 @@ window.previousInGameMonolog = function (e) {
 
 
 // === [#HEX:D.01.F6.00] START | name: advanceInGameMonolog | lines: 29 ===
-// @calls: [#HEX:D.01.F7.00], [#HEX:D.01.F4.00] | @calledBy: [#HEX:D.01.FD.00]
+// @calls: [#HEX:D.01.F4.00], [#HEX:D.01.F7.00] | @calledBy: [#HEX:D.01.FD.00]
 window.advanceInGameMonolog = function (e) {
 
   if (e && e.stopPropagation) e.stopPropagation();
@@ -10545,7 +10545,7 @@ window._dockDropoffLocked = false;
 
 
 // === [#HEX:D.01.F8.00] START | name: triggerDropoffMonologs | lines: 81 ===
-// @calls: [#HEX:D.01.FA.00], [#HEX:D.01.F9.00], [#HEX:D.01.F3.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.06.4E.00]
+// @calls: [#HEX:D.01.F3.00], [#HEX:D.01.FA.00], [#HEX:D.01.F9.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.06.4E.00]
 window.triggerDropoffMonologs = function (prevStored, newStored) {
 
   if (window._dockDropoffLocked) return;
@@ -10645,7 +10645,7 @@ let lastStepTime = 0;
 
 
 // === [#HEX:D.06.4B.00] START | name: selectZozoTextStep | lines: 67 ===
-// @calls: [#HEX:D.01.D3.00], [#HEX:D.06.47.00], [#HEX:D.01.F2.00], [#HEX:D.01.D4.00] | @calledBy: [#HEX:D.01.D0.00], [#HEX:D.01.D9.00], [#HEX:D.06.4C.00], [#HEX:D.06.4D.00]
+// @calls: [#HEX:D.01.D4.00], [#HEX:D.01.D3.00], [#HEX:D.06.47.00], [#HEX:D.01.F2.00] | @calledBy: [#HEX:D.01.D0.00], [#HEX:D.01.D9.00], [#HEX:D.06.4C.00], [#HEX:D.06.4D.00]
 window.selectZozoTextStep = function (stepVal) {
 
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
@@ -10753,7 +10753,7 @@ window.previousZozoWelcome = function (event) {
 
 
 // === [#HEX:D.06.4D.00] START | name: advanceZozoWelcome | lines: 35 ===
-// @calls: [#HEX:D.06.4B.00], [#HEX:D.06.4A.00] | @calledBy: [#HEX:D.01.FD.00]
+// @calls: [#HEX:D.06.4A.00], [#HEX:D.06.4B.00] | @calledBy: [#HEX:D.01.FD.00]
 window.advanceZozoWelcome = function (event) {
 
   if (event && event.stopPropagation) event.stopPropagation();
@@ -10798,7 +10798,7 @@ window.advanceZozoWelcome = function (event) {
 
 
 // === [#HEX:D.01.FA.00] START | name: showPopUp | lines: 111 ===
-// @calls: [#HEX:D.06.47.00], [#HEX:D.01.F2.00], [#HEX:D.01.FC.00], [#HEX:D.01.D4.00] | @calledBy: [#HEX:D.01.F8.00], [#HEX:D.01.FF.00], [#HEX:D.03.35.00], [#HEX:D.03.36.00], [#HEX:D.06.4E.00]
+// @calls: [#HEX:D.01.D4.00], [#HEX:D.01.F2.00], [#HEX:D.06.47.00], [#HEX:D.01.FC.00] | @calledBy: [#HEX:D.01.F8.00], [#HEX:D.01.FF.00], [#HEX:D.03.35.00], [#HEX:D.03.36.00], [#HEX:D.06.4E.00]
 window.showPopUp = function (msg, onCompleteCb, optionalAudioKey) {
 
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
@@ -10913,7 +10913,7 @@ window.showPopUp = function (msg, onCompleteCb, optionalAudioKey) {
 // === [#HEX:D.01.FA.00] END ===
 
 // === [#HEX:D.01.FB.00] START | name: _oldShowPopUpIgnored | lines: 109 ===
-// @calls: [#HEX:D.06.47.00], [#HEX:D.01.F2.00], [#HEX:D.01.FC.00], [#HEX:D.01.D4.00] | @calledBy: none
+// @calls: [#HEX:D.01.D4.00], [#HEX:D.01.F2.00], [#HEX:D.06.47.00], [#HEX:D.01.FC.00] | @calledBy: none
 window._oldShowPopUpIgnored = function (msg, onCompleteCb, optionalAudioKey) {
 
   if (typeof window.stopZozoTTS === 'function') window.stopZozoTTS();
@@ -11090,7 +11090,7 @@ window.dismissActivePopup = function (e) {
 // ====================================================
 
 // === [#HEX:D.01.FD.00] START | name: advanceActiveDialogue | lines: 45 ===
-// @calls: [#HEX:D.06.4D.00], [#HEX:D.01.104.00], [#HEX:D.01.F6.00], [#HEX:D.01.FC.00] | @calledBy: none
+// @calls: [#HEX:D.01.104.00], [#HEX:D.06.4D.00], [#HEX:D.01.F6.00], [#HEX:D.01.FC.00] | @calledBy: none
 window.advanceActiveDialogue = function (e) {
 
   const welcomeOverlay = document.getElementById('zozo-welcome-overlay');
@@ -11392,7 +11392,7 @@ function resumeGameLoop() {
 
 
 // === [#HEX:D.01.FF.00] START | name: frame | lines: 2535 ===
-// @calls: [#HEX:D.01.100.00], [#HEX:D.07.99.00], [#HEX:D.03.35.00], [#HEX:D.01.E5.00], [#HEX:D.03.31.00] | @calledBy: [#HEX:D.01.FE.00], [#HEX:D.01.135.00]
+// @calls: [#HEX:D.03.31.00], [#HEX:D.01.FA.00], [#HEX:D.01.109.00], [#HEX:D.01.F3.00], [#HEX:D.01.101.00] | @calledBy: [#HEX:D.01.FE.00], [#HEX:D.01.135.00]
 function frame(now) {
 
 
@@ -11802,7 +11802,7 @@ function frame(now) {
 
 
 // === [#HEX:D.03.35.00] START | name: executeMembranePickup | lines: 140 ===
-// @calls: [#HEX:D.01.100.00], [#HEX:D.01.FA.00], [#HEX:D.01.F3.00], [#HEX:D.01.DD.00], [#HEX:D.01.E5.00] | @calledBy: [#HEX:D.01.FF.00]
+// @calls: [#HEX:D.01.E5.00], [#HEX:D.01.FA.00], [#HEX:D.03.2C.00], [#HEX:D.01.100.00], [#HEX:D.01.F3.00] | @calledBy: [#HEX:D.01.FF.00]
           const executeMembranePickup = (showDefaultPopup = true) => {
 
             window.carriedMembranes++;
@@ -11825,7 +11825,7 @@ function frame(now) {
 
 
 // === [#HEX:D.01.100.00] START | name: handleMonologsAndLogic | lines: 101 ===
-// @calls: [#HEX:D.01.F3.00], [#HEX:D.01.DD.00], [#HEX:D.03.2C.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.03.35.00]
+// @calls: [#HEX:D.01.DD.00], [#HEX:D.01.F3.00], [#HEX:D.03.2C.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.03.35.00]
             const handleMonologsAndLogic = () => {
 
               if (count === 1) {
@@ -13978,7 +13978,7 @@ resumeGameLoop();
 
 
 // === [#HEX:D.06.4F.00] START | name: showZozoEogMonolog | lines: 112 ===
-// @calls: [#HEX:D.06.47.00], [#HEX:D.01.104.00], [#HEX:D.01.F2.00], [#HEX:D.01.105.00], [#HEX:D.01.106.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.01.103.00]
+// @calls: [#HEX:D.01.106.00], [#HEX:D.01.D4.00], [#HEX:D.01.105.00], [#HEX:D.01.104.00], [#HEX:D.06.47.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.01.103.00]
 window.showZozoEogMonolog = function (text, onCloseCallback, eogKey) {
 
   if (eogKey) { window._currentEogKey = eogKey.startsWith('eog_') ? eogKey : ('eog_' + eogKey); }
@@ -14015,7 +14015,7 @@ window.showZozoEogMonolog = function (text, onCloseCallback, eogKey) {
 
 
 // === [#HEX:D.01.104.00] START | name: closeEogDialog | lines: 21 ===
-// @calls: [#HEX:D.01.106.00], [#HEX:D.06.47.00], [#HEX:D.01.105.00] | @calledBy: [#HEX:D.01.FD.00], [#HEX:D.06.4F.00], [#HEX:D.01.105.00], [#HEX:D.01.106.00]
+// @calls: [#HEX:D.01.106.00], [#HEX:D.01.105.00], [#HEX:D.06.47.00] | @calledBy: [#HEX:D.01.FD.00], [#HEX:D.06.4F.00], [#HEX:D.01.105.00], [#HEX:D.01.106.00]
   function closeEogDialog() {
 
     if (isClosed) return;
@@ -14366,7 +14366,7 @@ function startEogCinematic(sceneRef, boatRef) {
 
 
 // === [#HEX:D.01.108.00] START | name: showChestAtPier | lines: 53 ===
-// @calls: [#HEX:D.01.3A.00], [#HEX:D.01.10A.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.03.38.00]
+// @calls: [#HEX:D.01.10A.00], [#HEX:D.01.3A.00] | @calledBy: [#HEX:D.01.FF.00], [#HEX:D.03.38.00]
 function showChestAtPier(sceneRef) {
 
   const targetScene = sceneRef || window.sceneRef || (typeof scene !== 'undefined' ? scene : null);
@@ -14720,7 +14720,7 @@ const EOG_PROMPT_TRANSLATIONS = {
 
 
 // === [#HEX:D.01.10B.00] START | name: parseEogSrtOrVtt | lines: 61 ===
-// @calls: [#HEX:F.04.13.00], [#HEX:D.01.10C.00] | @calledBy: [#HEX:D.01.10D.00], [#HEX:D.01.10E.00]
+// @calls: [#HEX:D.01.10C.00], [#HEX:F.04.13.00] | @calledBy: [#HEX:D.01.10D.00], [#HEX:D.01.10E.00]
 function parseEogSrtOrVtt(text) {
 
   if (!text) return [];
@@ -14790,7 +14790,7 @@ function parseEogSrtOrVtt(text) {
 
 
 // === [#HEX:D.01.10D.00] START | name: loadAndAttachEogSubtitles | lines: 137 ===
-// @calls: [#HEX:D.01.3A.00], [#HEX:F.04.13.00], [#HEX:D.01.10E.00], [#HEX:D.01.10F.00], [#HEX:D.01.10B.00] | @calledBy: [#HEX:D.01.111.00]
+// @calls: [#HEX:D.01.10F.00], [#HEX:D.01.10B.00], [#HEX:D.01.10E.00], [#HEX:F.04.13.00], [#HEX:D.01.3A.00] | @calledBy: [#HEX:D.01.111.00]
 function loadAndAttachEogSubtitles(video, curL) {
 
   const subFileMap = {
@@ -14860,7 +14860,7 @@ function loadAndAttachEogSubtitles(video, curL) {
 
 
 // === [#HEX:D.01.10E.00] START | name: tryFetchSub | lines: 65 ===
-// @calls: [#HEX:D.01.3A.00], [#HEX:F.04.13.00], [#HEX:D.01.10F.00], [#HEX:D.01.10B.00] | @calledBy: [#HEX:D.01.10D.00]
+// @calls: [#HEX:D.01.10F.00], [#HEX:D.01.10B.00], [#HEX:F.04.13.00], [#HEX:D.01.3A.00] | @calledBy: [#HEX:D.01.10D.00]
   function tryFetchSub(index) {
 
     if (index >= pathsToTry.length) return;
@@ -14939,7 +14939,7 @@ function loadAndAttachEogSubtitles(video, curL) {
 
 
 // === [#HEX:D.01.110.00] START | name: cleanupEogVideoAudioAndSubtitles | lines: 125 ===
-// @calls: [#HEX:D.01.3A.00], [#HEX:D.01.CF.00], [#HEX:D.01.10F.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:D.01.111.00]
+// @calls: [#HEX:D.01.10F.00], [#HEX:D.01.CF.00], [#HEX:F.07.18.00], [#HEX:D.01.3A.00] | @calledBy: [#HEX:D.01.111.00]
 function cleanupEogVideoAudioAndSubtitles() {
 
   const curL = (typeof window.getGameLanguage === 'function') ? window.getGameLanguage() : 'hu';
@@ -15070,7 +15070,7 @@ function cleanupEogVideoAudioAndSubtitles() {
 
 
 // === [#HEX:D.01.111.00] START | name: startEogVideo | lines: 779 ===
-// @calls: [#HEX:D.01.110.00], [#HEX:D.01.36.00], [#HEX:D.01.01.00], [#HEX:D.01.112.00], [#HEX:D.01.10D.00] | @calledBy: [#HEX:D.01.10A.00]
+// @calls: [#HEX:D.01.112.00], [#HEX:D.01.10F.00], [#HEX:D.01.116.00], [#HEX:D.01.110.00], [#HEX:D.01.CF.00] | @calledBy: [#HEX:D.01.10A.00]
 function startEogVideo(modeOverride) {
   const topbarCont = document.getElementById('topbar-container');
   if (topbarCont) topbarCont.style.display = 'none';
@@ -15941,7 +15941,7 @@ window.eogBoatName = '';
 
 
 // === [#HEX:D.01.117.00] START | name: startEogBoatNamingRoutine | lines: 85 ===
-// @calls: [#HEX:D.01.119.00], [#HEX:D.05.19.00], [#HEX:D.01.118.00] | @calledBy: [#HEX:D.01.111.00], [#HEX:D.01.118.00], [#HEX:D.01.119.00]
+// @calls: [#HEX:D.01.119.00], [#HEX:D.01.118.00], [#HEX:D.05.19.00] | @calledBy: [#HEX:D.01.111.00], [#HEX:D.01.118.00], [#HEX:D.01.119.00]
 window.startEogBoatNamingRoutine = function () {
 
   // Zozó és minden korábbi dialógus garantált elrejtése a háttérből
@@ -16036,7 +16036,7 @@ window.startEogBoatNamingRoutine = function () {
 
 
 // === [#HEX:D.01.118.00] START | name: showEogConfirm1 | lines: 29 ===
-// @calls: [#HEX:D.01.11A.00], [#HEX:D.01.117.00] | @calledBy: [#HEX:D.01.117.00]
+// @calls: [#HEX:D.01.117.00], [#HEX:D.01.11A.00] | @calledBy: [#HEX:D.01.117.00]
 window.showEogConfirm1 = function () {
 
   const c1 = document.getElementById('eog-confirm-overlay-1');
@@ -16075,7 +16075,7 @@ window.showEogConfirm1 = function () {
 
 
 // === [#HEX:D.01.119.00] START | name: showEogConfirm2 | lines: 37 ===
-// @calls: [#HEX:D.01.D5.00], [#HEX:D.01.11E.00], [#HEX:D.01.117.00] | @calledBy: [#HEX:D.01.117.00]
+// @calls: [#HEX:D.01.11E.00], [#HEX:D.01.117.00], [#HEX:D.01.D5.00] | @calledBy: [#HEX:D.01.117.00]
 window.showEogConfirm2 = function () {
 
   const c2 = document.getElementById('eog-confirm-overlay-2');
@@ -16240,7 +16240,7 @@ window.eogTreasureConfig = window.eogTreasureConfig || {
 
 
 // === [#HEX:D.01.11E.00] START | name: showEogSummaryPanel | lines: 163 ===
-// @calls: [#HEX:D.01.124.00], [#HEX:D.01.03.00] | @calledBy: [#HEX:D.01.119.00], [#HEX:D.01.11A.00], [#HEX:D.01.12E.00]
+// @calls: [#HEX:D.01.03.00], [#HEX:D.01.124.00] | @calledBy: [#HEX:D.01.119.00], [#HEX:D.01.11A.00], [#HEX:D.01.12E.00]
 window.showEogSummaryPanel = function () {
 
   const summaryOverlay = document.getElementById('eog-summary-overlay');
@@ -16567,7 +16567,7 @@ window.saveFullGameState = function () {
 
 
 // === [#HEX:D.01.121.00] START | name: loadFullGameState | lines: 235 ===
-// @calls: [#HEX:D.01.EE.00], [#HEX:D.03.32.00], [#HEX:D.01.E5.00], [#HEX:D.03.34.00], [#HEX:D.03.2F.00] | @calledBy: [#HEX:D.03.30.00]
+// @calls: [#HEX:D.01.E5.00], [#HEX:D.01.EE.00], [#HEX:D.03.34.00], [#HEX:D.03.2E.00], [#HEX:D.03.2F.00] | @calledBy: [#HEX:D.03.30.00]
 window.loadFullGameState = function () {
 
   const saveRaw = localStorage.getItem('TUTORIAL_game_state') || localStorage.getItem('TUTORIAL_save');
@@ -16968,7 +16968,7 @@ window.showEogVeteranPanel = function () {
 
 
 // === [#HEX:D.01.124.00] START | name: showEogFinalPanel | lines: 75 | action: 'tutorial_completed' ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:D.01.123.00], [#HEX:D.01.125.00] | @calledBy: [#HEX:D.01.11E.00], [#HEX:D.01.03.00]
+// @calls: [#HEX:D.01.123.00], [#HEX:D.01.125.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:D.01.11E.00], [#HEX:D.01.03.00]
 window.showEogFinalPanel = function () {
 
   // Ha a játékos már korábban elvégezte a tutorialt -> Veterán panel felugrása
@@ -17055,7 +17055,7 @@ window.showEogFinalPanel = function () {
 
 
 // === [#HEX:D.01.125.00] START | name: showEogSuccessChoicePanel | lines: 237 | action: 'start_hartyahalaszat' ===
-// @calls: [#HEX:D.06.43.00], [#HEX:D.01.128.00], [#HEX:D.01.127.00], [#HEX:F.04.2C1.00], [#HEX:D.01.129.00] | @calledBy: [#HEX:D.01.124.00], [#HEX:D.01.12D.00]
+// @calls: [#HEX:B.15.04.00], [#HEX:D.06.43.00], [#HEX:D.01.127.00], [#HEX:F.04.2C1.00], [#HEX:D.01.129.00] | @calledBy: [#HEX:D.01.124.00], [#HEX:D.01.12D.00]
 window.showEogSuccessChoicePanel = function () {
 
   const choiceOverlay = document.getElementById('eog-success-choice-overlay');
@@ -17312,7 +17312,7 @@ window.showEogSuccessChoicePanel = function () {
 
 
 // === [#HEX:D.01.129.00] START | name: playHebokDepartureVideo | lines: 104 | action: 'navigate_to_page' ===
-// @calls: [#HEX:D.01.12A.00], [#HEX:F.07.18.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.DB.00], [#HEX:D.01.DC.00], [#HEX:D.01.125.00], [#HEX:D.01.126.00]
+// @calls: [#HEX:F.07.18.00], [#HEX:D.01.12A.00], [#HEX:F.04.2C1.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.DB.00], [#HEX:D.01.DC.00], [#HEX:D.01.125.00], [#HEX:D.01.126.00]
 window.playHebokDepartureVideo = function () {
 
   const videoOverlay = document.getElementById('hebok-departure-video-overlay');
@@ -17872,7 +17872,7 @@ window.addEventListener('keydown', function (e) {
 
 
 // === [#HEX:D.07.97.00] START | name: initFishingMode | lines: 131 ===
-// @calls: [#HEX:D.07.98.00], [#HEX:D.03.39.00], [#HEX:B.03.1D.00], [#HEX:B.15.4B.00] | @calledBy: none
+// @calls: [#HEX:B.15.4B.00], [#HEX:B.03.1D.00], [#HEX:D.07.98.00], [#HEX:D.03.39.00] | @calledBy: none
 window.initFishingMode = function () {
 
   console.log("⚓ [FISHING MODE] Hártyavadászat arcade motor aktiválva!");
@@ -18096,7 +18096,7 @@ window.loadWarshipForFishing = function () {
 
 
 // === [#HEX:D.03.39.00] START | name: spawnFishingMembranes | lines: 39 ===
-// @calls: [#HEX:D.03.2F.00], [#HEX:D.03.33.00] | @calledBy: [#HEX:D.07.97.00], [#HEX:D.04.05.00]
+// @calls: [#HEX:D.03.33.00], [#HEX:D.03.2F.00] | @calledBy: [#HEX:D.07.97.00], [#HEX:D.04.05.00]
 window.spawnFishingMembranes = function () {
 
   if (typeof getPooledMembrane !== 'function') return;
@@ -18186,7 +18186,7 @@ window.triggerFishingQuiz = function () {
 
 
 // === [#HEX:D.07.99.00] START | name: exitFishingGame | lines: 138 ===
-// @calls: [#HEX:D.01.12F.00], [#HEX:B.03.1E.00], [#HEX:B.02.0C.00], [#HEX:B.15.4B.00], [#HEX:D.01.130.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.DB.00], [#HEX:D.01.DC.00], [#HEX:D.01.FF.00]
+// @calls: [#HEX:B.15.4B.00], [#HEX:B.03.1E.00], [#HEX:B.02.0C.00], [#HEX:D.01.12F.00], [#HEX:D.01.130.00] | @calledBy: [#HEX:D.01.D9.00], [#HEX:D.01.DB.00], [#HEX:D.01.DC.00], [#HEX:D.01.FF.00]
 window.exitFishingGame = function (type) {
 
   const exitType = type || 'NORMAL';
@@ -18839,7 +18839,7 @@ window.UI_TRANSLATIONS = {
 
 
 // === [#HEX:D.01.131.00] START | name: applyLanguageToUI | lines: 205 ===
-// @calls: [#HEX:B.15.01.00], [#HEX:D.01.D9.00], [#HEX:D.01.133.00], [#HEX:B.12.0F.00], [#HEX:D.01.132.00] | @calledBy: [#HEX:D.01.D8.00], [#HEX:D.01.D9.00], [#HEX:D.01.135.00], [#HEX:D.01.13C.00]
+// @calls: [#HEX:B.15.01.00], [#HEX:D.01.D9.00], [#HEX:B.12.0F.00], [#HEX:D.01.132.00], [#HEX:D.01.133.00] | @calledBy: [#HEX:D.01.D8.00], [#HEX:D.01.D9.00], [#HEX:D.01.135.00], [#HEX:D.01.13C.00]
 window.applyLanguageToUI = function (lang) {
 
   const targetLang = lang || window.currentLanguage || 'hu';
@@ -19175,7 +19175,7 @@ window.applyLanguageToUI = function (lang) {
 
 
 // === [#HEX:D.01.135.00] START | name: createTextBoxTunerUI | lines: 2757 ===
-// @calls: [#HEX:D.05.1C.00], [#HEX:D.01.13F.00], [#HEX:D.01.134.00], [#HEX:D.01.13C.00], [#HEX:D.01.FF.00] | @calledBy: none
+// @calls: [#HEX:D.05.1A.00], [#HEX:D.01.13A.00], [#HEX:D.01.13F.00], [#HEX:D.01.136.00], [#HEX:D.01.138.00] | @calledBy: none
   function createTextBoxTunerUI() {
 
     // Alapértelmezetten a szerkesztő rejtve van a tiszta játékélmény és tesztelés érdekében.
@@ -20074,7 +20074,7 @@ window.applyLanguageToUI = function (lang) {
 
 
 // === [#HEX:D.01.137.00] START | name: applyLiveTextBox | lines: 127 ===
-// @calls: [#HEX:D.01.134.00], [#HEX:D.01.D4.00] | @calledBy: [#HEX:D.01.135.00], [#HEX:D.01.140.00]
+// @calls: [#HEX:D.01.D4.00], [#HEX:D.01.134.00] | @calledBy: [#HEX:D.01.135.00], [#HEX:D.01.140.00]
     function applyLiveTextBox(fromUserFontSlider = false) {
 
       const w = rngW.value;
@@ -20283,7 +20283,7 @@ window.applyLanguageToUI = function (lang) {
 
 
 // === [#HEX:D.01.138.00] START | name: applyControlsPanelSliders | lines: 127 ===
-// @calls: [#HEX:D.01.134.00], [#HEX:D.01.D4.00] | @calledBy: [#HEX:D.01.135.00], [#HEX:D.01.140.00]
+// @calls: [#HEX:D.01.D4.00], [#HEX:D.01.134.00] | @calledBy: [#HEX:D.01.135.00], [#HEX:D.01.140.00]
     function applyControlsPanelSliders(fromUserFontSlider = false) {
 
       const pw = rngCPW.value;
@@ -21004,7 +21004,7 @@ window.applyLanguageToUI = function (lang) {
 
 
 // === [#HEX:D.01.13C.00] START | name: switchTunerLanguage | lines: 267 ===
-// @calls: [#HEX:D.01.13B.00], [#HEX:D.01.131.00], [#HEX:D.01.13E.00], [#HEX:D.01.140.00] | @calledBy: [#HEX:D.01.135.00]
+// @calls: [#HEX:D.01.13B.00], [#HEX:D.01.13E.00], [#HEX:D.01.140.00], [#HEX:D.01.131.00] | @calledBy: [#HEX:D.01.135.00]
     window.switchTunerLanguage = async function(lang) {
 
       window.currentLanguage = lang;
@@ -21502,7 +21502,7 @@ window.applyLanguageToUI = function (lang) {
 
 
 // === [#HEX:D.01.140.00] START | name: jumpToTunerMonolog | lines: 151 ===
-// @calls: [#HEX:D.01.137.00], [#HEX:D.01.139.00], [#HEX:D.01.13F.00], [#HEX:D.01.138.00], [#HEX:D.01.136.00] | @calledBy: [#HEX:D.01.135.00], [#HEX:D.01.13C.00]
+// @calls: [#HEX:D.01.13F.00], [#HEX:D.01.136.00], [#HEX:D.01.137.00], [#HEX:D.01.138.00], [#HEX:D.01.139.00] | @calledBy: [#HEX:D.01.135.00], [#HEX:D.01.13C.00]
     window.jumpToTunerMonolog = function(monoKey) {
 
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();

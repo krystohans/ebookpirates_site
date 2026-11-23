@@ -507,7 +507,7 @@
 // === [#HEX:D.07.157.00] END ===
 
 // === [#HEX:D.07.158.00] START | name: applyMenuLanguage | lines: 29 ===
-// @calls: [#HEX:D.07.156.00], [#HEX:D.07.15E.00] | @calledBy: [#HEX:D.07.15B.00]
+// @calls: [#HEX:D.07.15E.00], [#HEX:D.07.156.00] | @calledBy: [#HEX:D.07.15B.00]
     function applyMenuLanguage(lang) {
       const t = MENU_TRANSLATIONS[lang] || MENU_TRANSLATIONS.hu;
       const btnNew = document.getElementById('btn-new-game');
@@ -651,7 +651,7 @@
 // === [#HEX:D.07.15F.00] END ===
 
 // === [#HEX:D.07.160.00] START | name: toggleAccSpeech | lines: 58 ===
-// @calls: [#HEX:D.07.9C.00], [#HEX:D.07.15F.00] | @calledBy: [#HEX:D.07.161.00], [#HEX:D.07.162.00], [#HEX:D.07.163.00]
+// @calls: [#HEX:D.07.15F.00], [#HEX:D.07.9C.00] | @calledBy: [#HEX:D.07.161.00], [#HEX:D.07.162.00], [#HEX:D.07.163.00]
     function toggleAccSpeech(text, btnElement) {
       if (!('speechSynthesis' in window)) {
         alert('A böngésződ sajnos nem támogatja a közvetlen hangos felolvasást.');
@@ -713,7 +713,7 @@
 // === [#HEX:D.07.160.00] END ===
 
 // === [#HEX:D.07.161.00] START | name: speakAccIntro | lines: 15 ===
-// @calls: [#HEX:D.07.160.00], [#HEX:D.07.155.00] | @calledBy: none
+// @calls: [#HEX:D.07.155.00], [#HEX:D.07.160.00] | @calledBy: none
     function speakAccIntro(btn) {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const t = getAccTranslations(curLang);
@@ -863,7 +863,7 @@
 // === [#HEX:D.07.165.00] END ===
 
 // === [#HEX:D.07.166.00] START | name: closeAccessibilityTutorial | lines: 29 | action: 'navigate_to_page' ===
-// @calls: [#HEX:B.15.07.00], [#HEX:A.02.05.00], [#HEX:F.04.2C1.00], [#HEX:D.07.15F.00], [#HEX:F.07.18.00] | @calledBy: none
+// @calls: [#HEX:B.15.07.00], [#HEX:A.02.05.00], [#HEX:F.04.2C1.00], [#HEX:D.07.15F.00], [#HEX:D.07.104.00] | @calledBy: none
     function closeAccessibilityTutorial() {
       stopAccSpeech();
       if (typeof window.exitFullscreenIfActive === 'function') {
@@ -916,7 +916,7 @@
 // === [#HEX:D.07.167.00] END ===
 
 // === [#HEX:D.07.168.00] START | name: startAccessibilityQuiz | lines: 35 ===
-// @calls: [#HEX:D.07.15F.00], [#HEX:D.07.169.00] | @calledBy: none
+// @calls: [#HEX:D.07.169.00], [#HEX:D.07.15F.00] | @calledBy: none
     async function startAccessibilityQuiz() {
       stopAccSpeech();
       const infoView = document.getElementById('acc-info-view');
@@ -955,7 +955,7 @@
 // === [#HEX:D.07.168.00] END ===
 
 // === [#HEX:D.07.169.00] START | name: renderAccQuizQuestion | lines: 60 ===
-// @calls: [#HEX:D.07.16B.00], [#HEX:D.07.16A.00], [#HEX:D.07.155.00] | @calledBy: [#HEX:D.07.168.00], [#HEX:D.07.16A.00]
+// @calls: [#HEX:D.07.16A.00], [#HEX:D.07.155.00], [#HEX:D.07.16B.00] | @calledBy: [#HEX:D.07.168.00], [#HEX:D.07.16A.00]
     function renderAccQuizQuestion() {
       accIsAnswering = false;
       const qTextEl = document.getElementById('acc-quiz-question-text');
@@ -1081,7 +1081,7 @@
 // === [#HEX:D.07.16B.00] END ===
 
 // === [#HEX:D.07.16C.00] START | name: submitAccBoatName | lines: 13 ===
-// @calls: [#HEX:D.07.155.00], [#HEX:D.07.16E.00] | @calledBy: none
+// @calls: [#HEX:D.07.16E.00], [#HEX:D.07.155.00] | @calledBy: none
     function submitAccBoatName() {
       const curLang = localStorage.getItem('ebook_pirates_language') || localStorage.getItem('siteLang') || 'hu';
       const t = getAccTranslations(curLang) || {};

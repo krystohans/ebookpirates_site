@@ -709,7 +709,7 @@ function warmup3DHarborAssets() {
 
     // 2. GCS 3D modell és textúra előtöltése a böngésző cache-be
     var critical3DUrls = [
-        'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb',
+        'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/Hebok_kikoto_kicsi.glb',
         'https://storage.googleapis.com/kalozsziget-assets/demojatek/models/waternormals.jpg'
     ];
     critical3DUrls.forEach(function (url) {
@@ -19224,10 +19224,10 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 
 
 
-    // 8. Modell Betöltése (felhokolostor_interiors.glb)
+    // 8. Modell Betöltése (Animalt_Felhokolostor_kopott.glb)
     var gltfLoader = new GLTFLoader();
-    var primaryModelUrl = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/';
-    var fallbackGcsUrl = './assets/models/';
+    var primaryModelUrl = 'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/';
+    var fallbackGcsUrl = './assets/3d_webre/';
 
 // === [#HEX:F.04.2DB.00] START | name: loadModelSafe | lines: 23 ===
 // @calls: [#HEX:K.06.0C.00] | @calledBy: none
@@ -19258,7 +19258,7 @@ function runFelhokolostor3DModule(THREE, OrbitControls, GLTFLoader) {
 
 // === [#HEX:F.04.2DC.00] START | name: loadModelSafe | lines: 20 ===
 // @calls: [#HEX:F.04.314.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00], [#HEX:F.04.281.00], [#HEX:F.04.295.00]
-    loadModelSafe('felhokolostor_interiors.glb', function (monasteryModel) {
+    loadModelSafe('Animalt_Felhokolostor_kopott.glb', function (monasteryModel) {
         monasteryModel.position.set(0, 0, 0);
         monasteryModel.traverse(function (child) {
             if (child.isMesh) {
@@ -33986,7 +33986,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.156.00] START | name: loadHarborModel | lines: 1511 ===
 // @calls: [#HEX:F.05.97.00], [#HEX:F.02.04.00], [#HEX:F.04.03.00], [#HEX:F.04.2C1.00], [#HEX:F.04.143.00] | @calledBy: [#HEX:F.04.C8.00], [#HEX:F.02.0F.00], [#HEX:F.04.155.00]
     function loadHarborModel() {
-        const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/models/HEBOK_Kikoto_egyszerusitett_Blender.glb';
+        const modelPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/Hebok_kikoto_kicsi.glb';
         const loader = new GLTFLoader();
 
         const loaderFill = document.getElementById('loader-fill');

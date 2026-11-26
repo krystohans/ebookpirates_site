@@ -10836,7 +10836,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
         try {
             var BankCtor = window.EBPAnimationBank;
             if (!BankCtor) {
-                var bankMod = await import('./ebp_animation_bank.js?v=20261126d');
+                var bankMod = await import('./ebp_animation_bank.js?v=20261126f');
                 BankCtor = bankMod && bankMod.EBPAnimationBank;
             }
             if (!BankCtor || hajomuhelyDisposed) return;
@@ -10878,7 +10878,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
     // Szikra részecskék (önállóan pozícionálható WeldingSparksGroup, 28 apró gömb)
     var sparkGroup = new THREE.Group();
     sparkGroup.name = "WeldingSparksGroup";
-    sparkGroup.position.set(-2.330, 0.850, 0.080);
+    sparkGroup.position.set(-2.330, 0.420, 0.020);
     sparkGroup.rotation.set(0.0000, 0.0000, 0.0000);
     sparkGroup.scale.set(1.000, 1.000, 1.000);
     scene.add(sparkGroup);
@@ -10892,7 +10892,7 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
     sparkHandle.userData.rootObject = sparkGroup;
     sparkGroup.add(sparkHandle);
 
-    var sparkGeo = new THREE.SphereGeometry(0.035, 8, 6);
+    var sparkGeo = new THREE.SphereGeometry(0.022, 8, 6);
     var sparkMeshes = [];
     var sparkData = [];
 
@@ -10903,9 +10903,9 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
         sparkGroup.add(sMesh);
         sparkMeshes.push(sMesh);
         sparkData.push({
-            vx: (Math.random() - 0.5) * 1.6,
-            vy: Math.random() * 2.0 + 0.4,
-            vz: (Math.random() - 0.5) * 1.6,
+            vx: (Math.random() - 0.5) * 1.1,
+            vy: Math.random() * 0.85 + 0.15,
+            vz: (Math.random() - 0.5) * 1.1,
             life: Math.random(),
             scale: Math.random() * 0.7 + 0.3
         });
@@ -11451,18 +11451,18 @@ function runHajomuhely3DModule(THREE, OrbitControls, GLTFLoader) {
         for (var i = 0; i < sparkMeshes.length; i++) {
             var sMesh = sparkMeshes[i];
             var sData = sparkData[i];
-            sData.life += delta * 1.8;
+            sData.life += delta * 2.1;
             if (sData.life > 1.0) {
                 sData.life = 0;
                 sMesh.position.set(0, 0, 0);
-                sData.vx = (Math.random() - 0.5) * 1.6;
-                sData.vy = Math.random() * 2.0 + 0.4;
-                sData.vz = (Math.random() - 0.5) * 1.6;
+                sData.vx = (Math.random() - 0.5) * 1.1;
+                sData.vy = Math.random() * 0.85 + 0.15;
+                sData.vz = (Math.random() - 0.5) * 1.1;
             } else {
                 sMesh.position.x += sData.vx * delta;
                 sMesh.position.y += sData.vy * delta;
                 sMesh.position.z += sData.vz * delta;
-                sData.vy -= 9.8 * delta * 0.35;
+                sData.vy -= 9.8 * delta * 0.65;
                 var curScale = sData.scale * (1.0 - sData.life);
                 sMesh.scale.set(curScale, curScale, curScale);
             }

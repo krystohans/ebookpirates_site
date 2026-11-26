@@ -995,7 +995,7 @@
             window.__ensureEBPCharRuntime = function () {
                 if (window.__EBPCharRuntime) return Promise.resolve(window.__EBPCharRuntime);
                 if (!_rtPromise) {
-                    _rtPromise = import('./ebp_animation_bank.js?v=20261126e').then(function (mod) {
+                    _rtPromise = import('./ebp_animation_bank.js?v=20261126f').then(function (mod) {
                         var rt = new mod.EBPSubpageCharacterRuntime();
                         window.__EBPCharRuntime = rt;
                         return rt;
@@ -1081,7 +1081,7 @@
     </script>
 
     <script src="web_fordito.js?v=20261119_m339"></script>
-    <script src="app.js?v=20261119_m339"></script>
+    <script src="app.js?v=20261126_m349"></script>
 </body>
 
 </html>

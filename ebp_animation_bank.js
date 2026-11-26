@@ -1482,7 +1482,7 @@ export class EBPAnimationBank {
                 this._fetchJsonWithFallback('ebp_animations_manifest.json'),
                 this._fetchJsonWithFallback('ebp_mimics_library.json'),
                 this._fetchJsonWithFallback('ebp_ai_director_schema.json'),
-                this._fetchJsonWithFallback('ebp_face_masks.json').catch(() => ({ masks: {} }))
+                this._fetchJsonWithFallback('ebp_face_masks.json?v=20261126f').catch(() => ({ masks: {} }))
             ]);
             this.manifest = manifest;
             this.mimics = mimics;
@@ -1893,6 +1893,7 @@ export class EBPAnimationBank {
             parentKeyMap,
             topoKeys,
             hipsBone,
+            headBone: bonesByKey.get('head') || null,
             hipsRestPos,
             hipsParentScale,
             hipY,
@@ -2615,10 +2616,12 @@ export class EBPAnimationBank {
                     if (parsedMasks && parsedMasks[mKey]) localProfile = parsedMasks[mKey];
                 }
             } catch (_e) {}
+            const headBone = rigInfo.headBone || (rigInfo.bonesByKey && rigInfo.bonesByKey.get('head')) || null;
+            targetRoot.updateMatrixWorld(true);
             const profile = options.faceMaskProfile
                 || localProfile
                 || (mKey && this.faceMasks && this.faceMasks[mKey])
-                || (rigInfo.headBone ? this.estimateDefaultFaceMask(rigInfo, targetRoot) : null);
+                || (headBone ? this.estimateDefaultFaceMask(rigInfo, targetRoot) : null);
             if (profile) {
                 this.bindFaceMaskToModel(rigInfo, targetRoot, profile);
             }

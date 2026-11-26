@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>eBookPirates</title>
-    
+
     <!-- PWA & Apple iOS Natív Alkalmazás Beállítások (5. Pillér) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,29 +14,34 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1a0f05">
     <meta name="application-name" content="eBookPirates">
-    <link rel="apple-touch-icon" href="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png">
+    <link rel="apple-touch-icon"
+        href="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png">
+    <link rel="apple-touch-icon" sizes="192x192"
+        href="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png">
+    <link rel="apple-touch-icon" sizes="512x512"
+        href="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/Zozo_SteamPunk_Front_Dirty_02_portrait.png">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Pirata+One&display=swap"
+        rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=20261119_m339">
+    <link rel="stylesheet" href="styles.css?v=20261126_m347">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:,">
 
     <script>
-    (function() {
-        try {
-            var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || localStorage.getItem('ebook_pirates_username');
-            if (token) {
-                document.documentElement.classList.add('ebp-authenticated');
-            }
-        } catch(e) {}
-    })();
+        (function () {
+            try {
+                var token = localStorage.getItem('ebookPiratesToken') || sessionStorage.getItem('ebookPiratesToken') || localStorage.getItem('ebook_pirates_username');
+                if (token) {
+                    document.documentElement.classList.add('ebp-authenticated');
+                }
+            } catch (e) { }
+        })();
     </script>
 
     <!-- Three.js és Kiegészítők Importmap -->
@@ -53,20 +60,24 @@
         window.THREE = THREE;
     </script>
 </head>
+
 <body>
 
     <!-- 1. INTEGRÁLT 3D KOZMOSZ TERMINÁL KONTÉNER (100vw × 100vh) -->
     <div id="auth-3d-container">
         <div id="webgl-container"></div>
         <canvas id="screen-canvas" width="1024" height="512"></canvas>
-        <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="go" tabindex="-1" aria-hidden="true" />
+        <input type="text" id="virtual-input-capturer" autocomplete="off" autocorrect="off" autocapitalize="off"
+            spellcheck="false" inputmode="text" enterkeyhint="go" tabindex="-1" aria-hidden="true" />
 
         <div id="loading-screen">
             <div class="loader-spinner"></div>
-            <p style="font-family: 'Orbitron', sans-serif; letter-spacing: 2px;" data-lang="auth_loading_text">KOZMOSZ TERMINÁL INICIALIZÁLÁSA...</p>
+            <p style="font-family: 'Orbitron', sans-serif; letter-spacing: 2px;" data-lang="auth_loading_text">KOZMOSZ
+                TERMINÁL INICIALIZÁLÁSA...</p>
         </div>
 
-        <button id="info-toggle-btn" class="info-toggle-btn" onclick="toggleInfoModal()" title="Információ & Beállítások" data-lang-title="auth_info_btn_title">
+        <button id="info-toggle-btn" class="info-toggle-btn" onclick="toggleInfoModal()"
+            title="Információ & Beállítások" data-lang-title="auth_info_btn_title">
             <i class="fas fa-info"></i>
         </button>
 
@@ -74,92 +85,133 @@
         <div id="info-modal" onclick="onModalBackdropClick(event)">
             <div class="info-modal-content">
                 <button class="modal-close-btn" onclick="toggleInfoModal()">✕</button>
-                
+
                 <div class="modal-title" data-lang-html="auth_modal_title">
                     <i class="fas fa-compass"></i> eBookPirates // Kozmosz Készülék
                 </div>
 
                 <div class="modal-lang-switch" aria-label="Nyelvvalaszto">
-                    <button type="button" class="lang-btn" data-lang="hu" title="Magyar" onclick="handleLangSwitch('hu')"><span class="fi fi-hu"></span></button>
-                    <button type="button" class="lang-btn" data-lang="en" title="English" onclick="handleLangSwitch('en')"><span class="fi fi-gb"></span></button>
-                    <button type="button" class="lang-btn" data-lang="de" title="Deutsch" onclick="handleLangSwitch('de')"><span class="fi fi-de"></span></button>
-                    <button type="button" class="lang-btn" data-lang="fr" title="Francais" onclick="handleLangSwitch('fr')"><span class="fi fi-fr"></span></button>
-                    <button type="button" class="lang-btn" data-lang="es" title="Espanol" onclick="handleLangSwitch('es')"><span class="fi fi-es"></span></button>
-                    <button type="button" class="lang-btn" data-lang="pl" title="Polski" onclick="handleLangSwitch('pl')"><span class="fi fi-pl"></span></button>
-                    <button type="button" class="lang-btn" data-lang="ru" title="Russkiy" onclick="handleLangSwitch('ru')"><span class="fi fi-ru"></span></button>
+                    <button type="button" class="lang-btn" data-lang="hu" title="Magyar"
+                        onclick="handleLangSwitch('hu')"><span class="fi fi-hu"></span></button>
+                    <button type="button" class="lang-btn" data-lang="en" title="English"
+                        onclick="handleLangSwitch('en')"><span class="fi fi-gb"></span></button>
+                    <button type="button" class="lang-btn" data-lang="de" title="Deutsch"
+                        onclick="handleLangSwitch('de')"><span class="fi fi-de"></span></button>
+                    <button type="button" class="lang-btn" data-lang="fr" title="Francais"
+                        onclick="handleLangSwitch('fr')"><span class="fi fi-fr"></span></button>
+                    <button type="button" class="lang-btn" data-lang="es" title="Espanol"
+                        onclick="handleLangSwitch('es')"><span class="fi fi-es"></span></button>
+                    <button type="button" class="lang-btn" data-lang="pl" title="Polski"
+                        onclick="handleLangSwitch('pl')"><span class="fi fi-pl"></span></button>
+                    <button type="button" class="lang-btn" data-lang="ru" title="Russkiy"
+                        onclick="handleLangSwitch('ru')"><span class="fi fi-ru"></span></button>
                 </div>
 
                 <div class="guide-section">
                     <h4 data-lang-html="auth_guide_title"><i class="fas fa-book-reader"></i> Használati Útmutató</h4>
                     <ul class="guide-list">
-                        <li data-lang-html="auth_guide_typing"><i class="fas fa-keyboard"></i> <strong>3D Gépelés:</strong> Kattints a 3D monitorra vagy az alábbi mezőkre a gépeléshez!</li>
-                        <li data-lang-html="auth_guide_tab"><i class="fas fa-exchange-alt"></i> <strong>Mezőváltás:</strong> Nyomj <code>TAB</code> billentyűt a mezők közötti ugráshoz.</li>
-                        <li data-lang-html="auth_guide_submit"><i class="fas fa-paper-plane"></i> <strong>Beküldés:</strong> Nyomj <code>ENTER</code> billentyűt vagy kattints a Küldés gombra.</li>
-                        <li data-lang-html="auth_guide_camera"><i class="fas fa-globe"></i> <strong>Kamera:</strong> Bal egérgombbal körbeforgatható a kozmosz, görgővel közelíthetsz a monitorra.</li>
+                        <li data-lang-html="auth_guide_typing"><i class="fas fa-keyboard"></i> <strong>3D
+                                Gépelés:</strong> Kattints a 3D monitorra vagy az alábbi mezőkre a gépeléshez!</li>
+                        <li data-lang-html="auth_guide_tab"><i class="fas fa-exchange-alt"></i>
+                            <strong>Mezőváltás:</strong> Nyomj <code>TAB</code> billentyűt a mezők közötti ugráshoz.
+                        </li>
+                        <li data-lang-html="auth_guide_submit"><i class="fas fa-paper-plane"></i>
+                            <strong>Beküldés:</strong> Nyomj <code>ENTER</code> billentyűt vagy kattints a Küldés
+                            gombra.
+                        </li>
+                        <li data-lang-html="auth_guide_camera"><i class="fas fa-globe"></i> <strong>Kamera:</strong> Bal
+                            egérgombbal körbeforgatható a kozmosz, görgővel közelíthetsz a monitorra.</li>
                     </ul>
                 </div>
 
-                <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;" data-lang="auth_modes_header">Üzemmód & Akadálymentes Adatbevitel</h4>
+                <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;"
+                    data-lang="auth_modes_header">Üzemmód & Akadálymentes Adatbevitel</h4>
                 <div class="modal-mode-tabs">
-                    <button class="modal-tab-btn active" id="modal-tab-login" onclick="switchMode('LOGIN')" data-lang="auth_tab_login">Belépés</button>
-                    <button class="modal-tab-btn" id="modal-tab-register" onclick="switchMode('REGISTER')" data-lang="auth_tab_register">Regisztráció</button>
-                    <button class="modal-tab-btn" id="modal-tab-deregister" onclick="switchMode('DEREGISTER')" data-lang="auth_tab_deregister">Lelépés</button>
+                    <button class="modal-tab-btn active" id="modal-tab-login" onclick="switchMode('LOGIN')"
+                        data-lang="auth_tab_login">Belépés</button>
+                    <button class="modal-tab-btn" id="modal-tab-register" onclick="switchMode('REGISTER')"
+                        data-lang="auth_tab_register">Regisztráció</button>
+                    <button class="modal-tab-btn" id="modal-tab-deregister" onclick="switchMode('DEREGISTER')"
+                        data-lang="auth_tab_deregister">Lelépés</button>
                 </div>
 
                 <div class="accessible-form-container">
                     <div id="modal-form-login" class="modal-form-view">
                         <div class="modal-form-group">
                             <label data-lang="auth_login_name_label">Kalóznév</label>
-                            <input type="text" id="m-login-username" class="modal-input" placeholder="Add meg a kalózneved..." data-lang-placeholder="auth_login_name_placeholder" autocomplete="username" />
+                            <input type="text" id="m-login-username" class="modal-input"
+                                placeholder="Add meg a kalózneved..."
+                                data-lang-placeholder="auth_login_name_placeholder" autocomplete="username" />
                         </div>
                         <div class="modal-form-group">
                             <label data-lang="auth_login_pass_label">Jelszó / Kedvenc étel</label>
-                            <div class="password-container" style="position: relative; display: flex; align-items: center;">
-                                <input type="password" id="m-login-password" class="modal-input" placeholder="Add meg a jelszavad..." data-lang-placeholder="auth_login_pass_placeholder" autocomplete="current-password" style="padding-right: 40px;" />
-                                <i class="fas fa-eye" id="toggle-modal-password" style="position: absolute; right: 12px; cursor: pointer; color: #00ffcc; font-size: 16px;" title="Jelszó megjelenítése / elrejtése"></i>
+                            <div class="password-container"
+                                style="position: relative; display: flex; align-items: center;">
+                                <input type="password" id="m-login-password" class="modal-input"
+                                    placeholder="Add meg a jelszavad..."
+                                    data-lang-placeholder="auth_login_pass_placeholder" autocomplete="current-password"
+                                    style="padding-right: 40px;" />
+                                <i class="fas fa-eye" id="toggle-modal-password"
+                                    style="position: absolute; right: 12px; cursor: pointer; color: #00ffcc; font-size: 16px;"
+                                    title="Jelszó megjelenítése / elrejtése"></i>
                             </div>
                         </div>
-                        <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()" data-lang="auth_login_submit_btn">Beszállás a Kikötőbe</button>
+                        <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()"
+                            data-lang="auth_login_submit_btn">Beszállás a Kikötőbe</button>
                     </div>
 
                     <div id="modal-form-register" class="modal-form-view" style="display: none;">
                         <div class="modal-form-group">
                             <label data-lang="auth_reg_email_label">Kalóz E-mail Cím</label>
-                            <input type="email" id="m-reg-email" class="modal-input" placeholder="pelda@kalozposta.hu" data-lang-placeholder="auth_reg_email_placeholder" autocomplete="email" />
+                            <input type="email" id="m-reg-email" class="modal-input" placeholder="pelda@kalozposta.hu"
+                                data-lang-placeholder="auth_reg_email_placeholder" autocomplete="email" />
                         </div>
                         <div class="modal-form-group">
                             <label data-lang="auth_reg_name_label">Választott Kalóznév</label>
-                            <input type="text" id="m-reg-username" class="modal-input" placeholder="Pl. Feketeszakáll99" data-lang-placeholder="auth_reg_name_placeholder" />
+                            <input type="text" id="m-reg-username" class="modal-input" placeholder="Pl. Feketeszakáll99"
+                                data-lang-placeholder="auth_reg_name_placeholder" />
                         </div>
-                        <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()" data-lang="auth_reg_submit_btn">Jelentkezés a Bandába</button>
+                        <button type="button" class="modal-submit-btn" onclick="executeCurrentMode()"
+                            data-lang="auth_reg_submit_btn">Jelentkezés a Bandába</button>
                     </div>
 
                     <div id="modal-form-deregister" class="modal-form-view" style="display: none;">
                         <div class="modal-form-group">
                             <label data-lang="auth_del_name_label">Játékbeli Kalóznév</label>
-                            <input type="text" id="m-del-username" class="modal-input" placeholder="Törlendő kalóznév" data-lang-placeholder="auth_del_name_placeholder" />
+                            <input type="text" id="m-del-username" class="modal-input" placeholder="Törlendő kalóznév"
+                                data-lang-placeholder="auth_del_name_placeholder" />
                         </div>
                         <div class="modal-form-group">
                             <label data-lang="auth_del_email_label">Regisztrált E-mail</label>
-                            <input type="email" id="m-del-email" class="modal-input" placeholder="Eredeti e-mail cím" data-lang-placeholder="auth_del_email_placeholder" />
+                            <input type="email" id="m-del-email" class="modal-input" placeholder="Eredeti e-mail cím"
+                                data-lang-placeholder="auth_del_email_placeholder" />
                         </div>
                         <div class="modal-form-group">
                             <label data-lang="auth_del_reason_label">Kilépés Oka</label>
-                            <input type="text" id="m-del-reason" class="modal-input" placeholder="Miért hagysz el minket?" data-lang-placeholder="auth_del_reason_placeholder" />
+                            <input type="text" id="m-del-reason" class="modal-input"
+                                placeholder="Miért hagysz el minket?"
+                                data-lang-placeholder="auth_del_reason_placeholder" />
                         </div>
-                        <button type="button" class="modal-submit-btn" style="background: linear-gradient(135deg, #882222 0%, #ff4444 100%); color: #fff;" onclick="executeCurrentMode()" data-lang="auth_del_submit_btn">Leléptetési Kérelem Küldése</button>
+                        <button type="button" class="modal-submit-btn"
+                            style="background: linear-gradient(135deg, #882222 0%, #ff4444 100%); color: #fff;"
+                            onclick="executeCurrentMode()" data-lang="auth_del_submit_btn">Leléptetési Kérelem
+                            Küldése</button>
                     </div>
                 </div>
 
                 <!-- 1. Pillér: Opcionális váltógomb a 3D Kozmosz Készülékhez mobilon -->
-                <button type="button" class="switch-to-3d-btn" onclick="toggleInfoModal()" title="Visszatérés a 3D Kozmosz Készülékhez">
+                <button type="button" class="switch-to-3d-btn" onclick="toggleInfoModal()"
+                    title="Visszatérés a 3D Kozmosz Készülékhez">
                     <i class="fas fa-cube"></i> Váltás a 3D Kozmosz Készülékre
                 </button>
 
-                <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;" data-lang="auth_cam_header">Kamera Beállítások</h4>
+                <h4 style="color: #00ffcc; font-family: 'Orbitron', sans-serif; font-size: 11px; margin-bottom: 8px; text-transform: uppercase;"
+                    data-lang="auth_cam_header">Kamera Beállítások</h4>
                 <div class="camera-actions-grid">
-                    <button class="cam-action-btn" onclick="focusOnScreen(); toggleInfoModal();" data-lang-html="auth_cam_focus"><i class="fas fa-crosshairs"></i> Képernyő Fókusz</button>
-                    <button class="cam-action-btn" onclick="resetCamera(); toggleInfoModal();" data-lang-html="auth_cam_reset"><i class="fas fa-undo-alt"></i> Kamera Alaphelyzet</button>
+                    <button class="cam-action-btn" onclick="focusOnScreen(); toggleInfoModal();"
+                        data-lang-html="auth_cam_focus"><i class="fas fa-crosshairs"></i> Képernyő Fókusz</button>
+                    <button class="cam-action-btn" onclick="resetCamera(); toggleInfoModal();"
+                        data-lang-html="auth_cam_reset"><i class="fas fa-undo-alt"></i> Kamera Alaphelyzet</button>
                 </div>
             </div>
         </div>
@@ -167,525 +219,869 @@
 
     <!-- 2. FŐ ALKALMAZÁS NÉZET (Kizárólag sikeres belépés után jelenik meg) -->
     <div id="appContainer">
-    
-    <div id="login-view" style="display: none;">
-        <!-- Fallback 2D login nézet (ha szükséges) -->
-    </div>
 
-    <div id="app-view" style="display: none;">
-        <div id="header">
-            <!-- 1. Bal oldali zóna: Zozo_monolog_window_2 névtábla -->
-            <div class="header-nameplate" id="header-user-badge" title="Játékos Kalózprofil">
-                <span class="header-username-text" id="header-user-name">Turista</span>
-                <!-- Rejtett kompatibilitási elem meglévő kódrészletekhez -->
-                <span class="header-title" style="display: none;">Turista</span>
-            </div>
-
-            <!-- 2. Középső zóna: Kreditek, Könyvtár, Kincsek -->
-            <div id="header-main-actions">
-                <div id="creditCell" class="header-action-btn credit-btn" title="Kreditegyenleg frissítése" data-lang-title="header_credits_tooltip" onclick="updateCreditDisplay()">
-                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png" alt="Kredit" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/eBookPirates_coin_r.png'">
-                    <span id="creditValue">0</span>
-                </div>
-                <div id="libraryLink" class="header-action-btn" title="Könyvtár" data-lang-title="header_library" onclick="loadPage('konyvtar')">
-                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/konyvtar_removebg.png" alt="Könyvtár" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/konyvtar_removebg.png'">
-                </div>
-                <div id="treasuresLink" class="header-action-btn" title="Kincsek" data-lang-title="header_treasures" onclick="loadPage('kincsek')">
-                    <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada_nocolor.png" alt="Kincsek" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/lada_nocolor.png'">
-                </div>
-            </div>
-
-            <!-- 3. Jobb oldali vezérlők: Asztali gyorsgombok + Mobil beállítások -->
-            <div id="header-controls">
-                <!-- Asztali ikonsor -->
-                <div class="header-desktop-controls">
-                    <div class="header-action-btn" id="header-anchor-btn" title="Vissza a kikötőbe" data-lang-title="header_back_to_port" onclick="loadPage('kikoto_oldal')">
-                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/horgony_removebg.png'">
-                    </div>
-
-                    <!-- 2. Pillér: Teljes képernyő ki/be váltó gomb -->
-                    <div class="header-action-btn" id="header-fullscreen-btn" title="Teljes képernyő" data-lang-title="header_fullscreen" onclick="toggleFullscreen()">
-                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png" alt="Teljes képernyő" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png'">
-                    </div>
-
-                    <!-- 2. Pillér: PWA Telepítés gomb (Böngészői installprompt eseményre aktiválódik) -->
-                    <div class="header-action-btn" id="header-install-btn" title="Alkalmazás telepítése" data-lang-title="header_install" onclick="triggerPwaInstall()" style="display: none;">
-                        <svg class="header-icon-img" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 4px #ffd700); width: 28px; height: 28px; margin: auto;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    </div>
-
-                    <!-- Földgömb + Nyelvválasztó lenyíló panel -->
-                    <div class="header-lang-wrapper">
-                        <div class="header-action-btn" id="header-lang-globe-btn" title="Nyelvválasztás" data-lang-title="header_lang_select" onclick="toggleHeaderLangDropdown(event)">
-                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/nyelvvalaszto.png" alt="Nyelv" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/nyelvvalaszto.png'">
-                        </div>
-                        <div id="header-lang-dropdown" class="header-popup-menu" style="display: none;" onclick="event.stopPropagation()">
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" alt="HU" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_hu-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" alt="EN" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_en-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" alt="DE" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_de-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" alt="FR" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_fr-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" alt="ES" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_es-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" alt="PL" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_pl-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderLangDropdown(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" alt="RU" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_ru-removebg-preview.png'"></button>
-                        </div>
-                    </div>
-
-                    <!-- Kilépés gomb -->
-                    <div class="header-action-btn" id="header-exit-btn" title="Hebok elhagyása" data-lang-title="header_logout" onclick="logout()">
-                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png" alt="Kilépés" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/exit-r 1.png'">
-                    </div>
-                </div>
-
-                <!-- Mobil / Kis felbontás esetén megjelenő fogaskerék (settings_icon) -->
-                <div class="header-mobile-settings-wrapper">
-                    <div class="header-action-btn" id="header-mobile-settings-btn" title="Beállítások & Menü" data-lang-title="header_settings" onclick="toggleHeaderMobileSettings(event)">
-                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/settings_icon.png" alt="Beállítások" class="header-icon-img" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/settings_icon.png'">
-                    </div>
-                    <div id="header-mobile-popup" class="header-popup-menu mobile-settings-popup" style="display: none;" onclick="event.stopPropagation()">
-                        <div class="mobile-menu-item" onclick="loadPage('kikoto_oldal'); toggleHeaderMobileSettings(event, false);">
-                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png" alt="Kikötő" class="menu-item-icon" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/horgony_removebg.png'">
-                            <span data-lang="header_back_to_port">Kikötő</span>
-                        </div>
-                        <!-- 2. Pillér: Teljes képernyő mobil menüpont -->
-                        <div class="mobile-menu-item" id="mobile-menu-fullscreen" onclick="toggleFullscreen(); toggleHeaderMobileSettings(event, false);">
-                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png" alt="Teljes képernyő" class="menu-item-icon" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png'">
-                            <span data-lang="header_fullscreen">Teljes képernyő</span>
-                        </div>
-                        <!-- 2. Pillér: PWA Telepítés mobil menüpont -->
-                        <div class="mobile-menu-item" id="mobile-menu-install" onclick="triggerPwaInstall(); toggleHeaderMobileSettings(event, false);" style="display: none;">
-                            <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                            <span data-lang="header_install">Alkalmazás telepítése</span>
-                        </div>
-                        <div class="mobile-menu-divider"></div>
-                        <div class="mobile-lang-grid">
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar" onclick="switchLanguage('hu'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png" alt="HU" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_hu-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English" onclick="switchLanguage('en'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png" alt="EN" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_en-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch" onclick="switchLanguage('de'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png" alt="DE" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_de-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français" onclick="switchLanguage('fr'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png" alt="FR" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_fr-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español" onclick="switchLanguage('es'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png" alt="ES" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_es-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski" onclick="switchLanguage('pl'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png" alt="PL" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_pl-removebg-preview.png'"></button>
-                            <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский" onclick="switchLanguage('ru'); toggleHeaderMobileSettings(event, false);"><img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png" alt="RU" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_ru-removebg-preview.png'"></button>
-                        </div>
-                        <div class="mobile-menu-divider"></div>
-                        <div class="mobile-menu-item logout-item" onclick="logout()">
-                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png" alt="Kilépés" class="menu-item-icon" onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/exit-r 1.png'">
-                            <span data-lang="header_logout">Hebok elhagyása</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="login-view" style="display: none;">
+            <!-- Fallback 2D login nézet (ha szükséges) -->
         </div>
 
-        <!-- PERZISZTENS 3D KIKÖTŐ RÉTEG (Folyamatosan él a memóriában / GPU-n) -->
-        <div id="persistent-kikoto-container" style="display: none; width: 100%; height: 100%; position: relative;"></div>
-
-        <div id="content"></div>
-    </div>
-
-    <!-- Hagyományos Betöltő Képernyő (Taverna, Játékok, Adatbázis műveletek) -->
-    <div id="loading-overlay" style="display: none;">
-        <img id="loading-gif" src="" alt="Betöltés..." style="display: none;" />
-        <div class="loader-spinner"></div>
-        <p id="loading-overlay-text" data-lang="loading">Betöltés...</p>
-    </div>
-
-    <!-- Steampunk 3D Óramű & Kinetikus Karakter-Adagoló Töltőképernyő -->
-    <div id="kikoto-3d-loading-overlay" style="display: none; opacity: 0; pointer-events: none;">
-        <!-- 3D Three.js WebGL Óramű Színpad -->
-        <div id="clockwork-canvas-container"></div>
-
-        <!-- Kinetikus Karakter-Adagoló Gép (Kipotyogó Szövegek) -->
-        <div class="clockwork-dispenser-container">
-            <div class="clockwork-chute-aperture">
-                <div id="clockwork-dispenser-text" class="clockwork-text-line">
-                    <!-- Dinamikusan kipottyanó karakterek -->
+        <div id="app-view" style="display: none;">
+            <div id="header">
+                <!-- 1. Bal oldali zóna: Zozo_monolog_window_2 névtábla -->
+                <div class="header-nameplate" id="header-user-badge" title="Játékos Kalózprofil">
+                    <span class="header-username-text" id="header-user-name">Turista</span>
+                    <!-- Rejtett kompatibilitási elem meglévő kódrészletekhez -->
+                    <span class="header-title" style="display: none;">Turista</span>
                 </div>
-            </div>
-        </div>
 
-        <!-- Steampunk Folyamatjelző és Százalék -->
-        <div class="clockwork-progress-container">
-            <div class="loader-bar-bg">
-                <div id="loader-fill" class="loader-bar-fill"></div>
-            </div>
-            <div id="loader-status" class="loader-text" data-lang="sot_init_clockwork">3D ÓRAMŰ INICIALIZÁLÁSA...</div>
-        </div>
-
-        <!-- 2. Pillér: Fekvő Tájolás & Teljes Képernyő Tájékoztató Betöltés Alatt -->
-        <div id="loading-orientation-hint" class="loading-orientation-hint" onclick="if(typeof requestLandscapeAndFullscreen==='function')requestLandscapeAndFullscreen()">
-            <div class="orientation-anim-phone">
-                <div class="phone-screen-glow"></div>
-            </div>
-            <div class="orientation-hint-text" data-lang="loading_switch_landscape">⚓ VÁLTÁS TELJES KÉPERNYŐS FEKVŐ MÓDRA...</div>
-        </div>
-    </div>
-
-    <div id="marketing-view" style="display: none;">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: #8b0000; font-family: 'Pirata One', serif; font-size: 2.5em;" data-lang="marketing_title">A Zsákmány Értékelése</h2>
-            <p data-lang-html="marketing_intro">Minden válaszod <strong>1 Kalózkreditet</strong> ér!</p>
-        </div>
-        
-        <form id="marketing-form" onsubmit="return false;">
-            <div id="marketing-questions-area"></div>
-            
-            <div style="text-align: center; margin-top: 30px;">
-                <button type="button" class="btn btn-primary" onclick="submitMarketingForm()" style="font-size: 1.2em; padding: 15px 40px; background-color: #8b0000; border: none;" data-lang="marketing_submit_button">
-                    Vélemény Beküldése & Kreditek Zsebretétele
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="returnToPort()" style="font-size: 1.2em; padding: 15px 30px; margin-left: 10px; background-color: #666; border: none; color: white;" data-lang="marketing_cancel_button">
-                    Mégse
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <div id="author-dashboard-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="gamemode-modal-content" style="position: relative; max-width: 900px; width: 95%;">
-            
-            <div class="gamemode-header" style="position: relative;">
-                <span id="dashboard-book-title" class="header-title" data-lang="dashboard_title">Könyv Statisztika</span>
-                <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 0;" onclick="document.getElementById('author-dashboard-modal').style.display='none'">X</button>
-            </div>
-
-            <div id="dashboard-loading" style="padding: 20px; text-align: center;" data-lang-html="dashboard_loading">
-                <i class="fas fa-spinner fa-spin"></i> Adatok betöltése a kristálygömbből...
-            </div>
-
-            <div id="dashboard-content" style="display: none; padding: 20px;">
-                
-                <div id="dashboard-header-summary" style="margin-bottom: 25px; padding: 15px; background: #fff8dc; border: 1px solid #d2b48c; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <h4 style="margin-top:0; color:#8b4513; border-bottom:1px dashed #ccc; padding-bottom:5px;" data-lang-html="dashboard_active_questions_title">
-                        <i class="fas fa-list-alt"></i> Aktív Alapkérdések (Ezekre válaszol az olvasó)
-                    </h4>
-                    <div id="base-questions-grid" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <!-- 2. Középső zóna: Kreditek, Könyvtár, Kincsek -->
+                <div id="header-main-actions">
+                    <div id="creditCell" class="header-action-btn credit-btn" title="Kreditegyenleg frissítése"
+                        data-lang-title="header_credits_tooltip" onclick="updateCreditDisplay()">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/eBookPirates_coin_r.png"
+                            alt="Kredit" class="header-icon-img"
+                            onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/eBookPirates_coin_r.png'">
+                        <span id="creditValue">0</span>
+                    </div>
+                    <div id="libraryLink" class="header-action-btn" title="Könyvtár" data-lang-title="header_library"
+                        onclick="loadPage('konyvtar')">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/konyvtar_removebg.png"
+                            alt="Könyvtár" class="header-icon-img"
+                            onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/konyvtar_removebg.png'">
+                    </div>
+                    <div id="treasuresLink" class="header-action-btn" title="Kincsek" data-lang-title="header_treasures"
+                        onclick="loadPage('kincsek')">
+                        <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/lada_nocolor.png"
+                            alt="Kincsek" class="header-icon-img"
+                            onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/lada_nocolor.png'">
                     </div>
                 </div>
 
-                <div class="stats-summary-box" style="display: flex; gap: 20px; margin-bottom: 20px;">
-                    <div class="stat-card">
-                        <h3 data-lang="dashboard_total_responses">Összes Válasz</h3>
-                        <p id="stat-total-responses" style="font-size: 2em; font-weight: bold; color: #2c5282;">0</p>
-                    </div>
-                </div>
-                
-                <div class="tab-container" style="border-bottom: 2px solid #ddd; margin-bottom: 20px;">
-                    <button class="tab-button active" onclick="openDashboardTab(event, 'DashStats')" data-lang="dashboard_tab_results">📊 Eredmények</button>
-                    <button class="tab-button" onclick="openDashboardTab(event, 'DashVerification')" data-lang="dashboard_tab_verification">🛡️ Ellenőrzés (Kvíz)</button>
-                    <button class="tab-button" onclick="openDashboardTab(event, 'DashSettings')" data-lang="dashboard_tab_new_question">⚙️ Új Kérdés</button>
-                </div>
+                <!-- 3. Jobb oldali vezérlők: Asztali gyorsgombok + Mobil beállítások -->
+                <div id="header-controls">
+                    <!-- Asztali ikonsor -->
+                    <div class="header-desktop-controls">
+                        <div class="header-action-btn" id="header-anchor-btn" title="Vissza a kikötőbe"
+                            data-lang-title="header_back_to_port" onclick="loadPage('kikoto_oldal')">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png"
+                                alt="Kikötő" class="header-icon-img"
+                                onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/horgony_removebg.png'">
+                        </div>
 
-                <div id="DashStats" class="tab-content" style="display: block;">
-                    <div id="dashboard-details-list"></div>
-                </div>
+                        <!-- 2. Pillér: Teljes képernyő ki/be váltó gomb -->
+                        <div class="header-action-btn" id="header-fullscreen-btn" title="Teljes képernyő"
+                            data-lang-title="header_fullscreen" onclick="toggleFullscreen()">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png"
+                                alt="Teljes képernyő" class="header-icon-img"
+                                onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png'">
+                        </div>
 
-                <div id="DashVerification" class="tab-content" style="display: none;">
-                    <div style="background: #f0fff4; border: 1px solid #c6f6d5; padding: 20px; border-radius: 8px;">
-                        <h3 style="color: #276749; margin-top: 0;" data-lang="dashboard_verify_title">🧐 Olvasottsági Próba (Anti-Csalás Védelem)</h3>
-                        <p data-lang-html="dashboard_verify_intro">Itt állíthatsz be 3 kérdést, amire <strong>csak az tudja a választ, aki tényleg olvasta a művet.</strong></p>
-                        <p style="font-size: 0.9em; color: #555;" data-lang-html="dashboard_verify_note"><i>A rendszer ezeket "verify" típusként menti el. A statisztikába nem kerülnek bele, csak a kapuőrző funkciót látják el.</i></p>
-                        <hr>
+                        <!-- 2. Pillér: PWA Telepítés gomb (Böngészői installprompt eseményre aktiválódik) -->
+                        <div class="header-action-btn" id="header-install-btn" title="Alkalmazás telepítése"
+                            data-lang-title="header_install" onclick="triggerPwaInstall()" style="display: none;">
+                            <svg class="header-icon-img" viewBox="0 0 24 24" fill="none" stroke="#ffd700"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+                                style="filter: drop-shadow(0 0 4px #ffd700); width: 28px; height: 28px; margin: auto;">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </div>
 
-                        <form id="verification-quiz-form">
-                            <div class="quiz-setup-item" style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <label><strong data-lang="dashboard_verify_q1_label">1. Ellenőrző Kérdés:</strong></label>
-                                <input type="text" id="v-q1-text" class="quiz-q-text" placeholder="Kérdés szövege..." data-lang-placeholder="dashboard_verify_question_placeholder" style="width: 100%; margin-bottom: 5px;">
-                                <div style="display: flex; gap: 10px;">
-                                    <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
-                                        <option value="text" selected data-lang="dashboard_verify_answer_type">Szöveges válasz</option>
-                                    </select>
-                                    <input type="text" id="v-q1-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" data-lang-placeholder="dashboard_verify_answer_placeholder" style="flex-grow: 1; border: 2px solid #276749;">
-                                </div>
+                        <!-- Földgömb + Nyelvválasztó lenyíló panel -->
+                        <div class="header-lang-wrapper">
+                            <div class="header-action-btn" id="header-lang-globe-btn" title="Nyelvválasztás"
+                                data-lang-title="header_lang_select" onclick="toggleHeaderLangDropdown(event)">
+                                <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/nyelvvalaszto.png"
+                                    alt="Nyelv" class="header-icon-img"
+                                    onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/nyelvvalaszto.png'">
                             </div>
-
-                            <div class="quiz-setup-item" style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <label><strong data-lang="dashboard_verify_q2_label">2. Ellenőrző Kérdés:</strong></label>
-                                <input type="text" id="v-q2-text" class="quiz-q-text" placeholder="Kérdés szövege..." data-lang-placeholder="dashboard_verify_question_placeholder" style="width: 100%; margin-bottom: 5px;">
-                                <div style="display: flex; gap: 10px;">
-                                    <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
-                                        <option value="text" selected data-lang="dashboard_verify_answer_type">Szöveges válasz</option>
-                                    </select>
-                                    <input type="text" id="v-q2-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" data-lang-placeholder="dashboard_verify_answer_placeholder" style="flex-grow: 1; border: 2px solid #276749;">
-                                </div>
+                            <div id="header-lang-dropdown" class="header-popup-menu" style="display: none;"
+                                onclick="event.stopPropagation()">
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar"
+                                    onclick="switchLanguage('hu'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png"
+                                        alt="HU"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_hu-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English"
+                                    onclick="switchLanguage('en'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png"
+                                        alt="EN"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_en-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch"
+                                    onclick="switchLanguage('de'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png"
+                                        alt="DE"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_de-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français"
+                                    onclick="switchLanguage('fr'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png"
+                                        alt="FR"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_fr-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español"
+                                    onclick="switchLanguage('es'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png"
+                                        alt="ES"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_es-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski"
+                                    onclick="switchLanguage('pl'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png"
+                                        alt="PL"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_pl-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский"
+                                    onclick="switchLanguage('ru'); toggleHeaderLangDropdown(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png"
+                                        alt="RU"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_ru-removebg-preview.png'"></button>
                             </div>
+                        </div>
 
-                            <div class="quiz-setup-item" style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <label><strong data-lang="dashboard_verify_q3_label">3. Ellenőrző Kérdés:</strong></label>
-                                <input type="text" id="v-q3-text" class="quiz-q-text" placeholder="Kérdés szövege..." data-lang-placeholder="dashboard_verify_question_placeholder" style="width: 100%; margin-bottom: 5px;">
-                                <div style="display: flex; gap: 10px;">
-                                    <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
-                                        <option value="text" selected data-lang="dashboard_verify_answer_type">Szöveges válasz</option>
-                                    </select>
-                                    <input type="text" id="v-q3-ans" class="quiz-q-answer" placeholder="Helyes válasz (kulcsszó)" data-lang-placeholder="dashboard_verify_answer_placeholder" style="flex-grow: 1; border: 2px solid #276749;">
-                                </div>
+                        <!-- Kilépés gomb -->
+                        <div class="header-action-btn" id="header-exit-btn" title="Hebok elhagyása"
+                            data-lang-title="header_logout" onclick="logout()">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png"
+                                alt="Kilépés" class="header-icon-img"
+                                onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/exit-r 1.png'">
+                        </div>
+                    </div>
+
+                    <!-- Mobil / Kis felbontás esetén megjelenő fogaskerék (settings_icon) -->
+                    <div class="header-mobile-settings-wrapper">
+                        <div class="header-action-btn" id="header-mobile-settings-btn" title="Beállítások & Menü"
+                            data-lang-title="header_settings" onclick="toggleHeaderMobileSettings(event)">
+                            <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/settings_icon.png"
+                                alt="Beállítások" class="header-icon-img"
+                                onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/settings_icon.png'">
+                        </div>
+                        <div id="header-mobile-popup" class="header-popup-menu mobile-settings-popup"
+                            style="display: none;" onclick="event.stopPropagation()">
+                            <div class="mobile-menu-item"
+                                onclick="loadPage('kikoto_oldal'); toggleHeaderMobileSettings(event, false);">
+                                <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/horgony_removebg.png"
+                                    alt="Kikötő" class="menu-item-icon"
+                                    onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/horgony_removebg.png'">
+                                <span data-lang="header_back_to_port">Kikötő</span>
                             </div>
-
-                            <button type="button" class="btn" onclick="submitVerificationQuiz()" style="background-color: #276749; width: 100%; color: white; font-weight: bold; padding: 10px;" data-lang="dashboard_verify_save_button">
-                                💾 3 Ellenőrző Kérdés Mentése
-                            </button>
-                        </form>
+                            <!-- 2. Pillér: Teljes képernyő mobil menüpont -->
+                            <div class="mobile-menu-item" id="mobile-menu-fullscreen"
+                                onclick="toggleFullscreen(); toggleHeaderMobileSettings(event, false);">
+                                <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png"
+                                    alt="Teljes képernyő" class="menu-item-icon"
+                                    onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/full_screen-r.png'">
+                                <span data-lang="header_fullscreen">Teljes képernyő</span>
+                            </div>
+                            <!-- 2. Pillér: PWA Telepítés mobil menüpont -->
+                            <div class="mobile-menu-item" id="mobile-menu-install"
+                                onclick="triggerPwaInstall(); toggleHeaderMobileSettings(event, false);"
+                                style="display: none;">
+                                <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="#ffd700"
+                                    stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+                                    style="width: 20px; height: 20px;">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                <span data-lang="header_install">Alkalmazás telepítése</span>
+                            </div>
+                            <div class="mobile-menu-divider"></div>
+                            <div class="mobile-lang-grid">
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="hu" title="Magyar"
+                                    onclick="switchLanguage('hu'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_hu-removebg-preview.png"
+                                        alt="HU"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_hu-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="en" title="English"
+                                    onclick="switchLanguage('en'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_en-removebg-preview.png"
+                                        alt="EN"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_en-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="de" title="Deutsch"
+                                    onclick="switchLanguage('de'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_de-removebg-preview.png"
+                                        alt="DE"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_de-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="fr" title="Français"
+                                    onclick="switchLanguage('fr'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_fr-removebg-preview.png"
+                                        alt="FR"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_fr-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="es" title="Español"
+                                    onclick="switchLanguage('es'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_es-removebg-preview.png"
+                                        alt="ES"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_es-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="pl" title="Polski"
+                                    onclick="switchLanguage('pl'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_pl-removebg-preview.png"
+                                        alt="PL"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_pl-removebg-preview.png'"></button>
+                                <button type="button" class="lang-flag-btn lang-btn" data-lang="ru" title="Русский"
+                                    onclick="switchLanguage('ru'); toggleHeaderMobileSettings(event, false);"><img
+                                        src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_ru-removebg-preview.png"
+                                        alt="RU"
+                                        onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_ru-removebg-preview.png'"></button>
+                            </div>
+                            <div class="mobile-menu-divider"></div>
+                            <div class="mobile-menu-item logout-item" onclick="logout()">
+                                <img src="https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/exit-r%201.png"
+                                    alt="Kilépés" class="menu-item-icon"
+                                    onerror="this.src='https://storage.googleapis.com/kalozsziget-assets/assets/images/exit-r 1.png'">
+                                <span data-lang="header_logout">Hebok elhagyása</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div id="DashSettings" class="tab-content" style="display: none;">
-
-                    <div style="margin-bottom: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                        <div style="background: #f0f4f8; padding: 10px 15px; border-bottom: 1px solid #ddd; font-weight: bold; color: #2c3e50;" data-lang-html="dashboard_active_questions_panel_title">
-                            <i class="fas fa-clipboard-list"></i> Jelenleg aktív kérdések (Ezeket már tartalmazza az űrlap)
-                        </div>
-                        <div id="existing-questions-list" style="max-height: 200px; overflow-y: auto; padding: 10px;">
-                            <p style="color:#888; font-style:italic;" data-lang="dashboard_existing_questions_loading">Adatok betöltése...</p>
-                        </div>
-                    </div>
-
-                    <hr style="border: 0; border-top: 1px dashed #ccc; margin: 20px 0;">
-
-                    <h3 data-lang="dashboard_new_question_title">Új kérdés hozzáadása az űrlaphoz</h3>
-                    <p style="font-size: 0.9em; color: #666;" data-lang="dashboard_new_question_intro">Itt bővítheted a kérdőívet. Az új kérdések automatikusan megjelennek az új olvasóknál.</p>
-                    
-                    <form id="new-question-form" style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
-                        <div class="form-group">
-                            <label data-lang="dashboard_new_question_text_label">Kérdés szövege:</label>
-                            <input type="text" id="nq-text" placeholder="Pl. Melyik karakter volt a legszimpatikusabb?" data-lang-placeholder="dashboard_new_question_text_placeholder" required style="width: 100%; padding: 8px;">
-                        </div>
-                        
-                        <div class="form-group" style="margin-top: 10px;">
-                            <label data-lang="dashboard_new_question_type_label">Típus:</label>
-                            <select id="nq-type" style="width: 100%; padding: 8px;">
-                                <option value="text" data-lang="dashboard_new_question_type_text">Szöveges kifejtős</option>
-                                <option value="rating" data-lang="dashboard_new_question_type_rating">Csillagos értékelés (1-5)</option>
-                                <option value="yesno" data-lang="dashboard_new_question_type_yesno">Igen / Nem</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" style="margin-top: 10px;">
-                            <label data-lang="dashboard_new_question_category_label">Kategória (Játékhoz):</label>
-                            <select id="nq-category" style="width: 100%; padding: 8px;">
-                                <option value="general" data-lang="dashboard_new_question_category_general">Általános</option>
-                                <option value="story" data-lang="dashboard_new_question_category_story">Történet / Lore</option>
-                                <option value="character" data-lang="dashboard_new_question_category_character">Karakterek</option>
-                            </select>
-                        </div>
-                        
-                        <div style="margin-top: 10px;">
-                            <label><input type="checkbox" id="nq-isgame"> <span data-lang="dashboard_new_question_isgame">Ez a kérdés bekerülhet kvízkérdésnek a játékba?</span></label>
-                        </div>
-
-                        <button type="button" class="btn btn-success" onclick="submitNewQuestion()" style="margin-top: 15px; width: 100%;" data-lang="dashboard_new_question_add_button">Hozzáadás</button>
-                    </form>
-                </div>
-
-            </div> 
-        </div> 
-    </div>
-
-    <div id="universal-npc-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;" onclick="if(event.target===this) closeUniversalNPCModal(event)">
-        <div id="npc-portrait-panel" class="npc-portrait-closed" style="position: relative;">
-            <img id="npc-portrait-image" src="" alt="NPC" style="display: none;">
-            <video id="npc-portrait-video" playsinline muted autoplay loop style="display: none;"></video>
-            <button id="npc-portrait-audio-btn" type="button" class="portrait-audio-btn" title="Hang némítása / bekapcsolása" onclick="toggleVideoAudio('npc-portrait-video', 'npc-portrait-audio-btn')">
-                <i class="fas fa-volume-mute"></i>
-            </button>
-        </div>
-        <div class="gamemode-modal-content" style="width: 90%; max-width: 500px; height: min(80vh, 80dvh, 600px); max-height: calc(100dvh - 20px); padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
-        
-        <div id="npc-header" style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span id="npc-icon" style="font-size: 1.5em;">👵</span> <div>
-                    <h3 id="npc-name" style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">Hortenzi Gabrel</h3>
-                    <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
                 </div>
             </div>
-            <button class="npc-close-btn modal-close-btn" onclick="closeUniversalNPCModal(event)" style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;" aria-label="Bezárás">&times;</button>
+
+            <!-- PERZISZTENS 3D KIKÖTŐ RÉTEG (Folyamatosan él a memóriában / GPU-n) -->
+            <div id="persistent-kikoto-container" style="display: none; width: 100%; height: 100%; position: relative;">
+            </div>
+
+            <div id="content"></div>
         </div>
 
-        <div id="universal-chat-area" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
-            </div>
-
-        <div id="universal-chat-input-container" style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
-            <input type="text" id="universal-chat-input" placeholder="Mit akarsz?" data-lang-placeholder="npc_chat_placeholder" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-            <button class="btn" onclick="sendUniversalMessage()" style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+        <!-- Hagyományos Betöltő Képernyő (Taverna, Játékok, Adatbázis műveletek) -->
+        <div id="loading-overlay" style="display: none;">
+            <img id="loading-gif" src="" alt="Betöltés..." style="display: none;" />
+            <div class="loader-spinner"></div>
+            <p id="loading-overlay-text" data-lang="loading">Betöltés...</p>
         </div>
-        
-        <input type="hidden" id="current-npc-id" value="">
-    </div>
-</div>
 
-    <div id="log-entry-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) closeLogEntryModal()">
-        <div class="gamemode-modal-content" style="max-width: 700px;">
-            <span class="close-btn" onclick="closeLogEntryModal()">&times;</span>
-            <h4 id="log-modal-title" data-lang="log_entry_title">Új Hajónapló Bejegyzés</h4> 
-            <div style="margin-bottom: 15px; text-align: right;">
-                <i class="fas fa-info-circle" style="cursor: pointer; font-size: 1.2em;" onclick="toggleLogSplash()"></i>
+        <!-- Steampunk 3D Óramű & Kinetikus Karakter-Adagoló Töltőképernyő -->
+        <div id="kikoto-3d-loading-overlay" style="display: none; opacity: 0; pointer-events: none;">
+            <!-- 3D Three.js WebGL Óramű Színpad -->
+            <div id="clockwork-canvas-container"></div>
+
+            <!-- Kinetikus Karakter-Adagoló Gép (Kipotyogó Szövegek) -->
+            <div class="clockwork-dispenser-container">
+                <div class="clockwork-chute-aperture">
+                    <div id="clockwork-dispenser-text" class="clockwork-text-line">
+                        <!-- Dinamikusan kipottyanó karakterek -->
+                    </div>
+                </div>
             </div>
-            <div id="log-entry-splash-text" style="display: none; background-color: rgba(0,0,0,0.1); padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em; border: 1px dashed #ccc;">
-                <p data-lang="log_entry_splash_text">A hajónapló a hajó elválaszthatatlan, hivatalos dokumentuma. Csakis azok a hajóskapitányok vezethetik, akik ténylegesen irányítják a hajót, legyenek akár a hajó tulajdonosai, vagy csupán a tulajdonos által felkért parancsnokai. A napi jelentések beírása a napi rutinjuk kötelező része, egy sikeres könyvexpedíció vagy letkristályvadászat után segítenek az emlékek felidézésében, a pontos térképek megrajzolásában.</p>
+
+            <!-- Steampunk Folyamatjelző és Százalék -->
+            <div class="clockwork-progress-container">
+                <div class="loader-bar-bg">
+                    <div id="loader-fill" class="loader-bar-fill"></div>
+                </div>
+                <div id="loader-status" class="loader-text" data-lang="sot_init_clockwork">3D ÓRAMŰ INICIALIZÁLÁSA...
+                </div>
             </div>
 
-            <form id="log-entry-form">
-                <input type="hidden" id="log-entry-id" value="">
-
-                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                    <button type="button" id="log-prev-btn" class="btn btn-secondary" style="visibility: hidden;" data-lang="log_entry_prev_button">&lt; Előző</button>
-                    <button type="button" id="log-next-btn" class="btn btn-secondary" style="visibility: hidden;" data-lang="log_entry_next_button">Következő &gt;</button>
+            <!-- 2. Pillér: Fekvő Tájolás & Teljes Képernyő Tájékoztató Betöltés Alatt -->
+            <div id="loading-orientation-hint" class="loading-orientation-hint"
+                onclick="if(typeof requestLandscapeAndFullscreen==='function')requestLandscapeAndFullscreen()">
+                <div class="orientation-anim-phone">
+                    <div class="phone-screen-glow"></div>
                 </div>
+                <div class="orientation-hint-text" data-lang="loading_switch_landscape">⚓ VÁLTÁS TELJES KÉPERNYŐS FEKVŐ
+                    MÓDRA...</div>
+            </div>
+        </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div class="form-group">
-                        <label for="log-date" data-lang="log_entry_date_label">Dátum:</label>
-                        <input type="date" id="log-date" style="padding: 8px;"> 
-                    </div>
-                    <div class="form-group">
-                        <label for="log-time" data-lang="log_entry_time_label">Idő (kb.):</label>
-                        <input type="time" id="log-time" style="padding: 8px;"> 
-                    </div>
+        <div id="marketing-view" style="display: none;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #8b0000; font-family: 'Pirata One', serif; font-size: 2.5em;"
+                    data-lang="marketing_title">A Zsákmány Értékelése</h2>
+                <p data-lang-html="marketing_intro">Minden válaszod <strong>1 Kalózkreditet</strong> ér!</p>
+            </div>
+
+            <form id="marketing-form" onsubmit="return false;">
+                <div id="marketing-questions-area"></div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="button" class="btn btn-primary" onclick="submitMarketingForm()"
+                        style="font-size: 1.2em; padding: 15px 40px; background-color: #8b0000; border: none;"
+                        data-lang="marketing_submit_button">
+                        Vélemény Beküldése & Kreditek Zsebretétele
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="returnToPort()"
+                        style="font-size: 1.2em; padding: 15px 30px; margin-left: 10px; background-color: #666; border: none; color: white;"
+                        data-lang="marketing_cancel_button">
+                        Mégse
+                    </button>
                 </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                    <div class="form-group">
-                        <label for="log-wind" data-lang="log_entry_wind_label">Szélirány:</label>
-                        <select id="log-wind">
-                            <option value="" data-lang="log_entry_wind_select">Válassz...</option>
-                            <option value="É" data-lang="log_entry_wind_n">Észak (É)</option>
-                            <option value="ÉK" data-lang="log_entry_wind_ne">Észak-Kelet (ÉK)</option>
-                            <option value="K" data-lang="log_entry_wind_e">Kelet (K)</option>
-                            <option value="DK" data-lang="log_entry_wind_se">Dél-Kelet (DK)</option>
-                            <option value="D" data-lang="log_entry_wind_s">Dél (D)</option>
-                            <option value="DNY" data-lang="log_entry_wind_sw">Dél-Nyugat (DNY)</option>
-                            <option value="NY" data-lang="log_entry_wind_w">Nyugat (NY)</option>
-                            <option value="ÉNY" data-lang="log_entry_wind_nw">Észak-Nyugat (ÉNY)</option>
-                            <option value="Változó" data-lang="log_entry_wind_variable">Változó</option>
-                            <option value="Szélcsend" data-lang="log_entry_wind_calm">Szélcsend</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="log-weather" data-lang="log_entry_weather_label">Időjárás:</label>
-                        <select id="log-weather">
-                            <option value="" data-lang="log_entry_weather_select">Válassz...</option>
-                            <option value="Napos" data-lang="log_entry_weather_sunny">Napos</option>
-                            <option value="Felhős" data-lang="log_entry_weather_cloudy">Felhős</option>
-                            <option value="Esős" data-lang="log_entry_weather_rainy">Esős</option>
-                            <option value="Viharos" data-lang="log_entry_weather_storm">Viharos</option>
-                            <option value="Ködös" data-lang="log_entry_weather_fog">Ködös</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
-                    <div class="form-group">
-                        <label for="log-lat" data-lang="log_entry_lat_label">Szélesség:</label>
-                        <input type="text" id="log-lat" placeholder="Pl. 47.4979" data-lang-placeholder="log_entry_lat_placeholder">
-                    </div>
-                    <div class="form-group">
-                        <label for="log-lon" data-lang="log_entry_lon_label">Hosszúság:</label>
-                        <input type="text" id="log-lon" placeholder="Pl. 19.0402" data-lang-placeholder="log_entry_lon_placeholder">
-                    </div>
-                    <button type="button" class="btn" onclick="getGeoLocation()" style="padding: 8px 12px; height: fit-content;" title="Pozíció lekérése" data-lang-title="log_entry_geo_title">📍</button>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="log-report" data-lang="log_entry_report_label">Napi jelentés:</label>
-                    <textarea id="log-report" rows="8" style="width: 100%; box-sizing: border-box; padding: 8px;" placeholder="Írd le a mai nap eseményeit..." data-lang-placeholder="log_entry_report_placeholder"></textarea>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="log-image" data-lang="log_entry_image_label">Kép csatolása (opcionális, PNG):</label>
-                    <input type="file" id="log-image" accept="image/png">
-                    <div id="log-image-preview" style="margin-top: 10px; max-width: 200px;"></div>
-                </div>
-
-                <div id="log-entry-status" style="margin-bottom: 15px; color: red; font-weight: bold;"></div>
-
-                <button type="button" id="submit-log-entry-btn" class="btn" data-lang="log_entry_save_button">Bejegyzés mentése</button>
-                <button type="button" class="btn btn-close" onclick="closeLogEntryModal()" data-lang="log_entry_cancel_button">Mégse</button>
             </form>
         </div>
-    </div>
 
-    <div id="monk-pin-modal" class="gamemode-modal" style="display: none; align-items: center; z-index: 3100;" onclick="if(event.target===this) closeMonkPinModal()">
-        <div class="gamemode-modal-content" style="max-width: 400px; text-align: center;">
-            <h3 style="margin-top: 0;" data-lang="monk_pin_title">Biztonsági Ellenőrzés</h3>
-            <p data-lang-html="monk_pin_intro">A művelet díja 10 Tálentum.<br>Kérlek, add meg a PIN kódodat a folytatáshoz!</p>
-            
-            <div style="position: relative; margin: 20px 0; text-align: left;">
-                <label for="monk-pin-input" style="font-weight: bold;" data-lang="monk_pin_label">PIN Kód:</label>
-                <div style="position: relative;">
-                    <input type="password" id="monk-pin-input" style="width: 100%; padding-right: 40px; box-sizing: border-box;" placeholder="****">
-                    <i class="fas fa-eye" id="monk-pin-toggle" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+        <div id="author-dashboard-modal" class="gamemode-modal"
+            style="display: none; align-items: flex-start; overflow-y: auto;"
+            onclick="if(event.target===this) this.style.display='none'">
+            <div class="gamemode-modal-content" style="position: relative; max-width: 900px; width: 95%;">
+
+                <div class="gamemode-header" style="position: relative;">
+                    <span id="dashboard-book-title" class="header-title" data-lang="dashboard_title">Könyv
+                        Statisztika</span>
+                    <button class="btn btn-close"
+                        style="position: absolute; top: 10px; right: 10px; background: #8b0000; border: 2px solid #fff; border-radius: 50%; width: 35px; height: 35px; color: white; font-weight: bold; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 0;"
+                        onclick="document.getElementById('author-dashboard-modal').style.display='none'">X</button>
+                </div>
+
+                <div id="dashboard-loading" style="padding: 20px; text-align: center;"
+                    data-lang-html="dashboard_loading">
+                    <i class="fas fa-spinner fa-spin"></i> Adatok betöltése a kristálygömbből...
+                </div>
+
+                <div id="dashboard-content" style="display: none; padding: 20px;">
+
+                    <div id="dashboard-header-summary"
+                        style="margin-bottom: 25px; padding: 15px; background: #fff8dc; border: 1px solid #d2b48c; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <h4 style="margin-top:0; color:#8b4513; border-bottom:1px dashed #ccc; padding-bottom:5px;"
+                            data-lang-html="dashboard_active_questions_title">
+                            <i class="fas fa-list-alt"></i> Aktív Alapkérdések (Ezekre válaszol az olvasó)
+                        </h4>
+                        <div id="base-questions-grid" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        </div>
+                    </div>
+
+                    <div class="stats-summary-box" style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <h3 data-lang="dashboard_total_responses">Összes Válasz</h3>
+                            <p id="stat-total-responses" style="font-size: 2em; font-weight: bold; color: #2c5282;">0
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tab-container" style="border-bottom: 2px solid #ddd; margin-bottom: 20px;">
+                        <button class="tab-button active" onclick="openDashboardTab(event, 'DashStats')"
+                            data-lang="dashboard_tab_results">📊 Eredmények</button>
+                        <button class="tab-button" onclick="openDashboardTab(event, 'DashVerification')"
+                            data-lang="dashboard_tab_verification">🛡️ Ellenőrzés (Kvíz)</button>
+                        <button class="tab-button" onclick="openDashboardTab(event, 'DashSettings')"
+                            data-lang="dashboard_tab_new_question">⚙️ Új Kérdés</button>
+                    </div>
+
+                    <div id="DashStats" class="tab-content" style="display: block;">
+                        <div id="dashboard-details-list"></div>
+                    </div>
+
+                    <div id="DashVerification" class="tab-content" style="display: none;">
+                        <div style="background: #f0fff4; border: 1px solid #c6f6d5; padding: 20px; border-radius: 8px;">
+                            <h3 style="color: #276749; margin-top: 0;" data-lang="dashboard_verify_title">🧐
+                                Olvasottsági Próba (Anti-Csalás Védelem)</h3>
+                            <p data-lang-html="dashboard_verify_intro">Itt állíthatsz be 3 kérdést, amire <strong>csak
+                                    az tudja a választ, aki tényleg olvasta a művet.</strong></p>
+                            <p style="font-size: 0.9em; color: #555;" data-lang-html="dashboard_verify_note"><i>A
+                                    rendszer ezeket "verify" típusként menti el. A statisztikába nem kerülnek bele, csak
+                                    a kapuőrző funkciót látják el.</i></p>
+                            <hr>
+
+                            <form id="verification-quiz-form">
+                                <div class="quiz-setup-item"
+                                    style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                                    <label><strong data-lang="dashboard_verify_q1_label">1. Ellenőrző
+                                            Kérdés:</strong></label>
+                                    <input type="text" id="v-q1-text" class="quiz-q-text"
+                                        placeholder="Kérdés szövege..."
+                                        data-lang-placeholder="dashboard_verify_question_placeholder"
+                                        style="width: 100%; margin-bottom: 5px;">
+                                    <div style="display: flex; gap: 10px;">
+                                        <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
+                                            <option value="text" selected data-lang="dashboard_verify_answer_type">
+                                                Szöveges válasz</option>
+                                        </select>
+                                        <input type="text" id="v-q1-ans" class="quiz-q-answer"
+                                            placeholder="Helyes válasz (kulcsszó)"
+                                            data-lang-placeholder="dashboard_verify_answer_placeholder"
+                                            style="flex-grow: 1; border: 2px solid #276749;">
+                                    </div>
+                                </div>
+
+                                <div class="quiz-setup-item"
+                                    style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                                    <label><strong data-lang="dashboard_verify_q2_label">2. Ellenőrző
+                                            Kérdés:</strong></label>
+                                    <input type="text" id="v-q2-text" class="quiz-q-text"
+                                        placeholder="Kérdés szövege..."
+                                        data-lang-placeholder="dashboard_verify_question_placeholder"
+                                        style="width: 100%; margin-bottom: 5px;">
+                                    <div style="display: flex; gap: 10px;">
+                                        <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
+                                            <option value="text" selected data-lang="dashboard_verify_answer_type">
+                                                Szöveges válasz</option>
+                                        </select>
+                                        <input type="text" id="v-q2-ans" class="quiz-q-answer"
+                                            placeholder="Helyes válasz (kulcsszó)"
+                                            data-lang-placeholder="dashboard_verify_answer_placeholder"
+                                            style="flex-grow: 1; border: 2px solid #276749;">
+                                    </div>
+                                </div>
+
+                                <div class="quiz-setup-item"
+                                    style="margin-bottom: 15px; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                                    <label><strong data-lang="dashboard_verify_q3_label">3. Ellenőrző
+                                            Kérdés:</strong></label>
+                                    <input type="text" id="v-q3-text" class="quiz-q-text"
+                                        placeholder="Kérdés szövege..."
+                                        data-lang-placeholder="dashboard_verify_question_placeholder"
+                                        style="width: 100%; margin-bottom: 5px;">
+                                    <div style="display: flex; gap: 10px;">
+                                        <select class="quiz-q-type" style="padding: 5px; background:#eee;" disabled>
+                                            <option value="text" selected data-lang="dashboard_verify_answer_type">
+                                                Szöveges válasz</option>
+                                        </select>
+                                        <input type="text" id="v-q3-ans" class="quiz-q-answer"
+                                            placeholder="Helyes válasz (kulcsszó)"
+                                            data-lang-placeholder="dashboard_verify_answer_placeholder"
+                                            style="flex-grow: 1; border: 2px solid #276749;">
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn" onclick="submitVerificationQuiz()"
+                                    style="background-color: #276749; width: 100%; color: white; font-weight: bold; padding: 10px;"
+                                    data-lang="dashboard_verify_save_button">
+                                    💾 3 Ellenőrző Kérdés Mentése
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="DashSettings" class="tab-content" style="display: none;">
+
+                        <div
+                            style="margin-bottom: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                            <div style="background: #f0f4f8; padding: 10px 15px; border-bottom: 1px solid #ddd; font-weight: bold; color: #2c3e50;"
+                                data-lang-html="dashboard_active_questions_panel_title">
+                                <i class="fas fa-clipboard-list"></i> Jelenleg aktív kérdések (Ezeket már tartalmazza az
+                                űrlap)
+                            </div>
+                            <div id="existing-questions-list"
+                                style="max-height: 200px; overflow-y: auto; padding: 10px;">
+                                <p style="color:#888; font-style:italic;"
+                                    data-lang="dashboard_existing_questions_loading">Adatok betöltése...</p>
+                            </div>
+                        </div>
+
+                        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 20px 0;">
+
+                        <h3 data-lang="dashboard_new_question_title">Új kérdés hozzáadása az űrlaphoz</h3>
+                        <p style="font-size: 0.9em; color: #666;" data-lang="dashboard_new_question_intro">Itt
+                            bővítheted a kérdőívet. Az új kérdések automatikusan megjelennek az új olvasóknál.</p>
+
+                        <form id="new-question-form"
+                            style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                            <div class="form-group">
+                                <label data-lang="dashboard_new_question_text_label">Kérdés szövege:</label>
+                                <input type="text" id="nq-text"
+                                    placeholder="Pl. Melyik karakter volt a legszimpatikusabb?"
+                                    data-lang-placeholder="dashboard_new_question_text_placeholder" required
+                                    style="width: 100%; padding: 8px;">
+                            </div>
+
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label data-lang="dashboard_new_question_type_label">Típus:</label>
+                                <select id="nq-type" style="width: 100%; padding: 8px;">
+                                    <option value="text" data-lang="dashboard_new_question_type_text">Szöveges kifejtős
+                                    </option>
+                                    <option value="rating" data-lang="dashboard_new_question_type_rating">Csillagos
+                                        értékelés (1-5)</option>
+                                    <option value="yesno" data-lang="dashboard_new_question_type_yesno">Igen / Nem
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label data-lang="dashboard_new_question_category_label">Kategória (Játékhoz):</label>
+                                <select id="nq-category" style="width: 100%; padding: 8px;">
+                                    <option value="general" data-lang="dashboard_new_question_category_general">
+                                        Általános</option>
+                                    <option value="story" data-lang="dashboard_new_question_category_story">Történet /
+                                        Lore</option>
+                                    <option value="character" data-lang="dashboard_new_question_category_character">
+                                        Karakterek</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <label><input type="checkbox" id="nq-isgame"> <span
+                                        data-lang="dashboard_new_question_isgame">Ez a kérdés bekerülhet kvízkérdésnek a
+                                        játékba?</span></label>
+                            </div>
+
+                            <button type="button" class="btn btn-success" onclick="submitNewQuestion()"
+                                style="margin-top: 15px; width: 100%;"
+                                data-lang="dashboard_new_question_add_button">Hozzáadás</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
+        </div>
 
-            <div style="display: flex; justify-content: space-between; gap: 10px;">
-                <button class="btn btn-danger" onclick="closeMonkPinModal()" data-lang="monk_pin_cancel_button">Mégse</button>
-                <button class="btn btn-success" onclick="finalizeMonkUpload()" data-lang="monk_pin_confirm_button">Megerősítés és Feltöltés</button>
+        <div id="universal-npc-modal" class="gamemode-modal"
+            style="display: none; align-items: center; justify-content: center; z-index: 1000;"
+            onclick="if(event.target===this) closeUniversalNPCModal(event)">
+            <div id="npc-portrait-panel" class="npc-portrait-closed" style="position: relative;">
+                <img id="npc-portrait-image" src="" alt="NPC" style="display: none;">
+                <video id="npc-portrait-video" playsinline muted autoplay loop style="display: none;"></video>
+                <button id="npc-portrait-audio-btn" type="button" class="portrait-audio-btn"
+                    title="Hang némítása / bekapcsolása"
+                    onclick="toggleVideoAudio('npc-portrait-video', 'npc-portrait-audio-btn')">
+                    <i class="fas fa-volume-mute"></i>
+                </button>
+            </div>
+            <div class="gamemode-modal-content"
+                style="width: 90%; max-width: 500px; height: min(80vh, 80dvh, 600px); max-height: calc(100dvh - 20px); padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;">
+
+                <div id="npc-header"
+                    style="background: #37474f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #cfd8dc;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span id="npc-icon" style="font-size: 1.5em;">👵</span>
+                        <div>
+                            <h3 id="npc-name"
+                                style="margin: 0; font-family: 'Pirata One', cursive; font-size: 1.4em; color: white; border: none;">
+                                Hortenzi Gabrel</h3>
+                            <small id="npc-role" style="color: #b0bec5;">Piacfőnök</small>
+                        </div>
+                    </div>
+                    <button class="npc-close-btn modal-close-btn" onclick="closeUniversalNPCModal(event)"
+                        style="background: transparent; border: none; color: white; font-size: 1.5em; cursor: pointer;"
+                        aria-label="Bezárás">&times;</button>
+                </div>
+
+                <div id="universal-chat-area"
+                    style="flex: 1; padding: 15px; overflow-y: auto; background-color: #eceff1; display: flex; flex-direction: column; gap: 10px;">
+                </div>
+
+                <div id="universal-chat-input-container"
+                    style="padding: 10px; background: white; border-top: 1px solid #ccc; display: flex; gap: 5px;">
+                    <input type="text" id="universal-chat-input" placeholder="Mit akarsz?"
+                        data-lang-placeholder="npc_chat_placeholder"
+                        style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button class="btn" onclick="sendUniversalMessage()"
+                        style="background: #37474f; color: white; border: none; padding: 0 15px; border-radius: 4px;">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+
+                <input type="hidden" id="current-npc-id" value="">
             </div>
         </div>
-    </div>
 
-    <div id="papat-report-modal" class="gamemode-modal" style="display: none; align-items: flex-start; overflow-y: auto;" onclick="if(event.target===this) closePapatReportModal()">
-        <div class="gamemode-modal-content" style="position: relative; max-width: 700px; width: 95%;">
-            <div class="gamemode-header">
-                <span class="header-title"><i class="fas fa-robot"></i> Papát AI - Értékelő Jelentés</span>
-                <button class="btn btn-close" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;" onclick="closePapatReportModal()">X</button>
-            </div>
-            <div id="papat-report-content" style="padding: 20px; font-size: 0.95em; line-height: 1.5;">
-                <!-- AI report goes here -->
-            </div>
-            <div style="text-align: center; margin-top: 15px; padding-bottom: 20px;">
-                <button class="btn btn-secondary" onclick="closePapatReportModal()">Bezárás</button>
+        <div id="log-entry-modal" class="gamemode-modal"
+            style="display: none; align-items: flex-start; overflow-y: auto;"
+            onclick="if(event.target===this) closeLogEntryModal()">
+            <div class="gamemode-modal-content" style="max-width: 700px;">
+                <span class="close-btn" onclick="closeLogEntryModal()">&times;</span>
+                <h4 id="log-modal-title" data-lang="log_entry_title">Új Hajónapló Bejegyzés</h4>
+                <div style="margin-bottom: 15px; text-align: right;">
+                    <i class="fas fa-info-circle" style="cursor: pointer; font-size: 1.2em;"
+                        onclick="toggleLogSplash()"></i>
+                </div>
+                <div id="log-entry-splash-text"
+                    style="display: none; background-color: rgba(0,0,0,0.1); padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em; border: 1px dashed #ccc;">
+                    <p data-lang="log_entry_splash_text">A hajónapló a hajó elválaszthatatlan, hivatalos dokumentuma.
+                        Csakis azok a hajóskapitányok vezethetik, akik ténylegesen irányítják a hajót, legyenek akár a
+                        hajó tulajdonosai, vagy csupán a tulajdonos által felkért parancsnokai. A napi jelentések
+                        beírása a napi rutinjuk kötelező része, egy sikeres könyvexpedíció vagy letkristályvadászat után
+                        segítenek az emlékek felidézésében, a pontos térképek megrajzolásában.</p>
+                </div>
+
+                <form id="log-entry-form">
+                    <input type="hidden" id="log-entry-id" value="">
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <button type="button" id="log-prev-btn" class="btn btn-secondary" style="visibility: hidden;"
+                            data-lang="log_entry_prev_button">&lt; Előző</button>
+                        <button type="button" id="log-next-btn" class="btn btn-secondary" style="visibility: hidden;"
+                            data-lang="log_entry_next_button">Következő &gt;</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label for="log-date" data-lang="log_entry_date_label">Dátum:</label>
+                            <input type="date" id="log-date" style="padding: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-time" data-lang="log_entry_time_label">Idő (kb.):</label>
+                            <input type="time" id="log-time" style="padding: 8px;">
+                        </div>
+                    </div>
+
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label for="log-wind" data-lang="log_entry_wind_label">Szélirány:</label>
+                            <select id="log-wind">
+                                <option value="" data-lang="log_entry_wind_select">Válassz...</option>
+                                <option value="É" data-lang="log_entry_wind_n">Észak (É)</option>
+                                <option value="ÉK" data-lang="log_entry_wind_ne">Észak-Kelet (ÉK)</option>
+                                <option value="K" data-lang="log_entry_wind_e">Kelet (K)</option>
+                                <option value="DK" data-lang="log_entry_wind_se">Dél-Kelet (DK)</option>
+                                <option value="D" data-lang="log_entry_wind_s">Dél (D)</option>
+                                <option value="DNY" data-lang="log_entry_wind_sw">Dél-Nyugat (DNY)</option>
+                                <option value="NY" data-lang="log_entry_wind_w">Nyugat (NY)</option>
+                                <option value="ÉNY" data-lang="log_entry_wind_nw">Észak-Nyugat (ÉNY)</option>
+                                <option value="Változó" data-lang="log_entry_wind_variable">Változó</option>
+                                <option value="Szélcsend" data-lang="log_entry_wind_calm">Szélcsend</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="log-weather" data-lang="log_entry_weather_label">Időjárás:</label>
+                            <select id="log-weather">
+                                <option value="" data-lang="log_entry_weather_select">Válassz...</option>
+                                <option value="Napos" data-lang="log_entry_weather_sunny">Napos</option>
+                                <option value="Felhős" data-lang="log_entry_weather_cloudy">Felhős</option>
+                                <option value="Esős" data-lang="log_entry_weather_rainy">Esős</option>
+                                <option value="Viharos" data-lang="log_entry_weather_storm">Viharos</option>
+                                <option value="Ködös" data-lang="log_entry_weather_fog">Ködös</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                        <div class="form-group">
+                            <label for="log-lat" data-lang="log_entry_lat_label">Szélesség:</label>
+                            <input type="text" id="log-lat" placeholder="Pl. 47.4979"
+                                data-lang-placeholder="log_entry_lat_placeholder">
+                        </div>
+                        <div class="form-group">
+                            <label for="log-lon" data-lang="log_entry_lon_label">Hosszúság:</label>
+                            <input type="text" id="log-lon" placeholder="Pl. 19.0402"
+                                data-lang-placeholder="log_entry_lon_placeholder">
+                        </div>
+                        <button type="button" class="btn" onclick="getGeoLocation()"
+                            style="padding: 8px 12px; height: fit-content;" title="Pozíció lekérése"
+                            data-lang-title="log_entry_geo_title">📍</button>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="log-report" data-lang="log_entry_report_label">Napi jelentés:</label>
+                        <textarea id="log-report" rows="8" style="width: 100%; box-sizing: border-box; padding: 8px;"
+                            placeholder="Írd le a mai nap eseményeit..."
+                            data-lang-placeholder="log_entry_report_placeholder"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="log-image" data-lang="log_entry_image_label">Kép csatolása (opcionális,
+                            PNG):</label>
+                        <input type="file" id="log-image" accept="image/png">
+                        <div id="log-image-preview" style="margin-top: 10px; max-width: 200px;"></div>
+                    </div>
+
+                    <div id="log-entry-status" style="margin-bottom: 15px; color: red; font-weight: bold;"></div>
+
+                    <button type="button" id="submit-log-entry-btn" class="btn"
+                        data-lang="log_entry_save_button">Bejegyzés mentése</button>
+                    <button type="button" class="btn btn-close" onclick="closeLogEntryModal()"
+                        data-lang="log_entry_cancel_button">Mégse</button>
+                </form>
             </div>
         </div>
-    </div>
-    <!-- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK -->
-    <div id="quiz-book-modal" class="gamemode-modal" style="display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) closeQuizBookModal()">
-        <div class="gamemode-modal-content" style="max-width: 550px; position: relative;">
-            <button class="close-btn" onclick="closeQuizBookModal()">&times;</button>
-            <h3 style="text-align: center;"><i class="fas fa-book"></i> Kvízkérdések Könyve</h3>
-            <p style="font-size: 0.9em; color: #666;" data-lang="kerdesbekuldo_p_1">Ezen a felületen új kérdéseket adhatsz a játékhoz. Kérjük, ügyelj a helyesírásra és a kérdések egyediségére!</p>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label data-lang="kerdesbekuldo_label_2" for="modal-question-text">Kérdés szövege:</label>
-                <input id="modal-question-text" placeholder="Pl. Ki írta az Anyám tyúkját?" style="width: 100%; padding: 8px; box-sizing: border-box;" type="text"/>
-            </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label data-lang="kerdesbekuldo_label_3" for="modal-correct-answer">Helyes válasz:</label>
-                <input id="modal-correct-answer" placeholder="Pl. Petőfi Sándor" style="border: 2px solid green; width: 100%; padding: 8px; box-sizing: border-box;" type="text"/>
-            </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label data-lang="kerdesbekuldo_label_4">Helytelen válaszlehetőségek:</label>
-                <input id="modal-alt-1" placeholder="1. alternatíva (pl. Arany László)" style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text"/>
-                <input id="modal-alt-2" placeholder="2. alternatíva (pl. Toldi Miklós)" style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text"/>
-                <input id="modal-alt-3" placeholder="3. alternatíva (pl. Tyukodi Bence)" style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text"/>
-            </div>
-            <div class="form-group" style="margin-bottom: 20px;">
-                <label data-lang="kerdesbekuldo_label_5" for="modal-submitter-name">Beküldő kalóz neve:</label>
-                <input id="modal-submitter-name" value="" readonly style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #2a2a2a; color: #fff; border: 1px solid #444; cursor: not-allowed;" type="text"/>
-            </div>
-            <input id="modal-website-url-hp" style="display:none" type="text" autocomplete="off" tabindex="-1" />
-            <button class="btn" style="width: 100%; background-color: #2c3e50;" id="modal-submit-question-btn" onclick="submitQuizFromModal()" data-lang="kerdesbekuldo_button_6">Kérdés beküldése</button>
-            <div id="modal-question-feedback" style="margin-top: 20px; font-weight: bold; text-align: center; font-size: 1.2em;"></div>
-        </div>
-    </div>
 
-    <div id="system-message-modal" class="gamemode-modal" style="display: none; z-index: 2000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="gamemode-modal-content" style="max-width: 400px; width: 90%; text-align: center;">
-            
-            <div style="margin-bottom: 15px;">
-                <i id="sys-modal-icon" class="fas fa-info-circle" style="font-size: 2.5em; color: #8b0000; display:block; margin-bottom: 10px;"></i>
-                <h3 id="sys-modal-title" style="color: #5d3a1a; margin: 0; font-family: 'Georgia', serif;" data-lang="system_message_title">Rendszerüzenet</h3>
-            </div>
+        <div id="monk-pin-modal" class="gamemode-modal" style="display: none; align-items: center; z-index: 3100;"
+            onclick="if(event.target===this) closeMonkPinModal()">
+            <div class="gamemode-modal-content" style="max-width: 400px; text-align: center;">
+                <h3 style="margin-top: 0;" data-lang="monk_pin_title">Biztonsági Ellenőrzés</h3>
+                <p data-lang-html="monk_pin_intro">A művelet díja 10 Tálentum.<br>Kérlek, add meg a PIN kódodat a
+                    folytatáshoz!</p>
 
-            <div id="sys-modal-body" style="color: #333; font-size: 1em; line-height: 1.5; margin-bottom: 20px;">
-            </div>
+                <div style="position: relative; margin: 20px 0; text-align: left;">
+                    <label for="monk-pin-input" style="font-weight: bold;" data-lang="monk_pin_label">PIN Kód:</label>
+                    <div style="position: relative;">
+                        <input type="password" id="monk-pin-input"
+                            style="width: 100%; padding-right: 40px; box-sizing: border-box;" placeholder="****">
+                        <i class="fas fa-eye" id="monk-pin-toggle"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+                    </div>
+                </div>
 
-            <div id="sys-modal-buttons" style="display: flex; justify-content: center; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; gap: 10px;">
+                    <button class="btn btn-danger" onclick="closeMonkPinModal()"
+                        data-lang="monk_pin_cancel_button">Mégse</button>
+                    <button class="btn btn-success" onclick="finalizeMonkUpload()"
+                        data-lang="monk_pin_confirm_button">Megerősítés és Feltöltés</button>
+                </div>
             </div>
         </div>
+
+        <div id="papat-report-modal" class="gamemode-modal"
+            style="display: none; align-items: flex-start; overflow-y: auto;"
+            onclick="if(event.target===this) closePapatReportModal()">
+            <div class="gamemode-modal-content" style="position: relative; max-width: 700px; width: 95%;">
+                <div class="gamemode-header">
+                    <span class="header-title"><i class="fas fa-robot"></i> Papát AI - Értékelő Jelentés</span>
+                    <button class="btn btn-close"
+                        style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; line-height: 1;"
+                        onclick="closePapatReportModal()">X</button>
+                </div>
+                <div id="papat-report-content" style="padding: 20px; font-size: 0.95em; line-height: 1.5;">
+                    <!-- AI report goes here -->
+                </div>
+                <div style="text-align: center; margin-top: 15px; padding-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="closePapatReportModal()">Bezárás</button>
+                </div>
+            </div>
+        </div>
+        <!-- KVÍZKÉRDÉS BEKÜLDŐ MODÁLIS ABLAK -->
+        <div id="quiz-book-modal" class="gamemode-modal"
+            style="display: none; align-items: center; justify-content: center;"
+            onclick="if(event.target===this) closeQuizBookModal()">
+            <div class="gamemode-modal-content" style="max-width: 550px; position: relative;">
+                <button class="close-btn" onclick="closeQuizBookModal()">&times;</button>
+                <h3 style="text-align: center;"><i class="fas fa-book"></i> Kvízkérdések Könyve</h3>
+                <p style="font-size: 0.9em; color: #666;" data-lang="kerdesbekuldo_p_1">Ezen a felületen új kérdéseket
+                    adhatsz a játékhoz. Kérjük, ügyelj a helyesírásra és a kérdések egyediségére!</p>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label data-lang="kerdesbekuldo_label_2" for="modal-question-text">Kérdés szövege:</label>
+                    <input id="modal-question-text" placeholder="Pl. Ki írta az Anyám tyúkját?"
+                        style="width: 100%; padding: 8px; box-sizing: border-box;" type="text" />
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label data-lang="kerdesbekuldo_label_3" for="modal-correct-answer">Helyes válasz:</label>
+                    <input id="modal-correct-answer" placeholder="Pl. Petőfi Sándor"
+                        style="border: 2px solid green; width: 100%; padding: 8px; box-sizing: border-box;"
+                        type="text" />
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label data-lang="kerdesbekuldo_label_4">Helytelen válaszlehetőségek:</label>
+                    <input id="modal-alt-1" placeholder="1. alternatíva (pl. Arany László)"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text" />
+                    <input id="modal-alt-2" placeholder="2. alternatíva (pl. Toldi Miklós)"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text" />
+                    <input id="modal-alt-3" placeholder="3. alternatíva (pl. Tyukodi Bence)"
+                        style="width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px;" type="text" />
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label data-lang="kerdesbekuldo_label_5" for="modal-submitter-name">Beküldő kalóz neve:</label>
+                    <input id="modal-submitter-name" value="" readonly
+                        style="width: 100%; padding: 8px; box-sizing: border-box; background-color: #2a2a2a; color: #fff; border: 1px solid #444; cursor: not-allowed;"
+                        type="text" />
+                </div>
+                <input id="modal-website-url-hp" style="display:none" type="text" autocomplete="off" tabindex="-1" />
+                <button class="btn" style="width: 100%; background-color: #2c3e50;" id="modal-submit-question-btn"
+                    onclick="submitQuizFromModal()" data-lang="kerdesbekuldo_button_6">Kérdés beküldése</button>
+                <div id="modal-question-feedback"
+                    style="margin-top: 20px; font-weight: bold; text-align: center; font-size: 1.2em;"></div>
+            </div>
+        </div>
+
+        <div id="system-message-modal" class="gamemode-modal"
+            style="display: none; z-index: 2000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;"
+            onclick="if(event.target===this) this.style.display='none'">
+            <div class="gamemode-modal-content" style="max-width: 400px; width: 90%; text-align: center;">
+
+                <div style="margin-bottom: 15px;">
+                    <i id="sys-modal-icon" class="fas fa-info-circle"
+                        style="font-size: 2.5em; color: #8b0000; display:block; margin-bottom: 10px;"></i>
+                    <h3 id="sys-modal-title" style="color: #5d3a1a; margin: 0; font-family: 'Georgia', serif;"
+                        data-lang="system_message_title">Rendszerüzenet</h3>
+                </div>
+
+                <div id="sys-modal-body" style="color: #333; font-size: 1em; line-height: 1.5; margin-bottom: 20px;">
+                </div>
+
+                <div id="sys-modal-buttons" style="display: flex; justify-content: center; gap: 10px;">
+                </div>
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <!-- 3D Aloldali Karakter Futó & Fejlesztői 3D Elrendező Bootstrap -->
+    <script>
+        (function () {
+            var h = window.location.hostname;
+            var isLocal = (h === 'localhost' || h === '127.0.0.1' || h.indexOf('192.168.') === 0 || window.location.protocol === 'file:');
+
+            window.__ebp3DScenes = window.__ebp3DScenes || {};
+            var _rtPromise = null;
+            var _prodCharsPromise = null;
+
+            // === [#HEX:F.05.98.00] START | name: __ensureEBPCharRuntime | lines: 11 ===
+            // @calls: none | @calledBy: [#HEX:F.01.22.00]
+            window.__ensureEBPCharRuntime = function () {
+                if (window.__EBPCharRuntime) return Promise.resolve(window.__EBPCharRuntime);
+                if (!_rtPromise) {
+                    _rtPromise = import('./ebp_animation_bank.js?v=20261126e').then(function (mod) {
+                        var rt = new mod.EBPSubpageCharacterRuntime();
+                        window.__EBPCharRuntime = rt;
+                        return rt;
+                    });
+                }
+                return _rtPromise;
+            };
+            // === [#HEX:F.05.98.00] END ===
+
+            // === [#HEX:F.04.363.00] START | name: __getProdSubpageChars | lines: 8 ===
+            // @calls: none | @calledBy: [#HEX:F.01.22.00]
+            window.__getProdSubpageChars = function () {
+                if (!_prodCharsPromise) {
+                    _prodCharsPromise = fetch('./subpage_characters.json?v=20261126c', { cache: 'no-cache' })
+                        .then(function (res) { return res.ok ? res.json() : []; })
+                        .catch(function () { return []; });
+                }
+                return _prodCharsPromise;
+            };
+            // === [#HEX:F.04.363.00] END ===
+
+            // === [#HEX:F.01.22.00] START | name: __registerEBP3DScene | lines: 24 ===
+            // @calls: [#HEX:F.02.33.00], [#HEX:F.04.363.00], [#HEX:F.05.98.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.155.00], [#HEX:F.04.1F0.00], [#HEX:F.04.233.00], [#HEX:F.04.266.00]
+            window.__registerEBP3DScene = function (entry) {
+                if (!entry || !entry.id) return;
+                window.__ebp3DScenes[entry.id] = entry;
+                if (window.__EBP3DTools && typeof window.__EBP3DTools.onSceneRegistered === 'function') {
+                    window.__EBP3DTools.onSceneRegistered(entry);
+                }
+                var hasLocalChars = false;
+                if (isLocal) {
+                    try {
+                        var raw = localStorage.getItem('ebp_subpage_characters_v1');
+                        hasLocalChars = Boolean(raw && raw !== '[]');
+                    } catch (_e) { }
+                }
+                if (window.__EBPCharRuntime || hasLocalChars) {
+                    window.__ensureEBPCharRuntime().then(function (rt) { rt.syncScene(entry); }).catch(function () { });
+                } else {
+                    var targetId = entry.id === 'kikoto_3d' ? 'kikoto' : entry.id;
+                    window.__getProdSubpageChars().then(function (list) {
+                        if (Array.isArray(list) && list.some(function (c) { return c && c.subpageId === targetId && c.enabled !== false; })) {
+                            window.__ensureEBPCharRuntime().then(function (rt) { rt.syncScene(entry); }).catch(function () { });
+                        }
+                    }).catch(function () { });
+                }
+            };
+            // === [#HEX:F.01.22.00] END ===
+
+            // === [#HEX:F.01.23.00] START | name: __unregisterEBP3DScene | lines: 10 ===
+            // @calls: [#HEX:F.02.34.00] | @calledBy: [#HEX:F.04.1F0.00], [#HEX:F.04.204.00], [#HEX:F.04.233.00], [#HEX:F.04.24E.00], [#HEX:F.04.266.00]
+            window.__unregisterEBP3DScene = function (id) {
+                if (!id || !window.__ebp3DScenes) return;
+                delete window.__ebp3DScenes[id];
+                if (window.__EBP3DTools && typeof window.__EBP3DTools.onSceneUnregistered === 'function') {
+                    window.__EBP3DTools.onSceneUnregistered(id);
+                }
+                if (window.__EBPCharRuntime) {
+                    window.__EBPCharRuntime.detachScene(id);
+                }
+            };
+            // === [#HEX:F.01.23.00] END ===
+
+            if (isLocal) {
+                try {
+                    if (typeof BroadcastChannel !== 'undefined') {
+                        var bc = new BroadcastChannel('ebp_character_studio_sync');
+                        bc.onmessage = function (ev) {
+                            if (!ev || !ev.data || ev.data.type !== 'subpage_characters_updated') return;
+                            window.__ensureEBPCharRuntime().then(function (rt) {
+                                Object.keys(window.__ebp3DScenes || {}).forEach(function (k) {
+                                    rt.syncScene(window.__ebp3DScenes[k]);
+                                });
+                            }).catch(function () { });
+                        };
+                    }
+                } catch (_e) { }
+                var s = document.createElement('script');
+                s.src = 'Toolbox/toolbox_loader.js?v=20261126';
+                document.body.appendChild(s);
+            }
+        })();
+    </script>
 
     <script src="web_fordito.js?v=20261119_m339"></script>
     <script src="app.js?v=20261119_m339"></script>
 </body>
+
 </html>

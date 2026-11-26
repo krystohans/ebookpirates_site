@@ -87,6 +87,56 @@ const UPPER_BODY_BONES = new Set([
     'righthandpinky1', 'righthandpinky2', 'righthandpinky3', 'righthandpinky4'
 ]);
 
+const LOWER_BODY_BONES = new Set([
+    'hips', 'spine',
+    'leftupleg', 'leftleg', 'leftfoot', 'lefttoebase', 'lefttoeend',
+    'rightupleg', 'rightleg', 'rightfoot', 'righttoebase', 'righttoeend'
+]);
+
+const LEFT_ARM_BONES = new Set([
+    'leftshoulder', 'leftarm', 'leftforearm', 'lefthand',
+    'lefthandthumb1', 'lefthandthumb2', 'lefthandthumb3', 'lefthandthumb4',
+    'lefthandindex1', 'lefthandindex2', 'lefthandindex3', 'lefthandindex4',
+    'lefthandmiddle1', 'lefthandmiddle2', 'lefthandmiddle3', 'lefthandmiddle4',
+    'lefthandring1', 'lefthandring2', 'lefthandring3', 'lefthandring4',
+    'lefthandpinky1', 'lefthandpinky2', 'lefthandpinky3', 'lefthandpinky4'
+]);
+
+const RIGHT_ARM_BONES = new Set([
+    'rightshoulder', 'rightarm', 'rightforearm', 'righthand',
+    'righthandthumb1', 'righthandthumb2', 'righthandthumb3', 'righthandthumb4',
+    'righthandindex1', 'righthandindex2', 'righthandindex3', 'righthandindex4',
+    'righthandmiddle1', 'righthandmiddle2', 'righthandmiddle3', 'righthandmiddle4',
+    'righthandring1', 'righthandring2', 'righthandring3', 'righthandring4',
+    'righthandpinky1', 'righthandpinky2', 'righthandpinky3', 'righthandpinky4'
+]);
+
+const ARMS_BONES = new Set([...LEFT_ARM_BONES, ...RIGHT_ARM_BONES]);
+
+const HEAD_TORSO_BONES = new Set([
+    'spine', 'spine1', 'spine2', 'neck', 'head', 'headtopend', 'headfront'
+]);
+
+export const BODY_ZONE_BONES = {
+    full: null,
+    lower: LOWER_BODY_BONES,
+    upper: UPPER_BODY_BONES,
+    arms: ARMS_BONES,
+    right_arm: RIGHT_ARM_BONES,
+    left_arm: LEFT_ARM_BONES,
+    head_torso: HEAD_TORSO_BONES
+};
+
+export const BODY_ZONE_LABELS_HU = {
+    full: 'Teljes test',
+    lower: 'Alsótest & Testtartás (guggolás/láb)',
+    upper: 'Teljes felsőtest (törzs + karok)',
+    arms: 'Mindkét kar & kéztartás',
+    right_arm: 'Csak jobb kar & kéz',
+    left_arm: 'Csak bal kar & kéz',
+    head_torso: 'Törzs, nyak & fej'
+};
+
 const BONE_SYNONYMS = {
     pelvis: 'hips',
     root_hips: 'hips',
@@ -188,7 +238,7 @@ function raisedCosFalloff(dist, radius) {
  * Egysegesiti a karaktermodell-kulcsot utvonalbol vagy fajlnevbol (pl. zozo_animalt.glb).
  */
 // === [#HEX:F.0C.04.00] START | name: normalizeModelKey | lines: 5 ===
-// @calls: none | @calledBy: [#HEX:F.0C.38.00], [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00]
+// @calls: none | @calledBy: [#HEX:F.02.33.00], [#HEX:F.0C.38.00], [#HEX:F.0C.3E.00], [#HEX:F.0C.3F.00], [#HEX:F.0C.5F.00]
 export function normalizeModelKey(pathOrName) {
     if (!pathOrName) return '';
     const clean = String(pathOrName).split(/[?#]/)[0].split(/[\\/]/).pop() || '';
@@ -202,7 +252,7 @@ export { FACE_MASK_LANDMARKS, FACE_MASK_MORPH_NAMES };
  * Ekezet-eltavolito szovegnormalizalo magyar/angol keresoszo-egyezteteshez.
  */
 // === [#HEX:F.0C.05.00] START | name: stripAccents | lines: 10 ===
-// @calls: none | @calledBy: [#HEX:F.0C.23.00]
+// @calls: none | @calledBy: [#HEX:F.0C.23.00], [#HEX:F.0C.4F.00], [#HEX:F.0C.50.00]
 function stripAccents(str) {
     return String(str || '')
         .toLowerCase()
@@ -259,7 +309,7 @@ function parseTrackNodeAndProp(trackName) {
  * Gyors SLERP mintavetelezo THREE.QuaternionKeyframeTrack-bol.
  */
 // === [#HEX:F.0C.08.00] START | name: sampleQuatTrackInto | lines: 33 ===
-// @calls: none | @calledBy: none
+// @calls: none | @calledBy: [#HEX:F.0C.4A.00], [#HEX:F.0C.4B.00]
 function sampleQuatTrackInto(times, values, t, outQuat) {
     const n = times.length;
     if (n === 0) {
@@ -299,7 +349,7 @@ function sampleQuatTrackInto(times, values, t, outQuat) {
  * Gyors LERP mintavetelezo THREE.VectorKeyframeTrack-bol.
  */
 // === [#HEX:F.0C.09.00] START | name: sampleVec3TrackInto | lines: 34 ===
-// @calls: none | @calledBy: none
+// @calls: none | @calledBy: [#HEX:F.0C.4A.00], [#HEX:F.0C.4B.00]
 function sampleVec3TrackInto(times, values, t, outVec) {
     const n = times.length;
     if (n === 0) {
@@ -346,6 +396,127 @@ const _qTmpInv = new THREE.Quaternion();
 const _vTmpPos = new THREE.Vector3();
 const _eulerTmp = new THREE.Euler(0, 0, 0, 'YXZ');
 const _qBoneDelta = new THREE.Quaternion();
+const _qSliceOut = new THREE.Quaternion();
+const _vSliceOut = new THREE.Vector3();
+
+/**
+ * Egy animacios track pontos idoszeletelese [startSec..endSec] kozott (vagy kimerevitese egyetlen idopillanatra).
+ */
+// === [#HEX:F.0C.4A.00] START | name: sliceTrackWindow | lines: 75 ===
+// @calls: [#HEX:F.0C.08.00], [#HEX:F.0C.09.00], [#HEX:F.0C.4B.00], [#HEX:F.0C.53.00] | @calledBy: none
+export function sliceTrackWindow(track, startSec = 0, endSec = null, freeze = false) {
+    const times = track.times;
+    const vals = track.values;
+    const itemSize = track.getValueSize ? track.getValueSize() : (vals.length / Math.max(1, times.length));
+    const trackMax = times && times.length > 0 ? times[times.length - 1] : 0.1;
+    const s0 = Math.max(0, Math.min(trackMax, Number(startSec) || 0));
+    const rawEnd = (endSec === null || endSec === undefined || !Number.isFinite(Number(endSec))) ? trackMax : Number(endSec);
+    const s1 = Math.max(s0, Math.min(trackMax, rawEnd));
+    const span = s1 - s0;
+
+    const Ctor = track.constructor;
+    if (freeze || span < 0.025) {
+        const outTimes = new Float32Array([0, 0.1]);
+        const outVals = new Float32Array(itemSize * 2);
+        if (itemSize === 4) {
+            sampleQuatTrackInto(times, vals, s0, _qSliceOut);
+            outVals.set([_qSliceOut.x, _qSliceOut.y, _qSliceOut.z, _qSliceOut.w], 0);
+            outVals.set([_qSliceOut.x, _qSliceOut.y, _qSliceOut.z, _qSliceOut.w], 4);
+        } else if (itemSize === 3) {
+            sampleVec3TrackInto(times, vals, s0, _vSliceOut);
+            outVals.set([_vSliceOut.x, _vSliceOut.y, _vSliceOut.z], 0);
+            outVals.set([_vSliceOut.x, _vSliceOut.y, _vSliceOut.z], 3);
+        } else {
+            for (let k = 0; k < itemSize; k++) {
+                outVals[k] = vals[k] || 0;
+                outVals[itemSize + k] = vals[k] || 0;
+            }
+        }
+        return new Ctor(track.name, outTimes, outVals);
+    }
+
+    const pickedTimes = [0];
+    const pickedValues = [];
+
+// === [#HEX:F.0C.4B.00] START | name: pushSampleAt | lines: 18 ===
+// @calls: [#HEX:F.0C.08.00], [#HEX:F.0C.09.00] | @calledBy: [#HEX:F.0C.4A.00]
+    const pushSampleAt = (tSample) => {
+        if (itemSize === 4) {
+            sampleQuatTrackInto(times, vals, tSample, _qSliceOut);
+            if (pickedValues.length >= 4) {
+                const off = pickedValues.length - 4;
+                const dot = pickedValues[off] * _qSliceOut.x + pickedValues[off + 1] * _qSliceOut.y + pickedValues[off + 2] * _qSliceOut.z + pickedValues[off + 3] * _qSliceOut.w;
+                if (dot < 0) _qSliceOut.set(-_qSliceOut.x, -_qSliceOut.y, -_qSliceOut.z, -_qSliceOut.w);
+            }
+            pickedValues.push(_qSliceOut.x, _qSliceOut.y, _qSliceOut.z, _qSliceOut.w);
+        } else if (itemSize === 3) {
+            sampleVec3TrackInto(times, vals, tSample, _vSliceOut);
+            pickedValues.push(_vSliceOut.x, _vSliceOut.y, _vSliceOut.z);
+        } else {
+            const idx = Math.max(0, Math.min(times.length - 1, times.findIndex((tv) => tv >= tSample)));
+            const base = idx * itemSize;
+            for (let k = 0; k < itemSize; k++) pickedValues.push(vals[base + k] || 0);
+        }
+    };
+// === [#HEX:F.0C.4B.00] END ===
+
+    pushSampleAt(s0);
+    for (let i = 0; i < times.length; i++) {
+        const tv = times[i];
+        if (tv > s0 + 1e-4 && tv < s1 - 1e-4) {
+            pickedTimes.push(tv - s0);
+            const base = i * itemSize;
+            if (itemSize === 4) {
+                _qSliceOut.set(vals[base], vals[base + 1], vals[base + 2], vals[base + 3]).normalize();
+                const off = pickedValues.length - 4;
+                const dot = pickedValues[off] * _qSliceOut.x + pickedValues[off + 1] * _qSliceOut.y + pickedValues[off + 2] * _qSliceOut.z + pickedValues[off + 3] * _qSliceOut.w;
+                if (dot < 0) _qSliceOut.set(-_qSliceOut.x, -_qSliceOut.y, -_qSliceOut.z, -_qSliceOut.w);
+                pickedValues.push(_qSliceOut.x, _qSliceOut.y, _qSliceOut.z, _qSliceOut.w);
+            } else {
+                for (let k = 0; k < itemSize; k++) pickedValues.push(vals[base + k]);
+            }
+        }
+    }
+    pickedTimes.push(span);
+    pushSampleAt(s1);
+
+    return new Ctor(track.name, new Float32Array(pickedTimes), new Float32Array(pickedValues));
+}
+// === [#HEX:F.0C.4A.00] END ===
+
+/**
+ * Retargetelt teljes klipbol testzona-szurt es idoszeletelt kompozit retegklipet epit.
+ */
+// === [#HEX:F.0C.4C.00] START | name: buildCompositeLayerClip | lines: 1 ===
+// @calls: none | @calledBy: none
+export function buildCompositeLayerClip(retargetedFullClip, options = {}) {
+// === [#HEX:F.0C.4C.00] END ===
+    const bodyZone = options.bodyZone || 'full';
+    const allowedSet = BODY_ZONE_BONES[bodyZone] || null;
+    const excludeSet = options.excludeBoneKeys || null;
+    const freeze = Boolean(options.freeze);
+    const startSec = Number(options.startSec) || 0;
+    const endSec = (options.endSec !== undefined && options.endSec !== null) ? Number(options.endSec) : retargetedFullClip.duration;
+    const layerTag = options.layerTag || 'layer';
+
+    const outTracks = [];
+    for (const tr of retargetedFullClip.tracks) {
+        const { nodeName, propertyName } = parseTrackNodeAndProp(tr.name);
+        const bKey = normalizeBoneKey(nodeName);
+        if (excludeSet && excludeSet.has(bKey)) continue;
+
+        if (propertyName === 'position' && bKey === 'hips') {
+            if (bodyZone !== 'full' && bodyZone !== 'lower') continue;
+            outTracks.push(sliceTrackWindow(tr, startSec, endSec, freeze));
+        } else if (propertyName === 'quaternion') {
+            if (allowedSet && !allowedSet.has(bKey)) continue;
+            outTracks.push(sliceTrackWindow(tr, startSec, endSec, freeze));
+        }
+    }
+
+    const dur = freeze ? 0.1 : Math.max(0.033, (endSec - startSec));
+    return new THREE.AnimationClip(`__comp_${layerTag}_${retargetedFullClip.name}_${bodyZone}`, dur, outTracks);
+}
 
 // === [#HEX:F.0C.0A.00] START | name: detectDefaultAnimBaseUrl | lines: 7 ===
 // @calls: none | @calledBy: none
@@ -387,6 +558,10 @@ export class EBPActorController {
         this.upperFadeTime = 0.25;
         this.prevUpperActions = [];
 
+        this.compositeActions = [];
+        this.prevCompositeActions = [];
+        this.activeCompositeRecipe = null;
+
         this.paused = false;
         this.speed = typeof options.speed === 'number' ? options.speed : 1.0;
         this.lockRootXZ = Boolean(options.lockRootXZ);
@@ -417,7 +592,7 @@ export class EBPActorController {
      * Kivalasztott teljes-testes animacio elinditasa sima attunessel.
      */
 // === [#HEX:F.07.18.00] START | name: play | lines: 1 ===
-// @calls: none | @calledBy: [#HEX:F.04.48.00], [#HEX:F.04.4B.00], [#HEX:F.04.C8.00], [#HEX:F.07.0C.00], [#HEX:F.04.E9.00]
+// @calls: none | @calledBy: [#HEX:B.12.33.00], [#HEX:B.12.37.00], [#HEX:B.15.21.00], [#HEX:B.15.25.00], [#HEX:D.01.110.00]
     async play(clipOrAlias, options = {}) {
 // === [#HEX:F.07.18.00] END ===
         const fadeIn = typeof options.fadeIn === 'number' ? options.fadeIn : 0.3;
@@ -428,6 +603,7 @@ export class EBPActorController {
 
         this.speed = speed;
         this.lockRootXZ = lockRootXZ;
+        this.stopCompositeMotion(fadeIn);
 
         const srcClip = await this.bank.ensureClipLoaded(clipOrAlias);
         const retargeted = this.bank.retargetClipForModel(srcClip, this.rigInfo, {
@@ -506,7 +682,7 @@ export class EBPActorController {
     }
 
 // === [#HEX:F.0C.0C.00] START | name: stopUpperBody | lines: 12 ===
-// @calls: [#HEX:F.04.2C1.00] | @calledBy: none
+// @calls: [#HEX:F.04.70.00] | @calledBy: none
     stopUpperBody(fadeOut = 0.25) {
         if (!this.upperAction) return;
         this.prevUpperActions.push({
@@ -521,8 +697,141 @@ export class EBPActorController {
     }
 // === [#HEX:F.0C.0C.00] END ===
 
+    /**
+     * Tobb kulonallo mozgasklip idoszeletelt es testzona-maszkolt osszegyurasa egyetlen karaktermunkaba.
+     */
+// === [#HEX:F.07.1D.00] START | name: playCompositeMotion | lines: 1 ===
+// @calls: none | @calledBy: [#HEX:F.02.33.00], [#HEX:F.07.1E.00]
+    async playCompositeMotion(recipe, options = {}) {
+// === [#HEX:F.07.1D.00] END ===
+        if (!recipe || !Array.isArray(recipe.layers) || recipe.layers.length === 0) {
+            throw new Error('Ervenytelen kompozit mozgasrecept: ures layers tomb.');
+        }
+
+        const fadeIn = typeof options.fadeIn === 'number' ? options.fadeIn : 0.25;
+        const lockRootXZ = recipe.lockRootXZ !== false;
+        this.lockRootXZ = lockRootXZ;
+
+        if (this.mainAction) {
+            this.prevMainActions.push({
+                action: this.mainAction,
+                fadeOut: Math.max(0.05, fadeIn),
+                weight: this.mainCurrentWeight
+            });
+            this.mainAction = null;
+            this.mainClipName = null;
+            this.mainTargetWeight = 0;
+            this.mainCurrentWeight = 0;
+        }
+        this.stopUpperBody(fadeIn);
+        this.stopCompositeMotion(fadeIn);
+
+        const layers = recipe.layers;
+        const builtEntries = [];
+        const playedClips = [];
+
+        for (let i = 0; i < layers.length; i++) {
+            const layer = layers[i];
+            if (!layer || !layer.clip) continue;
+            const zone = layer.bodyZone || 'full';
+
+            // A magasabb prioritasu felso/kar retegek csontjait kivonjuk az alatta levo retegbol a tiszta felulirasert
+            const excludeBoneKeys = new Set();
+            for (let j = i + 1; j < layers.length; j++) {
+                const hiZone = layers[j] && layers[j].bodyZone;
+                const hiSet = hiZone ? BODY_ZONE_BONES[hiZone] : null;
+                if (hiSet) {
+                    hiSet.forEach((bk) => excludeBoneKeys.add(bk));
+                }
+            }
+
+            const srcClip = await this.bank.ensureClipLoaded(layer.clip);
+            const fullRetargeted = this.bank.retargetClipForModel(srcClip, this.rigInfo, {
+                lockRootXZ,
+                upperBodyOnly: false
+            });
+            const mode = layer.mode || 'pingpong';
+            const slicedClip = buildCompositeLayerClip(fullRetargeted, {
+                bodyZone: zone,
+                excludeBoneKeys: excludeBoneKeys.size > 0 ? excludeBoneKeys : null,
+                startSec: typeof layer.startSec === 'number' ? layer.startSec : 0,
+                endSec: typeof layer.endSec === 'number' ? layer.endSec : fullRetargeted.duration,
+                freeze: mode === 'freeze',
+                layerTag: `L${i}_${Date.now() % 100000}`
+            });
+
+            const action = this.mixer.clipAction(slicedClip);
+            action.reset();
+            action.enabled = true;
+            if (mode === 'pingpong') {
+                action.setLoop(THREE.LoopPingPong, Infinity);
+            } else if (mode === 'once') {
+                action.setLoop(THREE.LoopOnce, 1);
+                action.clampWhenFinished = true;
+            } else {
+                action.setLoop(THREE.LoopRepeat, Infinity);
+            }
+            const layerSpeed = mode === 'freeze' ? 0 : (typeof layer.speed === 'number' ? layer.speed : 1.0);
+            const targetW = typeof layer.weight === 'number' ? layer.weight : 1.0;
+            action.setEffectiveTimeScale(layerSpeed * (this.speed || 1.0));
+            action.setEffectiveWeight(fadeIn > 0 ? 0.0001 : targetW);
+            action.play();
+
+            builtEntries.push({
+                action,
+                clip: slicedClip,
+                targetWeight: targetW,
+                currentWeight: fadeIn > 0 ? 0.0001 : targetW,
+                fadeTime: Math.max(0.05, fadeIn)
+            });
+            playedClips.push(`${srcClip.name}[${zone}]`);
+        }
+
+        this.compositeActions = builtEntries;
+        this.activeCompositeRecipe = JSON.parse(JSON.stringify(recipe));
+        this.mainClipName = playedClips.join(' + ');
+
+        if (recipe.mimic) {
+            this.setMimic(recipe.mimic, { weight: typeof recipe.mimicWeight === 'number' ? recipe.mimicWeight : 1.0 });
+        }
+        return { layerCount: builtEntries.length, clips: playedClips };
+    }
+
+// === [#HEX:F.0C.4D.00] START | name: stopCompositeMotion | lines: 22 ===
+// @calls: [#HEX:F.04.14.00], [#HEX:F.04.70.00] | @calledBy: [#HEX:F.0C.1B.00], [#HEX:F.0C.60.00]
+    stopCompositeMotion(fadeOut = 0.2) {
+        if (!this.compositeActions || this.compositeActions.length === 0) {
+            this.activeCompositeRecipe = null;
+            return;
+        }
+        const fo = Math.max(0.05, fadeOut);
+        for (const item of this.compositeActions) {
+            if (fadeOut <= 0.01) {
+                item.action.stop();
+                this.mixer.uncacheClip(item.clip);
+            } else {
+                this.prevCompositeActions.push({
+                    action: item.action,
+                    clip: item.clip,
+                    fadeOut: fo,
+                    weight: item.currentWeight
+                });
+            }
+        }
+        this.compositeActions = [];
+        this.activeCompositeRecipe = null;
+    }
+// === [#HEX:F.0C.4D.00] END ===
+
+// === [#HEX:F.0C.4E.00] START | name: getActiveCompositeInfo | lines: 3 ===
+// @calls: none | @calledBy: none
+    getActiveCompositeInfo() {
+        return this.activeCompositeRecipe;
+    }
+// === [#HEX:F.0C.4E.00] END ===
+
 // === [#HEX:F.0C.0D.00] START | name: setMimic | lines: 1 ===
-// @calls: none | @calledBy: [#HEX:F.02.30.00], [#HEX:F.0C.13.00], [#HEX:F.0C.3F.00], [#HEX:F.0C.42.00]
+// @calls: none | @calledBy: [#HEX:F.02.30.00], [#HEX:F.02.33.00], [#HEX:F.04.266.00], [#HEX:F.0C.13.00], [#HEX:F.0C.3F.00]
     setMimic(mimicId, options = {}) {
 // === [#HEX:F.0C.0D.00] END ===
         const presets = (this.bank.mimics && this.bank.mimics.presets) || {};
@@ -552,7 +861,7 @@ export class EBPActorController {
 // === [#HEX:F.0C.0E.00] END ===
 
 // === [#HEX:F.0C.0F.00] START | name: setAutoBlink | lines: 3 ===
-// @calls: none | @calledBy: [#HEX:F.0C.3F.00]
+// @calls: none | @calledBy: [#HEX:F.04.266.00], [#HEX:F.0C.3F.00]
     setAutoBlink(enabled) {
         this.autoBlink = Boolean(enabled);
     }
@@ -578,7 +887,7 @@ export class EBPActorController {
      * Kozvetlenul vegrehajt egy Kryst3DScenePrompt objektumot a LET.kryst Studiobol.
      */
 // === [#HEX:F.02.30.00] START | name: applyKrystScenePrompt | lines: 23 ===
-// @calls: [#HEX:F.0C.0D.00], [#HEX:F.07.18.00] | @calledBy: none
+// @calls: [#HEX:F.07.18.00], [#HEX:F.0C.0D.00] | @calledBy: none
     async applyKrystScenePrompt(scenePrompt3D) {
         if (!scenePrompt3D || typeof scenePrompt3D !== 'object') {
             throw new Error('Ervenytelen Kryst3DScenePrompt objektum.');
@@ -642,7 +951,7 @@ export class EBPActorController {
 // === [#HEX:F.0C.12.00] END ===
 
 // === [#HEX:F.0C.13.00] START | name: _advanceChoreographyStep | lines: 29 ===
-// @calls: [#HEX:F.0C.46.00], [#HEX:F.0C.0D.00], [#HEX:F.02.32.00], [#HEX:F.07.18.00] | @calledBy: [#HEX:F.0C.14.00]
+// @calls: [#HEX:F.02.32.00], [#HEX:F.07.18.00], [#HEX:F.0C.0D.00], [#HEX:F.0C.46.00] | @calledBy: [#HEX:F.0C.14.00]
     async _advanceChoreographyStep(targetIdx) {
         if (!this._choreography) return;
         const timeline = this._choreography.timeline;
@@ -678,7 +987,7 @@ export class EBPActorController {
      * Frame-enkenti frissites (30 FPS / clampelt delta mellett is sima).
      */
 // === [#HEX:F.0C.14.00] START | name: update | lines: 38 ===
-// @calls: [#HEX:F.0C.16.00], [#HEX:F.0C.47.00], [#HEX:F.0C.13.00], [#HEX:F.0C.12.00], [#HEX:F.0C.15.00] | @calledBy: [#HEX:F.04.17E.00], [#HEX:F.04.18A.00], [#HEX:F.05.2D.00], [#HEX:F.05.2F.00], [#HEX:F.05.30.00]
+// @calls: [#HEX:F.0C.12.00], [#HEX:F.0C.13.00], [#HEX:F.0C.15.00], [#HEX:F.0C.16.00], [#HEX:F.0C.17.00] | @calledBy: [#HEX:A.05.1B.00], [#HEX:A.05.25.01], [#HEX:B.05.05.00], [#HEX:B.07.2D.00], [#HEX:F.02.0C.00]
     update(deltaSec) {
         // Eloszor levesszuk az elozo frame boneFallback deltajat, igy paused/LoopOnce eseten sem kumulalodik!
         this._revertBoneFallback();
@@ -719,8 +1028,8 @@ export class EBPActorController {
     }
 // === [#HEX:F.0C.14.00] END ===
 
-// === [#HEX:F.0C.15.00] START | name: _updateFadeWeights | lines: 37 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:F.04.14.00] | @calledBy: [#HEX:F.0C.14.00]
+// === [#HEX:F.0C.15.00] START | name: _updateFadeWeights | lines: 58 ===
+// @calls: [#HEX:F.04.14.00], [#HEX:F.04.70.00] | @calledBy: [#HEX:F.0C.14.00]
     _updateFadeWeights(dt) {
         if (this.mainAction && this.mainCurrentWeight < this.mainTargetWeight) {
             this.mainCurrentWeight = Math.min(
@@ -753,6 +1062,27 @@ export class EBPActorController {
             if (item.weight <= 0.001) {
                 item.action.stop();
                 this.prevUpperActions.splice(i, 1);
+            } else {
+                item.action.setEffectiveWeight(item.weight);
+            }
+        }
+
+        for (const item of this.compositeActions) {
+            if (item.currentWeight < item.targetWeight) {
+                item.currentWeight = Math.min(
+                    item.targetWeight,
+                    item.currentWeight + (dt / item.fadeTime) * item.targetWeight
+                );
+                item.action.setEffectiveWeight(item.currentWeight);
+            }
+        }
+        for (let i = this.prevCompositeActions.length - 1; i >= 0; i--) {
+            const item = this.prevCompositeActions[i];
+            item.weight -= (dt / item.fadeOut);
+            if (item.weight <= 0.001) {
+                item.action.stop();
+                if (item.clip) this.mixer.uncacheClip(item.clip);
+                this.prevCompositeActions.splice(i, 1);
             } else {
                 item.action.setEffectiveWeight(item.weight);
             }
@@ -1021,7 +1351,7 @@ export class EBPActorController {
 // === [#HEX:F.0C.19.00] END ===
 
 // === [#HEX:F.0C.1A.00] START | name: getDiagnostics | lines: 19 ===
-// @calls: none | @calledBy: [#HEX:F.0C.38.00], [#HEX:F.0C.39.00], [#HEX:F.0C.3F.00], [#HEX:F.07.1B.00], [#HEX:F.07.1C.00]
+// @calls: none | @calledBy: [#HEX:F.07.1B.00], [#HEX:F.07.1C.00], [#HEX:F.07.1E.00], [#HEX:F.0C.38.00], [#HEX:F.0C.39.00]
     getDiagnostics() {
         return {
             matchedBones: this.rigInfo.matchedBones,
@@ -1043,11 +1373,12 @@ export class EBPActorController {
     }
 // === [#HEX:F.0C.1A.00] END ===
 
-// === [#HEX:F.0C.1B.00] START | name: dispose | lines: 6 ===
-// @calls: [#HEX:F.0C.16.00], [#HEX:F.0C.12.00] | @calledBy: [#HEX:F.04.1C4.00], [#HEX:F.04.1CF.00], [#HEX:F.0C.2D.00], [#HEX:F.0C.2E.00], [#HEX:F.0C.2F.00]
+// === [#HEX:F.0C.1B.00] START | name: dispose | lines: 7 ===
+// @calls: [#HEX:F.0C.12.00], [#HEX:F.0C.16.00], [#HEX:F.0C.4D.00] | @calledBy: [#HEX:F.02.33.00], [#HEX:F.02.34.00], [#HEX:F.04.1C4.00], [#HEX:F.04.1CF.00], [#HEX:F.0C.2D.00]
     dispose() {
         this._revertBoneFallback();
         this.stopChoreography();
+        this.stopCompositeMotion(0);
         this.mixer.stopAllAction();
         this.mixer.uncacheRoot(this.targetRoot);
     }
@@ -1136,7 +1467,7 @@ export class EBPAnimationBank {
      * Betolti a 3 JSON adatbazist es felepiti a kanonikus csontvaz rest-pose terkepet.
      */
 // === [#HEX:F.0C.1E.00] START | name: init | lines: 1 ===
-// @calls: none | @calledBy: [#HEX:F.0C.20.00], [#HEX:F.0C.21.00], [#HEX:F.0C.26.00]
+// @calls: none | @calledBy: [#HEX:F.0C.20.00], [#HEX:F.0C.21.00], [#HEX:F.0C.26.00], [#HEX:F.0C.54.00]
     async init(options = {}) {
 // === [#HEX:F.0C.1E.00] END ===
         if (options.mode) this.mode = options.mode === 'master' ? 'master' : 'packs';
@@ -1167,7 +1498,7 @@ export class EBPAnimationBank {
     }
 
 // === [#HEX:F.0C.1F.00] START | name: _buildCanonicalRestMaps | lines: 50 ===
-// @calls: [#HEX:F.04.1F.00], [#HEX:F.0C.06.00], [#HEX:F.0C.00.00] | @calledBy: none
+// @calls: [#HEX:F.04.1F.00], [#HEX:F.0C.00.00], [#HEX:F.0C.06.00] | @calledBy: none
     _buildCanonicalRestMaps() {
         this.canonRestLocal.clear();
         this.canonRestWorld.clear();
@@ -1241,7 +1572,7 @@ export class EBPAnimationBank {
 // === [#HEX:F.01.1F.00] END ===
 
 // === [#HEX:F.0C.20.00] START | name: loadMaster | lines: 18 ===
-// @calls: [#HEX:F.0C.1E.00], [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00] | @calledBy: [#HEX:F.0C.26.00]
+// @calls: [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00], [#HEX:F.0C.1E.00] | @calledBy: [#HEX:F.0C.26.00]
     async loadMaster() {
         await this.init();
         if (this.masterLoaded) return this.rawClipsMap;
@@ -1263,7 +1594,7 @@ export class EBPAnimationBank {
 // === [#HEX:F.0C.20.00] END ===
 
 // === [#HEX:F.0C.21.00] START | name: loadPack | lines: 20 ===
-// @calls: [#HEX:F.0C.1E.00], [#HEX:F.0C.22.00], [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00] | @calledBy: [#HEX:F.0C.26.00]
+// @calls: [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00], [#HEX:F.0C.1E.00], [#HEX:F.0C.22.00] | @calledBy: [#HEX:F.0C.26.00]
     async loadPack(category) {
         await this.init();
         if (this.masterLoaded || this.loadedPacks.has(category)) return this.rawClipsMap;
@@ -1275,7 +1606,7 @@ export class EBPAnimationBank {
         }
 
 // === [#HEX:F.0C.22.00] START | name: prom | lines: 6 ===
-// @calls: [#HEX:F.0C.1D.00], [#HEX:F.01.1F.00] | @calledBy: [#HEX:F.0C.21.00]
+// @calls: [#HEX:F.01.1F.00], [#HEX:F.0C.1D.00] | @calledBy: [#HEX:F.0C.21.00]
         const prom = (async () => {
             const gltf = await this._loadGlbWithFallback(packInfo.file);
             this._registerGltfClips(gltf);
@@ -1352,7 +1683,7 @@ export class EBPAnimationBank {
 // === [#HEX:F.0C.23.00] END ===
 
 // === [#HEX:F.0C.24.00] START | name: getClipMeta | lines: 5 ===
-// @calls: [#HEX:F.0C.23.00] | @calledBy: [#HEX:F.0C.26.00], [#HEX:F.07.1B.00], [#HEX:F.0C.40.00]
+// @calls: [#HEX:F.0C.23.00] | @calledBy: [#HEX:F.07.1B.00], [#HEX:F.0C.26.00], [#HEX:F.0C.40.00], [#HEX:F.0C.5A.00], [#HEX:F.0C.5C.00]
     getClipMeta(clipName) {
         if (!this.manifest) return null;
         const resolved = this.resolveClipName(clipName);
@@ -1395,7 +1726,7 @@ export class EBPAnimationBank {
     }
 
 // === [#HEX:F.0C.26.00] START | name: ensureClipLoaded | lines: 24 ===
-// @calls: [#HEX:F.0C.24.00], [#HEX:F.0C.1E.00], [#HEX:F.0C.23.00], [#HEX:F.0C.20.00], [#HEX:F.0C.21.00] | @calledBy: none
+// @calls: [#HEX:F.0C.1E.00], [#HEX:F.0C.20.00], [#HEX:F.0C.21.00], [#HEX:F.0C.23.00], [#HEX:F.0C.24.00] | @calledBy: none
     async ensureClipLoaded(clipOrAlias) {
         await this.init();
         const clipName = this.resolveClipName(clipOrAlias);
@@ -1426,7 +1757,7 @@ export class EBPAnimationBank {
      * Kinyeri es rogziti a celmodell érintetlen rest-pozat, csontfajlalasat es morphTarget-jeit.
      */
 // === [#HEX:F.0C.27.00] START | name: inspectAndExtractRig | lines: 152 ===
-// @calls: [#HEX:F.0C.28.00], [#HEX:F.0C.06.00], [#HEX:F.0C.00.00] | @calledBy: none
+// @calls: [#HEX:F.0C.00.00], [#HEX:F.0C.06.00], [#HEX:F.0C.28.00] | @calledBy: none
     inspectAndExtractRig(targetRoot) {
         targetRoot.updateMatrixWorld(true);
 
@@ -1920,7 +2251,7 @@ export class EBPAnimationBank {
      * Kiszamitja az alapertelmezett 7 fogopontos sablon arc-maszkot (Head-lokalis terben).
      */
 // === [#HEX:F.0C.2B.00] START | name: estimateDefaultFaceMask | lines: 49 ===
-// @calls: [#HEX:F.0C.2A.00], [#HEX:F.0C.2C.00], [#HEX:F.0C.01.00] | @calledBy: [#HEX:F.0C.3F.00]
+// @calls: [#HEX:F.0C.01.00], [#HEX:F.0C.2A.00], [#HEX:F.0C.2C.00] | @calledBy: [#HEX:F.0C.3F.00]
     estimateDefaultFaceMask(rigInfo, targetRoot) {
         const data = this._collectHeadFaceData(rigInfo, targetRoot);
         const H = data.topYEst || 0.22;
@@ -1980,7 +2311,7 @@ export class EBPAnimationBank {
      * (19 valodi GPU ARKit MorphTarget zonava forditva, barmilyen skinning-sulyrongalas nelkul).
      */
 // === [#HEX:F.0C.2D.00] START | name: bindFaceMaskToModel | lines: 246 ===
-// @calls: [#HEX:F.0C.2A.00], [#HEX:F.0C.02.00], [#HEX:F.0C.01.00], [#HEX:F.0C.03.00], [#HEX:F.0C.2E.00] | @calledBy: [#HEX:F.0C.3E.00]
+// @calls: [#HEX:F.0C.01.00], [#HEX:F.0C.02.00], [#HEX:F.0C.03.00], [#HEX:F.0C.1B.00], [#HEX:F.0C.2A.00] | @calledBy: [#HEX:F.0C.3E.00]
     bindFaceMaskToModel(rigInfo, targetRoot, maskProfile) {
         if (!rigInfo || !targetRoot || !maskProfile || !maskProfile.points) {
             return { boundMeshes: 0, affectedVertices: 0, morphCount: 0 };
@@ -1998,7 +2329,7 @@ export class EBPAnimationBank {
         }
 
 // === [#HEX:F.0C.2E.00] START | name: toVec | lines: 217 ===
-// @calls: [#HEX:F.0C.02.00], [#HEX:F.0C.01.00], [#HEX:F.0C.03.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.0C.2D.00]
+// @calls: [#HEX:F.0C.01.00], [#HEX:F.0C.02.00], [#HEX:F.0C.03.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.0C.2D.00]
         const toVec = (arr) => new THREE.Vector3(Number(arr[0]) || 0, Number(arr[1]) || 0, Number(arr[2]) || 0);
         const browL = toVec(pts.browL);
         const browR = toVec(pts.browR);
@@ -2266,7 +2597,7 @@ export class EBPAnimationBank {
      * Csatol egy cel 3D modellt (Scene/Group) es visszaad egy EBPActorController-t.
      */
 // === [#HEX:F.0C.30.00] START | name: attachModel | lines: 1 ===
-// @calls: none | @calledBy: [#HEX:F.0C.3F.00]
+// @calls: none | @calledBy: [#HEX:F.02.33.00], [#HEX:F.04.266.00], [#HEX:F.0C.3F.00]
     attachModel(targetRoot, options = {}) {
 // === [#HEX:F.0C.30.00] END ===
         if (!targetRoot) throw new Error('attachModel: Hianyzo targetRoot 3D objektum.');
@@ -2274,9 +2605,20 @@ export class EBPAnimationBank {
             throw new Error('EBPAnimationBank meg nincs inicializalva! Elobb hivd az await bank.init() metodust.');
         }
         const rigInfo = this.inspectAndExtractRig(targetRoot);
-        if (rigInfo.morphTargetCount === 0) {
+        if (rigInfo.morphTargetCount === 0 && options.autoFaceMask !== false) {
             const mKey = normalizeModelKey(options.modelKey || targetRoot.name || '');
-            const profile = options.faceMaskProfile || (mKey && this.faceMasks && this.faceMasks[mKey]) || null;
+            let localProfile = null;
+            try {
+                if (mKey && typeof localStorage !== 'undefined') {
+                    const rawMasks = localStorage.getItem('ebp_face_masks_v1');
+                    const parsedMasks = rawMasks ? JSON.parse(rawMasks) : null;
+                    if (parsedMasks && parsedMasks[mKey]) localProfile = parsedMasks[mKey];
+                }
+            } catch (_e) {}
+            const profile = options.faceMaskProfile
+                || localProfile
+                || (mKey && this.faceMasks && this.faceMasks[mKey])
+                || (rigInfo.headBone ? this.estimateDefaultFaceMask(rigInfo, targetRoot) : null);
             if (profile) {
                 this.bindFaceMaskToModel(rigInfo, targetRoot, profile);
             }
@@ -2415,6 +2757,191 @@ export class EBPAnimationBank {
     /**
      * Masolhato Three.js kodreszlet generalasa a fejlesztoi muhelyhez.
      */
+    /**
+     * Magyar vagy angol promptbol kulonallo idoszeletelt es testzona-retegzett kompozit mozgasreceptet allit ossze.
+     */
+// === [#HEX:F.0C.4F.00] START | name: synthesizeCompositeFromPrompt | lines: 175 ===
+// @calls: [#HEX:B.07.A1.00], [#HEX:F.0C.05.00], [#HEX:F.0C.50.00] | @calledBy: [#HEX:F.0C.5E.00]
+    synthesizeCompositeFromPrompt(promptText) {
+        if (!this.manifest || !Array.isArray(this.manifest.clips)) {
+            throw new Error('A manifest meg nincs betoltve.');
+        }
+        const clips = this.manifest.clips;
+        const norm = stripAccents(promptText || '');
+
+        // 1. Cel aloldal detektalasa
+        let subpageId = 'hajomuhely';
+        if (/taverna|kocsma|pult|csapos|korso|sor/.test(norm)) subpageId = 'taverna';
+        else if (/szentely|konyvszentely|templom|oltar|paideia/.test(norm)) subpageId = 'konyvszentely';
+        else if (/hajojavito|hajomuhely|hajomester|acs|hegeszt|kovacs|szerelo|muhely/.test(norm)) subpageId = 'hajomuhely';
+        else if (/piac|stand|kofa|arus/.test(norm)) subpageId = 'piac';
+        else if (/bank|kincstar|trezor|arany/.test(norm)) subpageId = 'bank';
+        else if (/masolo|terkepmasolo|scriptorium/.test(norm)) subpageId = 'masolatok';
+        else if (/tekercs|irnok/.test(norm)) subpageId = 'tekercsmester';
+        else if (/kolostor|felhokolostor|csarnok|udvar/.test(norm)) subpageId = 'felhokolostor';
+        else if (/kikoto|molo|dokk|part|sziget/.test(norm)) subpageId = 'kikoto';
+
+        // 2. Javasolt karaktermodell detektalasa
+        let suggestedModelPath = '';
+        if (/hegeszt|munkas|szerelo|vas/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_Ironbound_Artisan_20261123_animated_mixamo_All_animation.glb';
+        } else if (/kovacs/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_The_Weathered_Blacksmith.glb';
+        } else if (/mernok|gepesz|ingenier/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_Mechanic_ingenierin.glb';
+        } else if (/sefszakacs|szakacs|chef|foz/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_Chef_20261123_animated_mixamo_All_animation.glb';
+        } else if (/barba\s*negra|kapitany/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_BarbaNegra.glb';
+        } else if (/zozo/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_Zozo.glb';
+        } else if (/paideia/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_Paideia.glb';
+        } else if (/szoke\s*rozmar/.test(norm)) {
+            suggestedModelPath = 'assets/models/karakterek/Animalt_SzokeRozmar.glb';
+        }
+
+// === [#HEX:F.0C.50.00] START | name: scoreClips | lines: 18 ===
+// @calls: [#HEX:F.0C.05.00] | @calledBy: [#HEX:F.0C.4F.00]
+        const scoreClips = (keywords, preferCats = [], avoidSubstrings = []) => {
+            const ranked = clips.map((c) => {
+                const hay = stripAccents(`${c.name} ${c.titleHu || ''} ${c.category || ''}`);
+                let score = 0;
+                if (preferCats.includes(c.category)) score += 6;
+                for (const [kw, w] of keywords) {
+                    if (hay.includes(kw)) score += w;
+                }
+                for (const av of avoidSubstrings) {
+                    if (hay.includes(av)) score -= 8;
+                }
+                if (Array.isArray(c.motionFlags) && c.motionFlags.includes('full_turn')) score -= 6;
+                if (c.durationSec >= 1.2 && c.durationSec <= 12) score += 1;
+                return { clip: c, score };
+            });
+            ranked.sort((a, b) => b.score - a.score);
+            return ranked;
+        };
+// === [#HEX:F.0C.50.00] END ===
+
+        // 3. Testtartas (Base / Lower) es keztartas (Hands / Arms) kinyerese
+        const hasUpperAction = /keztartas|kez|kar|masz|hegeszt|kalapal|dolgoz|javit|fog|tart|integet|olvas|ir|celoz/.test(norm);
+        const hasBasePosture = /testtartas|guggol|terdel|ul|all|harci|alapallas|felugrik|hajol/.test(norm);
+
+        const baseKeywords = [];
+        const baseCats = [];
+        if (/harc|harci|csata|fegyver|kard|vedekez/.test(norm)) {
+            baseCats.push('combat');
+            baseKeywords.push(['harci', 6], ['combat', 6], ['stance', 5], ['alapallas', 5], ['guard', 4], ['block', 4], ['shield', 3]);
+        }
+        if (/guggol|alacsony/.test(norm)) {
+            baseCats.push('combat', 'reactions_idle', 'sit_work');
+            baseKeywords.push(['crouch', 14], ['guggol', 14], ['kneel', 7], ['terdel', 7], ['low', 5], ['bow', 3]);
+        }
+        if (/terdel/.test(norm)) {
+            baseCats.push('sit_work', 'reactions_idle');
+            baseKeywords.push(['kneel', 14], ['terdel', 14], ['crouch', 6], ['guggol', 6]);
+        }
+        if (/ul|szek|torokules/.test(norm)) {
+            baseCats.push('sit_work');
+            baseKeywords.push(['sit', 12], ['ul', 12], ['chair', 8]);
+        }
+        if (baseKeywords.length === 0) {
+            baseCats.push('reactions_idle', 'sit_work', 'combat');
+            baseKeywords.push(['idle', 6], ['alapallas', 6], ['stance', 5]);
+        }
+
+        const baseRanked = scoreClips(baseKeywords, baseCats, ['death', 'fall', 'backflip']);
+        const baseBest = baseRanked[0].clip;
+        const baseFreeze = /merev|kimerevit|mozdulatlan|statikus/.test(norm);
+        const baseDur = Math.max(0.2, baseBest.durationSec || 2.0);
+        const baseStart = /guggol|crouch|terdel|kneel/.test(stripAccents(baseBest.name + ' ' + (baseBest.titleHu || '')))
+            ? +(baseDur * 0.22).toFixed(2) : 0;
+        const baseEnd = Math.min(baseDur, +(Math.max(baseStart + 0.5, baseDur * 0.65)).toFixed(2));
+
+        const layers = [{
+            id: 'layer_base',
+            label: 'Alap Testtartás (Lábak + Csípő + Törzs)',
+            clip: baseBest.name,
+            bodyZone: 'full',
+            startSec: baseStart,
+            endSec: baseEnd,
+            mode: baseFreeze ? 'freeze' : 'pingpong',
+            speed: baseFreeze ? 0 : 0.45,
+            weight: 1.0
+        }];
+
+        const layerAlternatives = [baseRanked.slice(0, 14).map((x) => x.clip)];
+
+        if (hasUpperAction || hasBasePosture) {
+            const handKeywords = [];
+            const handCats = [];
+            let armZone = 'arms';
+            if (/jobb\s*kez|jobb\s*kar/.test(norm)) armZone = 'right_arm';
+            else if (/bal\s*kez|bal\s*kar/.test(norm)) armZone = 'left_arm';
+            else if (/felso\s*test|torzs/.test(norm)) armZone = 'upper';
+
+            if (/masz/.test(norm)) {
+                handCats.push('climb_parkour');
+                handKeywords.push(['climb', 12], ['masz', 12], ['hang', 9], ['fugg', 9], ['ledge', 8], ['wall', 6], ['ladder', 6], ['bar', 5]);
+            }
+            if (/hegeszt|javit|szerel|kalapal|dolgoz|szerszam/.test(norm)) {
+                handCats.push('climb_parkour', 'sit_work', 'combat');
+                handKeywords.push(['climb', 6], ['hang', 5], ['hold', 6], ['reach', 6], ['work', 6], ['pick', 5], ['torch', 8], ['axe', 4], ['slash', 4]);
+            }
+            if (/celoz|tart|fog/.test(norm)) {
+                handCats.push('combat', 'social_talk');
+                handKeywords.push(['aim', 8], ['hold', 7], ['celoz', 8], ['point', 6]);
+            }
+            if (/integet|beszel|magyaraz/.test(norm)) {
+                handCats.push('social_talk');
+                handKeywords.push(['talk', 9], ['beszel', 9], ['wave', 8], ['gesture', 8], ['agree', 6]);
+            }
+            if (handKeywords.length === 0) {
+                handCats.push('climb_parkour', 'sit_work', 'social_talk');
+                handKeywords.push(['climb', 6], ['hold', 6], ['gesture', 5]);
+            }
+
+            const handRanked = scoreClips(handKeywords, handCats, ['backflip', 'death']);
+            const handBest = handRanked[0].clip;
+            const hDur = Math.max(0.2, handBest.durationSec || 2.0);
+            const hStart = +(hDur * 0.20).toFixed(2);
+            const hEnd = Math.min(hDur, +(Math.max(hStart + 0.5, hDur * 0.65)).toFixed(2));
+            const wantsLoop = /lupol|loop|ismetel|folyamatos|hegeszt|kalapal|dolgoz|csiszol/.test(norm);
+
+            layers.push({
+                id: 'layer_hands',
+                label: 'Kéztartás / Felsőtest Akció',
+                clip: handBest.name,
+                bodyZone: armZone,
+                startSec: hStart,
+                endSec: hEnd,
+                mode: wantsLoop ? 'pingpong' : 'loop',
+                speed: 0.85,
+                weight: 1.0
+            });
+            layerAlternatives.push(handRanked.slice(0, 14).map((x) => x.clip));
+        }
+
+        const recipe = {
+            schema: 'EBPCompositeMotion@1.0',
+            name: (promptText || 'Egyedi kompozit mozgás').slice(0, 64),
+            prompt: promptText || '',
+            lockRootXZ: true,
+            mimic: /koncentral|dolgoz|hegeszt|komoly/.test(norm) ? 'worried_frown' : 'neutral',
+            mimicWeight: 0.7,
+            layers
+        };
+
+        return {
+            recipe,
+            subpageId,
+            suggestedModelPath,
+            layerAlternatives,
+            explanationHu: `${layers.length} réteg összeállítva (${layers.map((l) => `${l.clip} [${l.bodyZone}: ${l.startSec}s–${l.endSec}s, ${l.mode}]`).join(' + ')}) → Cél: ${subpageId}`
+        };
+    }
+// === [#HEX:F.0C.4F.00] END ===
+
 // === [#HEX:F.0C.33.00] START | name: generateCodeSnippet | lines: 1 ===
 // @calls: none | @calledBy: [#HEX:F.0C.38.00]
     generateCodeSnippet(cfg = {}) {
@@ -2444,15 +2971,19 @@ export class EBPAnimationBank {
             "const actorModel = gltf.scene;",
             "scene.add(actorModel);",
             "",
-            `const actor = animBank.attachModel(actorModel, ${attachOpts});`,
-            `await actor.play('${clipName}', { fadeIn: 0.3, loop: true, speed: ${speed}, lockRootXZ: ${lockRootXZ} });`
+            `const actor = animBank.attachModel(actorModel, ${attachOpts});`
         ];
 
-        if (upperClipName) {
-            lines.push(`await actor.playUpperBody('${upperClipName}', { fadeIn: 0.25, loop: true, weight: 0.9 });`);
+        if (cfg.compositeRecipe && Array.isArray(cfg.compositeRecipe.layers) && cfg.compositeRecipe.layers.length > 0) {
+            lines.push(`await actor.playCompositeMotion(${JSON.stringify(cfg.compositeRecipe, null, 2)});`);
+        } else {
+            lines.push(`await actor.play('${clipName}', { fadeIn: 0.3, loop: true, speed: ${speed}, lockRootXZ: ${lockRootXZ} });`);
+            if (upperClipName) {
+                lines.push(`await actor.playUpperBody('${upperClipName}', { fadeIn: 0.25, loop: true, weight: 0.9 });`);
+            }
+            lines.push(`actor.setMimic('${mimicId}', { weight: 1.0, speak: ${Boolean(cfg.speak)} });`);
         }
 
-        lines.push(`actor.setMimic('${mimicId}', { weight: 1.0, speak: ${Boolean(cfg.speak)} });`);
         lines.push("");
         lines.push("// 3. Render loop-ban (30 FPS / deltaSec):");
         lines.push("// actor.update(deltaSec);");
@@ -2460,7 +2991,373 @@ export class EBPAnimationBank {
     }
 }
 
+// ============================================================================
+// EBPSubpageCharacterStore & Runtime - Studio karakterek elo aloldali futtatasa
+// ============================================================================
+export const EBP_SUBPAGE_CHARACTERS_STORAGE_KEY = 'ebp_subpage_characters_v1';
+export const EBP_SUBPAGE_SYNC_CHANNEL = 'ebp_character_studio_sync';
+const GCS_MODELS_BASE = 'https://storage.googleapis.com/kalozsziget-assets/';
+
+export const SUBPAGE_CATALOG = [
+    { id: 'hajomuhely', label: '🔨 Hajójavító Műhely', defaultPos: [0.6, 0.0, 1.8], defaultScale: 1.0 },
+    { id: 'taverna', label: '🍺 Taverna', defaultPos: [0.0, 0.0, 1.5], defaultScale: 1.0 },
+    { id: 'konyvszentely', label: '🏛️ Paideia Könyvszentély', defaultPos: [0.0, 0.0, 2.0], defaultScale: 1.0 },
+    { id: 'piac', label: '⚖️ Piac', defaultPos: [0.0, 0.0, 1.5], defaultScale: 1.0 },
+    { id: 'bank', label: '🏦 Bank', defaultPos: [0.0, 0.0, 1.5], defaultScale: 1.0 },
+    { id: 'masolatok', label: '📜 Másolóműhely', defaultPos: [0.0, 0.0, 0.5], defaultScale: 1.0 },
+    { id: 'tekercsmester', label: '🪶 Tekercsmester', defaultPos: [0.0, 0.0, 0.5], defaultScale: 1.0 },
+    { id: 'felhokolostor', label: '☁️ Felhőkolostor', defaultPos: [0.0, 0.0, 18.0], defaultScale: 1.0 },
+    { id: 'kikoto', label: '⚓ HEBOK Kikötő', defaultPos: [-20.0, 2.0, 0.0], defaultScale: 1.0 }
+];
+
+// === [#HEX:F.04.364.00] START | name: loadSubpageCharacters | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.365.00], [#HEX:F.04.366.00], [#HEX:F.04.367.00]
+export function loadSubpageCharacters() {
+    try {
+        const raw = localStorage.getItem(EBP_SUBPAGE_CHARACTERS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (_e) {
+        return [];
+    }
+}
+// === [#HEX:F.04.364.00] END ===
+
+// === [#HEX:F.04.365.00] START | name: getSubpageCharacters | lines: 3 ===
+// @calls: [#HEX:F.04.364.00] | @calledBy: [#HEX:F.02.33.00], [#HEX:F.0C.5F.00], [#HEX:F.0C.60.00]
+export function getSubpageCharacters(subpageId) {
+    return loadSubpageCharacters().filter((c) => c && c.subpageId === subpageId && c.enabled !== false);
+}
+// === [#HEX:F.04.365.00] END ===
+
+// === [#HEX:F.04.366.00] START | name: saveSubpageCharacter | lines: 17 ===
+// @calls: [#HEX:F.04.364.00], [#HEX:F.04.368.00] | @calledBy: [#HEX:F.0C.60.00]
+export function saveSubpageCharacter(actorCfg) {
+    if (!actorCfg || !actorCfg.subpageId || !actorCfg.modelPath) return null;
+    const list = loadSubpageCharacters();
+    const id = actorCfg.id || (`actor_${Date.now()}_${Math.floor(Math.random() * 1000)}`);
+    const nextCfg = {
+        ...actorCfg,
+        id,
+        enabled: actorCfg.enabled !== false,
+        updatedAt: new Date().toISOString()
+    };
+    const idx = list.findIndex((c) => c.id === id);
+    if (idx >= 0) list[idx] = nextCfg;
+    else list.push(nextCfg);
+    localStorage.setItem(EBP_SUBPAGE_CHARACTERS_STORAGE_KEY, JSON.stringify(list));
+    broadcastSubpageCharactersUpdate(nextCfg.subpageId);
+    return nextCfg;
+}
+// === [#HEX:F.04.366.00] END ===
+
+// === [#HEX:F.04.367.00] START | name: deleteSubpageCharacter | lines: 8 ===
+// @calls: [#HEX:F.04.364.00], [#HEX:F.04.368.00] | @calledBy: [#HEX:F.0C.5F.00]
+export function deleteSubpageCharacter(actorId) {
+    const list = loadSubpageCharacters();
+    const target = list.find((c) => c.id === actorId);
+    const filtered = list.filter((c) => c.id !== actorId);
+    localStorage.setItem(EBP_SUBPAGE_CHARACTERS_STORAGE_KEY, JSON.stringify(filtered));
+    if (target) broadcastSubpageCharactersUpdate(target.subpageId);
+    return filtered;
+}
+// === [#HEX:F.04.367.00] END ===
+
+// === [#HEX:F.04.368.00] START | name: broadcastSubpageCharactersUpdate | lines: 9 ===
+// @calls: none | @calledBy: [#HEX:F.04.366.00], [#HEX:F.04.367.00]
+export function broadcastSubpageCharactersUpdate(subpageId = '*') {
+    try {
+        if (typeof BroadcastChannel !== 'undefined') {
+            const ch = new BroadcastChannel(EBP_SUBPAGE_SYNC_CHANNEL);
+            ch.postMessage({ type: 'subpage_characters_updated', subpageId, ts: Date.now() });
+            ch.close();
+        }
+    } catch (_e) {}
+}
+// === [#HEX:F.04.368.00] END ===
+
+// === [#HEX:F.0C.51.00] START | name: isLocalDevHost | lines: 5 ===
+// @calls: none | @calledBy: [#HEX:F.02.33.00], [#HEX:F.0C.53.00]
+function isLocalDevHost() {
+    if (typeof window === 'undefined' || !window.location) return false;
+    const h = window.location.hostname;
+    return h === 'localhost' || h === '127.0.0.1' || h.indexOf('192.168.') === 0 || window.location.protocol === 'file:';
+}
+// === [#HEX:F.0C.51.00] END ===
+
+let _prodSubpageCharsCache = null;
+let _prodSubpageCharsPromise = null;
+
+// === [#HEX:F.04.369.00] START | name: fetchProductionSubpageCharacters | lines: 14 ===
+// @calls: none | @calledBy: [#HEX:F.02.33.00]
+export async function fetchProductionSubpageCharacters(force = false) {
+    if (!force && Array.isArray(_prodSubpageCharsCache)) return _prodSubpageCharsCache;
+    if (force) _prodSubpageCharsPromise = null;
+    if (!_prodSubpageCharsPromise) {
+        _prodSubpageCharsPromise = fetch('./subpage_characters.json?v=20261126c', { cache: 'no-cache' })
+            .then((res) => (res.ok ? res.json() : []))
+            .then((data) => {
+                _prodSubpageCharsCache = Array.isArray(data) ? data : [];
+                return _prodSubpageCharsCache;
+            })
+            .catch(() => []);
+    }
+    return _prodSubpageCharsPromise;
+}
+// === [#HEX:F.04.369.00] END ===
+
+// === [#HEX:F.0C.52.00] START | name: normalizeCharacterModelRelPath | lines: 3 ===
+// @calls: none | @calledBy: [#HEX:F.0C.57.00]
+function normalizeCharacterModelRelPath(path) {
+    return String(path || '').replace(/^(\.\.\/)+/, '').replace(/^\.\//, '').replace(/^\/+/, '');
+}
+// === [#HEX:F.0C.52.00] END ===
+
+export class EBPSubpageCharacterRuntime {
+// === [#HEX:F.0C.53.00] START | name: constructor | lines: 14 ===
+// @calls: [#HEX:F.0C.51.00], [#HEX:F.0C.55.00] | @calledBy: [#HEX:F.0C.4A.00]
+    constructor() {
+        this.bank = new EBPAnimationBank({
+            mode: 'packs',
+            baseUrl: isLocalDevHost() ? 'assets/models/animations/' : GCS_ANIM_BASE_URL
+        });
+        this.loader = new GLTFLoader();
+        this.mounted = new Map(); // sceneId -> Map<actorId, { root, controller, updatedAt }>
+        this.scenes = new Map();  // sceneId -> entry
+        this._initPromise = null;
+        this._timerId = null;
+        this._lastTickMs = 0;
+
+        this._setupLiveSyncListeners();
+    }
+// === [#HEX:F.0C.53.00] END ===
+
+// === [#HEX:F.0C.54.00] START | name: ensureReady | lines: 6 ===
+// @calls: [#HEX:F.0C.1E.00] | @calledBy: [#HEX:F.02.33.00]
+    async ensureReady() {
+        if (!this._initPromise) {
+            this._initPromise = this.bank.init();
+        }
+        return this._initPromise;
+    }
+// === [#HEX:F.0C.54.00] END ===
+
+// === [#HEX:F.0C.55.00] START | name: _setupLiveSyncListeners | lines: 24 ===
+// @calls: [#HEX:F.02.33.00] | @calledBy: [#HEX:F.0C.53.00]
+    _setupLiveSyncListeners() {
+        if (typeof BroadcastChannel !== 'undefined') {
+            try {
+                this._bc = new BroadcastChannel(EBP_SUBPAGE_SYNC_CHANNEL);
+                this._bc.onmessage = (ev) => {
+                    if (!ev || !ev.data || ev.data.type !== 'subpage_characters_updated') return;
+                    const targetId = ev.data.subpageId;
+                    this.scenes.forEach((entry, sId) => {
+                        if (targetId === '*' || targetId === sId || (targetId === 'kikoto' && sId === 'kikoto_3d')) {
+                            this.syncScene(entry);
+                        }
+                    });
+                };
+            } catch (_e) {}
+        }
+        window.addEventListener('storage', (ev) => {
+            if (ev && ev.key === EBP_SUBPAGE_CHARACTERS_STORAGE_KEY) {
+                this.scenes.forEach((entry) => this.syncScene(entry));
+            }
+        });
+        document.addEventListener('visibilitychange', () => {
+            this._lastTickMs = performance.now();
+        });
+    }
+// === [#HEX:F.0C.55.00] END ===
+
+// === [#HEX:F.0C.56.00] START | name: _ensureLoopRunning | lines: 21 ===
+// @calls: [#HEX:F.0C.14.00] | @calledBy: [#HEX:F.02.33.00], [#HEX:F.02.34.00]
+    _ensureLoopRunning() {
+        let total = 0;
+        this.mounted.forEach((m) => { total += m.size; });
+        if (total > 0 && this._timerId === null) {
+            this._lastTickMs = performance.now();
+            this._timerId = window.setInterval(() => {
+                if (document.hidden) return;
+                const now = performance.now();
+                const dt = Math.min(0.066, Math.max(0.001, (now - this._lastTickMs) / 1000));
+                this._lastTickMs = now;
+                this.mounted.forEach((actorMap) => {
+                    actorMap.forEach((inst) => {
+                        if (inst.controller) inst.controller.update(dt);
+                    });
+                });
+            }, 33);
+        } else if (total === 0 && this._timerId !== null) {
+            clearInterval(this._timerId);
+            this._timerId = null;
+        }
+    }
+// === [#HEX:F.0C.56.00] END ===
+
+// === [#HEX:F.0C.57.00] START | name: _loadGltfWithFallback | lines: 5 ===
+// @calls: [#HEX:F.0C.52.00] | @calledBy: [#HEX:F.02.33.00]
+    async _loadGltfWithFallback(relPath) {
+        const clean = normalizeCharacterModelRelPath(relPath);
+        if (/^https?:\/\//i.test(clean) || /^blob:/i.test(clean)) {
+            return await this.loader.loadAsync(clean);
+        }
+// === [#HEX:F.0C.57.00] END ===
+        if (!isLocalDevHost()) {
+            return await this.loader.loadAsync(GCS_MODELS_BASE + clean);
+        }
+        try {
+            return await this.loader.loadAsync(clean);
+        } catch (_localErr) {
+            return await this.loader.loadAsync(GCS_MODELS_BASE + clean);
+        }
+    }
+
+// === [#HEX:F.02.33.00] START | name: syncScene | lines: 90 ===
+// @calls: [#HEX:F.04.365.00], [#HEX:F.04.369.00], [#HEX:F.07.18.00], [#HEX:F.07.1D.00], [#HEX:F.0C.04.00] | @calledBy: [#HEX:F.01.20.00], [#HEX:F.01.22.00], [#HEX:F.0C.55.00]
+    async syncScene(entry) {
+        if (!entry || !entry.id || !entry.scene) return;
+        this.scenes.set(entry.id, entry);
+        const queryId = entry.id === 'kikoto_3d' ? 'kikoto' : entry.id;
+
+        const mergedById = new Map();
+        const prodAll = await fetchProductionSubpageCharacters();
+        for (const c of prodAll) {
+            if (c && c.subpageId === queryId && c.enabled !== false && c.id) {
+                mergedById.set(c.id, c);
+            }
+        }
+        if (isLocalDevHost()) {
+            for (const c of getSubpageCharacters(queryId)) {
+                if (!c || !c.id) continue;
+                const prod = mergedById.get(c.id);
+                const prodTs = prod && prod.updatedAt ? Date.parse(prod.updatedAt) : 0;
+                const localTs = c.updatedAt ? Date.parse(c.updatedAt) : 0;
+                if (!prod || localTs >= prodTs) {
+                    mergedById.set(c.id, c);
+                }
+            }
+        }
+        const desiredList = Array.from(mergedById.values());
+        if (desiredList.length === 0 && !this.mounted.has(entry.id)) return;
+
+        await this.ensureReady();
+
+        if (!this.mounted.has(entry.id)) {
+            this.mounted.set(entry.id, new Map());
+        }
+        const actorMap = this.mounted.get(entry.id);
+        const desiredIds = new Set(desiredList.map((c) => c.id));
+
+        for (const [id, inst] of actorMap.entries()) {
+            if (!desiredIds.has(id)) {
+                if (inst.controller) inst.controller.dispose();
+                if (inst.root && inst.root.parent) inst.root.parent.remove(inst.root);
+                actorMap.delete(id);
+            }
+        }
+
+        for (const cfg of desiredList) {
+            const existing = actorMap.get(cfg.id);
+            if (existing && existing.updatedAt === cfg.updatedAt) {
+                this._applySpatialTransform(existing.root, cfg);
+                continue;
+            }
+            if (existing) {
+                if (existing.controller) existing.controller.dispose();
+                if (existing.root && existing.root.parent) existing.root.parent.remove(existing.root);
+                actorMap.delete(cfg.id);
+            }
+            try {
+                const gltf = await this._loadGltfWithFallback(cfg.modelPath);
+                if (!this.scenes.has(entry.id)) continue;
+                const root = gltf.scene;
+                root.name = `StudioActor_${cfg.name || cfg.id}`;
+                root.userData = root.userData || {};
+                root.userData.rootObject = root;
+                root.userData.studioActorId = cfg.id;
+                root.userData.studioActorSubpage = entry.id;
+                root.traverse((c) => {
+                    if (c.isMesh) {
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                        c.userData = c.userData || {};
+                        c.userData.rootObject = root;
+                    }
+                });
+                this._applySpatialTransform(root, cfg);
+                entry.scene.add(root);
+
+                const mKey = normalizeModelKey(cfg.modelPath);
+                const controller = this.bank.attachModel(root, {
+                    modelKey: mKey,
+                    lockRootXZ: cfg.recipe ? cfg.recipe.lockRootXZ !== false : true,
+                    speed: typeof cfg.speed === 'number' ? cfg.speed : 1.0
+                });
+
+                if (cfg.recipe && Array.isArray(cfg.recipe.layers) && cfg.recipe.layers.length > 0) {
+                    await controller.playCompositeMotion(cfg.recipe, { fadeIn: 0.25 });
+                } else if (cfg.clip) {
+                    await controller.play(cfg.clip, { loop: true, lockRootXZ: true });
+                }
+                if (cfg.mimic) {
+                    controller.setMimic(cfg.mimic, { weight: typeof cfg.mimicWeight === 'number' ? cfg.mimicWeight : 0.8 });
+                }
+
+                actorMap.set(cfg.id, { root, controller, updatedAt: cfg.updatedAt });
+            } catch (err) {
+                console.warn('[EBPSubpageCharacterRuntime] Karakter betöltési hiba:', cfg.modelPath, err);
+            }
+        }
+        this._ensureLoopRunning();
+    }
+// === [#HEX:F.02.33.00] END ===
+
+// === [#HEX:F.0C.58.00] START | name: _applySpatialTransform | lines: 12 ===
+// @calls: none | @calledBy: [#HEX:F.02.33.00]
+    _applySpatialTransform(root, cfg) {
+        const p = Array.isArray(cfg.position) ? cfg.position : [0, 0, 0];
+        const r = Array.isArray(cfg.rotationDeg) ? cfg.rotationDeg : [0, 0, 0];
+        const s = Array.isArray(cfg.scale) ? cfg.scale : [1, 1, 1];
+        root.position.set(Number(p[0]) || 0, Number(p[1]) || 0, Number(p[2]) || 0);
+        root.rotation.set(
+            THREE.MathUtils.degToRad(Number(r[0]) || 0),
+            THREE.MathUtils.degToRad(Number(r[1]) || 0),
+            THREE.MathUtils.degToRad(Number(r[2]) || 0)
+        );
+        root.scale.set(Number(s[0]) || 1, Number(s[1]) || 1, Number(s[2]) || 1);
+    }
+// === [#HEX:F.0C.58.00] END ===
+
+// === [#HEX:F.02.34.00] START | name: detachScene | lines: 12 ===
+// @calls: [#HEX:F.0C.1B.00], [#HEX:F.0C.56.00] | @calledBy: [#HEX:F.01.21.00], [#HEX:F.01.23.00]
+    detachScene(sceneId) {
+        const actorMap = this.mounted.get(sceneId);
+        if (actorMap) {
+            actorMap.forEach((inst) => {
+                if (inst.controller) inst.controller.dispose();
+                if (inst.root && inst.root.parent) inst.root.parent.remove(inst.root);
+            });
+            this.mounted.delete(sceneId);
+        }
+        this.scenes.delete(sceneId);
+        this._ensureLoopRunning();
+    }
+// === [#HEX:F.02.34.00] END ===
+}
+
 if (typeof window !== 'undefined') {
     window.EBPAnimationBank = EBPAnimationBank;
     window.EBPActorController = EBPActorController;
+    window.EBPSubpageCharacterRuntime = EBPSubpageCharacterRuntime;
+    window.EBPSubpageCharacterStore = {
+        SUBPAGE_CATALOG,
+        BODY_ZONE_LABELS_HU,
+        fetchProductionSubpageCharacters,
+        loadSubpageCharacters,
+        getSubpageCharacters,
+        saveSubpageCharacter,
+        deleteSubpageCharacter,
+        broadcastSubpageCharactersUpdate
+    };
 }

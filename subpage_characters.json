@@ -1,0 +1,61 @@
+[
+  {
+    "id": "actor_1795663783333_581",
+    "subpageId": "hajomuhely",
+    "name": "Hegesztő Mester",
+    "modelPath": "assets/3d_webre/Hajojavito_Iron_Sentinel.glb",
+    "position": [
+      -2.056,
+      0.21,
+      -0.504
+    ],
+    "rotationDeg": [
+      0,
+      -25.06,
+      0
+    ],
+    "scale": [
+      1,
+      1,
+      1
+    ],
+    "recipe": {
+      "schema": "EBPCompositeMotion@1.0",
+      "name": "Hegesztő Mester (Hajójavító műhely)",
+      "prompt": "a hegesztő karakter a harci mozgás guggoló testtartásában végzi az egyik mászó mozgás kéztartását és ezt lupolva végzi a hegesztést a Hajójavító műhelyben",
+      "lockRootXZ": true,
+      "mimic": "worried_frown",
+      "mimicWeight": 0.7,
+      "layers": [
+        {
+          "id": "layer_base",
+          "label": "Alap Testtartás (Lábak + Csípő + Törzs)",
+          "clip": "Crouch_and_Push_Forward",
+          "bodyZone": "full",
+          "startSec": 0,
+          "endSec": 1,
+          "mode": "pingpong",
+          "speed": 0.45,
+          "weight": 1
+        },
+        {
+          "id": "layer_hands",
+          "label": "Kéztartás / Felsőtest Akció",
+          "clip": "Rope_Hang_Idle",
+          "bodyZone": "arms",
+          "startSec": 0,
+          "endSec": 2.57,
+          "mode": "pingpong",
+          "speed": 0.85,
+          "weight": 1
+        }
+      ]
+    },
+    "clip": "Idle_8",
+    "mimic": "speaking_viseme",
+    "mimicWeight": 1,
+    "speed": 1,
+    "enabled": true,
+    "updatedAt": "2026-11-26T10:40:00.000Z"
+  }
+]

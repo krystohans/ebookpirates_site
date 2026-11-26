@@ -5225,6 +5225,31 @@ body.keyboard-open #info-modal .info-modal-content {
     transform: scale(1.05);
 }
 
+/* Közös szélesség-védelem: a globális button { width: 100%; } ne nyújtsa meg a sarok-irányítópult gombokat */
+.hajomuhely-corner-menu-btn,
+.taverna-corner-menu-btn,
+.felhokolostor-corner-menu-btn,
+.bank-corner-menu-btn,
+.masolatok-corner-menu-btn,
+.tekercsmester-corner-menu-btn,
+.hajomuhely-2d-toggle-btn {
+    width: auto !important;
+    width: fit-content !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 90px) !important;
+    display: inline-flex !important;
+    white-space: nowrap !important;
+}
+
+.hajomuhely-corner-menu-btn,
+.taverna-corner-menu-btn,
+.felhokolostor-corner-menu-btn,
+.bank-corner-menu-btn,
+.masolatok-corner-menu-btn,
+.tekercsmester-corner-menu-btn {
+    right: auto !important;
+}
+
 .tekercsmester-2d-overlay {
     position: absolute;
     top: 65px;

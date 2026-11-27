@@ -630,7 +630,7 @@
         let isPasswordVisible = false;
 
 // === [#HEX:F.09.0E.00] START | name: togglePasswordVisibility | lines: 20 ===
-// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.09.0F.00], [#HEX:F.04.1DB.00]
+// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.1E5.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.09.0F.00]
         function togglePasswordVisibility() {
             isPasswordVisible = !isPasswordVisible;
             const modalPassInput = document.querySelector('#m-login-password');
@@ -874,7 +874,7 @@
 
         // --- THREE.JS INICIALIZÁLÁS ---
 // === [#HEX:F.04.1CA.00] START | name: initThree | lines: 68 ===
-// @calls: [#HEX:F.05.36.00], [#HEX:F.04.1D0.00], [#HEX:F.04.1CB.00], [#HEX:F.05.37.00], [#HEX:F.04.1EA.00] | @calledBy: none
+// @calls: [#HEX:F.04.1CB.00], [#HEX:F.04.1D0.00], [#HEX:F.04.1D6.00], [#HEX:F.04.1E9.00], [#HEX:F.04.1EA.00] | @calledBy: none
         function initThree() {
             const container = document.getElementById('webgl-container');
 
@@ -946,38 +946,48 @@
 // === [#HEX:F.04.1CA.00] END ===
 
         // --- KOZMOSZ GÖMB ---
-// === [#HEX:F.04.1CB.00] START | name: initCosmosSphere | lines: 38 ===
-// @calls: none | @calledBy: [#HEX:F.04.1CA.00]
+// === [#HEX:F.04.1CB.00] START | name: initCosmosSphere | lines: 101 ===
+// @calls: [#HEX:F.01.24.00], [#HEX:F.01.25.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.04.1CA.00]
         function initCosmosSphere() {
             const textureLoader = new THREE.TextureLoader();
-            const localPath = 'assets/images/galaxiskep_globusba.jpg';
-            const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/images/galaxiskep_globusba.jpg';
+            textureLoader.setCrossOrigin('anonymous');
+            const isLocalEnv = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:');
+            const maxTexSize = (renderer && renderer.capabilities && renderer.capabilities.maxTextureSize) ? renderer.capabilities.maxTextureSize : 4096;
+            const maxAniso = (renderer && renderer.capabilities && typeof renderer.capabilities.getMaxAnisotropy === 'function') ? Math.min(4, renderer.capabilities.getMaxAnisotropy()) : 1;
+            const GCS_IMG_BASE = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/';
+            const LOCAL_IMG_BASE = 'assets/images/';
+            const TEX_VER = '?v=20261127';
 
-            const spaceTexture = textureLoader.load(
-                localPath,
-                () => { console.info('Kozmosz panorámakép sikeresen betöltve (helyi).'); },
-                undefined,
-                () => {
-                    console.warn('Helyi kozmosz kép nem található, GCS felhő fallback betöltése...');
-                    textureLoader.load(
-                        gcsUrl,
-                        (cloudTex) => {
-                            spaceTexture.image = cloudTex.image;
-                            spaceTexture.needsUpdate = true;
-                            console.info('Kozmosz panorámakép sikeresen betöltve (GCS felhő).');
-                        }
-                    );
+            const tiers = [
+                {
+                    label: '512px WebP',
+                    delayMs: 30,
+                    urls: isLocalEnv
+                        ? [LOCAL_IMG_BASE + 'galaxiskep_globusba2_512.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_512.webp' + TEX_VER]
+                        : [GCS_IMG_BASE + 'galaxiskep_globusba2_512.webp' + TEX_VER]
+                },
+                {
+                    label: '2048px',
+                    delayMs: 180,
+                    urls: isLocalEnv
+                        ? [LOCAL_IMG_BASE + 'galaxiskep_globusba2_2048.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_2048.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_2048.jpg' + TEX_VER]
+                        : [GCS_IMG_BASE + 'galaxiskep_globusba2_2048.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_2048.jpg' + TEX_VER]
                 }
-            );
+            ];
 
-            spaceTexture.wrapS = THREE.MirroredRepeatWrapping;
-            spaceTexture.wrapT = THREE.ClampToEdgeWrapping;
-            spaceTexture.repeat.set(2, 1);
-            spaceTexture.colorSpace = THREE.SRGBColorSpace;
+            if (maxTexSize >= 4096) {
+                tiers.push({
+                    label: '4096px 4K WebP',
+                    delayMs: 0,
+                    urls: isLocalEnv
+                        ? [LOCAL_IMG_BASE + 'galaxiskep_globusba2_4096.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_4096.webp' + TEX_VER]
+                        : [GCS_IMG_BASE + 'galaxiskep_globusba2_4096.webp' + TEX_VER]
+                });
+            }
 
             const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 32);
             const sphereMat = new THREE.MeshBasicMaterial({
-                map: spaceTexture,
+                color: 0x050914,
                 side: THREE.BackSide,
                 depthWrite: false
             });
@@ -985,6 +995,65 @@
             cosmosSphere = new THREE.Mesh(sphereGeo, sphereMat);
             cosmosSphere.rotation.y = -Math.PI / 2;
             scene.add(cosmosSphere);
+
+            let appliedTier = -1;
+
+// === [#HEX:F.01.24.00] START | name: loadTier | lines: 48 ===
+// @calls: [#HEX:F.01.25.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.01.25.00], [#HEX:F.04.1CB.00]
+            const loadTier = (tierIdx) => {
+                if (tierIdx >= tiers.length) return;
+                const tier = tiers[tierIdx];
+
+// === [#HEX:F.01.25.00] START | name: tryUrl | lines: 41 ===
+// @calls: [#HEX:F.01.24.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.01.24.00], [#HEX:F.04.1CB.00]
+                const tryUrl = (urlIdx) => {
+                    if (urlIdx >= tier.urls.length) {
+                        loadTier(tierIdx + 1);
+                        return;
+                    }
+                    const url = tier.urls[urlIdx];
+                    textureLoader.load(
+                        url,
+                        (tex) => {
+                            if (!cosmosSphere || !cosmosSphere.material || tierIdx <= appliedTier) {
+                                tex.dispose();
+                                return;
+                            }
+                            tex.wrapS = THREE.MirroredRepeatWrapping;
+                            tex.wrapT = THREE.ClampToEdgeWrapping;
+                            tex.repeat.set(2, 1);
+                            tex.colorSpace = THREE.SRGBColorSpace;
+                            tex.anisotropy = maxAniso;
+                            tex.needsUpdate = true;
+
+                            const prevMap = sphereMat.map;
+                            sphereMat.color.setHex(0xffffff);
+                            sphereMat.map = tex;
+                            sphereMat.needsUpdate = true;
+                            appliedTier = tierIdx;
+                            if (prevMap && prevMap !== tex) {
+                                prevMap.dispose();
+                            }
+                            console.info('[CosmosSphere] Galaxis textúra aktiválva (' + tier.label + '):', url);
+
+                            if (tierIdx + 1 < tiers.length) {
+                                setTimeout(() => loadTier(tierIdx + 1), tier.delayMs);
+                            }
+                        },
+                        undefined,
+                        () => {
+                            console.warn('[CosmosSphere] Betöltési hiba (' + tier.label + '), következő forrás:', url);
+                            tryUrl(urlIdx + 1);
+                        }
+                    );
+                };
+// === [#HEX:F.01.25.00] END ===
+
+                tryUrl(0);
+            };
+// === [#HEX:F.01.24.00] END ===
+
+            loadTier(0);
         }
 // === [#HEX:F.04.1CB.00] END ===
 
@@ -1047,7 +1116,7 @@
 // === [#HEX:F.04.1CE.00] END ===
 
 // === [#HEX:F.04.1CF.00] START | name: update | lines: 15 ===
-// @calls: [#HEX:K.05.27.00], [#HEX:F.0C.1B.00] | @calledBy: [#HEX:F.04.1E4.00], [#HEX:F.02.0E.00], [#HEX:F.04.1E8.00], [#HEX:F.04.1EA.00]
+// @calls: [#HEX:F.0C.1B.00], [#HEX:K.05.27.00] | @calledBy: [#HEX:F.02.0E.00], [#HEX:F.04.1E4.00], [#HEX:F.04.1E8.00], [#HEX:F.04.1EA.00]
             update() {
                 for (let i = this.activeMeteors.length - 1; i >= 0; i--) {
                     const m = this.activeMeteors[i];
@@ -1127,7 +1196,7 @@
 
         // Képernyő újra-rajzolása többnyelvű feliratokkal
 // === [#HEX:F.07.17.00] START | name: updateScreenDisplay | lines: 121 ===
-// @calls: [#HEX:F.04.1C9.00], [#HEX:F.04.1D1.00], [#HEX:F.04.1D3.00], [#HEX:F.04.1D2.00], [#HEX:F.04.1D4.00] | @calledBy: [#HEX:F.04.1D0.00], [#HEX:F.05.36.00], [#HEX:F.05.37.00], [#HEX:F.04.1D9.00], [#HEX:F.04.1DB.00]
+// @calls: [#HEX:F.04.1C9.00], [#HEX:F.04.1D1.00], [#HEX:F.04.1D2.00], [#HEX:F.04.1D3.00], [#HEX:F.04.1D4.00] | @calledBy: [#HEX:F.04.1D0.00], [#HEX:F.04.1D9.00], [#HEX:F.04.1DB.00], [#HEX:F.04.1DC.00], [#HEX:F.04.1DF.00]
         function updateScreenDisplay() {
             const w = screenCanvas.width;
             const h = screenCanvas.height;
@@ -1643,7 +1712,7 @@
 
         // --- GLB MODELL BETÖLTÉSE ---
 // === [#HEX:F.04.1D6.00] START | name: loadDeviceModel | lines: 126 ===
-// @calls: [#HEX:F.04.1D8.00], [#HEX:F.03.15.00], [#HEX:F.05.3B.00], [#HEX:F.03.17.00], [#HEX:F.04.1D7.00] | @calledBy: [#HEX:F.04.1CA.00]
+// @calls: [#HEX:F.03.15.00], [#HEX:F.03.16.00], [#HEX:F.03.17.00], [#HEX:F.04.1D7.00], [#HEX:F.04.1D8.00] | @calledBy: [#HEX:F.04.1CA.00]
         function loadDeviceModel() {
             const gltfLoader = new GLTFLoader();
             const modelPaths = [
@@ -1656,7 +1725,7 @@
             ];
 
 // === [#HEX:F.04.1D7.00] START | name: tryLoad | lines: 112 ===
-// @calls: [#HEX:F.04.1D8.00], [#HEX:F.03.15.00], [#HEX:F.05.3B.00], [#HEX:F.03.17.00], [#HEX:F.03.16.00] | @calledBy: [#HEX:F.04.1D6.00]
+// @calls: [#HEX:F.03.15.00], [#HEX:F.03.16.00], [#HEX:F.03.17.00], [#HEX:F.04.1D8.00], [#HEX:F.05.3B.00] | @calledBy: [#HEX:F.04.1D6.00]
             function tryLoad(index) {
                 if (index >= modelPaths.length) {
                     console.warn('Nem található GLB fájl, fallback terminál mesh generálása.');
@@ -1797,7 +1866,7 @@
 
         // --- KÖZVETLEN 3D BILLENTYŰZET & RAYCAST INTERAKCIÓ ---
 // === [#HEX:F.05.36.00] START | name: setupDirectKeyboardAndRaycast | lines: 168 ===
-// @calls: [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00], [#HEX:F.04.1E0.00], [#HEX:F.04.1E2.00], [#HEX:F.04.1DD.00] | @calledBy: [#HEX:F.04.1CA.00]
+// @calls: [#HEX:F.04.1DB.00], [#HEX:F.04.1DC.00], [#HEX:F.04.1DD.00], [#HEX:F.04.1DF.00], [#HEX:F.04.1E0.00] | @calledBy: [#HEX:F.04.1CA.00]
         function setupDirectKeyboardAndRaycast() {
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
@@ -1995,7 +2064,7 @@
 // === [#HEX:F.05.37.00] END ===
 
 // === [#HEX:F.05.38.00] START | name: syncModalInputsFrom3D | lines: 14 ===
-// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.1DA.00] | @calledBy: [#HEX:F.04.1DF.00], [#HEX:F.04.1E0.00], [#HEX:F.09.0D.00], [#HEX:F.05.3A.00], [#HEX:F.05.3B.00]
+// @calls: [#HEX:F.01.0F.00], [#HEX:F.04.1DA.00] | @calledBy: [#HEX:F.04.1DF.00], [#HEX:F.04.1E0.00], [#HEX:F.05.3A.00], [#HEX:F.05.3B.00], [#HEX:F.09.0D.00]
         function syncModalInputsFrom3D() {
 // === [#HEX:F.04.1DA.00] START | name: setVal | lines: 4 ===
 // @calls: none | @calledBy: [#HEX:F.05.38.00]
@@ -2016,7 +2085,7 @@
 // === [#HEX:F.05.38.00] END ===
 
 // === [#HEX:F.04.1DB.00] START | name: handleScreenUVClick | lines: 90 ===
-// @calls: [#HEX:F.09.0D.00], [#HEX:F.09.0E.00], [#HEX:F.04.1DD.00], [#HEX:F.04.1E3.00], [#HEX:F.04.1DC.00] | @calledBy: [#HEX:F.05.36.00]
+// @calls: [#HEX:F.04.1DC.00], [#HEX:F.04.1DD.00], [#HEX:F.04.1E3.00], [#HEX:F.07.17.00], [#HEX:F.09.0D.00] | @calledBy: [#HEX:F.05.36.00]
         function handleScreenUVClick(uv, clickX, clickY) {
             const pxX = uv.x * 1024;
             const pxY = (1 - uv.y) * 512;
@@ -2110,7 +2179,7 @@
 // === [#HEX:F.04.1DB.00] END ===
 
 // === [#HEX:F.04.1DC.00] START | name: blurVirtualInput | lines: 13 ===
-// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.05.36.00], [#HEX:F.04.1DB.00], [#HEX:F.04.1E7.00]
+// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.04.1E7.00], [#HEX:F.05.36.00]
         function blurVirtualInput() {
             if (!virtualInput) return;
             try {
@@ -2127,7 +2196,7 @@
 // === [#HEX:F.04.1DC.00] END ===
 
 // === [#HEX:F.04.1DD.00] START | name: focusVirtualInput | lines: 41 ===
-// @calls: [#HEX:F.04.1DE.00] | @calledBy: [#HEX:F.05.36.00], [#HEX:F.04.1DB.00]
+// @calls: [#HEX:F.04.1DE.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.05.36.00]
         function focusVirtualInput(touchX, touchY) {
             if (!virtualInput) return;
             const targetFieldKey = (currentMode === 'LOGIN') ? ((activeFieldIndex === 0) ? 'username' : 'password') :
@@ -2175,7 +2244,7 @@
 // === [#HEX:F.04.1DD.00] END ===
 
 // === [#HEX:F.04.1DF.00] START | name: handleDirectKeyInput | lines: 53 ===
-// @calls: [#HEX:F.04.1E1.00], [#HEX:F.09.0D.00], [#HEX:F.05.38.00], [#HEX:F.04.1E3.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.05.36.00]
+// @calls: [#HEX:F.04.1E1.00], [#HEX:F.04.1E3.00], [#HEX:F.05.38.00], [#HEX:F.07.17.00], [#HEX:F.09.0D.00] | @calledBy: [#HEX:F.05.36.00]
         function handleDirectKeyInput(event) {
             if (!event || typeof event.key === 'undefined' || event.key === null) return;
             const key = event.key;
@@ -2232,7 +2301,7 @@
 // === [#HEX:F.04.1DF.00] END ===
 
 // === [#HEX:F.04.1E0.00] START | name: syncVirtualInput | lines: 8 ===
-// @calls: [#HEX:F.04.1E1.00], [#HEX:F.07.17.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.05.36.00]
+// @calls: [#HEX:F.04.1E1.00], [#HEX:F.05.38.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.05.36.00]
         function syncVirtualInput(val) {
             let targetFieldKey = getActiveFieldKey();
             if (!targetFieldKey) return;
@@ -2261,7 +2330,7 @@
 
         // --- MÓDVÁLTÁS ---
 // === [#HEX:F.09.0D.00] START | name: switchMode | lines: 36 ===
-// @calls: [#HEX:F.01.0F.00], [#HEX:F.01.00.00], [#HEX:F.05.38.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00], [#HEX:F.04.1E2.00], [#HEX:F.04.1E8.00]
+// @calls: [#HEX:F.01.00.00], [#HEX:F.01.0F.00], [#HEX:F.05.38.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00], [#HEX:F.04.1E2.00], [#HEX:F.04.1E8.00]
         function switchMode(mode) {
             if (currentMode !== 'INFO' && mode !== 'INFO') {
                 previousMode = currentMode;
@@ -2313,7 +2382,7 @@
 // === [#HEX:F.04.1E2.00] END ===
 
 // === [#HEX:F.04.1E3.00] START | name: executeCurrentMode | lines: 5 ===
-// @calls: [#HEX:F.01.13.00], [#HEX:F.01.11.00], [#HEX:F.01.12.00] | @calledBy: [#HEX:F.05.36.00], [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00]
+// @calls: [#HEX:F.01.11.00], [#HEX:F.01.12.00], [#HEX:F.01.13.00] | @calledBy: [#HEX:F.04.1DB.00], [#HEX:F.04.1DF.00], [#HEX:F.05.36.00]
         function executeCurrentMode() {
             if (currentMode === 'LOGIN') executeLogin();
             else if (currentMode === 'REGISTER') executeRegister();
@@ -2323,7 +2392,7 @@
 
         // --- NYELVVÁLTÁS KEZELŐ (web_fordito.js szinkron) ---
 // === [#HEX:F.08.0B.00] START | name: handleLangSwitch | lines: 16 ===
-// @calls: [#HEX:F.05.39.00], [#HEX:F.08.07.00], [#HEX:F.07.17.00], [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.08.0A.00], [#HEX:F.05.36.00]
+// @calls: [#HEX:F.05.39.00], [#HEX:F.07.17.00], [#HEX:F.08.07.00], [#HEX:F.08.0A.00] | @calledBy: [#HEX:F.05.36.00], [#HEX:F.08.0A.00]
         function handleLangSwitch(lang) {
             window.currentLang = lang;
             if (typeof localStorage !== 'undefined') {
@@ -2343,7 +2412,7 @@
 // === [#HEX:F.08.0B.00] END ===
 
 // === [#HEX:F.05.39.00] START | name: updateActiveLangButtonsInModal | lines: 7 ===
-// @calls: none | @calledBy: [#HEX:F.08.0B.00], [#HEX:F.05.3A.00], [#HEX:F.05.3B.00]
+// @calls: none | @calledBy: [#HEX:F.05.3A.00], [#HEX:F.05.3B.00], [#HEX:F.08.0B.00]
         function updateActiveLangButtonsInModal() {
             const lang = window.currentLang || localStorage.getItem('siteLang') || 'hu';
             document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -2376,7 +2445,7 @@
 
         // --- INFÓ MODAL KEZELŐ ---
 // === [#HEX:F.05.3A.00] START | name: toggleInfoModal | lines: 10 ===
-// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.05.3C.00]
+// @calls: [#HEX:F.05.38.00], [#HEX:F.05.39.00] | @calledBy: [#HEX:F.05.3C.00]
         function toggleInfoModal() {
             const modal = document.getElementById('info-modal');
             if (modal.style.display === 'flex') {
@@ -2390,7 +2459,7 @@
 // === [#HEX:F.05.3A.00] END ===
 
 // === [#HEX:F.05.3B.00] START | name: openInfoModalAuto | lines: 6 ===
-// @calls: [#HEX:F.05.39.00], [#HEX:F.05.38.00] | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
+// @calls: [#HEX:F.05.38.00], [#HEX:F.05.39.00] | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function openInfoModalAuto() {
             const modal = document.getElementById('info-modal');
             modal.style.display = 'flex';
@@ -2410,7 +2479,7 @@
 
         // --- BACKEND MŰVELETEK & ROBUSZTUS HÁLÓZATI RÉTEG ---
 // === [#HEX:F.04.1E5.00] START | name: setTerminalStatus | lines: 11 ===
-// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.09.0E.00], [#HEX:F.01.11.00], [#HEX:F.01.12.00], [#HEX:F.01.13.00]
+// @calls: [#HEX:F.07.17.00] | @calledBy: [#HEX:F.01.11.00], [#HEX:F.01.12.00], [#HEX:F.01.13.00], [#HEX:F.09.0E.00]
         function setTerminalStatus(keyOrText, isError = false, param = '') {
             isStatusError = isError;
             if (typeof keyOrText === 'string' && keyOrText.startsWith('status_')) {
@@ -2447,7 +2516,7 @@
 // === [#HEX:F.04.1E6.00] END ===
 
 // === [#HEX:F.06.55.00] START | name: callBackendApi | lines: 31 ===
-// @calls: [#HEX:F.04.2C1.00], [#HEX:K.06.0C.00], [#HEX:F.04.1E6.00] | @calledBy: [#HEX:F.01.11.00], [#HEX:F.01.12.00], [#HEX:F.01.13.00]
+// @calls: [#HEX:F.04.1E6.00], [#HEX:F.04.70.00], [#HEX:K.06.0C.00] | @calledBy: [#HEX:F.01.11.00], [#HEX:F.01.12.00], [#HEX:F.01.13.00]
         function callBackendApi(action, dataObj, onSuccess, onFailure) {
             fetch(BACKEND_URL, {
                 method: 'POST',
@@ -2620,8 +2689,8 @@
             const centerObstacle = new THREE.Vector3(0, 0.15, 0);
 
             // 2. Pontos célpont kijelölése a köpeny forgásának pillanatnyi állása alapján (EGYSZER, a validálás után)
-            const planetLocalPos = new THREE.Vector3(1.0, 2.3, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
-            const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, 2.3, 1.0);
+            const planetLocalPos = new THREE.Vector3(0.54, -0.46, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
+            const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, -0.46, 0.54);
 
             flightStartTarget = currentTarget.clone();
             flightFinalTarget = targetWorldPos.clone();
@@ -2656,11 +2725,11 @@
             const alignDir = flankDir.clone().multiplyScalar(0.35).add(dirToTarget.clone().multiplyScalar(0.65)).normalize();
             const p3 = centerObstacle.clone()
                 .add(alignDir.clone().multiplyScalar(11.0))
-                .add(new THREE.Vector3(0, 2.2, 0));
+                .add(new THREE.Vector3(0, 1.2, 0));
 
             const p4 = centerObstacle.clone()
                 .add(dirToTarget.clone().multiplyScalar(19.5))
-                .add(new THREE.Vector3(0, 2.2, 0));
+                .add(new THREE.Vector3(0, 0.25, 0));
 
             const p5 = targetWorldPos.clone().multiplyScalar(26.2 / SPHERE_RADIUS);
 
@@ -2674,12 +2743,14 @@
         }
 // === [#HEX:F.04.1E7.00] END ===
 
-// === [#HEX:F.04.1E8.00] START | name: reset3DTerminalState | lines: 20 ===
-// @calls: [#HEX:F.04.1CF.00], [#HEX:F.09.0D.00], [#HEX:F.07.17.00] | @calledBy: none
+// === [#HEX:F.04.1E8.00] START | name: reset3DTerminalState | lines: 22 ===
+// @calls: [#HEX:F.04.1CF.00], [#HEX:F.07.17.00], [#HEX:F.09.0D.00] | @calledBy: none
         function reset3DTerminalState() {
             isCinematicFlight = false;
             if (camera) {
+                camera.up.set(0, 1, 0);
                 camera.position.set(0, 0.35, 2.6);
+                camera.rotation.set(0, 0, 0);
                 camera.fov = 45;
                 camera.updateProjectionMatrix();
             }
@@ -2708,8 +2779,8 @@
         }
 // === [#HEX:F.04.1E9.00] END ===
 
-// === [#HEX:F.04.1EA.00] START | name: animate | lines: 75 ===
-// @calls: [#HEX:F.07.17.00], [#HEX:F.04.1CF.00] | @calledBy: [#HEX:F.04.1CA.00]
+// === [#HEX:F.04.1EA.00] START | name: animate | lines: 101 ===
+// @calls: [#HEX:F.04.1CF.00], [#HEX:F.07.17.00] | @calledBy: [#HEX:F.04.1CA.00]
         function animate(timestamp) {
             requestAnimationFrame(animate);
 
@@ -2748,7 +2819,27 @@
                 // Sima, elegáns fókuszpont átmenet: a konzolról folyamatosan átfordul a fix kijelölt bolygóra
                 const smoothLookT = Math.min(1.0, Math.pow(clampedT, 1.25));
                 const currentLookTarget = new THREE.Vector3().lerpVectors(flightStartTarget, flightFinalTarget, smoothLookT);
+
+                // Dugóhúzó-repülés (spirális pálya + tengelykörüli orsózás) a végső közeli zónában
+                let corkAngle = 0;
+                if (progress > 0.58) {
+                    const corkT = Math.min(1.0, (progress - 0.58) / 0.42);
+                    corkAngle = Math.pow(corkT, 1.75) * Math.PI * 3.0;
+                    const spiralRadius = Math.sin(corkT * Math.PI) * 0.45 + Math.pow(corkT, 2) * 0.08;
+                    const fwdDir = currentLookTarget.clone().sub(camera.position).normalize();
+                    const worldUp = new THREE.Vector3(0, 1, 0);
+                    const rightAxis = new THREE.Vector3().crossVectors(fwdDir, worldUp);
+                    if (rightAxis.lengthSq() < 0.0001) rightAxis.set(1, 0, 0);
+                    rightAxis.normalize();
+                    const upAxis = new THREE.Vector3().crossVectors(rightAxis, fwdDir).normalize();
+                    camera.position.addScaledVector(rightAxis, Math.cos(corkAngle) * spiralRadius);
+                    camera.position.addScaledVector(upAxis, Math.sin(corkAngle) * spiralRadius);
+                }
+
                 camera.lookAt(currentLookTarget);
+                if (progress > 0.58) {
+                    camera.rotateZ(corkAngle);
+                }
                 if (controls) controls.target.copy(currentLookTarget);
 
                 // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 74 -> 50)
@@ -2758,18 +2849,24 @@
                     camera.updateProjectionMatrix();
                 }
 
-                // Kiszürkülés (Grayscale) és finom sötétülés mielőtt eléri a gömbpalástot (progress > 0.58)
+                // Kiszürkülés (Grayscale), sötétülés és mozgási életlenség (blur) mielőtt eléri a gömbpalástot (progress > 0.58)
                 if (renderer && renderer.domElement) {
                     if (progress > 0.58) {
                         const grayProgress = (progress - 0.58) / 0.42; // 0.0 -> 1.0
                         const grayVal = Math.min(100, Math.floor(grayProgress * 100));
                         const brightVal = (1.0 - grayProgress * 0.40).toFixed(2);
-                        renderer.domElement.style.filter = 'grayscale(' + grayVal + '%) brightness(' + brightVal + ')';
+                        const blurPx = (Math.pow(Math.max(0, (grayProgress - 0.2) / 0.8), 1.6) * 4.5).toFixed(2);
+                        renderer.domElement.style.filter = 'grayscale(' + grayVal + '%) brightness(' + brightVal + ') blur(' + blurPx + 'px)';
                     }
                 }
 
                 if (progress >= 1.0) {
                     isCinematicFlight = false;
+                    if (camera) {
+                        camera.up.set(0, 1, 0);
+                        camera.fov = initialCameraFov;
+                        camera.updateProjectionMatrix();
+                    }
                     if (renderer && renderer.domElement) {
                         renderer.domElement.style.filter = 'none';
                     }

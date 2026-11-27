@@ -1187,7 +1187,7 @@ var HexEngine = (function () {
         dispatcher: {
             handlers: {},
 // === [#HEX:F.01.00.00] START | name: register | lines: 3 ===
-// @calls: none | @calledBy: [#HEX:D.01.131.00], [#HEX:D.01.D6.00], [#HEX:D.07.124.00], [#HEX:D.07.A7.00], [#HEX:F.01.0B.00]
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.10.00], [#HEX:F.04.17E.00], [#HEX:F.04.C8.00], [#HEX:F.09.08.00]
             register: function (hexId, handler) {
                 this.handlers[hexId] = handler;
             },
@@ -1600,7 +1600,7 @@ function parseJsonFromText(text) {
 // === [#HEX:F.04.51.00] END ===
 
 // === [#HEX:F.01.0F.00] START | name: login | lines: 45 ===
-// @calls: [#HEX:B.07.01.00], [#HEX:F.04.64.00], [#HEX:F.06.0A.00], [#HEX:F.06.6E.00] | @calledBy: [#HEX:D.01.131.00], [#HEX:D.01.D6.00], [#HEX:D.06.6F.00], [#HEX:D.06.70.00], [#HEX:D.06.71.00]
+// @calls: [#HEX:B.07.01.00], [#HEX:F.04.64.00], [#HEX:F.06.0A.00], [#HEX:F.06.6E.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.18.00], [#HEX:F.04.19.00], [#HEX:F.04.64.00], [#HEX:F.04.B3.00]
 function login() {
     if (typeof requestLandscapeAndFullscreen === 'function') {
         requestLandscapeAndFullscreen();
@@ -1923,7 +1923,7 @@ function checkSession() {
 // ==========================================
 
 // === [#HEX:F.01.03.00] START | name: logout | lines: 18 ===
-// @calls: none | @calledBy: [#HEX:D.01.125.00], [#HEX:D.07.113.00], [#HEX:F.04.A7.00]
+// @calls: none | @calledBy: [#HEX:F.04.A7.00]
 function logout() {
     document.documentElement.classList.remove('ebp-authenticated');
     sessionStorage.removeItem('ebookPiratesToken');
@@ -2503,7 +2503,7 @@ function ensureCreditDisplayIsPresent() {
  * JAVÍTVA: Nem küldjük az emailt, csak az oldal nevét!
  */
 // === [#HEX:F.04.FC.00] START | name: loadPage | lines: 402 ===
-// @calls: [#HEX:B.07.00.00], [#HEX:F.01.0F.00], [#HEX:F.02.1B.00], [#HEX:F.02.24.00], [#HEX:F.02.28.00] | @calledBy: [#HEX:D.06.60.00], [#HEX:D.07.166.00], [#HEX:F.02.0F.00], [#HEX:F.04.113.00], [#HEX:F.04.11E.00]
+// @calls: [#HEX:B.07.00.00], [#HEX:F.01.0F.00], [#HEX:F.02.1B.00], [#HEX:F.02.24.00], [#HEX:F.02.28.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.113.00], [#HEX:F.04.11E.00], [#HEX:F.04.12C.00], [#HEX:F.04.131.00]
 function loadPage(pageName) {
     var closeIcon = document.querySelector('.header-close-icon');
 
@@ -3577,7 +3577,7 @@ function runTutorialScript() {
 // === [#HEX:F.01.04.00] END ===
 
 // === [#HEX:F.04.3E.00] START | name: onTutorialSuccess | lines: 14 ===
-// @calls: [#HEX:B.06.06.00], [#HEX:F.04.FC.00], [#HEX:F.06.6E.00], [#HEX:F.07.02.00] | @calledBy: [#HEX:D.06.63.00], [#HEX:D.07.16F.00], [#HEX:F.04.31.00]
+// @calls: [#HEX:B.06.06.00], [#HEX:F.04.FC.00], [#HEX:F.06.6E.00], [#HEX:F.07.02.00] | @calledBy: [#HEX:F.04.31.00]
     window.onTutorialSuccess = function (boatData) {
         var extraData = (typeof boatData === 'object' && boatData !== null) ? boatData : { boatName: boatData || 'Gyöngyhalász', passed: true, score: 10 };
         window.userTutorialCompleted = true;
@@ -4563,7 +4563,7 @@ function createInteriorCameraController(config) {
 // === [#HEX:F.04.2D6.00] END ===
 
 // === [#HEX:F.04.2D7.00] START | name: dispose | lines: 6 ===
-// @calls: [#HEX:F.04.2D1.00], [#HEX:F.04.2D3.00], [#HEX:F.04.2D4.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.02.0F.00], [#HEX:F.04.155.00], [#HEX:F.04.160.00], [#HEX:F.04.1F0.00]
+// @calls: [#HEX:F.04.2D1.00], [#HEX:F.04.2D3.00], [#HEX:F.04.2D4.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.02.0F.00], [#HEX:F.04.155.00], [#HEX:F.04.15C.00], [#HEX:F.04.160.00]
     function dispose() {
         window.removeEventListener('keydown', handleKeyDown);
         window.removeEventListener('keyup', handleKeyUp);
@@ -5728,7 +5728,7 @@ function runTaverna3DModule(THREE, OrbitControls, GLTFLoader) {
         camPos: new THREE.Vector3(-0.6, 2.2, 4.8),
         lookAt: new THREE.Vector3(-0.6, 1.6, 7.95),
 // === [#HEX:F.04.70.00] START | name: action | lines: 8 ===
-// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:D.01.123.00], [#HEX:D.01.124.00], [#HEX:D.01.125.00], [#HEX:D.01.128.00], [#HEX:D.01.129.00]
+// @calls: [#HEX:F.04.FC.00] | @calledBy: [#HEX:F.06.55.00]
         action: function () {
             var modal = document.getElementById('taverna-kikoto-confirm-modal');
             if (modal) {
@@ -23462,7 +23462,7 @@ function displayInReader(htmlContent) {
 // === [#HEX:F.07.0B.00] END ===
 
 // 1. HAJÓNAPLÓ OLVASÓ (Biztos módszer: getLogEntry + Kliens oldali HTML)
-// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 15459 | action: 'RETURN_TO_SHIP' ===
+// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 15555 | action: 'RETURN_TO_SHIP' ===
 // @calls: [#HEX:A.06.10.08], [#HEX:B.01.03.00], [#HEX:B.02.03.00], [#HEX:B.02.04.00], [#HEX:B.02.07.00] | @calledBy: [#HEX:F.04.353.00], [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openLogReader(logId) {
     if (!logId) return;
@@ -36159,7 +36159,7 @@ function initAuthTerminal3D() {
 // === [#HEX:F.01.0A.00] END ===
 window.initAuthTerminal3D = initAuthTerminal3D;
 
-// === [#HEX:F.01.0B.00] START | name: runAuthTerminal3DModule | lines: 1930 ===
+// === [#HEX:F.01.0B.00] START | name: runAuthTerminal3DModule | lines: 2026 ===
 // @calls: [#HEX:B.07.01.00], [#HEX:B.07.DB.00], [#HEX:B.07.E2.00], [#HEX:F.01.00.00], [#HEX:F.01.0C.00] | @calledBy: [#HEX:F.01.0A.00], [#HEX:F.04.C8.00]
 function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     if (authTerminal3DRunning) return;
@@ -36344,34 +36344,48 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.15B.00] END ===
 
     // --- KOZMOSZ GÖMB ---
-// === [#HEX:F.04.15C.00] START | name: initCosmosSphere | lines: 34 ===
-// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.C8.00]
+// === [#HEX:F.04.15C.00] START | name: initCosmosSphere | lines: 102 ===
+// @calls: [#HEX:F.04.26D.00], [#HEX:F.04.26F.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.C8.00]
     function initCosmosSphere() {
         const textureLoader = new THREE.TextureLoader();
-        const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/images/galaxiskep_globusba.jpg';
-        const localPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/galaxiskep_globusba.jpg';
+        textureLoader.setCrossOrigin('anonymous');
+        const isLocalEnv = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:');
+        const maxTexSize = (renderer && renderer.capabilities && renderer.capabilities.maxTextureSize) ? renderer.capabilities.maxTextureSize : 4096;
+        const maxAniso = (renderer && renderer.capabilities && typeof renderer.capabilities.getMaxAnisotropy === 'function') ? Math.min(4, renderer.capabilities.getMaxAnisotropy()) : 1;
+        const GCS_IMG_BASE = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/';
+        const LOCAL_IMG_BASE = 'assets/images/';
+        const TEX_VER = '?v=20261127';
 
-        const spaceTexture = textureLoader.load(
-            gcsUrl,
-            () => { console.info('Kozmosz panorámakép sikeresen betöltve (GCS).'); },
-            undefined,
-            () => {
-                console.warn('GCS kozmosz kép nem található, helyi fallback betöltése...');
-                textureLoader.load(localPath, (localTex) => {
-                    spaceTexture.image = localTex.image;
-                    spaceTexture.needsUpdate = true;
-                });
+        const tiers = [
+            {
+                label: '512px WebP',
+                delayMs: 30,
+                urls: isLocalEnv
+                    ? [LOCAL_IMG_BASE + 'galaxiskep_globusba2_512.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_512.webp' + TEX_VER]
+                    : [GCS_IMG_BASE + 'galaxiskep_globusba2_512.webp' + TEX_VER]
+            },
+            {
+                label: '2048px',
+                delayMs: 180,
+                urls: isLocalEnv
+                    ? [LOCAL_IMG_BASE + 'galaxiskep_globusba2_2048.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_2048.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_2048.jpg' + TEX_VER]
+                    : [GCS_IMG_BASE + 'galaxiskep_globusba2_2048.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_2048.jpg' + TEX_VER]
             }
-        );
+        ];
 
-        spaceTexture.wrapS = THREE.MirroredRepeatWrapping;
-        spaceTexture.wrapT = THREE.ClampToEdgeWrapping;
-        spaceTexture.repeat.set(2, 1);
-        spaceTexture.colorSpace = THREE.SRGBColorSpace;
+        if (maxTexSize >= 4096) {
+            tiers.push({
+                label: '4096px 4K WebP',
+                delayMs: 0,
+                urls: isLocalEnv
+                    ? [LOCAL_IMG_BASE + 'galaxiskep_globusba2_4096.webp' + TEX_VER, GCS_IMG_BASE + 'galaxiskep_globusba2_4096.webp' + TEX_VER]
+                    : [GCS_IMG_BASE + 'galaxiskep_globusba2_4096.webp' + TEX_VER]
+            });
+        }
 
         const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 32);
         const sphereMat = new THREE.MeshBasicMaterial({
-            map: spaceTexture,
+            color: 0x050914,
             side: THREE.BackSide,
             depthWrite: false
         });
@@ -36379,6 +36393,66 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         cosmosSphere = new THREE.Mesh(sphereGeo, sphereMat);
         cosmosSphere.rotation.y = -Math.PI / 2;
         scene.add(cosmosSphere);
+
+        let appliedTier = -1;
+
+// === [#HEX:F.04.26D.00] START | name: loadTier | lines: 49 ===
+// @calls: [#HEX:F.04.26F.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15C.00], [#HEX:F.04.26F.00], [#HEX:F.04.C8.00]
+        const loadTier = (tierIdx) => {
+            if (tierIdx >= tiers.length) return;
+            if (tierIdx > 0 && document.documentElement.classList.contains('ebp-authenticated') && !isCinematicFlight) return;
+            const tier = tiers[tierIdx];
+
+// === [#HEX:F.04.26F.00] START | name: tryUrl | lines: 41 ===
+// @calls: [#HEX:F.04.26D.00], [#HEX:F.04.2D7.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15C.00], [#HEX:F.04.26D.00], [#HEX:F.04.C8.00]
+            const tryUrl = (urlIdx) => {
+                if (urlIdx >= tier.urls.length) {
+                    loadTier(tierIdx + 1);
+                    return;
+                }
+                const url = tier.urls[urlIdx];
+                textureLoader.load(
+                    url,
+                    (tex) => {
+                        if (!cosmosSphere || !cosmosSphere.material || tierIdx <= appliedTier) {
+                            tex.dispose();
+                            return;
+                        }
+                        tex.wrapS = THREE.MirroredRepeatWrapping;
+                        tex.wrapT = THREE.ClampToEdgeWrapping;
+                        tex.repeat.set(2, 1);
+                        tex.colorSpace = THREE.SRGBColorSpace;
+                        tex.anisotropy = maxAniso;
+                        tex.needsUpdate = true;
+
+                        const prevMap = sphereMat.map;
+                        sphereMat.color.setHex(0xffffff);
+                        sphereMat.map = tex;
+                        sphereMat.needsUpdate = true;
+                        appliedTier = tierIdx;
+                        if (prevMap && prevMap !== tex) {
+                            prevMap.dispose();
+                        }
+                        console.info('[CosmosSphere] Galaxis textúra aktiválva (' + tier.label + '):', url);
+
+                        if (tierIdx + 1 < tiers.length) {
+                            setTimeout(() => loadTier(tierIdx + 1), tier.delayMs);
+                        }
+                    },
+                    undefined,
+                    () => {
+                        console.warn('[CosmosSphere] Betöltési hiba (' + tier.label + '), következő forrás:', url);
+                        tryUrl(urlIdx + 1);
+                    }
+                );
+            };
+// === [#HEX:F.04.26F.00] END ===
+
+            tryUrl(0);
+        };
+// === [#HEX:F.04.26D.00] END ===
+
+        loadTier(0);
     }
 // === [#HEX:F.04.15C.00] END ===
 
@@ -38038,8 +38112,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         const centerObstacle = new THREE.Vector3(0, 0.15, 0);
 
         // 2. Pontos célpont kijelölése a köpeny forgásának pillanatnyi állása alapján (EGYSZER, a validálás után)
-        const planetLocalPos = new THREE.Vector3(1.0, 2.3, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
-        const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, 2.3, 1.0);
+        const planetLocalPos = new THREE.Vector3(0.54, -0.46, -29.8).normalize().multiplyScalar(SPHERE_RADIUS);
+        const targetWorldPos = cosmosSphere ? cosmosSphere.localToWorld(planetLocalPos.clone()) : new THREE.Vector3(29.8, -0.46, 0.54);
 
         flightStartTarget = currentTarget.clone();
         flightFinalTarget = targetWorldPos.clone();
@@ -38074,11 +38148,11 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         const alignDir = flankDir.clone().multiplyScalar(0.35).add(dirToTarget.clone().multiplyScalar(0.65)).normalize();
         const p3 = centerObstacle.clone()
             .add(alignDir.clone().multiplyScalar(11.0))
-            .add(new THREE.Vector3(0, 2.2, 0));
+            .add(new THREE.Vector3(0, 1.2, 0));
 
         const p4 = centerObstacle.clone()
             .add(dirToTarget.clone().multiplyScalar(19.5))
-            .add(new THREE.Vector3(0, 2.2, 0));
+            .add(new THREE.Vector3(0, 0.25, 0));
 
         const p5 = targetWorldPos.clone().multiplyScalar(26.2 / SPHERE_RADIUS);
 
@@ -38091,12 +38165,14 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         flightOnComplete = onComplete;
     }
 // === [#HEX:F.04.178.00] END ===
-// === [#HEX:F.04.179.00] START | name: reset3DTerminalState | lines: 20 ===
+// === [#HEX:F.04.179.00] START | name: reset3DTerminalState | lines: 22 ===
 // @calls: [#HEX:F.04.160.00], [#HEX:F.07.14.00], [#HEX:F.09.08.00] | @calledBy: [#HEX:F.01.0A.00], [#HEX:F.01.0B.00], [#HEX:F.04.C8.00]
     function reset3DTerminalState() {
         isCinematicFlight = false;
         if (camera) {
+            camera.up.set(0, 1, 0);
             camera.position.set(0, 0.35, 2.6);
+            camera.rotation.set(0, 0, 0);
             camera.fov = 45;
             camera.updateProjectionMatrix();
         }
@@ -38142,7 +38218,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     }
 // === [#HEX:F.04.35B.00] END ===
 
-// === [#HEX:F.04.22D.00] START | name: animate | lines: 93 ===
+// === [#HEX:F.04.22D.00] START | name: animate | lines: 119 ===
 // @calls: [#HEX:F.04.160.00], [#HEX:F.07.14.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.02.0F.00], [#HEX:F.02.2B.00], [#HEX:F.04.11.00], [#HEX:F.04.13.00]
     function animate(timestamp) {
         const authEl = document.getElementById('auth-3d-container');
@@ -38200,7 +38276,27 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             // Sima, elegáns fókuszpont átmenet: a konzolról folyamatosan átfordul a fix kijelölt bolygóra
             const smoothLookT = Math.min(1.0, Math.pow(clampedT, 1.25));
             const currentLookTarget = new THREE.Vector3().lerpVectors(flightStartTarget, flightFinalTarget, smoothLookT);
+
+            // Dugóhúzó-repülés (spirális pálya + tengelykörüli orsózás) a végső közeli zónában
+            let corkAngle = 0;
+            if (progress > 0.58) {
+                const corkT = Math.min(1.0, (progress - 0.58) / 0.42);
+                corkAngle = Math.pow(corkT, 1.75) * Math.PI * 3.0;
+                const spiralRadius = Math.sin(corkT * Math.PI) * 0.45 + Math.pow(corkT, 2) * 0.08;
+                const fwdDir = currentLookTarget.clone().sub(camera.position).normalize();
+                const worldUp = new THREE.Vector3(0, 1, 0);
+                const rightAxis = new THREE.Vector3().crossVectors(fwdDir, worldUp);
+                if (rightAxis.lengthSq() < 0.0001) rightAxis.set(1, 0, 0);
+                rightAxis.normalize();
+                const upAxis = new THREE.Vector3().crossVectors(rightAxis, fwdDir).normalize();
+                camera.position.addScaledVector(rightAxis, Math.cos(corkAngle) * spiralRadius);
+                camera.position.addScaledVector(upAxis, Math.sin(corkAngle) * spiralRadius);
+            }
+
             camera.lookAt(currentLookTarget);
+            if (progress > 0.58) {
+                camera.rotateZ(corkAngle);
+            }
             if (controls) controls.target.copy(currentLookTarget);
 
             // Dinamikus FOV hiperugrás lencse-torzítás (50 -> 74 -> 50)
@@ -38210,18 +38306,24 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                 camera.updateProjectionMatrix();
             }
 
-            // Kiszürkülés (Grayscale) és finom sötétülés mielőtt eléri a gömbpalástot (progress > 0.58)
+            // Kiszürkülés (Grayscale), sötétülés és mozgási életlenség (blur) mielőtt eléri a gömbpalástot (progress > 0.58)
             if (renderer && renderer.domElement) {
                 if (progress > 0.58) {
                     const grayProgress = (progress - 0.58) / 0.42; // 0.0 -> 1.0
                     const grayVal = Math.min(100, Math.floor(grayProgress * 100));
                     const brightVal = (1.0 - grayProgress * 0.40).toFixed(2);
-                    renderer.domElement.style.filter = 'grayscale(' + grayVal + '%) brightness(' + brightVal + ')';
+                    const blurPx = (Math.pow(Math.max(0, (grayProgress - 0.2) / 0.8), 1.6) * 4.5).toFixed(2);
+                    renderer.domElement.style.filter = 'grayscale(' + grayVal + '%) brightness(' + brightVal + ') blur(' + blurPx + 'px)';
                 }
             }
 
             if (progress >= 1.0) {
                 isCinematicFlight = false;
+                if (camera) {
+                    camera.up.set(0, 1, 0);
+                    camera.fov = initialCameraFov;
+                    camera.updateProjectionMatrix();
+                }
                 if (renderer && renderer.domElement) {
                     renderer.domElement.style.filter = 'none';
                 }

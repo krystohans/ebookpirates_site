@@ -5054,7 +5054,7 @@ window.normalizeShipData = normalizeShipData;
 // === [#HEX:F.03.14.00] END ===
 
             // 1. Háromdimenziós Tér Inicializálása
-// === [#HEX:F.04.1C4.00] START | name: init | lines: 119 ===
+// === [#HEX:F.04.1C4.00] START | name: init | lines: 120 ===
 // @calls: [#HEX:F.01.20.00], [#HEX:F.02.0A.00], [#HEX:F.02.0B.00], [#HEX:F.04.186.00], [#HEX:F.04.187.00] | @calledBy: none
             function init() {
                 const container = document.getElementById('webgl-canvas-container');
@@ -5090,10 +5090,11 @@ window.normalizeShipData = normalizeShipData;
                 controls = new OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
                 controls.dampingFactor = 0.05;
+                controls.enablePan = false; // Fókuszpont rögzítése a bázishoz (ne csúszhasson a bázis fölé)
                 controls.minPolarAngle = THREE.MathUtils.degToRad(55); // Maximum 35°-os lefelé dőlés a horizonttól (55° polárszög | ~0.9599 rad)
                 controls.maxPolarAngle = 1.46; // Legnagyobb vertikális szög (~83.64° | Pos: -132.0, 20.0, 48.0 -> Target: -23.3, 6.8, 1.0)
-                controls.minDistance = 13.13; // Legközelebbi megengedett távolság a fókusztól (-36.4, 7.6, 0.8)
-                controls.maxDistance = 118.0; // Legnagyobb megengedett zoom távolság (max 118)
+                controls.minDistance = 20.0; // Bázis széle határ (X <= -39.1m, nem csúszik a BaseHarbor fölé)
+                controls.maxDistance = 42.6; // Megjelenési távolság (-65.7, 10.9, 1.6 -> -23.3, 6.8, 1.0); ennél távolabb nem mehet!
 
                 // Horizontális elfordulás korlátozása 30 fokos tartományra (±15° az alapértelmezett rálátási szög körül)
                 const baseAzimuth = -1.5567; // atan2(-42.4, 0.6) ~ -89.19°
@@ -6901,7 +6902,7 @@ window.normalizeShipData = normalizeShipData;
             /**
              * Alapértelmezett Kikötő Kamera Beállítás
              */
-// === [#HEX:F.02.0C.00] START | name: setupCameraToModel | lines: 15 ===
+// === [#HEX:F.02.0C.00] START | name: setupCameraToModel | lines: 22 ===
 // @calls: [#HEX:F.0C.14.00] | @calledBy: [#HEX:F.04.1C5.00]
             function setupCameraToModel(model) {
                 // A kiválasztott tökéletes kameraállás és fókuszpont
@@ -6917,6 +6918,13 @@ window.normalizeShipData = normalizeShipData;
                 // Elmentjük a kezdőpozíciókat az alaphelyzetbe állításhoz
                 defaultCameraPos.copy(camera.position);
                 defaultTargetPos.copy(controls.target);
+                const initDist = defaultCameraPos.distanceTo(defaultTargetPos);
+                if (controls && initDist > 20.0) {
+                    controls.enablePan = false;
+                    controls.minDistance = 20.0;
+                    controls.maxDistance = initDist;
+                    controls.update();
+                }
             }
 // === [#HEX:F.02.0C.00] END ===
 
@@ -6943,7 +6951,7 @@ window.normalizeShipData = normalizeShipData;
             }
 // === [#HEX:F.04.1C7.00] END ===
 
-// === [#HEX:F.04.1C8.00] START | name: animate | lines: 259 ===
+// === [#HEX:F.04.1C8.00] START | name: animate | lines: 268 ===
 // @calls: [#HEX:F.0C.14.00] | @calledBy: [#HEX:F.04.1C4.00]
             function animate() {
                 requestAnimationFrame(animate);
@@ -7163,40 +7171,49 @@ window.normalizeShipData = normalizeShipData;
                     const currentLookAt = new THREE.Vector3().lerpVectors(cinematicStartLookAt, cinematicEndLookAt, ease);
                     camera.lookAt(currentLookAt);
                     if (controls) controls.target.copy(currentLookAt);
-                } else if (controls) {
+                } else if (controls && controls.enabled) {
                     // Először a controls.update() – ez alkalmazza a felhasználó bevitelét és a dampinget
                     controls.update();
 
-                    // CSAK EZUTÁN korrigálunk!
+                    // SZIGORÚ TÁVOLSÁG- ÉS BÁZIS-HATÁR VÉDELEM (Stop + azonnali visszaugrás a közelebbi szélső értékre)
+                    const baseCenter = (defaultTargetPos && defaultTargetPos.lengthSq() > 0.001)
+                        ? defaultTargetPos
+                        : new THREE.Vector3(-23.3, 6.8, 1.0);
 
-                    // ─── HORIZONTÁLIS ÉS VERTIKÁLIS MOZGATÁSI KERETEK ───────────────────────────
-                    // Alapértelmezett fókuszpont: (-23.3, 6.8, 1.0)
-                    const baseTargetX = -23.3;
-                    const baseTargetZ = 1.0;
-
-                    // 1. Horizontális mozgathatóság: az alapállapottól mért ±10 egység (Z tengely mentén: -9.0 .. +11.0)
-                    const clampedZ = THREE.MathUtils.clamp(controls.target.z, baseTargetZ - 10.0, baseTargetZ + 10.0);
-                    const corrZ = controls.target.z - clampedZ;
-                    if (Math.abs(corrZ) > 0.0001) {
-                        controls.target.z = clampedZ;
-                        camera.position.z -= corrZ;
+                    if (controls.target.distanceToSquared(baseCenter) > 0.0001) {
+                        controls.target.copy(baseCenter);
                     }
 
-                    // 2. Mélységi / X mozgathatóság: az alapállapottól mért ±10 egység (-33.3 .. -13.3)
-                    const clampedX = THREE.MathUtils.clamp(controls.target.x, baseTargetX - 10.0, baseTargetX + 10.0);
-                    const corrX = controls.target.x - clampedX;
-                    if (Math.abs(corrX) > 0.0001) {
-                        controls.target.x = clampedX;
-                        camera.position.x -= corrX;
+                    const minDist = (controls.minDistance && controls.minDistance > 0) ? controls.minDistance : 20.0;
+                    const maxDist = (defaultCameraPos && defaultCameraPos.lengthSq() > 0.001)
+                        ? defaultCameraPos.distanceTo(baseCenter)
+                        : 42.6;
+
+                    const camOffset = new THREE.Vector3().subVectors(camera.position, baseCenter);
+                    const curDist = camOffset.length();
+                    if (curDist < 0.001) {
+                        camera.position.copy(defaultCameraPos);
+                    } else if (curDist < minDist) {
+                        camOffset.setLength(minDist);
+                        camera.position.copy(baseCenter).add(camOffset);
+                    } else if (curDist > maxDist) {
+                        camOffset.setLength(maxDist);
+                        camera.position.copy(baseCenter).add(camOffset);
                     }
 
-                    // 3. Vertikális mozgási keret: Y tengely 2 és 42 között föl-le
-                    const clampedY = THREE.MathUtils.clamp(controls.target.y, 2, 42);
-                    const corrY = controls.target.y - clampedY;
-                    if (Math.abs(corrY) > 0.0001) {
-                        controls.target.y = clampedY;
-                        camera.position.y -= corrY;
+                    if (camera.position.x > -32.0) {
+                        camera.position.x = -32.0;
+                        camOffset.subVectors(camera.position, baseCenter);
+                        const wallDist = camOffset.length();
+                        if (wallDist < minDist) {
+                            camOffset.setLength(minDist);
+                            camera.position.copy(baseCenter).add(camOffset);
+                        } else if (wallDist > maxDist) {
+                            camOffset.setLength(maxDist);
+                            camera.position.copy(baseCenter).add(camOffset);
+                        }
                     }
+                    camera.lookAt(baseCenter);
                 }
 
                 // Fő színtér renderelése a képernyőre

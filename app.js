@@ -23462,7 +23462,7 @@ function displayInReader(htmlContent) {
 // === [#HEX:F.07.0B.00] END ===
 
 // 1. HAJÓNAPLÓ OLVASÓ (Biztos módszer: getLogEntry + Kliens oldali HTML)
-// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 15663 | action: 'RETURN_TO_SHIP' ===
+// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 15683 | action: 'RETURN_TO_SHIP' ===
 // @calls: [#HEX:A.06.10.08], [#HEX:B.01.03.00], [#HEX:B.02.03.00], [#HEX:B.02.04.00], [#HEX:B.02.07.00] | @calledBy: [#HEX:F.04.353.00], [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openLogReader(logId) {
     if (!logId) return;
@@ -26806,7 +26806,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // === WINDOW ONLOAD (INDÍTÁS) ===
 // === [#HEX:F.04.F3.00] START | name: onload | lines: 60 ===
-// @calls: [#HEX:F.01.01.00], [#HEX:F.01.0F.00], [#HEX:F.04.D2.00], [#HEX:F.04.F4.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00], [#HEX:F.04.121.00], [#HEX:F.04.126.00]
+// @calls: [#HEX:F.01.01.00], [#HEX:F.01.0F.00], [#HEX:F.04.D2.00], [#HEX:F.04.F4.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.01.28.00], [#HEX:F.01.2B.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00]
 window.onload = function () {
     console.log(">>> OLLDAL BETÖLTVE. Rendszer indítása...");
 
@@ -31105,7 +31105,7 @@ function tryGoToDeck() {
 // === [#HEX:F.04.135.00] END ===
 window.tryGoToDeck = tryGoToDeck;
 
-// === [#HEX:F.02.0F.00] START | name: runKikoto3DModule | lines: 4825 ===
+// === [#HEX:F.02.0F.00] START | name: runKikoto3DModule | lines: 4845 ===
 // @calls: [#HEX:A.06.10.08], [#HEX:B.01.03.00], [#HEX:B.03.14.00], [#HEX:B.03.15.00], [#HEX:B.03.1D.00] | @calledBy: [#HEX:F.04.134.00], [#HEX:F.04.C8.00]
 function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Water) {
     kikoto3DRunning = true;
@@ -33731,7 +33731,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.03.0A.00] END ===
 
     // 1. Háromdimenziós Tér Inicializálása
-// === [#HEX:F.04.155.00] START | name: init | lines: 160 ===
+// === [#HEX:F.04.155.00] START | name: init | lines: 161 ===
 // @calls: [#HEX:F.01.22.00], [#HEX:F.02.02.00], [#HEX:F.02.03.00], [#HEX:F.02.04.00], [#HEX:F.04.137.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.11.00], [#HEX:F.04.20C.00], [#HEX:F.04.266.00], [#HEX:F.04.C8.00]
     function init() {
         const container = document.getElementById('webgl-canvas-container');
@@ -33768,10 +33768,11 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.095;
+        controls.enablePan = false; // A fókuszpont a bázis közepéhez rögzítve marad (ne csúszhasson a bázis fölé vagy a háttér széléig)
         controls.minPolarAngle = THREE.MathUtils.degToRad(45); // Tágasabb vertikális dőlési szög a magas madártávlathoz (~45° polárszög | ~0.7854 rad)
         controls.maxPolarAngle = 1.466; // Legnagyobb vertikális szög a vízszint felett (~84° | ~1.466 rad)
-        controls.minDistance = 15.0; // Legközelebbi megengedett zoom távolság a fókusztól
-        controls.maxDistance = 150.0; // Legnagyobb megengedett zoom távolság a teljes szigethez (max 150)
+        controls.minDistance = 34.0; // Bázis széle határ (X <= -34.6m még 45°-os emelkedésnél is, nem csúszik a BaseHarbor fölé)
+        controls.maxDistance = 92.35; // Pontos megjelenési távolság (-100, 32, 0 -> -12, 4, 0); ennél távolabb nem mehet!
 
         // Horizontális elfordulás korlátozása (±20° az alapértelmezett rálátási szög körül)
         const baseAzimuth = -Math.PI / 2; // -90.0° (-1.5708 rad)
@@ -35649,7 +35650,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
     /**
      * Alapértelmezett Kikötő Kamera Beállítás
      */
-// === [#HEX:F.02.05.00] START | name: setupCameraToModel | lines: 16 ===
+// === [#HEX:F.02.05.00] START | name: setupCameraToModel | lines: 23 ===
 // @calls: [#HEX:F.04.160.00] | @calledBy: [#HEX:F.02.0F.00], [#HEX:F.04.156.00], [#HEX:F.04.C8.00]
     function setupCameraToModel(model) {
         // Magasabb madártávlati kameraállás (Y: 32m, X: -100m) a bázis centrumára (-12.0, 4.0, 0.0) irányítva
@@ -35666,6 +35667,13 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
         // Elmentjük a kezdőpozíciókat az alaphelyzetbe állításhoz
         defaultCameraPos.copy(camera.position);
         defaultTargetPos.copy(controls.target);
+        const initDist = defaultCameraPos.distanceTo(defaultTargetPos);
+        if (controls && initDist > 34.0) {
+            controls.enablePan = false;
+            controls.minDistance = 34.0;
+            controls.maxDistance = initDist;
+            controls.update();
+        }
     }
 // === [#HEX:F.02.05.00] END ===
 
@@ -35720,7 +35728,7 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
 // === [#HEX:F.04.35C.00] END ===
     document.addEventListener('visibilitychange', onKikotoVisibilityChange);
 
-// === [#HEX:F.04.159.00] START | name: animate | lines: 290 ===
+// === [#HEX:F.04.159.00] START | name: animate | lines: 302 ===
 // @calls: [#HEX:F.04.160.00] | @calledBy: none
     function animate(now) {
         if (!kikoto3DRunning) return;
@@ -35971,40 +35979,52 @@ function runKikoto3DModule(THREE, OrbitControls, GLTFLoader, RoomEnvironment, Wa
             const currentLookAt = _kikotoCinematicLookAt.lerpVectors(cinematicStartLookAt, cinematicEndLookAt, ease);
             camera.lookAt(currentLookAt);
             if (controls) controls.target.copy(currentLookAt);
-        } else if (controls) {
+        } else if (controls && controls.enabled) {
             // Először a controls.update() – ez alkalmazza a felhasználó bevitelét és a dampinget
             controls.update();
 
-            // CSAK EZUTÁN korrigálunk!
+            // SZIGORÚ TÁVOLSÁG- ÉS BÁZIS-HATÁR VÉDELEM (Stop + azonnali visszaugrás a közelebbi szélső értékre)
+            const baseCenter = (defaultTargetPos && defaultTargetPos.lengthSq() > 0.001)
+                ? defaultTargetPos
+                : _kikotoTempWPos.set(-12.0, 4.0, 0.0);
 
-            // ─── HORIZONTÁLIS ÉS VERTIKÁLIS MOZGATÁSI KERETEK ───────────────────────────
-            // Alapértelmezett fókuszpont dinamikusan a bázis centrumához igazítva (-12.0, 4.0, 0.0)
-            const baseTargetX = (defaultTargetPos && defaultTargetPos.length() > 0) ? defaultTargetPos.x : -12.0;
-            const baseTargetZ = (defaultTargetPos && defaultTargetPos.length() > 0) ? defaultTargetPos.z : 0.0;
-
-            // 1. Horizontális mozgathatóság: az alapállapottól mért ±15 egység (Z tengely mentén: -15.0 .. +15.0)
-            const clampedZ = THREE.MathUtils.clamp(controls.target.z, baseTargetZ - 15.0, baseTargetZ + 15.0);
-            const corrZ = controls.target.z - clampedZ;
-            if (Math.abs(corrZ) > 0.0001) {
-                controls.target.z = clampedZ;
-                camera.position.z -= corrZ;
+            // 1. Fókuszpont rögzítése a bázis középpontjához (nincs elcsúszás a bázis fölé)
+            if (controls.target.distanceToSquared(baseCenter) > 0.0001) {
+                controls.target.copy(baseCenter);
             }
 
-            // 2. Mélységi / X mozgathatóság: az alapállapottól mért ±15 egység (-27.0 .. +3.0)
-            const clampedX = THREE.MathUtils.clamp(controls.target.x, baseTargetX - 15.0, baseTargetX + 15.0);
-            const corrX = controls.target.x - clampedX;
-            if (Math.abs(corrX) > 0.0001) {
-                controls.target.x = clampedX;
-                camera.position.x -= corrX;
+            // 2. Kamera távolság szigorú korlátozása: [bázis széle (34.0) .. megjelenési távolság (92.35)]
+            const minDist = (controls.minDistance && controls.minDistance > 0) ? controls.minDistance : 34.0;
+            const maxDist = (defaultCameraPos && defaultCameraPos.lengthSq() > 0.001)
+                ? defaultCameraPos.distanceTo(baseCenter)
+                : 92.35;
+
+            const camOffset = _kikotoCinematicLookAt.subVectors(camera.position, baseCenter);
+            const curDist = camOffset.length();
+            if (curDist < 0.001) {
+                camera.position.copy(defaultCameraPos);
+            } else if (curDist < minDist) {
+                camOffset.setLength(minDist);
+                camera.position.copy(baseCenter).add(camOffset);
+            } else if (curDist > maxDist) {
+                camOffset.setLength(maxDist);
+                camera.position.copy(baseCenter).add(camOffset);
             }
 
-            // 3. Vertikális mozgási keret: Y tengely 2 és 42 között föl-le
-            const clampedY = THREE.MathUtils.clamp(controls.target.y, 2, 42);
-            const corrY = controls.target.y - clampedY;
-            if (Math.abs(corrY) > 0.0001) {
-                controls.target.y = clampedY;
-                camera.position.y -= corrY;
+            // 3. Extra fizikai bázis-fal védelem (BaseHarbor elülső széle X = -30.4 -> kamera X soha ne lépje át a -32.0-t)
+            if (camera.position.x > -32.0) {
+                camera.position.x = -32.0;
+                camOffset.subVectors(camera.position, baseCenter);
+                const wallDist = camOffset.length();
+                if (wallDist < minDist) {
+                    camOffset.setLength(minDist);
+                    camera.position.copy(baseCenter).add(camOffset);
+                } else if (wallDist > maxDist) {
+                    camOffset.setLength(maxDist);
+                    camera.position.copy(baseCenter).add(camOffset);
+                }
             }
+            camera.lookAt(baseCenter);
         }
 
         // Fő színtér renderelése a képernyőre

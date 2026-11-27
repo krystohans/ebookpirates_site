@@ -1377,8 +1377,8 @@
 // === [#HEX:F.04.1D4.00] END ===
 
         // InfoMesh és ScreenMesh Anyag és UV kezelők
-// === [#HEX:F.03.15.00] START | name: applyInfoMeshMaterial | lines: 79 ===
-// @calls: none | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
+// === [#HEX:F.03.15.00] START | name: applyInfoMeshMaterial | lines: 132 ===
+// @calls: [#HEX:F.01.29.00], [#HEX:F.01.2A.00], [#HEX:F.01.2B.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function applyInfoMeshMaterial(mesh) {
             if (!mesh || !mesh.geometry) return;
             try {
@@ -1418,37 +1418,99 @@
                 mesh.geometry.computeVertexNormals();
 
                 if (!infoMaterial) {
-                    const texLoader = new THREE.TextureLoader();
-                    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
-                    const localPath = 'assets/icons/info-r 1.png';
-                    const infoTex = texLoader.load(
-                        gcsUrl,
-                        () => { 
-                            console.info('Info-gomb ikon sikeresen betöltve (GCS).'); 
-                            if (mesh && mesh.material) mesh.material.needsUpdate = true;
-                        },
-                        undefined,
-                        () => {
-                            console.warn('GCS ikon nem található, helyi fallback...');
-                            texLoader.load(localPath, (localTex) => {
-                                if (infoMaterial) {
-                                    infoMaterial.map = localTex;
-                                    infoMaterial.needsUpdate = true;
-                                }
-                            });
-                        }
-                    );
+                    const btnCanvas = document.createElement('canvas');
+                    btnCanvas.width = 512;
+                    btnCanvas.height = 512;
+                    const bCtx = btnCanvas.getContext('2d');
+// === [#HEX:F.01.26.00] START | name: paintBacking | lines: 13 ===
+// @calls: none | @calledBy: none
+                    const paintBacking = () => {
+                        const bg = bCtx.createRadialGradient(256, 256, 30, 256, 256, 360);
+                        bg.addColorStop(0, '#3a2a1c');
+                        bg.addColorStop(0.65, '#221810');
+                        bg.addColorStop(1, '#140e09');
+                        bCtx.fillStyle = bg;
+                        bCtx.fillRect(0, 0, 512, 512);
+                        bCtx.strokeStyle = 'rgba(212, 168, 83, 0.38)';
+                        bCtx.lineWidth = 10;
+                        bCtx.beginPath();
+                        bCtx.arc(256, 256, 240, 0, Math.PI * 2);
+                        bCtx.stroke();
+                    };
+// === [#HEX:F.01.26.00] END ===
+                    paintBacking();
+
+                    const infoTex = new THREE.CanvasTexture(btnCanvas);
                     infoTex.colorSpace = THREE.SRGBColorSpace;
                     infoTex.wrapS = THREE.ClampToEdgeWrapping;
                     infoTex.wrapT = THREE.ClampToEdgeWrapping;
                     infoMaterial = new THREE.MeshStandardMaterial({
                         map: infoTex,
                         roughness: 0.35,
-                        metalness: 0.15,
-                        transparent: true,
-                        alphaTest: 0.05,
+                        metalness: 0.25,
                         side: THREE.DoubleSide
                     });
+
+                    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
+                    const localPath = 'assets/icons/info-r 1.png';
+// === [#HEX:F.01.27.00] START | name: drawCroppedIcon | lines: 35 ===
+// @calls: [#HEX:F.01.29.00] | @calledBy: none
+                    const drawCroppedIcon = (img) => {
+                        paintBacking();
+                        const iw = img.naturalWidth || img.width;
+                        const ih = img.naturalHeight || img.height;
+                        let sx = 0, sy = 0, sw = iw, sh = ih;
+                        try {
+                            const scanCanvas = document.createElement('canvas');
+                            scanCanvas.width = iw;
+                            scanCanvas.height = ih;
+                            const sCtx = scanCanvas.getContext('2d');
+                            sCtx.drawImage(img, 0, 0);
+                            const px = sCtx.getImageData(0, 0, iw, ih).data;
+                            let x0 = iw, y0 = ih, x1 = 0, y1 = 0;
+                            for (let y = 0; y < ih; y++) {
+                                for (let x = 0; x < iw; x++) {
+                                    if (px[(y * iw + x) * 4 + 3] > 20) {
+                                        if (x < x0) x0 = x;
+                                        if (x > x1) x1 = x;
+                                        if (y < y0) y0 = y;
+                                        if (y > y1) y1 = y;
+                                    }
+                                }
+                            }
+                            if (x1 > x0 && y1 > y0) {
+                                sx = x0; sy = y0; sw = x1 - x0 + 1; sh = y1 - y0 + 1;
+                            }
+                        } catch (_e) { }
+                        const targetSpan = 472;
+                        const scale = Math.min(targetSpan / sw, targetSpan / sh);
+                        const dw = sw * scale;
+                        const dh = sh * scale;
+                        bCtx.drawImage(img, sx, sy, sw, sh, (512 - dw) / 2, (512 - dh) / 2, dw, dh);
+                        infoTex.needsUpdate = true;
+                        if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                    };
+// === [#HEX:F.01.27.00] END ===
+
+// === [#HEX:F.01.28.00] START | name: loadBtnImg | lines: 15 ===
+// @calls: [#HEX:F.01.2A.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: none
+                    const loadBtnImg = (url, fallbackUrl) => {
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+                        img.onload = () => {
+                            drawCroppedIcon(img);
+                            console.info('Info-gomb ikon sikeresen betöltve és befoltozva:', url);
+                        };
+                        img.onerror = () => {
+                            if (fallbackUrl) {
+                                console.warn('GCS ikon nem található, helyi fallback...');
+                                loadBtnImg(fallbackUrl, null);
+                            }
+                        };
+                        img.src = url;
+                    };
+// === [#HEX:F.01.28.00] END ===
+                    loadBtnImg(gcsUrl, localPath);
                 }
 
                 mesh.material = infoMaterial;
@@ -1461,7 +1523,7 @@
 // === [#HEX:F.03.15.00] END ===
 
         // Cián színben ragyogó célkereszt ikon generálása FokuszMesh gombra
-// === [#HEX:F.04.1D5.00] START | name: createCrosshairCanvas | lines: 92 ===
+// === [#HEX:F.04.1D5.00] START | name: createCrosshairCanvas | lines: 90 ===
 // @calls: none | @calledBy: [#HEX:F.03.16.00]
         function createCrosshairCanvas() {
             const canvas = document.createElement('canvas');
@@ -1471,14 +1533,12 @@
             const cx = 256, cy = 256;
 
             // 1. Sötét sci-fi körkörös alap
-            const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 240);
+            const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 265);
             bgGrad.addColorStop(0, '#04222a');
             bgGrad.addColorStop(0.7, '#021218');
             bgGrad.addColorStop(1, '#01090d');
             c.fillStyle = bgGrad;
-            c.beginPath();
-            c.arc(cx, cy, 245, 0, Math.PI * 2);
-            c.fill();
+            c.fillRect(0, 0, 512, 512);
 
             // Külső perem
             c.strokeStyle = '#005544';
@@ -1625,8 +1685,8 @@
 // === [#HEX:F.03.16.00] END ===
 
         // Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője (Hártyahalász stílusú pergamen/arany zászlók)
-// === [#HEX:F.03.17.00] START | name: applyLangMeshMaterial | lines: 81 ===
-// @calls: none | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
+// === [#HEX:F.03.17.00] START | name: applyLangMeshMaterial | lines: 134 ===
+// @calls: [#HEX:F.01.29.00], [#HEX:F.01.2A.00], [#HEX:F.01.2B.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: [#HEX:F.04.1D6.00], [#HEX:F.04.1D7.00]
         function applyLangMeshMaterial(mesh, lang) {
             if (!mesh || !mesh.geometry) return;
             try {
@@ -1667,37 +1727,99 @@
                 mesh.geometry.computeVertexNormals();
 
                 if (!langMaterials[lang]) {
-                    const texLoader = new THREE.TextureLoader();
-                    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
-                    const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
-                    const langTex = texLoader.load(
-                        gcsUrl,
-                        () => { 
-                            console.info('Nyelv zászló textúra sikeresen betöltve (Hártyahalász GCS):', lang); 
-                            if (mesh && mesh.material) mesh.material.needsUpdate = true;
-                        },
-                        undefined,
-                        () => {
-                            console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
-                            texLoader.load(localPath, (localTex) => {
-                                if (langMaterials[lang]) {
-                                    langMaterials[lang].map = localTex;
-                                    langMaterials[lang].needsUpdate = true;
-                                }
-                            });
-                        }
-                    );
+                    const btnCanvas = document.createElement('canvas');
+                    btnCanvas.width = 512;
+                    btnCanvas.height = 512;
+                    const bCtx = btnCanvas.getContext('2d');
+// === [#HEX:F.01.29.00] START | name: paintBacking | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.01.27.00], [#HEX:F.01.2A.00], [#HEX:F.03.15.00], [#HEX:F.03.17.00]
+                    const paintBacking = () => {
+                        const bg = bCtx.createRadialGradient(256, 256, 30, 256, 256, 360);
+                        bg.addColorStop(0, '#3a2a1c');
+                        bg.addColorStop(0.65, '#221810');
+                        bg.addColorStop(1, '#140e09');
+                        bCtx.fillStyle = bg;
+                        bCtx.fillRect(0, 0, 512, 512);
+                        bCtx.strokeStyle = 'rgba(212, 168, 83, 0.38)';
+                        bCtx.lineWidth = 10;
+                        bCtx.beginPath();
+                        bCtx.arc(256, 256, 240, 0, Math.PI * 2);
+                        bCtx.stroke();
+                    };
+// === [#HEX:F.01.29.00] END ===
+                    paintBacking();
+
+                    const langTex = new THREE.CanvasTexture(btnCanvas);
                     langTex.colorSpace = THREE.SRGBColorSpace;
                     langTex.wrapS = THREE.ClampToEdgeWrapping;
                     langTex.wrapT = THREE.ClampToEdgeWrapping;
                     langMaterials[lang] = new THREE.MeshStandardMaterial({
                         map: langTex,
                         roughness: 0.35,
-                        metalness: 0.2,
-                        transparent: true,
-                        alphaTest: 0.05,
+                        metalness: 0.25,
                         side: THREE.DoubleSide
                     });
+
+                    const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                    const localPath = 'assets/images/flags/lang_' + lang + '-removebg-preview.png';
+// === [#HEX:F.01.2A.00] START | name: drawCroppedIcon | lines: 35 ===
+// @calls: [#HEX:F.01.29.00] | @calledBy: [#HEX:F.01.28.00], [#HEX:F.01.2B.00], [#HEX:F.03.15.00], [#HEX:F.03.17.00]
+                    const drawCroppedIcon = (img) => {
+                        paintBacking();
+                        const iw = img.naturalWidth || img.width;
+                        const ih = img.naturalHeight || img.height;
+                        let sx = 0, sy = 0, sw = iw, sh = ih;
+                        try {
+                            const scanCanvas = document.createElement('canvas');
+                            scanCanvas.width = iw;
+                            scanCanvas.height = ih;
+                            const sCtx = scanCanvas.getContext('2d');
+                            sCtx.drawImage(img, 0, 0);
+                            const px = sCtx.getImageData(0, 0, iw, ih).data;
+                            let x0 = iw, y0 = ih, x1 = 0, y1 = 0;
+                            for (let y = 0; y < ih; y++) {
+                                for (let x = 0; x < iw; x++) {
+                                    if (px[(y * iw + x) * 4 + 3] > 20) {
+                                        if (x < x0) x0 = x;
+                                        if (x > x1) x1 = x;
+                                        if (y < y0) y0 = y;
+                                        if (y > y1) y1 = y;
+                                    }
+                                }
+                            }
+                            if (x1 > x0 && y1 > y0) {
+                                sx = x0; sy = y0; sw = x1 - x0 + 1; sh = y1 - y0 + 1;
+                            }
+                        } catch (_e) { }
+                        const targetSpan = 472;
+                        const scale = Math.min(targetSpan / sw, targetSpan / sh);
+                        const dw = sw * scale;
+                        const dh = sh * scale;
+                        bCtx.drawImage(img, sx, sy, sw, sh, (512 - dw) / 2, (512 - dh) / 2, dw, dh);
+                        langTex.needsUpdate = true;
+                        if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                    };
+// === [#HEX:F.01.2A.00] END ===
+
+// === [#HEX:F.01.2B.00] START | name: loadBtnImg | lines: 15 ===
+// @calls: [#HEX:F.01.2A.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: [#HEX:F.03.15.00], [#HEX:F.03.17.00]
+                    const loadBtnImg = (url, fallbackUrl) => {
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+                        img.onload = () => {
+                            drawCroppedIcon(img);
+                            console.info('Nyelv zászló textúra sikeresen betöltve és befoltozva:', lang);
+                        };
+                        img.onerror = () => {
+                            if (fallbackUrl) {
+                                console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
+                                loadBtnImg(fallbackUrl, null);
+                            }
+                        };
+                        img.src = url;
+                    };
+// === [#HEX:F.01.2B.00] END ===
+                    loadBtnImg(gcsUrl, localPath);
                 }
 
                 mesh.material = langMaterials[lang];
@@ -1711,20 +1833,21 @@
 // === [#HEX:F.03.17.00] END ===
 
         // --- GLB MODELL BETÖLTÉSE ---
-// === [#HEX:F.04.1D6.00] START | name: loadDeviceModel | lines: 126 ===
+// === [#HEX:F.04.1D6.00] START | name: loadDeviceModel | lines: 132 ===
 // @calls: [#HEX:F.03.15.00], [#HEX:F.03.16.00], [#HEX:F.03.17.00], [#HEX:F.04.1D7.00], [#HEX:F.04.1D8.00] | @calledBy: [#HEX:F.04.1CA.00]
         function loadDeviceModel() {
             const gltfLoader = new GLTFLoader();
-            const modelPaths = [
-                'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb',
-                'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb',
-                'assets/models/belepo_kozmosz_kutyu.glb',
-                'https://storage.googleapis.com/kalozsziget-assets/models/belepooldal_kozmosz_kutyu.glb',
-                'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepooldal_kozmosz_kutyu.glb',
-                'assets/models/belepooldal_kozmosz_kutyu.glb'
+            const isLocalEnv = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:');
+            const modelPaths = isLocalEnv ? [
+                'assets/3d_webre/belepooldal_kozmosz_kutyu.glb?v=20261127',
+                'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/belepooldal_kozmosz_kutyu.glb?v=20261127',
+                'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb'
+            ] : [
+                'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/belepooldal_kozmosz_kutyu.glb?v=20261127',
+                'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb'
             ];
 
-// === [#HEX:F.04.1D7.00] START | name: tryLoad | lines: 112 ===
+// === [#HEX:F.04.1D7.00] START | name: tryLoad | lines: 117 ===
 // @calls: [#HEX:F.03.15.00], [#HEX:F.03.16.00], [#HEX:F.03.17.00], [#HEX:F.04.1D8.00], [#HEX:F.05.3B.00] | @calledBy: [#HEX:F.04.1D6.00]
             function tryLoad(index) {
                 if (index >= modelPaths.length) {
@@ -1761,28 +1884,33 @@
                                     screenFound = true;
                                     console.info('Dinamikus ScreenMaterial sikeresen hozzárendelve:', child.name);
 
-                                    // Automatikus UV normalizálás és tükrözés javítás (1.0 - normU)
-                                    if (child.geometry && child.geometry.attributes && child.geometry.attributes.uv) {
-                                        const uvAttr = child.geometry.attributes.uv;
-                                        let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-                                        for (let i = 0; i < uvAttr.count; i++) {
-                                            const u = uvAttr.getX(i);
-                                            const v = uvAttr.getY(i);
-                                            if (u < minU) minU = u;
-                                            if (u > maxU) maxU = u;
-                                            if (v < minV) minV = v;
-                                            if (v > maxV) maxV = v;
+                                    // Közvetlen síkbeli 3D (X-Y) UV vetítés (nincs tükröződés és nincs kilógás Blender UV-től függetlenül)
+                                    if (child.geometry && child.geometry.attributes && child.geometry.attributes.position) {
+                                        const posAttr = child.geometry.attributes.position;
+                                        let uvAttr = child.geometry.attributes.uv;
+                                        if (!uvAttr || uvAttr.count !== posAttr.count) {
+                                            uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                                            child.geometry.setAttribute('uv', uvAttr);
                                         }
-                                        const rangeU = maxU - minU;
-                                        const rangeV = maxV - minV;
-                                        if (rangeU > 0.01 && rangeV > 0.01) {
-                                            for (let i = 0; i < uvAttr.count; i++) {
-                                                const normU = 1.0 - ((uvAttr.getX(i) - minU) / rangeU);
-                                                const normV = (uvAttr.getY(i) - minV) / rangeV;
+                                        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                                        for (let i = 0; i < posAttr.count; i++) {
+                                            const px = posAttr.getX(i);
+                                            const py = posAttr.getY(i);
+                                            if (px < minX) minX = px;
+                                            if (px > maxX) maxX = px;
+                                            if (py < minY) minY = py;
+                                            if (py > maxY) maxY = py;
+                                        }
+                                        const rangeX = maxX - minX;
+                                        const rangeY = maxY - minY;
+                                        if (rangeX > 0.001 && rangeY > 0.001) {
+                                            for (let i = 0; i < posAttr.count; i++) {
+                                                const normU = (posAttr.getX(i) - minX) / rangeX;
+                                                const normV = (posAttr.getY(i) - minY) / rangeY;
                                                 uvAttr.setXY(i, normU, normV);
                                             }
                                             uvAttr.needsUpdate = true;
-                                            console.info('ScreenMesh UV normalizálva és tükrözve:', { minU, maxU, minV, maxV, rangeU, rangeV });
+                                            console.info('ScreenMesh síkbeli 3D X-Y UV vetítés kész:', { minX, maxX, minY, maxY, rangeX, rangeY });
                                         }
                                     }
                                 }

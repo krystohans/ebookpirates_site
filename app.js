@@ -23462,7 +23462,7 @@ function displayInReader(htmlContent) {
 // === [#HEX:F.07.0B.00] END ===
 
 // 1. HAJÓNAPLÓ OLVASÓ (Biztos módszer: getLogEntry + Kliens oldali HTML)
-// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 15555 | action: 'RETURN_TO_SHIP' ===
+// === [#HEX:F.04.C8.00] START | name: openLogReader | lines: 15663 | action: 'RETURN_TO_SHIP' ===
 // @calls: [#HEX:A.06.10.08], [#HEX:B.01.03.00], [#HEX:B.02.03.00], [#HEX:B.02.04.00], [#HEX:B.02.07.00] | @calledBy: [#HEX:F.04.353.00], [#HEX:F.04.AB.00], [#HEX:F.04.C4.00]
 function openLogReader(logId) {
     if (!logId) return;
@@ -26806,7 +26806,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // === WINDOW ONLOAD (INDÍTÁS) ===
 // === [#HEX:F.04.F3.00] START | name: onload | lines: 60 ===
-// @calls: [#HEX:F.01.01.00], [#HEX:F.01.0F.00], [#HEX:F.04.D2.00], [#HEX:F.04.F4.00] | @calledBy: [#HEX:F.04.121.00], [#HEX:F.04.126.00], [#HEX:F.04.132.00], [#HEX:F.04.1BE.00], [#HEX:F.04.1C3.00]
+// @calls: [#HEX:F.01.01.00], [#HEX:F.01.0F.00], [#HEX:F.04.D2.00], [#HEX:F.04.F4.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00], [#HEX:F.04.121.00], [#HEX:F.04.126.00]
 window.onload = function () {
     console.log(">>> OLLDAL BETÖLTVE. Rendszer indítása...");
 
@@ -36159,7 +36159,7 @@ function initAuthTerminal3D() {
 // === [#HEX:F.01.0A.00] END ===
 window.initAuthTerminal3D = initAuthTerminal3D;
 
-// === [#HEX:F.01.0B.00] START | name: runAuthTerminal3DModule | lines: 2026 ===
+// === [#HEX:F.01.0B.00] START | name: runAuthTerminal3DModule | lines: 2134 ===
 // @calls: [#HEX:B.07.01.00], [#HEX:B.07.DB.00], [#HEX:B.07.E2.00], [#HEX:F.01.00.00], [#HEX:F.01.0C.00] | @calledBy: [#HEX:F.01.0A.00], [#HEX:F.04.C8.00]
 function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
     if (authTerminal3DRunning) return;
@@ -36253,8 +36253,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.09.0A.00] END ===
 
     // --- THREE.JS INICIALIZÁLÁS ---
-// === [#HEX:F.04.15B.00] START | name: initThree | lines: 86 ===
-// @calls: [#HEX:F.04.15C.00], [#HEX:F.04.161.00], [#HEX:F.04.167.00], [#HEX:F.04.169.00], [#HEX:F.04.17A.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.C8.00]
+// === [#HEX:F.04.15B.00] START | name: initThree | lines: 85 ===
+// @calls: [#HEX:F.04.15C.00], [#HEX:F.04.161.00], [#HEX:F.04.167.00], [#HEX:F.04.17A.00], [#HEX:F.04.22D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.C8.00]
     function initThree() {
         const container = document.getElementById('webgl-container');
         if (!container) return;
@@ -36314,8 +36314,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         // 8. Meteor / Üstökös Rendszer
         meteorManager = new MeteorManager(scene, SPHERE_RADIUS);
 
-        // 9. AZONNALI FALLBACK DEVICE LÉTREHOZÁSA (Azonnali megjelenés, 0 várakozás!)
-        createFallbackDevice();
+        // 9. A sima fallback kijelzőt NEM jelenítjük meg előre — a kijelző kizárólag a betöltött 3D kozmikus kütyü ScreenMesh felületén jelenik meg!
 
         // 10. BETÖLTŐKÉPERNYŐ AZONNALI ELTÁVOLÍTÁSA (Nincs perceken át tartó beragadás!)
         const ls = document.getElementById('loading-screen');
@@ -36780,8 +36779,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.165.00] END ===
 
     // InfoMesh és ScreenMesh Anyag és UV kezelők
-// === [#HEX:F.03.0B.00] START | name: applyInfoMeshMaterial | lines: 78 ===
-// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.C8.00]
+// === [#HEX:F.03.0B.00] START | name: applyInfoMeshMaterial | lines: 131 ===
+// @calls: [#HEX:F.04.36F.00], [#HEX:F.04.370.00], [#HEX:F.04.371.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.C8.00]
     function applyInfoMeshMaterial(mesh) {
         if (!mesh || !mesh.geometry) return;
         try {
@@ -36821,37 +36820,99 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             mesh.geometry.computeVertexNormals();
 
             if (!infoMaterial) {
-                const texLoader = new THREE.TextureLoader();
-                const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
-                const localPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/icons/info-r 1.png';
-                const infoTex = texLoader.load(
-                    gcsUrl,
-                    () => {
-                        console.info('Info-gomb ikon sikeresen betöltve (GCS).');
-                        if (mesh && mesh.material) mesh.material.needsUpdate = true;
-                    },
-                    undefined,
-                    () => {
-                        console.warn('GCS ikon nem található, helyi fallback...');
-                        texLoader.load(localPath, (localTex) => {
-                            if (infoMaterial) {
-                                infoMaterial.map = localTex;
-                                infoMaterial.needsUpdate = true;
-                            }
-                        });
-                    }
-                );
+                const btnCanvas = document.createElement('canvas');
+                btnCanvas.width = 512;
+                btnCanvas.height = 512;
+                const bCtx = btnCanvas.getContext('2d');
+// === [#HEX:F.04.271.00] START | name: paintBacking | lines: 13 ===
+// @calls: none | @calledBy: none
+                const paintBacking = () => {
+                    const bg = bCtx.createRadialGradient(256, 256, 30, 256, 256, 360);
+                    bg.addColorStop(0, '#3a2a1c');
+                    bg.addColorStop(0.65, '#221810');
+                    bg.addColorStop(1, '#140e09');
+                    bCtx.fillStyle = bg;
+                    bCtx.fillRect(0, 0, 512, 512);
+                    bCtx.strokeStyle = 'rgba(212, 168, 83, 0.38)';
+                    bCtx.lineWidth = 10;
+                    bCtx.beginPath();
+                    bCtx.arc(256, 256, 240, 0, Math.PI * 2);
+                    bCtx.stroke();
+                };
+// === [#HEX:F.04.271.00] END ===
+                paintBacking();
+
+                const infoTex = new THREE.CanvasTexture(btnCanvas);
                 infoTex.colorSpace = THREE.SRGBColorSpace;
                 infoTex.wrapS = THREE.ClampToEdgeWrapping;
                 infoTex.wrapT = THREE.ClampToEdgeWrapping;
                 infoMaterial = new THREE.MeshStandardMaterial({
                     map: infoTex,
                     roughness: 0.35,
-                    metalness: 0.15,
-                    transparent: true,
-                    alphaTest: 0.05,
+                    metalness: 0.25,
                     side: THREE.DoubleSide
                 });
+
+                const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/icons/info-r%201.png';
+                const localPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/icons/info-r 1.png';
+// === [#HEX:F.04.272.00] START | name: drawCroppedIcon | lines: 35 ===
+// @calls: [#HEX:F.04.36F.00] | @calledBy: none
+                const drawCroppedIcon = (img) => {
+                    paintBacking();
+                    const iw = img.naturalWidth || img.width;
+                    const ih = img.naturalHeight || img.height;
+                    let sx = 0, sy = 0, sw = iw, sh = ih;
+                    try {
+                        const scanCanvas = document.createElement('canvas');
+                        scanCanvas.width = iw;
+                        scanCanvas.height = ih;
+                        const sCtx = scanCanvas.getContext('2d');
+                        sCtx.drawImage(img, 0, 0);
+                        const px = sCtx.getImageData(0, 0, iw, ih).data;
+                        let x0 = iw, y0 = ih, x1 = 0, y1 = 0;
+                        for (let y = 0; y < ih; y++) {
+                            for (let x = 0; x < iw; x++) {
+                                if (px[(y * iw + x) * 4 + 3] > 20) {
+                                    if (x < x0) x0 = x;
+                                    if (x > x1) x1 = x;
+                                    if (y < y0) y0 = y;
+                                    if (y > y1) y1 = y;
+                                }
+                            }
+                        }
+                        if (x1 > x0 && y1 > y0) {
+                            sx = x0; sy = y0; sw = x1 - x0 + 1; sh = y1 - y0 + 1;
+                        }
+                    } catch (_e) { }
+                    const targetSpan = 472;
+                    const scale = Math.min(targetSpan / sw, targetSpan / sh);
+                    const dw = sw * scale;
+                    const dh = sh * scale;
+                    bCtx.drawImage(img, sx, sy, sw, sh, (512 - dw) / 2, (512 - dh) / 2, dw, dh);
+                    infoTex.needsUpdate = true;
+                    if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                };
+// === [#HEX:F.04.272.00] END ===
+
+// === [#HEX:F.04.273.00] START | name: loadBtnImg | lines: 15 ===
+// @calls: [#HEX:F.04.370.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: none
+                const loadBtnImg = (url, fallbackUrl) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        drawCroppedIcon(img);
+                        console.info('Info-gomb ikon sikeresen betöltve és befoltozva:', url);
+                    };
+                    img.onerror = () => {
+                        if (fallbackUrl) {
+                            console.warn('Info-gomb elsődleges ikon nem érhető el, fallback:', fallbackUrl);
+                            loadBtnImg(fallbackUrl, null);
+                        }
+                    };
+                    img.src = url;
+                };
+// === [#HEX:F.04.273.00] END ===
+                loadBtnImg(gcsUrl, localPath);
             }
 
             mesh.material = infoMaterial;
@@ -36863,7 +36924,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.03.0B.00] END ===
 
     // Célkereszt ikon generálása FokuszMesh gombra
-// === [#HEX:F.04.166.00] START | name: createCrosshairCanvas | lines: 76 ===
+// === [#HEX:F.04.166.00] START | name: createCrosshairCanvas | lines: 74 ===
 // @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0C.00], [#HEX:F.04.C8.00]
     function createCrosshairCanvas() {
         const canvas = document.createElement('canvas');
@@ -36872,14 +36933,12 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
         const c = canvas.getContext('2d');
         const cx = 256, cy = 256;
 
-        const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 240);
+        const bgGrad = c.createRadialGradient(cx, cy, 20, cx, cy, 265);
         bgGrad.addColorStop(0, '#04222a');
         bgGrad.addColorStop(0.7, '#021218');
         bgGrad.addColorStop(1, '#01090d');
         c.fillStyle = bgGrad;
-        c.beginPath();
-        c.arc(cx, cy, 245, 0, Math.PI * 2);
-        c.fill();
+        c.fillRect(0, 0, 512, 512);
 
         c.strokeStyle = '#005544';
         c.lineWidth = 4;
@@ -37009,8 +37068,8 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.03.0C.00] END ===
 
     // Nyelvválasztó Gombok Anyag és Síkbeli UV kezelője
-// === [#HEX:F.03.0D.00] START | name: applyLangMeshMaterial | lines: 79 ===
-// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.C8.00]
+// === [#HEX:F.03.0D.00] START | name: applyLangMeshMaterial | lines: 132 ===
+// @calls: [#HEX:F.04.36F.00], [#HEX:F.04.370.00], [#HEX:F.04.371.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.C8.00]
     function applyLangMeshMaterial(mesh, lang) {
         if (!mesh || !mesh.geometry) return;
         try {
@@ -37050,37 +37109,99 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
             mesh.geometry.computeVertexNormals();
 
             if (!langMaterials[lang]) {
-                const texLoader = new THREE.TextureLoader();
-                const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
-                const localPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_' + lang + '-removebg-preview.png';
-                const langTex = texLoader.load(
-                    gcsUrl,
-                    () => {
-                        console.info('Nyelv zászló textúra sikeresen betöltve (GCS):', lang);
-                        if (mesh && mesh.material) mesh.material.needsUpdate = true;
-                    },
-                    undefined,
-                    () => {
-                        console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
-                        texLoader.load(localPath, (localTex) => {
-                            if (langMaterials[lang]) {
-                                langMaterials[lang].map = localTex;
-                                langMaterials[lang].needsUpdate = true;
-                            }
-                        });
-                    }
-                );
+                const btnCanvas = document.createElement('canvas');
+                btnCanvas.width = 512;
+                btnCanvas.height = 512;
+                const bCtx = btnCanvas.getContext('2d');
+// === [#HEX:F.04.36F.00] START | name: paintBacking | lines: 13 ===
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00], [#HEX:F.04.272.00], [#HEX:F.04.370.00]
+                const paintBacking = () => {
+                    const bg = bCtx.createRadialGradient(256, 256, 30, 256, 256, 360);
+                    bg.addColorStop(0, '#3a2a1c');
+                    bg.addColorStop(0.65, '#221810');
+                    bg.addColorStop(1, '#140e09');
+                    bCtx.fillStyle = bg;
+                    bCtx.fillRect(0, 0, 512, 512);
+                    bCtx.strokeStyle = 'rgba(212, 168, 83, 0.38)';
+                    bCtx.lineWidth = 10;
+                    bCtx.beginPath();
+                    bCtx.arc(256, 256, 240, 0, Math.PI * 2);
+                    bCtx.stroke();
+                };
+// === [#HEX:F.04.36F.00] END ===
+                paintBacking();
+
+                const langTex = new THREE.CanvasTexture(btnCanvas);
                 langTex.colorSpace = THREE.SRGBColorSpace;
                 langTex.wrapS = THREE.ClampToEdgeWrapping;
                 langTex.wrapT = THREE.ClampToEdgeWrapping;
                 langMaterials[lang] = new THREE.MeshStandardMaterial({
                     map: langTex,
                     roughness: 0.35,
-                    metalness: 0.2,
-                    transparent: true,
-                    alphaTest: 0.05,
+                    metalness: 0.25,
                     side: THREE.DoubleSide
                 });
+
+                const gcsUrl = 'https://storage.googleapis.com/kalozsziget-assets/tutorial/assets/images/flags/lang_' + lang + '-removebg-preview.png';
+                const localPath = 'https://storage.googleapis.com/kalozsziget-assets/assets/images/flags/lang_' + lang + '-removebg-preview.png';
+// === [#HEX:F.04.370.00] START | name: drawCroppedIcon | lines: 35 ===
+// @calls: [#HEX:F.04.36F.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00], [#HEX:F.04.273.00], [#HEX:F.04.371.00]
+                const drawCroppedIcon = (img) => {
+                    paintBacking();
+                    const iw = img.naturalWidth || img.width;
+                    const ih = img.naturalHeight || img.height;
+                    let sx = 0, sy = 0, sw = iw, sh = ih;
+                    try {
+                        const scanCanvas = document.createElement('canvas');
+                        scanCanvas.width = iw;
+                        scanCanvas.height = ih;
+                        const sCtx = scanCanvas.getContext('2d');
+                        sCtx.drawImage(img, 0, 0);
+                        const px = sCtx.getImageData(0, 0, iw, ih).data;
+                        let x0 = iw, y0 = ih, x1 = 0, y1 = 0;
+                        for (let y = 0; y < ih; y++) {
+                            for (let x = 0; x < iw; x++) {
+                                if (px[(y * iw + x) * 4 + 3] > 20) {
+                                    if (x < x0) x0 = x;
+                                    if (x > x1) x1 = x;
+                                    if (y < y0) y0 = y;
+                                    if (y > y1) y1 = y;
+                                }
+                            }
+                        }
+                        if (x1 > x0 && y1 > y0) {
+                            sx = x0; sy = y0; sw = x1 - x0 + 1; sh = y1 - y0 + 1;
+                        }
+                    } catch (_e) { }
+                    const targetSpan = 472;
+                    const scale = Math.min(targetSpan / sw, targetSpan / sh);
+                    const dw = sw * scale;
+                    const dh = sh * scale;
+                    bCtx.drawImage(img, sx, sy, sw, sh, (512 - dw) / 2, (512 - dh) / 2, dw, dh);
+                    langTex.needsUpdate = true;
+                    if (mesh && mesh.material) mesh.material.needsUpdate = true;
+                };
+// === [#HEX:F.04.370.00] END ===
+
+// === [#HEX:F.04.371.00] START | name: loadBtnImg | lines: 15 ===
+// @calls: [#HEX:F.04.370.00], [#HEX:F.04.F3.00], [#HEX:T.04.00.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.03.0B.00], [#HEX:F.03.0D.00], [#HEX:F.04.C8.00]
+                const loadBtnImg = (url, fallbackUrl) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        drawCroppedIcon(img);
+                        console.info('Nyelv zászló textúra sikeresen betöltve és befoltozva:', lang);
+                    };
+                    img.onerror = () => {
+                        if (fallbackUrl) {
+                            console.warn('GCS zászló nem található, helyi fallback (' + lang + ')');
+                            loadBtnImg(fallbackUrl, null);
+                        }
+                    };
+                    img.src = url;
+                };
+// === [#HEX:F.04.371.00] END ===
+                loadBtnImg(gcsUrl, localPath);
             }
 
             mesh.material = langMaterials[lang];
@@ -37093,26 +37214,26 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.03.0D.00] END ===
 
     // --- GLB MODELL BETÖLTÉSE ---
-// === [#HEX:F.04.167.00] START | name: loadDeviceModel | lines: 122 ===
-// @calls: [#HEX:F.03.0B.00], [#HEX:F.03.0C.00], [#HEX:F.03.0D.00], [#HEX:F.04.168.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.C8.00]
+// === [#HEX:F.04.167.00] START | name: loadDeviceModel | lines: 127 ===
+// @calls: [#HEX:F.03.0B.00], [#HEX:F.03.0C.00], [#HEX:F.03.0D.00], [#HEX:F.04.168.00], [#HEX:F.04.169.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.C8.00]
     function loadDeviceModel() {
         const gltfLoader = new GLTFLoader();
         var isLocalEnv = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:');
         const modelPaths = isLocalEnv ? [
-            'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb',
-            'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepooldal_kozmosz_kutyu.glb',
-            'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb'
+            'assets/3d_webre/belepooldal_kozmosz_kutyu.glb?v=20261127',
+            'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/belepooldal_kozmosz_kutyu.glb?v=20261127',
+            'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb'
         ] : [
-            'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb',
-            'https://storage.googleapis.com/kalozsziget-assets/models/belepo_kozmosz_kutyu.glb',
+            'https://storage.googleapis.com/kalozsziget-assets/assets/3d_webre/belepooldal_kozmosz_kutyu.glb?v=20261127',
             'https://storage.googleapis.com/kalozsziget-assets/assets/models/belepo_kozmosz_kutyu.glb'
         ];
 
-// === [#HEX:F.04.168.00] START | name: tryLoad | lines: 106 ===
-// @calls: [#HEX:F.03.0B.00], [#HEX:F.03.0C.00], [#HEX:F.03.0D.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.C8.00]
+// === [#HEX:F.04.168.00] START | name: tryLoad | lines: 112 ===
+// @calls: [#HEX:F.03.0B.00], [#HEX:F.03.0C.00], [#HEX:F.03.0D.00], [#HEX:F.04.169.00] | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.C8.00]
         function tryLoad(index) {
             if (index >= modelPaths.length) {
-                console.warn('Nem található újabb GLB modell, a villámgyors fallback terminál marad érvényben.');
+                console.warn('Nem sikerült betölteni a 3D kozmikus kütyüt, vészhelyzeti fallback terminál aktiválása.');
+                createFallbackDevice();
                 return;
             }
 
@@ -37136,23 +37257,28 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
                                 matName.includes('kijelzo') || matName.includes('monitor')) {
                                 child.material = screenMaterial;
 
-                                if (child.geometry && child.geometry.attributes && child.geometry.attributes.uv) {
-                                    const uvAttr = child.geometry.attributes.uv;
-                                    let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-                                    for (let i = 0; i < uvAttr.count; i++) {
-                                        const u = uvAttr.getX(i);
-                                        const v = uvAttr.getY(i);
-                                        if (u < minU) minU = u;
-                                        if (u > maxU) maxU = u;
-                                        if (v < minV) minV = v;
-                                        if (v > maxV) maxV = v;
+                                if (child.geometry && child.geometry.attributes && child.geometry.attributes.position) {
+                                    const posAttr = child.geometry.attributes.position;
+                                    let uvAttr = child.geometry.attributes.uv;
+                                    if (!uvAttr || uvAttr.count !== posAttr.count) {
+                                        uvAttr = new THREE.BufferAttribute(new Float32Array(posAttr.count * 2), 2);
+                                        child.geometry.setAttribute('uv', uvAttr);
                                     }
-                                    const rangeU = maxU - minU;
-                                    const rangeV = maxV - minV;
-                                    if (rangeU > 0.01 && rangeV > 0.01) {
-                                        for (let i = 0; i < uvAttr.count; i++) {
-                                            const normU = 1.0 - ((uvAttr.getX(i) - minU) / rangeU);
-                                            const normV = (uvAttr.getY(i) - minV) / rangeV;
+                                    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                                    for (let i = 0; i < posAttr.count; i++) {
+                                        const px = posAttr.getX(i);
+                                        const py = posAttr.getY(i);
+                                        if (px < minX) minX = px;
+                                        if (px > maxX) maxX = px;
+                                        if (py < minY) minY = py;
+                                        if (py > maxY) maxY = py;
+                                    }
+                                    const rangeX = maxX - minX;
+                                    const rangeY = maxY - minY;
+                                    if (rangeX > 0.001 && rangeY > 0.001) {
+                                        for (let i = 0; i < posAttr.count; i++) {
+                                            const normU = (posAttr.getX(i) - minX) / rangeX;
+                                            const normV = (posAttr.getY(i) - minY) / rangeY;
                                             uvAttr.setXY(i, normU, normV);
                                         }
                                         uvAttr.needsUpdate = true;
@@ -37223,7 +37349,7 @@ function runAuthTerminal3DModule(THREE, OrbitControls, GLTFLoader) {
 // === [#HEX:F.04.167.00] END ===
 
 // === [#HEX:F.04.169.00] START | name: createFallbackDevice | lines: 19 ===
-// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.15B.00], [#HEX:F.04.C8.00]
+// @calls: none | @calledBy: [#HEX:F.01.0B.00], [#HEX:F.04.167.00], [#HEX:F.04.168.00], [#HEX:F.04.C8.00]
     function createFallbackDevice() {
         if (deviceModel) return;
         const group = new THREE.Group();
